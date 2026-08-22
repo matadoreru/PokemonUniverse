@@ -33,55 +33,22 @@ services:
         max-size: 10m
         max-file: "3"
 
-  migrate:
-    image: "${PU_SERVER_IMAGE:-ghcr.io/matadoreru/pokemon-universe-server}:${PU_IMAGE_TAG:-latest}"
-    restart: "no"
-    command: ["./node_modules/.bin/prisma", "migrate", "deploy", "--schema", "apps/server/prisma/schema.prisma"]
-    environment: &database_environment
-      DATABASE_URL: "postgresql://${PU_POSTGRES_USER:-pokemon}:${PU_POSTGRES_PASSWORD:?Define PU_POSTGRES_PASSWORD en .env}@postgres:5432/${PU_POSTGRES_DB:-pokemon_universe}?schema=public"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    read_only: true
-    tmpfs:
-      - /tmp:size=32m,mode=1777
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-
-  seed:
-    image: "${PU_SERVER_IMAGE:-ghcr.io/matadoreru/pokemon-universe-server}:${PU_IMAGE_TAG:-latest}"
-    restart: "no"
-    command: ["node", "apps/server/dist/prisma/seed.js"]
-    environment: *database_environment
-    depends_on:
-      migrate:
-        condition: service_completed_successfully
-    read_only: true
-    tmpfs:
-      - /tmp:size=32m,mode=1777
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-
   server:
     image: "${PU_SERVER_IMAGE:-ghcr.io/matadoreru/pokemon-universe-server}:${PU_IMAGE_TAG:-latest}"
     container_name: pokemon-universe-server
     restart: unless-stopped
     environment:
-      <<: *database_environment
       NODE_ENV: production
       PORT: "3001"
       WEB_ORIGIN: "${PU_PUBLIC_ORIGIN:?Define PU_PUBLIC_ORIGIN en .env}"
+      DATABASE_URL: "postgresql://${PU_POSTGRES_USER:-pokemon}:${PU_POSTGRES_PASSWORD:?Define PU_POSTGRES_PASSWORD en .env}@postgres:5432/${PU_POSTGRES_DB:-pokemon_universe}?schema=public"
       JWT_SECRET: "${PU_JWT_SECRET:?Define PU_JWT_SECRET en .env}"
       COOKIE_SECURE: "${PU_SECURE_COOKIE:-true}"
       ROOM_MAX_PLAYERS: "${PU_ROOM_MAX_PLAYERS:-8}"
       RECONNECT_GRACE_MS: "${PU_RECONNECT_GRACE_MS:-30000}"
     depends_on:
-      seed:
-        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
     read_only: true
     tmpfs:
       - /tmp:size=32m,mode=1777
@@ -96,7 +63,7 @@ services:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
       interval: 30s
       timeout: 5s
-      start_period: 15s
+      start_period: 30s
       retries: 3
     stop_grace_period: 20s
     logging: *logging

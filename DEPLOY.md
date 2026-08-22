@@ -78,8 +78,8 @@ curl --fail --silent --show-error http://127.0.0.1:8080/api/health
 docker compose exec postgres pg_isready -U pokemon -d pokemon_universe
 ```
 
-`migrate` aplica el esquema Prisma y `seed` descarga una sola vez las 1.025 especies. Es normal que ambos terminen con
-`Exited (0)`. Las partidas posteriores no consultan PokéAPI.
+Al arrancar, `server` aplica las migraciones Prisma antes de aceptar tráfico y descarga una sola vez las 1.025 especies.
+En reinicios posteriores detecta el catálogo completo y continúa sin consultar PokéAPI.
 
 En Cloudflare Tunnel configura el hostname público para enviar tráfico HTTP a `http://127.0.0.1:8080`. Socket.IO usa
 el mismo origen y la ruta `/socket.io/`, por lo que no necesita otro túnel ni puerto. `PU_PUBLIC_ORIGIN` debe coincidir
@@ -115,8 +115,8 @@ cd /srv/docker/pokemon-universe
 ./scripts/deploy.sh SHA_COMPLETO_DEL_COMMIT
 ```
 
-El script crea y valida un backup, descarga las dos imágenes, aplica migraciones, sincroniza el catálogo, espera los
-healthchecks y comprueba `/api/health`. Si falla, vuelve al tag anterior. Una migración de base de datos no se deshace
+El script crea y valida un backup, descarga las dos imágenes y espera mientras el servidor aplica migraciones y sincroniza
+el catálogo; después comprueba los healthchecks y `/api/health`. Si falla, vuelve al tag anterior. Una migración no se deshace
 automáticamente; antes de cambios incompatibles debe existir un procedimiento de migración inversa o restaurarse el dump.
 
 No uses `docker compose down -v`: elimina PostgreSQL. Mantén `PU_WATCHTOWER_ENABLE=false`; un despliegue automático sin

@@ -26,9 +26,7 @@ fi
 
 "$project_dir/scripts/backup-postgres.sh"
 export PU_IMAGE_TAG=$new_tag
-docker compose pull server web migrate seed
-docker compose run --rm migrate || rollback
-docker compose run --rm --no-deps seed || rollback
+docker compose pull server web
 docker compose up -d --wait server web || rollback
 
 published_port=$(docker compose port web 8080 | sed 's/.*://')
