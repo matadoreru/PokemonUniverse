@@ -64,6 +64,12 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Verify production server image
+        run: |
+          docker build --target server --tag pokemon-universe-server:ci .
+          docker run --rm --entrypoint sh pokemon-universe-server:ci -c \
+            'test -x ./apps/server/node_modules/.bin/prisma && test -f ./apps/server/dist/src/index.js'
+
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high
 
