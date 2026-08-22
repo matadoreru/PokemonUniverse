@@ -3,6 +3,9 @@ import type { RoomView } from '@pokemon-universe/shared';
 import { PokedexDistanceConfigPanel } from './pokedex-distance/ConfigPanel';
 import { PokedexDistanceGame } from '../room/PokedexDistanceGame';
 import { GameResults } from '../room/Results';
+import { ShinyVoteConfigPanel } from './shiny-vote/ConfigPanel';
+import { ShinyVoteGame } from '../room/ShinyVoteGame';
+import { ShinyVoteResults } from '../room/ShinyVoteResults';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
@@ -25,6 +28,10 @@ class ClientGameRegistry {
 }
 
 export const clientGameRegistry = new ClientGameRegistry().register({
+  id: 'shiny-vote', name: '¿Cuál es el shiny?',
+  description: 'Encuentra el shiny real. Verás en directo qué opción elige cada entrenador.',
+  ConfigPanel: ShinyVoteConfigPanel, ActiveGame: ShinyVoteGame, Results: ShinyVoteResults,
+}).register({
   id: 'pokedex-distance', name: 'Pokédex Distance',
   description: 'Acércate al número objetivo. La elección más lejana queda fuera.',
   ConfigPanel: PokedexDistanceConfigPanel, ActiveGame: PokedexDistanceGame, Results: GameResults,

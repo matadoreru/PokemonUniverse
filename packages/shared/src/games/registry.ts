@@ -1,5 +1,6 @@
 import type { MiniGameModule } from './contracts.js';
 import { pokedexDistanceGame } from './pokedex-distance/server.js';
+import { shinyVoteGame } from './shiny-vote/server.js';
 
 export type RegisteredGame = MiniGameModule<any, any, any, any>;
 
@@ -14,4 +15,4 @@ export class GameRegistry {
   list(): RegisteredGame[] { return [...this.games.values()]; }
 }
 
-export const gameRegistry = new GameRegistry().register(pokedexDistanceGame);
+export const gameRegistry = new GameRegistry().register(shinyVoteGame).register(pokedexDistanceGame);

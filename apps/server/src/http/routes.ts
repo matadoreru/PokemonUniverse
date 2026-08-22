@@ -1,9 +1,21 @@
 import { gameRegistry } from '@pokemon-universe/shared';
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import { prisma } from '../db.js';
 import { env } from '../config.js';
 
 export const apiRouter = Router();
+let gameImageResolver: ((code: string, assetToken: string, roundNumber: number, optionId: string) => string | null) | null = null;
+const gameImageCache = new Map<string, Promise<{ body: Buffer; contentType: string }>>();
+const gameImageRateLimit = rateLimit({ windowMs: 60_000, limit: 5_000, standardHeaders: 'draft-7', legacyHeaders: false });
+
+export function registerGameImageResolver(resolver: typeof gameImageResolver): void {
+  gameImageResolver = resolver;
+}
+
+function routeParam(value: string | string[] | undefined): string {
+  return Array.isArray(value) ? value[0] ?? '' : value ?? '';
+}
 
 apiRouter.get('/health', async (_req, res, next) => {
   try {
@@ -35,5 +47,29 @@ apiRouter.get('/pokemon', async (req, res, next) => {
     });
     res.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
     res.json({ pokemon: rows });
+  } catch (error) { next(error); }
+});
+
+apiRouter.get('/rooms/:code/games/:assetToken/rounds/:roundNumber/options/:optionId/sprite', gameImageRateLimit, async (req, res, next) => {
+  try {
+    const roundNumber = Number(req.params.roundNumber);
+    if (!gameImageResolver || !Number.isInteger(roundNumber)) { res.status(404).end(); return; }
+    const source = gameImageResolver(routeParam(req.params.code), routeParam(req.params.assetToken), roundNumber, routeParam(req.params.optionId));
+    if (!source) { res.status(404).end(); return; }
+    const sourceUrl = new URL(source);
+    if (sourceUrl.protocol !== 'https:' || sourceUrl.hostname !== 'raw.githubusercontent.com') { res.status(400).end(); return; }
+    let cached = gameImageCache.get(source);
+    if (!cached) {
+      cached = fetch(sourceUrl).then(async (image) => {
+        if (!image.ok) throw new Error(`Sprite source returned ${image.status}`);
+        return { body: Buffer.from(await image.arrayBuffer()), contentType: image.headers.get('content-type') ?? 'image/png' };
+      }).catch((error) => { gameImageCache.delete(source); throw error; });
+      gameImageCache.set(source, cached);
+      if (gameImageCache.size > 256) gameImageCache.delete(gameImageCache.keys().next().value!);
+    }
+    const image = await cached;
+    res.type(image.contentType);
+    res.set('Cache-Control', 'private, max-age=86400, immutable');
+    res.send(image.body);
   } catch (error) { next(error); }
 });

@@ -1,6 +1,6 @@
 # Pokémon Universe
 
-Real-time multiplayer minigame hub. The first registered game is **Pokédex Distance**.
+Real-time multiplayer minigame hub. The default game is **¿Cuál es el shiny?**: four candidates, public server-authoritative voting, a three-second reveal and cumulative scoring. **Pokédex Distance** remains available through the game registry.
 
 ## Run local code with Docker
 
@@ -8,7 +8,7 @@ Real-time multiplayer minigame hub. The first registered game is **Pokédex Dist
 2. Run `docker compose -f compose.yaml -f compose.dev.yaml up -d --build --wait`.
 3. Open <http://localhost:8080>.
 
-The first boot runs the database migration and imports the 1,025 National Pokédex species. Later boots skip the import when the catalog is complete. This one-time seed needs internet access; actual games do not.
+The first boot runs the database migration and imports the 1,025 National Pokédex species. Later boots skip the import when the catalog is complete. The shiny game proxies and caches trusted PokéAPI sprite assets so public round state never exposes which candidate URL is the shiny variant.
 
 For local Node 22 development:
 
@@ -44,7 +44,7 @@ See [DEPLOY.md](DEPLOY.md) for installation, GHCR, Cloudflare Tunnel, backups an
 
 See [docs/architecture.md](docs/architecture.md) for concurrency, reconnect and scaling decisions.
 
-## Add a second minigame
+## Add another minigame
 
 Create `packages/shared/src/games/<id>/` with config/action schemas, state/action types, pure rules and a `MiniGameModule` implementation. Export it, then add one `.register(newGame)` call in the shared `games/registry.ts`. Add its configuration, active-game and results components to the declarative client registry at `apps/web/src/games/registry.ts`. The room coordinator discovers its manifest and drives it through the common contract; central auth, rooms, host, scoring, sessions, persistence, reconnection and spectators require no changes.
 

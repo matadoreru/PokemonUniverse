@@ -10,7 +10,7 @@ The repository is split into three boundaries:
 
 The room state machine uses `LOBBY → GAME_STARTING → ROUND_ACTIVE ↔ ROUND_RESULTS / TIEBREAKER_ACTIVE → GAME_RESULTS → SESSION_RESULTS`. A game module owns the middle states. There are no combinations of gameplay booleans.
 
-Selections are handled synchronously in the Node event loop with no `await` before mutation. Consequently, two events for the same Pokémon are serialized and only the first can add it to `lockedPokemonIds`. For horizontal scale, `InMemoryRoomStore` is the intentional replacement boundary: move rooms/timers to Redis and run each action under a per-room distributed lock or atomic Lua operation. Socket.IO's Redis adapter then distributes events.
+Actions are handled synchronously in the Node event loop with no `await` before mutation. Consequently, concurrent votes in one room are serialized, a player's first valid vote is final, and every accepted mutation is broadcast as one authoritative room snapshot. For horizontal scale, `InMemoryRoomStore` is the intentional replacement boundary: move rooms/timers to Redis and run each action under a per-room distributed lock or atomic Lua operation. Socket.IO's Redis adapter then distributes events.
 
 The server stores an absolute deadline. Browsers only render an estimate using `serverNow`; the server timer calls `handleTimeout` and owns the transition.
 
@@ -18,9 +18,9 @@ The server stores an absolute deadline. Browsers only render an estimate using `
 
 The signed HttpOnly identity cookie is stable through reloads. A disconnected member remains reserved for 30 seconds and receives the full public snapshot after reconnecting, including their prior selection. After grace expires, host ownership transfers to the oldest connected member.
 
-An active player is retained in the running engine to keep results deterministic. They cannot act while offline and will be eliminated by the normal no-response rule at a deadline. Offline members are removed when returning to the lobby. Spectators and lobby members are removed as soon as grace expires.
+An active player is retained in the running engine to keep results deterministic. They cannot act while offline; a voting round waits for them until its server deadline and then records no response. Offline members are removed when returning to the lobby. Spectators and lobby members are removed as soon as grace expires.
 
-If every remaining player times out in the same round, the explicit “eliminate every non-responder” rule produces a draw: the game closes with no winner and those final players receive no winner bonus. This avoids inventing a client-side winner or leaving the room stuck with zero active players.
+The shiny answer is absent from the public state during voting. Candidate images use opaque, round-scoped application URLs; the server resolves and caches the trusted upstream sprite without exposing a semantic `/shiny/` URL to clients. During the reveal, the public projection adds the correct option and per-player outcome for three seconds.
 
 ## Pokémon data
 

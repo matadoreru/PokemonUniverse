@@ -25,3 +25,5 @@ button { -webkit-tap-highlight-color: transparent; }
 .pokeball-mark::after { content: ''; position: absolute; inset: 32%; border: 3px solid #172033; border-radius: 50%; background: #fff9ed; }
 .timer-pulse { animation: timer-pulse .7s ease-in-out infinite alternate; }
 @keyframes timer-pulse { to { transform: scale(1.06); color: #ef476f; } }
+.reveal-pop { animation: reveal-pop .45s cubic-bezier(.2,.9,.3,1.25); }
+@keyframes reveal-pop { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }

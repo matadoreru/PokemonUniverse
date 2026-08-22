@@ -152,7 +152,7 @@ export class RoomManager {
     const players = [...room.members.values()].filter((member) => member.connected).map((member) => ({ id: member.identity.id, displayName: member.identity.displayName }));
     const module = gameRegistry.get(room.selectedGameId)!;
     if (players.length < module.manifest.minPlayers) throw new Error(`Se necesitan al menos ${module.manifest.minPlayers} jugadores.`);
-    const context = { players, pokemon: this.pokemon, now: Date.now(), random: Math.random };
+    const context = { players, pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code };
     let state = module.createInitialState(module.configSchema.parse(room.gameConfig), context);
     state = module.start(state, context);
     for (const member of room.members.values()) member.role = 'PLAYER';
@@ -228,7 +228,15 @@ export class RoomManager {
   }
 
   private context(room: LiveRoom) {
-    return { players: [...room.members.values()].map((member) => ({ id: member.identity.id, displayName: member.identity.displayName })), pokemon: this.pokemon, now: Date.now(), random: Math.random };
+    return { players: [...room.members.values()].map((member) => ({ id: member.identity.id, displayName: member.identity.displayName })), pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code };
+  }
+
+  shinyOptionSprite(code: string, assetToken: string, roundNumber: number, optionId: string): string | null {
+    const room = this.store.get(code);
+    const state = room?.game?.state;
+    if (!room || room.selectedGameId !== 'shiny-vote' || !state || state.assetToken !== assetToken || state.roundNumber !== roundNumber) return null;
+    const option = state.options?.find((entry: { id: string }) => entry.id === optionId);
+    return typeof option?.sprite === 'string' ? option.sprite : null;
   }
 
   private view(room: LiveRoom): RoomView {

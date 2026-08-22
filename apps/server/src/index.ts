@@ -13,7 +13,7 @@ import { optionalAuth } from './auth/middleware.js';
 import { AUTH_COOKIE, verifyIdentity } from './auth/tokens.js';
 import { env } from './config.js';
 import { prisma } from './db.js';
-import { apiRouter } from './http/routes.js';
+import { apiRouter, registerGameImageResolver } from './http/routes.js';
 import { loadPokemonCatalog } from './pokemon/catalog.js';
 import { RoomManager } from './rooms/manager.js';
 
@@ -23,7 +23,10 @@ app.use(helmet());
 app.use(cors({ origin: env.WEB_ORIGIN, credentials: true }));
 app.use(express.json({ limit: '32kb' }));
 app.use(cookieParser());
-app.use(rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false }));
+app.use(rateLimit({
+  windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false,
+  skip: (req) => /^\/api\/rooms\/[^/]+\/games\/[^/]+\/rounds\/\d+\/options\/[A-D]\/sprite$/.test(req.path),
+}));
 app.use(optionalAuth);
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 30 }), authRouter);
 app.use('/api', apiRouter);
@@ -52,6 +55,7 @@ io.use(async (socket, next) => {
 
 const catalog = await loadPokemonCatalog();
 const rooms = new RoomManager(io, catalog);
+registerGameImageResolver((code, assetToken, roundNumber, optionId) => rooms.shinyOptionSprite(code, assetToken, roundNumber, optionId));
 io.on('connection', (socket) => {
   const recentEvents: number[] = [];
   socket.use((_event, next) => {

@@ -5,3 +5,4 @@ export * from './pokemon/types.js';
 export * from './games/contracts.js';
 export * from './games/registry.js';
 export * from './games/pokedex-distance/index.js';
+export * from './games/shiny-vote/index.js';

@@ -18,6 +18,7 @@ export interface GameContext {
   pokemon: PokemonCatalog;
   now: number;
   random: () => number;
+  roomCode?: string;
 }
 
 export interface GameActionResult<TState> {
