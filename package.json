@@ -1,0 +1,24 @@
+{
+  "name": "pokemon-universe",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "postinstall": "npm run db:generate",
+    "dev": "concurrently -n server,web -c yellow,cyan \"npm run dev -w @pokemon-universe/server\" \"npm run dev -w @pokemon-universe/web\"",
+    "build": "npm run build -w @pokemon-universe/shared && npm run build -w @pokemon-universe/server && npm run build -w @pokemon-universe/web",
+    "typecheck": "npm run build -w @pokemon-universe/shared && npm run typecheck -w @pokemon-universe/server && npm run typecheck -w @pokemon-universe/web",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "db:generate": "npm run db:generate -w @pokemon-universe/server",
+    "db:migrate": "npm run db:migrate -w @pokemon-universe/server",
+    "db:seed": "npm run db:seed -w @pokemon-universe/server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "eslint": "^9.20.1",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.0"
+  },
+  "engines": { "node": ">=22" }
+}

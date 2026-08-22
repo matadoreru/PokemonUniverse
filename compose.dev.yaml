@@ -1,0 +1,24 @@
+services:
+  migrate:
+    build:
+      context: .
+      target: server
+    image: pokemon-universe-server:dev
+
+  seed:
+    build:
+      context: .
+      target: server
+    image: pokemon-universe-server:dev
+
+  server:
+    build:
+      context: .
+      target: server
+    image: pokemon-universe-server:dev
+
+  web:
+    build:
+      context: .
+      target: web
+    image: pokemon-universe-web:dev
