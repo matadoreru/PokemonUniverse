@@ -8,6 +8,7 @@ const BATCH_SIZE = 25;
 interface PokeApiPokemon {
   id: number;
   name: string;
+  species: { name: string };
   stats: Array<{ base_stat: number; stat: { name: string } }>;
   types: Array<{ slot: number; type: { name: string } }>;
 }
@@ -48,9 +49,9 @@ async function main(): Promise<void> {
       const specialDefense = stats['special-defense'] ?? 0;
       const speed = stats.speed ?? 0;
       entries.push({
-        id: pokemon.name, nationalDexNumber: pokemon.id, name: displayName(pokemon.name), generation: generationFor(pokemon.id),
+        id: pokemon.species.name, nationalDexNumber: pokemon.id, name: displayName(pokemon.species.name), generation: generationFor(pokemon.id),
         sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
-        names: { en: pokemon.name }, types: pokemon.types.sort((a, b) => a.slot - b.slot).map((entry) => entry.type.name),
+        names: { en: pokemon.species.name }, types: pokemon.types.sort((a, b) => a.slot - b.slot).map((entry) => entry.type.name),
         hp, attack, defense, specialAttack, specialDefense, speed,
         baseStatTotal: hp + attack + defense + specialAttack + specialDefense + speed,
       });
@@ -61,7 +62,14 @@ async function main(): Promise<void> {
   if (entries.length !== LAST_NATIONAL_DEX_NUMBER) throw new Error(`Expected ${LAST_NATIONAL_DEX_NUMBER} Pokémon, received ${entries.length}`);
   for (let start = 0; start < entries.length; start += 100) {
     const batch = entries.slice(start, start + 100);
-    await prisma.$transaction(batch.map((entry) => prisma.pokemon.upsert({ where: { id: entry.id }, create: entry, update: entry })));
+    await prisma.$transaction(batch.map((entry) => {
+      const { id: _id, nationalDexNumber: _nationalDexNumber, ...update } = entry;
+      return prisma.pokemon.upsert({
+        where: { nationalDexNumber: entry.nationalDexNumber },
+        create: entry,
+        update,
+      });
+    }));
   }
   console.info(`Seeded ${entries.length} enriched Pokémon.`);
 }

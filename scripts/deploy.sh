@@ -11,9 +11,33 @@ new_tag=$1
 previous_tag=${PU_IMAGE_TAG:-}
 cd "$project_dir"
 
+# Preserve the exact local images that are running. A tag such as `latest` can
+# move during pull, so a tag alone is not a reliable rollback target.
+rollback_tag="deployment-rollback-$$"
+previous_server_ref=$(docker inspect pokemon-universe-server --format '{{.Config.Image}}' 2>/dev/null || true)
+previous_web_ref=$(docker inspect pokemon-universe-web --format '{{.Config.Image}}' 2>/dev/null || true)
+previous_server_id=$(docker inspect pokemon-universe-server --format '{{.Image}}' 2>/dev/null || true)
+previous_web_id=$(docker inspect pokemon-universe-web --format '{{.Image}}' 2>/dev/null || true)
+rollback_snapshot=0
+if [ -n "$previous_server_id" ] && [ -n "$previous_web_id" ] \
+  && docker image tag "$previous_server_id" "pokemon-universe-server-rollback:$rollback_tag" \
+  && docker image tag "$previous_web_id" "pokemon-universe-web-rollback:$rollback_tag"; then
+  rollback_snapshot=1
+fi
+
 rollback() {
-  echo "El despliegue falló; restaurando las imágenes con tag $previous_tag" >&2
-  export PU_IMAGE_TAG=$previous_tag
+  echo "El despliegue falló. Estado y últimos logs del servidor:" >&2
+  docker compose ps -a >&2 || true
+  docker compose logs --no-color --tail=200 server >&2 || true
+  if [ "$rollback_snapshot" -eq 1 ]; then
+    echo "Restaurando las imágenes exactas anteriores: $previous_server_ref / $previous_web_ref" >&2
+    export PU_SERVER_IMAGE=pokemon-universe-server-rollback
+    export PU_WEB_IMAGE=pokemon-universe-web-rollback
+    export PU_IMAGE_TAG=$rollback_tag
+  else
+    echo "No se pudo crear el snapshot local; restaurando el tag $previous_tag" >&2
+    export PU_IMAGE_TAG=$previous_tag
+  fi
   docker compose up -d --wait server web || true
   exit 1
 }
