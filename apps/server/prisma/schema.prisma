@@ -71,9 +71,10 @@ model PlayerGameResult {
 
 model Pokemon {
   id                String   @id
-  nationalDexNumber Int      @unique
+  nationalDexNumber Int
   name              String
   generation        Int
+  isDefault         Boolean  @default(true)
   sprite            String
   hp                Int      @default(0)
   attack            Int      @default(0)
@@ -87,4 +88,5 @@ model Pokemon {
   updatedAt         DateTime @updatedAt
 
   @@index([generation])
+  @@index([nationalDexNumber])
 }

@@ -8,6 +8,8 @@ export interface Pokemon {
   nationalDexNumber: number;
   name: string;
   generation: number;
+  /** False for regional/battle variants that share a National Pokédex number. */
+  isDefault?: boolean;
   sprite: string;
   hp: number;
   attack: number;
@@ -24,7 +26,7 @@ export interface PokemonCatalog {
   all(): readonly Pokemon[];
   byId(id: string): Pokemon | undefined;
   byDexNumber(number: number): Pokemon | undefined;
-  forGenerations(generations: readonly number[]): readonly Pokemon[];
+  forGenerations(generations: readonly number[], options?: { includeForms?: boolean }): readonly Pokemon[];
 }
 
 export const GENERATIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;

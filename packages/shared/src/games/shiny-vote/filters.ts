@@ -3,6 +3,8 @@
  * keeping transparent sprites readable against both light and dark surfaces.
  */
 export const AUTHENTIC_SHINY_FILTER = 'brightness(1) saturate(1) contrast(1) hue-rotate(0deg)';
+/** Some decoys start from the official shiny palette before being recolored. */
+export const FAKE_SHINY_SPRITE_PROBABILITY = 0.35;
 
 export const FAKE_SHINY_FILTERS = [
   'hue-rotate(64deg) saturate(2.15) contrast(1.2) brightness(1.06)',
@@ -15,4 +17,8 @@ export const FAKE_SHINY_FILTERS = [
 
 export function fakeShinyFilter(index: number): string {
   return FAKE_SHINY_FILTERS[index % FAKE_SHINY_FILTERS.length]!;
+}
+
+export function useShinySpriteForFake(random: () => number): boolean {
+  return random() < FAKE_SHINY_SPRITE_PROBABILITY;
 }

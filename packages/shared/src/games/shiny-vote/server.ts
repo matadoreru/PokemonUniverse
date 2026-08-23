@@ -1,7 +1,7 @@
 import type { Pokemon } from '../../pokemon/types.js';
 import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { defaultShinyVoteConfig, shinyVoteConfigSchema, type ShinyVoteConfig } from './config.js';
-import { AUTHENTIC_SHINY_FILTER, fakeShinyFilter } from './filters.js';
+import { AUTHENTIC_SHINY_FILTER, fakeShinyFilter, useShinySpriteForFake } from './filters.js';
 import { buildShinyResults, emptyShinyStats } from './rules.js';
 import {
   SHINY_OPTION_IDS,
@@ -50,11 +50,12 @@ function createOptions(state: ShinyVoteState, context: GameContext): { options: 
     options: candidates.map((pokemon, index) => {
       const authentic = index === correctIndex;
       const visualFilter = authentic ? AUTHENTIC_SHINY_FILTER : fakeShinyFilter(fakeFilterIndex++);
+      const useShinyBase = authentic || useShinySpriteForFake(context.random);
       return {
         id: optionIds[index]!,
         pokemonId: pokemon.id,
         pokemonName: pokemon.name,
-        sprite: authentic ? shinySprite(pokemon) : pokemon.sprite,
+        sprite: useShinyBase ? shinySprite(pokemon) : pokemon.sprite,
         visualFilter,
       };
     }),

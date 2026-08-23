@@ -1,7 +1,7 @@
 import type { Pokemon } from '../../pokemon/types.js';
 import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { defaultHigherLowerConfig, higherLowerConfigSchema, type HigherLowerConfig } from './config.js';
-import { buildHigherLowerResults, higherLowerAnswer, HIGHER_LOWER_POINTS, pokemonCategoryValue, streakBonus } from './rules.js';
+import { buildHigherLowerResults, higherLowerAnswer, HIGHER_LOWER_POINTS, pokemonCategoryValue, selectPokemonByDifficulty, streakBonus } from './rules.js';
 import { higherLowerActionSchema, type HigherLowerAction, type HigherLowerPlayerState, type HigherLowerPublicState, type HigherLowerState, type HigherLowerStats } from './types.js';
 
 const REVEAL_MS = 3_000;
@@ -12,9 +12,11 @@ function pokemonView(pokemon: Pokemon, value: number | null) { return { id: poke
 function beginRound(state: HigherLowerState, context: GameContext): HigherLowerState {
   const pool = context.pokemon.forGenerations(state.config.generations);
   const candidates = pool.filter((entry) => entry.id !== state.previousPokemonId);
-  const current = randomItem(candidates, context.random);
+  const previous = context.pokemon.byId(state.previousPokemonId)!;
+  const category = randomItem(state.config.categories, context.random);
+  const current = selectPokemonByDifficulty(previous, candidates, category, state.config.difficulty, context.random);
   return { ...state, phase: 'ROUND_ACTIVE', roundNumber: state.roundNumber + 1, currentPokemonId: current.id,
-    category: randomItem(state.config.categories, context.random), answers: {}, roundStartedAt: context.now,
+    category, answers: {}, roundStartedAt: context.now,
     roundEndsAt: context.now + state.config.roundSeconds * 1_000, nextTransitionAt: null, lastRound: null };
 }
 function reveal(state: HigherLowerState, context: GameContext): HigherLowerState {

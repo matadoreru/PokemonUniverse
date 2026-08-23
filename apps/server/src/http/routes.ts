@@ -40,10 +40,14 @@ apiRouter.get('/pokemon', async (req, res, next) => {
     const generations = typeof req.query.generations === 'string'
       ? req.query.generations.split(',').map(Number).filter((value) => Number.isInteger(value) && value >= 1 && value <= 9)
       : [];
+    const includeForms = req.query.includeForms === 'true';
     const rows = await prisma.pokemon.findMany({
-      ...(generations.length ? { where: { generation: { in: generations } } } : {}),
-      orderBy: { nationalDexNumber: 'asc' },
-      select: { id: true, nationalDexNumber: true, name: true, generation: true, sprite: true, names: true, types: true, hp: true, attack: true, defense: true, specialAttack: true, specialDefense: true, speed: true, baseStatTotal: true },
+      where: {
+        ...(generations.length ? { generation: { in: generations } } : {}),
+        ...(!includeForms ? { isDefault: true } : {}),
+      },
+      orderBy: [{ nationalDexNumber: 'asc' }, { isDefault: 'desc' }, { name: 'asc' }],
+      select: { id: true, nationalDexNumber: true, name: true, generation: true, isDefault: true, sprite: true, names: true, types: true, hp: true, attack: true, defense: true, specialAttack: true, specialDefense: true, speed: true, baseStatTotal: true },
     });
     res.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
     res.json({ pokemon: rows });

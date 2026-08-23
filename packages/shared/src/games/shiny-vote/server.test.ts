@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { GameContext, GamePlayer, Pokemon, PokemonCatalog, ShinyCandidateMode, ShinyOptionId, ShinyVoteState } from '../../index.js';
-import { shinyVoteGame } from '../../index.js';
+import { AUTHENTIC_SHINY_FILTER, shinyVoteGame } from '../../index.js';
 
 const pokemon: Pokemon[] = Array.from({ length: 8 }, (_, index) => ({
   id: `pokemon-${index + 1}`,
@@ -22,10 +22,10 @@ const players: GamePlayer[] = [
   { id: 'marta', displayName: 'Marta' },
 ];
 
-function setup(rounds = 2, candidateMode: ShinyCandidateMode = 'SAME_POKEMON', optionCount = 4, generations = [1], showVotes = true) {
+function setup(rounds = 2, candidateMode: ShinyCandidateMode = 'SAME_POKEMON', optionCount = 4, generations = [1], showVotes = true, random: () => number = () => 0) {
   let now = 1_000;
   const preloadedImages: string[] = [];
-  const context: GameContext = { players: players.map((player) => ({ ...player })), pokemon: catalog, get now() { return now; }, random: () => 0, roomCode: 'PIKA42', preloadImage: (source) => preloadedImages.push(source) };
+  const context: GameContext = { players: players.map((player) => ({ ...player })), pokemon: catalog, get now() { return now; }, random, roomCode: 'PIKA42', preloadImage: (source) => preloadedImages.push(source) };
   let state = shinyVoteGame.createInitialState({ generations, roundSeconds: 20, rounds, candidateMode, optionCount, showVotes }, context);
   state = shinyVoteGame.start(state, context);
   return { state, context, preloadedImages, setNow(value: number) { now = value; } };
@@ -44,6 +44,15 @@ describe('public shiny voting', () => {
     expect(fakeOptions.every((option) => /hue-rotate\((64|137|211|278|329)deg\)/.test(option.visualFilter))).toBe(true);
   });
 
+  it('builds fake recolors from normal sprites and sometimes from official shiny sprites', () => {
+    const values = [0, 0, 0.9, 0.1, 0.9];
+    const fixture = setup(2, 'SAME_POKEMON', 4, [1], true, () => values.shift() ?? 0.9);
+    const fakeOptions = fixture.state.options.filter((option) => option.id !== fixture.state.correctOptionId);
+    expect(fakeOptions.some((option) => !option.sprite.includes('/shiny/'))).toBe(true);
+    expect(fakeOptions.some((option) => option.sprite.includes('/shiny/'))).toBe(true);
+    expect(fakeOptions.every((option) => option.visualFilter !== AUTHENTIC_SHINY_FILTER)).toBe(true);
+  });
+
   it('supports four different Pokémon when configured by the host', () => {
     const fixture = setup(2, 'DIFFERENT_POKEMON');
     expect(new Set(fixture.state.options.map((option) => option.pokemonId)).size).toBe(4);
@@ -53,8 +62,10 @@ describe('public shiny voting', () => {
   it.each([3, 4, 5, 6])('creates exactly one official shiny among %i configurable options', (optionCount) => {
     const fixture = setup(2, 'SAME_POKEMON', optionCount);
     expect(fixture.state.options).toHaveLength(optionCount);
-    expect(fixture.state.options.filter((option) => option.sprite.includes('/shiny/'))).toHaveLength(1);
-    expect(fixture.state.options.filter((option) => option.id === fixture.state.correctOptionId)).toHaveLength(1);
+    const authenticOptions = fixture.state.options.filter((option) => option.visualFilter === AUTHENTIC_SHINY_FILTER);
+    expect(authenticOptions).toHaveLength(1);
+    expect(authenticOptions[0]).toMatchObject({ id: fixture.state.correctOptionId });
+    expect(authenticOptions[0]?.sprite).toContain('/shiny/');
     expect(new Set(fixture.state.options.map((option) => option.visualFilter)).size).toBe(optionCount);
   });
 

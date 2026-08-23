@@ -63,6 +63,13 @@ export interface PublicSelection extends RoundSelection {
   sprite: string;
 }
 
+export interface PublicActiveSelection {
+  pokemonId: string;
+  pokemonName: string;
+  sprite: string;
+  selectedAt: number;
+}
+
 export interface PublicRoundResult extends Omit<RoundResult, 'selections'> {
   eligibleIds: string[];
   targetPokemon: {
@@ -83,7 +90,7 @@ export interface PokedexDistancePublicState {
   eligibleIds: string[];
   survivorIds: string[];
   spectatorIds: string[];
-  selections: Record<string, PublicSelection>;
+  selections: Record<string, PublicActiveSelection>;
   lockedPokemonIds: string[];
   roundStartedAt: number | null;
   roundEndsAt: number | null;

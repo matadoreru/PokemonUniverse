@@ -52,6 +52,7 @@ export interface GameContext {
   now: number;
   random: () => number;
   roomCode?: string;
+  hostId?: string;
   preloadImage?: (source: string) => void;
 }
 

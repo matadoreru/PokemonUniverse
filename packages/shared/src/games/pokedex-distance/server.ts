@@ -9,7 +9,7 @@ const manifest = {
   description: 'Elige un Pokémon cuyo número esté lo más cerca posible del objetivo.',
   minPlayers: 2,
 } as const;
-const RESULTS_DURATION_MS = 4_000;
+const RESULTS_DURATION_MS = 6_000;
 
 function selectTarget(state: PokedexDistanceState, context: GameContext): number {
   const pool = context.pokemon.forGenerations(state.config.generations);
@@ -173,7 +173,7 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
   getPublicState(state, context) {
     const selections = Object.fromEntries(Object.entries(state.selections).map(([playerId, selection]) => {
       const pokemon = context.pokemon.byId(selection.pokemonId);
-      return [playerId, { ...selection, pokemonName: pokemon?.name ?? 'Unknown', sprite: pokemon?.sprite ?? '' }];
+      return [playerId, { pokemonId: selection.pokemonId, selectedAt: selection.selectedAt, pokemonName: pokemon?.name ?? 'Unknown', sprite: pokemon?.sprite ?? '' }];
     }));
     const lastRound = state.lastRound ? (() => {
       const target = context.pokemon.byDexNumber(state.lastRound!.targetDexNumber);
@@ -199,7 +199,10 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
       results: state.phase === 'GAME_RESULTS' ? buildResults(state) : null,
     };
   },
-  getPlayerState(state, playerId) { return { canSelect: state.eligibleIds.includes(playerId) && !state.selections[playerId], selection: state.selections[playerId] ?? null }; },
+  getPlayerState(state, playerId) {
+    const selection = state.selections[playerId];
+    return { canSelect: state.eligibleIds.includes(playerId) && !selection, selection: selection ? { pokemonId: selection.pokemonId, selectedAt: selection.selectedAt } : null };
+  },
   isFinished(state) { return state.phase === 'GAME_RESULTS'; },
   getResults(state) { return buildResults(state); },
 };

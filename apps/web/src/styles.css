@@ -9,6 +9,7 @@ body { margin: 0; min-width: 320px; min-height: 100vh; background:
   radial-gradient(circle at 88% 5%, rgba(240,191,84,.09), transparent 28rem), #090d18; }
 button, input, select { font: inherit; }
 button { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 3px solid rgba(82,199,232,.55); outline-offset: 2px; }
 
 @layer components {
   .card { @apply rounded-[2rem] border-2 border-ink/10 bg-surface/95 p-5 shadow-card backdrop-blur md:p-7; }
@@ -19,7 +20,29 @@ button { -webkit-tap-highlight-color: transparent; }
   .field { @apply w-full rounded-2xl border-2 border-ink/15 bg-surface-raised px-4 py-3 font-bold outline-none transition placeholder:text-ink/35 focus:border-aqua focus:ring-4 focus:ring-aqua/15; }
   .label { @apply mb-1.5 block text-sm font-extrabold uppercase tracking-wider text-ink/55; }
   .chip { @apply inline-flex items-center rounded-full bg-ink/5 px-3 py-1 text-sm font-extrabold; }
+  .step-number { @apply grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-aqua text-sm font-black text-night; }
+  .permission-chip { @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-ink/10 bg-ink/5 px-3 py-1.5 text-xs font-extrabold text-ink/50; }
+  .permission-help { @apply mt-3 text-sm font-bold text-ink/45; }
+  .session-card { @apply min-h-24 rounded-2xl border-2 border-ink/10 bg-surface-raised p-4 text-left transition hover:border-aqua/50 disabled:cursor-not-allowed; }
+  .session-card strong { @apply block font-display text-lg; }
+  .session-card span { @apply mt-1 block text-sm font-bold text-ink/50; }
+  .session-card-selected { @apply border-aqua bg-aqua/10 shadow-[inset_4px_0_0_#52c7e8]; }
 }
+
+.lobby-readonly { opacity: .72; }
+.lobby-readonly button:disabled, .lobby-readonly input:disabled { cursor: not-allowed; }
+.lobby-readonly button:disabled { filter: saturate(.62); }
+
+.config-range { width: 100%; height: 2.75rem; margin: 0; cursor: pointer; appearance: none; -webkit-appearance: none; background: transparent; touch-action: pan-y; }
+.config-range:disabled { cursor: not-allowed; opacity: .6; }
+.config-range::-webkit-slider-runnable-track { height: .5rem; border: 1px solid rgba(232,237,247,.2); border-radius: 999px; background: #2a3243; }
+.config-range::-moz-range-track { height: .5rem; border: 1px solid rgba(232,237,247,.2); border-radius: 999px; background: #2a3243; }
+.config-range::-webkit-slider-thumb { width: 1.4rem; height: 1.4rem; margin-top: -.5rem; appearance: none; -webkit-appearance: none; border: 3px solid #090d18; border-radius: 999px; background: #ff5c82; box-shadow: 0 0 0 2px rgba(255,92,130,.25); }
+.config-range::-moz-range-thumb { width: 1.1rem; height: 1.1rem; border: 3px solid #090d18; border-radius: 999px; background: #ff5c82; box-shadow: 0 0 0 2px rgba(255,92,130,.25); }
+.config-range-aqua::-webkit-slider-thumb { background: #52c7e8; box-shadow: 0 0 0 2px rgba(82,199,232,.25); }
+.config-range-aqua::-moz-range-thumb { background: #52c7e8; box-shadow: 0 0 0 2px rgba(82,199,232,.25); }
+.config-range-electric::-webkit-slider-thumb { background: #f0bf54; box-shadow: 0 0 0 2px rgba(240,191,84,.25); }
+.config-range-electric::-moz-range-thumb { background: #f0bf54; box-shadow: 0 0 0 2px rgba(240,191,84,.25); }
 
 .pokeball-mark { position: relative; border-radius: 9999px; background: linear-gradient(#ff5c82 0 44%, #050811 44% 56%, #e8edf7 56%); }
 .pokeball-mark::after { content: ''; position: absolute; inset: 32%; border: 3px solid #050811; border-radius: 50%; background: #141b2b; }

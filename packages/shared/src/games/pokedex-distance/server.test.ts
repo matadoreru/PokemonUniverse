@@ -65,6 +65,16 @@ describe('Pokédex Distance rules', () => {
     expect(next.selections.p1).toMatchObject({ pokemonId: 'pikachu', dexNumber: 25, distance: 24 });
   });
 
+  it('does not expose Pokédex number or distance while selections are active', () => {
+    const { context, state } = setup(3, 0);
+    const next = choose(state, 'p1', 'pikachu', context);
+    const publicState = pokedexDistanceGame.getPublicState(next, context);
+    expect(publicState.selections.p1).toEqual({ pokemonId: 'pikachu', pokemonName: 'Pikachu', sprite: '/25.png', selectedAt: context.now });
+    expect(publicState.selections.p1).not.toHaveProperty('dexNumber');
+    expect(publicState.selections.p1).not.toHaveProperty('distance');
+    expect(pokedexDistanceGame.getPlayerState(next, 'p1', context)).toEqual({ canSelect: false, selection: { pokemonId: 'pikachu', selectedAt: context.now } });
+  });
+
   it('eliminates exactly the farthest player in a normal round', () => {
     const { context, state } = setup(3, 0); // #1
     let next = choose(state, 'p1', 'bulbasaur', context);
@@ -146,7 +156,7 @@ describe('Pokédex Distance rules', () => {
     let state = choose(fixture.state, 'p1', 'bulbasaur', fixture.context);
     state = choose(state, 'p2', 'mew', fixture.context);
     expect(state.phase).toBe('ROUND_RESULTS');
-    expect(state.nextTransitionAt).toBe(fixture.context.now + 4_000);
+    expect(state.nextTransitionAt).toBe(fixture.context.now + 6_000);
     state = advanceResults(state, fixture.context, fixture.setNow);
     expect(state.phase).toBe('GAME_RESULTS');
     expect(state.winnerId).toBe('p1');
@@ -172,7 +182,7 @@ describe('Pokédex Distance rules', () => {
     state = choose(state, 'p3', 'mew', fixture.context);
     const view = pokedexDistanceGame.getPublicState(state, fixture.context);
     expect(view.phase).toBe('ROUND_RESULTS');
-    expect(view.nextTransitionAt).toBe(fixture.context.now + 4_000);
+    expect(view.nextTransitionAt).toBe(fixture.context.now + 6_000);
     expect(view.lastRound?.targetPokemon).toEqual({ id: 'bulbasaur', name: 'Bulbasaur', nationalDexNumber: 1, sprite: '/1.png' });
     expect(view.lastRound?.selections.p1).toMatchObject({ pokemonName: 'Bulbasaur', dexNumber: 1, distance: 0, sprite: '/1.png' });
     expect(view.lastRound?.selections.p3).toMatchObject({ pokemonName: 'Mew', dexNumber: 151, distance: 150 });

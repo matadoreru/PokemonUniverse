@@ -3,6 +3,22 @@ import type { MiniGameManifest } from './games/contracts.js';
 
 export type RoomPhase = 'LOBBY' | 'GAME_STARTING' | 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'TIEBREAKER_ACTIVE' | 'ROLE_REVEAL' | 'CLUE_PHASE' | 'VOTING' | 'VOTE_RESULTS' | 'ELIMINATION' | 'SELECTING_TYPES' | 'TYPE_REVEAL' | 'INVALID_COMBINATION' | 'POKEMON_SEARCH' | 'GAME_RESULTS' | 'SESSION_RESULTS';
 export type MemberRole = 'PLAYER' | 'SPECTATOR';
+export const ROOM_ROLES = ['HOST', 'CO_HOST', 'MEMBER'] as const;
+export type RoomRole = (typeof ROOM_ROLES)[number];
+export const assignableRoomRoleSchema = z.enum(['CO_HOST', 'MEMBER']);
+export type AssignableRoomRole = z.infer<typeof assignableRoomRoleSchema>;
+export const ROOM_PERMISSIONS = ['CHANGE_GAME', 'EDIT_GAME_CONFIG', 'EDIT_SESSION', 'START_GAME', 'END_SESSION', 'MANAGE_ROLES', 'KICK_MEMBER', 'TRANSFER_HOST'] as const;
+export type RoomPermission = (typeof ROOM_PERMISSIONS)[number];
+const ROOM_ROLE_PERMISSIONS: Record<RoomRole, readonly RoomPermission[]> = {
+  HOST: ROOM_PERMISSIONS,
+  CO_HOST: ['CHANGE_GAME', 'EDIT_GAME_CONFIG', 'EDIT_SESSION'],
+  MEMBER: [],
+};
+
+export function hasRoomPermission(role: RoomRole, permission: RoomPermission): boolean {
+  return ROOM_ROLE_PERMISSIONS[role].includes(permission);
+}
+
 export type PresenceStatus = 'CONNECTED' | 'TEMPORARILY_DISCONNECTED' | 'LEFT';
 
 export interface RoomMemberView {
@@ -11,6 +27,8 @@ export interface RoomMemberView {
   avatarSeed: string;
   connected: boolean;
   presence: PresenceStatus;
+  roomRole: RoomRole;
+  /** Participation role for the current minigame, independent from room permissions. */
   role: MemberRole;
   isHost: boolean;
   sessionPoints: number;
@@ -52,6 +70,8 @@ export interface ClientToServerEvents {
   'room:select-game': (payload: { gameId: string }, ack: SocketAck) => void;
   'room:update-config': (payload: { config: unknown }, ack: SocketAck) => void;
   'room:update-session': (payload: { mode: SessionMode }, ack: SocketAck) => void;
+  'room:set-role': (payload: { playerId: string; role: AssignableRoomRole }, ack: SocketAck) => void;
+  'room:transfer-host': (payload: { playerId: string }, ack: SocketAck) => void;
   'room:kick': (payload: { playerId: string }, ack: SocketAck) => void;
   'room:start-game': (_: unknown, ack: SocketAck) => void;
   'room:return-lobby': (_: unknown, ack: SocketAck) => void;

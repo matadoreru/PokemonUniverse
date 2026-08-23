@@ -1,4 +1,4 @@
-import { gameRegistry, roomCodeSchema, sessionModeSchema, type AuthUser, type ClientToServerEvents, type PokemonCatalog, type RoomView, type ServerToClientEvents, type SocketAck } from '@pokemon-universe/shared';
+import { assignableRoomRoleSchema, gameRegistry, hasRoomPermission, roomCodeSchema, sessionModeSchema, type AssignableRoomRole, type AuthUser, type ClientToServerEvents, type PokemonCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck } from '@pokemon-universe/shared';
 import { randomInt } from 'node:crypto';
 import type { Server, Socket } from 'socket.io';
 import { env } from '../config.js';
@@ -28,6 +28,8 @@ export class RoomManager {
     socket.on('room:select-game', (payload, ack) => this.guard(ack, () => this.selectGame(identity.id, payload.gameId)));
     socket.on('room:update-config', (payload, ack) => this.guard(ack, () => this.updateConfig(identity.id, payload.config)));
     socket.on('room:update-session', (payload, ack) => this.guard(ack, () => this.updateSession(identity.id, payload.mode)));
+    socket.on('room:set-role', (payload, ack) => this.guard(ack, () => this.setRoomRole(identity.id, payload.playerId, payload.role)));
+    socket.on('room:transfer-host', (payload, ack) => this.guard(ack, () => this.transferHostManually(identity.id, payload.playerId)));
     socket.on('room:kick', (payload, ack) => this.guard(ack, () => this.kick(identity.id, payload.playerId)));
     socket.on('room:start-game', (_payload, ack) => this.guard(ack, () => this.startGame(identity.id)));
     socket.on('room:return-lobby', (_payload, ack) => this.guard(ack, () => this.returnLobby(identity.id)));
@@ -66,7 +68,7 @@ export class RoomManager {
       gameConfigs: new Map(gameRegistry.list().map((game) => [game.manifest.id, game.configSchema.parse(game.defaultConfig)])),
       sessionMode: { type: 'INFINITE' }, gamesPlayed: 0, game: null, transitionTimer: null,
     };
-    room.members.set(identity.id, this.member(identity, socket.id, 'PLAYER'));
+    room.members.set(identity.id, this.member(identity, socket.id, 'PLAYER', 'HOST'));
     this.store.save(room); this.store.attachPlayer(identity.id, code); void socket.join(code);
     return { room: this.view(room, identity.id) };
   }
@@ -88,15 +90,15 @@ export class RoomManager {
       if (expiredDuringGame) current.role = 'SPECTATOR';
       this.store.attachPlayer(identity.id, room.code);
     } else {
-      room.members.set(identity.id, this.member(identity, socket.id, room.phase === 'LOBBY' ? 'PLAYER' : 'SPECTATOR'));
+      room.members.set(identity.id, this.member(identity, socket.id, room.phase === 'LOBBY' ? 'PLAYER' : 'SPECTATOR', 'MEMBER'));
       this.store.attachPlayer(identity.id, room.code);
     }
     void socket.join(room.code); this.applyPresenceChange(room);
     return { room: this.view(room, identity.id) };
   }
 
-  private member(identity: AuthUser, socketId: string, role: 'PLAYER' | 'SPECTATOR'): RoomMember {
-    return { identity, avatarSeed: identity.displayName, connected: true, presence: 'CONNECTED', socketId, role, sessionPoints: 0, joinedAt: Date.now(), disconnectTimer: null };
+  private member(identity: AuthUser, socketId: string, role: 'PLAYER' | 'SPECTATOR', roomRole: RoomRole): RoomMember {
+    return { identity, avatarSeed: identity.displayName, connected: true, presence: 'CONNECTED', roomRole, socketId, role, sessionPoints: 0, joinedAt: Date.now(), disconnectTimer: null };
   }
 
   private leave(socket: GameSocket, playerId: string): Record<string, never> {
@@ -136,11 +138,14 @@ export class RoomManager {
 
   private transferHost(room: LiveRoom): void {
     const next = [...room.members.values()].filter((member) => member.presence === 'CONNECTED').sort((a, b) => a.joinedAt - b.joinedAt)[0];
-    if (next) room.hostId = next.identity.id;
+    if (!next) return;
+    for (const member of room.members.values()) if (member.roomRole === 'HOST') member.roomRole = 'MEMBER';
+    next.roomRole = 'HOST';
+    room.hostId = next.identity.id;
   }
 
   private selectGame(playerId: string, gameId: string): Record<string, never> {
-    const room = this.hostRoom(playerId); this.assertLobby(room);
+    const room = this.permissionRoom(playerId, 'CHANGE_GAME'); this.assertLobby(room);
     const module = gameRegistry.get(gameId); if (!module) throw new Error('Unknown game');
     room.selectedGameId = gameId;
     if (!room.gameConfigs.has(gameId)) room.gameConfigs.set(gameId, module.configSchema.parse(module.defaultConfig));
@@ -148,30 +153,48 @@ export class RoomManager {
   }
 
   private updateConfig(playerId: string, config: unknown): Record<string, never> {
-    const room = this.hostRoom(playerId); this.assertLobby(room);
+    const room = this.permissionRoom(playerId, 'EDIT_GAME_CONFIG'); this.assertLobby(room);
     const module = gameRegistry.get(room.selectedGameId)!;
     room.gameConfigs.set(room.selectedGameId, module.configSchema.parse(config));
     this.broadcast(room); return {};
   }
 
   private updateSession(playerId: string, mode: unknown): Record<string, never> {
-    const room = this.hostRoom(playerId); this.assertLobby(room); room.sessionMode = sessionModeSchema.parse(mode); this.broadcast(room); return {};
+    const room = this.permissionRoom(playerId, 'EDIT_SESSION'); this.assertLobby(room); room.sessionMode = sessionModeSchema.parse(mode); this.broadcast(room); return {};
   }
 
-  private kick(hostId: string, playerId: string): Record<string, never> {
-    const room = this.hostRoom(hostId); this.assertLobby(room);
-    if (playerId === hostId) throw new Error('Host cannot kick themselves');
+  private setRoomRole(actorId: string, playerId: string, requestedRole: AssignableRoomRole): Record<string, never> {
+    const room = this.permissionRoom(actorId, 'MANAGE_ROLES'); this.assertLobby(room);
+    const role = assignableRoomRoleSchema.parse(requestedRole);
+    if (playerId === room.hostId) throw new Error('El Host no puede cambiar su propio rol.');
+    const member = room.members.get(playerId); if (!member || member.presence === 'LEFT') throw new Error('Jugador no encontrado.');
+    member.roomRole = role; this.broadcast(room); return {};
+  }
+
+  private transferHostManually(actorId: string, playerId: string): Record<string, never> {
+    const room = this.permissionRoom(actorId, 'TRANSFER_HOST'); this.assertLobby(room);
+    if (playerId === actorId) throw new Error('Ya eres el Host.');
+    const target = room.members.get(playerId);
+    if (!target || target.presence !== 'CONNECTED') throw new Error('Solo puedes transferir el Host a un jugador conectado.');
+    const priorHost = room.members.get(room.hostId);
+    if (priorHost) priorHost.roomRole = 'CO_HOST';
+    target.roomRole = 'HOST'; room.hostId = playerId; this.broadcast(room); return {};
+  }
+
+  private kick(actorId: string, playerId: string): Record<string, never> {
+    const room = this.permissionRoom(actorId, 'KICK_MEMBER'); this.assertLobby(room);
+    if (playerId === actorId || playerId === room.hostId) throw new Error('El Host no puede expulsarse a sí mismo.');
     const member = room.members.get(playerId); if (!member) throw new Error('Player not found');
     if (member.socketId) this.io.to(member.socketId).emit('room:kicked', 'El host te ha expulsado de la sala.');
     room.members.delete(playerId); this.store.detachPlayer(playerId); this.broadcast(room); return {};
   }
 
   private startGame(playerId: string): Record<string, never> {
-    const room = this.hostRoom(playerId); this.assertLobby(room);
+    const room = this.permissionRoom(playerId, 'START_GAME'); this.assertLobby(room);
     const players = [...room.members.values()].filter((member) => member.presence === 'CONNECTED').map((member) => ({ id: member.identity.id, displayName: member.identity.displayName, connected: true, active: true }));
     const module = gameRegistry.get(room.selectedGameId)!;
     if (players.length < module.manifest.minPlayers) throw new Error(`Se necesitan al menos ${module.manifest.minPlayers} jugadores.`);
-    const context = { players, pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code, preloadImage: preloadGameImage };
+    const context = { players, pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage };
     const config = module.configSchema.parse(room.gameConfigs.get(room.selectedGameId));
     let state = module.createInitialState(config, context);
     state = module.start(state, context);
@@ -234,7 +257,7 @@ export class RoomManager {
   }
 
   private returnLobby(playerId: string): Record<string, never> {
-    const room = this.hostRoom(playerId);
+    const room = this.permissionRoom(playerId, 'START_GAME');
     if (room.phase !== 'GAME_RESULTS' && room.phase !== 'SESSION_RESULTS') throw new Error('Game has not finished');
     const resetSession = room.phase === 'SESSION_RESULTS';
     for (const [id, member] of room.members) {
@@ -246,7 +269,7 @@ export class RoomManager {
   }
 
   private endSession(playerId: string): Record<string, never> {
-    const room = this.hostRoom(playerId);
+    const room = this.permissionRoom(playerId, 'END_SESSION');
     if (room.phase !== 'LOBBY' && room.phase !== 'GAME_RESULTS') throw new Error('Cannot end the session during a game');
     room.phase = 'SESSION_RESULTS'; this.broadcast(room); return {};
   }
@@ -265,7 +288,7 @@ export class RoomManager {
       displayName: member.identity.displayName,
       connected: member.presence === 'CONNECTED',
       active: member.role === 'PLAYER' && member.presence !== 'LEFT',
-    })), pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code, preloadImage: preloadGameImage };
+    })), pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage };
   }
 
   gameAsset(code: string, assetToken: string, roundNumber: number, assetId: string): string | null {
@@ -281,7 +304,7 @@ export class RoomManager {
       code: room.code, phase: room.phase, hostId: room.hostId, maxPlayers: room.maxPlayers,
       members: [...room.members.values()].map((member) => ({
         id: member.identity.id, displayName: member.identity.displayName, avatarSeed: member.avatarSeed,
-        connected: member.connected, presence: member.presence, role: member.role, isHost: member.identity.id === room.hostId, sessionPoints: member.sessionPoints,
+        connected: member.connected, presence: member.presence, roomRole: member.roomRole, role: member.role, isHost: member.identity.id === room.hostId, sessionPoints: member.sessionPoints,
       })),
       availableGames: gameRegistry.manifests(),
       selectedGameId: room.selectedGameId, selectedGameConfig: room.gameConfigs.get(room.selectedGameId), sessionMode: room.sessionMode,
@@ -298,6 +321,10 @@ export class RoomManager {
     }
   }
   private requiredRoom(playerId: string): LiveRoom { const room = this.store.roomForPlayer(playerId); if (!room) throw new Error('Not in a room'); return room; }
-  private hostRoom(playerId: string): LiveRoom { const room = this.requiredRoom(playerId); if (room.hostId !== playerId) throw new Error('Only the host can do that'); return room; }
+  private permissionRoom(playerId: string, permission: RoomPermission): LiveRoom {
+    const room = this.requiredRoom(playerId); const member = room.members.get(playerId);
+    if (!member || !hasRoomPermission(member.roomRole, permission)) throw new Error('No tienes permiso para realizar esta acción.');
+    return room;
+  }
   private assertLobby(room: LiveRoom): void { if (room.phase !== 'LOBBY') throw new Error('This setting can only be changed in the lobby'); }
 }

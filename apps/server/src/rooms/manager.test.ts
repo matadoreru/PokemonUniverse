@@ -106,7 +106,7 @@ describe('room multi-game lifecycle', () => {
     expect(persistGameResults).toHaveBeenCalledTimes(2);
   });
 
-  it('allows only the host to change games and rejects unknown ids without altering the registry', () => {
+  it('rejects Members changing games and rejects unknown ids without altering the registry', () => {
     const manager = new RoomManager(io() as any, catalog);
     const host = identity('host', 'Host');
     const guest = identity('guest', 'Guest');
@@ -114,10 +114,66 @@ describe('room multi-game lifecycle', () => {
     const room = manager.store.get(created.room.code)!;
     (manager as any).join(socket('guest-socket'), guest, room.code);
 
-    expect(() => (manager as any).selectGame(guest.id, 'shiny-vote')).toThrow(/Only the host/);
+    expect(() => (manager as any).selectGame(guest.id, 'shiny-vote')).toThrow(/No tienes permiso/);
     expect(() => (manager as any).selectGame(host.id, 'missing-game')).toThrow(/Unknown game/);
     expect(room.selectedGameId).toBe('pokedex-distance');
     expect(created.room.availableGames).toHaveLength(5);
+  });
+
+  it('centralizes Host, Co-host and Member permissions and broadcasts role changes', () => {
+    const transport = io(); const manager = new RoomManager(transport as any, catalog);
+    const host = identity('host', 'Host'); const cohost = identity('cohost', 'Pedro'); const member = identity('member', 'Ana');
+    const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
+    (manager as any).join(socket('cohost-socket'), cohost, room.code); (manager as any).join(socket('member-socket'), member, room.code);
+    expect(room.members.get(host.id)?.roomRole).toBe('HOST');
+    expect(room.members.get(cohost.id)?.roomRole).toBe('MEMBER');
+    expect(() => (manager as any).setRoomRole(member.id, cohost.id, 'CO_HOST')).toThrow(/No tienes permiso/);
+    expect(() => (manager as any).setRoomRole(host.id, cohost.id, 'HOST')).toThrow();
+
+    (manager as any).setRoomRole(host.id, cohost.id, 'CO_HOST');
+    expect(room.members.get(cohost.id)?.roomRole).toBe('CO_HOST');
+    expect(transport.to().emit).toHaveBeenCalledWith('room:state', expect.objectContaining({ members: expect.arrayContaining([expect.objectContaining({ id: cohost.id, roomRole: 'CO_HOST' })]) }));
+    (manager as any).selectGame(cohost.id, 'shiny-vote');
+    (manager as any).updateConfig(cohost.id, { generations: [1], roundSeconds: 20, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, showVotes: true });
+    expect(() => (manager as any).updateConfig(cohost.id, { generations: [1], roundSeconds: 2, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, showVotes: true })).toThrow();
+    (manager as any).updateSession(cohost.id, { type: 'GAME_COUNT', target: 5 });
+    expect(room.selectedGameId).toBe('shiny-vote'); expect(room.sessionMode).toEqual({ type: 'GAME_COUNT', target: 5 });
+    expect(() => (manager as any).startGame(cohost.id)).toThrow(/No tienes permiso/);
+    expect(() => (manager as any).kick(cohost.id, member.id)).toThrow(/No tienes permiso/);
+    expect(() => (manager as any).setRoomRole(cohost.id, member.id, 'CO_HOST')).toThrow(/No tienes permiso/);
+    expect(() => (manager as any).updateConfig(member.id, room.gameConfigs.get('shiny-vote'))).toThrow(/No tienes permiso/);
+
+    (manager as any).setRoomRole(host.id, cohost.id, 'MEMBER');
+    expect(room.members.get(cohost.id)?.roomRole).toBe('MEMBER');
+    (manager as any).kick(host.id, member.id);
+    expect(room.members.has(member.id)).toBe(false);
+  });
+
+  it('transfers Host manually, makes the old Host Co-host and preserves roles across games and reconnects', () => {
+    vi.useFakeTimers(); vi.setSystemTime(5_000);
+    const manager = new RoomManager(io() as any, catalog);
+    const oldHost = identity('old-host', 'Eru'); const nextHost = identity('next-host', 'Pedro');
+    const created = (manager as any).create(socket('old-socket'), oldHost, 8); const room = manager.store.get(created.room.code)!;
+    (manager as any).join(socket('next-socket'), nextHost, room.code);
+    (manager as any).transferHostManually(oldHost.id, nextHost.id);
+    expect(room.hostId).toBe(nextHost.id);
+    expect(room.members.get(nextHost.id)?.roomRole).toBe('HOST');
+    expect(room.members.get(oldHost.id)?.roomRole).toBe('CO_HOST');
+    expect(() => (manager as any).startGame(oldHost.id)).toThrow(/No tienes permiso/);
+    (manager as any).selectGame(oldHost.id, 'shiny-vote');
+    (manager as any).selectGame(oldHost.id, 'pokedex-distance');
+    expect(room.members.get(oldHost.id)?.roomRole).toBe('CO_HOST');
+
+    (manager as any).disconnect(oldHost.id, 'old-socket');
+    const restoredSocket = socket('old-restored');
+    (manager as any).restore(restoredSocket, oldHost);
+    expect(room.members.get(oldHost.id)).toMatchObject({ roomRole: 'CO_HOST', presence: 'CONNECTED', socketId: 'old-restored' });
+    (manager as any).startGame(nextHost.id);
+    (manager as any).action(nextHost.id, { type: 'SELECT_POKEMON', pokemonId: 'pokemon-1' });
+    (manager as any).action(oldHost.id, { type: 'SELECT_POKEMON', pokemonId: 'pokemon-2' });
+    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); (manager as any).returnLobby(nextHost.id);
+    expect(room.members.get(oldHost.id)?.roomRole).toBe('CO_HOST');
+    expect(room.members.get(nextHost.id)?.roomRole).toBe('HOST');
   });
 
   it('plays Pokémon Impostor privately and keeps the room when switching games', () => {
@@ -169,7 +225,7 @@ describe('room multi-game lifecycle', () => {
     const manager = new RoomManager(io() as any, catalog); const host = identity('host', 'Host'); const guest = identity('guest', 'Guest');
     const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!; (manager as any).join(socket('guest-socket'), guest, room.code);
     (manager as any).selectGame(host.id, 'higher-lower');
-    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'REALTIME', roundSeconds: 10, rounds: 1 });
+    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'REALTIME', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
     (manager as any).startGame(host.id); (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' }); (manager as any).action(guest.id, { type: 'ANSWER', choice: 'LOWER' });
     room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); (manager as any).returnLobby(host.id);
     (manager as any).selectGame(host.id, 'type-duel'); (manager as any).updateConfig(host.id, { generations: [1], typeSelectSeconds: 5, searchSeconds: 10, rounds: 1 }); (manager as any).startGame(host.id);

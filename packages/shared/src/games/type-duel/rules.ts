@@ -3,6 +3,7 @@ import type { GameResults, GameStanding } from '../contracts.js';
 import type { TypeDuelState } from './types.js';
 export const TYPE_DUEL_WIN_POINTS = 5;
 export const TYPE_DUEL_ATTEMPT_COOLDOWN_MS = 1_000;
+export const TYPE_DUEL_MAX_SOLUTIONS = 8;
 export function requiredTypeCombination(typeA: PokemonType, typeB: PokemonType): PokemonType[] { return typeA === typeB ? [typeA] : [typeA, typeB]; }
 export function isValidPokemonForTypes(pokemon: Pokemon, typeA: PokemonType, typeB: PokemonType): boolean {
   const required = requiredTypeCombination(typeA, typeB);

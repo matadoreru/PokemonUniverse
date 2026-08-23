@@ -10,7 +10,7 @@ export function RoomPage() {
   if (!user) return null;
   if (!room) return <Navigate to="/play" replace />;
   const gameClient = clientGameRegistry.get(room.selectedGameId);
-  if (room.phase === 'LOBBY') return <Lobby room={room} selfId={user.id} onLeave={() => void context.leaveRoom().then(() => navigate('/play'))} onStart={context.startGame} onSelectGame={context.selectGame} onConfig={context.updateConfig} onSession={context.updateSession} onKick={(id) => void context.kick(id)} onEndSession={() => void context.endSession()} />;
+  if (room.phase === 'LOBBY') return <Lobby room={room} selfId={user.id} onLeave={() => void context.leaveRoom().then(() => navigate('/play'))} onStart={context.startGame} onSelectGame={context.selectGame} onConfig={context.updateConfig} onSession={context.updateSession} onSetRoomRole={context.setRoomRole} onTransferHost={context.transferHost} onKick={context.kick} onEndSession={() => void context.endSession()} />;
   if (room.phase === 'GAME_RESULTS') return <gameClient.Results room={room} selfId={user.id} onLobby={() => void context.returnLobby()} onEnd={() => void context.endSession()} />;
   if (room.phase === 'SESSION_RESULTS') return <SessionResults room={room} selfId={user.id} onLobby={() => void context.returnLobby()} />;
   return <gameClient.ActiveGame room={room} selfId={user.id} onAction={context.gameAction} />;
