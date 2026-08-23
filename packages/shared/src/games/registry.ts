@@ -4,6 +4,7 @@ import { shinyVoteGame } from './shiny-vote/server.js';
 import { pokemonImpostorGame } from './pokemon-impostor/server.js';
 import { higherLowerGame } from './higher-lower/server.js';
 import { typeDuelGame } from './type-duel/server.js';
+import { learnsetGuessGame } from './learnset-guess/server.js';
 
 export type RegisteredGame = MiniGameModule<any, any, any, any>;
 
@@ -25,4 +26,5 @@ export const gameRegistry = new GameRegistry()
   .register(shinyVoteGame)
   .register(pokemonImpostorGame)
   .register(higherLowerGame)
-  .register(typeDuelGame);
+  .register(typeDuelGame)
+  .register(learnsetGuessGame);

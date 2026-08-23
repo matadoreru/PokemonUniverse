@@ -284,8 +284,9 @@ export class RoomManager {
   private schedule(room: LiveRoom): void {
     if (room.transitionTimer) clearTimeout(room.transitionTimer);
     const state = room.game?.state; if (!state || room.phase === 'GAME_RESULTS' || room.phase === 'SESSION_RESULTS') return;
-    const deadline = state.roundEndsAt ?? state.nextTransitionAt;
-    if (typeof deadline !== 'number') return;
+    const deadlines = [state.roundEndsAt, state.nextTransitionAt].filter((value): value is number => typeof value === 'number');
+    if (!deadlines.length) return;
+    const deadline = Math.min(...deadlines);
     room.transitionTimer = setTimeout(() => this.tick(room), Math.max(0, deadline - Date.now() + 5));
   }
 

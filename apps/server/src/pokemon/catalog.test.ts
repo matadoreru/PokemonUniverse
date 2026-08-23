@@ -19,4 +19,17 @@ describe('InMemoryPokemonCatalog forms', () => {
     expect(catalog.forGenerations([1]).map((pokemon) => pokemon.id)).toEqual(['dugtrio']);
     expect(catalog.forGenerations([1], { includeForms: true }).map((pokemon) => pokemon.id)).toEqual(['dugtrio', 'dugtrio-alola']);
   });
+
+  it('resolves normalized move metadata and orders level-up learnsets', () => {
+    const moves = [
+      { id: 'earthquake', name: 'Earthquake', type: 'ground' as const, category: 'physical' as const },
+      { id: 'growl', name: 'Growl', type: 'normal' as const, category: 'status' as const },
+    ];
+    const catalog = new InMemoryPokemonCatalog(entries, moves, [
+      { pokemonId: 'dugtrio', moveId: 'earthquake', referenceGeneration: 9, level: 40 },
+      { pokemonId: 'dugtrio', moveId: 'growl', referenceGeneration: 9, level: 1 },
+    ], { dugtrio: { stage: 2, stages: 2 } });
+    expect(catalog.levelUpMoves('dugtrio', 9).map((entry) => [entry.move.name, entry.level])).toEqual([['Growl', 1], ['Earthquake', 40]]);
+    expect(catalog.evolutionInfo('dugtrio')).toEqual({ stage: 2, stages: 2 });
+  });
 });

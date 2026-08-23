@@ -90,8 +90,40 @@ model Pokemon {
   baseStatTotal     Int      @default(0)
   names             Json?
   types             String[]
+  evolutionStage    Int?
+  evolutionStages   Int?
+  levelUpMoves      PokemonLevelUpMove[]
   updatedAt         DateTime @updatedAt
 
   @@index([generation])
   @@index([nationalDexNumber])
+}
+
+model Move {
+  id                String   @id
+  name              String
+  type              String
+  category          String
+  names             Json?
+  learnsets         PokemonLevelUpMove[]
+  updatedAt         DateTime @updatedAt
+}
+
+model PokemonLevelUpMove {
+  pokemonId          String
+  moveId             String
+  referenceGeneration Int
+  level              Int
+  pokemon            Pokemon @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
+  move               Move    @relation(fields: [moveId], references: [id], onDelete: Cascade)
+
+  @@id([pokemonId, moveId, referenceGeneration, level])
+  @@index([pokemonId, referenceGeneration, level])
+  @@index([moveId])
+}
+
+model PokemonCatalogSync {
+  key         String   @id
+  version     Int
+  completedAt DateTime @default(now()) @updatedAt
 }

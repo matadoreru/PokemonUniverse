@@ -15,6 +15,9 @@ import { HigherLowerResults } from '../room/HigherLowerResults';
 import { TypeDuelConfigPanel } from './type-duel/ConfigPanel';
 import { TypeDuelGame } from '../room/TypeDuelGame';
 import { TypeDuelResults } from '../room/TypeDuelResults';
+import { LearnsetGuessConfigPanel } from './learnset-guess/ConfigPanel';
+import { LearnsetGuessGame } from '../room/LearnsetGuessGame';
+import { LearnsetGuessResults } from '../room/LearnsetGuessResults';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
@@ -62,4 +65,7 @@ export const clientGameRegistry = new ClientGameRegistry().register({
 }).register({
   id: 'type-duel', name: 'Type Duel', icon: '⚔️', description: 'Duelo de tipos: encuentra antes que tu rival la combinación Pokémon exacta.',
   ConfigPanel: TypeDuelConfigPanel, ActiveGame: TypeDuelGame, Results: TypeDuelResults,
+}).register({
+  id: 'learnset-guess', name: 'Learnset Guess', icon: '📚', description: 'Adivina el Pokémon por los movimientos que aprende al subir de nivel.',
+  ConfigPanel: LearnsetGuessConfigPanel, ActiveGame: LearnsetGuessGame, Results: LearnsetGuessResults,
 });

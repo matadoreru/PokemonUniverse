@@ -1,9 +1,10 @@
-import type { AuthUser, Pokemon, PokemonCatalog } from '@pokemon-universe/shared';
+import type { AuthUser, LearnsetPokemonCatalog, Pokemon } from '@pokemon-universe/shared';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../config.js', () => ({
   env: { ROOM_MAX_PLAYERS: 8, RECONNECT_GRACE_MS: 30_000 },
 }));
+vi.mock('../http/game-image-cache.js', () => ({ preloadGameImage: vi.fn() }));
 const persistGameResults = vi.hoisted(() => vi.fn(() => Promise.resolve()));
 vi.mock('../stats/service.js', () => ({ persistGameResults }));
 
@@ -17,11 +18,16 @@ const pokemon: Pokemon[] = Array.from({ length: 8 }, (_, index) => ({
   sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index + 1}.png`,
   hp: 40 + index, attack: 50 + index, defense: 45 + index, specialAttack: 55 + index, specialDefense: 50 + index, speed: 60 + index, baseStatTotal: 300 + index * 6, types: index === 0 ? ['fire'] : index === 1 ? ['water'] : index === 2 ? ['fire', 'water'] : ['normal'],
 }));
-const catalog: PokemonCatalog = {
+const catalog: LearnsetPokemonCatalog = {
   all: () => pokemon,
   byId: (id) => pokemon.find((entry) => entry.id === id),
   byDexNumber: (number) => pokemon.find((entry) => entry.nationalDexNumber === number),
   forGenerations: (generations) => pokemon.filter((entry) => generations.includes(entry.generation)),
+  levelUpMoves: () => [
+    { moveId: 'tackle', level: 1, move: { id: 'tackle', name: 'Tackle', type: 'normal', category: 'physical' } },
+    { moveId: 'growl', level: 5, move: { id: 'growl', name: 'Growl', type: 'normal', category: 'status' } },
+  ],
+  evolutionInfo: () => ({ stage: 1, stages: 1 }),
 };
 
 function identity(id: string, displayName: string): AuthUser {
@@ -53,7 +59,7 @@ describe('room multi-game lifecycle', () => {
     const room = manager.store.get(created.room.code)!;
     (manager as any).join(guestSocket, guest, room.code);
 
-    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel']);
+    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess']);
     expect(room.selectedGameId).toBe('pokedex-distance');
     expect(room.members.size).toBe(2);
 
@@ -117,7 +123,7 @@ describe('room multi-game lifecycle', () => {
     expect(() => (manager as any).selectGame(guest.id, 'shiny-vote')).toThrow(/No tienes permiso/);
     expect(() => (manager as any).selectGame(host.id, 'missing-game')).toThrow(/Unknown game/);
     expect(room.selectedGameId).toBe('pokedex-distance');
-    expect(created.room.availableGames).toHaveLength(5);
+    expect(created.room.availableGames).toHaveLength(6);
   });
 
   it('broadcasts avatar changes and keeps the lightweight reference in the room', () => {
@@ -246,6 +252,14 @@ describe('room multi-game lifecycle', () => {
     (manager as any).selectGame(host.id, 'type-duel'); (manager as any).updateConfig(host.id, { generations: [1], typeSelectSeconds: 5, searchSeconds: 10, rounds: 1 }); (manager as any).startGame(host.id);
     const [first, second] = room.game!.state.participants; (manager as any).action(first, { type: 'SELECT_TYPE', pokemonType: 'fire' }); (manager as any).action(second, { type: 'SELECT_TYPE', pokemonType: 'water' });
     room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); (manager as any).action(first, { type: 'ATTEMPT_POKEMON', pokemonId: 'pokemon-3' });
+    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); (manager as any).returnLobby(host.id);
+    (manager as any).selectGame(host.id, 'learnset-guess');
+    (manager as any).updateConfig(host.id, { generations: [1], showLevels: true, showEvolution: true, roundSeconds: 20, rounds: 1 });
+    (manager as any).startGame(host.id); const answerId = room.game!.state.correctPokemonId;
+    expect(JSON.stringify((manager as any).view(room, guest.id))).not.toContain('correctPokemonId');
+    (manager as any).action(host.id, { type: 'GUESS_POKEMON', pokemonId: answerId });
+    const guestView = (manager as any).view(room, guest.id); expect(guestView.game.solvedPlayerIds).toEqual([host.id]); expect(JSON.stringify(guestView.game)).not.toContain(answerId);
+    (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: answerId });
     room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); (manager as any).returnLobby(host.id);
     (manager as any).selectGame(host.id, 'shiny-vote'); (manager as any).selectGame(host.id, 'pokemon-impostor'); (manager as any).selectGame(host.id, 'pokedex-distance');
     expect(room.phase).toBe('LOBBY'); expect(room.members.size).toBe(2); expect(room.selectedGameId).toBe('pokedex-distance');

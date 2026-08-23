@@ -9,6 +9,7 @@ fi
 project_dir=${PU_PROJECT_DIR:-$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)}
 new_tag=$1
 previous_tag=${PU_IMAGE_TAG:-}
+deploy_wait_seconds=${PU_DEPLOY_WAIT_SECONDS:-600}
 cd "$project_dir"
 
 # Preserve the exact local images that are running. A tag such as `latest` can
@@ -38,7 +39,7 @@ rollback() {
     echo "No se pudo crear el snapshot local; restaurando el tag $previous_tag" >&2
     export PU_IMAGE_TAG=$previous_tag
   fi
-  docker compose up -d --wait server web || true
+  docker compose up -d --wait --wait-timeout "$deploy_wait_seconds" server web || true
   exit 1
 }
 
@@ -51,7 +52,7 @@ fi
 "$project_dir/scripts/backup-postgres.sh"
 export PU_IMAGE_TAG=$new_tag
 docker compose pull server web
-docker compose up -d --wait server web || rollback
+docker compose up -d --wait --wait-timeout "$deploy_wait_seconds" server web || rollback
 
 published_port=$(docker compose port web 8080 | sed 's/.*://')
 if ! curl --fail --silent --show-error --max-time 10 "http://127.0.0.1:${published_port:-8080}/api/health" >/dev/null; then

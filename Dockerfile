@@ -42,7 +42,7 @@ COPY --chmod=755 scripts/start-server.sh /usr/local/bin/start-pokemon-universe
 RUN mkdir -p /data/avatars && chown -R node:node /data
 USER node
 EXPOSE 3001
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5m --retries=3 \
   CMD ["node", "-e", "fetch('http://127.0.0.1:3001/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
 CMD ["start-pokemon-universe"]
 

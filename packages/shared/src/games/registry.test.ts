@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { defaultHigherLowerConfig, defaultPokedexDistanceConfig, defaultPokemonImpostorConfig, defaultShinyVoteConfig, defaultTypeDuelConfig, GameRegistry, gameRegistry, higherLowerGame, pokedexDistanceGame, pokemonImpostorGame, shinyVoteGame, typeDuelGame } from '../index.js';
+import { defaultHigherLowerConfig, defaultLearnsetGuessConfig, defaultPokedexDistanceConfig, defaultPokemonImpostorConfig, defaultShinyVoteConfig, defaultTypeDuelConfig, GameRegistry, gameRegistry, higherLowerGame, learnsetGuessGame, pokedexDistanceGame, pokemonImpostorGame, shinyVoteGame, typeDuelGame } from '../index.js';
 
 describe('multi-game registry', () => {
   it('registers every minigame simultaneously', () => {
@@ -9,6 +9,7 @@ describe('multi-game registry', () => {
       ['pokemon-impostor', 'Pokémon Impostor'],
       ['higher-lower', 'Higher or Lower'],
       ['type-duel', 'Type Duel'],
+      ['learnset-guess', 'Learnset Guess'],
     ]);
   });
 
@@ -16,21 +17,21 @@ describe('multi-game registry', () => {
     const pokedex = gameRegistry.get('pokedex-distance');
     const shiny = gameRegistry.get('shiny-vote');
     const impostor = gameRegistry.get('pokemon-impostor');
-    const higherLower = gameRegistry.get('higher-lower'); const typeDuel = gameRegistry.get('type-duel');
+    const higherLower = gameRegistry.get('higher-lower'); const typeDuel = gameRegistry.get('type-duel'); const learnset = gameRegistry.get('learnset-guess');
     expect(pokedex).toBe(pokedexDistanceGame);
     expect(shiny).toBe(shinyVoteGame);
     expect(impostor).toBe(pokemonImpostorGame);
-    expect(higherLower).toBe(higherLowerGame); expect(typeDuel).toBe(typeDuelGame); expect(gameRegistry.list()).toHaveLength(5);
+    expect(higherLower).toBe(higherLowerGame); expect(typeDuel).toBe(typeDuelGame); expect(learnset).toBe(learnsetGuessGame); expect(gameRegistry.list()).toHaveLength(6);
     expect(pokedex?.defaultConfig).toEqual(defaultPokedexDistanceConfig);
     expect(shiny?.defaultConfig).toEqual(defaultShinyVoteConfig);
     expect(impostor?.defaultConfig).toEqual(defaultPokemonImpostorConfig);
-    expect(higherLower?.defaultConfig).toEqual(defaultHigherLowerConfig); expect(typeDuel?.defaultConfig).toEqual(defaultTypeDuelConfig);
+    expect(higherLower?.defaultConfig).toEqual(defaultHigherLowerConfig); expect(typeDuel?.defaultConfig).toEqual(defaultTypeDuelConfig); expect(learnset?.defaultConfig).toEqual(defaultLearnsetGuessConfig);
   });
 
   it('rejects duplicate ids instead of silently replacing a game', () => {
-    const registry = new GameRegistry().register(pokedexDistanceGame).register(shinyVoteGame).register(pokemonImpostorGame).register(higherLowerGame).register(typeDuelGame);
+    const registry = new GameRegistry().register(pokedexDistanceGame).register(shinyVoteGame).register(pokemonImpostorGame).register(higherLowerGame).register(typeDuelGame).register(learnsetGuessGame);
     expect(() => registry.register(pokedexDistanceGame)).toThrow(/Duplicate game id/);
-    expect(registry.list()).toEqual([pokedexDistanceGame, shinyVoteGame, pokemonImpostorGame, higherLowerGame, typeDuelGame]);
+    expect(registry.list()).toEqual([pokedexDistanceGame, shinyVoteGame, pokemonImpostorGame, higherLowerGame, typeDuelGame, learnsetGuessGame]);
   });
 
   it('exposes a profile statistics definition for every registered game', () => {

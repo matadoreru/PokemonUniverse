@@ -50,3 +50,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 @keyframes timer-pulse { to { transform: scale(1.06); color: #ef476f; } }
 .reveal-pop { animation: reveal-pop .45s cubic-bezier(.2,.9,.3,1.25); }
 @keyframes reveal-pop { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .reveal-pop, .timer-pulse { animation: none !important; }
+}

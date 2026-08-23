@@ -66,7 +66,10 @@ services:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
       interval: 30s
       timeout: 5s
-      start_period: 30s
+      # The first boot populates normalized learnsets and evolution metadata.
+      # Healthy responses still complete startup immediately; failures are only
+      # ignored while that one-off synchronization is running.
+      start_period: 5m
       retries: 3
     stop_grace_period: 20s
     logging: *logging
