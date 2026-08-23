@@ -12,4 +12,4 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-export const socketUrl = API_URL || window.location.origin;
+export const socketUrl = API_URL || (typeof window === 'undefined' ? '' : window.location.origin);

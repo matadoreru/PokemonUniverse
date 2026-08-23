@@ -30,8 +30,9 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
           <div className="mb-4 flex items-center gap-3"><div className="grid h-11 w-11 place-items-center rounded-xl bg-aqua text-night"><Settings2 /></div><div><span className="label !mb-0">Seleccionar minijuego</span><h2 className="font-display text-2xl font-bold">Pokémon Minigame Hub</h2></div></div>
           <div className="mb-7 grid gap-3 sm:grid-cols-2">{room.availableGames.map((game) => {
             const selected = game.id === room.selectedGameId;
+            const clientGame = clientGameRegistry.get(game.id);
             return <button key={game.id} type="button" disabled={!host} aria-pressed={selected} onClick={() => selectGame(game.id)} className={`min-h-36 rounded-2xl border-2 p-4 text-left transition ${selected ? 'border-electric bg-electric text-night shadow-[0_0_0_3px_rgba(240,191,84,.16)]' : 'border-ink/10 bg-surface-raised hover:border-aqua'} ${!host ? 'cursor-default' : ''}`}>
-              <span className="mb-3 block text-3xl" aria-hidden="true">{game.id === 'pokedex-distance' ? '🎯' : '✨'}</span>
+              <span className="mb-3 block text-3xl" aria-hidden="true">{clientGame.icon}</span>
               <strong className="block font-display text-xl">{game.name}</strong>
               <span className={`mt-1 block text-sm font-bold ${selected ? 'text-night/65' : 'text-ink/50'}`}>{game.description}</span>
               {selected && <span className="mt-3 inline-flex rounded-full bg-night px-2 py-1 text-xs font-extrabold text-ink">Seleccionado</span>}

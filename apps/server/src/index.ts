@@ -25,7 +25,7 @@ app.use(express.json({ limit: '32kb' }));
 app.use(cookieParser());
 app.use(rateLimit({
   windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false,
-  skip: (req) => /^\/api\/rooms\/[^/]+\/games\/[^/]+\/rounds\/\d+\/options\/[A-D]\/sprite$/.test(req.path),
+  skip: (req) => /^\/api\/rooms\/[^/]+\/games\/[^/]+\/rounds\/\d+\/options\/[A-F]\/sprite$/.test(req.path),
 }));
 app.use(optionalAuth);
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 30 }), authRouter);

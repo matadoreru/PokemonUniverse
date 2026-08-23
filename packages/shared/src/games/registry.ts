@@ -1,6 +1,7 @@
 import type { MiniGameManifest, MiniGameModule } from './contracts.js';
 import { pokedexDistanceGame } from './pokedex-distance/server.js';
 import { shinyVoteGame } from './shiny-vote/server.js';
+import { pokemonImpostorGame } from './pokemon-impostor/server.js';
 
 export type RegisteredGame = MiniGameModule<any, any, any, any>;
 
@@ -19,4 +20,5 @@ export class GameRegistry {
 /** Registration is additive: adding a game never replaces an existing module. */
 export const gameRegistry = new GameRegistry()
   .register(pokedexDistanceGame)
-  .register(shinyVoteGame);
+  .register(shinyVoteGame)
+  .register(pokemonImpostorGame);

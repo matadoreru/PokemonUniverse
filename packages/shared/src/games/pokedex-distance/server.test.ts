@@ -57,6 +57,12 @@ describe('Pokédex Distance rules', () => {
     expect(next.selections.p1?.distance).toBe(0);
   });
 
+  it('continues using the hidden National Dex number for distance calculations', () => {
+    const { context, state } = setup(3, 0); // target #1
+    const next = choose(state, 'p1', 'pikachu', context);
+    expect(next.selections.p1).toMatchObject({ pokemonId: 'pikachu', dexNumber: 25, distance: 24 });
+  });
+
   it('eliminates exactly the farthest player in a normal round', () => {
     const { context, state } = setup(3, 0); // #1
     let next = choose(state, 'p1', 'bulbasaur', context);

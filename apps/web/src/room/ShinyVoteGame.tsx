@@ -1,5 +1,5 @@
 import type { RoomMemberView, RoomView, ShinyOption, ShinyOptionId, ShinyVotePublicState } from '@pokemon-universe/shared';
-import { Check, Clock3, Eye, Sparkles, Trophy, Users } from 'lucide-react';
+import { Check, Clock3, Eye, LoaderCircle, Sparkles, Trophy, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 const API_ORIGIN = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
@@ -19,6 +19,22 @@ function PlayerPill({ member, result }: { member: RoomMemberView; result?: 'corr
   </span>;
 }
 
+function PokemonSprite({ option }: { option: ShinyOption }) {
+  const [loaded, setLoaded] = useState(false);
+  return <div className="relative mx-auto grid h-40 w-40 place-items-center sm:h-44 sm:w-44">
+    {!loaded && <LoaderCircle className="absolute animate-spin text-aqua" aria-label="Cargando sprite" size={34} />}
+    <img
+      key={option.sprite}
+      className={`h-full w-full object-contain [image-rendering:auto] transition-opacity duration-150 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+      src={imageSource(option.sprite)}
+      style={{ filter: option.visualFilter }}
+      alt={`Candidato ${option.id}: ${option.pokemonName}`}
+      onLoad={() => setLoaded(true)}
+      onError={() => setLoaded(true)}
+    />
+  </div>;
+}
+
 function OptionCard({ option, voters, selected, disabled, reveal, correct, onSelect }: {
   option: ShinyOption;
   voters: RoomMemberView[];
@@ -33,7 +49,7 @@ function OptionCard({ option, voters, selected, disabled, reveal, correct, onSel
     : selected ? 'border-berry bg-berry/10 shadow-[0_0_0_4px_rgba(255,92,130,.12)]' : 'border-ink/10 bg-surface hover:border-aqua';
   return <button type="button" disabled={disabled} aria-pressed={selected} onClick={onSelect} className={`relative flex min-h-[300px] flex-col overflow-hidden rounded-[1.75rem] border-2 p-3 text-left transition ${tone} ${disabled ? 'cursor-default' : 'hover:-translate-y-1'}`}>
     <div className="flex w-full items-center justify-between"><span className={`grid h-10 w-10 place-items-center rounded-xl border-2 font-display text-xl font-bold ${correct && reveal ? 'border-leaf bg-leaf text-night' : 'border-electric bg-electric text-night'}`}>{option.id}</span>{selected && !reveal && <span className="chip bg-berry/15 text-berry"><Check size={15} /> Tu elección</span>}{correct && reveal && <span className="chip bg-leaf/20 text-leaf">✨ Shiny correcto</span>}</div>
-    <img className="mx-auto h-40 w-40 object-contain [image-rendering:auto] sm:h-44 sm:w-44" src={imageSource(option.sprite)} alt={`Candidato ${option.id}: ${option.pokemonName}`} />
+    <PokemonSprite key={option.sprite} option={option} />
     <strong className="w-full truncate text-center font-display text-lg">{option.pokemonName}</strong>
     <div className="mt-3 flex max-h-28 min-h-9 w-full flex-wrap content-start gap-1.5 overflow-y-auto rounded-xl bg-ink/[.035] p-2">
       {voters.length > 0 ? voters.map((member) => <PlayerPill key={member.id} member={member} result={reveal ? (correct ? 'correct' : 'wrong') : undefined} />) : <span className="m-auto text-sm font-bold text-ink/30">—</span>}
@@ -48,16 +64,20 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
   const [error, setError] = useState('');
   const serverOffset = useMemo(() => room.serverNow - Date.now(), [room.serverNow]);
   const remainingMs = useCountdown(game.roundEndsAt, serverOffset);
+  const transitionRemainingMs = useCountdown(game.nextTransitionAt, serverOffset);
   const totalMs = (room.selectedGameConfig as { roundSeconds: number }).roundSeconds * 1_000;
   const remaining = Math.ceil(remainingMs / 1_000);
   const progress = Math.min(100, remainingMs / totalMs * 100);
   const active = game.phase === 'ROUND_ACTIVE';
   const reveal = game.phase === 'ROUND_RESULTS';
+  const transitionRemaining = Math.max(1, Math.ceil(transitionRemainingMs / 1_000));
+  const transitionLabel = game.roundNumber >= game.totalRounds ? 'Resultados finales' : 'Siguiente ronda';
   const ownVote = game.votes[selfId];
   const participant = game.playerIds.includes(selfId);
   const canVote = active && participant && !ownVote;
   const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
   const ranking = [...game.playerIds].sort((a, b) => (game.scores[b] ?? 0) - (game.scores[a] ?? 0) || (members.get(a)?.displayName ?? '').localeCompare(members.get(b)?.displayName ?? ''));
+  const optionGrid = game.options.length === 3 ? 'md:grid-cols-3' : game.options.length === 4 ? 'sm:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3';
 
   useEffect(() => { setDraft(null); setError(''); }, [game.roundNumber]);
 
@@ -75,10 +95,10 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
       <span className="chip text-base"><Users size={17} /> {Object.keys(game.votes).length}/{game.playerIds.length} votos</span>
     </div>
     {active && <div className="mb-5"><div className="mb-1.5 flex items-center justify-between text-sm font-extrabold"><span className="flex items-center gap-1.5"><Clock3 size={17} /> Votación pública</span><span className={remaining <= 5 ? 'timer-pulse text-xl' : ''}>{remaining}s</span></div><div className="h-3 overflow-hidden rounded-full border-2 border-ink/20 bg-night"><div className={`h-full transition-[width] duration-100 ${remaining <= 5 ? 'bg-berry' : 'bg-aqua'}`} style={{ width: `${progress}%` }} /></div></div>}
-    {reveal && <div className="reveal-pop mb-5 rounded-2xl border-2 border-leaf bg-leaf/15 p-4 text-center"><Sparkles className="mr-2 inline text-leaf" /><strong className="font-display text-2xl">SHINY CORRECTO: {game.correctOptionId}</strong><p className="mt-1 font-bold text-ink/55">Siguiente ronda en unos 3 segundos…</p></div>}
+    {reveal && <div className="reveal-pop mb-5 rounded-2xl border-2 border-leaf bg-leaf/15 p-4 text-center"><Sparkles className="mr-2 inline text-leaf" /><strong className="font-display text-2xl">SHINY CORRECTO: {game.correctOptionId}</strong><p className="mt-1 font-bold text-ink/55">{transitionLabel} en {transitionRemaining} {transitionRemaining === 1 ? 'segundo' : 'segundos'}…</p></div>}
     <div className="grid gap-5 xl:grid-cols-[1fr_290px]">
       <div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">{game.options.map((option) => {
+        <div className={`grid grid-cols-1 gap-4 ${optionGrid}`}>{game.options.map((option) => {
           const voters = Object.entries(game.votes).filter(([, vote]) => vote.optionId === option.id).map(([playerId]) => members.get(playerId)).filter((member): member is RoomMemberView => Boolean(member));
           return <OptionCard key={option.id} option={option} voters={voters} selected={(ownVote?.optionId ?? draft) === option.id} disabled={!canVote || submitting} reveal={reveal} correct={game.correctOptionId === option.id} onSelect={() => setDraft(option.id)} />;
         })}</div>

@@ -1,6 +1,7 @@
 import type { Pokemon } from '../../pokemon/types.js';
 import type { GameActionResult, GameContext, MiniGameModule } from '../contracts.js';
 import { defaultShinyVoteConfig, shinyVoteConfigSchema, type ShinyVoteConfig } from './config.js';
+import { AUTHENTIC_SHINY_FILTER, fakeShinyFilter } from './filters.js';
 import { buildShinyResults, emptyShinyStats } from './rules.js';
 import {
   SHINY_OPTION_IDS,
@@ -16,7 +17,7 @@ const REVEAL_DURATION_MS = 3_000;
 const manifest = {
   id: 'shiny-vote',
   name: 'Shiny Quiz',
-  description: 'Encuentra el shiny verdadero entre cuatro candidatos. Los votos se ven en directo.',
+  description: 'Encuentra el shiny verdadero entre varios candidatos. Los votos se ven en directo.',
   minPlayers: 1,
 } as const;
 
@@ -37,22 +38,41 @@ function shinySprite(pokemon: Pokemon): string {
 }
 
 function createOptions(state: ShinyVoteState, context: GameContext): { options: ShinyOption[]; correctOptionId: ShinyOptionId } {
-  const candidates = takeRandom(context.pokemon.forGenerations(state.config.generations), SHINY_OPTION_IDS.length, context.random);
-  if (candidates.length < SHINY_OPTION_IDS.length) throw new Error('At least four Pokémon are required for the selected generations');
-  const correctIndex = Math.min(Math.floor(context.random() * SHINY_OPTION_IDS.length), SHINY_OPTION_IDS.length - 1);
+  const samePokemon = state.config.candidateMode === 'SAME_POKEMON';
+  const optionIds = SHINY_OPTION_IDS.slice(0, state.config.optionCount);
+  const requiredPokemon = samePokemon ? 1 : optionIds.length;
+  const selected = takeRandom(context.pokemon.forGenerations(state.config.generations), requiredPokemon, context.random);
+  if (selected.length < requiredPokemon) throw new Error(`At least ${requiredPokemon} Pokémon are required for the selected generations`);
+  const candidates = samePokemon ? optionIds.map(() => selected[0]!) : selected;
+  const correctIndex = Math.min(Math.floor(context.random() * optionIds.length), optionIds.length - 1);
+  let fakeFilterIndex = 0;
   return {
-    options: candidates.map((pokemon, index) => ({
-      id: SHINY_OPTION_IDS[index]!,
-      pokemonId: pokemon.id,
-      pokemonName: pokemon.name,
-      sprite: index === correctIndex ? shinySprite(pokemon) : pokemon.sprite,
-    })),
-    correctOptionId: SHINY_OPTION_IDS[correctIndex]!,
+    options: candidates.map((pokemon, index) => {
+      const authentic = index === correctIndex;
+      const visualFilter = authentic ? AUTHENTIC_SHINY_FILTER : fakeShinyFilter(fakeFilterIndex++);
+      return {
+        id: optionIds[index]!,
+        pokemonId: pokemon.id,
+        pokemonName: pokemon.name,
+        sprite: authentic ? shinySprite(pokemon) : pokemon.sprite,
+        visualFilter,
+      };
+    }),
+    correctOptionId: optionIds[correctIndex]!,
   };
 }
 
-function beginRound(state: ShinyVoteState, context: GameContext): ShinyVoteState {
+function prepareNextRound(state: ShinyVoteState, context: GameContext): Pick<ShinyVoteState, 'preparedOptions' | 'preparedCorrectOptionId'> {
+  if (state.roundNumber >= state.config.rounds) return { preparedOptions: null, preparedCorrectOptionId: null };
   const generated = createOptions(state, context);
+  for (const option of generated.options) context.preloadImage?.(option.sprite);
+  return { preparedOptions: generated.options, preparedCorrectOptionId: generated.correctOptionId };
+}
+
+function beginRound(state: ShinyVoteState, context: GameContext): ShinyVoteState {
+  const generated = state.preparedOptions && state.preparedCorrectOptionId
+    ? { options: state.preparedOptions, correctOptionId: state.preparedCorrectOptionId }
+    : createOptions(state, context);
   return {
     ...state,
     phase: 'ROUND_ACTIVE',
@@ -64,6 +84,8 @@ function beginRound(state: ShinyVoteState, context: GameContext): ShinyVoteState
     roundEndsAt: context.now + state.config.roundSeconds * 1_000,
     nextTransitionAt: null,
     lastRound: null,
+    preparedOptions: null,
+    preparedCorrectOptionId: null,
   };
 }
 
@@ -86,6 +108,7 @@ function revealRound(state: ShinyVoteState, context: GameContext): ShinyVoteStat
   }
   return {
     ...state,
+    ...prepareNextRound(state, context),
     phase: 'ROUND_RESULTS',
     scores,
     playerStats,
@@ -114,7 +137,8 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
   createInitialState(config, context) {
     const parsed = shinyVoteConfigSchema.parse(config);
     if (context.players.length < manifest.minPlayers) throw new Error(`At least ${manifest.minPlayers} player is required`);
-    if (context.pokemon.forGenerations(parsed.generations).length < SHINY_OPTION_IDS.length) throw new Error('At least four Pokémon are required for the selected generations');
+    const requiredPokemon = parsed.candidateMode === 'SAME_POKEMON' ? 1 : parsed.optionCount;
+    if (context.pokemon.forGenerations(parsed.generations).length < requiredPokemon) throw new Error(`At least ${requiredPokemon} Pokémon are required for the selected generations`);
     return {
       phase: 'GAME_STARTING',
       config: parsed,
@@ -130,6 +154,8 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
       roundEndsAt: null,
       nextTransitionAt: null,
       lastRound: null,
+      preparedOptions: null,
+      preparedCorrectOptionId: null,
     };
   },
 

@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import type { GameContext, GamePlayer, Pokemon, PokemonCatalog, ShinyVoteState } from '../../index.js';
+import type { GameContext, GamePlayer, Pokemon, PokemonCatalog, ShinyCandidateMode, ShinyOptionId, ShinyVoteState } from '../../index.js';
 import { shinyVoteGame } from '../../index.js';
 
 const pokemon: Pokemon[] = Array.from({ length: 8 }, (_, index) => ({
   id: `pokemon-${index + 1}`,
   nationalDexNumber: index + 1,
   name: `Pokémon ${index + 1}`,
-  generation: 1,
+  generation: index < 6 ? 1 : 2,
   sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index + 1}.png`,
 }));
 const catalog: PokemonCatalog = {
@@ -21,19 +21,59 @@ const players: GamePlayer[] = [
   { id: 'marta', displayName: 'Marta' },
 ];
 
-function setup(rounds = 2) {
+function setup(rounds = 2, candidateMode: ShinyCandidateMode = 'SAME_POKEMON', optionCount = 4, generations = [1]) {
   let now = 1_000;
-  const context: GameContext = { players, pokemon: catalog, get now() { return now; }, random: () => 0, roomCode: 'PIKA42' };
-  let state = shinyVoteGame.createInitialState({ generations: [1], roundSeconds: 20, rounds }, context);
+  const preloadedImages: string[] = [];
+  const context: GameContext = { players, pokemon: catalog, get now() { return now; }, random: () => 0, roomCode: 'PIKA42', preloadImage: (source) => preloadedImages.push(source) };
+  let state = shinyVoteGame.createInitialState({ generations, roundSeconds: 20, rounds, candidateMode, optionCount }, context);
   state = shinyVoteGame.start(state, context);
-  return { state, context, setNow(value: number) { now = value; } };
+  return { state, context, preloadedImages, setNow(value: number) { now = value; } };
 }
 
-function vote(state: ShinyVoteState, playerId: string, optionId: 'A' | 'B' | 'C' | 'D', context: GameContext) {
+function vote(state: ShinyVoteState, playerId: string, optionId: ShinyOptionId, context: GameContext) {
   return shinyVoteGame.handleAction(state, playerId, { type: 'VOTE', optionId }, context);
 }
 
 describe('public shiny voting', () => {
+  it('supports four versions of the same Pokémon with visibly distinct fake filters', () => {
+    const fixture = setup();
+    expect(new Set(fixture.state.options.map((option) => option.pokemonId)).size).toBe(1);
+    expect(new Set(fixture.state.options.map((option) => option.visualFilter)).size).toBe(4);
+    const fakeOptions = fixture.state.options.filter((option) => option.id !== fixture.state.correctOptionId);
+    expect(fakeOptions.every((option) => /hue-rotate\((64|137|211|278|329)deg\)/.test(option.visualFilter))).toBe(true);
+  });
+
+  it('supports four different Pokémon when configured by the host', () => {
+    const fixture = setup(2, 'DIFFERENT_POKEMON');
+    expect(new Set(fixture.state.options.map((option) => option.pokemonId)).size).toBe(4);
+    expect(new Set(fixture.state.options.map((option) => option.pokemonName)).size).toBe(4);
+  });
+
+  it.each([3, 4, 5, 6])('creates exactly one official shiny among %i configurable options', (optionCount) => {
+    const fixture = setup(2, 'SAME_POKEMON', optionCount);
+    expect(fixture.state.options).toHaveLength(optionCount);
+    expect(fixture.state.options.filter((option) => option.sprite.includes('/shiny/'))).toHaveLength(1);
+    expect(fixture.state.options.filter((option) => option.id === fixture.state.correctOptionId)).toHaveLength(1);
+    expect(new Set(fixture.state.options.map((option) => option.visualFilter)).size).toBe(optionCount);
+  });
+
+  it('uses unique Pokémon from only the configured generations in different mode', () => {
+    const fixture = setup(2, 'DIFFERENT_POKEMON', 6, [1]);
+    expect(new Set(fixture.state.options.map((option) => option.pokemonId)).size).toBe(6);
+    expect(fixture.state.options.every((option) => pokemon.find((entry) => entry.id === option.pokemonId)?.generation === 1)).toBe(true);
+  });
+
+  it('reveals and scores correctly with six options', () => {
+    const fixture = setup(1, 'SAME_POKEMON', 6);
+    let state = vote(fixture.state, 'pedro', 'F', fixture.context).state;
+    state = vote(state, 'ana', 'A', fixture.context).state;
+    state = vote(state, 'marta', 'A', fixture.context).state;
+    expect(state.phase).toBe('ROUND_RESULTS');
+    expect(state.options).toHaveLength(6);
+    expect(state.correctOptionId).toBe('A');
+    expect(state.scores).toEqual({ pedro: 0, ana: 1, marta: 1 });
+  });
+
   it('keeps only the correct answer secret while votes and pending players are public', () => {
     const fixture = setup();
     expect(fixture.state.correctOptionId).toBe('A');
@@ -86,11 +126,16 @@ describe('public shiny voting', () => {
     state = shinyVoteGame.handleTimeout(state, fixture.context);
     expect(state.phase).toBe('ROUND_RESULTS');
     expect(state.lastRound?.missedPlayerIds).toEqual(['ana', 'marta']);
+    expect(state.preparedOptions).toHaveLength(4);
+    expect(fixture.preloadedImages).toEqual(state.preparedOptions?.map((option) => option.sprite));
 
     fixture.setNow(state.nextTransitionAt!);
+    const preparedOptions = state.preparedOptions;
     state = shinyVoteGame.handleTimeout(state, fixture.context);
     expect(state.phase).toBe('ROUND_ACTIVE');
     expect(state.roundNumber).toBe(2);
+    expect(state.options).toEqual(preparedOptions);
+    expect(state.preparedOptions).toBeNull();
     expect(state.votes).toEqual({});
     expect(shinyVoteGame.getPublicState(state, fixture.context).correctOptionId).toBeNull();
   });

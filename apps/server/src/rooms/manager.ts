@@ -2,6 +2,7 @@ import { gameRegistry, roomCodeSchema, sessionModeSchema, type AuthUser, type Cl
 import { randomInt } from 'node:crypto';
 import type { Server, Socket } from 'socket.io';
 import { env } from '../config.js';
+import { preloadGameImage } from '../http/game-image-cache.js';
 import { persistGameResults } from '../stats/service.js';
 import { InMemoryRoomStore } from './store.js';
 import type { LiveRoom, RoomMember } from './types.js';
@@ -48,7 +49,7 @@ export class RoomManager {
     const host = room.members.get(room.hostId);
     if (host && !host.connected && !host.disconnectTimer) this.transferHost(room);
     void socket.join(room.code);
-    socket.emit('session:restored', this.view(room));
+    socket.emit('session:restored', this.view(room, identity.id));
     this.broadcast(room);
   }
 
@@ -67,7 +68,7 @@ export class RoomManager {
     };
     room.members.set(identity.id, this.member(identity, socket.id, 'PLAYER'));
     this.store.save(room); this.store.attachPlayer(identity.id, code); void socket.join(code);
-    return { room: this.view(room) };
+    return { room: this.view(room, identity.id) };
   }
 
   private join(socket: GameSocket, identity: AuthUser, rawCode: string): { room: RoomView } {
@@ -85,7 +86,7 @@ export class RoomManager {
       this.store.attachPlayer(identity.id, room.code);
     }
     void socket.join(room.code); this.broadcast(room);
-    return { room: this.view(room) };
+    return { room: this.view(room, identity.id) };
   }
 
   private member(identity: AuthUser, socketId: string, role: 'PLAYER' | 'SPECTATOR'): RoomMember {
@@ -157,7 +158,7 @@ export class RoomManager {
     const players = [...room.members.values()].filter((member) => member.connected).map((member) => ({ id: member.identity.id, displayName: member.identity.displayName }));
     const module = gameRegistry.get(room.selectedGameId)!;
     if (players.length < module.manifest.minPlayers) throw new Error(`Se necesitan al menos ${module.manifest.minPlayers} jugadores.`);
-    const context = { players, pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code };
+    const context = { players, pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code, preloadImage: preloadGameImage };
     const config = module.configSchema.parse(room.gameConfigs.get(room.selectedGameId));
     let state = module.createInitialState(config, context);
     state = module.start(state, context);
@@ -234,7 +235,7 @@ export class RoomManager {
   }
 
   private context(room: LiveRoom) {
-    return { players: [...room.members.values()].map((member) => ({ id: member.identity.id, displayName: member.identity.displayName })), pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code };
+    return { players: [...room.members.values()].map((member) => ({ id: member.identity.id, displayName: member.identity.displayName })), pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code, preloadImage: preloadGameImage };
   }
 
   gameAsset(code: string, assetToken: string, roundNumber: number, assetId: string): string | null {
@@ -244,7 +245,8 @@ export class RoomManager {
     return game.module.resolveAsset(game.state, { assetToken, roundNumber, assetId }, this.context(room));
   }
 
-  private view(room: LiveRoom): RoomView {
+  private view(room: LiveRoom, playerId: string): RoomView {
+    const context = this.context(room);
     return {
       code: room.code, phase: room.phase, hostId: room.hostId, maxPlayers: room.maxPlayers,
       members: [...room.members.values()].map((member) => ({
@@ -254,12 +256,17 @@ export class RoomManager {
       availableGames: gameRegistry.manifests(),
       selectedGameId: room.selectedGameId, selectedGameConfig: room.gameConfigs.get(room.selectedGameId), sessionMode: room.sessionMode,
       gamesPlayed: room.gamesPlayed,
-      game: room.game ? room.game.module.getPublicState(room.game.state, this.context(room)) : null,
+      game: room.game ? room.game.module.getPublicState(room.game.state, context) : null,
+      gamePlayerState: room.game ? room.game.module.getPlayerState(room.game.state, playerId, context) : null,
       serverNow: Date.now(),
     };
   }
 
-  private broadcast(room: LiveRoom): void { this.io.to(room.code).emit('room:state', this.view(room)); }
+  private broadcast(room: LiveRoom): void {
+    for (const member of room.members.values()) {
+      if (member.socketId) this.io.to(member.socketId).emit('room:state', this.view(room, member.identity.id));
+    }
+  }
   private requiredRoom(playerId: string): LiveRoom { const room = this.store.roomForPlayer(playerId); if (!room) throw new Error('Not in a room'); return room; }
   private hostRoom(playerId: string): LiveRoom { const room = this.requiredRoom(playerId); if (room.hostId !== playerId) throw new Error('Only the host can do that'); return room; }
   private assertLobby(room: LiveRoom): void { if (room.phase !== 'LOBBY') throw new Error('This setting can only be changed in the lobby'); }

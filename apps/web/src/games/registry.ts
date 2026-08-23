@@ -6,6 +6,9 @@ import { GameResults } from '../room/Results';
 import { ShinyVoteConfigPanel } from './shiny-vote/ConfigPanel';
 import { ShinyVoteGame } from '../room/ShinyVoteGame';
 import { ShinyVoteResults } from '../room/ShinyVoteResults';
+import { PokemonImpostorConfigPanel } from './pokemon-impostor/ConfigPanel';
+import { PokemonImpostorGame } from '../room/PokemonImpostorGame';
+import { PokemonImpostorResults } from '../room/PokemonImpostorResults';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
@@ -14,6 +17,7 @@ export interface MiniGameClientModule {
   id: string;
   name: string;
   description: string;
+  icon: string;
   ConfigPanel: ComponentType<GameConfigProps>;
   ActiveGame: ComponentType<ActiveGameProps>;
   Results: ComponentType<GameResultsProps>;
@@ -34,10 +38,16 @@ class ClientGameRegistry {
 
 export const clientGameRegistry = new ClientGameRegistry().register({
   id: 'pokedex-distance', name: 'Pokédex Distance',
+  icon: '🎯',
   description: 'Acércate al número objetivo. La elección más lejana queda fuera.',
   ConfigPanel: PokedexDistanceConfigPanel, ActiveGame: PokedexDistanceGame, Results: GameResults,
 }).register({
   id: 'shiny-vote', name: 'Shiny Quiz',
+  icon: '✨',
   description: 'Encuentra el shiny real. Verás en directo qué opción elige cada entrenador.',
   ConfigPanel: ShinyVoteConfigPanel, ActiveGame: ShinyVoteGame, Results: ShinyVoteResults,
+}).register({
+  id: 'pokemon-impostor', name: 'Pokémon Impostor', icon: '🕵️',
+  description: 'Da pistas sin revelar demasiado y descubre quién no conoce el Pokémon.',
+  ConfigPanel: PokemonImpostorConfigPanel, ActiveGame: PokemonImpostorGame, Results: PokemonImpostorResults,
 });

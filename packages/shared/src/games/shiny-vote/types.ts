@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { GamePhase, GameResults } from '../contracts.js';
 import type { ShinyVoteConfig } from './config.js';
 
-export const SHINY_OPTION_IDS = ['A', 'B', 'C', 'D'] as const;
+export const SHINY_OPTION_IDS = ['A', 'B', 'C', 'D', 'E', 'F'] as const;
 export type ShinyOptionId = (typeof SHINY_OPTION_IDS)[number];
 
 export interface ShinyOption {
@@ -10,6 +10,7 @@ export interface ShinyOption {
   pokemonId: string;
   pokemonName: string;
   sprite: string;
+  visualFilter: string;
 }
 
 export interface ShinyVote {
@@ -45,6 +46,8 @@ export interface ShinyVoteState {
   roundEndsAt: number | null;
   nextTransitionAt: number | null;
   lastRound: ShinyRoundResult | null;
+  preparedOptions: ShinyOption[] | null;
+  preparedCorrectOptionId: ShinyOptionId | null;
 }
 
 export const shinyVoteActionSchema = z.object({

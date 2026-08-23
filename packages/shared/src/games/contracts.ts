@@ -6,6 +6,11 @@ export type GamePhase =
   | 'ROUND_ACTIVE'
   | 'ROUND_RESULTS'
   | 'TIEBREAKER_ACTIVE'
+  | 'ROLE_REVEAL'
+  | 'CLUE_PHASE'
+  | 'VOTING'
+  | 'VOTE_RESULTS'
+  | 'ELIMINATION'
   | 'GAME_RESULTS';
 
 export interface GamePlayer {
@@ -19,6 +24,7 @@ export interface GameContext {
   now: number;
   random: () => number;
   roomCode?: string;
+  preloadImage?: (source: string) => void;
 }
 
 export interface GameActionResult<TState> {
