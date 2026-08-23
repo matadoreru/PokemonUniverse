@@ -75,6 +75,13 @@ model Pokemon {
   name              String
   generation        Int
   sprite            String
+  hp                Int      @default(0)
+  attack            Int      @default(0)
+  defense           Int      @default(0)
+  specialAttack     Int      @default(0)
+  specialDefense    Int      @default(0)
+  speed             Int      @default(0)
+  baseStatTotal     Int      @default(0)
   names             Json?
   types             String[]
   updatedAt         DateTime @updatedAt

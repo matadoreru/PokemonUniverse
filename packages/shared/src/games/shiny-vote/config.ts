@@ -10,6 +10,7 @@ export const shinyVoteConfigSchema = z.object({
   rounds: z.number().int().min(1).max(50),
   candidateMode: z.enum(SHINY_CANDIDATE_MODES),
   optionCount: z.number().int().min(3).max(6),
+  showVotes: z.boolean(),
 });
 
 export type ShinyVoteConfig = z.infer<typeof shinyVoteConfigSchema>;
@@ -20,4 +21,5 @@ export const defaultShinyVoteConfig: ShinyVoteConfig = {
   rounds: 10,
   candidateMode: 'SAME_POKEMON',
   optionCount: 4,
+  showVotes: true,
 };

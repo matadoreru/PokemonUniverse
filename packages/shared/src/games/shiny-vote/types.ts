@@ -31,6 +31,11 @@ export interface ShinyRoundResult {
   missedPlayerIds: string[];
 }
 
+export interface ShinyVotePlayerState {
+  canVote: boolean;
+  vote: ShinyVote | null;
+}
+
 export interface ShinyVoteState {
   phase: GamePhase;
   config: ShinyVoteConfig;
@@ -64,6 +69,8 @@ export interface ShinyVotePublicState {
   playerIds: string[];
   options: ShinyOption[];
   votes: Record<string, ShinyVote>;
+  votedPlayerIds: string[];
+  showVotes: boolean;
   pendingPlayerIds: string[];
   scores: Record<string, number>;
   roundStartedAt: number | null;

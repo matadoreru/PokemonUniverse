@@ -2,13 +2,15 @@ import { describe, expect, it } from 'vitest';
 import type { GameContext, GamePlayer, Pokemon, PokemonCatalog, PokedexDistanceState } from '../../index.js';
 import { defaultPokedexDistanceConfig, distanceBetween, farthestPlayerIds, pointsForPosition, pokedexDistanceGame } from '../../index.js';
 
+const battleData = { hp: 50, attack: 50, defense: 50, specialAttack: 50, specialDefense: 50, speed: 50, baseStatTotal: 300, types: ['normal'] as Pokemon['types'] };
+
 const pokemon: Pokemon[] = [
-  { id: 'bulbasaur', nationalDexNumber: 1, name: 'Bulbasaur', generation: 1, sprite: '/1.png' },
-  { id: 'pikachu', nationalDexNumber: 25, name: 'Pikachu', generation: 1, sprite: '/25.png' },
-  { id: 'mew', nationalDexNumber: 151, name: 'Mew', generation: 1, sprite: '/151.png' },
-  { id: 'chikorita', nationalDexNumber: 152, name: 'Chikorita', generation: 2, sprite: '/152.png' },
-  { id: 'celebi', nationalDexNumber: 251, name: 'Celebi', generation: 2, sprite: '/251.png' },
-  { id: 'treecko', nationalDexNumber: 252, name: 'Treecko', generation: 3, sprite: '/252.png' },
+  { ...battleData, id: 'bulbasaur', nationalDexNumber: 1, name: 'Bulbasaur', generation: 1, sprite: '/1.png' },
+  { ...battleData, id: 'pikachu', nationalDexNumber: 25, name: 'Pikachu', generation: 1, sprite: '/25.png' },
+  { ...battleData, id: 'mew', nationalDexNumber: 151, name: 'Mew', generation: 1, sprite: '/151.png' },
+  { ...battleData, id: 'chikorita', nationalDexNumber: 152, name: 'Chikorita', generation: 2, sprite: '/152.png' },
+  { ...battleData, id: 'celebi', nationalDexNumber: 251, name: 'Celebi', generation: 2, sprite: '/251.png' },
+  { ...battleData, id: 'treecko', nationalDexNumber: 252, name: 'Treecko', generation: 3, sprite: '/252.png' },
 ];
 
 const catalog: PokemonCatalog = {
@@ -143,6 +145,9 @@ describe('Pokédex Distance rules', () => {
     const fixture = setup(2, 0);
     let state = choose(fixture.state, 'p1', 'bulbasaur', fixture.context);
     state = choose(state, 'p2', 'mew', fixture.context);
+    expect(state.phase).toBe('ROUND_RESULTS');
+    expect(state.nextTransitionAt).toBe(fixture.context.now + 4_000);
+    state = advanceResults(state, fixture.context, fixture.setNow);
     expect(state.phase).toBe('GAME_RESULTS');
     expect(state.winnerId).toBe('p1');
     const results = pokedexDistanceGame.getResults(state);
@@ -152,10 +157,37 @@ describe('Pokédex Distance rules', () => {
   it('finishes safely without a winner when every remaining player times out', () => {
     const fixture = setup(2, 0);
     fixture.setNow(fixture.state.roundEndsAt!);
-    const state = pokedexDistanceGame.handleTimeout(fixture.state, fixture.context);
+    let state = pokedexDistanceGame.handleTimeout(fixture.state, fixture.context);
+    expect(state.phase).toBe('ROUND_RESULTS');
+    state = advanceResults(state, fixture.context, fixture.setNow);
     expect(state.phase).toBe('GAME_RESULTS');
     expect(state.winnerId).toBeNull();
     expect(pokedexDistanceGame.getResults(state).standings.every((entry) => entry.points === 0)).toBe(true);
+  });
+
+  it('publishes a rich four-second result with target, choices, distances and exact hits', () => {
+    const fixture = setup(3, 0);
+    let state = choose(fixture.state, 'p1', 'bulbasaur', fixture.context);
+    state = choose(state, 'p2', 'pikachu', fixture.context);
+    state = choose(state, 'p3', 'mew', fixture.context);
+    const view = pokedexDistanceGame.getPublicState(state, fixture.context);
+    expect(view.phase).toBe('ROUND_RESULTS');
+    expect(view.nextTransitionAt).toBe(fixture.context.now + 4_000);
+    expect(view.lastRound?.targetPokemon).toEqual({ id: 'bulbasaur', name: 'Bulbasaur', nationalDexNumber: 1, sprite: '/1.png' });
+    expect(view.lastRound?.selections.p1).toMatchObject({ pokemonName: 'Bulbasaur', dexNumber: 1, distance: 0, sprite: '/1.png' });
+    expect(view.lastRound?.selections.p3).toMatchObject({ pokemonName: 'Mew', dexNumber: 151, distance: 150 });
+    expect(view.lastRound?.eliminatedIds).toEqual(['p3']);
+  });
+
+  it('does not wait for a disconnected player and records them as a non-responder', () => {
+    const fixture = setup(3, 0);
+    fixture.context.players[2]!.connected = false;
+    let state = choose(fixture.state, 'p1', 'bulbasaur', fixture.context);
+    state = choose(state, 'p2', 'pikachu', fixture.context);
+    expect(state.phase).toBe('ROUND_RESULTS');
+    expect(state.lastRound).toMatchObject({ reason: 'NO_RESPONSE', eliminatedIds: ['p3'] });
+    expect(state.selections.p1).toBeDefined();
+    expect(state.selections.p2).toBeDefined();
   });
 
   it('uses dynamic scoring for any field size', () => {

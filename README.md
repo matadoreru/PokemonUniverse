@@ -1,6 +1,6 @@
 # Pokémon Universe
 
-Real-time multiplayer minigame hub with **Pokédex Distance** and **Shiny Quiz** available in every room. The host can switch games in the lobby without recreating the room; members, connections and session scores remain in place while each game keeps its own validated configuration.
+Real-time multiplayer hub with **Pokédex Distance**, **Shiny Quiz**, **Pokémon Impostor**, **Higher or Lower** and **Type Duel** available in every room. The host can switch games in the lobby without recreating the room; members, connections and session scores remain in place while each game keeps its own validated configuration.
 
 ## Run local code with Docker
 

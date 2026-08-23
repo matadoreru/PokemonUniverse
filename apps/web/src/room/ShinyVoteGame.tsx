@@ -1,4 +1,4 @@
-import type { RoomMemberView, RoomView, ShinyOption, ShinyOptionId, ShinyVotePublicState } from '@pokemon-universe/shared';
+import type { RoomMemberView, RoomView, ShinyOption, ShinyOptionId, ShinyVotePlayerState, ShinyVotePublicState } from '@pokemon-universe/shared';
 import { Check, Clock3, Eye, LoaderCircle, Sparkles, Trophy, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -72,7 +72,8 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
   const reveal = game.phase === 'ROUND_RESULTS';
   const transitionRemaining = Math.max(1, Math.ceil(transitionRemainingMs / 1_000));
   const transitionLabel = game.roundNumber >= game.totalRounds ? 'Resultados finales' : 'Siguiente ronda';
-  const ownVote = game.votes[selfId];
+  const playerState = room.gamePlayerState as ShinyVotePlayerState | null;
+  const ownVote = playerState?.vote ?? game.votes[selfId];
   const participant = game.playerIds.includes(selfId);
   const canVote = active && participant && !ownVote;
   const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
@@ -92,9 +93,9 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
   return <section className="mx-auto max-w-7xl px-4 py-5 md:px-8">
     <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
       <div><span className="label">Ronda {game.roundNumber} de {game.totalRounds}</span><h1 className="font-display text-3xl font-bold sm:text-4xl">¿Cuál es el shiny verdadero?</h1></div>
-      <span className="chip text-base"><Users size={17} /> {Object.keys(game.votes).length}/{game.playerIds.length} votos</span>
+      <span className="chip text-base"><Users size={17} /> {game.votedPlayerIds.length}/{game.playerIds.length} votos</span>
     </div>
-    {active && <div className="mb-5"><div className="mb-1.5 flex items-center justify-between text-sm font-extrabold"><span className="flex items-center gap-1.5"><Clock3 size={17} /> Votación pública</span><span className={remaining <= 5 ? 'timer-pulse text-xl' : ''}>{remaining}s</span></div><div className="h-3 overflow-hidden rounded-full border-2 border-ink/20 bg-night"><div className={`h-full transition-[width] duration-100 ${remaining <= 5 ? 'bg-berry' : 'bg-aqua'}`} style={{ width: `${progress}%` }} /></div></div>}
+    {active && <div className="mb-5"><div className="mb-1.5 flex items-center justify-between text-sm font-extrabold"><span className="flex items-center gap-1.5"><Clock3 size={17} /> {game.showVotes ? 'Votación pública' : 'Votación secreta'}</span><span className={remaining <= 5 ? 'timer-pulse text-xl' : ''}>{remaining}s</span></div><div className="h-3 overflow-hidden rounded-full border-2 border-ink/20 bg-night"><div className={`h-full transition-[width] duration-100 ${remaining <= 5 ? 'bg-berry' : 'bg-aqua'}`} style={{ width: `${progress}%` }} /></div></div>}
     {reveal && <div className="reveal-pop mb-5 rounded-2xl border-2 border-leaf bg-leaf/15 p-4 text-center"><Sparkles className="mr-2 inline text-leaf" /><strong className="font-display text-2xl">SHINY CORRECTO: {game.correctOptionId}</strong><p className="mt-1 font-bold text-ink/55">{transitionLabel} en {transitionRemaining} {transitionRemaining === 1 ? 'segundo' : 'segundos'}…</p></div>}
     <div className="grid gap-5 xl:grid-cols-[1fr_290px]">
       <div>
@@ -108,7 +109,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
         {error && <p className="mt-3 rounded-xl bg-berry/10 p-3 text-center font-bold text-berry">{error}</p>}
       </div>
       <aside className="space-y-4">
-        <div className="card !p-4"><h2 className="mb-3 font-display text-xl font-bold">{reveal ? 'Resultados de ronda' : 'Pendientes'}</h2>{reveal ? <div className="space-y-2">{game.playerIds.map((id) => { const member = members.get(id); const vote = game.votes[id]; const correct = vote?.optionId === game.correctOptionId; return <div key={id} className="flex items-center gap-2 rounded-xl bg-ink/[.04] px-3 py-2 text-sm"><span className="min-w-0 flex-1 truncate font-extrabold">{member?.displayName ?? id}</span><span className="font-bold text-ink/45">→ {vote?.optionId ?? 'sin voto'}</span><strong className={correct ? 'text-leaf' : 'text-berry'}>{correct ? '✓ +1' : '✗'}</strong></div>; })}</div> : <div className="flex flex-wrap gap-2">{game.pendingPlayerIds.length > 0 ? game.pendingPlayerIds.map((id) => { const member = members.get(id); return member ? <PlayerPill key={id} member={member} /> : null; }) : <p className="font-extrabold text-leaf">✓ Todos han votado</p>}</div>}</div>
+        <div className="card !p-4"><h2 className="mb-3 font-display text-xl font-bold">{reveal ? 'Resultados de ronda' : game.showVotes ? 'Pendientes' : 'Jugadores'}</h2>{reveal ? <div className="space-y-2">{game.playerIds.map((id) => { const member = members.get(id); const vote = game.votes[id]; const correct = vote?.optionId === game.correctOptionId; return <div key={id} className="flex items-center gap-2 rounded-xl bg-ink/[.04] px-3 py-2 text-sm"><span className="min-w-0 flex-1 truncate font-extrabold">{member?.displayName ?? id}</span><span className="font-bold text-ink/45">→ {vote?.optionId ?? 'sin voto'}</span><strong className={correct ? 'text-leaf' : 'text-berry'}>{correct ? '✓ +1' : '✗'}</strong></div>; })}</div> : game.showVotes ? <div className="flex flex-wrap gap-2">{game.pendingPlayerIds.length > 0 ? game.pendingPlayerIds.map((id) => { const member = members.get(id); return member ? <PlayerPill key={id} member={member} /> : null; }) : <p className="font-extrabold text-leaf">✓ Todos han votado</p>}</div> : <div className="space-y-2">{game.playerIds.map((id) => <div key={id} className="flex items-center gap-2 rounded-xl bg-ink/[.04] px-3 py-2 text-sm"><span className="min-w-0 flex-1 truncate font-extrabold">{members.get(id)?.displayName ?? id}</span>{game.votedPlayerIds.includes(id) ? <strong className="text-leaf">✓ Ha votado</strong> : <span className="font-bold text-ink/35">…</span>}</div>)}</div>}</div>
         <div className="card !p-4"><h2 className="mb-3 flex items-center gap-2 font-display text-xl font-bold"><Trophy size={19} className="text-berry" /> Clasificación</h2><div className="space-y-2">{ranking.map((id, index) => <div key={id} className="flex items-center gap-2 rounded-xl bg-ink/[.04] px-3 py-2"><span className="w-5 font-display font-bold">{index + 1}</span><span className="min-w-0 flex-1 truncate font-extrabold">{members.get(id)?.displayName ?? id}</span><strong className="text-berry">{game.scores[id] ?? 0}</strong></div>)}</div></div>
       </aside>
     </div>

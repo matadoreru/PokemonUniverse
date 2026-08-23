@@ -1,4 +1,4 @@
-import { DoorOpen, KeyRound, LoaderCircle, Plus, Wifi, WifiOff } from 'lucide-react';
+import { DoorOpen, KeyRound, LoaderCircle, Plus } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRoom } from '../room/RoomContext';
@@ -79,11 +79,6 @@ export function PlayPage() {
       </form>
 
       {error && <p role="alert" className="mt-4 rounded-xl border border-berry/25 bg-berry/10 p-3 text-center text-sm font-extrabold text-berry">{error}</p>}
-
-      <div className={`mt-6 flex items-center justify-center gap-2 border-t border-ink/10 pt-5 text-sm font-bold ${connected ? 'text-leaf' : 'text-berry'}`}>
-        {connected ? <Wifi size={17} /> : <WifiOff size={17} />}
-        {connected ? 'Conectado al servidor' : 'Conectando con el servidor…'}
-      </div>
     </article>
 
     <p className="mt-5 text-center text-sm font-bold text-ink/40">El host podrá elegir el minijuego y configurar la partida desde el lobby.</p>

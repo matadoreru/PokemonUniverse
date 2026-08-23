@@ -1,4 +1,4 @@
-import type { Pokemon, PokemonCatalog } from '@pokemon-universe/shared';
+import type { Pokemon, PokemonCatalog, PokemonType } from '@pokemon-universe/shared';
 import { prisma } from '../db.js';
 
 export class InMemoryPokemonCatalog implements PokemonCatalog {
@@ -23,7 +23,9 @@ export async function loadPokemonCatalog(): Promise<InMemoryPokemonCatalog> {
   return new InMemoryPokemonCatalog(rows.map((row) => ({
     id: row.id, nationalDexNumber: row.nationalDexNumber, name: row.name,
     generation: row.generation, sprite: row.sprite,
+    hp: row.hp, attack: row.attack, defense: row.defense, specialAttack: row.specialAttack,
+    specialDefense: row.specialDefense, speed: row.speed, baseStatTotal: row.baseStatTotal,
     ...(row.names && typeof row.names === 'object' ? { names: row.names as Record<string, string> } : {}),
-    types: row.types,
+    types: row.types as PokemonType[],
   })));
 }

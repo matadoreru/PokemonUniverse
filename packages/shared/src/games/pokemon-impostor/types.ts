@@ -6,8 +6,15 @@ export type ImpostorRole = 'INNOCENT' | 'IMPOSTOR';
 export type ImpostorWinner = 'INNOCENTS' | 'IMPOSTORS';
 
 export interface ImpostorClue {
-  text: string;
-  submittedAt: number;
+  text: string | null;
+  submittedAt: number | null;
+  status: 'SUBMITTED' | 'TIMEOUT' | 'DISCONNECTED';
+}
+
+export interface ImpostorGuess {
+  pokemonId: string;
+  correct: boolean;
+  guessedAt: number;
 }
 
 export interface ImpostorVote {
@@ -44,6 +51,9 @@ export interface PokemonImpostorState {
   spectatorIds: string[];
   roundNumber: number;
   clues: Record<number, Record<string, ImpostorClue>>;
+  clueOrder: string[];
+  currentClueTurnIndex: number;
+  guessAttempts: Record<string, ImpostorGuess>;
   votes: Record<string, ImpostorVote>;
   voteCandidateIds: string[];
   votingRound: number;
@@ -59,6 +69,7 @@ export interface PokemonImpostorState {
 export const pokemonImpostorActionSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('SUBMIT_CLUE'), text: z.string().max(200) }).strict(),
   z.object({ type: z.literal('VOTE'), targetId: z.string().min(1).max(64) }).strict(),
+  z.object({ type: z.literal('GUESS_POKEMON'), pokemonId: z.string().min(1).max(64) }).strict(),
 ]);
 export type PokemonImpostorAction = z.infer<typeof pokemonImpostorActionSchema>;
 
@@ -71,6 +82,9 @@ export interface PokemonImpostorPublicState {
   spectatorIds: string[];
   roundNumber: number;
   clues: Record<number, Record<string, ImpostorClue>>;
+  clueOrder: string[];
+  currentClueTurnIndex: number;
+  currentCluePlayerId: string | null;
   cluePendingIds: string[];
   voteCompletedIds: string[];
   voteCandidateIds: string[];
@@ -91,6 +105,9 @@ export interface PokemonImpostorPlayerState {
   alive: boolean;
   canSubmitClue: boolean;
   ownClue: ImpostorClue | null;
+  canGuessPokemon: boolean;
+  guessUsed: boolean;
+  guessCorrect: boolean | null;
   canVote: boolean;
   ownVote: ImpostorVote | null;
 }

@@ -7,3 +7,5 @@ export * from './games/registry.js';
 export * from './games/pokedex-distance/index.js';
 export * from './games/shiny-vote/index.js';
 export * from './games/pokemon-impostor/index.js';
+export * from './games/higher-lower/index.js';
+export * from './games/type-duel/index.js';

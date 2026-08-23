@@ -1,10 +1,11 @@
-import type { AuthUser, MemberRole, SessionMode } from '@pokemon-universe/shared';
+import type { AuthUser, MemberRole, PresenceStatus, SessionMode } from '@pokemon-universe/shared';
 import type { RegisteredGame } from '@pokemon-universe/shared';
 
 export interface RoomMember {
   identity: AuthUser;
   avatarSeed: string;
   connected: boolean;
+  presence: PresenceStatus;
   socketId: string | null;
   role: MemberRole;
   sessionPoints: number;

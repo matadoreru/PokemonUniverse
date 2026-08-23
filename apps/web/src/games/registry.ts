@@ -9,6 +9,12 @@ import { ShinyVoteResults } from '../room/ShinyVoteResults';
 import { PokemonImpostorConfigPanel } from './pokemon-impostor/ConfigPanel';
 import { PokemonImpostorGame } from '../room/PokemonImpostorGame';
 import { PokemonImpostorResults } from '../room/PokemonImpostorResults';
+import { HigherLowerConfigPanel } from './higher-lower/ConfigPanel';
+import { HigherLowerGame } from '../room/HigherLowerGame';
+import { HigherLowerResults } from '../room/HigherLowerResults';
+import { TypeDuelConfigPanel } from './type-duel/ConfigPanel';
+import { TypeDuelGame } from '../room/TypeDuelGame';
+import { TypeDuelResults } from '../room/TypeDuelResults';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
@@ -50,4 +56,10 @@ export const clientGameRegistry = new ClientGameRegistry().register({
   id: 'pokemon-impostor', name: 'Pokémon Impostor', icon: '🕵️',
   description: 'Da pistas sin revelar demasiado y descubre quién no conoce el Pokémon.',
   ConfigPanel: PokemonImpostorConfigPanel, ActiveGame: PokemonImpostorGame, Results: PokemonImpostorResults,
+}).register({
+  id: 'higher-lower', name: 'Higher or Lower', icon: '📈', description: 'Compara stats, decide si suben o bajan y construye una racha.',
+  ConfigPanel: HigherLowerConfigPanel, ActiveGame: HigherLowerGame, Results: HigherLowerResults,
+}).register({
+  id: 'type-duel', name: 'Type Duel', icon: '⚔️', description: 'Duelo de tipos: encuentra antes que tu rival la combinación Pokémon exacta.',
+  ConfigPanel: TypeDuelConfigPanel, ActiveGame: TypeDuelGame, Results: TypeDuelResults,
 });

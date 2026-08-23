@@ -1,4 +1,4 @@
-import type { GameActionResult, GameContext, MiniGameModule } from '../contracts.js';
+import { allConnectedRequiredCompleted, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { defaultPokedexDistanceConfig, pokedexDistanceConfigSchema, type PokedexDistanceConfig } from './config.js';
 import { buildResults, distanceBetween, elimination, emptyPlayerStats, farthestPlayerIds } from './rules.js';
 import { pokedexDistanceActionSchema, type PokedexDistanceAction, type PokedexDistancePublicState, type PokedexDistanceState, type RoundResult } from './types.js';
@@ -71,7 +71,7 @@ function eliminateAndContinue(
     pendingEligibleIds: survivorIds,
     pendingTiebreakDepth: 0,
   };
-  return finishIfWinner(next);
+  return next;
 }
 
 function resolveRound(state: PokedexDistanceState, context: GameContext): PokedexDistanceState {
@@ -148,12 +148,13 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
       lockedPokemonIds: [...state.lockedPokemonIds, pokemon.id],
       playerStats: { ...state.playerStats, [playerId]: { ...stats, exactHits: stats.exactHits + (distance === 0 ? 1 : 0), distanceTotal: stats.distanceTotal + distance, selections: stats.selections + 1, roundsSurvived: stats.roundsSurvived + 1 } },
     };
-    if (next.eligibleIds.every((id) => next.selections[id])) next = resolveRound(next, context);
+    if (allConnectedRequiredCompleted(context, next.eligibleIds, (id) => Boolean(next.selections[id]))) next = resolveRound(next, context);
     return { state: next, accepted: true };
   },
 
   handleTimeout(state, context) {
     if (state.phase === 'ROUND_RESULTS' && context.now >= (state.nextTransitionAt ?? Infinity)) {
+      if (state.survivorIds.length <= 1) return finishIfWinner(state);
       return beginRound(state, context, state.pendingEligibleIds, state.pendingTiebreakDepth);
     }
     if (state.phase !== 'ROUND_ACTIVE' && state.phase !== 'TIEBREAKER_ACTIVE') return state;
@@ -161,17 +162,39 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
     return resolveRound(state, context);
   },
 
+  handlePresenceChange(state, context) {
+    if ((state.phase === 'ROUND_ACTIVE' || state.phase === 'TIEBREAKER_ACTIVE')
+      && allConnectedRequiredCompleted(context, state.eligibleIds, (id) => Boolean(state.selections[id]))) {
+      return resolveRound(state, context);
+    }
+    return state;
+  },
+
   getPublicState(state, context) {
     const selections = Object.fromEntries(Object.entries(state.selections).map(([playerId, selection]) => {
       const pokemon = context.pokemon.byId(selection.pokemonId);
       return [playerId, { ...selection, pokemonName: pokemon?.name ?? 'Unknown', sprite: pokemon?.sprite ?? '' }];
     }));
+    const lastRound = state.lastRound ? (() => {
+      const target = context.pokemon.byDexNumber(state.lastRound!.targetDexNumber);
+      if (!target) throw new Error('Round target is missing from the Pokémon catalog');
+      const roundSelections = Object.fromEntries(Object.entries(state.lastRound!.selections).map(([playerId, selection]) => {
+        const pokemon = context.pokemon.byId(selection.pokemonId);
+        return [playerId, { ...selection, pokemonName: pokemon?.name ?? 'Unknown', sprite: pokemon?.sprite ?? '' }];
+      }));
+      return {
+        ...state.lastRound!,
+        eligibleIds: [...state.eligibleIds],
+        targetPokemon: { id: target.id, name: target.name, nationalDexNumber: target.nationalDexNumber, sprite: target.sprite },
+        selections: roundSelections,
+      };
+    })() : null;
     return {
       gameId: 'pokedex-distance', phase: state.phase, roundNumber: state.roundNumber,
       tiebreakDepth: state.tiebreakDepth, targetDexNumber: state.targetDexNumber, eligibleIds: state.eligibleIds,
       survivorIds: state.survivorIds, spectatorIds: state.spectatorIds, selections,
       lockedPokemonIds: state.lockedPokemonIds, roundStartedAt: state.roundStartedAt,
-      roundEndsAt: state.roundEndsAt, lastRound: state.lastRound, winnerId: state.winnerId,
+      roundEndsAt: state.roundEndsAt, lastRound, winnerId: state.winnerId,
       nextTransitionAt: state.nextTransitionAt,
       results: state.phase === 'GAME_RESULTS' ? buildResults(state) : null,
     };

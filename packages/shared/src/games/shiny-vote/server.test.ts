@@ -8,6 +8,7 @@ const pokemon: Pokemon[] = Array.from({ length: 8 }, (_, index) => ({
   name: `Pokémon ${index + 1}`,
   generation: index < 6 ? 1 : 2,
   sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index + 1}.png`,
+  hp: 50, attack: 50, defense: 50, specialAttack: 50, specialDefense: 50, speed: 50, baseStatTotal: 300, types: ['normal'],
 }));
 const catalog: PokemonCatalog = {
   all: () => pokemon,
@@ -21,11 +22,11 @@ const players: GamePlayer[] = [
   { id: 'marta', displayName: 'Marta' },
 ];
 
-function setup(rounds = 2, candidateMode: ShinyCandidateMode = 'SAME_POKEMON', optionCount = 4, generations = [1]) {
+function setup(rounds = 2, candidateMode: ShinyCandidateMode = 'SAME_POKEMON', optionCount = 4, generations = [1], showVotes = true) {
   let now = 1_000;
   const preloadedImages: string[] = [];
-  const context: GameContext = { players, pokemon: catalog, get now() { return now; }, random: () => 0, roomCode: 'PIKA42', preloadImage: (source) => preloadedImages.push(source) };
-  let state = shinyVoteGame.createInitialState({ generations, roundSeconds: 20, rounds, candidateMode, optionCount }, context);
+  const context: GameContext = { players: players.map((player) => ({ ...player })), pokemon: catalog, get now() { return now; }, random: () => 0, roomCode: 'PIKA42', preloadImage: (source) => preloadedImages.push(source) };
+  let state = shinyVoteGame.createInitialState({ generations, roundSeconds: 20, rounds, candidateMode, optionCount, showVotes }, context);
   state = shinyVoteGame.start(state, context);
   return { state, context, preloadedImages, setNow(value: number) { now = value; } };
 }
@@ -102,6 +103,40 @@ describe('public shiny voting', () => {
     const spectator = vote(first.state, 'spectator', 'A', fixture.context);
     expect(spectator.accepted).toBe(false);
     expect(spectator.error).toMatch(/participas/);
+  });
+
+  it('hides other players option ids until reveal while exposing completion', () => {
+    const fixture = setup(2, 'SAME_POKEMON', 4, [1], false);
+    let state = vote(fixture.state, 'pedro', 'C', fixture.context).state;
+    let publicState = shinyVoteGame.getPublicState(state, fixture.context);
+    expect(publicState.showVotes).toBe(false);
+    expect(publicState.votedPlayerIds).toEqual(['pedro']);
+    expect(publicState.votes).toEqual({});
+    expect(JSON.stringify(publicState)).not.toContain('"optionId":"C"');
+    expect((shinyVoteGame.getPlayerState(state, 'pedro', fixture.context) as { vote: { optionId: string } }).vote.optionId).toBe('C');
+    state = vote(state, 'ana', 'A', fixture.context).state;
+    state = vote(state, 'marta', 'B', fixture.context).state;
+    publicState = shinyVoteGame.getPublicState(state, fixture.context);
+    expect(publicState.phase).toBe('ROUND_RESULTS');
+    expect(publicState.votes).toEqual(state.votes);
+  });
+
+  it('does not wait for a disconnected non-voter and preserves an accepted vote after disconnect', () => {
+    const fixture = setup();
+    let state = vote(fixture.state, 'marta', 'A', fixture.context).state;
+    fixture.context.players[2]!.connected = false;
+    state = vote(state, 'pedro', 'A', fixture.context).state;
+    state = vote(state, 'ana', 'B', fixture.context).state;
+    expect(state.phase).toBe('ROUND_RESULTS');
+    expect(state.lastRound?.votes.marta?.optionId).toBe('A');
+    expect(state.scores.marta).toBe(1);
+
+    const second = setup();
+    second.context.players[2]!.connected = false;
+    let withoutVote = vote(second.state, 'pedro', 'A', second.context).state;
+    withoutVote = vote(withoutVote, 'ana', 'B', second.context).state;
+    expect(withoutVote.phase).toBe('ROUND_RESULTS');
+    expect(withoutVote.lastRound?.missedPlayerIds).toContain('marta');
   });
 
   it('ends voting immediately after every participant votes and scores the reveal', () => {

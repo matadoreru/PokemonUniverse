@@ -3,8 +3,9 @@ import type { GameContext, GamePlayer, Pokemon, PokemonCatalog, PokemonImpostorP
 import { impostorWinner, pokemonImpostorGame } from '../../index.js';
 
 const pokemon: Pokemon[] = [
-  { id: 'lucario', nationalDexNumber: 448, name: 'Lucario', generation: 4, sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/448.png' },
-  { id: 'pikachu', nationalDexNumber: 25, name: 'Pikachu', generation: 1, sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png' },
+  { id: 'lucario', nationalDexNumber: 448, name: 'Lucario', generation: 4, sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/448.png', hp: 70, attack: 110, defense: 70, specialAttack: 115, specialDefense: 70, speed: 90, baseStatTotal: 525, types: ['fighting', 'steel'] },
+  { id: 'pikachu', nationalDexNumber: 25, name: 'Pikachu', generation: 1, sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png', hp: 35, attack: 55, defense: 40, specialAttack: 50, specialDefense: 50, speed: 90, baseStatTotal: 320, types: ['electric'] },
+  { id: 'garchomp', nationalDexNumber: 445, name: 'Garchomp', generation: 4, sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/445.png', hp: 108, attack: 130, defense: 95, specialAttack: 80, specialDefense: 85, speed: 102, baseStatTotal: 600, types: ['dragon', 'ground'] },
 ];
 const catalog: PokemonCatalog = {
   all: () => pokemon,
@@ -14,10 +15,11 @@ const catalog: PokemonCatalog = {
 };
 const players: GamePlayer[] = Array.from({ length: 5 }, (_, index) => ({ id: `p${index + 1}`, displayName: `Player ${index + 1}` }));
 
-function setup(impostorCount = 1) {
+function setup(impostorCount = 1, clueSeconds = 15) {
   let now = 1_000;
-  const context: GameContext = { players, pokemon: catalog, get now() { return now; }, random: () => 0 };
-  let state = pokemonImpostorGame.createInitialState({ generations: [4], impostorCount, clueSeconds: 30, voteSeconds: 20 }, context);
+  const contextPlayers = players.map((player) => ({ ...player }));
+  const context: GameContext = { players: contextPlayers, pokemon: catalog, get now() { return now; }, random: () => 0 };
+  let state = pokemonImpostorGame.createInitialState({ generations: [4], impostorCount, clueSeconds, voteSeconds: 20 }, context);
   state = pokemonImpostorGame.start(state, context);
   return { state, context, setNow(value: number) { now = value; } };
 }
@@ -37,7 +39,10 @@ function clue(state: PokemonImpostorState, playerId: string, text: string, conte
 
 function fillClues(state: PokemonImpostorState, context: GameContext): PokemonImpostorState {
   let next = state;
-  for (const id of state.aliveIds) next = clue(next, id, `Pista ${id}`, context).state;
+  while (next.phase === 'CLUE_PHASE') {
+    const id = next.clueOrder[next.currentClueTurnIndex]!;
+    next = clue(next, id, `Pista ${id}`, context).state;
+  }
   return next;
 }
 
@@ -88,7 +93,7 @@ describe('Pokémon Impostor', () => {
     expect(first.accepted).toBe(true);
     state = first.state;
     expect(pokemonImpostorGame.getPublicState(state, fixture.context).clues[1]?.p1?.text).toBe('Sale en Smash');
-    expect(clue(state, 'p1', 'Otra pista', fixture.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/bloqueada/) });
+    expect(clue(state, 'p1', 'Otra pista', fixture.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/turno|bloqueada/) });
     state = fillClues(state, fixture.context);
     expect(state.phase).toBe('VOTING');
     expect(state.roundEndsAt).toBe(fixture.context.now + 20_000);
@@ -96,19 +101,79 @@ describe('Pokémon Impostor', () => {
 
   it('counts Unicode clues by code points instead of bytes', () => {
     const fixture = setup();
-    const state = startClues(fixture);
-    expect(clue(state, 'p1', '⚡'.repeat(25), fixture.context).accepted).toBe(true);
+    let state = startClues(fixture);
+    const accepted = clue(state, 'p1', '⚡'.repeat(25), fixture.context);
+    expect(accepted.accepted).toBe(true);
+    state = accepted.state;
     expect(clue(state, 'p2', '⚡'.repeat(26), fixture.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/25/) });
+  });
+
+  it('uses an authoritative random order, one configurable timer per turn and advances immediately', () => {
+    const fixture = setup(1, 15);
+    let state = startClues(fixture);
+    expect(state.clueOrder).toEqual(['p1', 'p2', 'p3', 'p4', 'p5']);
+    expect(state.currentClueTurnIndex).toBe(0);
+    expect(state.roundEndsAt).toBe(fixture.context.now + 15_000);
+    expect(clue(state, 'p2', 'Fuera de turno', fixture.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/turno/) });
+    state = clue(state, 'p1', 'Primera pista', fixture.context).state;
+    expect(state.currentClueTurnIndex).toBe(1);
+    expect(state.clueOrder[state.currentClueTurnIndex]).toBe('p2');
+    expect(state.roundEndsAt).toBe(fixture.context.now + 15_000);
+    expect(pokemonImpostorGame.getPublicState(state, fixture.context).clues[1]?.p1?.text).toBe('Primera pista');
+  });
+
+  it('skips disconnected turns immediately and preserves clues accepted before disconnect', () => {
+    const fixture = setup();
+    let state = startClues(fixture);
+    state = clue(state, 'p1', 'Pista válida', fixture.context).state;
+    fixture.context.players[0]!.connected = false;
+    fixture.context.players[1]!.connected = false;
+    state = pokemonImpostorGame.handlePresenceChange!(state, fixture.context);
+    expect(state.clues[1]?.p1).toMatchObject({ text: 'Pista válida', status: 'SUBMITTED' });
+    expect(state.clues[1]?.p2).toMatchObject({ text: null, status: 'DISCONNECTED' });
+    expect(state.clueOrder[state.currentClueTurnIndex]).toBe('p3');
+  });
+
+  it('does not rewind a missed turn after reconnection and generates a different order next round', () => {
+    const fixture = setup();
+    let state = startClues(fixture);
+    fixture.context.players[0]!.connected = false;
+    state = pokemonImpostorGame.handlePresenceChange!(state, fixture.context);
+    expect(state.clueOrder[state.currentClueTurnIndex]).toBe('p2');
+    fixture.context.players[0]!.connected = true;
+    state = pokemonImpostorGame.handlePresenceChange!(state, fixture.context);
+    expect(state.clueOrder[state.currentClueTurnIndex]).toBe('p2');
+
+    const previousOrder = [...state.clueOrder];
+    state = { ...state, phase: 'ELIMINATION', winnerTeam: null, nextTransitionAt: fixture.context.now };
+    state = pokemonImpostorGame.handleTimeout(state, fixture.context);
+    expect(state.phase).toBe('CLUE_PHASE');
+    expect(state.clueOrder).not.toEqual(previousOrder);
+  });
+
+  it('lets a living impostor use one guess during any clue turn without leaking the secret', () => {
+    const fixture = setup();
+    const state = startClues(fixture);
+    expect(state.clueOrder[state.currentClueTurnIndex]).toBe('p1');
+    const wrong = pokemonImpostorGame.handleAction(state, 'p1', { type: 'GUESS_POKEMON', pokemonId: 'garchomp' }, fixture.context);
+    expect(wrong.accepted).toBe(true);
+    expect((pokemonImpostorGame.getPlayerState(wrong.state, 'p1', fixture.context) as PokemonImpostorPlayerState)).toMatchObject({ guessUsed: true, guessCorrect: false, secretPokemon: null });
+    expect(JSON.stringify(pokemonImpostorGame.getPublicState(wrong.state, fixture.context))).not.toMatch(/lucario|Lucario|448/);
+    expect(pokemonImpostorGame.handleAction(wrong.state, 'p1', { type: 'GUESS_POKEMON', pokemonId: 'lucario' }, fixture.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/intento/) });
+
+    const fresh = startClues(setup());
+    const correct = pokemonImpostorGame.handleAction(fresh, 'p1', { type: 'GUESS_POKEMON', pokemonId: 'lucario' }, fixture.context);
+    expect(correct.state).toMatchObject({ phase: 'GAME_RESULTS', winnerTeam: 'IMPOSTORS' });
   });
 
   it('moves to voting on clue timeout without eliminating non-responders', () => {
     const fixture = setup();
     let state = startClues(fixture);
     state = clue(state, 'p1', 'Algo azul', fixture.context).state;
-    state = timeout(fixture, state);
+    while (state.phase === 'CLUE_PHASE') state = timeout(fixture, state);
     expect(state.phase).toBe('VOTING');
     expect(state.aliveIds).toEqual(players.map((player) => player.id));
-    expect(state.clues[1]?.p2).toBeUndefined();
+    expect(state.clues[1]?.p2).toMatchObject({ text: null, status: 'TIMEOUT' });
   });
 
   it('rejects clues and votes received after their authoritative deadlines', () => {
@@ -117,6 +182,7 @@ describe('Pokémon Impostor', () => {
     fixture.setNow(state.roundEndsAt!);
     expect(clue(state, 'p1', 'Demasiado tarde', fixture.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/terminado/) });
     state = pokemonImpostorGame.handleTimeout(state, fixture.context);
+    while (state.phase === 'CLUE_PHASE') state = timeout(fixture, state);
     fixture.setNow(state.roundEndsAt!);
     expect(cast(state, 'p1', 'p2', fixture.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/terminado/) });
   });
@@ -132,6 +198,20 @@ describe('Pokémon Impostor', () => {
     const publicState = pokemonImpostorGame.getPublicState(state, fixture.context);
     expect(publicState.voteCompletedIds).toEqual(['p1']);
     expect(JSON.stringify(publicState)).not.toContain('"targetId":"p2"');
+  });
+
+  it('does not wait for disconnected voters and retains votes cast before disconnect', () => {
+    const fixture = setup();
+    let state = fillClues(startClues(fixture), fixture.context);
+    state = cast(state, 'p1', 'p2', fixture.context).state;
+    fixture.context.players[0]!.connected = false;
+    fixture.context.players[2]!.connected = false;
+    state = cast(state, 'p2', 'p1', fixture.context).state;
+    state = cast(state, 'p4', 'p1', fixture.context).state;
+    state = cast(state, 'p5', 'p1', fixture.context).state;
+    expect(state.phase).toBe('VOTE_RESULTS');
+    expect(state.lastVoteResult?.votes.p1?.targetId).toBe('p2');
+    expect(state.lastVoteResult?.votes.p3).toBeUndefined();
   });
 
   it('reveals votes after everyone votes and eliminates the unique maximum', () => {

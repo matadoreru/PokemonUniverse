@@ -8,7 +8,7 @@ The repository is split into three boundaries:
 
 ## State and authority
 
-The room state machine uses `LOBBY → game-owned phases → GAME_RESULTS → SESSION_RESULTS`. Round games use active/results phases; Pokémon Impostor uses `ROLE_REVEAL → CLUE_PHASE → VOTING → VOTE_RESULTS → ELIMINATION`. A game module owns every middle state. There are no combinations of gameplay booleans.
+The room state machine uses `LOBBY → game-owned phases → GAME_RESULTS → SESSION_RESULTS`. Round games use active/results phases; Pokémon Impostor uses `ROLE_REVEAL → ordered CLUE_PHASE turns → VOTING → VOTE_RESULTS → ELIMINATION`, while Type Duel owns its private type-selection, reveal and Pokémon-search phases. A game module owns every middle state. There are no combinations of gameplay booleans.
 
 `LiveRoom` owns only room lifecycle data: code, host, members, selected game id, per-game configurations, session progress and the optional active runtime. A `GameRuntime` captures the selected module, game id, validated configuration and opaque module state. Returning to the lobby discards that runtime and restores connected members to player status; it does not recreate the room or sockets.
 
@@ -22,15 +22,19 @@ The server stores an absolute deadline. Browsers only render an estimate using `
 
 The signed HttpOnly identity cookie is stable through reloads. A disconnected member remains reserved for 30 seconds and receives the current public snapshot plus their own private game projection after reconnecting. After grace expires, host ownership transfers to the oldest connected member.
 
-An active player is retained in the running engine to keep results deterministic. They cannot act while offline; a voting round waits for them until its server deadline and then records no response. Offline members are removed when returning to the lobby. Spectators and lobby members are removed as soon as grace expires.
+Presence has three room-level states: `CONNECTED`, `TEMPORARILY_DISCONNECTED` and `LEFT`. The shared game contract exposes one definition of an active, connected participant and a presence-change hook. Completion checks therefore wait only for connected required players; accepted votes, choices and clues remain immutable after their sender disconnects. Turn-based games skip an offline turn immediately, and Type Duel cancels an affected duel without awarding a free win.
+
+An active identity is retained in the running engine after grace expires when its historical state is needed for results, but it is no longer eligible for actions or future waits. A reconnect inside the 30-second grace restores the same private projection. Returning to the lobby keeps temporarily disconnected identities reserved until their own grace expires; definitive departures are removed. Host ownership transfers to the oldest connected member only after definitive departure, not on a transient socket loss.
 
 The shiny answer is absent from the public state during voting. Candidate images use opaque, round-scoped application URLs; the server resolves and caches the trusted upstream sprite without exposing a semantic `/shiny/` URL to clients. During the reveal, the public projection adds the correct option and per-player outcome for three seconds.
 
 ## Pokémon data
 
-`prisma/seed.ts` imports exactly National Dex entries 1–1025 from PokéAPI once, stores canonical metadata in PostgreSQL, and the server loads it into one indexed, immutable in-memory `PokemonCatalog` at boot. Pokédex Distance, Shiny Quiz and Pokémon Impostor consume this same catalog; there is no per-game Pokémon dataset. No game round calls an external service. `POKEMON_SYNC=true npm run db:seed` explicitly refreshes the catalog. The model already has localized names, types and room for enrichment.
+`prisma/seed.ts` imports exactly National Dex entries 1–1025 from PokéAPI once, including ordered types and all six base stats, and stores them in PostgreSQL. The server loads this into one indexed, immutable in-memory `PokemonCatalog` at boot. All five games consume the same catalog; there is no per-game Pokémon dataset and no game round or attempt calls an external service. The seed skips work once every entry is enriched, while `POKEMON_SYNC=true npm run db:seed` explicitly refreshes it.
 
 Pokémon Impostor never includes `secretPokemonId`, the target sprite or the role map in its public projection. Living impostors receive `secretPokemon: null`; innocents receive only the display name and sprite in their socket-specific projection. Eliminated players may receive the reveal because the application has no spectator-to-player communication channel.
+
+Type Duel follows the same boundary: public state reports only which participants have locked a type. Each participant receives only their own choice until both are committed, after which the game publishes the pair atomically. Exact type matching, cooldowns and the first winning attempt are resolved synchronously by the server.
 
 ## Security boundaries
 

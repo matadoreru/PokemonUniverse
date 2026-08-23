@@ -63,6 +63,17 @@ export interface PublicSelection extends RoundSelection {
   sprite: string;
 }
 
+export interface PublicRoundResult extends Omit<RoundResult, 'selections'> {
+  eligibleIds: string[];
+  targetPokemon: {
+    id: string;
+    name: string;
+    nationalDexNumber: number;
+    sprite: string;
+  };
+  selections: Record<string, PublicSelection>;
+}
+
 export interface PokedexDistancePublicState {
   gameId: 'pokedex-distance';
   phase: GamePhase;
@@ -77,7 +88,7 @@ export interface PokedexDistancePublicState {
   roundStartedAt: number | null;
   roundEndsAt: number | null;
   nextTransitionAt: number | null;
-  lastRound: RoundResult | null;
+  lastRound: PublicRoundResult | null;
   winnerId: string | null;
   results: GameResults | null;
 }

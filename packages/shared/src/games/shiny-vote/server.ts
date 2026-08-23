@@ -1,5 +1,5 @@
 import type { Pokemon } from '../../pokemon/types.js';
-import type { GameActionResult, GameContext, MiniGameModule } from '../contracts.js';
+import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { defaultShinyVoteConfig, shinyVoteConfigSchema, type ShinyVoteConfig } from './config.js';
 import { AUTHENTIC_SHINY_FILTER, fakeShinyFilter } from './filters.js';
 import { buildShinyResults, emptyShinyStats } from './rules.js';
@@ -167,6 +167,7 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
   handleAction(state, playerId, action, context): GameActionResult<ShinyVoteState> {
     if (action.type !== 'VOTE') return { state, accepted: false, error: 'Unknown action' };
     if (!state.playerIds.includes(playerId)) return { state, accepted: false, error: 'No participas en esta partida.' };
+    if (!isPlayerRequired(context, playerId)) return { state, accepted: false, error: 'No estás conectado como participante.' };
     if (state.phase !== 'ROUND_ACTIVE') return { state, accepted: false, error: 'La ronda no está en fase de votación.' };
     if (context.now >= (state.roundEndsAt ?? 0)) return { state: revealRound(state, context), accepted: false, error: 'La votación ha terminado.' };
     if (state.votes[playerId]) return { state, accepted: false, error: 'Tu voto ya está bloqueado.' };
@@ -176,7 +177,7 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
       ...state,
       votes: { ...state.votes, [playerId]: { optionId: action.optionId, votedAt: context.now } },
     };
-    if (next.playerIds.every((id) => Boolean(next.votes[id]))) next = revealRound(next, context);
+    if (allConnectedRequiredCompleted(context, next.playerIds, (id) => Boolean(next.votes[id]))) next = revealRound(next, context);
     return { state: next, accepted: true };
   },
 
@@ -186,6 +187,14 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
     }
     if (state.phase !== 'ROUND_ACTIVE' || context.now < (state.roundEndsAt ?? Infinity)) return state;
     return revealRound(state, context);
+  },
+
+  handlePresenceChange(state, context) {
+    if (state.phase === 'ROUND_ACTIVE'
+      && allConnectedRequiredCompleted(context, state.playerIds, (id) => Boolean(state.votes[id]))) {
+      return revealRound(state, context);
+    }
+    return state;
   },
 
   getPublicState(state, context) {
@@ -204,7 +213,9 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
       totalRounds: state.config.rounds,
       playerIds: state.playerIds,
       options,
-      votes: state.votes,
+      votes: reveal || state.config.showVotes ? state.votes : {},
+      votedPlayerIds: Object.keys(state.votes),
+      showVotes: state.config.showVotes,
       pendingPlayerIds: state.playerIds.filter((playerId) => !state.votes[playerId]),
       scores: state.scores,
       roundStartedAt: state.roundStartedAt,

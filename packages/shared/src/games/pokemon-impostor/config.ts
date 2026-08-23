@@ -13,6 +13,6 @@ export type PokemonImpostorConfig = z.infer<typeof pokemonImpostorConfigSchema>;
 export const defaultPokemonImpostorConfig: PokemonImpostorConfig = {
   generations: [...GENERATIONS],
   impostorCount: 1,
-  clueSeconds: 30,
+  clueSeconds: 15,
   voteSeconds: 20,
 };
