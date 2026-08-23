@@ -12,10 +12,13 @@ COPY apps/server/prisma ./apps/server/prisma
 # execute through QEMU. Sharp is the one runtime-native dependency: retain the
 # native musl package for ARM64 as well as the host package so the same cached
 # build output remains valid for both published Alpine images.
+# The second npm reification replaces @prisma/client while lifecycle scripts
+# are disabled, so regenerate the typed client before compiling.
 RUN npm ci \
     && npm install --no-save --package-lock=false --ignore-scripts --force \
       @img/sharp-linuxmusl-arm64@0.35.3 \
-      @img/sharp-libvips-linuxmusl-arm64@1.3.2
+      @img/sharp-libvips-linuxmusl-arm64@1.3.2 \
+    && npm run db:generate
 COPY packages/shared/src ./packages/shared/src
 COPY apps/server/src ./apps/server/src
 COPY apps/web/src ./apps/web/src
