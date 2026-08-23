@@ -1,4 +1,6 @@
-FROM node:22-alpine AS build
+# TypeScript/Vite output is architecture-independent. Building it on the native
+# runner avoids running npm, Prisma generation and Vite under ARM64 QEMU.
+FROM --platform=$BUILDPLATFORM node:22-alpine AS build
 ARG PU_COMMIT_SHA=""
 WORKDIR /app
 COPY package.json package-lock.json* tsconfig.base.json eslint.config.mjs ./

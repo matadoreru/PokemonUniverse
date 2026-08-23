@@ -2,27 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { color: #172033; background: #fff9ed; font-family: Nunito, system-ui, sans-serif; font-synthesis: none; }
+:root { color: #e8edf7; background: #090d18; color-scheme: dark; font-family: Nunito, system-ui, sans-serif; font-synthesis: none; }
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; min-height: 100vh; background:
-  radial-gradient(circle at 12% 12%, rgba(73,198,229,.18), transparent 24rem),
-  radial-gradient(circle at 88% 5%, rgba(255,209,102,.25), transparent 26rem), #fff9ed; }
+  radial-gradient(circle at 12% 12%, rgba(82,199,232,.12), transparent 26rem),
+  radial-gradient(circle at 88% 5%, rgba(240,191,84,.09), transparent 28rem), #090d18; }
 button, input, select { font: inherit; }
 button { -webkit-tap-highlight-color: transparent; }
 
 @layer components {
-  .card { @apply rounded-[2rem] border-2 border-ink/10 bg-white/90 p-5 shadow-card backdrop-blur md:p-7; }
+  .card { @apply rounded-[2rem] border-2 border-ink/10 bg-surface/95 p-5 shadow-card backdrop-blur md:p-7; }
   .btn { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border-2 border-ink px-5 py-2.5 font-extrabold transition hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50; }
-  .btn-primary { @apply btn bg-berry text-white shadow-[0_5px_0_#172033] active:shadow-none; }
-  .btn-secondary { @apply btn bg-electric text-ink shadow-[0_5px_0_#172033] active:shadow-none; }
-  .btn-ghost { @apply btn border-ink/15 bg-white hover:border-ink/40; }
-  .field { @apply w-full rounded-2xl border-2 border-ink/15 bg-white px-4 py-3 font-bold outline-none transition placeholder:text-ink/35 focus:border-aqua focus:ring-4 focus:ring-aqua/15; }
+  .btn-primary { @apply btn bg-berry text-white shadow-[0_5px_0_#050811] active:shadow-none; }
+  .btn-secondary { @apply btn bg-electric text-night shadow-[0_5px_0_#050811] active:shadow-none; }
+  .btn-ghost { @apply btn border-ink/15 bg-surface-raised hover:border-ink/40; }
+  .field { @apply w-full rounded-2xl border-2 border-ink/15 bg-surface-raised px-4 py-3 font-bold outline-none transition placeholder:text-ink/35 focus:border-aqua focus:ring-4 focus:ring-aqua/15; }
   .label { @apply mb-1.5 block text-sm font-extrabold uppercase tracking-wider text-ink/55; }
   .chip { @apply inline-flex items-center rounded-full bg-ink/5 px-3 py-1 text-sm font-extrabold; }
 }
 
-.pokeball-mark { position: relative; border-radius: 9999px; background: linear-gradient(#ef476f 0 44%, #172033 44% 56%, white 56%); }
-.pokeball-mark::after { content: ''; position: absolute; inset: 32%; border: 3px solid #172033; border-radius: 50%; background: #fff9ed; }
+.pokeball-mark { position: relative; border-radius: 9999px; background: linear-gradient(#ff5c82 0 44%, #050811 44% 56%, #e8edf7 56%); }
+.pokeball-mark::after { content: ''; position: absolute; inset: 32%; border: 3px solid #050811; border-radius: 50%; background: #141b2b; }
 .timer-pulse { animation: timer-pulse .7s ease-in-out infinite alternate; }
 @keyframes timer-pulse { to { transform: scale(1.06); color: #ef476f; } }
 .reveal-pop { animation: reveal-pop .45s cubic-bezier(.2,.9,.3,1.25); }
