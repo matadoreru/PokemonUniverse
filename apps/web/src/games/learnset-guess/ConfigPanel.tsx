@@ -15,8 +15,8 @@ export function LearnsetGuessConfigPanel({ config, disabled, onChange }: { confi
       <Toggle icon={value.showLevels ? Eye : EyeOff} label="Mostrar niveles" description="Indica el nivel exacto de cada movimiento." active={value.showLevels} onClick={() => void onChange({ ...value, showLevels: !value.showLevels })} />
       <Toggle icon={value.showEvolution ? Eye : EyeOff} label="Información evolutiva" description="Muestra únicamente la etapa, nunca nombres." active={value.showEvolution} onClick={() => void onChange({ ...value, showEvolution: !value.showEvolution })} />
     </div>
-    <div className="grid gap-4 md:grid-cols-2"><ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} /><ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => `${rounds} rondas`} onCommit={(rounds) => onChange({ ...value, rounds })} /></div>
-    <p className="text-sm font-bold text-ink/45">Nuevas pistas cada 3 segundos · cooldown de 1 segundo tras un fallo.</p>
+    <div className="grid gap-4 md:grid-cols-2"><ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={120} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} /><ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => `${rounds} rondas`} onCommit={(rounds) => onChange({ ...value, rounds })} /></div>
+    <p className="text-sm font-bold text-ink/45">Nuevas pistas cada 7 segundos · cooldown de 1 segundo tras un fallo.</p>
   </fieldset>;
 }
 

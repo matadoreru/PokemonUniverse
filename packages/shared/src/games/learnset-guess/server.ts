@@ -5,7 +5,7 @@ import { buildLearnsetResults, emptyLearnsetStats, learnsetPoints } from './rule
 import { learnsetGuessActionSchema, type LearnsetGuessAction, type LearnsetGuessPlayerState, type LearnsetGuessPublicState, type LearnsetGuessState, type LearnsetMoveGroup, type LearnsetMoveHint } from './types.js';
 
 export const LEARNSET_INITIAL_MAX_LEVEL = 15;
-export const LEARNSET_HINT_INTERVAL_MS = 3_000;
+export const LEARNSET_HINT_INTERVAL_MS = 7_000;
 export const LEARNSET_GUESS_COOLDOWN_MS = 1_000;
 export const LEARNSET_RESULT_DURATION_MS = 4_000;
 
@@ -53,7 +53,8 @@ export function evolutionHint(stage: number, stages: number): string {
 }
 
 function hint(entry: ResolvedLevelUpMove, showLevels: boolean): LearnsetMoveHint {
-  return { moveId: entry.moveId, name: entry.move.name, level: showLevels ? entry.level : null, type: entry.move.type, category: entry.move.category };
+  const spanishName = entry.move.names?.es?.trim();
+  return { moveId: entry.moveId, name: spanishName || entry.move.name, level: showLevels ? entry.level : null, type: entry.move.type, category: entry.move.category };
 }
 
 function groupsForState(state: LearnsetGuessState): ResolvedLevelUpMove[][] { return groupLearnset(state.learnset); }

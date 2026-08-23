@@ -62,6 +62,13 @@ describe('Learnset Guess', () => {
     expect(view.visibleGroups.flatMap((group) => group.moves).some((entry) => (entry.level ?? 0) > 15)).toBe(false);
   });
 
+  it('uses the Spanish move name when the catalog provides one', () => {
+    const spanishCatalog: LearnsetPokemonCatalog = { ...catalog, levelUpMoves: (id, generation) => (catalog.levelUpMoves(id, generation) as ResolvedLevelUpMove[]).map((entry) => ({ ...entry, move: { ...entry.move, names: { es: entry.move.name === 'Growl' ? 'Gruñido' : entry.move.name } } })) };
+    const context = { players: [{ id: 'p1', displayName: 'Pedro' }, { id: 'p2', displayName: 'Ana' }], pokemon: spanishCatalog, now: 1_000, random: () => 0 } satisfies GameContext;
+    let state = learnsetGuessGame.createInitialState({ ...defaultLearnsetGuessConfig, generations: [1], rounds: 1 }, context); state = learnsetGuessGame.start(state, context);
+    expect(learnsetGuessGame.getPublicState(state, context).visibleGroups.flatMap((group) => group.moves).some((entry) => entry.name === 'Gruñido')).toBe(true);
+  });
+
   it('reveals one higher-level block every centralized interval', () => {
     const fixture = setup(); fixture.setNow(fixture.state.nextTransitionAt!); const state = learnsetGuessGame.handleTimeout(fixture.state, fixture.context); const view = learnsetGuessGame.getPublicState(state, fixture.context);
     expect(state.revealedExtraGroups).toBe(1); expect(view.visibleGroups.at(-1)?.moves[0]?.level).toBe(18); expect(state.nextTransitionAt).toBe(fixture.context.now + LEARNSET_HINT_INTERVAL_MS);
