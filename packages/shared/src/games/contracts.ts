@@ -27,14 +27,22 @@ export interface GameActionResult<TState> {
   error?: string;
 }
 
+export interface MiniGameManifest {
+  id: string;
+  name: string;
+  description: string;
+  minPlayers: number;
+  maxPlayers?: number;
+}
+
+export interface GameAssetRequest {
+  assetToken: string;
+  roundNumber: number;
+  assetId: string;
+}
+
 export interface MiniGameModule<TConfig, TState, TAction, TPublicState> {
-  readonly manifest: {
-    id: string;
-    name: string;
-    description: string;
-    minPlayers: number;
-    maxPlayers?: number;
-  };
+  readonly manifest: MiniGameManifest;
   readonly configSchema: z.ZodType<TConfig>;
   readonly actionSchema: z.ZodType<TAction>;
   readonly defaultConfig: TConfig;
@@ -44,6 +52,7 @@ export interface MiniGameModule<TConfig, TState, TAction, TPublicState> {
   handleTimeout(state: TState, context: GameContext): TState;
   getPublicState(state: TState, context: GameContext): TPublicState;
   getPlayerState(state: TState, playerId: string, context: GameContext): unknown;
+  resolveAsset?(state: TState, request: GameAssetRequest, context: GameContext): string | null;
   isFinished(state: TState): boolean;
   getResults(state: TState): GameResults;
 }

@@ -10,6 +10,10 @@ The repository is split into three boundaries:
 
 The room state machine uses `LOBBY → GAME_STARTING → ROUND_ACTIVE ↔ ROUND_RESULTS / TIEBREAKER_ACTIVE → GAME_RESULTS → SESSION_RESULTS`. A game module owns the middle states. There are no combinations of gameplay booleans.
 
+`LiveRoom` owns only room lifecycle data: code, host, members, selected game id, per-game configurations, session progress and the optional active runtime. A `GameRuntime` captures the selected module, game id, validated configuration and opaque module state. Returning to the lobby discards that runtime and restores connected members to player status; it does not recreate the room or sockets.
+
+The shared `GameRegistry` is additive and rejects duplicate ids. Its manifests are included in every public room view, so the lobby selector is driven by the same authoritative list used by the server. Selecting another manifest switches to that game's preserved configuration; starting a game instantiates only that module. Optional module facilities such as private asset resolution remain behind the same contract rather than adding game-specific branches to the room coordinator.
+
 Actions are handled synchronously in the Node event loop with no `await` before mutation. Consequently, concurrent votes in one room are serialized, a player's first valid vote is final, and every accepted mutation is broadcast as one authoritative room snapshot. For horizontal scale, `InMemoryRoomStore` is the intentional replacement boundary: move rooms/timers to Redis and run each action under a per-room distributed lock or atomic Lua operation. Socket.IO's Redis adapter then distributes events.
 
 The server stores an absolute deadline. Browsers only render an estimate using `serverNow`; the server timer calls `handleTimeout` and owns the transition.
@@ -24,7 +28,7 @@ The shiny answer is absent from the public state during voting. Candidate images
 
 ## Pokémon data
 
-`prisma/seed.ts` imports exactly National Dex entries 1–1025 from PokéAPI once, stores canonical metadata in PostgreSQL, and the server loads it into an indexed, immutable in-memory catalog at boot. No game round calls an external service. `POKEMON_SYNC=true npm run db:seed` explicitly refreshes the catalog. The model already has localized names, types and room for enrichment.
+`prisma/seed.ts` imports exactly National Dex entries 1–1025 from PokéAPI once, stores canonical metadata in PostgreSQL, and the server loads it into one indexed, immutable in-memory `PokemonCatalog` at boot. Pokédex Distance and Shiny Quiz both consume this catalog; there is no per-game Pokémon dataset. No game round calls an external service. `POKEMON_SYNC=true npm run db:seed` explicitly refreshes the catalog. The model already has localized names, types and room for enrichment.
 
 ## Security boundaries
 

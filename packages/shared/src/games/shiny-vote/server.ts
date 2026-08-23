@@ -15,7 +15,7 @@ import {
 const REVEAL_DURATION_MS = 3_000;
 const manifest = {
   id: 'shiny-vote',
-  name: '¿Cuál es el shiny?',
+  name: 'Shiny Quiz',
   description: 'Encuentra el shiny verdadero entre cuatro candidatos. Los votos se ven en directo.',
   minPlayers: 1,
 } as const;
@@ -193,6 +193,10 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
 
   getPlayerState(state, playerId) {
     return { canVote: state.phase === 'ROUND_ACTIVE' && state.playerIds.includes(playerId) && !state.votes[playerId], vote: state.votes[playerId] ?? null };
+  },
+  resolveAsset(state, request) {
+    if (state.assetToken !== request.assetToken || state.roundNumber !== request.roundNumber) return null;
+    return state.options.find((option) => option.id === request.assetId)?.sprite ?? null;
   },
   isFinished(state) { return state.phase === 'GAME_RESULTS'; },
   getResults(state) { return buildShinyResults(state); },

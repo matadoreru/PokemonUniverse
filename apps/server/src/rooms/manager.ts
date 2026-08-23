@@ -61,7 +61,8 @@ export class RoomManager {
     const maxPlayers = Math.min(desiredMax, 100);
     const room: LiveRoom = {
       code, hostId: identity.id, phase: 'LOBBY', members: new Map(), maxPlayers,
-      selectedGameId: module.manifest.id, gameConfig: module.defaultConfig,
+      selectedGameId: module.manifest.id,
+      gameConfigs: new Map(gameRegistry.list().map((game) => [game.manifest.id, game.configSchema.parse(game.defaultConfig)])),
       sessionMode: { type: 'INFINITE' }, gamesPlayed: 0, game: null, transitionTimer: null,
     };
     room.members.set(identity.id, this.member(identity, socket.id, 'PLAYER'));
@@ -126,12 +127,16 @@ export class RoomManager {
   private selectGame(playerId: string, gameId: string): Record<string, never> {
     const room = this.hostRoom(playerId); this.assertLobby(room);
     const module = gameRegistry.get(gameId); if (!module) throw new Error('Unknown game');
-    room.selectedGameId = gameId; room.gameConfig = module.defaultConfig; this.broadcast(room); return {};
+    room.selectedGameId = gameId;
+    if (!room.gameConfigs.has(gameId)) room.gameConfigs.set(gameId, module.configSchema.parse(module.defaultConfig));
+    this.broadcast(room); return {};
   }
 
   private updateConfig(playerId: string, config: unknown): Record<string, never> {
     const room = this.hostRoom(playerId); this.assertLobby(room);
-    const module = gameRegistry.get(room.selectedGameId)!; room.gameConfig = module.configSchema.parse(config); this.broadcast(room); return {};
+    const module = gameRegistry.get(room.selectedGameId)!;
+    room.gameConfigs.set(room.selectedGameId, module.configSchema.parse(config));
+    this.broadcast(room); return {};
   }
 
   private updateSession(playerId: string, mode: unknown): Record<string, never> {
@@ -153,10 +158,11 @@ export class RoomManager {
     const module = gameRegistry.get(room.selectedGameId)!;
     if (players.length < module.manifest.minPlayers) throw new Error(`Se necesitan al menos ${module.manifest.minPlayers} jugadores.`);
     const context = { players, pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code };
-    let state = module.createInitialState(module.configSchema.parse(room.gameConfig), context);
+    const config = module.configSchema.parse(room.gameConfigs.get(room.selectedGameId));
+    let state = module.createInitialState(config, context);
     state = module.start(state, context);
     for (const member of room.members.values()) member.role = 'PLAYER';
-    room.game = { module, state, startedAt: context.now, resultsApplied: false };
+    room.game = { gameId: module.manifest.id, module, config, state, startedAt: context.now, resultsApplied: false };
     room.phase = state.phase; this.syncAndBroadcast(room); return {};
   }
 
@@ -198,7 +204,7 @@ export class RoomManager {
       : mode.type === 'POINT_TARGET' ? [...room.members.values()].some((member) => member.sessionPoints >= mode.target)
       : false;
     room.phase = sessionFinished ? 'SESSION_RESULTS' : 'GAME_RESULTS';
-    void persistGameResults(room, results, game.startedAt).catch((error) => console.error('Failed to persist game results', error));
+    void persistGameResults(room, results, game.startedAt, game.gameId, game.config).catch((error) => console.error('Failed to persist game results', error));
   }
 
   private returnLobby(playerId: string): Record<string, never> {
@@ -231,12 +237,11 @@ export class RoomManager {
     return { players: [...room.members.values()].map((member) => ({ id: member.identity.id, displayName: member.identity.displayName })), pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code };
   }
 
-  shinyOptionSprite(code: string, assetToken: string, roundNumber: number, optionId: string): string | null {
+  gameAsset(code: string, assetToken: string, roundNumber: number, assetId: string): string | null {
     const room = this.store.get(code);
-    const state = room?.game?.state;
-    if (!room || room.selectedGameId !== 'shiny-vote' || !state || state.assetToken !== assetToken || state.roundNumber !== roundNumber) return null;
-    const option = state.options?.find((entry: { id: string }) => entry.id === optionId);
-    return typeof option?.sprite === 'string' ? option.sprite : null;
+    const game = room?.game;
+    if (!room || !game?.module.resolveAsset) return null;
+    return game.module.resolveAsset(game.state, { assetToken, roundNumber, assetId }, this.context(room));
   }
 
   private view(room: LiveRoom): RoomView {
@@ -246,7 +251,8 @@ export class RoomManager {
         id: member.identity.id, displayName: member.identity.displayName, avatarSeed: member.avatarSeed,
         connected: member.connected, role: member.role, isHost: member.identity.id === room.hostId, sessionPoints: member.sessionPoints,
       })),
-      selectedGameId: room.selectedGameId, gameConfig: room.gameConfig, sessionMode: room.sessionMode,
+      availableGames: gameRegistry.manifests(),
+      selectedGameId: room.selectedGameId, selectedGameConfig: room.gameConfigs.get(room.selectedGameId), sessionMode: room.sessionMode,
       gamesPlayed: room.gamesPlayed,
       game: room.game ? room.game.module.getPublicState(room.game.state, this.context(room)) : null,
       serverNow: Date.now(),

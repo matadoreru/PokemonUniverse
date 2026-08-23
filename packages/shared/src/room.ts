@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { MiniGameManifest } from './games/contracts.js';
 
 export type RoomPhase = 'LOBBY' | 'GAME_STARTING' | 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'TIEBREAKER_ACTIVE' | 'GAME_RESULTS' | 'SESSION_RESULTS';
 export type MemberRole = 'PLAYER' | 'SPECTATOR';
@@ -24,8 +25,9 @@ export interface RoomView {
   hostId: string;
   maxPlayers: number;
   members: RoomMemberView[];
+  availableGames: MiniGameManifest[];
   selectedGameId: string;
-  gameConfig: unknown;
+  selectedGameConfig: unknown;
   sessionMode: SessionMode;
   gamesPlayed: number;
   game: unknown | null;

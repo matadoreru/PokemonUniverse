@@ -55,7 +55,7 @@ io.use(async (socket, next) => {
 
 const catalog = await loadPokemonCatalog();
 const rooms = new RoomManager(io, catalog);
-registerGameImageResolver((code, assetToken, roundNumber, optionId) => rooms.shinyOptionSprite(code, assetToken, roundNumber, optionId));
+registerGameImageResolver((code, assetToken, roundNumber, optionId) => rooms.gameAsset(code, assetToken, roundNumber, optionId));
 io.on('connection', (socket) => {
   const recentEvents: number[] = [];
   socket.use((_event, next) => {

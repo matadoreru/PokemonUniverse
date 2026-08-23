@@ -21,18 +21,23 @@ export interface MiniGameClientModule {
 
 class ClientGameRegistry {
   private readonly modules = new Map<string, MiniGameClientModule>();
-  register(module: MiniGameClientModule): this { this.modules.set(module.id, module); return this; }
+  register(module: MiniGameClientModule): this {
+    if (this.modules.has(module.id)) throw new Error(`Duplicate client game id: ${module.id}`);
+    this.modules.set(module.id, module);
+    return this;
+  }
   get(id: string): MiniGameClientModule {
     const module = this.modules.get(id); if (!module) throw new Error(`No client registered for game ${id}`); return module;
   }
+  list(): MiniGameClientModule[] { return [...this.modules.values()]; }
 }
 
 export const clientGameRegistry = new ClientGameRegistry().register({
-  id: 'shiny-vote', name: '¿Cuál es el shiny?',
-  description: 'Encuentra el shiny real. Verás en directo qué opción elige cada entrenador.',
-  ConfigPanel: ShinyVoteConfigPanel, ActiveGame: ShinyVoteGame, Results: ShinyVoteResults,
-}).register({
   id: 'pokedex-distance', name: 'Pokédex Distance',
   description: 'Acércate al número objetivo. La elección más lejana queda fuera.',
   ConfigPanel: PokedexDistanceConfigPanel, ActiveGame: PokedexDistanceGame, Results: GameResults,
+}).register({
+  id: 'shiny-vote', name: 'Shiny Quiz',
+  description: 'Encuentra el shiny real. Verás en directo qué opción elige cada entrenador.',
+  ConfigPanel: ShinyVoteConfigPanel, ActiveGame: ShinyVoteGame, Results: ShinyVoteResults,
 });

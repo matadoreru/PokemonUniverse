@@ -16,15 +16,15 @@ function mergeMetrics(previous: unknown, current: Record<string, number>): Prism
   return merged;
 }
 
-export async function persistGameResults(room: LiveRoom, results: GameResults, startedAt: number): Promise<void> {
+export async function persistGameResults(room: LiveRoom, results: GameResults, startedAt: number, gameId: string, config: unknown): Promise<void> {
   const standings = results.standings.map((standing) => {
     const member = room.members.get(standing.playerId)!;
     return { standing, member };
   });
   await prisma.$transaction(async (tx) => {
     const history = await tx.gameHistory.create({ data: {
-      roomCode: room.code, gameId: room.selectedGameId, playerCount: standings.length,
-      config: room.gameConfig as Prisma.InputJsonValue, startedAt: new Date(startedAt),
+      roomCode: room.code, gameId, playerCount: standings.length,
+      config: config as Prisma.InputJsonValue, startedAt: new Date(startedAt),
     } });
     for (const { standing, member } of standings) {
       const userId = member.identity.kind === 'USER' ? member.identity.id : null;
@@ -38,9 +38,9 @@ export async function persistGameResults(room: LiveRoom, results: GameResults, s
       }, update: {
         gamesPlayed: { increment: 1 }, gamesWon: { increment: standing.playerId === results.winnerId ? 1 : 0 }, totalPoints: { increment: standing.points },
       } });
-      const existing = await tx.userGameStats.findUnique({ where: { userId_gameId: { userId, gameId: room.selectedGameId } } });
-      await tx.userGameStats.upsert({ where: { userId_gameId: { userId, gameId: room.selectedGameId } }, create: {
-        userId, gameId: room.selectedGameId, gamesPlayed: 1, gamesWon: standing.playerId === results.winnerId ? 1 : 0,
+      const existing = await tx.userGameStats.findUnique({ where: { userId_gameId: { userId, gameId } } });
+      await tx.userGameStats.upsert({ where: { userId_gameId: { userId, gameId } }, create: {
+        userId, gameId, gamesPlayed: 1, gamesWon: standing.playerId === results.winnerId ? 1 : 0,
         metrics: mergeMetrics(null, standing.stats),
       }, update: {
         gamesPlayed: { increment: 1 }, gamesWon: { increment: standing.playerId === results.winnerId ? 1 : 0 },

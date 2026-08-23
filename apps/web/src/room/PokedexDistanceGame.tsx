@@ -13,10 +13,10 @@ function useCountdown(deadline: number | null, serverOffset: number): number {
 
 export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
   const game = room.game as PokedexDistancePublicState;
-  const generations = (room.gameConfig as { generations: number[] }).generations;
+  const generations = (room.selectedGameConfig as { generations: number[] }).generations;
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const serverOffset = useMemo(() => room.serverNow - Date.now(), [room.serverNow]);
-  const remainingMs = useCountdown(game.roundEndsAt, serverOffset); const totalMs = (room.gameConfig as { roundSeconds: number }).roundSeconds * 1_000;
+  const remainingMs = useCountdown(game.roundEndsAt, serverOffset); const totalMs = (room.selectedGameConfig as { roundSeconds: number }).roundSeconds * 1_000;
   const remaining = Math.ceil(remainingMs / 1_000); const progress = Math.min(100, remainingMs / totalMs * 100);
   const member = room.members.find((item) => item.id === selfId);
   const activePhase = game.phase === 'ROUND_ACTIVE' || game.phase === 'TIEBREAKER_ACTIVE';

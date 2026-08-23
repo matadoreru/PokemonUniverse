@@ -1,6 +1,6 @@
 # Pokémon Universe
 
-Real-time multiplayer minigame hub. The default game is **¿Cuál es el shiny?**: four candidates, public server-authoritative voting, a three-second reveal and cumulative scoring. **Pokédex Distance** remains available through the game registry.
+Real-time multiplayer minigame hub with **Pokédex Distance** and **Shiny Quiz** available in every room. The host can switch games in the lobby without recreating the room; members, connections and session scores remain in place while each game keeps its own validated configuration.
 
 ## Run local code with Docker
 
@@ -46,7 +46,7 @@ See [docs/architecture.md](docs/architecture.md) for concurrency, reconnect and 
 
 ## Add another minigame
 
-Create `packages/shared/src/games/<id>/` with config/action schemas, state/action types, pure rules and a `MiniGameModule` implementation. Export it, then add one `.register(newGame)` call in the shared `games/registry.ts`. Add its configuration, active-game and results components to the declarative client registry at `apps/web/src/games/registry.ts`. The room coordinator discovers its manifest and drives it through the common contract; central auth, rooms, host, scoring, sessions, persistence, reconnection and spectators require no changes.
+Create `packages/shared/src/games/<id>/` with config/action schemas, state/action types, pure rules and a `MiniGameModule` implementation. Export it, then add one `.register(newGame)` call in the shared `games/registry.ts`. Registration rejects duplicate ids instead of replacing modules. Add its configuration, active-game and results components to the declarative client registry at `apps/web/src/games/registry.ts`. The room coordinator discovers its manifest, creates an independent configuration slot and drives it through the common contract; central auth, rooms, host, scoring, sessions, persistence, reconnection and spectators require no changes.
 
 ## Current production boundary
 

@@ -13,7 +13,9 @@ export interface RoomMember {
 }
 
 export interface GameRuntime {
+  gameId: string;
   module: RegisteredGame;
+  config: unknown;
   state: any;
   startedAt: number;
   resultsApplied: boolean;
@@ -26,7 +28,7 @@ export interface LiveRoom {
   members: Map<string, RoomMember>;
   maxPlayers: number;
   selectedGameId: string;
-  gameConfig: unknown;
+  gameConfigs: Map<string, unknown>;
   sessionMode: SessionMode;
   gamesPlayed: number;
   game: GameRuntime | null;
