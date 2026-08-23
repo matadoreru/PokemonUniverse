@@ -1,6 +1,7 @@
 import type { PokedexDistancePublicState, RoomMemberView } from '@pokemon-universe/shared';
 import { ArrowRightLeft, Crown, Eye, MoreVertical, Star, UserMinus, UserRoundCog, WifiOff } from 'lucide-react';
 import { memo } from 'react';
+import { Avatar } from '../components/Avatar';
 
 interface Props {
   members: RoomMemberView[];
@@ -18,17 +19,12 @@ const roomRoleCopy = {
   MEMBER: { label: 'Miembro', icon: null, className: 'text-ink/40' },
 } as const;
 
-const presenceCopy = {
-  CONNECTED: { label: 'Conectado', dot: 'bg-leaf' },
-  TEMPORARILY_DISCONNECTED: { label: 'Reconectando', dot: 'animate-pulse bg-electric' },
-  LEFT: { label: 'Desconectado', dot: 'bg-ink/25' },
-} as const;
-
 function sameMembers(left: RoomMemberView[], right: RoomMemberView[]): boolean {
   return left.length === right.length && left.every((member, index) => {
     const other = right[index];
     return other && member.id === other.id && member.displayName === other.displayName && member.roomRole === other.roomRole
-      && member.presence === other.presence && member.sessionPoints === other.sessionPoints && member.role === other.role;
+      && member.presence === other.presence && member.sessionPoints === other.sessionPoints && member.role === other.role
+      && JSON.stringify(member.avatar) === JSON.stringify(other.avatar);
   });
 }
 
@@ -38,15 +34,11 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
       {members.map((member) => {
         const role = roomRoleCopy[member.roomRole];
         const RoleIcon = role.icon;
-        const presence = presenceCopy[member.presence];
         const manageable = canManage && member.roomRole !== 'HOST' && member.id !== selfId;
         const selection = game?.selections[member.id];
         return (
           <div key={member.id} className={`relative flex min-h-16 items-center gap-3 rounded-2xl border-2 p-2.5 ${member.presence === 'LEFT' ? 'border-ink/5 bg-ink/[.03] opacity-60' : 'border-ink/10 bg-surface-raised'}`}>
-            <div className="relative grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-aqua/70 to-electric/80 font-display font-bold text-night">
-              {member.displayName.slice(0, 1).toUpperCase()}
-              <span className={`absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full border-2 border-surface-raised ${presence.dot}`} title={presence.label} aria-label={presence.label} />
-            </div>
+            <Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} size="md" />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5 font-extrabold">
                 <span className="truncate">{member.displayName}</span>

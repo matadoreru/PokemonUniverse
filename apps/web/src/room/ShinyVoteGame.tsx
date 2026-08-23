@@ -1,6 +1,7 @@
 import type { RoomMemberView, RoomView, ShinyOption, ShinyOptionId, ShinyVotePlayerState, ShinyVotePublicState } from '@pokemon-universe/shared';
 import { Check, Clock3, Eye, LoaderCircle, Sparkles, Trophy, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { Avatar } from '../components/Avatar';
 
 const API_ORIGIN = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
 const imageSource = (source: string) => source.startsWith('/api/') ? `${API_ORIGIN}${source}` : source;
@@ -13,7 +14,7 @@ function useCountdown(deadline: number | null, serverOffset: number): number {
 
 function PlayerPill({ member, result }: { member: RoomMemberView; result?: 'correct' | 'wrong' | undefined }) {
   return <span className={`inline-flex max-w-full items-center gap-1.5 rounded-full border px-2 py-1 text-xs font-extrabold ${result === 'correct' ? 'border-leaf/40 bg-leaf/15 text-leaf' : result === 'wrong' ? 'border-berry/30 bg-berry/10 text-berry' : 'border-ink/10 bg-surface-raised/90'}`}>
-    <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-gradient-to-br from-aqua/70 to-electric/80 text-[10px] text-night">{member.displayName.slice(0, 1).toUpperCase()}</span>
+    <Avatar name={member.displayName} avatar={member.avatar} size="xs" />
     <span className="truncate">{member.displayName}</span>
     {result === 'correct' && <span>✓ +1</span>}{result === 'wrong' && <span>✗</span>}
   </span>;

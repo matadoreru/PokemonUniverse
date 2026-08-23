@@ -1,7 +1,8 @@
-import type { Pokemon, PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared';
+import type { Pokemon, PokedexDistancePlayerState, PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared';
 import { AlertTriangle, Clock3, Crosshair, Eye, Target, Trophy, UserX } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { api } from '../lib/api';
+import { Avatar } from '../components/Avatar';
 import { PlayerList } from './PlayerList';
 import { PokemonSelector } from './PokemonSelector';
 
@@ -13,6 +14,7 @@ function useCountdown(deadline: number | null, serverOffset: number): number {
 
 export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
   const game = room.game as PokedexDistancePublicState;
+  const playerState = room.gamePlayerState as PokedexDistancePlayerState | null;
   const generations = (room.selectedGameConfig as { generations: number[] }).generations;
   const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const serverOffset = useMemo(() => room.serverNow - Date.now(), [room.serverNow]);
@@ -37,9 +39,9 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
         <div className="text-center sm:text-left"><span className="label">Pokémon objetivo</span><h3 className="font-display text-3xl font-bold">{game.lastRound.targetPokemon.name}</h3><p className="mt-1 font-display text-2xl font-bold text-berry">#{String(game.lastRound.targetPokemon.nationalDexNumber).padStart(3, '0')}</p></div>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{game.lastRound.eligibleIds.map((playerId) => {
-        const selection = game.lastRound!.selections[playerId]; const eliminated = game.lastRound!.eliminatedIds.includes(playerId); const tied = game.lastRound!.tiedIds.includes(playerId); const exact = selection?.distance === 0; const displayName = room.members.find((item) => item.id === playerId)?.displayName ?? playerId;
+        const selection = game.lastRound!.selections[playerId]; const eliminated = game.lastRound!.eliminatedIds.includes(playerId); const tied = game.lastRound!.tiedIds.includes(playerId); const exact = selection?.distance === 0; const resultMember = room.members.find((item) => item.id === playerId); const displayName = resultMember?.displayName ?? playerId;
         return <article key={playerId} className={`rounded-2xl border-2 p-4 ${eliminated ? 'border-berry bg-berry/10' : tied ? 'border-electric bg-electric/10' : exact ? 'border-leaf bg-leaf/10' : 'border-ink/10 bg-surface-raised'}`}>
-          <div className="mb-3 flex items-center justify-between gap-2"><strong className="truncate font-display text-xl">{displayName}</strong>{eliminated && <span className="chip bg-berry/15 text-berry"><UserX size={15} /> Eliminado</span>}{tied && <span className="chip bg-electric/20 text-electric"><AlertTriangle size={15} /> Empate</span>}</div>
+          <div className="mb-3 flex items-center gap-2"><Avatar name={displayName} avatar={resultMember?.avatar} size="sm" /><strong className="min-w-0 flex-1 truncate font-display text-xl">{displayName}</strong>{eliminated && <span className="chip bg-berry/15 text-berry"><UserX size={15} /> Eliminado</span>}{tied && <span className="chip bg-electric/20 text-electric"><AlertTriangle size={15} /> Empate</span>}</div>
           {selection ? <><div className="flex items-center gap-3"><img src={selection.sprite} alt={selection.pokemonName} className="h-20 w-20 object-contain [image-rendering:pixelated]" /><div><strong className="block font-display text-lg">{selection.pokemonName}</strong><span className="font-extrabold text-ink/55">#{String(selection.dexNumber).padStart(3, '0')}</span></div></div><div className="mt-3 rounded-xl bg-night/40 px-3 py-2 font-extrabold">Distancia: <span className={exact ? 'text-leaf' : 'text-aqua'}>{selection.distance}</span></div>{exact && <p className="mt-2 flex items-center gap-2 font-display font-bold text-leaf"><Crosshair size={18} /> EXACT HIT</p>}</> : <div className="grid min-h-28 place-items-center rounded-xl bg-night/30 text-center"><div><UserX className="mx-auto mb-2 text-berry" /><strong className="text-berry">Sin respuesta</strong></div></div>}
         </article>;
       })}</div>
@@ -47,7 +49,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
     </div>}
     {game.phase !== 'ROUND_RESULTS' && <div className="grid gap-5 lg:grid-cols-[340px_1fr]">
       <aside className="card !p-4"><div className="mb-3 flex items-center justify-between"><h2 className="font-display text-xl font-bold">En la ronda</h2><span className="chip">{game.survivorIds.length} siguen</span></div><PlayerList members={room.members} game={game} selfId={selfId} /></aside>
-      <div>{activePhase && eligible && !hasSelection ? <PokemonSelector pokemon={pokemon} locked={new Set(game.lockedPokemonIds)} disabled={false} onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId })} /> : <div className="card grid min-h-[280px] place-items-center text-center"><div>{member?.role === 'SPECTATOR' || !eligible ? <><Eye className="mx-auto text-aqua" size={48} /><h2 className="mt-4 font-display text-2xl font-bold">Estás observando</h2><p className="mt-2 font-bold text-ink/45">Sigue las selecciones en directo.</p></> : hasSelection ? <><div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-leaf/20 text-4xl">✓</div><h2 className="mt-4 font-display text-2xl font-bold">¡Selección confirmada!</h2><p className="mt-2 font-bold text-ink/45">Ya está bloqueada en el servidor.</p></> : <><Clock3 className="mx-auto text-aqua" size={48} /><h2 className="mt-4 font-display text-2xl font-bold">Siguiente ronda en breve…</h2></>}</div></div>}</div>
+      <div>{activePhase && eligible && !hasSelection ? <PokemonSelector pokemon={pokemon} locked={new Set(game.lockedPokemonIds)} disabled={false} onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId })} /> : <div className={`card grid min-h-[280px] place-items-center text-center ${playerState?.exactHit ? '!border-leaf bg-leaf/10' : ''}`}><div>{member?.role === 'SPECTATOR' || !eligible ? <><Eye className="mx-auto text-aqua" size={48} /><h2 className="mt-4 font-display text-2xl font-bold">Estás observando</h2><p className="mt-2 font-bold text-ink/45">Sigue las selecciones en directo.</p></> : hasSelection && playerState?.exactHit ? <div className="reveal-pop"><div className="mx-auto grid h-24 w-24 place-items-center rounded-full border-4 border-leaf bg-leaf/20 text-leaf shadow-[0_0_40px_rgba(77,210,140,.35)]"><Crosshair size={52} /></div><span className="label mt-5 text-leaf">Distancia 0</span><h2 className="mt-1 font-display text-4xl font-bold text-leaf">¡EXACT HIT!</h2><p className="mt-2 font-bold text-ink/60">Has elegido exactamente el Pokémon objetivo.</p><span className="chip mt-4 bg-leaf/15 text-leaf">Selección bloqueada ✓</span></div> : hasSelection ? <><div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-leaf/20 text-4xl">✓</div><h2 className="mt-4 font-display text-2xl font-bold">¡Selección confirmada!</h2><p className="mt-2 font-bold text-ink/45">Ya está bloqueada en el servidor.</p></> : <><Clock3 className="mx-auto text-aqua" size={48} /><h2 className="mt-4 font-display text-2xl font-bold">Siguiente ronda en breve…</h2></>}</div></div>}</div>
     </div>}
   </section>;
 }

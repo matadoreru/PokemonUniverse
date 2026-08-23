@@ -17,8 +17,18 @@ const REVEAL_DURATION_MS = 3_000;
 const manifest = {
   id: 'shiny-vote',
   name: 'Shiny Quiz',
+  icon: '✨',
   description: 'Encuentra el shiny verdadero entre varios candidatos. Los votos se ven en directo.',
   minPlayers: 1,
+  profileStats: {
+    metrics: [
+      { key: 'correctVotes', label: 'Aciertos', aggregation: 'SUM' },
+      { key: 'incorrectVotes', label: 'Fallos', aggregation: 'SUM' },
+      { key: 'unanswered', label: 'Sin respuesta', aggregation: 'SUM' },
+      { key: 'votes', label: 'Respuestas', aggregation: 'SUM' },
+    ],
+    derivedMetrics: [{ key: 'accuracy', label: 'Precisión', kind: 'PERCENT', numerator: 'correctVotes', denominator: ['votes'] }],
+  },
 } as const;
 
 function takeRandom<T>(source: readonly T[], count: number, random: () => number): T[] {

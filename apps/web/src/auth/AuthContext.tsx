@@ -7,7 +7,8 @@ interface AuthContextValue {
   loading: boolean;
   login(email: string, password: string): Promise<void>;
   register(username: string, email: string, password: string): Promise<void>;
-  guest(displayName: string): Promise<void>;
+  guest(displayName: string, avatarPresetId?: string): Promise<void>;
+  updateUser(user: AuthUser): void;
   logout(): Promise<void>;
 }
 
@@ -21,7 +22,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
     user, loading,
     async login(email, password) { const body = await api<{ user: AuthUser }>('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }); setUser(body.user); },
     async register(username, email, password) { const body = await api<{ user: AuthUser }>('/auth/register', { method: 'POST', body: JSON.stringify({ username, email, password }) }); setUser(body.user); },
-    async guest(displayName) { const body = await api<{ user: AuthUser }>('/auth/guest', { method: 'POST', body: JSON.stringify({ displayName }) }); setUser(body.user); },
+    async guest(displayName, avatarPresetId) { const body = await api<{ user: AuthUser }>('/auth/guest', { method: 'POST', body: JSON.stringify({ displayName, ...(avatarPresetId ? { avatarPresetId } : {}) }) }); setUser(body.user); },
+    updateUser(nextUser) { setUser(nextUser); },
     async logout() { await api('/auth/logout', { method: 'POST' }); setUser(null); },
   }), [loading, user]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

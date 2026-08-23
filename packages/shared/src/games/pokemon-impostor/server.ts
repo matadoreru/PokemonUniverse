@@ -20,8 +20,23 @@ const ELIMINATION_MS = 4_000;
 const manifest = {
   id: 'pokemon-impostor',
   name: 'Pokémon Impostor',
+  icon: '🕵️',
   description: 'Da pistas, detecta a quienes no conocen el Pokémon y expulsa a los impostores.',
   minPlayers: 3,
+  profileStats: {
+    metrics: [
+      { key: 'playedAsInnocent', label: 'Como inocente', aggregation: 'SUM' },
+      { key: 'wonAsInnocent', label: 'Victorias de inocente', aggregation: 'SUM' },
+      { key: 'playedAsImpostor', label: 'Como impostor', aggregation: 'SUM' },
+      { key: 'wonAsImpostor', label: 'Victorias de impostor', aggregation: 'SUM' },
+      { key: 'pokemonGuessed', label: 'Pokémon adivinados', aggregation: 'SUM' },
+      { key: 'cluesSubmitted', label: 'Pistas enviadas', aggregation: 'SUM' },
+    ],
+    derivedMetrics: [
+      { key: 'innocentWinRate', label: 'Winrate inocente', kind: 'PERCENT', numerator: 'wonAsInnocent', denominator: ['playedAsInnocent'] },
+      { key: 'impostorWinRate', label: 'Winrate impostor', kind: 'PERCENT', numerator: 'wonAsImpostor', denominator: ['playedAsImpostor'] },
+    ],
+  },
 } as const;
 
 function takeRandom<T>(source: readonly T[], count: number, random: () => number): T[] {

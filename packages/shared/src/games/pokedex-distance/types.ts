@@ -99,3 +99,10 @@ export interface PokedexDistancePublicState {
   winnerId: string | null;
   results: GameResults | null;
 }
+
+export interface PokedexDistancePlayerState {
+  canSelect: boolean;
+  selection: { pokemonId: string; selectedAt: number } | null;
+  /** Private confirmation for the player who matched the target exactly. */
+  exactHit: boolean;
+}

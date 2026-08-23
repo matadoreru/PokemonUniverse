@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { AvatarRef } from './avatar.js';
 import type { MiniGameManifest } from './games/contracts.js';
 
 export type RoomPhase = 'LOBBY' | 'GAME_STARTING' | 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'TIEBREAKER_ACTIVE' | 'ROLE_REVEAL' | 'CLUE_PHASE' | 'VOTING' | 'VOTE_RESULTS' | 'ELIMINATION' | 'SELECTING_TYPES' | 'TYPE_REVEAL' | 'INVALID_COMBINATION' | 'POKEMON_SEARCH' | 'GAME_RESULTS' | 'SESSION_RESULTS';
@@ -24,7 +25,7 @@ export type PresenceStatus = 'CONNECTED' | 'TEMPORARILY_DISCONNECTED' | 'LEFT';
 export interface RoomMemberView {
   id: string;
   displayName: string;
-  avatarSeed: string;
+  avatar: AvatarRef;
   connected: boolean;
   presence: PresenceStatus;
   roomRole: RoomRole;

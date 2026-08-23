@@ -15,11 +15,22 @@ export function buildPokemonImpostorResults(state: PokemonImpostorState): GameRe
   const standings: GameStanding[] = state.playerIds.map((playerId) => {
     const won = winners.includes(playerId);
     const stats = state.playerStats[playerId] ?? { cluesSubmitted: 0, votesCast: 0 };
+    const wasImpostor = state.roles[playerId] === 'IMPOSTOR';
     return {
       playerId,
       position: won ? 1 : 2,
       points: won ? 1 : 0,
-      stats: { ...stats, wasImpostor: state.roles[playerId] === 'IMPOSTOR' ? 1 : 0, survived: state.aliveIds.includes(playerId) ? 1 : 0 },
+      won,
+      stats: {
+        ...stats,
+        wasImpostor: wasImpostor ? 1 : 0,
+        survived: state.aliveIds.includes(playerId) ? 1 : 0,
+        playedAsInnocent: wasImpostor ? 0 : 1,
+        wonAsInnocent: !wasImpostor && won ? 1 : 0,
+        playedAsImpostor: wasImpostor ? 1 : 0,
+        wonAsImpostor: wasImpostor && won ? 1 : 0,
+        pokemonGuessed: state.guessAttempts[playerId]?.correct ? 1 : 0,
+      },
     };
   }).sort((a, b) => a.position - b.position || a.playerId.localeCompare(b.playerId));
   return { winnerId: winners.length === 1 ? winners[0]! : null, standings };

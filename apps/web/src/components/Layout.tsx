@@ -1,6 +1,7 @@
-import { LogOut, UserRound } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import { Avatar } from './Avatar';
 
 export function Layout() {
   const { user, logout } = useAuth(); const navigate = useNavigate();
@@ -11,8 +12,8 @@ export function Layout() {
         <span>Pokémon <span className="text-berry">Universe</span></span>
       </Link>
       {user && <div className="flex items-center gap-2">
-        {user.kind === 'USER' && <Link className="btn-ghost min-h-9 px-3 py-1.5 text-sm" to="/profile"><UserRound size={17} />{user.displayName}</Link>}
-        {user.kind === 'GUEST' && <span className="chip">Invitado · {user.displayName}</span>}
+        {user.kind === 'USER' && <Link className="btn-ghost min-h-9 px-2.5 py-1.5 text-sm" to="/profile"><Avatar name={user.displayName} avatar={user.avatar} size="sm" />{user.displayName}</Link>}
+        {user.kind === 'GUEST' && <span className="chip"><Avatar name={user.displayName} avatar={user.avatar} size="xs" /> Invitado · {user.displayName}</span>}
         <button aria-label="Cerrar sesión" className="rounded-xl p-2 hover:bg-ink/5" onClick={() => void logout().then(() => navigate('/'))}><LogOut size={20} /></button>
       </div>}
     </header>

@@ -1,4 +1,5 @@
 export * from './auth.js';
+export * from './avatar.js';
 export * from './room.js';
 export * from './scoring.js';
 export * from './pokemon/types.js';

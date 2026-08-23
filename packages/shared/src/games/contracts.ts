@@ -65,9 +65,45 @@ export interface GameActionResult<TState> {
 export interface MiniGameManifest {
   id: string;
   name: string;
+  icon: string;
   description: string;
   minPlayers: number;
   maxPlayers?: number;
+  profileStats: ProfileStatsDefinition;
+}
+
+export type ProfileMetricAggregation = 'SUM' | 'MAX';
+export interface ProfileMetricDefinition {
+  key: string;
+  label: string;
+  aggregation: ProfileMetricAggregation;
+  format?: 'NUMBER' | 'DURATION_MS';
+}
+export interface ProfileDerivedMetricDefinition {
+  key: string;
+  label: string;
+  kind: 'PERCENT' | 'AVERAGE';
+  numerator: string;
+  denominator: readonly string[];
+  format?: 'NUMBER' | 'DURATION_MS';
+}
+export interface ProfileStatsDefinition {
+  metrics: readonly ProfileMetricDefinition[];
+  derivedMetrics?: readonly ProfileDerivedMetricDefinition[];
+}
+
+export interface ProfileGameStats {
+  gameId: string;
+  gamesPlayed: number;
+  gamesWon: number;
+  points: number;
+  metrics: Record<string, number>;
+}
+
+export interface UserProfileResponse {
+  user: { id: string; username: string; email: string; avatar: import('../avatar.js').AvatarRef; createdAt: string };
+  globalStats: { gamesPlayed: number; gamesWon: number; totalPoints: number };
+  games: Array<MiniGameManifest & { stats: ProfileGameStats }>;
 }
 
 export interface GameAssetRequest {
@@ -98,6 +134,7 @@ export interface GameStanding {
   playerId: string;
   position: number;
   points: number;
+  won?: boolean;
   stats: Record<string, number>;
 }
 

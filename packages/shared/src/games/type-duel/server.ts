@@ -3,7 +3,23 @@ import { defaultTypeDuelConfig, typeDuelConfigSchema, type TypeDuelConfig } from
 import { buildTypeDuelResults, chooseBalancedPair, isValidPokemonForTypes, requiredTypeCombination, TYPE_DUEL_ATTEMPT_COOLDOWN_MS, TYPE_DUEL_MAX_SOLUTIONS, TYPE_DUEL_WIN_POINTS } from './rules.js';
 import { typeDuelActionSchema, type TypeDuelAction, type TypeDuelPlayerState, type TypeDuelPublicState, type TypeDuelRoundResult, type TypeDuelState, type TypeDuelStats } from './types.js';
 const TYPE_REVEAL_MS = 2_000; const INVALID_COMBINATION_MS = 3_000; export const TYPE_DUEL_RESULT_MS = 10_000;
-const manifest = { id: 'type-duel', name: 'Type Duel', description: 'Elige un tipo en secreto y corre contra otro entrenador para encontrar la combinación exacta.', minPlayers: 2 } as const;
+const manifest = {
+  id: 'type-duel', name: 'Type Duel', icon: '⚔️',
+  description: 'Elige un tipo en secreto y corre contra otro entrenador para encontrar la combinación exacta.', minPlayers: 2,
+  profileStats: {
+    metrics: [
+      { key: 'duelsPlayed', label: 'Duelos jugados', aggregation: 'SUM' },
+      { key: 'duelsWon', label: 'Duelos ganados', aggregation: 'SUM' },
+      { key: 'correctAttempts', label: 'Intentos correctos', aggregation: 'SUM' },
+      { key: 'incorrectAttempts', label: 'Intentos incorrectos', aggregation: 'SUM' },
+      { key: 'correctTimeTotalMs', label: 'Tiempo total al acertar', aggregation: 'SUM', format: 'DURATION_MS' },
+    ],
+    derivedMetrics: [
+      { key: 'duelWinRate', label: 'Winrate de duelos', kind: 'PERCENT', numerator: 'duelsWon', denominator: ['duelsPlayed'] },
+      { key: 'averageCorrectTime', label: 'Tiempo medio de acierto', kind: 'AVERAGE', numerator: 'correctTimeTotalMs', denominator: ['correctAttempts'], format: 'DURATION_MS' },
+    ],
+  },
+} as const;
 function selectPlayers(state: TypeDuelState, context: GameContext): TypeDuelState {
   const availablePlayerIds = connectedRequiredPlayerIds(context, state.playerIds);
   if (availablePlayerIds.length < 2) return finish(state);

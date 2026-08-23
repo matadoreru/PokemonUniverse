@@ -1,12 +1,15 @@
+import { AVATAR_PRESETS, type AvatarPresetId } from '@pokemon-universe/shared';
 import { useState, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import { Avatar } from '../components/Avatar';
 
 type Mode = 'login' | 'register' | 'guest';
 
 export function AuthPage() {
   const [params] = useSearchParams();
   const [mode, setMode] = useState<Mode>(params.get('mode') === 'guest' ? 'guest' : 'login');
+  const [guestAvatar, setGuestAvatar] = useState<AvatarPresetId | undefined>();
   const [busy, setBusy] = useState(false); const [error, setError] = useState('');
   const auth = useAuth(); const navigate = useNavigate();
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -14,7 +17,7 @@ export function AuthPage() {
     try {
       if (mode === 'login') await auth.login(String(data.get('email')), String(data.get('password')));
       if (mode === 'register') await auth.register(String(data.get('username')), String(data.get('email')), String(data.get('password')));
-      if (mode === 'guest') await auth.guest(String(data.get('displayName')));
+      if (mode === 'guest') await auth.guest(String(data.get('displayName')), guestAvatar);
       navigate('/play');
     } catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudo continuar'); } finally { setBusy(false); }
   }
@@ -29,6 +32,7 @@ export function AuthPage() {
         {mode !== 'guest' && <label><span className="label">Email</span><input className="field" name="email" type="email" required autoComplete="email" /></label>}
         {mode !== 'guest' && <label><span className="label">Contraseña</span><input className="field" name="password" type="password" minLength={mode === 'register' ? 10 : 1} required autoComplete={mode === 'register' ? 'new-password' : 'current-password'} />{mode === 'register' && <small className="mt-1 block font-semibold text-ink/45">Mínimo 10 caracteres.</small>}</label>}
         {mode === 'guest' && <label><span className="label">Tu nombre temporal</span><input className="field" name="displayName" minLength={2} maxLength={24} required autoFocus placeholder="Entrenador/a" /></label>}
+        {mode === 'guest' && <fieldset><legend className="label">Elige un avatar <span className="normal-case tracking-normal text-ink/35">(opcional)</span></legend><div className="grid grid-cols-4 gap-2">{AVATAR_PRESETS.map((preset) => <button key={preset.id} type="button" aria-pressed={guestAvatar === preset.id} aria-label={preset.label} onClick={() => setGuestAvatar(preset.id)} className={`grid min-h-16 place-items-center rounded-2xl border-2 transition ${guestAvatar === preset.id ? 'border-berry bg-berry/10' : 'border-ink/10 hover:border-aqua'}`}><Avatar name={preset.label} avatar={{ type: 'PRESET', value: preset.id }} size="md" /></button>)}</div></fieldset>}
         {error && <p role="alert" className="rounded-xl bg-berry/10 px-4 py-3 text-sm font-bold text-berry">{error}</p>}
         <button className="btn-primary w-full" disabled={busy}>{busy ? 'Preparando…' : mode === 'guest' ? 'Continuar como invitado' : mode === 'register' ? 'Crear cuenta' : 'Iniciar sesión'}</button>
       </form>

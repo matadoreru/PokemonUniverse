@@ -46,6 +46,9 @@ services:
       COOKIE_SECURE: "${PU_SECURE_COOKIE:-true}"
       ROOM_MAX_PLAYERS: "${PU_ROOM_MAX_PLAYERS:-8}"
       RECONNECT_GRACE_MS: "${PU_RECONNECT_GRACE_MS:-30000}"
+      AVATAR_STORAGE_DIR: "/data/avatars"
+    volumes:
+      - pokemon_universe_avatar_data:/data/avatars
     depends_on:
       postgres:
         condition: service_healthy
@@ -99,3 +102,5 @@ services:
 volumes:
   pokemon_universe_postgres_data:
     name: pokemon_universe_postgres_data
+  pokemon_universe_avatar_data:
+    name: pokemon_universe_avatar_data

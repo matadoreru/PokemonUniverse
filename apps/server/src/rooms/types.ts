@@ -3,7 +3,6 @@ import type { RegisteredGame } from '@pokemon-universe/shared';
 
 export interface RoomMember {
   identity: AuthUser;
-  avatarSeed: string;
   connected: boolean;
   presence: PresenceStatus;
   roomRole: RoomRole;
@@ -15,6 +14,7 @@ export interface RoomMember {
 }
 
 export interface GameRuntime {
+  resultId: string;
   gameId: string;
   module: RegisteredGame;
   config: unknown;

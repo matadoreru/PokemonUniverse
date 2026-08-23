@@ -1,13 +1,21 @@
 import { allConnectedRequiredCompleted, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { defaultPokedexDistanceConfig, pokedexDistanceConfigSchema, type PokedexDistanceConfig } from './config.js';
 import { buildResults, distanceBetween, elimination, emptyPlayerStats, farthestPlayerIds } from './rules.js';
-import { pokedexDistanceActionSchema, type PokedexDistanceAction, type PokedexDistancePublicState, type PokedexDistanceState, type RoundResult } from './types.js';
+import { pokedexDistanceActionSchema, type PokedexDistanceAction, type PokedexDistancePlayerState, type PokedexDistancePublicState, type PokedexDistanceState, type RoundResult } from './types.js';
 
 const manifest = {
   id: 'pokedex-distance',
   name: 'Pokédex Distance',
+  icon: '🎯',
   description: 'Elige un Pokémon cuyo número esté lo más cerca posible del objetivo.',
   minPlayers: 2,
+  profileStats: {
+    metrics: [
+      { key: 'exactHits', label: 'Exact Hits', aggregation: 'SUM' },
+      { key: 'roundsSurvived', label: 'Rondas superadas', aggregation: 'SUM' },
+      { key: 'selections', label: 'Selecciones', aggregation: 'SUM' },
+    ],
+  },
 } as const;
 const RESULTS_DURATION_MS = 6_000;
 
@@ -199,9 +207,13 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
       results: state.phase === 'GAME_RESULTS' ? buildResults(state) : null,
     };
   },
-  getPlayerState(state, playerId) {
+  getPlayerState(state, playerId): PokedexDistancePlayerState {
     const selection = state.selections[playerId];
-    return { canSelect: state.eligibleIds.includes(playerId) && !selection, selection: selection ? { pokemonId: selection.pokemonId, selectedAt: selection.selectedAt } : null };
+    return {
+      canSelect: state.eligibleIds.includes(playerId) && !selection,
+      selection: selection ? { pokemonId: selection.pokemonId, selectedAt: selection.selectedAt } : null,
+      exactHit: selection?.distance === 0,
+    };
   },
   isFinished(state) { return state.phase === 'GAME_RESULTS'; },
   getResults(state) { return buildResults(state); },

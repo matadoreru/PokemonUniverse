@@ -1,5 +1,5 @@
-import { assignableRoomRoleSchema, gameRegistry, hasRoomPermission, roomCodeSchema, sessionModeSchema, type AssignableRoomRole, type AuthUser, type ClientToServerEvents, type PokemonCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck } from '@pokemon-universe/shared';
-import { randomInt } from 'node:crypto';
+import { assignableRoomRoleSchema, gameRegistry, hasRoomPermission, roomCodeSchema, sessionModeSchema, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type PokemonCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck } from '@pokemon-universe/shared';
+import { randomInt, randomUUID } from 'node:crypto';
 import type { Server, Socket } from 'socket.io';
 import { env } from '../config.js';
 import { preloadGameImage } from '../http/game-image-cache.js';
@@ -47,7 +47,7 @@ export class RoomManager {
     const member = room?.members.get(identity.id);
     if (!room || !member) return;
     if (member.disconnectTimer) clearTimeout(member.disconnectTimer);
-    member.disconnectTimer = null; member.connected = true; member.presence = 'CONNECTED'; member.socketId = socket.id;
+    member.identity = identity; member.disconnectTimer = null; member.connected = true; member.presence = 'CONNECTED'; member.socketId = socket.id;
     const host = room.members.get(room.hostId);
     if (host && !host.connected && !host.disconnectTimer) this.transferHost(room);
     void socket.join(room.code);
@@ -84,6 +84,7 @@ export class RoomManager {
       if (current.disconnectTimer) clearTimeout(current.disconnectTimer);
       const expiredDuringGame = current.presence === 'LEFT' && room.game !== null;
       current.connected = true;
+      current.identity = identity;
       current.presence = 'CONNECTED';
       current.socketId = socket.id;
       current.disconnectTimer = null;
@@ -98,7 +99,13 @@ export class RoomManager {
   }
 
   private member(identity: AuthUser, socketId: string, role: 'PLAYER' | 'SPECTATOR', roomRole: RoomRole): RoomMember {
-    return { identity, avatarSeed: identity.displayName, connected: true, presence: 'CONNECTED', roomRole, socketId, role, sessionPoints: 0, joinedAt: Date.now(), disconnectTimer: null };
+    return { identity, connected: true, presence: 'CONNECTED', roomRole, socketId, role, sessionPoints: 0, joinedAt: Date.now(), disconnectTimer: null };
+  }
+
+  updateIdentityAvatar(userId: string, avatar: AvatarRef): void {
+    const room = this.store.roomForPlayer(userId); const member = room?.members.get(userId);
+    if (!room || !member) return;
+    member.identity = { ...member.identity, avatar }; this.broadcast(room);
   }
 
   private leave(socket: GameSocket, playerId: string): Record<string, never> {
@@ -199,7 +206,7 @@ export class RoomManager {
     let state = module.createInitialState(config, context);
     state = module.start(state, context);
     for (const member of room.members.values()) member.role = member.presence === 'CONNECTED' ? 'PLAYER' : 'SPECTATOR';
-    room.game = { gameId: module.manifest.id, module, config, state, startedAt: context.now, resultsApplied: false };
+    room.game = { resultId: randomUUID(), gameId: module.manifest.id, module, config, state, startedAt: context.now, resultsApplied: false };
     room.phase = state.phase; this.syncAndBroadcast(room); return {};
   }
 
@@ -253,7 +260,7 @@ export class RoomManager {
       : mode.type === 'POINT_TARGET' ? [...room.members.values()].some((member) => member.sessionPoints >= mode.target)
       : false;
     room.phase = sessionFinished ? 'SESSION_RESULTS' : 'GAME_RESULTS';
-    void persistGameResults(room, results, game.startedAt, game.gameId, game.config).catch((error) => console.error('Failed to persist game results', error));
+    void persistGameResults(room, results, game.resultId, game.startedAt, game.gameId, game.config).catch((error) => console.error('Failed to persist game results', error));
   }
 
   private returnLobby(playerId: string): Record<string, never> {
@@ -303,7 +310,7 @@ export class RoomManager {
     return {
       code: room.code, phase: room.phase, hostId: room.hostId, maxPlayers: room.maxPlayers,
       members: [...room.members.values()].map((member) => ({
-        id: member.identity.id, displayName: member.identity.displayName, avatarSeed: member.avatarSeed,
+        id: member.identity.id, displayName: member.identity.displayName, avatar: member.identity.avatar,
         connected: member.connected, presence: member.presence, roomRole: member.roomRole, role: member.role, isHost: member.identity.id === room.hostId, sessionPoints: member.sessionPoints,
       })),
       availableGames: gameRegistry.manifests(),

@@ -57,6 +57,7 @@ describe('Pokédex Distance rules', () => {
     const next = choose(state, 'p1', 'bulbasaur', context);
     expect(next.playerStats.p1?.exactHits).toBe(1);
     expect(next.selections.p1?.distance).toBe(0);
+    expect(pokedexDistanceGame.getPlayerState(next, 'p1', context)).toMatchObject({ exactHit: true });
   });
 
   it('continues using the hidden National Dex number for distance calculations', () => {
@@ -72,7 +73,7 @@ describe('Pokédex Distance rules', () => {
     expect(publicState.selections.p1).toEqual({ pokemonId: 'pikachu', pokemonName: 'Pikachu', sprite: '/25.png', selectedAt: context.now });
     expect(publicState.selections.p1).not.toHaveProperty('dexNumber');
     expect(publicState.selections.p1).not.toHaveProperty('distance');
-    expect(pokedexDistanceGame.getPlayerState(next, 'p1', context)).toEqual({ canSelect: false, selection: { pokemonId: 'pikachu', selectedAt: context.now } });
+    expect(pokedexDistanceGame.getPlayerState(next, 'p1', context)).toEqual({ canSelect: false, selection: { pokemonId: 'pikachu', selectedAt: context.now }, exactHit: false });
   });
 
   it('eliminates exactly the farthest player in a normal round', () => {

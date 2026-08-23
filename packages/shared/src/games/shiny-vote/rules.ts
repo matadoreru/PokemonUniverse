@@ -24,6 +24,8 @@ export function buildShinyResults(state: ShinyVoteState): GameResults {
       stats: {
         correctVotes: entry.stats.correctVotes,
         votes: entry.stats.votes,
+        incorrectVotes: entry.stats.votes - entry.stats.correctVotes,
+        unanswered: Math.max(0, state.config.rounds - entry.stats.votes),
         accuracy: entry.stats.votes === 0 ? 0 : Math.round(entry.stats.correctVotes / entry.stats.votes * 100),
       },
     };

@@ -25,7 +25,7 @@ const catalog: PokemonCatalog = {
 };
 
 function identity(id: string, displayName: string): AuthUser {
-  return { id, displayName, kind: 'GUEST' };
+  return { id, displayName, kind: 'GUEST', avatar: { type: 'DEFAULT' } };
 }
 
 function socket(id: string) {
@@ -118,6 +118,21 @@ describe('room multi-game lifecycle', () => {
     expect(() => (manager as any).selectGame(host.id, 'missing-game')).toThrow(/Unknown game/);
     expect(room.selectedGameId).toBe('pokedex-distance');
     expect(created.room.availableGames).toHaveLength(5);
+  });
+
+  it('broadcasts avatar changes and keeps the lightweight reference in the room', () => {
+    const transport = io(); const manager = new RoomManager(transport as any, catalog);
+    const host = identity('host', 'Host');
+    const created = (manager as any).create(socket('host-socket'), host, 8);
+    const room = manager.store.get(created.room.code)!;
+
+    manager.updateIdentityAvatar(host.id, { type: 'PRESET', value: 'trainer-aqua' });
+
+    expect(room.members.get(host.id)?.identity.avatar).toEqual({ type: 'PRESET', value: 'trainer-aqua' });
+    expect(transport.to).toHaveBeenCalledWith('host-socket');
+    expect(transport.to().emit).toHaveBeenCalledWith('room:state', expect.objectContaining({
+      members: [expect.objectContaining({ id: host.id, avatar: { type: 'PRESET', value: 'trainer-aqua' } })],
+    }));
   });
 
   it('centralizes Host, Co-host and Member permissions and broadcasts role changes', () => {

@@ -10,7 +10,9 @@ import { Server } from 'socket.io';
 import { ZodError } from 'zod';
 import { authRouter } from './auth/routes.js';
 import { optionalAuth } from './auth/middleware.js';
+import { onAvatarUpdated } from './auth/profile-events.js';
 import { AUTH_COOKIE, verifyIdentity } from './auth/tokens.js';
+import { AvatarValidationError } from './avatar/service.js';
 import { env } from './config.js';
 import { prisma } from './db.js';
 import { apiRouter, registerGameImageResolver } from './http/routes.js';
@@ -28,12 +30,16 @@ app.use(rateLimit({
   skip: (req) => /^\/api\/rooms\/[^/]+\/games\/[^/]+\/rounds\/\d+\/options\/[A-F]\/sprite$/.test(req.path),
 }));
 app.use(optionalAuth);
-app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 30 }), authRouter);
+app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 30, skip: (req) => req.path.startsWith('/avatars/') }), authRouter);
 app.use('/api', apiRouter);
 
 app.use((error: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {
   void next;
   if (error instanceof ZodError) { res.status(400).json({ error: error.issues[0]?.message ?? 'Invalid input', issues: error.issues }); return; }
+  if (error instanceof AvatarValidationError) { res.status(error.status).json({ error: error.message }); return; }
+  if (typeof error === 'object' && error !== null && ('status' in error && error.status === 413 || 'type' in error && error.type === 'entity.too.large')) {
+    res.status(413).json({ error: 'La imagen supera el límite de 5 MB.' }); return;
+  }
   console.error(error);
   res.status(500).json({ error: env.NODE_ENV === 'production' ? 'Internal server error' : error instanceof Error ? error.message : 'Unknown error' });
 });
@@ -55,6 +61,7 @@ io.use(async (socket, next) => {
 
 const catalog = await loadPokemonCatalog();
 const rooms = new RoomManager(io, catalog);
+onAvatarUpdated((userId, avatar) => rooms.updateIdentityAvatar(userId, avatar));
 registerGameImageResolver((code, assetToken, roundNumber, optionId) => rooms.gameAsset(code, assetToken, roundNumber, optionId));
 io.on('connection', (socket) => {
   const recentEvents: number[] = [];

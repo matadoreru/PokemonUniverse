@@ -5,7 +5,19 @@ import { buildHigherLowerResults, higherLowerAnswer, HIGHER_LOWER_POINTS, pokemo
 import { higherLowerActionSchema, type HigherLowerAction, type HigherLowerPlayerState, type HigherLowerPublicState, type HigherLowerState, type HigherLowerStats } from './types.js';
 
 const REVEAL_MS = 3_000;
-const manifest = { id: 'higher-lower', name: 'Higher or Lower', description: 'Compara stats Pokémon, acierta si suben, empatan o bajan y encadena rachas.', minPlayers: 1 } as const;
+const manifest = {
+  id: 'higher-lower', name: 'Higher or Lower', icon: '📈',
+  description: 'Compara stats Pokémon, acierta si suben, empatan o bajan y encadena rachas.', minPlayers: 1,
+  profileStats: {
+    metrics: [
+      { key: 'correct', label: 'Respuestas correctas', aggregation: 'SUM' },
+      { key: 'incorrect', label: 'Respuestas incorrectas', aggregation: 'SUM' },
+      { key: 'sameCorrect', label: 'SAME acertados', aggregation: 'SUM' },
+      { key: 'bestStreak', label: 'Mejor racha', aggregation: 'MAX' },
+    ],
+    derivedMetrics: [{ key: 'accuracy', label: 'Precisión', kind: 'PERCENT', numerator: 'correct', denominator: ['correct', 'incorrect'] }],
+  },
+} as const;
 function randomItem<T>(items: readonly T[], random: () => number): T { return items[Math.min(Math.floor(random() * items.length), items.length - 1)]!; }
 function pokemonView(pokemon: Pokemon, value: number | null) { return { id: pokemon.id, name: pokemon.name, sprite: pokemon.sprite, value }; }
 

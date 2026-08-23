@@ -32,4 +32,32 @@ describe('multi-game registry', () => {
     expect(() => registry.register(pokedexDistanceGame)).toThrow(/Duplicate game id/);
     expect(registry.list()).toEqual([pokedexDistanceGame, shinyVoteGame, pokemonImpostorGame, higherLowerGame, typeDuelGame]);
   });
+
+  it('exposes a profile statistics definition for every registered game', () => {
+    for (const manifest of gameRegistry.manifests()) {
+      expect(manifest.icon).toBeTruthy();
+      expect(manifest.profileStats.metrics.length + (manifest.profileStats.derivedMetrics?.length ?? 0)).toBeGreaterThan(0);
+    }
+  });
+
+  it('accepts profile statistics metadata from a future game without central profile changes', () => {
+    const futureGame = {
+      ...pokedexDistanceGame,
+      manifest: {
+        ...pokedexDistanceGame.manifest,
+        id: 'pokemon-cry-quiz',
+        name: 'Pokémon Cry Quiz',
+        icon: '🔊',
+        profileStats: {
+          metrics: [{ key: 'correct', label: 'Aciertos', aggregation: 'SUM' as const }],
+          derivedMetrics: [],
+        },
+      },
+    };
+    const registry = new GameRegistry().register(futureGame);
+
+    expect(registry.manifests()[0]?.profileStats.metrics).toEqual([
+      { key: 'correct', label: 'Aciertos', aggregation: 'SUM' },
+    ]);
+  });
 });
