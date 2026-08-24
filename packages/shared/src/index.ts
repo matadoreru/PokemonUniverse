@@ -11,3 +11,4 @@ export * from './games/pokemon-impostor/index.js';
 export * from './games/higher-lower/index.js';
 export * from './games/type-duel/index.js';
 export * from './games/learnset-guess/index.js';
+export * from './games/pokeddle-race/index.js';

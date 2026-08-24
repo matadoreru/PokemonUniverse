@@ -72,7 +72,7 @@ export interface MiniGameManifest {
   profileStats: ProfileStatsDefinition;
 }
 
-export type ProfileMetricAggregation = 'SUM' | 'MAX';
+export type ProfileMetricAggregation = 'SUM' | 'MAX' | 'MIN';
 export interface ProfileMetricDefinition {
   key: string;
   label: string;

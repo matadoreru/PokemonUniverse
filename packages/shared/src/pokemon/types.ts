@@ -5,6 +5,9 @@ export type PokemonType = (typeof POKEMON_TYPES)[number];
 export const MOVE_CATEGORIES = ['physical', 'special', 'status'] as const;
 export type MoveCategory = (typeof MOVE_CATEGORIES)[number];
 
+export const POKEMON_LEGENDARY_STATUSES = ['NORMAL', 'LEGENDARY', 'MYTHICAL'] as const;
+export type PokemonLegendaryStatus = (typeof POKEMON_LEGENDARY_STATUSES)[number];
+
 export interface Move {
   id: string;
   name: string;
@@ -54,6 +57,16 @@ export interface Pokemon {
   specialDefense: number;
   speed: number;
   baseStatTotal: number;
+  /** PokéAPI stores height in decimetres and weight in hectograms. */
+  heightDecimeters?: number;
+  weightHectograms?: number;
+  evolutionStage?: number;
+  evolutionStageCount?: number;
+  legendaryStatus?: PokemonLegendaryStatus;
+  /** Official species colour classification from PokéAPI, never sprite analysis. */
+  color?: string;
+  /** Normal and hidden abilities are intentionally kept together. */
+  abilities?: string[];
   names?: LocalizedText;
   types: PokemonType[];
 }

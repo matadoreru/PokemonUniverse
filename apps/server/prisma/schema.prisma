@@ -88,6 +88,11 @@ model Pokemon {
   specialDefense    Int      @default(0)
   speed             Int      @default(0)
   baseStatTotal     Int      @default(0)
+  heightDecimeters Int      @default(0)
+  weightHectograms Int      @default(0)
+  legendaryStatus String   @default("NORMAL")
+  color             String   @default("unknown")
+  abilities         String[]
   names             Json?
   types             String[]
   evolutionStage    Int?

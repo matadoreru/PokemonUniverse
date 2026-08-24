@@ -201,6 +201,7 @@ export class RoomManager {
     const players = [...room.members.values()].filter((member) => member.presence === 'CONNECTED').map((member) => ({ id: member.identity.id, displayName: member.identity.displayName, connected: true, active: true }));
     const module = gameRegistry.get(room.selectedGameId)!;
     if (players.length < module.manifest.minPlayers) throw new Error(`Se necesitan al menos ${module.manifest.minPlayers} jugadores.`);
+    if (module.manifest.maxPlayers && players.length > module.manifest.maxPlayers) throw new Error(`Este juego admite un máximo de ${module.manifest.maxPlayers} jugadores.`);
     const context = { players, pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage };
     const config = module.configSchema.parse(room.gameConfigs.get(room.selectedGameId));
     let state = module.createInitialState(config, context);

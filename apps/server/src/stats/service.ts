@@ -10,7 +10,9 @@ export function mergeMetrics(previous: unknown, current: Record<string, number>,
     const priorValue = base[definition.key]; const currentValue = current[definition.key];
     const old = typeof priorValue === 'number' ? priorValue : 0;
     const value = typeof currentValue === 'number' ? currentValue : 0;
-    merged[definition.key] = definition.aggregation === 'MAX' ? Math.max(old, value) : old + value;
+    if (definition.aggregation === 'MAX') merged[definition.key] = Math.max(old, value);
+    else if (definition.aggregation === 'MIN') merged[definition.key] = value <= 0 ? old : old <= 0 ? value : Math.min(old, value);
+    else merged[definition.key] = old + value;
   }
   return merged;
 }

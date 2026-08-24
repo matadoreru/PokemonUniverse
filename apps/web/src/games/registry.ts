@@ -18,6 +18,9 @@ import { TypeDuelResults } from '../room/TypeDuelResults';
 import { LearnsetGuessConfigPanel } from './learnset-guess/ConfigPanel';
 import { LearnsetGuessGame } from '../room/LearnsetGuessGame';
 import { LearnsetGuessResults } from '../room/LearnsetGuessResults';
+import { PokeddleRaceConfigPanel, validatePokeddleConfig } from './pokeddle-race/ConfigPanel';
+import { PokeddleRaceGame } from '../room/PokeddleRaceGame';
+import { PokeddleRaceResults } from '../room/PokeddleRaceResults';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
@@ -30,6 +33,7 @@ export interface MiniGameClientModule {
   ConfigPanel: ComponentType<GameConfigProps>;
   ActiveGame: ComponentType<ActiveGameProps>;
   Results: ComponentType<GameResultsProps>;
+  validateConfig?(config: unknown): string | null;
 }
 
 class ClientGameRegistry {
@@ -68,4 +72,7 @@ export const clientGameRegistry = new ClientGameRegistry().register({
 }).register({
   id: 'learnset-guess', name: 'Learnset Guess', icon: '📚', description: 'Adivina el Pokémon por los movimientos que aprende al subir de nivel.',
   ConfigPanel: LearnsetGuessConfigPanel, ActiveGame: LearnsetGuessGame, Results: LearnsetGuessResults,
+}).register({
+  id: 'pokeddle-race', name: 'Pokédle Race', icon: '🏁', description: 'Descubre tu Pokémon secreto mediante pistas comparativas antes que tus rivales.',
+  ConfigPanel: PokeddleRaceConfigPanel, ActiveGame: PokeddleRaceGame, Results: PokeddleRaceResults, validateConfig: validatePokeddleConfig,
 });

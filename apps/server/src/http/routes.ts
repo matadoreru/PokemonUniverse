@@ -47,10 +47,13 @@ apiRouter.get('/pokemon', async (req, res, next) => {
         ...(!includeForms ? { isDefault: true } : {}),
       },
       orderBy: [{ nationalDexNumber: 'asc' }, { isDefault: 'desc' }, { name: 'asc' }],
-      select: { id: true, nationalDexNumber: true, name: true, generation: true, isDefault: true, sprite: true, names: true, types: true, hp: true, attack: true, defense: true, specialAttack: true, specialDefense: true, speed: true, baseStatTotal: true },
+      select: { id: true, nationalDexNumber: true, name: true, generation: true, isDefault: true, sprite: true, names: true, types: true, hp: true, attack: true, defense: true, specialAttack: true, specialDefense: true, speed: true, baseStatTotal: true, heightDecimeters: true, weightHectograms: true, evolutionStage: true, evolutionStages: true, legendaryStatus: true, color: true, abilities: true },
     });
     res.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
-    res.json({ pokemon: rows });
+    res.json({ pokemon: rows.map(({ evolutionStages, ...pokemon }) => ({
+      ...pokemon,
+      ...(evolutionStages ? { evolutionStageCount: evolutionStages } : {}),
+    })) });
   } catch (error) { next(error); }
 });
 

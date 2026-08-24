@@ -12,7 +12,9 @@ const MIN_MOVE_COUNT = 500;
 const LEARNSET_SYNC_KEY = 'canonical-level-up-learnsets';
 const LEARNSET_SYNC_VERSION = 1;
 const EVOLUTION_SYNC_KEY = 'evolution-positions';
-const EVOLUTION_SYNC_VERSION = 1;
+const EVOLUTION_SYNC_VERSION = 2;
+const POKEDDLE_METADATA_SYNC_KEY = 'pokeddle-species-metadata';
+const POKEDDLE_METADATA_SYNC_VERSION = 1;
 
 interface PokeApiVersionDetail {
   level_learned_at: number;
@@ -27,6 +29,9 @@ interface PokeApiPokemon {
   sprites: { front_default: string | null };
   stats: Array<{ base_stat: number; stat: { name: string } }>;
   types: Array<{ slot: number; type: { name: string } }>;
+  height: number;
+  weight: number;
+  abilities: Array<{ ability: { name: string }; is_hidden: boolean }>;
   moves: Array<{ move: { name: string; url: string }; version_group_details: PokeApiVersionDetail[] }>;
 }
 
@@ -40,6 +45,9 @@ interface PokeApiMove {
 interface PokeApiSpecies {
   name: string;
   evolves_from_species: { name: string } | null;
+  is_legendary: boolean;
+  is_mythical: boolean;
+  color: { name: string };
 }
 
 interface PokeApiPokemonList { results: Array<{ name: string }> }
@@ -107,7 +115,7 @@ function regionalDisplayName(pokemon: PokeApiPokemon): string {
   return `${displayName(pokemon.species.name)} de ${regionLabels[region[1]!]!}${detail}`;
 }
 
-function toEntry(pokemon: PokeApiPokemon, isDefault: boolean) {
+function toEntry(pokemon: PokeApiPokemon, isDefault: boolean, species: PokeApiSpecies) {
   const nationalDexNumber = nationalDexNumberFor(pokemon);
   const stats = Object.fromEntries(pokemon.stats.map((entry) => [entry.stat.name, entry.base_stat]));
   const hp = stats.hp ?? 0; const attack = stats.attack ?? 0; const defense = stats.defense ?? 0;
@@ -117,6 +125,10 @@ function toEntry(pokemon: PokeApiPokemon, isDefault: boolean) {
     sprite: pokemon.sprites.front_default ?? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
     names: { en: pokemon.species.name }, types: pokemon.types.sort((a, b) => a.slot - b.slot).map((entry) => entry.type.name),
     hp, attack, defense, specialAttack, specialDefense, speed, baseStatTotal: hp + attack + defense + specialAttack + specialDefense + speed,
+    heightDecimeters: pokemon.height, weightHectograms: pokemon.weight,
+    legendaryStatus: species.is_mythical ? 'MYTHICAL' : species.is_legendary ? 'LEGENDARY' : 'NORMAL',
+    color: species.color.name,
+    abilities: [...new Set(pokemon.abilities.map((entry) => entry.ability.name))].sort(),
   };
 }
 
@@ -126,6 +138,16 @@ async function fetchPokemonRange(): Promise<PokeApiPokemon[]> {
     const numbers = Array.from({ length: Math.min(BATCH_SIZE, LAST_NATIONAL_DEX_NUMBER - start + 1) }, (_, index) => start + index);
     result.push(...await Promise.all(numbers.map(fetchPokemon)));
     console.info(`Loaded Pokémon data ${start}-${numbers.at(-1)}`);
+  }
+  return result;
+}
+
+async function fetchSpeciesRange(): Promise<PokeApiSpecies[]> {
+  const result: PokeApiSpecies[] = [];
+  for (let start = 1; start <= LAST_NATIONAL_DEX_NUMBER; start += BATCH_SIZE) {
+    const numbers = Array.from({ length: Math.min(BATCH_SIZE, LAST_NATIONAL_DEX_NUMBER - start + 1) }, (_, index) => start + index);
+    result.push(...await Promise.all(numbers.map(fetchSpecies)));
+    console.info(`Loaded species metadata ${start}-${numbers.at(-1)}`);
   }
   return result;
 }
@@ -155,12 +177,7 @@ async function syncLearnsets(pokemon: PokeApiPokemon[]): Promise<void> {
   console.info(`Seeded ${entries.length} canonical level-up entries across ${moves.length} moves.`);
 }
 
-async function syncEvolution(defaultPokemon: PokeApiPokemon[]): Promise<void> {
-  const species: PokeApiSpecies[] = [];
-  for (let start = 1; start <= LAST_NATIONAL_DEX_NUMBER; start += BATCH_SIZE) {
-    const numbers = Array.from({ length: Math.min(BATCH_SIZE, LAST_NATIONAL_DEX_NUMBER - start + 1) }, (_, index) => start + index);
-    species.push(...await Promise.all(numbers.map(fetchSpecies)));
-  }
+async function syncEvolution(defaultPokemon: PokeApiPokemon[], species: PokeApiSpecies[]): Promise<void> {
   const parent = new Map(species.map((entry) => [entry.name, entry.evolves_from_species?.name ?? null]));
   const children = new Map<string, string[]>();
   for (const entry of species) if (entry.evolves_from_species) children.set(entry.evolves_from_species.name, [...(children.get(entry.evolves_from_species.name) ?? []), entry.name]);
@@ -171,7 +188,11 @@ async function syncEvolution(defaultPokemon: PokeApiPokemon[]): Promise<void> {
   const pokemonIdBySpecies = new Map(defaultPokemon.map((entry) => [entry.species.name, entry.name]));
   const updates = species.flatMap((entry) => {
     const pokemonId = pokemonIdBySpecies.get(entry.name); if (!pokemonId) return [];
-    return prisma.pokemon.update({ where: { id: pokemonId }, data: { evolutionStage: stage(entry.name), evolutionStages: depth(root(entry.name)) } });
+    const stages = depth(root(entry.name));
+    // A terminal member of a short branch is still normalized as "final" even
+    // when another branch in the same family contains an extra intermediate.
+    const normalizedStage = (children.get(entry.name)?.length ?? 0) === 0 ? stages : stage(entry.name);
+    return prisma.pokemon.update({ where: { id: pokemonId }, data: { evolutionStage: normalizedStage, evolutionStages: stages } });
   });
   for (let start = 0; start < updates.length; start += 100) await prisma.$transaction(updates.slice(start, start + 100));
   console.info(`Seeded evolution position for ${updates.length} Pokémon.`);
@@ -185,38 +206,43 @@ async function upsertPokemon(entries: ReturnType<typeof toEntry>[]): Promise<voi
 
 async function main(): Promise<void> {
   const force = process.env.POKEMON_SYNC === 'true';
-  const [enrichedDefaultCount, regionalFormCount, moveCount, learnsetCount, evolutionCount, syncRows] = await Promise.all([
+  const [enrichedDefaultCount, regionalFormCount, moveCount, learnsetCount, evolutionCount, metadataCount, syncRows] = await Promise.all([
     prisma.pokemon.count({ where: { isDefault: true, hp: { gt: 0 }, types: { isEmpty: false } } }),
     prisma.pokemon.count({ where: { isDefault: false } }), prisma.move.count(), prisma.pokemonLevelUpMove.count(),
     prisma.pokemon.count({ where: { isDefault: true, evolutionStage: { not: null }, evolutionStages: { not: null } } }),
-    prisma.pokemonCatalogSync.findMany({ where: { key: { in: [LEARNSET_SYNC_KEY, EVOLUTION_SYNC_KEY] } } }),
+    prisma.pokemon.count({ where: { isDefault: true, heightDecimeters: { gt: 0 }, weightHectograms: { gt: 0 }, color: { not: 'unknown' }, abilities: { isEmpty: false } } }),
+    prisma.pokemonCatalogSync.findMany({ where: { key: { in: [LEARNSET_SYNC_KEY, EVOLUTION_SYNC_KEY, POKEDDLE_METADATA_SYNC_KEY] } } }),
   ]);
   const syncVersions = new Map(syncRows.map((entry) => [entry.key, entry.version]));
   const needsBase = force || enrichedDefaultCount < LAST_NATIONAL_DEX_NUMBER;
   const needsRegional = force || regionalFormCount < MIN_REGIONAL_FORM_COUNT;
   const needsLearnsets = force || (syncVersions.get(LEARNSET_SYNC_KEY) ?? 0) < LEARNSET_SYNC_VERSION || moveCount < MIN_MOVE_COUNT || learnsetCount < MIN_LEARNSET_ENTRIES;
   const needsEvolution = force || (syncVersions.get(EVOLUTION_SYNC_KEY) ?? 0) < EVOLUTION_SYNC_VERSION || evolutionCount < LAST_NATIONAL_DEX_NUMBER;
-  if (!needsBase && !needsRegional && !needsLearnsets && !needsEvolution) {
+  const needsMetadata = force || (syncVersions.get(POKEDDLE_METADATA_SYNC_KEY) ?? 0) < POKEDDLE_METADATA_SYNC_VERSION || metadataCount < LAST_NATIONAL_DEX_NUMBER;
+  if (!needsBase && !needsRegional && !needsLearnsets && !needsEvolution && !needsMetadata) {
     console.info(`Catalog ready: ${enrichedDefaultCount} Pokémon, ${regionalFormCount} forms, ${moveCount} moves and ${learnsetCount} learnset entries.`); return;
   }
 
-  const defaultPokemon = needsBase || needsLearnsets || needsEvolution ? await fetchPokemonRange() : [];
-  if (defaultPokemon.length) await upsertPokemon(defaultPokemon.map((pokemon) => toEntry(pokemon, true)));
+  const defaultPokemon = needsBase || needsLearnsets || needsEvolution || needsMetadata ? await fetchPokemonRange() : [];
+  const species = needsBase || needsRegional || needsEvolution || needsMetadata ? await fetchSpeciesRange() : [];
+  const speciesByName = new Map(species.map((entry) => [entry.name, entry]));
+  if (needsBase || needsMetadata) await upsertPokemon(defaultPokemon.map((pokemon) => toEntry(pokemon, true, speciesByName.get(pokemon.species.name)!)));
   if (needsRegional) {
     const regionalNames = await fetchRegionalFormNames();
     if (regionalNames.length < MIN_REGIONAL_FORM_COUNT) throw new Error(`Expected at least ${MIN_REGIONAL_FORM_COUNT} regional forms, received ${regionalNames.length}`);
     const regional: PokeApiPokemon[] = [];
     for (let start = 0; start < regionalNames.length; start += BATCH_SIZE) regional.push(...await Promise.all(regionalNames.slice(start, start + BATCH_SIZE).map(fetchPokemon)));
-    await upsertPokemon(regional.map((pokemon) => toEntry(pokemon, false))); console.info(`Seeded ${regional.length} regional forms.`);
+    await upsertPokemon(regional.map((pokemon) => toEntry(pokemon, false, speciesByName.get(pokemon.species.name)!))); console.info(`Seeded ${regional.length} regional forms.`);
   }
   if (needsLearnsets) {
     await syncLearnsets(defaultPokemon);
     await prisma.pokemonCatalogSync.upsert({ where: { key: LEARNSET_SYNC_KEY }, create: { key: LEARNSET_SYNC_KEY, version: LEARNSET_SYNC_VERSION }, update: { version: LEARNSET_SYNC_VERSION } });
   }
   if (needsEvolution) {
-    await syncEvolution(defaultPokemon);
+    await syncEvolution(defaultPokemon, species);
     await prisma.pokemonCatalogSync.upsert({ where: { key: EVOLUTION_SYNC_KEY }, create: { key: EVOLUTION_SYNC_KEY, version: EVOLUTION_SYNC_VERSION }, update: { version: EVOLUTION_SYNC_VERSION } });
   }
+  if (needsMetadata) await prisma.pokemonCatalogSync.upsert({ where: { key: POKEDDLE_METADATA_SYNC_KEY }, create: { key: POKEDDLE_METADATA_SYNC_KEY, version: POKEDDLE_METADATA_SYNC_VERSION }, update: { version: POKEDDLE_METADATA_SYNC_VERSION } });
 }
 
 main().finally(() => prisma.$disconnect());

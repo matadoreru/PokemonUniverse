@@ -1,4 +1,4 @@
-import type { Generation, LearnsetPokemonCatalog, Move, MoveCategory, Pokemon, PokemonEvolutionInfo, PokemonType, ResolvedLevelUpMove } from '@pokemon-universe/shared';
+import type { Generation, LearnsetPokemonCatalog, Move, MoveCategory, Pokemon, PokemonEvolutionInfo, PokemonLegendaryStatus, PokemonType, ResolvedLevelUpMove } from '@pokemon-universe/shared';
 import { prisma } from '../db.js';
 
 interface CatalogLearnsetEntry { pokemonId: string; moveId: string; referenceGeneration: number; level: number }
@@ -52,6 +52,10 @@ export async function loadPokemonCatalog(): Promise<InMemoryPokemonCatalog> {
     generation: row.generation, isDefault: row.isDefault, sprite: row.sprite,
     hp: row.hp, attack: row.attack, defense: row.defense, specialAttack: row.specialAttack,
     specialDefense: row.specialDefense, speed: row.speed, baseStatTotal: row.baseStatTotal,
+    heightDecimeters: row.heightDecimeters, weightHectograms: row.weightHectograms,
+    ...(row.evolutionStage ? { evolutionStage: row.evolutionStage } : {}),
+    ...(row.evolutionStages ? { evolutionStageCount: row.evolutionStages } : {}),
+    legendaryStatus: row.legendaryStatus as PokemonLegendaryStatus, color: row.color, abilities: row.abilities,
     ...(row.names && typeof row.names === 'object' ? { names: row.names as Record<string, string> } : {}),
     types: row.types as PokemonType[],
   }));

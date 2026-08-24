@@ -60,7 +60,9 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
     ? 'Solo el host puede iniciar la partida.'
     : !enoughPlayers
       ? `Se necesitan al menos ${selectedManifest.minPlayers} jugadores conectados.`
-      : null;
+      : selectedManifest.maxPlayers && connectedPlayers > selectedManifest.maxPlayers
+        ? `Este juego admite un máximo de ${selectedManifest.maxPlayers} jugadores.`
+        : gameClient.validateConfig?.(room.selectedGameConfig) ?? null;
 
   return (
     <section className="mx-auto max-w-[92rem] px-4 py-5 sm:px-6 md:py-8">

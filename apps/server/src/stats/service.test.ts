@@ -28,6 +28,7 @@ import { mergeMetrics, persistGameResults } from './service.js';
 const definitions: readonly ProfileMetricDefinition[] = [
   { key: 'correct', label: 'Correctas', aggregation: 'SUM' },
   { key: 'bestStreak', label: 'Mejor racha', aggregation: 'MAX' },
+  { key: 'bestResolution', label: 'Mejor resolución', aggregation: 'MIN' },
 ];
 
 describe('profile statistics aggregation', () => {
@@ -36,16 +37,18 @@ describe('profile statistics aggregation', () => {
     database.playerResultsCreated.mockClear(); database.userStatsUpdated.mockClear(); database.gameStatsUpdated.mockClear();
   });
   it('sums counters and retains the best maximum', () => {
-    expect(mergeMetrics({ correct: 4, bestStreak: 7 }, { correct: 3, bestStreak: 2 }, definitions)).toEqual({
+    expect(mergeMetrics({ correct: 4, bestStreak: 7, bestResolution: 5 }, { correct: 3, bestStreak: 2, bestResolution: 3 }, definitions)).toEqual({
       correct: 7,
       bestStreak: 7,
+      bestResolution: 3,
     });
   });
 
   it('does not persist unregistered or derived client values', () => {
-    expect(mergeMetrics(null, { correct: 2, bestStreak: 4, accuracy: 100, injected: 9_999 }, definitions)).toEqual({
+    expect(mergeMetrics(null, { correct: 2, bestStreak: 4, bestResolution: 0, accuracy: 100, injected: 9_999 }, definitions)).toEqual({
       correct: 2,
       bestStreak: 4,
+      bestResolution: 0,
     });
   });
 
