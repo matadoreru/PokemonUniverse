@@ -1,4 +1,4 @@
-import { assignableRoomRoleSchema, gameRegistry, hasRoomPermission, roomCodeSchema, sessionModeSchema, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type PokemonCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck } from '@pokemon-universe/shared';
+import { assignableRoomRoleSchema, gameRegistry, hasRoomPermission, roomCodeSchema, sessionModeSchema, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck } from '@pokemon-universe/shared';
 import { randomInt, randomUUID } from 'node:crypto';
 import type { Server, Socket } from 'socket.io';
 import { env } from '../config.js';
@@ -300,7 +300,7 @@ export class RoomManager {
     })), pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage };
   }
 
-  gameAsset(code: string, assetToken: string, roundNumber: number, assetId: string): string | null {
+  gameAsset(code: string, assetToken: string, roundNumber: number, assetId: string): string | GameAssetResolution | null {
     const room = this.store.get(code);
     const game = room?.game;
     if (!room || !game?.module.resolveAsset) return null;

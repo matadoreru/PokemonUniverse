@@ -1,4 +1,4 @@
-import { gameRegistry } from '@pokemon-universe/shared';
+import { gameRegistry, type GameAssetResolution } from '@pokemon-universe/shared';
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { prisma } from '../db.js';
@@ -6,7 +6,7 @@ import { env } from '../config.js';
 import { loadGameImage } from './game-image-cache.js';
 
 export const apiRouter = Router();
-let gameImageResolver: ((code: string, assetToken: string, roundNumber: number, optionId: string) => string | null) | null = null;
+let gameImageResolver: ((code: string, assetToken: string, roundNumber: number, optionId: string) => string | GameAssetResolution | null) | null = null;
 const gameImageRateLimit = rateLimit({ windowMs: 60_000, limit: 5_000, standardHeaders: 'draft-7', legacyHeaders: false });
 
 export function registerGameImageResolver(resolver: typeof gameImageResolver): void {

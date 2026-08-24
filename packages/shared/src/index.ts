@@ -13,3 +13,4 @@ export * from './games/type-duel/index.js';
 export * from './games/learnset-guess/index.js';
 export * from './games/pokeddle-race/index.js';
 export * from './games/pokemon-bingo/index.js';
+export * from './games/whos-that-pokemon/index.js';

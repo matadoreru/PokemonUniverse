@@ -55,6 +55,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 @keyframes pokeddle-row-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 .pokeddle-timer-urgent { animation: pokeddle-timer-urgent .8s ease-in-out infinite alternate; }
 @keyframes pokeddle-timer-urgent { to { text-shadow: 0 0 16px rgba(255,92,130,.7); opacity: .78; } }
+.who-silhouette-stage { background: radial-gradient(circle at 50% 44%, rgba(232,237,247,.92), rgba(82,199,232,.56) 52%, rgba(27,36,54,.95) 72%); box-shadow: inset 0 0 60px rgba(5,8,17,.42), 0 18px 45px rgba(0,0,0,.22); }
+.who-silhouette-stage img { filter: drop-shadow(0 5px 1px rgba(255,255,255,.18)); }
+.who-reveal-stage { background-image: radial-gradient(circle at center, rgba(98,201,149,.2), transparent 68%); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; }
   .reveal-pop, .timer-pulse, .pokeddle-row-enter, .pokeddle-timer-urgent { animation: none !important; }

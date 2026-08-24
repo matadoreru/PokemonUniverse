@@ -61,7 +61,7 @@ describe('room multi-game lifecycle', () => {
     const room = manager.store.get(created.room.code)!;
     (manager as any).join(guestSocket, guest, room.code);
 
-    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo']);
+    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon']);
     expect(room.selectedGameId).toBe('pokedex-distance');
     expect(room.members.size).toBe(2);
 
@@ -125,7 +125,7 @@ describe('room multi-game lifecycle', () => {
     expect(() => (manager as any).selectGame(guest.id, 'shiny-vote')).toThrow(/No tienes permiso/);
     expect(() => (manager as any).selectGame(host.id, 'missing-game')).toThrow(/Unknown game/);
     expect(room.selectedGameId).toBe('pokedex-distance');
-    expect(created.room.availableGames).toHaveLength(8);
+    expect(created.room.availableGames).toHaveLength(9);
   });
 
   it('broadcasts avatar changes and keeps the lightweight reference in the room', () => {
@@ -302,6 +302,34 @@ describe('room multi-game lifecycle', () => {
     room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); expect((manager as any).view(room, guest.id).game.boards.guest.cells.every((cell: { possibleSolutions: unknown[] }) => cell.possibleSolutions.length <= 3)).toBe(true);
     (manager as any).returnLobby(host.id); expect(room.phase).toBe('LOBBY'); expect(room.game).toBeNull(); expect([...room.members.keys()]).toEqual(memberIds); expect([...room.members.values()].every((member) => member.role === 'PLAYER')).toBe(true);
     (manager as any).selectGame(host.id, 'shiny-vote'); expect(room.selectedGameId).toBe('shiny-vote');
+  });
+
+  it('plays ¿Quién es ese Pokémon? with an opaque silhouette and returns to the same lobby', () => {
+    const manager = new RoomManager(io() as any, catalog); const host = identity('host', 'Host'); const guest = identity('guest', 'Guest');
+    const hostSocket = socket('host-socket'); const created = (manager as any).create(hostSocket, host, 8); const room = manager.store.get(created.room.code)!;
+    (manager as any).join(socket('guest-socket'), guest, room.code); const originalIds = [...room.members.keys()];
+    (manager as any).selectGame(host.id, 'whos-that-pokemon');
+    (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 10, rounds: 1, hintsEnabled: false, includeRegionalForms: false });
+    (manager as any).startGame(host.id); const targetId = room.game!.state.targetPokemonId; const wrongId = pokemon.find((entry) => entry.id !== targetId)!.id;
+    const activeView = (manager as any).view(room, guest.id);
+    expect(activeView.game).toMatchObject({ gameId: 'whos-that-pokemon', visibleHints: [], solvedPlayerIds: [] });
+    expect(activeView.game.silhouetteSprite).toMatch(/\/options\/shadow\/sprite$/);
+    expect(JSON.stringify(activeView)).not.toContain(targetId);
+    expect(manager.gameAsset(room.code, room.game!.state.assetToken, 1, 'shadow')).toMatchObject({ transform: 'SILHOUETTE' });
+    expect(manager.gameAsset(room.code, room.game!.state.assetToken, 1, 'reveal')).toBeNull();
+
+    (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: wrongId });
+    expect((manager as any).view(room, host.id).game.attempts[0]).toMatchObject({ playerId: guest.id, guessedPokemon: { id: wrongId } });
+    room.game!.state.cooldownUntil.guest = 0;
+    (manager as any).action(host.id, { type: 'GUESS_POKEMON', pokemonId: targetId });
+    const stillHidden = (manager as any).view(room, guest.id); expect(stillHidden.game.solvedPlayerIds).toEqual([host.id]); expect(JSON.stringify(stillHidden.game)).not.toContain(targetId);
+    (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: targetId }); expect(room.phase).toBe('ROUND_RESULTS');
+    expect((manager as any).view(room, guest.id).game.lastRound.pokemon.name).toBe(pokemon.find((entry) => entry.id === targetId)!.name);
+    expect(manager.gameAsset(room.code, room.game!.state.assetToken, 1, 'reveal')).toMatchObject({ transform: 'ORIGINAL' });
+    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS');
+    (manager as any).returnLobby(host.id); expect(room.phase).toBe('LOBBY'); expect(room.game).toBeNull(); expect([...room.members.keys()]).toEqual(originalIds);
+    expect([...room.members.values()].every((member) => member.role === 'PLAYER')).toBe(true);
+    (manager as any).selectGame(host.id, 'pokemon-bingo'); expect(room.selectedGameId).toBe('pokemon-bingo');
   });
 
   it('uses connected required players globally without deleting accepted actions', () => {

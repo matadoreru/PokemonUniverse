@@ -112,6 +112,12 @@ export interface GameAssetRequest {
   assetId: string;
 }
 
+export type GameAssetTransform = 'ORIGINAL' | 'SILHOUETTE';
+export interface GameAssetResolution {
+  source: string;
+  transform: GameAssetTransform;
+}
+
 export interface MiniGameModule<TConfig, TState, TAction, TPublicState> {
   readonly manifest: MiniGameManifest;
   readonly configSchema: z.ZodType<TConfig>;
@@ -125,7 +131,7 @@ export interface MiniGameModule<TConfig, TState, TAction, TPublicState> {
   handlePresenceChange?(state: TState, context: GameContext): TState;
   getPublicState(state: TState, context: GameContext): TPublicState;
   getPlayerState(state: TState, playerId: string, context: GameContext): unknown;
-  resolveAsset?(state: TState, request: GameAssetRequest, context: GameContext): string | null;
+  resolveAsset?(state: TState, request: GameAssetRequest, context: GameContext): string | GameAssetResolution | null;
   isFinished(state: TState): boolean;
   getResults(state: TState): GameResults;
 }

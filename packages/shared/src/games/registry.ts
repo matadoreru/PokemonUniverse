@@ -7,6 +7,7 @@ import { typeDuelGame } from './type-duel/server.js';
 import { learnsetGuessGame } from './learnset-guess/server.js';
 import { pokeddleRaceGame } from './pokeddle-race/server.js';
 import { pokemonBingoGame } from './pokemon-bingo/server.js';
+import { whosThatPokemonGame } from './whos-that-pokemon/server.js';
 
 export type RegisteredGame = MiniGameModule<any, any, any, any>;
 
@@ -31,4 +32,5 @@ export const gameRegistry = new GameRegistry()
   .register(typeDuelGame)
   .register(learnsetGuessGame)
   .register(pokeddleRaceGame)
-  .register(pokemonBingoGame);
+  .register(pokemonBingoGame)
+  .register(whosThatPokemonGame);

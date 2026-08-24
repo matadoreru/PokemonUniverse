@@ -24,6 +24,9 @@ import { PokeddleRaceResults } from '../room/PokeddleRaceResults';
 import { PokemonBingoConfigPanel, validatePokemonBingoConfig } from './pokemon-bingo/ConfigPanel';
 import { PokemonBingoGame } from '../room/PokemonBingoGame';
 import { PokemonBingoResults } from '../room/PokemonBingoResults';
+import { WhosThatPokemonConfigPanel } from './whos-that-pokemon/ConfigPanel';
+import { WhosThatPokemonGame } from '../room/WhosThatPokemonGame';
+import { WhosThatPokemonResults } from '../room/WhosThatPokemonResults';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
@@ -81,4 +84,7 @@ export const clientGameRegistry = new ClientGameRegistry().register({
 }).register({
   id: 'pokemon-bingo', name: 'Pokémon Bingo', icon: '🎉', description: 'Completa antes que nadie un tablero de condiciones con Pokémon distintos.',
   ConfigPanel: PokemonBingoConfigPanel, ActiveGame: PokemonBingoGame, Results: PokemonBingoResults, validateConfig: validatePokemonBingoConfig,
+}).register({
+  id: 'whos-that-pokemon', name: '¿Quién es ese Pokémon?', icon: '❓', description: 'Reconoce la silueta antes que nadie y suma más puntos cuanto más rápido aciertes.',
+  ConfigPanel: WhosThatPokemonConfigPanel, ActiveGame: WhosThatPokemonGame, Results: WhosThatPokemonResults,
 });
