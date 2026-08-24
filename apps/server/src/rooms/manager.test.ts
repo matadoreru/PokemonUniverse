@@ -62,7 +62,7 @@ describe('room multi-game lifecycle', () => {
     const room = manager.store.get(created.room.code)!;
     (manager as any).join(guestSocket, guest, room.code);
 
-    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokedex-entry-guess', 'type-chain', 'guess-from-stats']);
+    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokedex-entry-guess', 'type-chain', 'guess-from-stats', 'zoomed-pokemon']);
     expect(room.selectedGameId).toBe('pokedex-distance');
     expect(room.members.size).toBe(2);
 
@@ -126,7 +126,7 @@ describe('room multi-game lifecycle', () => {
     expect(() => (manager as any).selectGame(guest.id, 'shiny-vote')).toThrow(/No tienes permiso/);
     expect(() => (manager as any).selectGame(host.id, 'missing-game')).toThrow(/Unknown game/);
     expect(room.selectedGameId).toBe('pokedex-distance');
-    expect(created.room.availableGames).toHaveLength(12);
+    expect(created.room.availableGames).toHaveLength(13);
   });
 
   it('broadcasts avatar changes and keeps the lightweight reference in the room', () => {
@@ -409,6 +409,25 @@ describe('room multi-game lifecycle', () => {
     expect(room.members.get(host.id)?.sessionPoints).toBeGreaterThan(room.members.get(guest.id)?.sessionPoints ?? 0);
     (manager as any).returnLobby(host.id); expect(room.phase).toBe('LOBBY'); expect(room.game).toBeNull(); expect([...room.members.keys()]).toEqual(originalIds); expect([...room.members.values()].every((member) => member.role === 'PLAYER')).toBe(true);
     (manager as any).selectGame(host.id, 'type-chain'); expect(room.selectedGameId).toBe('type-chain');
+  });
+
+  it('plays Zoomed Pokémon with one authoritative crop, solve order, reveal and the same lobby', () => {
+    const manager = new RoomManager(io() as any, catalog); const host = identity('host', 'Host'); const guest = identity('guest', 'Guest');
+    const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
+    (manager as any).join(socket('guest-socket'), guest, room.code); const originalIds = [...room.members.keys()];
+    (manager as any).selectGame(host.id, 'zoomed-pokemon'); const defaults = room.gameConfigs.get('zoomed-pokemon') as Record<string, unknown>;
+    (manager as any).updateConfig(host.id, { ...defaults, generations: [1], imageMode: 'MIXED', roundSeconds: 30, rounds: 1, hintsEnabled: false });
+    (manager as any).startGame(host.id); const targetId = room.game!.state.targetPokemonId as string;
+    const hostView = (manager as any).view(room, host.id); const guestView = (manager as any).view(room, guest.id);
+    expect(hostView.game).toMatchObject({ gameId: 'zoomed-pokemon', imageUrl: expect.stringContaining('/active/sprite'), focusPoint: { x: 0.5, y: 0.5 }, currentZoomStage: 0 });
+    expect(guestView.game.imageUrl).toBe(hostView.game.imageUrl); expect(JSON.stringify(hostView.game)).not.toContain(targetId);
+    (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: targetId }); const hidden = (manager as any).view(room, host.id);
+    expect(hidden.game.solves.guest).toEqual({ solveOrder: 1, zoomStage: 0 }); expect(JSON.stringify(hidden.game)).not.toContain(targetId);
+    (manager as any).action(host.id, { type: 'GUESS_POKEMON', pokemonId: targetId }); expect(room.phase).toBe('ROUND_RESULTS');
+    const reveal = (manager as any).view(room, host.id); expect(reveal.game.lastRound).toMatchObject({ pokemon: { name: expect.any(String) }, imageUrl: expect.stringContaining('/reveal/sprite'), initialCropUrl: expect.stringContaining('/active/sprite') });
+    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); expect(room.members.get(guest.id)!.sessionPoints).toBeGreaterThan(room.members.get(host.id)!.sessionPoints);
+    (manager as any).returnLobby(host.id); expect(room.phase).toBe('LOBBY'); expect(room.game).toBeNull(); expect([...room.members.keys()]).toEqual(originalIds);
+    (manager as any).selectGame(host.id, 'shiny-vote'); expect(room.selectedGameId).toBe('shiny-vote');
   });
 
   it('uses connected required players globally without deleting accepted actions', () => {

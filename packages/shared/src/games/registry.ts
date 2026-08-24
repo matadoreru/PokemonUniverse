@@ -11,6 +11,7 @@ import { whosThatPokemonGame } from './whos-that-pokemon/server.js';
 import { pokedexEntryGuessGame } from './pokedex-entry-guess/server.js';
 import { typeChainGame } from './type-chain/server.js';
 import { guessFromStatsGame } from './guess-from-stats/server.js';
+import { zoomedPokemonGame } from './zoomed-pokemon/server.js';
 
 export type RegisteredGame = MiniGameModule<any, any, any, any>;
 
@@ -39,4 +40,5 @@ export const gameRegistry = new GameRegistry()
   .register(whosThatPokemonGame)
   .register(pokedexEntryGuessGame)
   .register(typeChainGame)
-  .register(guessFromStatsGame);
+  .register(guessFromStatsGame)
+  .register(zoomedPokemonGame);

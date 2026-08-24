@@ -17,6 +17,7 @@ import { env } from './config.js';
 import { prisma } from './db.js';
 import { apiRouter, registerGameImageResolver } from './http/routes.js';
 import { loadPokemonCatalog } from './pokemon/catalog.js';
+import { loadPokemonVisualCatalog } from './pokemon/visual-assets.js';
 import { RoomManager } from './rooms/manager.js';
 
 const app = express();
@@ -60,7 +61,8 @@ io.use(async (socket, next) => {
 });
 
 const catalog = await loadPokemonCatalog();
-const rooms = new RoomManager(io, catalog);
+const pokemonVisuals = await loadPokemonVisualCatalog(catalog);
+const rooms = new RoomManager(io, catalog, pokemonVisuals);
 onAvatarUpdated((userId, avatar) => rooms.updateIdentityAvatar(userId, avatar));
 registerGameImageResolver((code, assetToken, roundNumber, optionId) => rooms.gameAsset(code, assetToken, roundNumber, optionId));
 io.on('connection', (socket) => {
@@ -73,7 +75,7 @@ io.on('connection', (socket) => {
   rooms.bind(socket);
 });
 
-httpServer.listen(env.PORT, () => console.info(`API listening on :${env.PORT} with ${catalog.all().length} Pokémon`));
+httpServer.listen(env.PORT, () => console.info(`API listening on :${env.PORT} with ${catalog.all().length} Pokémon and ${pokemonVisuals.artworkPokemonIds().length} local artworks`));
 
 async function shutdown(): Promise<void> {
   io.close(); httpServer.close(); await prisma.$disconnect(); process.exit(0);

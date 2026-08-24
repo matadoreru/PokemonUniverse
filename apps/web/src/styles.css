@@ -58,7 +58,11 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .who-silhouette-stage { background: radial-gradient(circle at 50% 44%, rgba(232,237,247,.92), rgba(82,199,232,.56) 52%, rgba(27,36,54,.95) 72%); box-shadow: inset 0 0 60px rgba(5,8,17,.42), 0 18px 45px rgba(0,0,0,.22); }
 .who-silhouette-stage img { filter: drop-shadow(0 5px 1px rgba(255,255,255,.18)); }
 .who-reveal-stage { background-image: radial-gradient(circle at center, rgba(98,201,149,.2), transparent 68%); }
+.zoomed-viewport { box-shadow: inset 0 0 70px rgba(5,8,17,.55), 0 18px 45px rgba(0,0,0,.24); }
+.zoomed-image { transition: transform 300ms cubic-bezier(.2,.75,.25,1); will-change: transform; }
+@media (max-width: 640px) { .zoomed-answer { position: sticky; bottom: .5rem; z-index: 10; border-radius: 1rem; background: rgba(20,27,43,.96); padding: .75rem; backdrop-filter: blur(12px); } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; }
   .reveal-pop, .timer-pulse, .pokeddle-row-enter, .pokeddle-timer-urgent { animation: none !important; }
+  .zoomed-image { transition: none !important; }
 }

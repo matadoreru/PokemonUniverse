@@ -16,6 +16,7 @@ describe('client minigame registry', () => {
       ['pokedex-entry-guess', 'Pokédex Entry Guess'],
       ['type-chain', 'Type Chain'],
       ['guess-from-stats', 'Guess from Stats'],
+      ['zoomed-pokemon', 'Zoomed Pokémon'],
     ]);
   });
 });

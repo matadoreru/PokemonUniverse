@@ -36,6 +36,9 @@ import { TypeChainResults } from '../room/TypeChainResults';
 import { GuessFromStatsConfigPanel, validateGuessFromStatsConfig } from './guess-from-stats/ConfigPanel';
 import { GuessFromStatsGame } from '../room/GuessFromStatsGame';
 import { GuessFromStatsResults } from '../room/GuessFromStatsResults';
+import { ZoomedPokemonConfigPanel, validateZoomedPokemonConfig } from './zoomed-pokemon/ConfigPanel';
+import { ZoomedPokemonGame } from '../room/ZoomedPokemonGame';
+import { ZoomedPokemonResults } from '../room/ZoomedPokemonResults';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
@@ -105,4 +108,7 @@ export const clientGameRegistry = new ClientGameRegistry().register({
 }).register({
   id: 'guess-from-stats', name: 'Guess from Stats', icon: '📊', description: 'Reconoce Pokémon por sus estadísticas base y resuelve antes que tus rivales.',
   ConfigPanel: GuessFromStatsConfigPanel, ActiveGame: GuessFromStatsGame, Results: GuessFromStatsResults, validateConfig: validateGuessFromStatsConfig,
+}).register({
+  id: 'zoomed-pokemon', name: 'Zoomed Pokémon', icon: '🔎', description: 'Reconoce el Pokémon mientras una cámara compartida se aleja progresivamente.',
+  ConfigPanel: ZoomedPokemonConfigPanel, ActiveGame: ZoomedPokemonGame, Results: ZoomedPokemonResults, validateConfig: validateZoomedPokemonConfig,
 });

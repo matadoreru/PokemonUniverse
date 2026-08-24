@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { defaultGuessFromStatsConfig, defaultHigherLowerConfig, defaultLearnsetGuessConfig, defaultPokedexDistanceConfig, defaultPokedexEntryGuessConfig, defaultPokeddleRaceConfig, defaultPokemonBingoConfig, defaultPokemonImpostorConfig, defaultShinyVoteConfig, defaultTypeChainConfig, defaultTypeDuelConfig, defaultWhosThatPokemonConfig, GameRegistry, gameRegistry, guessFromStatsGame, higherLowerGame, learnsetGuessGame, pokeddleRaceGame, pokemonBingoGame, pokedexDistanceGame, pokedexEntryGuessGame, pokemonImpostorGame, shinyVoteGame, typeChainGame, typeDuelGame, whosThatPokemonGame } from '../index.js';
+import { defaultGuessFromStatsConfig, defaultHigherLowerConfig, defaultLearnsetGuessConfig, defaultPokedexDistanceConfig, defaultPokedexEntryGuessConfig, defaultPokeddleRaceConfig, defaultPokemonBingoConfig, defaultPokemonImpostorConfig, defaultShinyVoteConfig, defaultTypeChainConfig, defaultTypeDuelConfig, defaultWhosThatPokemonConfig, defaultZoomedPokemonConfig, GameRegistry, gameRegistry, guessFromStatsGame, higherLowerGame, learnsetGuessGame, pokeddleRaceGame, pokemonBingoGame, pokedexDistanceGame, pokedexEntryGuessGame, pokemonImpostorGame, shinyVoteGame, typeChainGame, typeDuelGame, whosThatPokemonGame, zoomedPokemonGame } from '../index.js';
 
 describe('multi-game registry', () => {
   it('registers every minigame simultaneously', () => {
@@ -16,6 +16,7 @@ describe('multi-game registry', () => {
       ['pokedex-entry-guess', 'Pokédex Entry Guess'],
       ['type-chain', 'Type Chain'],
       ['guess-from-stats', 'Guess from Stats'],
+      ['zoomed-pokemon', 'Zoomed Pokémon'],
     ]);
   });
 
@@ -28,7 +29,8 @@ describe('multi-game registry', () => {
     expect(shiny).toBe(shinyVoteGame);
     expect(impostor).toBe(pokemonImpostorGame);
     const pokeddle = gameRegistry.get('pokeddle-race'); const bingo = gameRegistry.get('pokemon-bingo'); const who = gameRegistry.get('whos-that-pokemon'); const entryGuess = gameRegistry.get('pokedex-entry-guess'); const typeChain = gameRegistry.get('type-chain'); const statsGuess = gameRegistry.get('guess-from-stats');
-    expect(higherLower).toBe(higherLowerGame); expect(typeDuel).toBe(typeDuelGame); expect(learnset).toBe(learnsetGuessGame); expect(pokeddle).toBe(pokeddleRaceGame); expect(bingo).toBe(pokemonBingoGame); expect(who).toBe(whosThatPokemonGame); expect(entryGuess).toBe(pokedexEntryGuessGame); expect(typeChain).toBe(typeChainGame); expect(statsGuess).toBe(guessFromStatsGame); expect(gameRegistry.list()).toHaveLength(12);
+    const zoomed = gameRegistry.get('zoomed-pokemon');
+    expect(higherLower).toBe(higherLowerGame); expect(typeDuel).toBe(typeDuelGame); expect(learnset).toBe(learnsetGuessGame); expect(pokeddle).toBe(pokeddleRaceGame); expect(bingo).toBe(pokemonBingoGame); expect(who).toBe(whosThatPokemonGame); expect(entryGuess).toBe(pokedexEntryGuessGame); expect(typeChain).toBe(typeChainGame); expect(statsGuess).toBe(guessFromStatsGame); expect(zoomed).toBe(zoomedPokemonGame); expect(gameRegistry.list()).toHaveLength(13);
     expect(pokedex?.defaultConfig).toEqual(defaultPokedexDistanceConfig);
     expect(shiny?.defaultConfig).toEqual(defaultShinyVoteConfig);
     expect(impostor?.defaultConfig).toEqual(defaultPokemonImpostorConfig);
@@ -39,12 +41,13 @@ describe('multi-game registry', () => {
     expect(entryGuess?.defaultConfig).toEqual(defaultPokedexEntryGuessConfig);
     expect(typeChain?.defaultConfig).toEqual(defaultTypeChainConfig);
     expect(statsGuess?.defaultConfig).toEqual(defaultGuessFromStatsConfig);
+    expect(zoomed?.defaultConfig).toEqual(defaultZoomedPokemonConfig);
   });
 
   it('rejects duplicate ids instead of silently replacing a game', () => {
-    const registry = new GameRegistry().register(pokedexDistanceGame).register(shinyVoteGame).register(pokemonImpostorGame).register(higherLowerGame).register(typeDuelGame).register(learnsetGuessGame).register(pokeddleRaceGame).register(pokemonBingoGame).register(whosThatPokemonGame).register(pokedexEntryGuessGame).register(typeChainGame).register(guessFromStatsGame);
+    const registry = new GameRegistry().register(pokedexDistanceGame).register(shinyVoteGame).register(pokemonImpostorGame).register(higherLowerGame).register(typeDuelGame).register(learnsetGuessGame).register(pokeddleRaceGame).register(pokemonBingoGame).register(whosThatPokemonGame).register(pokedexEntryGuessGame).register(typeChainGame).register(guessFromStatsGame).register(zoomedPokemonGame);
     expect(() => registry.register(pokedexDistanceGame)).toThrow(/Duplicate game id/);
-    expect(registry.list()).toEqual([pokedexDistanceGame, shinyVoteGame, pokemonImpostorGame, higherLowerGame, typeDuelGame, learnsetGuessGame, pokeddleRaceGame, pokemonBingoGame, whosThatPokemonGame, pokedexEntryGuessGame, typeChainGame, guessFromStatsGame]);
+    expect(registry.list()).toEqual([pokedexDistanceGame, shinyVoteGame, pokemonImpostorGame, higherLowerGame, typeDuelGame, learnsetGuessGame, pokeddleRaceGame, pokemonBingoGame, whosThatPokemonGame, pokedexEntryGuessGame, typeChainGame, guessFromStatsGame, zoomedPokemonGame]);
   });
 
   it('exposes a profile statistics definition for every registered game', () => {

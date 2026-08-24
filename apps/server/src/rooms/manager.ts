@@ -1,4 +1,4 @@
-import { assignableRoomRoleSchema, gameRegistry, hasRoomPermission, roomCodeSchema, sessionModeSchema, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck } from '@pokemon-universe/shared';
+import { assignableRoomRoleSchema, gameRegistry, hasRoomPermission, roomCodeSchema, sessionModeSchema, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck } from '@pokemon-universe/shared';
 import { randomInt, randomUUID } from 'node:crypto';
 import type { Server, Socket } from 'socket.io';
 import { env } from '../config.js';
@@ -17,7 +17,11 @@ function roomCode(): string {
 
 export class RoomManager {
   readonly store = new InMemoryRoomStore();
-  constructor(private readonly io: GameServer, private readonly pokemon: PokemonCatalog) {}
+  constructor(
+    private readonly io: GameServer,
+    private readonly pokemon: PokemonCatalog,
+    private readonly pokemonVisuals: PokemonVisualCatalog = { artworkFor: () => null, artworkPokemonIds: () => [] },
+  ) {}
 
   bind(socket: GameSocket): void {
     const identity = socket.data.identity;
@@ -202,7 +206,7 @@ export class RoomManager {
     const module = gameRegistry.get(room.selectedGameId)!;
     if (players.length < module.manifest.minPlayers) throw new Error(`Se necesitan al menos ${module.manifest.minPlayers} jugadores.`);
     if (module.manifest.maxPlayers && players.length > module.manifest.maxPlayers) throw new Error(`Este juego admite un máximo de ${module.manifest.maxPlayers} jugadores.`);
-    const context = { players, pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage };
+    const context = { players, pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage };
     const config = module.configSchema.parse(room.gameConfigs.get(room.selectedGameId));
     let state = module.createInitialState(config, context);
     state = module.start(state, context);
@@ -297,7 +301,7 @@ export class RoomManager {
       displayName: member.identity.displayName,
       connected: member.presence === 'CONNECTED',
       active: member.role === 'PLAYER' && member.presence !== 'LEFT',
-    })), pokemon: this.pokemon, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage };
+    })), pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage };
   }
 
   gameAsset(code: string, assetToken: string, roundNumber: number, assetId: string): string | GameAssetResolution | null {

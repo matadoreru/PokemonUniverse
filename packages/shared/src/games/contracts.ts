@@ -55,6 +55,23 @@ export interface GameContext {
   roomCode?: string;
   hostId?: string;
   preloadImage?: (source: string) => void;
+  /** Server-owned visual sources. Local artwork paths never enter public game state. */
+  pokemonVisuals?: PokemonVisualCatalog;
+}
+
+export interface PokemonVisualAsset {
+  pokemonId: string;
+  source: 'SPRITE' | 'ARTWORK';
+  /** Trusted remote URL or an opaque local-artwork source understood by the server. */
+  location: string;
+  width?: number;
+  height?: number;
+  alphaBounds?: { x: number; y: number; width: number; height: number };
+}
+
+export interface PokemonVisualCatalog {
+  artworkFor(pokemonId: string): PokemonVisualAsset | null;
+  artworkPokemonIds(): readonly string[];
 }
 
 export interface GameActionResult<TState> {
@@ -113,10 +130,12 @@ export interface GameAssetRequest {
   assetId: string;
 }
 
-export type GameAssetTransform = 'ORIGINAL' | 'SILHOUETTE';
+export type GameAssetTransform = 'ORIGINAL' | 'SILHOUETTE' | 'NORMALIZED' | 'FOCUSED_NORMALIZED';
 export interface GameAssetResolution {
   source: string;
   transform: GameAssetTransform;
+  /** Used only by FOCUSED_NORMALIZED to deterministically select an alpha-safe focus. */
+  focusSeed?: number;
 }
 
 export interface MiniGameModule<TConfig, TState, TAction, TPublicState> {

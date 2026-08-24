@@ -17,3 +17,4 @@ export * from './games/whos-that-pokemon/index.js';
 export * from './games/pokedex-entry-guess/index.js';
 export * from './games/type-chain/index.js';
 export * from './games/guess-from-stats/index.js';
+export * from './games/zoomed-pokemon/index.js';
