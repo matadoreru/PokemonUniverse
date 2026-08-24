@@ -21,6 +21,9 @@ import { LearnsetGuessResults } from '../room/LearnsetGuessResults';
 import { PokeddleRaceConfigPanel, validatePokeddleConfig } from './pokeddle-race/ConfigPanel';
 import { PokeddleRaceGame } from '../room/PokeddleRaceGame';
 import { PokeddleRaceResults } from '../room/PokeddleRaceResults';
+import { PokemonBingoConfigPanel, validatePokemonBingoConfig } from './pokemon-bingo/ConfigPanel';
+import { PokemonBingoGame } from '../room/PokemonBingoGame';
+import { PokemonBingoResults } from '../room/PokemonBingoResults';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
@@ -75,4 +78,7 @@ export const clientGameRegistry = new ClientGameRegistry().register({
 }).register({
   id: 'pokeddle-race', name: 'Pokédle Race', icon: '🏁', description: 'Descubre tu Pokémon secreto mediante pistas comparativas antes que tus rivales.',
   ConfigPanel: PokeddleRaceConfigPanel, ActiveGame: PokeddleRaceGame, Results: PokeddleRaceResults, validateConfig: validatePokeddleConfig,
+}).register({
+  id: 'pokemon-bingo', name: 'Pokémon Bingo', icon: '🎉', description: 'Completa antes que nadie un tablero de condiciones con Pokémon distintos.',
+  ConfigPanel: PokemonBingoConfigPanel, ActiveGame: PokemonBingoGame, Results: PokemonBingoResults, validateConfig: validatePokemonBingoConfig,
 });

@@ -10,7 +10,7 @@ vi.mock('../stats/service.js', () => ({ persistGameResults }));
 
 import { RoomManager } from './manager.js';
 
-const pokemon: Pokemon[] = Array.from({ length: 8 }, (_, index) => ({
+const pokemon: Pokemon[] = Array.from({ length: 16 }, (_, index) => ({
   id: `pokemon-${index + 1}`,
   nationalDexNumber: index + 1,
   name: `Pokémon ${index + 1}`,
@@ -61,7 +61,7 @@ describe('room multi-game lifecycle', () => {
     const room = manager.store.get(created.room.code)!;
     (manager as any).join(guestSocket, guest, room.code);
 
-    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess', 'pokeddle-race']);
+    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo']);
     expect(room.selectedGameId).toBe('pokedex-distance');
     expect(room.members.size).toBe(2);
 
@@ -125,7 +125,7 @@ describe('room multi-game lifecycle', () => {
     expect(() => (manager as any).selectGame(guest.id, 'shiny-vote')).toThrow(/No tienes permiso/);
     expect(() => (manager as any).selectGame(host.id, 'missing-game')).toThrow(/Unknown game/);
     expect(room.selectedGameId).toBe('pokedex-distance');
-    expect(created.room.availableGames).toHaveLength(7);
+    expect(created.room.availableGames).toHaveLength(8);
   });
 
   it('broadcasts avatar changes and keeps the lightweight reference in the room', () => {
@@ -287,6 +287,21 @@ describe('room multi-game lifecycle', () => {
     room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS');
     (manager as any).returnLobby(host.id); expect(room.phase).toBe('LOBBY'); expect(room.game).toBeNull(); expect([...room.members.keys()]).toEqual(originalMemberIds); expect(room.members.get(host.id)?.socketId).toBe('host-restored');
     (manager as any).selectGame(host.id, 'higher-lower'); expect(room.selectedGameId).toBe('higher-lower'); expect(room.members.size).toBe(2); expect([...room.members.values()].every((member) => member.role === 'PLAYER')).toBe(true);
+  });
+
+  it('plays Pokémon Bingo, synchronizes public boards, and returns to the same lobby and roles', () => {
+    const manager = new RoomManager(io() as any, catalog); const host = identity('host', 'Host'); const guest = identity('guest', 'Guest');
+    const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!; (manager as any).join(socket('guest-socket'), guest, room.code);
+    const memberIds = [...room.members.keys()]; (manager as any).selectGame(host.id, 'pokemon-bingo');
+    const config = room.gameConfigs.get('pokemon-bingo') as Record<string, unknown>; (manager as any).updateConfig(host.id, { ...config, width: 2, height: 2, generations: [1], durationSeconds: 60 });
+    (manager as any).startGame(host.id); expect(room.game?.gameId).toBe('pokemon-bingo'); expect(room.phase).toBe('ROUND_ACTIVE');
+    const hostBoard = room.game!.state.boards.host; const guestBoard = room.game!.state.boards.guest;
+    expect(hostBoard.cells).toHaveLength(4); expect(guestBoard.cells).toHaveLength(4); expect(hostBoard.cells).not.toEqual(guestBoard.cells);
+    for (const cell of hostBoard.cells) (manager as any).action(host.id, { type: 'ASSIGN_POKEMON', cellId: cell.id, pokemonId: hostBoard.solutionPokemonIds[cell.id] });
+    expect(room.phase).toBe('ROUND_RESULTS'); const publicView = (manager as any).view(room, guest.id); expect(publicView.game.boards.host).toMatchObject({ completed: 4, total: 4 }); expect(JSON.stringify(publicView.game)).not.toContain('solutionPokemonIds');
+    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); expect((manager as any).view(room, guest.id).game.boards.guest.cells.every((cell: { possibleSolutions: unknown[] }) => cell.possibleSolutions.length <= 3)).toBe(true);
+    (manager as any).returnLobby(host.id); expect(room.phase).toBe('LOBBY'); expect(room.game).toBeNull(); expect([...room.members.keys()]).toEqual(memberIds); expect([...room.members.values()].every((member) => member.role === 'PLAYER')).toBe(true);
+    (manager as any).selectGame(host.id, 'shiny-vote'); expect(room.selectedGameId).toBe('shiny-vote');
   });
 
   it('uses connected required players globally without deleting accepted actions', () => {

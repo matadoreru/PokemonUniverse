@@ -11,6 +11,7 @@ describe('client minigame registry', () => {
       ['type-duel', 'Type Duel'],
       ['learnset-guess', 'Learnset Guess'],
       ['pokeddle-race', 'Pokédle Race'],
+      ['pokemon-bingo', 'Pokémon Bingo'],
     ]);
   });
 });

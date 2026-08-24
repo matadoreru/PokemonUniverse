@@ -50,6 +50,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 @keyframes timer-pulse { to { transform: scale(1.06); color: #ef476f; } }
 .reveal-pop { animation: reveal-pop .45s cubic-bezier(.2,.9,.3,1.25); }
 @keyframes reveal-pop { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
+.pokeddle-feedback { height: 100%; transition: background-color .18s ease, color .18s ease; }
+.pokeddle-row-enter { animation: pokeddle-row-enter .38s cubic-bezier(.2,.8,.3,1); }
+@keyframes pokeddle-row-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.pokeddle-timer-urgent { animation: pokeddle-timer-urgent .8s ease-in-out infinite alternate; }
+@keyframes pokeddle-timer-urgent { to { text-shadow: 0 0 16px rgba(255,92,130,.7); opacity: .78; } }
 @media (prefers-reduced-motion: reduce) {
-  .reveal-pop, .timer-pulse { animation: none !important; }
+  *, *::before, *::after { scroll-behavior: auto !important; }
+  .reveal-pop, .timer-pulse, .pokeddle-row-enter, .pokeddle-timer-urgent { animation: none !important; }
 }
