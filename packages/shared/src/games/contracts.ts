@@ -15,6 +15,7 @@ export type GamePhase =
   | 'TYPE_REVEAL'
   | 'INVALID_COMBINATION'
   | 'POKEMON_SEARCH'
+  | 'TURN_ACTIVE'
   | 'GAME_RESULTS';
 
 export interface GamePlayer {

@@ -98,10 +98,25 @@ model Pokemon {
   evolutionStage    Int?
   evolutionStages   Int?
   levelUpMoves      PokemonLevelUpMove[]
+  pokedexEntries    PokedexEntry[]
   updatedAt         DateTime @updatedAt
 
   @@index([generation])
   @@index([nationalDexNumber])
+}
+
+model PokedexEntry {
+  id           String  @id
+  pokemonId    String
+  text         String
+  language     String
+  generation   Int
+  version      String
+  versionLabel String
+  pokemon      Pokemon @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
+
+  @@unique([pokemonId, language, version])
+  @@index([pokemonId, language, generation])
 }
 
 model Move {

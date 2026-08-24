@@ -1,6 +1,7 @@
 import { type Generation, type MoveCategory, type PokemonType } from '@pokemon-universe/shared';
 import { PrismaClient } from '@prisma/client';
 import { extractCanonicalLevelUpEntries } from '../src/pokemon/learnset-source.js';
+import { extractSpanishPokedexEntries, type SourceFlavorTextEntry } from '../src/pokemon/pokedex-entry-source.js';
 
 const prisma = new PrismaClient();
 const LAST_NATIONAL_DEX_NUMBER = 1_025;
@@ -14,7 +15,10 @@ const LEARNSET_SYNC_VERSION = 1;
 const EVOLUTION_SYNC_KEY = 'evolution-positions';
 const EVOLUTION_SYNC_VERSION = 2;
 const POKEDDLE_METADATA_SYNC_KEY = 'pokeddle-species-metadata';
-const POKEDDLE_METADATA_SYNC_VERSION = 1;
+const POKEDDLE_METADATA_SYNC_VERSION = 2;
+const POKEDEX_ENTRY_SYNC_KEY = 'spanish-pokedex-entries';
+const POKEDEX_ENTRY_SYNC_VERSION = 1;
+const MIN_SPANISH_POKEDEX_ENTRIES = 500;
 
 interface PokeApiVersionDetail {
   level_learned_at: number;
@@ -44,10 +48,12 @@ interface PokeApiMove {
 
 interface PokeApiSpecies {
   name: string;
+  names: Array<{ name: string; language: { name: string } }>;
   evolves_from_species: { name: string } | null;
   is_legendary: boolean;
   is_mythical: boolean;
   color: { name: string };
+  flavor_text_entries: SourceFlavorTextEntry[];
 }
 
 interface PokeApiPokemonList { results: Array<{ name: string }> }
@@ -123,7 +129,8 @@ function toEntry(pokemon: PokeApiPokemon, isDefault: boolean, species: PokeApiSp
   return {
     id: pokemon.name, nationalDexNumber, name: isDefault ? displayName(pokemon.species.name) : regionalDisplayName(pokemon), generation: generationFor(nationalDexNumber), isDefault,
     sprite: pokemon.sprites.front_default ?? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
-    names: { en: pokemon.species.name }, types: pokemon.types.sort((a, b) => a.slot - b.slot).map((entry) => entry.type.name),
+    names: Object.fromEntries(species.names.filter((entry) => ['en', 'es'].includes(entry.language.name)).map((entry) => [entry.language.name, entry.name])),
+    types: pokemon.types.sort((a, b) => a.slot - b.slot).map((entry) => entry.type.name),
     hp, attack, defense, specialAttack, specialDefense, speed, baseStatTotal: hp + attack + defense + specialAttack + specialDefense + speed,
     heightDecimeters: pokemon.height, weightHectograms: pokemon.weight,
     legendaryStatus: species.is_mythical ? 'MYTHICAL' : species.is_legendary ? 'LEGENDARY' : 'NORMAL',
@@ -204,14 +211,33 @@ async function upsertPokemon(entries: ReturnType<typeof toEntry>[]): Promise<voi
   }
 }
 
+async function syncPokedexEntries(defaultPokemon: PokeApiPokemon[], species: PokeApiSpecies[]): Promise<void> {
+  const speciesByName = new Map(species.map((entry) => [entry.name, entry]));
+  const entries = defaultPokemon.flatMap((pokemon) => {
+    const source = speciesByName.get(pokemon.species.name);
+    return source ? extractSpanishPokedexEntries(pokemon.name, source.flavor_text_entries) : [];
+  });
+  const pokemonIds = defaultPokemon.map((pokemon) => pokemon.name);
+  await prisma.pokedexEntry.deleteMany({ where: { pokemonId: { in: pokemonIds } } });
+  for (let start = 0; start < entries.length; start += 1_000) {
+    await prisma.pokedexEntry.createMany({
+      data: entries.slice(start, start + 1_000).map((entry) => ({ ...entry, id: `${entry.pokemonId}:${entry.version}` })),
+      skipDuplicates: true,
+    });
+  }
+  if (entries.length < MIN_SPANISH_POKEDEX_ENTRIES) throw new Error(`Expected at least ${MIN_SPANISH_POKEDEX_ENTRIES} Spanish Pokédex entries, received ${entries.length}`);
+  console.info(`Seeded ${entries.length} official Spanish Pokédex entries.`);
+}
+
 async function main(): Promise<void> {
   const force = process.env.POKEMON_SYNC === 'true';
-  const [enrichedDefaultCount, regionalFormCount, moveCount, learnsetCount, evolutionCount, metadataCount, syncRows] = await Promise.all([
+  const [enrichedDefaultCount, regionalFormCount, moveCount, learnsetCount, evolutionCount, metadataCount, pokedexEntryCount, syncRows] = await Promise.all([
     prisma.pokemon.count({ where: { isDefault: true, hp: { gt: 0 }, types: { isEmpty: false } } }),
     prisma.pokemon.count({ where: { isDefault: false } }), prisma.move.count(), prisma.pokemonLevelUpMove.count(),
     prisma.pokemon.count({ where: { isDefault: true, evolutionStage: { not: null }, evolutionStages: { not: null } } }),
     prisma.pokemon.count({ where: { isDefault: true, heightDecimeters: { gt: 0 }, weightHectograms: { gt: 0 }, color: { not: 'unknown' }, abilities: { isEmpty: false } } }),
-    prisma.pokemonCatalogSync.findMany({ where: { key: { in: [LEARNSET_SYNC_KEY, EVOLUTION_SYNC_KEY, POKEDDLE_METADATA_SYNC_KEY] } } }),
+    prisma.pokedexEntry.count({ where: { language: 'es' } }),
+    prisma.pokemonCatalogSync.findMany({ where: { key: { in: [LEARNSET_SYNC_KEY, EVOLUTION_SYNC_KEY, POKEDDLE_METADATA_SYNC_KEY, POKEDEX_ENTRY_SYNC_KEY] } } }),
   ]);
   const syncVersions = new Map(syncRows.map((entry) => [entry.key, entry.version]));
   const needsBase = force || enrichedDefaultCount < LAST_NATIONAL_DEX_NUMBER;
@@ -219,12 +245,13 @@ async function main(): Promise<void> {
   const needsLearnsets = force || (syncVersions.get(LEARNSET_SYNC_KEY) ?? 0) < LEARNSET_SYNC_VERSION || moveCount < MIN_MOVE_COUNT || learnsetCount < MIN_LEARNSET_ENTRIES;
   const needsEvolution = force || (syncVersions.get(EVOLUTION_SYNC_KEY) ?? 0) < EVOLUTION_SYNC_VERSION || evolutionCount < LAST_NATIONAL_DEX_NUMBER;
   const needsMetadata = force || (syncVersions.get(POKEDDLE_METADATA_SYNC_KEY) ?? 0) < POKEDDLE_METADATA_SYNC_VERSION || metadataCount < LAST_NATIONAL_DEX_NUMBER;
-  if (!needsBase && !needsRegional && !needsLearnsets && !needsEvolution && !needsMetadata) {
+  const needsPokedexEntries = force || (syncVersions.get(POKEDEX_ENTRY_SYNC_KEY) ?? 0) < POKEDEX_ENTRY_SYNC_VERSION || pokedexEntryCount < MIN_SPANISH_POKEDEX_ENTRIES;
+  if (!needsBase && !needsRegional && !needsLearnsets && !needsEvolution && !needsMetadata && !needsPokedexEntries) {
     console.info(`Catalog ready: ${enrichedDefaultCount} Pokémon, ${regionalFormCount} forms, ${moveCount} moves and ${learnsetCount} learnset entries.`); return;
   }
 
-  const defaultPokemon = needsBase || needsLearnsets || needsEvolution || needsMetadata ? await fetchPokemonRange() : [];
-  const species = needsBase || needsRegional || needsEvolution || needsMetadata ? await fetchSpeciesRange() : [];
+  const defaultPokemon = needsBase || needsLearnsets || needsEvolution || needsMetadata || needsPokedexEntries ? await fetchPokemonRange() : [];
+  const species = needsBase || needsRegional || needsEvolution || needsMetadata || needsPokedexEntries ? await fetchSpeciesRange() : [];
   const speciesByName = new Map(species.map((entry) => [entry.name, entry]));
   if (needsBase || needsMetadata) await upsertPokemon(defaultPokemon.map((pokemon) => toEntry(pokemon, true, speciesByName.get(pokemon.species.name)!)));
   if (needsRegional) {
@@ -243,6 +270,10 @@ async function main(): Promise<void> {
     await prisma.pokemonCatalogSync.upsert({ where: { key: EVOLUTION_SYNC_KEY }, create: { key: EVOLUTION_SYNC_KEY, version: EVOLUTION_SYNC_VERSION }, update: { version: EVOLUTION_SYNC_VERSION } });
   }
   if (needsMetadata) await prisma.pokemonCatalogSync.upsert({ where: { key: POKEDDLE_METADATA_SYNC_KEY }, create: { key: POKEDDLE_METADATA_SYNC_KEY, version: POKEDDLE_METADATA_SYNC_VERSION }, update: { version: POKEDDLE_METADATA_SYNC_VERSION } });
+  if (needsPokedexEntries) {
+    await syncPokedexEntries(defaultPokemon, species);
+    await prisma.pokemonCatalogSync.upsert({ where: { key: POKEDEX_ENTRY_SYNC_KEY }, create: { key: POKEDEX_ENTRY_SYNC_KEY, version: POKEDEX_ENTRY_SYNC_VERSION }, update: { version: POKEDEX_ENTRY_SYNC_VERSION } });
+  }
 }
 
 main().finally(() => prisma.$disconnect());

@@ -30,6 +30,16 @@ export interface PokemonEvolutionInfo {
   stages: number;
 }
 
+export interface PokedexEntry {
+  pokemonId: string;
+  text: string;
+  /** This game deliberately accepts only source entries tagged as Spanish. */
+  language: 'es';
+  generation: Generation;
+  version: string;
+  versionLabel: string;
+}
+
 export const GENERATION_LEARNSET_SOURCES = {
   1: { versionGroup: 'yellow', label: 'Pokémon Yellow' },
   2: { versionGroup: 'crystal', label: 'Pokémon Crystal' },
@@ -83,9 +93,17 @@ export interface LearnsetPokemonCatalog extends PokemonCatalog {
   evolutionInfo(pokemonId: string): PokemonEvolutionInfo | undefined;
 }
 
+export interface PokedexEntryPokemonCatalog extends PokemonCatalog {
+  pokedexEntries(pokemonId: string): readonly PokedexEntry[];
+}
+
 export function isLearnsetPokemonCatalog(catalog: PokemonCatalog): catalog is LearnsetPokemonCatalog {
   const candidate = catalog as Partial<LearnsetPokemonCatalog>;
   return typeof candidate.levelUpMoves === 'function' && typeof candidate.evolutionInfo === 'function';
+}
+
+export function isPokedexEntryPokemonCatalog(catalog: PokemonCatalog): catalog is PokedexEntryPokemonCatalog {
+  return typeof (catalog as Partial<PokedexEntryPokemonCatalog>).pokedexEntries === 'function';
 }
 
 export const GENERATIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;

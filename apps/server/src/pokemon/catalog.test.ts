@@ -32,4 +32,11 @@ describe('InMemoryPokemonCatalog forms', () => {
     expect(catalog.levelUpMoves('dugtrio', 9).map((entry) => [entry.move.name, entry.level])).toEqual([['Growl', 1], ['Earthquake', 40]]);
     expect(catalog.evolutionInfo('dugtrio')).toEqual({ stage: 2, stages: 2 });
   });
+
+  it('indexes preloaded Spanish Pokédex entries without network access', () => {
+    const pokedexEntries = [{ pokemonId: 'dugtrio', text: 'Sus tres cabezas piensan al unísono.', language: 'es' as const, generation: 3 as const, version: 'emerald', versionLabel: 'Pokémon Esmeralda' }];
+    const catalog = new InMemoryPokemonCatalog(entries, [], [], {}, pokedexEntries);
+    expect(catalog.pokedexEntries('dugtrio')).toEqual(pokedexEntries);
+    expect(catalog.pokedexEntries('dugtrio-alola')).toEqual([]);
+  });
 });

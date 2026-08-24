@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { clientGameRegistry } from './registry';
 
 describe('client minigame registry', () => {
-  it('keeps the six existing minigames and adds Pokédle Race', () => {
+  it('keeps every existing minigame and adds Guess from Stats', () => {
     expect(clientGameRegistry.list().map(({ id, name }) => [id, name])).toEqual([
       ['pokedex-distance', 'Pokédex Distance'],
       ['shiny-vote', 'Shiny Quiz'],
@@ -13,6 +13,9 @@ describe('client minigame registry', () => {
       ['pokeddle-race', 'Pokédle Race'],
       ['pokemon-bingo', 'Pokémon Bingo'],
       ['whos-that-pokemon', '¿Quién es ese Pokémon?'],
+      ['pokedex-entry-guess', 'Pokédex Entry Guess'],
+      ['type-chain', 'Type Chain'],
+      ['guess-from-stats', 'Guess from Stats'],
     ]);
   });
 });

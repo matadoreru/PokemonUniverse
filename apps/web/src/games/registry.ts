@@ -27,6 +27,15 @@ import { PokemonBingoResults } from '../room/PokemonBingoResults';
 import { WhosThatPokemonConfigPanel } from './whos-that-pokemon/ConfigPanel';
 import { WhosThatPokemonGame } from '../room/WhosThatPokemonGame';
 import { WhosThatPokemonResults } from '../room/WhosThatPokemonResults';
+import { PokedexEntryGuessConfigPanel } from './pokedex-entry-guess/ConfigPanel';
+import { PokedexEntryGuessGame } from '../room/PokedexEntryGuessGame';
+import { PokedexEntryGuessResults } from '../room/PokedexEntryGuessResults';
+import { TypeChainConfigPanel } from './type-chain/ConfigPanel';
+import { TypeChainGame } from '../room/TypeChainGame';
+import { TypeChainResults } from '../room/TypeChainResults';
+import { GuessFromStatsConfigPanel, validateGuessFromStatsConfig } from './guess-from-stats/ConfigPanel';
+import { GuessFromStatsGame } from '../room/GuessFromStatsGame';
+import { GuessFromStatsResults } from '../room/GuessFromStatsResults';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
@@ -87,4 +96,13 @@ export const clientGameRegistry = new ClientGameRegistry().register({
 }).register({
   id: 'whos-that-pokemon', name: '¿Quién es ese Pokémon?', icon: '❓', description: 'Reconoce la silueta antes que nadie y suma más puntos cuanto más rápido aciertes.',
   ConfigPanel: WhosThatPokemonConfigPanel, ActiveGame: WhosThatPokemonGame, Results: WhosThatPokemonResults,
+}).register({
+  id: 'pokedex-entry-guess', name: 'Pokédex Entry Guess', icon: '📖', description: 'Reconoce al Pokémon por una entrada oficial de la Pokédex en español.',
+  ConfigPanel: PokedexEntryGuessConfigPanel, ActiveGame: PokedexEntryGuessGame, Results: PokedexEntryGuessResults,
+}).register({
+  id: 'type-chain', name: 'Type Chain', icon: '⛓️', description: 'Encadena Pokémon compartiendo exactamente un tipo antes de que termine tu turno.',
+  ConfigPanel: TypeChainConfigPanel, ActiveGame: TypeChainGame, Results: TypeChainResults,
+}).register({
+  id: 'guess-from-stats', name: 'Guess from Stats', icon: '📊', description: 'Reconoce Pokémon por sus estadísticas base y resuelve antes que tus rivales.',
+  ConfigPanel: GuessFromStatsConfigPanel, ActiveGame: GuessFromStatsGame, Results: GuessFromStatsResults, validateConfig: validateGuessFromStatsConfig,
 });

@@ -14,3 +14,6 @@ export * from './games/learnset-guess/index.js';
 export * from './games/pokeddle-race/index.js';
 export * from './games/pokemon-bingo/index.js';
 export * from './games/whos-that-pokemon/index.js';
+export * from './games/pokedex-entry-guess/index.js';
+export * from './games/type-chain/index.js';
+export * from './games/guess-from-stats/index.js';
