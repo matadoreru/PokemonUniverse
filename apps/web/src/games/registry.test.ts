@@ -9,4 +9,16 @@ describe('client minigame registry', () => {
       'guess-from-stats', 'zoomed-pokemon',
     ]);
   });
+
+  it('keeps configuration, gameplay and results behind React lazy boundaries', () => {
+    for (const module of clientGameRegistry.list()) {
+      expect(module.ConfigPanel).toHaveProperty('$$typeof', Symbol.for('react.lazy'));
+      expect(module.ActiveGame).toHaveProperty('$$typeof', Symbol.for('react.lazy'));
+      expect(module.Results).toHaveProperty('$$typeof', Symbol.for('react.lazy'));
+    }
+  });
+
+  it('can preload every dynamically registered component export', async () => {
+    await Promise.all(clientGameRegistry.list().flatMap((module) => [module.preloadConfig(), module.preloadGameplay()]));
+  });
 });

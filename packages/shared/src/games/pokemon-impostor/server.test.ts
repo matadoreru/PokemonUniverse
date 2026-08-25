@@ -181,6 +181,9 @@ describe('Pokémon Impostor', () => {
     let state = startClues(fixture);
     fixture.setNow(state.roundEndsAt!);
     expect(clue(state, 'p1', 'Demasiado tarde', fixture.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/terminado/) });
+    const lateGuess = pokemonImpostorGame.handleAction(state, 'p1', { type: 'GUESS_POKEMON', pokemonId: 'lucario' }, fixture.context);
+    expect(lateGuess).toMatchObject({ accepted: false, error: expect.stringMatching(/terminado/) });
+    expect(lateGuess.state.guessAttempts).toEqual({});
     state = pokemonImpostorGame.handleTimeout(state, fixture.context);
     while (state.phase === 'CLUE_PHASE') state = timeout(fixture, state);
     fixture.setNow(state.roundEndsAt!);

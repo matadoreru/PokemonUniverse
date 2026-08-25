@@ -1,5 +1,5 @@
 import { GENERATION_LEARNSET_SOURCES, isLearnsetPokemonCatalog, type Generation, type LearnsetPokemonCatalog, type Pokemon, type ResolvedLevelUpMove } from '../../pokemon/types.js';
-import type { GameActionResult, GameContext, MiniGameModule } from '../contracts.js';
+import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
 import { defaultLearnsetGuessConfig, learnsetGuessConfigSchema, type LearnsetGuessConfig } from './config.js';
 import { buildLearnsetResults, emptyLearnsetStats, learnsetPoints } from './rules.js';
@@ -140,8 +140,9 @@ export const learnsetGuessGame: MiniGameModule<LearnsetGuessConfig, LearnsetGues
   handleAction(state, playerId, action, context): GameActionResult<LearnsetGuessState> {
     if (action.type !== 'GUESS_POKEMON') return { state, accepted: false, error: 'Unknown action' };
     if (state.phase !== 'ROUND_ACTIVE') return { state, accepted: false, error: 'No active round' };
-    if (!state.playerIds.includes(playerId)) return { state, accepted: false, error: 'You are spectating' };
+    if (!state.playerIds.includes(playerId) || !isPlayerRequired(context, playerId)) return { state, accepted: false, error: 'No estás conectado como participante.' };
     if (state.solves[playerId]) return { state, accepted: false, error: 'Ya has acertado esta ronda.' };
+    if (context.now >= (state.roundEndsAt ?? 0)) return { state: resolveRound(state, context), accepted: false, error: 'El tiempo ha terminado.' };
     if (cooldownRemainingMs(context.now, state.cooldownUntil[playerId]) > 0) return { state, accepted: false, error: cooldownMessage(context.now, state.cooldownUntil[playerId]) };
     const guessed = context.pokemon.byId(action.pokemonId);
     if (!guessed || guessed.isDefault === false || !state.config.generations.includes(guessed.generation)) return { state, accepted: false, error: 'Pokémon no disponible en esta partida.' };
@@ -186,9 +187,9 @@ export const learnsetGuessGame: MiniGameModule<LearnsetGuessConfig, LearnsetGues
       scores: state.scores, results: state.phase === 'GAME_RESULTS' ? buildLearnsetResults(state) : null,
     };
   },
-  getPlayerState(state, playerId): LearnsetGuessPlayerState {
+  getPlayerState(state, playerId, context): LearnsetGuessPlayerState {
     const solve = state.solves[playerId];
-    return { canGuess: state.phase === 'ROUND_ACTIVE' && state.playerIds.includes(playerId) && !solve, solved: Boolean(solve), cooldownUntil: state.cooldownUntil[playerId] ?? null, roundPoints: solve?.points ?? 0 };
+    return { canGuess: state.phase === 'ROUND_ACTIVE' && state.playerIds.includes(playerId) && isPlayerRequired(context, playerId) && !solve, solved: Boolean(solve), cooldownUntil: state.cooldownUntil[playerId] ?? null, roundPoints: solve?.points ?? 0 };
   },
   isFinished(state) { return state.phase === 'GAME_RESULTS'; }, getResults(state) { return buildLearnsetResults(state); },
 };

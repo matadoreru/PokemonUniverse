@@ -1,8 +1,10 @@
 import type { AuthUser } from '@pokemon-universe/shared';
 import { LogOut } from 'lucide-react';
+import { Suspense } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { Avatar } from './Avatar';
+import { RouteLoadingFallback } from './LoadingFallback';
 import { ThemeToggle } from './ThemeToggle';
 
 export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(): void }) {
@@ -23,7 +25,7 @@ export function Layout() {
   const { user, logout } = useAuth(); const navigate = useNavigate();
   return <div className="flex min-h-screen flex-col">
     <AppHeader user={user} onLogout={() => void logout().then(() => navigate('/'))} />
-    <main className="flex-1"><Outlet /></main>
+    <main className="flex-1"><Suspense fallback={<RouteLoadingFallback />}><Outlet /></Suspense></main>
     <footer className="mx-auto max-w-7xl px-5 py-8 text-center text-sm font-bold text-ink/60">Proyecto fan no afiliado a Nintendo, Game Freak ni The Pokémon Company.</footer>
   </div>;
 }

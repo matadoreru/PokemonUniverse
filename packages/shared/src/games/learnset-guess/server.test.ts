@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { defaultLearnsetGuessConfig } from './config.js';
 import { LEARNSET_GUESS_COOLDOWN_MS, LEARNSET_HINT_INTERVAL_MS, LEARNSET_RESULT_DURATION_MS, evolutionHint, groupLearnset, learnsetGuessGame, learnsetReferenceGeneration } from './server.js';
 import { learnsetPoints } from './rules.js';
-import type { LearnsetGuessState } from './types.js';
+import type { LearnsetGuessPlayerState, LearnsetGuessState } from './types.js';
 
 const pokemon: Pokemon[] = [
   makePokemon('late-hints', 1, 'Late Hints', 1),
@@ -101,6 +101,17 @@ describe('Learnset Guess', () => {
     state = learnsetGuessGame.handlePresenceChange!(state, fixture.context); expect(state.phase).toBe('ROUND_RESULTS'); expect(state.solves.p1?.points).toBe(5);
   });
 
+  it('rejects disconnected players and guesses received at the authoritative deadline', () => {
+    const disconnected = setup(); disconnected.context.players[0]!.connected = false;
+    expect(guess(disconnected.state, 'p1', 'pikachu', disconnected.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/conectado/) });
+    expect((learnsetGuessGame.getPlayerState(disconnected.state, 'p1', disconnected.context) as LearnsetGuessPlayerState).canGuess).toBe(false);
+
+    const expired = setup(); expired.setNow(expired.state.roundEndsAt!);
+    const late = guess(expired.state, 'p1', 'pikachu', expired.context);
+    expect(late).toMatchObject({ accepted: false, error: expect.stringMatching(/tiempo/) });
+    expect(late.state).toMatchObject({ phase: 'ROUND_RESULTS', solves: {} });
+  });
+
   it('times out, reveals the answer and automatically advances after four seconds', () => {
     const fixture = setup(); fixture.setNow(fixture.state.roundEndsAt!); let state = learnsetGuessGame.handleTimeout(fixture.state, fixture.context); const view = learnsetGuessGame.getPublicState(state, fixture.context);
     expect(state.phase).toBe('ROUND_RESULTS'); expect(view.lastRound?.pokemon).toMatchObject({ id: 'pikachu', name: 'Pikachu', sprite: '/pikachu.png', generation: 1 }); expect(view.lastRound?.learnset).toHaveLength(pikachuMoves.length); expect(state.nextTransitionAt).toBe(fixture.context.now + LEARNSET_RESULT_DURATION_MS);
@@ -121,6 +132,6 @@ describe('Learnset Guess', () => {
   it('restores only safe private progress and rejects spectators', () => {
     const fixture = setup(); const state = guess(fixture.state, 'p1', 'pikachu', fixture.context).state; const restored = learnsetGuessGame.getPlayerState(state, 'p1', fixture.context);
     expect(JSON.stringify(restored)).not.toContain('pikachu'); expect(restored).toMatchObject({ solved: true, canGuess: false });
-    expect(guess(state, 'spectator', 'pikachu', fixture.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/spectating/) });
+    expect(guess(state, 'spectator', 'pikachu', fixture.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/conectado/) });
   });
 });

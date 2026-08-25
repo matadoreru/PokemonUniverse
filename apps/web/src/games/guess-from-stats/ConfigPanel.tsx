@@ -1,6 +1,7 @@
-import { guessFromStatsConfigSchema, type GuessFromStatsConfig } from '@pokemon-universe/shared';
+import type { GuessFromStatsConfig } from '@pokemon-universe/shared';
 import { BarChart3, Lightbulb } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
+export { validateGuessFromStatsConfig } from './validation';
 
 const roundTimes = [15, 20, 30, 45, 60]; const roundCounts = [5, 10, 15, 20];
 const statOptions: Array<{ key: keyof GuessFromStatsConfig['stats']; label: string }> = [
@@ -9,11 +10,6 @@ const statOptions: Array<{ key: keyof GuessFromStatsConfig['stats']; label: stri
 const hintOptions: Array<{ key: keyof GuessFromStatsConfig['hints']; label: string }> = [
   { key: 'generation', label: 'Generación' }, { key: 'types', label: 'Tipos' }, { key: 'typeCount', label: 'Nº de tipos' }, { key: 'evolution', label: 'Etapa evolutiva' }, { key: 'height', label: 'Altura' }, { key: 'weight', label: 'Peso' }, { key: 'category', label: 'Legendario / Mítico' },
 ];
-
-export function validateGuessFromStatsConfig(config: unknown): string | null {
-  const result = guessFromStatsConfigSchema.safeParse(config); if (result.success) return null;
-  return result.error.issues[0]?.message ?? 'Configuración inválida.';
-}
 
 export function GuessFromStatsConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as GuessFromStatsConfig; const statCount = Object.values(value.stats).filter(Boolean).length;

@@ -1,6 +1,7 @@
 import { hasRoomPermission, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared';
 import { Check, Copy, LockKeyhole, LogOut, Play, Settings2, UsersRound } from 'lucide-react';
-import { useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { GameLoadingFallback } from '../components/LoadingFallback';
 import { clientGameRegistry } from '../games/registry';
 import { GameSelectionConfig } from './GameSelectionConfig';
 import { PlayerList } from './PlayerList';
@@ -35,6 +36,11 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
   const enoughPlayers = connectedPlayers >= selectedManifest.minPlayers;
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const preloadTimer = window.setTimeout(() => { void gameClient.preloadGameplay().catch(() => undefined); }, 600);
+    return () => window.clearTimeout(preloadTimer);
+  }, [gameClient]);
 
   const report = (caught: unknown) => setError(caught instanceof Error ? caught.message : 'Ha ocurrido un error.');
   const session = (mode: SessionMode) => { if (canEditSession) void onSession(mode).catch(report); };
@@ -121,9 +127,10 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
             <div className={`grid gap-3 sm:grid-cols-2 xl:grid-cols-3 ${!canChangeGame ? 'lobby-readonly' : ''}`} aria-describedby={!canChangeGame ? 'game-permission-help' : undefined}>
               {room.availableGames.map((game) => {
                 const selected = game.id === room.selectedGameId;
-                clientGameRegistry.get(game.id);
+                const candidate = clientGameRegistry.get(game.id);
+                const preloadConfig = () => { void candidate.preloadConfig().catch(() => undefined); };
                 return (
-                  <button key={game.id} type="button" disabled={!canChangeGame} aria-pressed={selected} onClick={() => selectGame(game.id)} className={`group min-h-28 rounded-xl border p-3.5 text-left transition-colors ${selected ? 'border-aqua bg-aqua/10' : 'border-ink/10 bg-surface-raised hover:border-aqua/55 hover:bg-ink/[.05]'}`}>
+                  <button key={game.id} type="button" disabled={!canChangeGame} aria-pressed={selected} onClick={() => selectGame(game.id)} onPointerEnter={preloadConfig} onFocus={preloadConfig} className={`group min-h-28 rounded-xl border p-3.5 text-left transition-colors ${selected ? 'border-aqua bg-aqua/10' : 'border-ink/10 bg-surface-raised hover:border-aqua/55 hover:bg-ink/[.05]'}`}>
                     <span className="mb-2 flex items-start justify-between gap-2"><span className="text-2xl" aria-hidden="true">{game.icon}</span>{selected && <span className="rounded-full bg-aqua px-2 py-1 text-[.68rem] font-extrabold uppercase tracking-wide text-night">Activo</span>}</span>
                     <strong className="block font-display text-lg">{game.name}</strong>
                     <span className="mt-1 block text-sm font-bold leading-snug text-ink/65">{game.description}</span>
@@ -141,7 +148,7 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
             </div>
             {!canEditGame && <div className="mb-4 flex items-center gap-2 rounded-xl border border-electric/20 bg-electric/5 px-3 py-2 text-sm font-bold text-ink/60"><LockKeyhole size={15} className="text-electric" /> Solo el host y los co-hosts pueden cambiar esta configuración.</div>}
             <div className={!canEditGame ? 'lobby-readonly' : ''} title={!canEditGame ? 'Solo el host y los co-hosts pueden cambiar esta configuración.' : undefined}>
-              <gameClient.ConfigPanel config={room.selectedGameConfig} disabled={!canEditGame} onChange={onConfig} />
+              <Suspense fallback={<GameLoadingFallback compact />}><gameClient.ConfigPanel config={room.selectedGameConfig} disabled={!canEditGame} onChange={onConfig} /></Suspense>
             </div>
           </article>
 

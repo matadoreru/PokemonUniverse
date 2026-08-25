@@ -30,26 +30,38 @@ export class RoomManager {
   bind(socket: GameSocket): void {
     const identity = socket.data.identity;
     this.restore(socket, identity);
+    const currentSocket = <T = Record<string, never>>(ack: SocketAck<T>, operation: () => T): void => {
+      this.guard(ack, () => {
+        this.assertActiveSocket(identity.id, socket.id);
+        return operation();
+      });
+    };
     socket.on('room:create', (payload, ack) => this.guard(ack, () => this.create(socket, identity, payload.maxPlayers)));
     socket.on('room:join', (payload, ack) => this.guard(ack, () => this.join(socket, identity, payload.code)));
-    socket.on('room:leave', (_payload, ack) => this.guard(ack, () => this.leave(socket, identity.id)));
-    socket.on('room:select-game', (payload, ack) => this.guard(ack, () => this.selectGame(identity.id, payload.gameId)));
-    socket.on('room:update-config', (payload, ack) => this.guard(ack, () => this.updateConfig(identity.id, payload.config)));
-    socket.on('room:update-session', (payload, ack) => this.guard(ack, () => this.updateSession(identity.id, payload.mode)));
-    socket.on('room:update-game-selection', (payload, ack) => this.guard(ack, () => this.updateGameSelection(identity.id, payload.mode)));
-    socket.on('room:vote-next-game', (payload, ack) => this.guard(ack, () => this.voteNextGame(identity.id, payload.gameId)));
-    socket.on('room:set-role', (payload, ack) => this.guard(ack, () => this.setRoomRole(identity.id, payload.playerId, payload.role)));
-    socket.on('room:transfer-host', (payload, ack) => this.guard(ack, () => this.transferHostManually(identity.id, payload.playerId)));
-    socket.on('room:kick', (payload, ack) => this.guard(ack, () => this.kick(identity.id, payload.playerId)));
-    socket.on('room:start-game', (_payload, ack) => this.guard(ack, () => this.startGame(identity.id)));
-    socket.on('room:return-lobby', (_payload, ack) => this.guard(ack, () => this.returnLobby(identity.id)));
-    socket.on('room:end-session', (_payload, ack) => this.guard(ack, () => this.endSession(identity.id)));
-    socket.on('game:action', (payload, ack) => this.guard(ack, () => this.action(identity.id, payload)));
+    socket.on('room:leave', (_payload, ack) => currentSocket(ack, () => this.leave(socket, identity.id)));
+    socket.on('room:select-game', (payload, ack) => currentSocket(ack, () => this.selectGame(identity.id, payload.gameId)));
+    socket.on('room:update-config', (payload, ack) => currentSocket(ack, () => this.updateConfig(identity.id, payload.config)));
+    socket.on('room:update-session', (payload, ack) => currentSocket(ack, () => this.updateSession(identity.id, payload.mode)));
+    socket.on('room:update-game-selection', (payload, ack) => currentSocket(ack, () => this.updateGameSelection(identity.id, payload.mode)));
+    socket.on('room:vote-next-game', (payload, ack) => currentSocket(ack, () => this.voteNextGame(identity.id, payload.gameId)));
+    socket.on('room:set-role', (payload, ack) => currentSocket(ack, () => this.setRoomRole(identity.id, payload.playerId, payload.role)));
+    socket.on('room:transfer-host', (payload, ack) => currentSocket(ack, () => this.transferHostManually(identity.id, payload.playerId)));
+    socket.on('room:kick', (payload, ack) => currentSocket(ack, () => this.kick(identity.id, payload.playerId)));
+    socket.on('room:start-game', (_payload, ack) => currentSocket(ack, () => this.startGame(identity.id)));
+    socket.on('room:return-lobby', (_payload, ack) => currentSocket(ack, () => this.returnLobby(identity.id)));
+    socket.on('room:end-session', (_payload, ack) => currentSocket(ack, () => this.endSession(identity.id)));
+    socket.on('game:action', (payload, ack) => currentSocket(ack, () => this.action(identity.id, payload)));
     socket.on('disconnect', () => this.disconnect(identity.id, socket.id));
   }
 
-  private guard<T = Record<string, never>>(ack: SocketAck<T>, operation: () => T): void {
+  private guard<T = Record<string, never>>(ack: SocketAck<T> | undefined, operation: () => T): void {
+    if (typeof ack !== 'function') return;
     try { ack({ ok: true, ...operation() }); } catch (error) { ack({ ok: false, error: error instanceof Error ? error.message : 'Unexpected error' }); }
+  }
+
+  private assertActiveSocket(playerId: string, socketId: string): void {
+    const member = this.store.roomForPlayer(playerId)?.members.get(playerId);
+    if (member && member.socketId !== socketId) throw new Error('Esta conexión ha sido reemplazada por una sesión más reciente.');
   }
 
   private restore(socket: GameSocket, identity: AuthUser): void {

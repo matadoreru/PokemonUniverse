@@ -201,6 +201,7 @@ export const pokemonImpostorGame: MiniGameModule<PokemonImpostorConfig, PokemonI
     if (action.type === 'GUESS_POKEMON') {
       if (state.phase !== 'CLUE_PHASE') return { state, accepted: false, error: 'Solo puedes adivinar durante la fase de pistas.' };
       if (state.roles[playerId] !== 'IMPOSTOR') return { state, accepted: false, error: 'Solo los impostores pueden intentar adivinar.' };
+      if (context.now >= (state.roundEndsAt ?? 0)) return { state: advanceClueTurn(state, context, 'TIMEOUT'), accepted: false, error: 'El tiempo para adivinar ha terminado.' };
       if (state.guessAttempts[playerId]) return { state, accepted: false, error: 'Ya has utilizado tu intento.' };
       const pokemon = context.pokemon.byId(action.pokemonId);
       if (!pokemon || !state.config.generations.includes(pokemon.generation)) return { state, accepted: false, error: 'Pokémon fuera del pool configurado.' };
@@ -308,12 +309,12 @@ export const pokemonImpostorGame: MiniGameModule<PokemonImpostorConfig, PokemonI
       secretPokemon: pokemon ? { name: pokemon.name, sprite: pokemon.sprite } : null,
       revealedRoles: eliminated || state.phase === 'GAME_RESULTS' ? { ...state.roles } : null,
       alive: state.aliveIds.includes(playerId),
-      canSubmitClue: state.phase === 'CLUE_PHASE' && state.aliveIds.includes(playerId) && state.clueOrder[state.currentClueTurnIndex] === playerId && state.clues[state.roundNumber]?.[playerId] === undefined,
+      canSubmitClue: state.phase === 'CLUE_PHASE' && state.aliveIds.includes(playerId) && isPlayerRequired(context, playerId) && state.clueOrder[state.currentClueTurnIndex] === playerId && state.clues[state.roundNumber]?.[playerId] === undefined,
       ownClue: state.clues[state.roundNumber]?.[playerId] ?? null,
-      canGuessPokemon: state.phase === 'CLUE_PHASE' && state.aliveIds.includes(playerId) && role === 'IMPOSTOR' && !state.guessAttempts[playerId],
+      canGuessPokemon: state.phase === 'CLUE_PHASE' && state.aliveIds.includes(playerId) && isPlayerRequired(context, playerId) && role === 'IMPOSTOR' && !state.guessAttempts[playerId],
       guessUsed: Boolean(state.guessAttempts[playerId]),
       guessCorrect: state.guessAttempts[playerId]?.correct ?? null,
-      canVote: state.phase === 'VOTING' && state.aliveIds.includes(playerId) && !state.votes[playerId],
+      canVote: state.phase === 'VOTING' && state.aliveIds.includes(playerId) && isPlayerRequired(context, playerId) && !state.votes[playerId],
       ownVote: state.votes[playerId] ?? null,
     };
   },

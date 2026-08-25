@@ -1,6 +1,7 @@
 import type { ZoomedPokemonConfig, ZoomedPokemonHintKind, ZoomedPokemonImageMode } from '@pokemon-universe/shared';
 import { Image, Images, Lightbulb, Sparkles } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
+export { validateZoomedPokemonConfig } from './validation';
 
 const roundTimes = [15, 20, 30, 45, 60];
 const roundCounts = [5, 10, 15, 20];
@@ -13,12 +14,6 @@ const hintOptions: Array<{ id: ZoomedPokemonHintKind; label: string }> = [
   { id: 'GENERATION', label: 'Generación' }, { id: 'TYPE', label: 'Tipo' }, { id: 'TYPE_COUNT', label: 'Nº de tipos' },
   { id: 'EVOLUTION', label: 'Etapa evolutiva' }, { id: 'CATEGORY', label: 'Legendario / Mítico' },
 ];
-
-export function validateZoomedPokemonConfig(config: unknown): string | null {
-  const value = config as Partial<ZoomedPokemonConfig>;
-  if (!value.generations?.length) return 'Selecciona al menos una generación.';
-  return null;
-}
 
 export function ZoomedPokemonConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as ZoomedPokemonConfig;

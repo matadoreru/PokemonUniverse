@@ -1,44 +1,9 @@
-import type { ComponentType } from 'react';
 import type { RoomView } from '@pokemon-universe/shared';
-import { PokedexDistanceConfigPanel } from './pokedex-distance/ConfigPanel';
-import { PokedexDistanceGame } from '../room/PokedexDistanceGame';
-import { GameResults } from '../room/Results';
-import { ShinyVoteConfigPanel } from './shiny-vote/ConfigPanel';
-import { ShinyVoteGame } from '../room/ShinyVoteGame';
-import { ShinyVoteResults } from '../room/ShinyVoteResults';
-import { PokemonImpostorConfigPanel } from './pokemon-impostor/ConfigPanel';
-import { PokemonImpostorGame } from '../room/PokemonImpostorGame';
-import { PokemonImpostorResults } from '../room/PokemonImpostorResults';
-import { HigherLowerConfigPanel } from './higher-lower/ConfigPanel';
-import { HigherLowerGame } from '../room/HigherLowerGame';
-import { HigherLowerResults } from '../room/HigherLowerResults';
-import { TypeDuelConfigPanel } from './type-duel/ConfigPanel';
-import { TypeDuelGame } from '../room/TypeDuelGame';
-import { TypeDuelResults } from '../room/TypeDuelResults';
-import { LearnsetGuessConfigPanel } from './learnset-guess/ConfigPanel';
-import { LearnsetGuessGame } from '../room/LearnsetGuessGame';
-import { LearnsetGuessResults } from '../room/LearnsetGuessResults';
-import { PokeddleRaceConfigPanel, validatePokeddleConfig } from './pokeddle-race/ConfigPanel';
-import { PokeddleRaceGame } from '../room/PokeddleRaceGame';
-import { PokeddleRaceResults } from '../room/PokeddleRaceResults';
-import { PokemonBingoConfigPanel, validatePokemonBingoConfig } from './pokemon-bingo/ConfigPanel';
-import { PokemonBingoGame } from '../room/PokemonBingoGame';
-import { PokemonBingoResults } from '../room/PokemonBingoResults';
-import { WhosThatPokemonConfigPanel } from './whos-that-pokemon/ConfigPanel';
-import { WhosThatPokemonGame } from '../room/WhosThatPokemonGame';
-import { WhosThatPokemonResults } from '../room/WhosThatPokemonResults';
-import { PokedexEntryGuessConfigPanel } from './pokedex-entry-guess/ConfigPanel';
-import { PokedexEntryGuessGame } from '../room/PokedexEntryGuessGame';
-import { PokedexEntryGuessResults } from '../room/PokedexEntryGuessResults';
-import { TypeChainConfigPanel } from './type-chain/ConfigPanel';
-import { TypeChainGame } from '../room/TypeChainGame';
-import { TypeChainResults } from '../room/TypeChainResults';
-import { GuessFromStatsConfigPanel, validateGuessFromStatsConfig } from './guess-from-stats/ConfigPanel';
-import { GuessFromStatsGame } from '../room/GuessFromStatsGame';
-import { GuessFromStatsResults } from '../room/GuessFromStatsResults';
-import { ZoomedPokemonConfigPanel, validateZoomedPokemonConfig } from './zoomed-pokemon/ConfigPanel';
-import { ZoomedPokemonGame } from '../room/ZoomedPokemonGame';
-import { ZoomedPokemonResults } from '../room/ZoomedPokemonResults';
+import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
+import { validateGuessFromStatsConfig } from './guess-from-stats/validation';
+import { validatePokeddleConfig } from './pokeddle-race/validation';
+import { validatePokemonBingoConfig } from './pokemon-bingo/validation';
+import { validateZoomedPokemonConfig } from './zoomed-pokemon/validation';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
@@ -49,6 +14,50 @@ export interface MiniGameClientModule {
   ActiveGame: ComponentType<ActiveGameProps>;
   Results: ComponentType<GameResultsProps>;
   validateConfig?(config: unknown): string | null;
+  preloadConfig(): Promise<unknown>;
+  preloadGameplay(): Promise<unknown>;
+}
+
+interface LazyComponentDefinition {
+  load(): Promise<Record<string, unknown>>;
+  exportName: string;
+}
+
+function preloadableComponent<TProps>(definition: LazyComponentDefinition): {
+  Component: LazyExoticComponent<ComponentType<TProps>>;
+  preload(): Promise<unknown>;
+} {
+  let pending: Promise<{ default: ComponentType<TProps> }> | null = null;
+  const load = () => {
+    pending ??= definition.load().then((module) => {
+      const Component = module[definition.exportName];
+      if (!Component) throw new Error(`Missing client component export: ${definition.exportName}`);
+      return { default: Component as ComponentType<TProps> };
+    }).catch((error: unknown) => { pending = null; throw error; });
+    return pending;
+  };
+  return { Component: lazy(load), preload: load };
+}
+
+function clientModule(definition: {
+  id: string;
+  config: LazyComponentDefinition;
+  active: LazyComponentDefinition;
+  results: LazyComponentDefinition;
+  validateConfig?(config: unknown): string | null;
+}): MiniGameClientModule {
+  const config = preloadableComponent<GameConfigProps>(definition.config);
+  const active = preloadableComponent<ActiveGameProps>(definition.active);
+  const results = preloadableComponent<GameResultsProps>(definition.results);
+  return {
+    id: definition.id,
+    ConfigPanel: config.Component,
+    ActiveGame: active.Component,
+    Results: results.Component,
+    ...(definition.validateConfig ? { validateConfig: definition.validateConfig } : {}),
+    preloadConfig: config.preload,
+    preloadGameplay: () => Promise.all([active.preload(), results.preload()]),
+  };
 }
 
 class ClientGameRegistry {
@@ -64,43 +73,75 @@ class ClientGameRegistry {
   list(): MiniGameClientModule[] { return [...this.modules.values()]; }
 }
 
-export const clientGameRegistry = new ClientGameRegistry().register({
+const component = (load: LazyComponentDefinition['load'], exportName: string): LazyComponentDefinition => ({ load, exportName });
+
+export const clientGameRegistry = new ClientGameRegistry().register(clientModule({
   id: 'pokedex-distance',
-  ConfigPanel: PokedexDistanceConfigPanel, ActiveGame: PokedexDistanceGame, Results: GameResults,
-}).register({
+  config: component(() => import('./pokedex-distance/ConfigPanel'), 'PokedexDistanceConfigPanel'),
+  active: component(() => import('../room/PokedexDistanceGame'), 'PokedexDistanceGame'),
+  results: component(() => import('../room/Results'), 'GameResults'),
+})).register(clientModule({
   id: 'shiny-vote',
-  ConfigPanel: ShinyVoteConfigPanel, ActiveGame: ShinyVoteGame, Results: ShinyVoteResults,
-}).register({
+  config: component(() => import('./shiny-vote/ConfigPanel'), 'ShinyVoteConfigPanel'),
+  active: component(() => import('../room/ShinyVoteGame'), 'ShinyVoteGame'),
+  results: component(() => import('../room/ShinyVoteResults'), 'ShinyVoteResults'),
+})).register(clientModule({
   id: 'pokemon-impostor',
-  ConfigPanel: PokemonImpostorConfigPanel, ActiveGame: PokemonImpostorGame, Results: PokemonImpostorResults,
-}).register({
+  config: component(() => import('./pokemon-impostor/ConfigPanel'), 'PokemonImpostorConfigPanel'),
+  active: component(() => import('../room/PokemonImpostorGame'), 'PokemonImpostorGame'),
+  results: component(() => import('../room/PokemonImpostorResults'), 'PokemonImpostorResults'),
+})).register(clientModule({
   id: 'higher-lower',
-  ConfigPanel: HigherLowerConfigPanel, ActiveGame: HigherLowerGame, Results: HigherLowerResults,
-}).register({
+  config: component(() => import('./higher-lower/ConfigPanel'), 'HigherLowerConfigPanel'),
+  active: component(() => import('../room/HigherLowerGame'), 'HigherLowerGame'),
+  results: component(() => import('../room/HigherLowerResults'), 'HigherLowerResults'),
+})).register(clientModule({
   id: 'type-duel',
-  ConfigPanel: TypeDuelConfigPanel, ActiveGame: TypeDuelGame, Results: TypeDuelResults,
-}).register({
+  config: component(() => import('./type-duel/ConfigPanel'), 'TypeDuelConfigPanel'),
+  active: component(() => import('../room/TypeDuelGame'), 'TypeDuelGame'),
+  results: component(() => import('../room/TypeDuelResults'), 'TypeDuelResults'),
+})).register(clientModule({
   id: 'learnset-guess',
-  ConfigPanel: LearnsetGuessConfigPanel, ActiveGame: LearnsetGuessGame, Results: LearnsetGuessResults,
-}).register({
+  config: component(() => import('./learnset-guess/ConfigPanel'), 'LearnsetGuessConfigPanel'),
+  active: component(() => import('../room/LearnsetGuessGame'), 'LearnsetGuessGame'),
+  results: component(() => import('../room/LearnsetGuessResults'), 'LearnsetGuessResults'),
+})).register(clientModule({
   id: 'pokeddle-race',
-  ConfigPanel: PokeddleRaceConfigPanel, ActiveGame: PokeddleRaceGame, Results: PokeddleRaceResults, validateConfig: validatePokeddleConfig,
-}).register({
+  config: component(() => import('./pokeddle-race/ConfigPanel'), 'PokeddleRaceConfigPanel'),
+  active: component(() => import('../room/PokeddleRaceGame'), 'PokeddleRaceGame'),
+  results: component(() => import('../room/PokeddleRaceResults'), 'PokeddleRaceResults'),
+  validateConfig: validatePokeddleConfig,
+})).register(clientModule({
   id: 'pokemon-bingo',
-  ConfigPanel: PokemonBingoConfigPanel, ActiveGame: PokemonBingoGame, Results: PokemonBingoResults, validateConfig: validatePokemonBingoConfig,
-}).register({
+  config: component(() => import('./pokemon-bingo/ConfigPanel'), 'PokemonBingoConfigPanel'),
+  active: component(() => import('../room/PokemonBingoGame'), 'PokemonBingoGame'),
+  results: component(() => import('../room/PokemonBingoResults'), 'PokemonBingoResults'),
+  validateConfig: validatePokemonBingoConfig,
+})).register(clientModule({
   id: 'whos-that-pokemon',
-  ConfigPanel: WhosThatPokemonConfigPanel, ActiveGame: WhosThatPokemonGame, Results: WhosThatPokemonResults,
-}).register({
+  config: component(() => import('./whos-that-pokemon/ConfigPanel'), 'WhosThatPokemonConfigPanel'),
+  active: component(() => import('../room/WhosThatPokemonGame'), 'WhosThatPokemonGame'),
+  results: component(() => import('../room/WhosThatPokemonResults'), 'WhosThatPokemonResults'),
+})).register(clientModule({
   id: 'pokedex-entry-guess',
-  ConfigPanel: PokedexEntryGuessConfigPanel, ActiveGame: PokedexEntryGuessGame, Results: PokedexEntryGuessResults,
-}).register({
+  config: component(() => import('./pokedex-entry-guess/ConfigPanel'), 'PokedexEntryGuessConfigPanel'),
+  active: component(() => import('../room/PokedexEntryGuessGame'), 'PokedexEntryGuessGame'),
+  results: component(() => import('../room/PokedexEntryGuessResults'), 'PokedexEntryGuessResults'),
+})).register(clientModule({
   id: 'type-chain',
-  ConfigPanel: TypeChainConfigPanel, ActiveGame: TypeChainGame, Results: TypeChainResults,
-}).register({
+  config: component(() => import('./type-chain/ConfigPanel'), 'TypeChainConfigPanel'),
+  active: component(() => import('../room/TypeChainGame'), 'TypeChainGame'),
+  results: component(() => import('../room/TypeChainResults'), 'TypeChainResults'),
+})).register(clientModule({
   id: 'guess-from-stats',
-  ConfigPanel: GuessFromStatsConfigPanel, ActiveGame: GuessFromStatsGame, Results: GuessFromStatsResults, validateConfig: validateGuessFromStatsConfig,
-}).register({
+  config: component(() => import('./guess-from-stats/ConfigPanel'), 'GuessFromStatsConfigPanel'),
+  active: component(() => import('../room/GuessFromStatsGame'), 'GuessFromStatsGame'),
+  results: component(() => import('../room/GuessFromStatsResults'), 'GuessFromStatsResults'),
+  validateConfig: validateGuessFromStatsConfig,
+})).register(clientModule({
   id: 'zoomed-pokemon',
-  ConfigPanel: ZoomedPokemonConfigPanel, ActiveGame: ZoomedPokemonGame, Results: ZoomedPokemonResults, validateConfig: validateZoomedPokemonConfig,
-});
+  config: component(() => import('./zoomed-pokemon/ConfigPanel'), 'ZoomedPokemonConfigPanel'),
+  active: component(() => import('../room/ZoomedPokemonGame'), 'ZoomedPokemonGame'),
+  results: component(() => import('../room/ZoomedPokemonResults'), 'ZoomedPokemonResults'),
+  validateConfig: validateZoomedPokemonConfig,
+}));

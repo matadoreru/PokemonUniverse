@@ -1,6 +1,8 @@
 import { POKEDDLE_CLUE_KEYS, type PokeddleClueKey, type PokeddleRaceConfig } from '@pokemon-universe/shared';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
+import { validatePokeddleConfig } from './validation';
+export { validatePokeddleConfig } from './validation';
 
 const groups: Array<{ title: string; keys: PokeddleClueKey[] }> = [
   { title: 'Básicas', keys: ['generation', 'dexNumber', 'types', 'typeCount'] },
@@ -11,11 +13,6 @@ const groups: Array<{ title: string; keys: PokeddleClueKey[] }> = [
 const labels: Record<PokeddleClueKey, string> = {
   generation: 'Generación', dexNumber: 'N.º Pokédex', types: 'Tipos', typeCount: 'Número de tipos', hp: 'HP', attack: 'Ataque', defense: 'Defensa', specialAttack: 'At. Especial', specialDefense: 'Def. Especial', speed: 'Velocidad', baseStatTotal: 'Total stats', height: 'Altura', weight: 'Peso', evolutionStage: 'Etapa evolutiva', legendaryStatus: 'Legendario / Mítico', color: 'Color oficial', abilities: 'Habilidades',
 };
-
-export function validatePokeddleConfig(config: unknown): string | null {
-  const value = config as Partial<PokeddleRaceConfig>;
-  return value.clues && POKEDDLE_CLUE_KEYS.some((key) => value.clues?.[key]) ? null : 'Selecciona al menos una pista.';
-}
 
 export function PokeddleRaceConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as PokeddleRaceConfig; const validation = validatePokeddleConfig(value);

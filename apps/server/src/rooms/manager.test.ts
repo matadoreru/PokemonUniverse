@@ -41,6 +41,16 @@ function socket(id: string) {
   return { id, join: vi.fn(() => Promise.resolve()), leave: vi.fn(() => Promise.resolve()), emit: vi.fn() };
 }
 
+function boundSocket(id: string, user: AuthUser) {
+  const handlers = new Map<string, (...args: any[]) => void>();
+  const result = {
+    ...socket(id), data: { identity: user },
+    on: vi.fn((event: string, handler: (...args: any[]) => void) => { handlers.set(event, handler); return result; }),
+    handlers,
+  };
+  return result;
+}
+
 function io() {
   const emit = vi.fn();
   return { emit, to: vi.fn(() => ({ emit })) };
@@ -49,6 +59,32 @@ function io() {
 describe('room multi-game lifecycle', () => {
   beforeEach(() => persistGameResults.mockClear());
   afterEach(() => vi.useRealTimers());
+
+  it('ignores socket events without an acknowledgement callback', () => {
+    const manager = new RoomManager(io() as any, catalog); const host = identity('host', 'Host'); const hostSocket = boundSocket('host-socket', host);
+    manager.bind(hostSocket as any);
+
+    expect(() => hostSocket.handlers.get('room:create')?.({}, undefined)).not.toThrow();
+    expect(manager.store.roomForPlayer(host.id)).toBeUndefined();
+  });
+
+  it('rejects mutations from a socket replaced by a newer connection', () => {
+    const manager = new RoomManager(io() as any, catalog); const host = identity('host', 'Host'); const first = boundSocket('host-old', host);
+    manager.bind(first as any);
+    const createAck = vi.fn(); first.handlers.get('room:create')?.({ maxPlayers: 8 }, createAck);
+    const room = manager.store.roomForPlayer(host.id)!;
+
+    const current = boundSocket('host-current', host); manager.bind(current as any);
+    expect(room.members.get(host.id)?.socketId).toBe('host-current');
+
+    const staleAck = vi.fn(); first.handlers.get('room:leave')?.({}, staleAck);
+    expect(staleAck).toHaveBeenCalledWith({ ok: false, error: expect.stringMatching(/sesión más reciente/) });
+    expect(manager.store.get(room.code)).toBe(room);
+
+    const currentAck = vi.fn(); current.handlers.get('room:leave')?.({}, currentAck);
+    expect(currentAck).toHaveBeenCalledWith({ ok: true });
+    expect(manager.store.get(room.code)).toBeUndefined();
+  });
 
   it('plays Pokédex Distance and Shiny Quiz in the same room without leaking game state', () => {
     const transport = io();
