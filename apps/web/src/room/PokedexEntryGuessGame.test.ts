@@ -23,7 +23,7 @@ describe('Pokédex Entry Guess client', () => {
   it('makes the sanitized Spanish entry prominent and shows only public incorrect attempts', () => {
     const game = publicGame(); game.solvedPlayers = []; const view = room(game, { canGuess: true, solved: false, solveOrder: null, cooldownUntil: null, roundPoints: 0, attemptCount: 0, lastAttempt: null });
     const markup = renderToStaticMarkup(createElement(PokedexEntryGuessGame, { room: view, selfId: 'p1', onAction: async () => undefined }));
-    expect(markup).toContain('Entrada Pokédex'); expect(markup).toContain('??? aparece'); expect(markup).toContain('Buscar respuesta para la ronda 1'); expect(markup).toContain('Umbreon'); expect(markup).not.toContain('Absol');
+    expect(markup).toContain('aria-labelledby="pokedex-entry-heading"'); expect(markup).toContain('Descripción oficial en español'); expect(markup).toContain('??? aparece'); expect(markup).toContain('Buscar respuesta para la ronda 1'); expect(markup).toContain('Umbreon'); expect(markup).not.toContain('Absol');
   });
 
   it('locks a solved player and displays solve order without revealing the answer', () => {
