@@ -1,8 +1,9 @@
-import type { GameResults as GameResultsData, RoomView } from '@pokemon-universe/shared';
+import { supportsPlayerCount, type GameResults as GameResultsData, type RoomView } from '@pokemon-universe/shared';
 import { Check, LoaderCircle, StopCircle, Trophy, UsersRound, Vote } from 'lucide-react';
 import { useState } from 'react';
 import { ServerTimer } from '../components/ServerTimer';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
+import { gameAvailabilityReason } from './GameSelectionConfig';
 
 export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; selfId: string; onVote(gameId: string): Promise<void>; onEnd(): void }) {
   const vote = room.nextGameVote!;
@@ -16,10 +17,13 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
   const host = room.hostId === selfId;
   const eligible = vote.eligibleVoterIds.includes(selfId);
   const canVote = active && eligible && !vote.ownVoteGameId;
+  const playerCount = room.members.filter((member) => member.presence === 'CONNECTED').length;
   const members = new Map(room.members.map((member) => [member.id, member]));
 
   async function confirmVote() {
     if (!draft || !canVote || submitting) return;
+    const selectedGame = vote.options.find((game) => game.id === draft);
+    if (!selectedGame || !supportsPlayerCount(selectedGame, playerCount)) { setError('Ese minijuego ya no admite el número actual de jugadores.'); return; }
     setSubmitting(true); setError('');
     try { await onVote(draft); }
     catch (caught) { setError(caught instanceof Error ? caught.message : 'No se ha podido registrar el voto.'); }
@@ -40,7 +44,7 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
 
     {!active && vote.resolvedGameId && <div className="reveal-pop mb-5 rounded-xl border border-leaf/40 bg-leaf/10 p-4 text-center">
       <Check className="mr-2 inline text-leaf" size={22} /><strong className="font-display text-xl">La sala ha elegido {vote.options.find((game) => game.id === vote.resolvedGameId)?.name}</strong>
-      <p className="mt-1 text-sm font-bold text-ink/65">Volviendo al lobby en {Math.max(1, Math.ceil(revealRemainingMs / 1_000))} s…</p>
+      <p className="mt-1 text-sm font-bold text-ink/65">La siguiente partida empieza en {Math.max(1, Math.ceil(revealRemainingMs / 1_000))} s…</p>
     </div>}
 
     <div className="grid gap-3 md:grid-cols-3">
@@ -48,9 +52,10 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
         const selected = (vote.ownVoteGameId ?? draft) === game.id;
         const winner = vote.resolvedGameId === game.id;
         const tally = vote.tallies?.[game.id] ?? 0;
-        return <button key={game.id} type="button" disabled={!canVote || submitting} aria-pressed={selected} onClick={() => setDraft(game.id)} className={`relative min-h-0 rounded-2xl border p-4 text-left transition-colors md:min-h-48 md:p-5 ${winner ? 'border-leaf bg-leaf/10' : selected ? 'border-aqua bg-aqua/10' : active ? 'border-ink/10 bg-surface hover:border-aqua/60 hover:bg-ink/[.04]' : 'border-ink/10 bg-surface-raised opacity-70'} disabled:cursor-default`}>
+        const unavailableReason = active ? gameAvailabilityReason(game, playerCount) : null;
+        return <button key={game.id} type="button" disabled={!canVote || submitting || Boolean(unavailableReason)} aria-pressed={selected} title={unavailableReason ?? undefined} onClick={() => setDraft(game.id)} className={`relative min-h-0 rounded-2xl border p-4 text-left transition-colors md:min-h-48 md:p-5 ${winner ? 'border-leaf bg-leaf/10' : selected ? 'border-aqua bg-aqua/10' : active ? 'border-ink/10 bg-surface hover:border-aqua/60 hover:bg-ink/[.04]' : 'border-ink/10 bg-surface-raised opacity-70'} disabled:cursor-default`}>
           <span className="mb-3 flex items-start justify-between gap-3 md:mb-5"><span className="text-3xl md:text-4xl" aria-hidden="true">{game.icon}</span>{winner ? <span className="chip bg-leaf/15 text-leaf"><Trophy size={15} /> Ganador</span> : selected && <span className="chip bg-aqua/15 text-aqua"><Check size={15} /> Tu voto</span>}</span>
-          <strong className="block font-display text-xl">{game.name}</strong><span className="mt-1 block text-sm font-bold leading-snug text-ink/60">{game.description}</span>
+          <strong className="block font-display text-xl">{game.name}</strong><span className={`mt-1 block text-sm font-bold leading-snug ${unavailableReason ? 'text-berry' : 'text-ink/60'}`}>{unavailableReason ?? game.description}</span>
           {!active && <span className="mt-4 inline-flex items-center gap-1.5 font-extrabold text-ink/70"><Vote size={17} /> {tally} {tally === 1 ? 'voto' : 'votos'}</span>}
         </button>;
       })}

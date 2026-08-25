@@ -1,4 +1,4 @@
-import { hasRoomPermission, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared';
+import { hasRoomPermission, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared';
 import { Check, Copy, LockKeyhole, LogOut, Play, Settings2, UsersRound } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
 import { GameLoadingFallback } from '../components/LoadingFallback';
@@ -33,7 +33,6 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
   const gameClient = clientGameRegistry.get(room.selectedGameId);
   const selectedManifest = room.availableGames.find((game) => game.id === room.selectedGameId)!;
   const connectedPlayers = room.members.filter((member) => member.presence === 'CONNECTED').length;
-  const enoughPlayers = connectedPlayers >= selectedManifest.minPlayers;
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState('');
 
@@ -64,18 +63,23 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
     void onKick(playerId).catch(report);
   };
 
-  const randomPlayable = room.gameSelectionMode.type === 'RANDOM' && room.gameSelectionMode.gameIds.some((gameId) => {
+  const rotationPlayableCount = room.gameSelectionMode.type !== 'FIXED' ? room.gameSelectionMode.gameIds.filter((gameId) => {
     const manifest = room.availableGames.find((game) => game.id === gameId);
-    return Boolean(manifest && connectedPlayers >= manifest.minPlayers && (!manifest.maxPlayers || connectedPlayers <= manifest.maxPlayers));
-  });
+    return Boolean(manifest && supportsPlayerCount(manifest, connectedPlayers));
+  }).length : 0;
+  const selectedGameReason = connectedPlayers < selectedManifest.minPlayers
+    ? `Se necesitan al menos ${selectedManifest.minPlayers} jugadores conectados.`
+    : selectedManifest.maxPlayers !== undefined && connectedPlayers > selectedManifest.maxPlayers
+      ? `Este juego admite un máximo de ${selectedManifest.maxPlayers} jugadores.`
+      : null;
   const startReason = !canStart
     ? 'Solo el host puede iniciar la partida.'
-    : room.gameSelectionMode.type === 'RANDOM' && !randomPlayable
-      ? 'Ningún minijuego aleatorio admite el número actual de jugadores.'
-    : room.gameSelectionMode.type !== 'RANDOM' && !enoughPlayers
-      ? `Se necesitan al menos ${selectedManifest.minPlayers} jugadores conectados.`
-      : room.gameSelectionMode.type !== 'RANDOM' && selectedManifest.maxPlayers && connectedPlayers > selectedManifest.maxPlayers
-        ? `Este juego admite un máximo de ${selectedManifest.maxPlayers} jugadores.`
+    : room.gameSelectionMode.type === 'RANDOM' && rotationPlayableCount < 2
+      ? 'La rotación aleatoria necesita al menos 2 minijuegos compatibles.'
+    : room.gameSelectionMode.type === 'VOTE' && rotationPlayableCount < 3
+      ? 'La votación necesita al menos 3 minijuegos compatibles.'
+      : room.gameSelectionMode.type !== 'RANDOM' && selectedGameReason
+        ? selectedGameReason
         : room.gameSelectionMode.type === 'RANDOM' ? null : gameClient.validateConfig?.(room.selectedGameConfig) ?? null;
 
   return (
@@ -155,7 +159,7 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
           <article className="card !p-4 md:!p-6">
             <div className="mb-5 flex items-center justify-between gap-3"><div className="flex items-center gap-3"><span className="step-number">3</span><div><span className="label !mb-0">Rotación de juegos</span><h2 className="font-display text-2xl font-bold">Cómo se elige cada minijuego</h2></div></div>{!canEditGameSelection && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}</div>
             <div className={!canEditGameSelection ? 'lobby-readonly' : ''}>
-              <GameSelectionConfig availableGames={room.availableGames} mode={room.gameSelectionMode} disabled={!canEditGameSelection} onChange={gameSelection} />
+              <GameSelectionConfig availableGames={room.availableGames} mode={room.gameSelectionMode} playerCount={connectedPlayers} disabled={!canEditGameSelection} onChange={gameSelection} />
             </div>
             {!canEditGameSelection && <p className="permission-help">Solo el host y los co-hosts pueden cambiar la rotación.</p>}
           </article>

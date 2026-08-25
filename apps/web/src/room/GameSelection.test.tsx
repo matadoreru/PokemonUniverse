@@ -18,14 +18,15 @@ function room(phase: 'NEXT_GAME_VOTE' | 'NEXT_GAME_VOTE_RESULTS'): RoomView {
     selectedGameId: resolved ? 'two' : 'one', selectedGameConfig: {}, sessionMode: { type: 'GAME_COUNT', target: 5 },
     gameSelectionMode: { type: 'VOTE', gameIds: games.map((game) => game.id) }, gamesPlayed: 1,
     nextGameVote: {
-      options: games, eligibleVoterIds: ['p1', 'p2'], votedPlayerIds: resolved ? ['p1', 'p2'] : [], ownVoteGameId: null,
+      options: games, eligibleVoterIds: ['p1', 'p2', 'p3'], votedPlayerIds: resolved ? ['p1', 'p2', 'p3'] : [], ownVoteGameId: null,
       endsAt: resolved ? null : Date.now() + 15_000, resolvedGameId: resolved ? 'two' : null,
-      tallies: resolved ? { one: 0, two: 2, three: 0 } : null, nextTransitionAt: resolved ? Date.now() + 3_000 : null,
+      tallies: resolved ? { one: 0, two: 3, three: 0 } : null, nextTransitionAt: resolved ? Date.now() + 3_000 : null,
     },
     game: { gameId: 'one', results: { winnerId: 'p1', standings: [{ playerId: 'p1', position: 1, points: 5, stats: {} }, { playerId: 'p2', position: 2, points: 2, stats: {} }] } },
     gamePlayerState: null, serverNow: Date.now(), members: [
       { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, sessionPoints: 5 },
       { id: 'p2', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, sessionPoints: 2 },
+      { id: 'p3', displayName: 'Leo', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, sessionPoints: 0 },
     ],
   };
 }
@@ -33,7 +34,7 @@ function room(phase: 'NEXT_GAME_VOTE' | 'NEXT_GAME_VOTE_RESULTS'): RoomView {
 describe('game selection UI', () => {
   it('shows the three rotation methods and the selected voting pool', () => {
     const markup = renderToStaticMarkup(createElement(GameSelectionConfig, {
-      availableGames: games, mode: { type: 'VOTE', gameIds: games.map((game) => game.id) }, disabled: false, onChange: () => undefined,
+      availableGames: games, mode: { type: 'VOTE', gameIds: games.map((game) => game.id) }, playerCount: 3, disabled: false, onChange: () => undefined,
     }));
     expect(markup).toContain('Mismo minijuego');
     expect(markup).toContain('Aleatorio');
@@ -42,16 +43,25 @@ describe('game selection UI', () => {
     expect(markup).toContain('aria-pressed="true"');
   });
 
+  it('disables games and rotation modes that do not support the current player count', () => {
+    const markup = renderToStaticMarkup(createElement(GameSelectionConfig, {
+      availableGames: games, mode: { type: 'VOTE', gameIds: games.map((game) => game.id) }, playerCount: 9, disabled: false, onChange: () => undefined,
+    }));
+    expect(markup).toContain('Máximo 8 jugadores');
+    expect(markup).toContain('Un juego seleccionado ya no admite');
+    expect(markup).toContain('No hay 3 juegos compatibles para 9 jugadores.');
+  });
+
   it('renders a private active vote and the public winning reveal', () => {
     const active = renderToStaticMarkup(createElement(NextGameVote, { room: room('NEXT_GAME_VOTE'), selfId: 'p1', onVote: async () => undefined, onEnd: () => undefined }));
     expect(active).toContain('Elige el siguiente minijuego');
     expect(active).toContain('Confirmar voto');
-    expect(active).toContain('0/2 votos');
+    expect(active).toContain('0/3 votos');
     expect(active).not.toContain('Ganador');
 
     const result = renderToStaticMarkup(createElement(NextGameVote, { room: room('NEXT_GAME_VOTE_RESULTS'), selfId: 'p1', onVote: async () => undefined, onEnd: () => undefined }));
     expect(result).toContain('La sala ha elegido Juego dos');
     expect(result).toContain('Ganador');
-    expect(result).toContain('2 votos');
+    expect(result).toContain('3 votos');
   });
 });

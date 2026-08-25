@@ -36,12 +36,12 @@ describe('Pokédex Entry Guess client', () => {
     expect(markup).toContain('¡Era Absol!'); expect(markup).toContain('Pokémon Esmeralda'); expect(markup).toContain('Se dice que Absol'); expect(markup).toContain('+4'); expect(markup).toContain('1.0s');
   });
 
-  it('supports spectators, accessible configuration and the same-lobby result action', () => {
+  it('supports spectators, accessible configuration and the session continuation action', () => {
     const spectator = renderToStaticMarkup(createElement(PokedexEntryGuessGame, { room: room(publicGame(), { canGuess: false, solved: false, solveOrder: null, cooldownUntil: null, roundPoints: 0, attemptCount: 0, lastAttempt: null }, true), selfId: 'p1', onAction: async () => undefined }));
     expect(spectator).toContain('Estás observando'); expect(spectator).not.toContain('Buscar respuesta para la ronda');
     const config = renderToStaticMarkup(createElement(PokedexEntryGuessConfigPanel, { config: defaultPokedexEntryGuessConfig, disabled: false, onChange: async () => undefined }));
     expect(config).toContain('Generación de referencia'); expect(config).toContain('25s'); expect(config).toContain('Pistas adicionales');
     const results = renderToStaticMarkup(createElement(PokedexEntryGuessResults, { room: room(publicGame('GAME_RESULTS'), { canGuess: false, solved: false, solveOrder: null, cooldownUntil: null, roundPoints: 0, attemptCount: 0, lastAttempt: null }), selfId: 'p1', onLobby: () => undefined, onEnd: () => undefined }));
-    expect(results).toContain('Volver al mismo lobby'); expect(results).toContain('primeras posiciones'); expect(results).toContain('Avatar de Eru');
+    expect(results).toContain('Continuar sesión'); expect(results).toContain('primeras posiciones'); expect(results).toContain('Avatar de Eru');
   });
 });

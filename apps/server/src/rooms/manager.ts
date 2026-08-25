@@ -1,4 +1,4 @@
-import { assignableRoomRoleSchema, gameRegistry, gameSelectionModeSchema, hasRoomPermission, roomCodeSchema, sessionModeSchema, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck } from '@pokemon-universe/shared';
+import { assignableRoomRoleSchema, gameRegistry, gameSelectionModeSchema, hasRoomPermission, roomCodeSchema, sessionModeSchema, supportsPlayerCount, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck } from '@pokemon-universe/shared';
 import { randomInt, randomUUID } from 'node:crypto';
 import type { Server, Socket } from 'socket.io';
 import { env } from '../config.js';
@@ -48,6 +48,7 @@ export class RoomManager {
     socket.on('room:transfer-host', (payload, ack) => currentSocket(ack, () => this.transferHostManually(identity.id, payload.playerId)));
     socket.on('room:kick', (payload, ack) => currentSocket(ack, () => this.kick(identity.id, payload.playerId)));
     socket.on('room:start-game', (_payload, ack) => currentSocket(ack, () => this.startGame(identity.id)));
+    socket.on('room:continue-session', (_payload, ack) => currentSocket(ack, () => this.continueSession(identity.id)));
     socket.on('room:return-lobby', (_payload, ack) => currentSocket(ack, () => this.returnLobby(identity.id)));
     socket.on('room:end-session', (_payload, ack) => currentSocket(ack, () => this.endSession(identity.id)));
     socket.on('game:action', (payload, ack) => currentSocket(ack, () => this.action(identity.id, payload)));
@@ -183,7 +184,11 @@ export class RoomManager {
     const room = this.permissionRoom(playerId, 'EDIT_GAME_SELECTION'); this.assertLobby(room);
     const parsed = gameSelectionModeSchema.parse(mode);
     if (parsed.type !== 'FIXED') {
-      for (const gameId of parsed.gameIds) if (!gameRegistry.get(gameId)) throw new Error(`Minijuego desconocido: ${gameId}`);
+      const playerCount = this.connectedPlayerCount(room);
+      for (const gameId of parsed.gameIds) {
+        const game = gameRegistry.get(gameId); if (!game) throw new Error(`Minijuego desconocido: ${gameId}`);
+        if (!supportsPlayerCount(game.manifest, playerCount)) throw new Error(`${game.manifest.name} no admite ${playerCount} jugadores conectados.`);
+      }
     }
     room.gameSelectionMode = parsed; this.broadcast(room); return {};
   }
@@ -229,12 +234,23 @@ export class RoomManager {
     return result;
   }
 
+  private connectedPlayerCount(room: LiveRoom): number {
+    return [...room.members.values()].filter((member) => member.presence === 'CONNECTED').length;
+  }
+
   private playableGameIds(room: LiveRoom, gameIds: readonly string[]): string[] {
-    const playerCount = [...room.members.values()].filter((member) => member.presence === 'CONNECTED').length;
+    const playerCount = this.connectedPlayerCount(room);
     return gameIds.filter((gameId) => {
       const manifest = gameRegistry.get(gameId)?.manifest;
-      return Boolean(manifest && playerCount >= manifest.minPlayers && (!manifest.maxPlayers || playerCount <= manifest.maxPlayers));
+      return Boolean(manifest && supportsPlayerCount(manifest, playerCount));
     });
+  }
+
+  private assertRotationReady(room: LiveRoom): void {
+    const mode = room.gameSelectionMode; if (mode.type === 'FIXED') return;
+    const playableCount = this.playableGameIds(room, mode.gameIds).length;
+    const minimum = mode.type === 'VOTE' ? 3 : 2;
+    if (playableCount < minimum) throw new Error(`La rotación ${mode.type === 'VOTE' ? 'por votación' : 'aleatoria'} necesita al menos ${minimum} minijuegos compatibles con el número actual de jugadores.`);
   }
 
   private selectRandomGame(room: LiveRoom): void {
@@ -247,7 +263,12 @@ export class RoomManager {
 
   private startGame(playerId: string): Record<string, never> {
     const room = this.permissionRoom(playerId, 'START_GAME'); this.assertLobby(room);
+    this.assertRotationReady(room);
     this.selectRandomGame(room);
+    this.launchGame(room); return {};
+  }
+
+  private launchGame(room: LiveRoom): void {
     const players = [...room.members.values()].filter((member) => member.presence === 'CONNECTED').map((member) => ({ id: member.identity.id, displayName: member.identity.displayName, connected: true, active: true }));
     const module = gameRegistry.get(room.selectedGameId)!;
     if (players.length < module.manifest.minPlayers) throw new Error(`Se necesitan al menos ${module.manifest.minPlayers} jugadores.`);
@@ -258,7 +279,7 @@ export class RoomManager {
     state = module.start(state, context);
     for (const member of room.members.values()) member.role = member.presence === 'CONNECTED' ? 'PLAYER' : 'SPECTATOR';
     room.game = { resultId: randomUUID(), gameId: module.manifest.id, participantIds: players.map((player) => player.id), module, config, state, startedAt: context.now, resultsApplied: false };
-    room.phase = state.phase; this.syncAndBroadcast(room); return {};
+    room.phase = state.phase; this.syncAndBroadcast(room);
   }
 
   /** Synchronous mutation is the per-room critical section: no await occurs before a selection is committed. */
@@ -279,21 +300,26 @@ export class RoomManager {
     return [...room.members.values()].filter((member) => member.presence === 'CONNECTED').map((member) => member.identity.id);
   }
 
-  private beginNextGameVote(room: LiveRoom): void {
-    if (room.gameSelectionMode.type !== 'VOTE') return;
+  private beginNextGameVote(room: LiveRoom): boolean {
+    if (room.gameSelectionMode.type !== 'VOTE') return false;
+    const optionGameIds = this.shuffled(this.playableGameIds(room, room.gameSelectionMode.gameIds)).slice(0, 3);
+    if (optionGameIds.length < 3) return false;
     room.nextGameVote = {
-      optionGameIds: this.shuffled(room.gameSelectionMode.gameIds).slice(0, 3),
+      optionGameIds,
       votes: {}, endsAt: Date.now() + NEXT_GAME_VOTE_MS, resolvedGameId: null, tallies: null, nextTransitionAt: null,
     };
     room.phase = 'NEXT_GAME_VOTE';
+    return true;
   }
 
   private resolveNextGameVote(room: LiveRoom): void {
     const vote = room.nextGameVote; if (!vote || room.phase !== 'NEXT_GAME_VOTE') return;
     const tallies = Object.fromEntries(vote.optionGameIds.map((gameId) => [gameId, 0]));
     for (const gameId of Object.values(vote.votes)) tallies[gameId] = (tallies[gameId] ?? 0) + 1;
-    const maximum = Math.max(...Object.values(tallies));
-    const tiedGameIds = vote.optionGameIds.filter((gameId) => tallies[gameId] === maximum);
+    const playable = this.playableGameIds(room, vote.optionGameIds);
+    if (playable.length === 0) { this.resetToLobby(room, false); return; }
+    const maximum = Math.max(...playable.map((gameId) => tallies[gameId] ?? 0));
+    const tiedGameIds = playable.filter((gameId) => tallies[gameId] === maximum);
     const resolvedGameId = this.randomItem(tiedGameIds);
     vote.endsAt = null; vote.resolvedGameId = resolvedGameId; vote.tallies = tallies;
     vote.nextTransitionAt = Date.now() + NEXT_GAME_VOTE_RESULT_MS;
@@ -310,6 +336,8 @@ export class RoomManager {
       throw new Error('La votación ha terminado.');
     }
     if (!vote.optionGameIds.includes(gameId)) throw new Error('Ese minijuego no es una opción válida.');
+    const manifest = gameRegistry.get(gameId)?.manifest;
+    if (!manifest || !supportsPlayerCount(manifest, this.connectedPlayerCount(room))) throw new Error('Ese minijuego ya no admite el número actual de jugadores.');
     if (vote.votes[playerId]) throw new Error('Tu voto ya está bloqueado.');
     vote.votes[playerId] = gameId;
     const eligibleIds = this.eligibleNextGameVoterIds(room);
@@ -322,8 +350,12 @@ export class RoomManager {
       this.resolveNextGameVote(room); this.broadcast(room); this.schedule(room); return;
     }
     if (room.phase === 'NEXT_GAME_VOTE_RESULTS') {
-      this.resetToLobby(room, false); this.broadcast(room); this.schedule(room); return;
+      this.resetToLobby(room, false);
+      try { this.launchGame(room); }
+      catch { this.broadcast(room); this.schedule(room); }
+      return;
     }
+    if (room.phase === 'LOBBY' || room.phase === 'GAME_RESULTS' || room.phase === 'SESSION_RESULTS') return;
     if (!room.game) return;
     room.game.state = room.game.module.handleTimeout(room.game.state, this.context(room));
     this.syncAndBroadcast(room);
@@ -386,6 +418,22 @@ export class RoomManager {
     this.resetToLobby(room, resetSession); this.broadcast(room); return {};
   }
 
+  private continueSession(playerId: string): Record<string, never> {
+    const room = this.permissionRoom(playerId, 'START_GAME');
+    if (room.phase !== 'GAME_RESULTS') throw new Error('La partida todavía no ha terminado.');
+    this.resetToLobby(room, false);
+    if (room.gameSelectionMode.type === 'VOTE') { this.broadcast(room); return {}; }
+    try {
+      this.assertRotationReady(room);
+      this.selectRandomGame(room);
+      this.launchGame(room);
+      return {};
+    } catch (error) {
+      this.broadcast(room);
+      throw error;
+    }
+  }
+
   private endSession(playerId: string): Record<string, never> {
     const room = this.permissionRoom(playerId, 'END_SESSION');
     if (room.phase !== 'LOBBY' && room.phase !== 'GAME_RESULTS' && room.phase !== 'NEXT_GAME_VOTE' && room.phase !== 'NEXT_GAME_VOTE_RESULTS') throw new Error('Cannot end the session during a game');
@@ -395,15 +443,23 @@ export class RoomManager {
 
   private schedule(room: LiveRoom): void {
     room.transitionTimer = cancelTimer(room.transitionTimer);
+    const scheduleCurrent = (deadline: number) => {
+      const timer = scheduleDeadline(deadline, () => {
+        if (room.transitionTimer !== timer) return;
+        room.transitionTimer = null;
+        this.tick(room);
+      });
+      room.transitionTimer = timer;
+    };
     if (room.phase === 'NEXT_GAME_VOTE' || room.phase === 'NEXT_GAME_VOTE_RESULTS') {
       const deadline = room.phase === 'NEXT_GAME_VOTE' ? room.nextGameVote?.endsAt : room.nextGameVote?.nextTransitionAt;
-      if (deadline !== null && deadline !== undefined) room.transitionTimer = scheduleDeadline(deadline, () => this.tick(room));
+      if (deadline !== null && deadline !== undefined) scheduleCurrent(deadline);
       return;
     }
     const state = room.game?.state; if (!state || room.phase === 'GAME_RESULTS' || room.phase === 'SESSION_RESULTS') return;
     const deadline = earliestDeadline([state.roundEndsAt, state.nextTransitionAt]);
     if (deadline === null) return;
-    room.transitionTimer = scheduleDeadline(deadline, () => this.tick(room));
+    scheduleCurrent(deadline);
   }
 
   private context(room: LiveRoom) {

@@ -42,13 +42,13 @@ describe('¿Quién es ese Pokémon? client', () => {
     expect(markup).toContain('¡Era Lucario!'); expect(markup).toContain('/options/reveal/sprite'); expect(markup).toContain('+5'); expect(markup).toContain('1.0s');
   });
 
-  it('keeps spectators read-only and exposes configuration and final lobby controls', () => {
+  it('keeps spectators read-only and exposes configuration and final session controls', () => {
     const active = publicGame(); active.solvedPlayerIds = [];
     const spectatorMarkup = renderToStaticMarkup(createElement(WhosThatPokemonGame, { room: room(active, { canGuess: false, solved: false, cooldownUntil: null, roundPoints: 0, attemptCount: 0, lastAttempt: null }, true), selfId: 'p1', onAction: async () => undefined }));
     expect(spectatorMarkup).toContain('Estás observando'); expect(spectatorMarkup).not.toContain('Buscar respuesta para la ronda');
     const configMarkup = renderToStaticMarkup(createElement(WhosThatPokemonConfigPanel, { config: defaultWhosThatPokemonConfig, disabled: false, onChange: async () => undefined }));
     expect(configMarkup).toContain('Tiempo por ronda'); expect(configMarkup).toContain('Pistas adicionales'); expect(configMarkup).toContain('Formas regionales');
     const finished = publicGame('GAME_RESULTS'); const resultsMarkup = renderToStaticMarkup(createElement(WhosThatPokemonResults, { room: room(finished, { canGuess: false, solved: false, cooldownUntil: null, roundPoints: 0, attemptCount: 0, lastAttempt: null }), selfId: 'p1', onLobby: () => undefined, onEnd: () => undefined }));
-    expect(resultsMarkup).toContain('Volver al mismo lobby'); expect(resultsMarkup).toContain('Avatar de Eru');
+    expect(resultsMarkup).toContain('Continuar sesión'); expect(resultsMarkup).toContain('Avatar de Eru');
   });
 });

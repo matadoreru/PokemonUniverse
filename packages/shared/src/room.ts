@@ -103,6 +103,7 @@ export interface ClientToServerEvents {
   'room:transfer-host': (payload: { playerId: string }, ack: SocketAck) => void;
   'room:kick': (payload: { playerId: string }, ack: SocketAck) => void;
   'room:start-game': (_: unknown, ack: SocketAck) => void;
+  'room:continue-session': (_: unknown, ack: SocketAck) => void;
   'room:return-lobby': (_: unknown, ack: SocketAck) => void;
   'room:end-session': (_: unknown, ack: SocketAck) => void;
   'game:action': (payload: unknown, ack: SocketAck) => void;

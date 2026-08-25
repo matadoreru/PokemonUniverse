@@ -47,12 +47,12 @@ describe('Guess from Stats client', () => {
     expect(markup).toContain('¡Era Gardevoir!'); expect(markup).not.toContain('respuestas válidas');
   });
 
-  it('validates two stats, exposes accessible toggles and keeps the same-lobby result action', () => {
+  it('validates two stats, exposes accessible toggles and keeps the session continuation action', () => {
     const invalid = { ...defaultGuessFromStatsConfig, stats: { ...defaultGuessFromStatsConfig.stats, attack: false, defense: false, specialAttack: false, specialDefense: false, speed: false } };
     expect(validateGuessFromStatsConfig(invalid)).toContain('2 estadísticas');
     const config = renderToStaticMarkup(createElement(GuessFromStatsConfigPanel, { config: defaultGuessFromStatsConfig, disabled: false, onChange: async () => undefined }));
     expect(config).toContain('Stats mostradas'); expect(config).toContain('6 activas'); expect(config).toContain('Total de Stats'); expect(config).toContain('Pistas adicionales'); expect(config).not.toContain('type="range"');
     const results = renderToStaticMarkup(createElement(GuessFromStatsResults, { room: room(publicGame('GAME_RESULTS'), { canGuess: false, solved: false, solveOrder: null, cooldownUntil: null, roundPoints: 0, attemptCount: 0, lastAttempt: null }), selfId: 'p1', onLobby: () => undefined, onEnd: () => undefined }));
-    expect(results).toContain('Clasificación final'); expect(results).toContain('Volver al mismo lobby'); expect(results).toContain('Avatar de Eru');
+    expect(results).toContain('Clasificación final'); expect(results).toContain('Continuar sesión'); expect(results).toContain('Avatar de Eru');
   });
 });

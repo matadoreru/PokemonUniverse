@@ -58,9 +58,9 @@ describe('Type Chain client', () => {
     expect(config).toContain('Tiempo por turno'); expect(config).toContain('15s'); expect(config).toContain('Exactamente un tipo compartido'); expect(config).not.toContain('type="range"');
   });
 
-  it('shows survivor ranking, Type Chain stats, avatars and same-lobby action', () => {
+  it('shows survivor ranking, Type Chain stats, avatars and session continuation', () => {
     const game = publicGame('GAME_RESULTS');
     const markup = renderToStaticMarkup(createElement(TypeChainResults, { room: room(game, { canSubmit: false, isCurrentPlayer: false, eliminated: false, cooldownUntil: null, lastAttempt: null }), selfId: 'p1', onLobby: () => undefined, onEnd: () => undefined }));
-    expect(markup).toContain('Clasificación final'); expect(markup).toContain('Cadena más larga: 7'); expect(markup).toContain('3 válidos'); expect(markup).toContain('Volver al mismo lobby'); expect(markup).toContain('Avatar de Eru');
+    expect(markup).toContain('Clasificación final'); expect(markup).toContain('Cadena más larga: 7'); expect(markup).toContain('3 válidos'); expect(markup).toContain('Continuar sesión'); expect(markup).toContain('Avatar de Eru');
   });
 });

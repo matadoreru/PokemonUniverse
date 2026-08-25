@@ -90,6 +90,10 @@ export interface MiniGameManifest {
   profileStats: ProfileStatsDefinition;
 }
 
+export function supportsPlayerCount(manifest: MiniGameManifest, playerCount: number): boolean {
+  return playerCount >= manifest.minPlayers && (manifest.maxPlayers === undefined || playerCount <= manifest.maxPlayers);
+}
+
 export type ProfileMetricAggregation = 'SUM' | 'MAX' | 'MIN';
 export interface ProfileMetricDefinition {
   key: string;
