@@ -1,4 +1,5 @@
 import { connectedRequiredPlayerIds, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { cooldownMessage, cooldownRemainingMs, setPlayerCooldown } from '../infrastructure/timing.js';
 import { defaultTypeDuelConfig, typeDuelConfigSchema, type TypeDuelConfig } from './config.js';
 import { buildTypeDuelResults, chooseBalancedPair, isValidPokemonForTypes, requiredTypeCombination, TYPE_DUEL_ATTEMPT_COOLDOWN_MS, TYPE_DUEL_MAX_SOLUTIONS, TYPE_DUEL_WIN_POINTS } from './rules.js';
 import { typeDuelActionSchema, type TypeDuelAction, type TypeDuelPlayerState, type TypeDuelPublicState, type TypeDuelRoundResult, type TypeDuelState, type TypeDuelStats } from './types.js';
@@ -71,10 +72,10 @@ export const typeDuelGame: MiniGameModule<TypeDuelConfig, TypeDuelState, TypeDue
     }
     if (state.phase !== 'POKEMON_SEARCH') return { state, accepted: false, error: 'La carrera no está activa.' };
     if (context.now >= (state.roundEndsAt ?? 0)) return { state, accepted: false, error: 'El tiempo ha terminado.' };
-    if (context.now < (state.cooldownUntil[playerId] ?? 0)) return { state, accepted: false, error: `Espera ${((state.cooldownUntil[playerId]! - context.now) / 1_000).toFixed(1)}s antes de intentarlo.` };
+    if (cooldownRemainingMs(context.now, state.cooldownUntil[playerId]) > 0) return { state, accepted: false, error: cooldownMessage(context.now, state.cooldownUntil[playerId]) };
     const pokemon = context.pokemon.byId(action.pokemonId); if (!pokemon || !state.config.generations.includes(pokemon.generation)) return { state, accepted: false, error: 'Pokémon fuera del pool.' };
     const correct = state.validPokemonIds.includes(pokemon.id); const attempt = { playerId, pokemonId: pokemon.id, pokemonName: pokemon.name, sprite: pokemon.sprite, correct, attemptedAt: context.now }; const prior = state.playerStats[playerId]!;
-    let next: TypeDuelState = { ...state, attempts: [...state.attempts, attempt], cooldownUntil: correct ? state.cooldownUntil : { ...state.cooldownUntil, [playerId]: context.now + TYPE_DUEL_ATTEMPT_COOLDOWN_MS }, playerStats: { ...state.playerStats, [playerId]: { ...prior, correctAttempts: prior.correctAttempts + (correct ? 1 : 0), incorrectAttempts: prior.incorrectAttempts + (correct ? 0 : 1), correctTimeTotalMs: prior.correctTimeTotalMs + (correct ? context.now - (state.roundStartedAt ?? context.now) : 0) } } };
+    let next: TypeDuelState = { ...state, attempts: [...state.attempts, attempt], cooldownUntil: correct ? state.cooldownUntil : setPlayerCooldown(state.cooldownUntil, playerId, context.now, TYPE_DUEL_ATTEMPT_COOLDOWN_MS), playerStats: { ...state.playerStats, [playerId]: { ...prior, correctAttempts: prior.correctAttempts + (correct ? 1 : 0), incorrectAttempts: prior.incorrectAttempts + (correct ? 0 : 1), correctTimeTotalMs: prior.correctTimeTotalMs + (correct ? context.now - (state.roundStartedAt ?? context.now) : 0) } } };
     if (correct) next = roundResult(next, context, 'WINNER', playerId);
     return { state: next, accepted: true };
   },

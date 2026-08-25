@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { pokemonGenerationsSchema } from '../config.js';
 import { GENERATIONS } from '../../pokemon/types.js';
 
 export const POKEDDLE_CLUE_KEYS = [
@@ -13,7 +14,7 @@ export const pokeddleCluesSchema = z.object(Object.fromEntries(
 ) as Record<PokeddleClueKey, z.ZodBoolean>);
 
 export const pokeddleRaceConfigSchema = z.object({
-  generations: z.array(z.number().int().min(1).max(9)).min(1).transform((values) => [...new Set(values)].sort()),
+  generations: pokemonGenerationsSchema,
   roundSeconds: z.number().int().min(10).max(60),
   maxRounds: z.number().int().min(1).max(30),
   clues: pokeddleCluesSchema,

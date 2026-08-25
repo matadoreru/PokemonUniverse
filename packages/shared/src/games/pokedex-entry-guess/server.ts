@@ -1,5 +1,6 @@
 import { isPokedexEntryPokemonCatalog, type PokedexEntry, type PokedexEntryPokemonCatalog, type Pokemon } from '../../pokemon/types.js';
-import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
 import { defaultPokedexEntryGuessConfig, pokedexEntryGuessConfigSchema, type PokedexEntryGuessConfig } from './config.js';
 import { buildPokedexEntryHints, buildPokedexEntryResults, emptyPokedexEntryStats, pokedexEntryKey, pokedexEntryReferenceGeneration, pokedexEntryRoundPoints, resolvePokedexEntry, sanitizePokedexEntry } from './rules.js';
 import { pokedexEntryGuessActionSchema, type PokedexEntryGuessAction, type PokedexEntryGuessPlayerState, type PokedexEntryGuessPublicState, type PokedexEntryGuessRoundPublicResult, type PokedexEntryGuessRoundTarget, type PokedexEntryGuessState } from './types.js';
@@ -127,7 +128,7 @@ export const pokedexEntryGuessGame: MiniGameModule<PokedexEntryGuessConfig, Poke
     if (!state.playerIds.includes(playerId) || !isPlayerRequired(context, playerId)) return { state, accepted: false, error: 'Estás observando esta ronda.' };
     if (state.solves[playerId]) return { state, accepted: false, error: 'Ya has acertado esta ronda.' };
     if (context.now >= (state.roundEndsAt ?? 0)) return { state: resolveRound(state, context), accepted: false, error: 'El tiempo ha terminado.' };
-    if (context.now < (state.cooldownUntil[playerId] ?? 0)) return { state, accepted: false, error: `Espera ${Math.ceil(((state.cooldownUntil[playerId] ?? 0) - context.now) / 100) / 10}s antes de volver a intentar.` };
+    if (cooldownRemainingMs(context.now, state.cooldownUntil[playerId]) > 0) return { state, accepted: false, error: cooldownMessage(context.now, state.cooldownUntil[playerId]) };
     const guessed = context.pokemon.byId(action.pokemonId);
     if (!guessed || guessed.isDefault === false || !state.config.generations.includes(guessed.generation)) return { state, accepted: false, error: 'Ese Pokémon no pertenece al pool configurado.' };
     const target = activeTarget(state); if (!target) return { state, accepted: false, error: 'La respuesta no está disponible.' };
@@ -145,24 +146,18 @@ export const pokedexEntryGuessGame: MiniGameModule<PokedexEntryGuessConfig, Poke
           bestTimeMs: stats.bestTimeMs <= 0 ? elapsedMs : Math.min(stats.bestTimeMs, elapsedMs), pointsFromRounds: stats.pointsFromRounds + points,
         } },
       };
-      if (allConnectedRequiredCompleted(context, next.playerIds, (id) => Boolean(next.solves[id]))) next = resolveRound(next, context);
+      next = resolveWhenRequiredPlayersComplete(next, context, next.playerIds, (id) => Boolean(next.solves[id]), resolveRound);
       return { state: next, accepted: true };
     }
     return { accepted: true, state: {
       ...state, attempts: [...state.attempts, { playerId, guessedPokemon: { id: guessed.id, name: guessed.name, sprite: guessed.sprite }, attemptedAt: context.now }],
-      attemptCounts: { ...state.attemptCounts, [playerId]: attemptCount }, cooldownUntil: { ...state.cooldownUntil, [playerId]: context.now + POKEDEX_ENTRY_GUESS_COOLDOWN_MS },
+      attemptCounts: { ...state.attemptCounts, [playerId]: attemptCount }, cooldownUntil: setPlayerCooldown(state.cooldownUntil, playerId, context.now, POKEDEX_ENTRY_GUESS_COOLDOWN_MS),
       lastAttemptResult: { ...state.lastAttemptResult, [playerId]: { result: 'INCORRECT', attemptedAt: context.now } },
       playerStats: { ...state.playerStats, [playerId]: { ...stats, totalAttempts: stats.totalAttempts + 1 } },
     } };
   },
-  handleTimeout(state, context) {
-    if (state.phase === 'ROUND_RESULTS' && context.now >= (state.nextTransitionAt ?? Infinity)) return state.roundNumber >= state.config.rounds ? finish(state) : beginRound(state, context);
-    if (state.phase === 'ROUND_ACTIVE' && context.now >= (state.roundEndsAt ?? Infinity)) return resolveRound(state, context);
-    return state;
-  },
-  handlePresenceChange(state, context) {
-    return state.phase === 'ROUND_ACTIVE' && allConnectedRequiredCompleted(context, state.playerIds, (id) => Boolean(state.solves[id])) ? resolveRound(state, context) : state;
-  },
+  handleTimeout(state, context) { return advanceTimedRound(state, context, { beginNext: beginRound, resolveActive: resolveRound, finish, isComplete: (current) => current.roundNumber >= current.config.rounds }); },
+  handlePresenceChange(state, context) { return resolveWhenRequiredPlayersComplete(state, context, state.playerIds, (id) => Boolean(state.solves[id]), resolveRound); },
   getPublicState(state, context) {
     const target = activeTarget(state); const pokemon = target ? context.pokemon.byId(target.pokemonId) : undefined;
     return {

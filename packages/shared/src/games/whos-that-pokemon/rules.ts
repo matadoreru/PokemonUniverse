@@ -1,5 +1,6 @@
 import type { Pokemon } from '../../pokemon/types.js';
-import type { GameResults, GameStanding } from '../contracts.js';
+import { buildRankedResults } from '../../scoring.js';
+import type { GameResults } from '../contracts.js';
 import type { WhosThatPokemonHint, WhosThatPokemonPlayerStats, WhosThatPokemonState } from './types.js';
 
 export const WHOS_THAT_POKEMON_MAX_POINTS = 5;
@@ -43,14 +44,8 @@ export function emptyWhoPokemonStats(): WhosThatPokemonPlayerStats {
 
 export function buildWhoPokemonResults(state: WhosThatPokemonState): GameResults {
   if (state.phase !== 'GAME_RESULTS') throw new Error('Results are unavailable before the game finishes');
-  const ordered = state.playerIds.map((playerId) => ({ playerId, points: state.scores[playerId] ?? 0, stats: state.playerStats[playerId] ?? emptyWhoPokemonStats() }))
-    .sort((left, right) => right.points - left.points || right.stats.correct - left.stats.correct || left.playerId.localeCompare(right.playerId));
-  let priorPoints: number | null = null; let position = 0;
-  const standings: GameStanding[] = ordered.map((entry, index) => {
-    if (entry.points !== priorPoints) position = index + 1;
-    priorPoints = entry.points;
-    return { playerId: entry.playerId, position, points: entry.points, won: position === 1, stats: { ...entry.stats } };
+  return buildRankedResults(state.playerIds.map((playerId) => ({ playerId, points: state.scores[playerId] ?? 0, stats: state.playerStats[playerId] ?? emptyWhoPokemonStats() })), {
+    compare: (left, right) => right.points - left.points || right.stats.correct - left.stats.correct || left.playerId.localeCompare(right.playerId),
+    tieKey: (entry) => entry.points,
   });
-  const leaders = standings.filter((standing) => standing.position === 1);
-  return { winnerId: leaders.length === 1 ? leaders[0]!.playerId : null, standings };
 }

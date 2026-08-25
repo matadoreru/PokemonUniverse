@@ -5,6 +5,8 @@ import { env } from '../config.js';
 import { preloadGameImage } from '../http/game-image-cache.js';
 import { persistGameResults } from '../stats/service.js';
 import { InMemoryRoomStore } from './store.js';
+import { gameRetainsPlayer, markLeft, markTemporarilyDisconnected, oldestConnectedMember, restoreMember } from './presence.js';
+import { cancelTimer, earliestDeadline, scheduleDeadline } from './timers.js';
 import type { LiveRoom, RoomMember } from './types.js';
 
 type GameServer = Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, { identity: AuthUser }>;
@@ -50,8 +52,7 @@ export class RoomManager {
     const room = this.store.roomForPlayer(identity.id);
     const member = room?.members.get(identity.id);
     if (!room || !member) return;
-    if (member.disconnectTimer) clearTimeout(member.disconnectTimer);
-    member.identity = identity; member.disconnectTimer = null; member.connected = true; member.presence = 'CONNECTED'; member.socketId = socket.id;
+    restoreMember(member, identity, socket.id);
     const host = room.members.get(room.hostId);
     if (host && !host.connected && !host.disconnectTimer) this.transferHost(room);
     void socket.join(room.code);
@@ -85,13 +86,8 @@ export class RoomManager {
     const current = room.members.get(identity.id);
     if (!current && room.members.size >= room.maxPlayers) throw new Error('Room is full');
     if (current) {
-      if (current.disconnectTimer) clearTimeout(current.disconnectTimer);
       const expiredDuringGame = current.presence === 'LEFT' && room.game !== null;
-      current.connected = true;
-      current.identity = identity;
-      current.presence = 'CONNECTED';
-      current.socketId = socket.id;
-      current.disconnectTimer = null;
+      restoreMember(current, identity, socket.id);
       if (expiredDuringGame) current.role = 'SPECTATOR';
       this.store.attachPlayer(identity.id, room.code);
     } else {
@@ -122,7 +118,7 @@ export class RoomManager {
   private disconnect(playerId: string, socketId: string): void {
     const room = this.store.roomForPlayer(playerId); const member = room?.members.get(playerId);
     if (!room || !member || member.socketId !== socketId) return;
-    member.connected = false; member.presence = 'TEMPORARILY_DISCONNECTED'; member.socketId = null;
+    markTemporarilyDisconnected(member);
     this.applyPresenceChange(room);
     member.disconnectTimer = setTimeout(() => this.finalDisconnect(room, playerId, false), env.RECONNECT_GRACE_MS);
   }
@@ -130,25 +126,17 @@ export class RoomManager {
   private finalDisconnect(room: LiveRoom, playerId: string, explicit: boolean): void {
     const member = room.members.get(playerId); if (!member) return;
     if (!explicit && member.connected) return;
-    member.disconnectTimer = null;
-    member.connected = false;
-    member.presence = 'LEFT';
-    member.socketId = null;
-    const historicalPlayerIds: unknown = room.game?.state.playerIds ?? room.game?.state.initialPlayerIds;
-    const retainedByLiveGame = room.game
-      && room.phase !== 'GAME_RESULTS'
-      && room.phase !== 'SESSION_RESULTS'
-      && Array.isArray(historicalPlayerIds)
-      && historicalPlayerIds.includes(playerId);
+    markLeft(member);
+    const retainedByLiveGame = gameRetainsPlayer(room, playerId);
     if (!retainedByLiveGame) room.members.delete(playerId);
     this.store.detachPlayer(playerId);
     if (room.hostId === playerId) this.transferHost(room);
-    if (![...room.members.values()].some((candidate) => candidate.presence !== 'LEFT')) { if (room.transitionTimer) clearTimeout(room.transitionTimer); this.store.delete(room.code); return; }
+    if (![...room.members.values()].some((candidate) => candidate.presence !== 'LEFT')) { room.transitionTimer = cancelTimer(room.transitionTimer); this.store.delete(room.code); return; }
     this.applyPresenceChange(room);
   }
 
   private transferHost(room: LiveRoom): void {
-    const next = [...room.members.values()].filter((member) => member.presence === 'CONNECTED').sort((a, b) => a.joinedAt - b.joinedAt)[0];
+    const next = oldestConnectedMember(room);
     if (!next) return;
     for (const member of room.members.values()) if (member.roomRole === 'HOST') member.roomRole = 'MEMBER';
     next.roomRole = 'HOST';
@@ -211,7 +199,7 @@ export class RoomManager {
     let state = module.createInitialState(config, context);
     state = module.start(state, context);
     for (const member of room.members.values()) member.role = member.presence === 'CONNECTED' ? 'PLAYER' : 'SPECTATOR';
-    room.game = { resultId: randomUUID(), gameId: module.manifest.id, module, config, state, startedAt: context.now, resultsApplied: false };
+    room.game = { resultId: randomUUID(), gameId: module.manifest.id, participantIds: players.map((player) => player.id), module, config, state, startedAt: context.now, resultsApplied: false };
     room.phase = state.phase; this.syncAndBroadcast(room); return {};
   }
 
@@ -287,12 +275,11 @@ export class RoomManager {
   }
 
   private schedule(room: LiveRoom): void {
-    if (room.transitionTimer) clearTimeout(room.transitionTimer);
+    room.transitionTimer = cancelTimer(room.transitionTimer);
     const state = room.game?.state; if (!state || room.phase === 'GAME_RESULTS' || room.phase === 'SESSION_RESULTS') return;
-    const deadlines = [state.roundEndsAt, state.nextTransitionAt].filter((value): value is number => typeof value === 'number');
-    if (!deadlines.length) return;
-    const deadline = Math.min(...deadlines);
-    room.transitionTimer = setTimeout(() => this.tick(room), Math.max(0, deadline - Date.now() + 5));
+    const deadline = earliestDeadline([state.roundEndsAt, state.nextTransitionAt]);
+    if (deadline === null) return;
+    room.transitionTimer = scheduleDeadline(deadline, () => this.tick(room));
   }
 
   private context(room: LiveRoom) {

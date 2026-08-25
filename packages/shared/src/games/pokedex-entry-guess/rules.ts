@@ -1,6 +1,6 @@
-import { pointsForPosition } from '../../scoring.js';
+import { buildRankedResults, pointsForPosition } from '../../scoring.js';
 import type { PokedexEntry, Pokemon } from '../../pokemon/types.js';
-import type { GameResults, GameStanding } from '../contracts.js';
+import type { GameResults } from '../contracts.js';
 import type { PokedexEntryGuessConfig } from './config.js';
 import type { PokedexEntryGuessHint, PokedexEntryGuessPlayerStats, PokedexEntryGuessState } from './types.js';
 
@@ -56,15 +56,8 @@ export function emptyPokedexEntryStats(): PokedexEntryGuessPlayerStats {
 
 export function buildPokedexEntryResults(state: PokedexEntryGuessState): GameResults {
   if (state.phase !== 'GAME_RESULTS') throw new Error('Results are unavailable before the game finishes');
-  const ordered = state.playerIds.map((playerId) => ({ playerId, points: state.scores[playerId] ?? 0, stats: state.playerStats[playerId] ?? emptyPokedexEntryStats() }))
-    .sort((a, b) => b.points - a.points || b.stats.roundFirsts - a.stats.roundFirsts || b.stats.correct - a.stats.correct || a.stats.totalAttempts - b.stats.totalAttempts || a.playerId.localeCompare(b.playerId));
-  let position = 0; let prior: string | null = null;
-  const standings: GameStanding[] = ordered.map((entry, index) => {
-    const key = `${entry.points}:${entry.stats.roundFirsts}:${entry.stats.correct}:${entry.stats.totalAttempts}`;
-    if (key !== prior) position = index + 1;
-    prior = key;
-    return { playerId: entry.playerId, position, points: entry.points, won: position === 1, stats: { ...entry.stats } };
+  return buildRankedResults(state.playerIds.map((playerId) => ({ playerId, points: state.scores[playerId] ?? 0, stats: state.playerStats[playerId] ?? emptyPokedexEntryStats() })), {
+    compare: (left, right) => right.points - left.points || right.stats.roundFirsts - left.stats.roundFirsts || right.stats.correct - left.stats.correct || left.stats.totalAttempts - right.stats.totalAttempts || left.playerId.localeCompare(right.playerId),
+    tieKey: (entry) => `${entry.points}:${entry.stats.roundFirsts}:${entry.stats.correct}:${entry.stats.totalAttempts}`,
   });
-  const leaders = standings.filter((standing) => standing.position === 1);
-  return { winnerId: leaders.length === 1 ? leaders[0]!.playerId : null, standings };
 }

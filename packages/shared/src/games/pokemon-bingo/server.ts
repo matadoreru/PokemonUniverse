@@ -1,6 +1,7 @@
 import { pointsForPosition } from '../../scoring.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameContext, type GameResults, type MiniGameModule } from '../contracts.js';
+import { cooldownRemainingMs, setPlayerCooldown } from '../infrastructure/timing.js';
 import { activeBingoFamilies, defaultPokemonBingoConfig, pokemonBingoConfigSchema, type PokemonBingoConfig } from './config.js';
 import { buildBingoConditionTemplates, generateBingoBoard } from './generator.js';
 import { describeBingoCondition, hasCompleteBingoMetadata, pokemonMatchesBingoCell } from './rules.js';
@@ -36,7 +37,7 @@ function findCell(board: BingoBoardState, cellId: string) { return board.cells.f
 function assignedCell(board: BingoBoardState, pokemonId: string): string | undefined { return Object.entries(board.assignments).find(([, assigned]) => assigned === pokemonId)?.[0]; }
 
 function privateAttempt(state: PokemonBingoState, playerId: string, attempt: BingoPrivateAttempt, cooldown = false): PokemonBingoState {
-  return { ...state, lastAttempts: { ...state.lastAttempts, [playerId]: attempt }, ...(cooldown ? { cooldownUntil: { ...state.cooldownUntil, [playerId]: attempt.attemptedAt + BINGO_INCORRECT_COOLDOWN_MS } } : {}) };
+  return { ...state, lastAttempts: { ...state.lastAttempts, [playerId]: attempt }, ...(cooldown ? { cooldownUntil: setPlayerCooldown(state.cooldownUntil, playerId, attempt.attemptedAt, BINGO_INCORRECT_COOLDOWN_MS) } : {}) };
 }
 
 function finishIfBingo(state: PokemonBingoState, playerId: string, context: GameContext): PokemonBingoState {
@@ -120,7 +121,7 @@ export const pokemonBingoGame: MiniGameModule<PokemonBingoConfig, PokemonBingoSt
       const assignments = { ...board.assignments }; delete assignments[action.cellId];
       return { state: { ...state, boards: { ...state.boards, [playerId]: { ...board, assignments, lastProgressAt: context.now } } }, accepted: true };
     }
-    if (context.now < (state.cooldownUntil[playerId] ?? 0)) return { state, accepted: false, error: 'Espera un momento antes de confirmar otro Pokémon.' };
+    if (cooldownRemainingMs(context.now, state.cooldownUntil[playerId]) > 0) return { state, accepted: false, error: 'Espera un momento antes de confirmar otro Pokémon.' };
     if (action.type === 'MOVE_POKEMON') {
       if (action.fromCellId === action.toCellId) return { state, accepted: false, error: 'Selecciona otra casilla de destino.' };
       const target = findCell(board, action.toCellId); const pokemonId = board.assignments[action.fromCellId]; const pokemon = pokemonId ? context.pokemon.byId(pokemonId) : undefined;

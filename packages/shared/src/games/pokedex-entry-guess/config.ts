@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { pokemonGenerationsSchema } from '../config.js';
 import { GENERATIONS } from '../../pokemon/types.js';
 
 export const pokedexEntryHintConfigSchema = z.object({
@@ -6,7 +7,7 @@ export const pokedexEntryHintConfigSchema = z.object({
 }).strict();
 
 export const pokedexEntryGuessConfigSchema = z.object({
-  generations: z.array(z.number().int().min(1).max(9)).min(1).transform((values) => [...new Set(values)].sort((a, b) => a - b)),
+  generations: pokemonGenerationsSchema,
   roundSeconds: z.number().int().min(15).max(60),
   rounds: z.number().int().min(1).max(20),
   hintsEnabled: z.boolean(),

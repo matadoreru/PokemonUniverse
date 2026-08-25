@@ -1,5 +1,6 @@
 import type { Pokemon } from '../../pokemon/types.js';
-import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, type PokemonVisualAsset } from '../contracts.js';
+import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, type PokemonVisualAsset } from '../contracts.js';
+import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
 import { defaultZoomedPokemonConfig, zoomedPokemonConfigSchema, type ZoomedPokemonConfig } from './config.js';
 import { buildZoomedHints, buildZoomedPokemonResults, emptyZoomedPokemonStats, isUsableZoomedSprite, supportsArtwork, zoomedPoints, zoomStageAt, zoomStageSchedule, ZOOMED_POKEMON_ZOOM_STAGES } from './rules.js';
 import { zoomedPokemonActionSchema, type ZoomedPokemonAction, type ZoomedPokemonPlayerState, type ZoomedPokemonPublicState, type ZoomedPokemonState, type ZoomedPokemonVisual } from './types.js';
@@ -119,7 +120,7 @@ export const zoomedPokemonGame: MiniGameModule<ZoomedPokemonConfig, ZoomedPokemo
     if (!state.playerIds.includes(playerId) || !isPlayerRequired(context, playerId)) return { state, accepted: false, error: 'Estás observando esta ronda.' };
     if (state.solves[playerId]) return { state, accepted: false, error: 'Ya has acertado esta ronda.' };
     if (context.now >= (state.roundEndsAt ?? 0)) return { state: resolveRound(state, context), accepted: false, error: 'El tiempo ha terminado.' };
-    if (context.now < (state.cooldownUntil[playerId] ?? 0)) return { state, accepted: false, error: `Espera ${Math.ceil(((state.cooldownUntil[playerId] ?? 0) - context.now) / 100) / 10}s antes de volver a intentar.` };
+    if (cooldownRemainingMs(context.now, state.cooldownUntil[playerId]) > 0) return { state, accepted: false, error: cooldownMessage(context.now, state.cooldownUntil[playerId]) };
     const guessed = context.pokemon.byId(action.pokemonId);
     if (!guessed || !state.guessPoolIds.includes(guessed.id)) return { state, accepted: false, error: 'Ese Pokémon o forma no pertenece al pool configurado.' };
     const attemptCount = (state.attemptCounts[playerId] ?? 0) + 1; const stats = state.playerStats[playerId] ?? emptyZoomedPokemonStats();
@@ -140,29 +141,29 @@ export const zoomedPokemonGame: MiniGameModule<ZoomedPokemonConfig, ZoomedPokemo
           solvesBySprite: stats.solvesBySprite + (source === 'SPRITE' ? 1 : 0), solvesByArtwork: stats.solvesByArtwork + (source === 'ARTWORK' ? 1 : 0),
         } },
       };
-      if (allConnectedRequiredCompleted(context, next.playerIds, (id) => Boolean(next.solves[id]))) next = resolveRound(next, context);
+      next = resolveWhenRequiredPlayersComplete(next, context, next.playerIds, (id) => Boolean(next.solves[id]), resolveRound);
       return { state: next, accepted: true };
     }
     return { accepted: true, state: {
       ...state,
       attempts: [...state.attempts, { playerId, guessedPokemon: { id: guessed.id, name: guessed.name, sprite: guessed.sprite }, attemptedAt: context.now }].slice(-80),
-      attemptCounts: { ...state.attemptCounts, [playerId]: attemptCount }, cooldownUntil: { ...state.cooldownUntil, [playerId]: context.now + ZOOMED_POKEMON_COOLDOWN_MS },
+      attemptCounts: { ...state.attemptCounts, [playerId]: attemptCount }, cooldownUntil: setPlayerCooldown(state.cooldownUntil, playerId, context.now, ZOOMED_POKEMON_COOLDOWN_MS),
       lastAttemptResult: { ...state.lastAttemptResult, [playerId]: { result: 'INCORRECT', attemptedAt: context.now } },
       playerStats: { ...state.playerStats, [playerId]: { ...stats, totalAttempts: stats.totalAttempts + 1 } },
     } };
   },
   handleTimeout(state, context) {
-    if (state.phase === 'ROUND_RESULTS' && context.now >= (state.nextTransitionAt ?? Infinity)) return state.roundNumber >= state.config.rounds ? finish(state) : beginRound(state, context);
-    if (state.phase !== 'ROUND_ACTIVE') return state;
-    if (context.now >= (state.roundEndsAt ?? Infinity)) return resolveRound(state, context);
-    const currentZoomStage = zoomStageAt(state.roundStartedAt!, state.config.roundSeconds, context.now);
-    if (currentZoomStage === state.currentZoomStage) return state;
-    const schedule = zoomStageSchedule(state.roundStartedAt!, state.config.roundSeconds);
-    return { ...state, currentZoomStage, nextTransitionAt: schedule[currentZoomStage] ?? null };
+    return advanceTimedRound(state, context, {
+      beginNext: beginRound, resolveActive: resolveRound, finish, isComplete: (current) => current.roundNumber >= current.config.rounds,
+      tickActive(current) {
+        const currentZoomStage = zoomStageAt(current.roundStartedAt!, current.config.roundSeconds, context.now);
+        if (currentZoomStage === current.currentZoomStage) return current;
+        const schedule = zoomStageSchedule(current.roundStartedAt!, current.config.roundSeconds);
+        return { ...current, currentZoomStage, nextTransitionAt: schedule[currentZoomStage] ?? null };
+      },
+    });
   },
-  handlePresenceChange(state, context) {
-    return state.phase === 'ROUND_ACTIVE' && allConnectedRequiredCompleted(context, state.playerIds, (id) => Boolean(state.solves[id])) ? resolveRound(state, context) : state;
-  },
+  handlePresenceChange(state, context) { return resolveWhenRequiredPlayersComplete(state, context, state.playerIds, (id) => Boolean(state.solves[id]), resolveRound); },
   getPublicState(state, context) {
     const target = context.pokemon.byId(state.targetPokemonId ?? '');
     const active = state.phase === 'ROUND_ACTIVE' && state.visual;

@@ -1,5 +1,6 @@
 import type { Pokemon } from '../../pokemon/types.js';
-import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultShinyVoteConfig, shinyVoteConfigSchema, type ShinyVoteConfig } from './config.js';
 import { AUTHENTIC_SHINY_FILTER, fakeShinyFilter, useShinySpriteForFake } from './filters.js';
 import { buildShinyResults, emptyShinyStats } from './rules.js';
@@ -188,7 +189,7 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
       ...state,
       votes: { ...state.votes, [playerId]: { optionId: action.optionId, votedAt: context.now } },
     };
-    if (allConnectedRequiredCompleted(context, next.playerIds, (id) => Boolean(next.votes[id]))) next = revealRound(next, context);
+    next = resolveWhenRequiredPlayersComplete(next, context, next.playerIds, (id) => Boolean(next.votes[id]), revealRound);
     return { state: next, accepted: true };
   },
 
@@ -201,11 +202,7 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
   },
 
   handlePresenceChange(state, context) {
-    if (state.phase === 'ROUND_ACTIVE'
-      && allConnectedRequiredCompleted(context, state.playerIds, (id) => Boolean(state.votes[id]))) {
-      return revealRound(state, context);
-    }
-    return state;
+    return resolveWhenRequiredPlayersComplete(state, context, state.playerIds, (id) => Boolean(state.votes[id]), revealRound);
   },
 
   getPublicState(state, context) {

@@ -15,8 +15,9 @@ import { AUTH_COOKIE, verifyIdentity } from './auth/tokens.js';
 import { AvatarValidationError } from './avatar/service.js';
 import { env } from './config.js';
 import { prisma } from './db.js';
-import { apiRouter, registerGameImageResolver } from './http/routes.js';
+import { apiRouter, registerGameImageResolver, registerPokemonRepository } from './http/routes.js';
 import { loadPokemonCatalog } from './pokemon/catalog.js';
+import { CatalogPokemonRepository } from './pokemon/repository.js';
 import { loadPokemonVisualCatalog } from './pokemon/visual-assets.js';
 import { RoomManager } from './rooms/manager.js';
 
@@ -61,6 +62,7 @@ io.use(async (socket, next) => {
 });
 
 const catalog = await loadPokemonCatalog();
+registerPokemonRepository(new CatalogPokemonRepository(catalog));
 const pokemonVisuals = await loadPokemonVisualCatalog(catalog);
 const rooms = new RoomManager(io, catalog, pokemonVisuals);
 onAvatarUpdated((userId, avatar) => rooms.updateIdentityAvatar(userId, avatar));

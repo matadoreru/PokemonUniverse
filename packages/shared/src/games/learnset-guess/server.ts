@@ -1,5 +1,6 @@
 import { GENERATION_LEARNSET_SOURCES, isLearnsetPokemonCatalog, type Generation, type LearnsetPokemonCatalog, type Pokemon, type ResolvedLevelUpMove } from '../../pokemon/types.js';
-import { allConnectedRequiredCompleted, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import type { GameActionResult, GameContext, MiniGameModule } from '../contracts.js';
+import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
 import { defaultLearnsetGuessConfig, learnsetGuessConfigSchema, type LearnsetGuessConfig } from './config.js';
 import { buildLearnsetResults, emptyLearnsetStats, learnsetPoints } from './rules.js';
 import { learnsetGuessActionSchema, type LearnsetGuessAction, type LearnsetGuessPlayerState, type LearnsetGuessPublicState, type LearnsetGuessState, type LearnsetMoveGroup, type LearnsetMoveHint } from './types.js';
@@ -141,7 +142,7 @@ export const learnsetGuessGame: MiniGameModule<LearnsetGuessConfig, LearnsetGues
     if (state.phase !== 'ROUND_ACTIVE') return { state, accepted: false, error: 'No active round' };
     if (!state.playerIds.includes(playerId)) return { state, accepted: false, error: 'You are spectating' };
     if (state.solves[playerId]) return { state, accepted: false, error: 'Ya has acertado esta ronda.' };
-    if (context.now < (state.cooldownUntil[playerId] ?? 0)) return { state, accepted: false, error: `Espera ${Math.ceil(((state.cooldownUntil[playerId] ?? 0) - context.now) / 100) / 10}s antes de volver a intentar.` };
+    if (cooldownRemainingMs(context.now, state.cooldownUntil[playerId]) > 0) return { state, accepted: false, error: cooldownMessage(context.now, state.cooldownUntil[playerId]) };
     const guessed = context.pokemon.byId(action.pokemonId);
     if (!guessed || guessed.isDefault === false || !state.config.generations.includes(guessed.generation)) return { state, accepted: false, error: 'Pokémon no disponible en esta partida.' };
     if (guessed.id === state.correctPokemonId) {
@@ -150,31 +151,30 @@ export const learnsetGuessGame: MiniGameModule<LearnsetGuessConfig, LearnsetGues
         ...state, solves: { ...state.solves, [playerId]: { solvedAt: context.now, revealStage, points } }, scores: { ...state.scores, [playerId]: (state.scores[playerId] ?? 0) + points },
         playerStats: { ...state.playerStats, [playerId]: { ...stats, correct: stats.correct + 1, initialSolves: stats.initialSolves + (revealStage === 0 ? 1 : 0), pointsFromSolves: stats.pointsFromSolves + points, bestRoundPoints: Math.max(stats.bestRoundPoints, points) } },
       };
-      if (allConnectedRequiredCompleted(context, next.playerIds, (id) => Boolean(next.solves[id]))) next = resolveRound(next, context);
+      next = resolveWhenRequiredPlayersComplete(next, context, next.playerIds, (id) => Boolean(next.solves[id]), resolveRound);
       return { state: next, accepted: true };
     }
     const stats = state.playerStats[playerId] ?? emptyLearnsetStats();
     return { accepted: true, state: {
       ...state, attempts: [...state.attempts, { playerId, pokemonId: guessed.id, pokemonName: guessed.name, sprite: guessed.sprite, attemptedAt: context.now }],
-      cooldownUntil: { ...state.cooldownUntil, [playerId]: context.now + LEARNSET_GUESS_COOLDOWN_MS },
+      cooldownUntil: setPlayerCooldown(state.cooldownUntil, playerId, context.now, LEARNSET_GUESS_COOLDOWN_MS),
       playerStats: { ...state.playerStats, [playerId]: { ...stats, incorrectGuesses: stats.incorrectGuesses + 1 } },
     } };
   },
   handleTimeout(state, context) {
-    if (state.phase === 'ROUND_RESULTS' && context.now >= (state.nextTransitionAt ?? Infinity)) return state.roundNumber >= state.config.rounds ? finish(state) : beginRound(state, context);
-    if (state.phase !== 'ROUND_ACTIVE') return state;
-    if (context.now >= (state.roundEndsAt ?? Infinity)) return resolveRound(state, context);
-    if (context.now < (state.nextTransitionAt ?? Infinity)) return state;
-    const groups = groupsForState(state); const availableExtras = groups.length - state.initialGroupCount;
-    let revealedExtraGroups = state.revealedExtraGroups; let deadline = state.nextTransitionAt!;
-    while (revealedExtraGroups < availableExtras && context.now >= deadline) { revealedExtraGroups += 1; deadline += LEARNSET_HINT_INTERVAL_MS; }
-    const nextTransitionAt = revealedExtraGroups < availableExtras && deadline < (state.roundEndsAt ?? Infinity) ? deadline : null;
-    return { ...state, revealedExtraGroups, nextTransitionAt };
+    return advanceTimedRound(state, context, {
+      beginNext: beginRound, resolveActive: resolveRound, finish, isComplete: (current) => current.roundNumber >= current.config.rounds,
+      tickActive(current) {
+        if (context.now < (current.nextTransitionAt ?? Infinity)) return current;
+        const groups = groupsForState(current); const availableExtras = groups.length - current.initialGroupCount;
+        let revealedExtraGroups = current.revealedExtraGroups; let deadline = current.nextTransitionAt!;
+        while (revealedExtraGroups < availableExtras && context.now >= deadline) { revealedExtraGroups += 1; deadline += LEARNSET_HINT_INTERVAL_MS; }
+        const nextTransitionAt = revealedExtraGroups < availableExtras && deadline < (current.roundEndsAt ?? Infinity) ? deadline : null;
+        return { ...current, revealedExtraGroups, nextTransitionAt };
+      },
+    });
   },
-  handlePresenceChange(state, context) {
-    if (state.phase === 'ROUND_ACTIVE' && allConnectedRequiredCompleted(context, state.playerIds, (id) => Boolean(state.solves[id]))) return resolveRound(state, context);
-    return state;
-  },
+  handlePresenceChange(state, context) { return resolveWhenRequiredPlayersComplete(state, context, state.playerIds, (id) => Boolean(state.solves[id]), resolveRound); },
   getPublicState(state) {
     return {
       gameId: 'learnset-guess', phase: state.phase, roundNumber: state.roundNumber, totalRounds: state.config.rounds,

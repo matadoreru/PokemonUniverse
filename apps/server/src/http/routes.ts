@@ -3,14 +3,21 @@ import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { prisma } from '../db.js';
 import { env } from '../config.js';
+import type { PokemonRepository } from '../pokemon/repository.js';
+import { parsePokemonSearchQuery } from '../pokemon/repository.js';
 import { loadGameImage } from './game-image-cache.js';
 
 export const apiRouter = Router();
 let gameImageResolver: ((code: string, assetToken: string, roundNumber: number, optionId: string) => string | GameAssetResolution | null) | null = null;
+let pokemonRepository: PokemonRepository | null = null;
 const gameImageRateLimit = rateLimit({ windowMs: 60_000, limit: 5_000, standardHeaders: 'draft-7', legacyHeaders: false });
 
 export function registerGameImageResolver(resolver: typeof gameImageResolver): void {
   gameImageResolver = resolver;
+}
+
+export function registerPokemonRepository(repository: PokemonRepository): void {
+  pokemonRepository = repository;
 }
 
 function routeParam(value: string | string[] | undefined): string {
@@ -35,25 +42,12 @@ apiRouter.get('/games', (_req, res) => {
   res.json({ games: gameRegistry.list().map((game) => ({ ...game.manifest, defaultConfig: game.defaultConfig })) });
 });
 
-apiRouter.get('/pokemon', async (req, res, next) => {
+apiRouter.get('/pokemon', (req, res, next) => {
   try {
-    const generations = typeof req.query.generations === 'string'
-      ? req.query.generations.split(',').map(Number).filter((value) => Number.isInteger(value) && value >= 1 && value <= 9)
-      : [];
-    const includeForms = req.query.includeForms === 'true';
-    const rows = await prisma.pokemon.findMany({
-      where: {
-        ...(generations.length ? { generation: { in: generations } } : {}),
-        ...(!includeForms ? { isDefault: true } : {}),
-      },
-      orderBy: [{ nationalDexNumber: 'asc' }, { isDefault: 'desc' }, { name: 'asc' }],
-      select: { id: true, nationalDexNumber: true, name: true, generation: true, isDefault: true, sprite: true, names: true, types: true, hp: true, attack: true, defense: true, specialAttack: true, specialDefense: true, speed: true, baseStatTotal: true, heightDecimeters: true, weightHectograms: true, evolutionStage: true, evolutionStages: true, legendaryStatus: true, color: true, abilities: true },
-    });
+    if (!pokemonRepository) throw new Error('Pokémon repository is not ready');
+    const pokemon = pokemonRepository.search(parsePokemonSearchQuery(req.query));
     res.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
-    res.json({ pokemon: rows.map(({ evolutionStages, ...pokemon }) => ({
-      ...pokemon,
-      ...(evolutionStages ? { evolutionStageCount: evolutionStages } : {}),
-    })) });
+    res.json({ pokemon });
   } catch (error) { next(error); }
 });
 

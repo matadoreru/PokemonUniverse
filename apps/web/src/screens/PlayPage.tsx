@@ -24,39 +24,39 @@ export function PlayPage() {
     await run(() => joinRoom(code));
   }
 
-  if (room) return <section className="mx-auto max-w-xl px-5 py-16 text-center">
+  if (room) return <section className="mx-auto max-w-xl px-4 py-10 text-center sm:px-5 sm:py-16">
     <div className="card">
       <DoorOpen className="mx-auto text-aqua" size={48} />
       <h1 className="mt-4 font-display text-3xl font-bold">Ya tienes una sala activa</h1>
-      <p className="mt-2 font-semibold text-ink/55">Código <strong className="tracking-widest text-ink">{room.code}</strong></p>
+      <p className="mt-2 font-semibold text-ink/65">Código <strong className="tracking-widest text-ink">{room.code}</strong></p>
       <button className="btn-primary mt-6 w-full sm:w-auto" onClick={() => navigate('/room')}>Volver a la sala</button>
     </div>
   </section>;
 
-  return <section className="mx-auto max-w-xl px-5 pb-16 pt-8 sm:pt-12">
+  return <section className="mx-auto max-w-xl px-4 pb-12 pt-6 sm:px-5 sm:pb-16 sm:pt-10">
     <header className="mb-7 text-center">
       <span className="label !mb-2 text-aqua">Multijugador privado</span>
       <h1 className="font-display text-4xl font-bold sm:text-5xl">Entrar en partida</h1>
-      <p className="mx-auto mt-3 max-w-md font-semibold text-ink/55">Crea una sala nueva o utiliza el código que te ha enviado otro entrenador.</p>
+      <p className="mx-auto mt-3 max-w-md font-semibold text-ink/65">Crea una sala nueva o utiliza el código que te ha enviado otro entrenador.</p>
     </header>
 
-    <article className="card !p-5 sm:!p-8">
+    <article className="card !p-4 sm:!p-6">
       <button className="btn-secondary w-full" disabled={busy || !connected} onClick={() => void run(createRoom)}>
         {busy ? <LoaderCircle className="animate-spin" size={20} /> : <Plus size={21} />}
         {busy ? 'Preparando sala…' : 'Crear sala privada'}
       </button>
-      <p className="mt-2 text-center text-sm font-bold text-ink/40">Se crea al instante con la configuración predeterminada.</p>
+      <p className="mt-2 text-center text-sm font-bold text-ink/60">Se crea al instante con la configuración predeterminada.</p>
 
       <div className="my-7 flex items-center gap-3" aria-hidden="true">
         <span className="h-px flex-1 bg-ink/10" />
-        <span className="text-xs font-black uppercase tracking-[.2em] text-ink/35">O únete a una sala</span>
+        <span className="text-xs font-black uppercase tracking-[.2em] text-ink/55">O únete a una sala</span>
         <span className="h-px flex-1 bg-ink/10" />
       </div>
 
       <form onSubmit={join}>
         <label htmlFor="room-code" className="mb-2 flex items-center justify-between gap-3">
           <span className="flex items-center gap-2 font-extrabold"><KeyRound size={18} className="text-aqua" /> Código de sala</span>
-          <span className="text-xs font-black tabular-nums text-ink/35">{code.length}/6</span>
+          <span className="text-xs font-black tabular-nums text-ink/55">{code.length}/6</span>
         </label>
         <input
           id="room-code"
@@ -71,16 +71,16 @@ export function PlayPage() {
           minLength={6}
           maxLength={6}
         />
-        <p id="room-code-help" className="mt-2 text-sm font-bold text-ink/40">Seis letras o números, sin espacios.</p>
+        <p id="room-code-help" className="mt-2 text-sm font-bold text-ink/60">Seis letras o números, sin espacios.</p>
         <button className="btn-primary mt-4 w-full" disabled={busy || !connected || code.length !== 6}>
           {busy ? <LoaderCircle className="animate-spin" size={20} /> : <DoorOpen size={20} />}
           {busy ? 'Entrando…' : 'Unirse a la sala'}
         </button>
       </form>
 
-      {error && <p role="alert" className="mt-4 rounded-xl border border-berry/25 bg-berry/10 p-3 text-center text-sm font-extrabold text-berry">{error}</p>}
+      {error && <p role="alert" className="status-error mt-4 text-center">{error}</p>}
     </article>
 
-    <p className="mt-5 text-center text-sm font-bold text-ink/40">El host podrá elegir el minijuego y configurar la partida desde el lobby.</p>
+    <p className="mt-5 text-center text-sm font-bold text-ink/60">El host podrá elegir el minijuego y configurar la partida desde el lobby.</p>
   </section>;
 }

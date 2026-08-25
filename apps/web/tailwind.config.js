@@ -3,11 +3,14 @@ export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: { extend: {
     colors: {
-      ink: '#e8edf7', cream: '#090d18', surface: '#141b2b', 'surface-raised': '#1b2436', night: '#050811',
-      berry: '#ff5c82', electric: '#f0bf54', aqua: '#52c7e8', leaf: '#62c995',
+      ink: 'rgb(var(--color-ink) / <alpha-value>)', cream: 'rgb(var(--color-cream) / <alpha-value>)',
+      surface: 'rgb(var(--color-surface) / <alpha-value>)', 'surface-raised': 'rgb(var(--color-surface-raised) / <alpha-value>)',
+      night: 'rgb(var(--color-night) / <alpha-value>)', berry: 'rgb(var(--color-berry) / <alpha-value>)',
+      electric: 'rgb(var(--color-electric) / <alpha-value>)', aqua: 'rgb(var(--color-aqua) / <alpha-value>)',
+      leaf: 'rgb(var(--color-leaf) / <alpha-value>)',
     },
     fontFamily: { display: ['Fredoka', 'ui-rounded', 'system-ui'], body: ['Nunito', 'system-ui'] },
-    boxShadow: { card: '0 18px 50px rgba(0, 0, 0, .32)', pop: '0 8px 0 #050811' },
+    boxShadow: { card: 'var(--shadow-card)', pop: '0 4px 0 rgb(var(--color-night) / .8)' },
   } },
   plugins: [],
 };

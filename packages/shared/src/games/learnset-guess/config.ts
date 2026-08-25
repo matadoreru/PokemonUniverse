@@ -1,8 +1,9 @@
 import { GENERATIONS } from '../../pokemon/types.js';
 import { z } from 'zod';
+import { pokemonGenerationsSchema } from '../config.js';
 
 export const learnsetGuessConfigSchema = z.object({
-  generations: z.array(z.number().int().min(1).max(9)).min(1).transform((values) => [...new Set(values)].sort((a, b) => a - b)),
+  generations: pokemonGenerationsSchema,
   showLevels: z.boolean(),
   showEvolution: z.boolean(),
   roundSeconds: z.number().int().min(15).max(120),

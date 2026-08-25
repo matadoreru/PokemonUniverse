@@ -45,9 +45,6 @@ export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): v
 export interface GameConfigProps { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }
 export interface MiniGameClientModule {
   id: string;
-  name: string;
-  description: string;
-  icon: string;
   ConfigPanel: ComponentType<GameConfigProps>;
   ActiveGame: ComponentType<ActiveGameProps>;
   Results: ComponentType<GameResultsProps>;
@@ -68,47 +65,42 @@ class ClientGameRegistry {
 }
 
 export const clientGameRegistry = new ClientGameRegistry().register({
-  id: 'pokedex-distance', name: 'Pokédex Distance',
-  icon: '🎯',
-  description: 'Acércate al número objetivo. La elección más lejana queda fuera.',
+  id: 'pokedex-distance',
   ConfigPanel: PokedexDistanceConfigPanel, ActiveGame: PokedexDistanceGame, Results: GameResults,
 }).register({
-  id: 'shiny-vote', name: 'Shiny Quiz',
-  icon: '✨',
-  description: 'Encuentra el shiny real. Verás en directo qué opción elige cada entrenador.',
+  id: 'shiny-vote',
   ConfigPanel: ShinyVoteConfigPanel, ActiveGame: ShinyVoteGame, Results: ShinyVoteResults,
 }).register({
-  id: 'pokemon-impostor', name: 'Pokémon Impostor', icon: '🕵️',
-  description: 'Da pistas sin revelar demasiado y descubre quién no conoce el Pokémon.',
+  id: 'pokemon-impostor',
   ConfigPanel: PokemonImpostorConfigPanel, ActiveGame: PokemonImpostorGame, Results: PokemonImpostorResults,
 }).register({
-  id: 'higher-lower', name: 'Higher or Lower', icon: '📈', description: 'Compara stats, decide si suben o bajan y construye una racha.',
+  id: 'higher-lower',
   ConfigPanel: HigherLowerConfigPanel, ActiveGame: HigherLowerGame, Results: HigherLowerResults,
 }).register({
-  id: 'type-duel', name: 'Type Duel', icon: '⚔️', description: 'Duelo de tipos: encuentra antes que tu rival la combinación Pokémon exacta.',
+  id: 'type-duel',
   ConfigPanel: TypeDuelConfigPanel, ActiveGame: TypeDuelGame, Results: TypeDuelResults,
 }).register({
-  id: 'learnset-guess', name: 'Learnset Guess', icon: '📚', description: 'Adivina el Pokémon por los movimientos que aprende al subir de nivel.',
+  id: 'learnset-guess',
   ConfigPanel: LearnsetGuessConfigPanel, ActiveGame: LearnsetGuessGame, Results: LearnsetGuessResults,
 }).register({
-  id: 'pokeddle-race', name: 'Pokédle Race', icon: '🏁', description: 'Descubre tu Pokémon secreto mediante pistas comparativas antes que tus rivales.',
+  id: 'pokeddle-race',
   ConfigPanel: PokeddleRaceConfigPanel, ActiveGame: PokeddleRaceGame, Results: PokeddleRaceResults, validateConfig: validatePokeddleConfig,
 }).register({
-  id: 'pokemon-bingo', name: 'Pokémon Bingo', icon: '🎉', description: 'Completa antes que nadie un tablero de condiciones con Pokémon distintos.',
+  id: 'pokemon-bingo',
   ConfigPanel: PokemonBingoConfigPanel, ActiveGame: PokemonBingoGame, Results: PokemonBingoResults, validateConfig: validatePokemonBingoConfig,
 }).register({
-  id: 'whos-that-pokemon', name: '¿Quién es ese Pokémon?', icon: '❓', description: 'Reconoce la silueta antes que nadie y suma más puntos cuanto más rápido aciertes.',
+  id: 'whos-that-pokemon',
   ConfigPanel: WhosThatPokemonConfigPanel, ActiveGame: WhosThatPokemonGame, Results: WhosThatPokemonResults,
 }).register({
-  id: 'pokedex-entry-guess', name: 'Pokédex Entry Guess', icon: '📖', description: 'Reconoce al Pokémon por una entrada oficial de la Pokédex en español.',
+  id: 'pokedex-entry-guess',
   ConfigPanel: PokedexEntryGuessConfigPanel, ActiveGame: PokedexEntryGuessGame, Results: PokedexEntryGuessResults,
 }).register({
-  id: 'type-chain', name: 'Type Chain', icon: '⛓️', description: 'Encadena Pokémon compartiendo exactamente un tipo antes de que termine tu turno.',
+  id: 'type-chain',
   ConfigPanel: TypeChainConfigPanel, ActiveGame: TypeChainGame, Results: TypeChainResults,
 }).register({
-  id: 'guess-from-stats', name: 'Guess from Stats', icon: '📊', description: 'Reconoce Pokémon por sus estadísticas base y resuelve antes que tus rivales.',
+  id: 'guess-from-stats',
   ConfigPanel: GuessFromStatsConfigPanel, ActiveGame: GuessFromStatsGame, Results: GuessFromStatsResults, validateConfig: validateGuessFromStatsConfig,
 }).register({
-  id: 'zoomed-pokemon', name: 'Zoomed Pokémon', icon: '🔎', description: 'Reconoce el Pokémon mientras una cámara compartida se aleja progresivamente.',
+  id: 'zoomed-pokemon',
   ConfigPanel: ZoomedPokemonConfigPanel, ActiveGame: ZoomedPokemonGame, Results: ZoomedPokemonResults, validateConfig: validateZoomedPokemonConfig,
 });

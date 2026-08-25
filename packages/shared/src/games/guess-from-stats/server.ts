@@ -1,5 +1,6 @@
 import type { Pokemon } from '../../pokemon/types.js';
-import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
 import { defaultGuessFromStatsConfig, guessFromStatsConfigSchema, type GuessFromStatsConfig } from './config.js';
 import { buildGuessFromStatsHints, buildGuessFromStatsResults, buildGuessFromStatsSignature, buildGuessFromStatsVisibleStats, emptyGuessFromStatsPlayerStats, guessFromStatsRoundPoints, hasGuessFromStatsHintData, pokemonBaseStatTotal } from './rules.js';
 import { guessFromStatsActionSchema, type GuessFromStatsAction, type GuessFromStatsPlayerState, type GuessFromStatsPokemonReveal, type GuessFromStatsPreparedRound, type GuessFromStatsPublicSolve, type GuessFromStatsPublicState, type GuessFromStatsRoundResult, type GuessFromStatsState } from './types.js';
@@ -92,23 +93,20 @@ export const guessFromStatsGame: MiniGameModule<GuessFromStatsConfig, GuessFromS
     if (!state.playerIds.includes(playerId) || !isPlayerRequired(context, playerId)) return { state, accepted: false, error: 'Estás observando esta ronda.' };
     if (state.solves[playerId]) return { state, accepted: false, error: 'Ya has acertado esta ronda.' };
     if (context.now >= (state.roundEndsAt ?? 0)) return { state, accepted: false, error: 'El tiempo ha terminado.' };
-    if (context.now < (state.cooldownUntil[playerId] ?? 0)) return { state, accepted: false, error: `Espera ${Math.ceil(((state.cooldownUntil[playerId] ?? 0) - context.now) / 100) / 10}s antes de volver a intentar.` };
+    if (cooldownRemainingMs(context.now, state.cooldownUntil[playerId]) > 0) return { state, accepted: false, error: cooldownMessage(context.now, state.cooldownUntil[playerId]) };
     const guessed = context.pokemon.byId(action.pokemonId); if (!guessed || !state.poolIds.includes(guessed.id)) return { state, accepted: false, error: 'Ese Pokémon no pertenece al pool configurado.' };
     const prepared = activeRound(state); if (!prepared) return { state, accepted: false, error: 'La respuesta no está disponible.' };
     const attemptCount = (state.attemptCounts[playerId] ?? 0) + 1; const stats = state.playerStats[playerId] ?? emptyGuessFromStatsPlayerStats();
     if (prepared.acceptedPokemonIds.includes(guessed.id)) {
       const solveOrder = Object.keys(state.solves).length + 1; const points = guessFromStatsRoundPoints(state.playerIds.length, solveOrder); const elapsedMs = context.now - state.roundStartedAt!;
       let next: GuessFromStatsState = { ...state, attemptCounts: { ...state.attemptCounts, [playerId]: attemptCount }, solves: { ...state.solves, [playerId]: { solveOrder, solvedAt: context.now, elapsedMs, points, attempts: attemptCount, submittedPokemonId: guessed.id } }, lastAttemptResult: { ...state.lastAttemptResult, [playerId]: { result: 'CORRECT', attemptedAt: context.now } }, scores: { ...state.scores, [playerId]: (state.scores[playerId] ?? 0) + points }, playerStats: { ...state.playerStats, [playerId]: { ...stats, correct: stats.correct + 1, totalAttempts: stats.totalAttempts + 1, firstTry: stats.firstTry + (attemptCount === 1 ? 1 : 0), roundFirsts: stats.roundFirsts + (solveOrder === 1 ? 1 : 0), solveTimeTotalMs: stats.solveTimeTotalMs + elapsedMs, bestTimeMs: stats.bestTimeMs <= 0 ? elapsedMs : Math.min(stats.bestTimeMs, elapsedMs), pointsFromRounds: stats.pointsFromRounds + points } } };
-      if (allConnectedRequiredCompleted(context, next.playerIds, (id) => Boolean(next.solves[id]))) next = resolveRound(next, context);
+      next = resolveWhenRequiredPlayersComplete(next, context, next.playerIds, (id) => Boolean(next.solves[id]), resolveRound);
       return { state: next, accepted: true };
     }
-    return { accepted: true, state: { ...state, attempts: [...state.attempts, { playerId, guessedPokemon: summary(guessed), attemptedAt: context.now }].slice(-GUESS_FROM_STATS_MAX_RECENT_ATTEMPTS), attemptCounts: { ...state.attemptCounts, [playerId]: attemptCount }, cooldownUntil: { ...state.cooldownUntil, [playerId]: context.now + GUESS_FROM_STATS_COOLDOWN_MS }, lastAttemptResult: { ...state.lastAttemptResult, [playerId]: { result: 'INCORRECT', attemptedAt: context.now } }, playerStats: { ...state.playerStats, [playerId]: { ...stats, totalAttempts: stats.totalAttempts + 1 } } } };
+    return { accepted: true, state: { ...state, attempts: [...state.attempts, { playerId, guessedPokemon: summary(guessed), attemptedAt: context.now }].slice(-GUESS_FROM_STATS_MAX_RECENT_ATTEMPTS), attemptCounts: { ...state.attemptCounts, [playerId]: attemptCount }, cooldownUntil: setPlayerCooldown(state.cooldownUntil, playerId, context.now, GUESS_FROM_STATS_COOLDOWN_MS), lastAttemptResult: { ...state.lastAttemptResult, [playerId]: { result: 'INCORRECT', attemptedAt: context.now } }, playerStats: { ...state.playerStats, [playerId]: { ...stats, totalAttempts: stats.totalAttempts + 1 } } } };
   },
-  handleTimeout(state, context) {
-    if (state.phase === 'ROUND_RESULTS' && context.now >= (state.nextTransitionAt ?? Infinity)) return state.roundNumber >= state.config.rounds ? finish(state) : beginRound(state, context);
-    if (state.phase === 'ROUND_ACTIVE' && context.now >= (state.roundEndsAt ?? Infinity)) return resolveRound(state, context); return state;
-  },
-  handlePresenceChange(state, context) { return state.phase === 'ROUND_ACTIVE' && allConnectedRequiredCompleted(context, state.playerIds, (id) => Boolean(state.solves[id])) ? resolveRound(state, context) : state; },
+  handleTimeout(state, context) { return advanceTimedRound(state, context, { beginNext: beginRound, resolveActive: resolveRound, finish, isComplete: (current) => current.roundNumber >= current.config.rounds }); },
+  handlePresenceChange(state, context) { return resolveWhenRequiredPlayersComplete(state, context, state.playerIds, (id) => Boolean(state.solves[id]), resolveRound); },
   getPublicState(state) {
     const prepared = activeRound(state); const active = state.phase === 'ROUND_ACTIVE';
     return { gameId: 'guess-from-stats', phase: state.phase, roundNumber: state.roundNumber, totalRounds: state.config.rounds, visibleStats: active ? prepared?.visibleStats ?? [] : [], hints: active ? prepared?.hints ?? [] : [], attempts: state.attempts, solvedPlayers: Object.entries(state.solves).map(([playerId, solve]) => ({ playerId, solveOrder: solve.solveOrder })).sort((a, b) => a.solveOrder - b.solveOrder), scores: state.scores, roundStartedAt: state.roundStartedAt, roundEndsAt: state.roundEndsAt, nextTransitionAt: state.nextTransitionAt, lastRound: state.phase === 'ROUND_RESULTS' || state.phase === 'GAME_RESULTS' ? state.lastRound : null, results: state.phase === 'GAME_RESULTS' ? buildGuessFromStatsResults(state) : null };

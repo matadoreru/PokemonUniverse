@@ -1,4 +1,5 @@
-import { allConnectedRequiredCompleted, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultPokedexDistanceConfig, pokedexDistanceConfigSchema, type PokedexDistanceConfig } from './config.js';
 import { buildResults, distanceBetween, elimination, emptyPlayerStats, farthestPlayerIds } from './rules.js';
 import { pokedexDistanceActionSchema, type PokedexDistanceAction, type PokedexDistancePlayerState, type PokedexDistancePublicState, type PokedexDistanceState, type RoundResult } from './types.js';
@@ -156,7 +157,7 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
       lockedPokemonIds: [...state.lockedPokemonIds, pokemon.id],
       playerStats: { ...state.playerStats, [playerId]: { ...stats, exactHits: stats.exactHits + (distance === 0 ? 1 : 0), distanceTotal: stats.distanceTotal + distance, selections: stats.selections + 1, roundsSurvived: stats.roundsSurvived + 1 } },
     };
-    if (allConnectedRequiredCompleted(context, next.eligibleIds, (id) => Boolean(next.selections[id]))) next = resolveRound(next, context);
+    next = resolveWhenRequiredPlayersComplete(next, context, next.eligibleIds, (id) => Boolean(next.selections[id]), resolveRound, next.phase);
     return { state: next, accepted: true };
   },
 
@@ -171,11 +172,8 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
   },
 
   handlePresenceChange(state, context) {
-    if ((state.phase === 'ROUND_ACTIVE' || state.phase === 'TIEBREAKER_ACTIVE')
-      && allConnectedRequiredCompleted(context, state.eligibleIds, (id) => Boolean(state.selections[id]))) {
-      return resolveRound(state, context);
-    }
-    return state;
+    if (state.phase !== 'ROUND_ACTIVE' && state.phase !== 'TIEBREAKER_ACTIVE') return state;
+    return resolveWhenRequiredPlayersComplete(state, context, state.eligibleIds, (id) => Boolean(state.selections[id]), resolveRound, state.phase);
   },
 
   getPublicState(state, context) {

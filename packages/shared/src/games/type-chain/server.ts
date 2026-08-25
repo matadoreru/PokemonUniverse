@@ -1,5 +1,6 @@
 import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { cooldownMessage, cooldownRemainingMs, setPlayerCooldown } from '../infrastructure/timing.js';
 import { defaultTypeChainConfig, typeChainConfigSchema, type TypeChainConfig } from './config.js';
 import { buildTypeChainResults, emptyTypeChainStats, getValidTypeChainCandidates, sharedPokemonTypes } from './rules.js';
 import { typeChainActionSchema, type TypeChainAction, type TypeChainEvent, type TypeChainInvalidReason, type TypeChainPlayerState, type TypeChainPokemonView, type TypeChainPublicState, type TypeChainState } from './types.js';
@@ -114,7 +115,7 @@ function invalidAttempt(state: TypeChainState, playerId: string, pokemon: Pokemo
   return {
     ...state,
     invalidAttempts: [...state.invalidAttempts, { playerId, pokemon: pokemonView(pokemon), reason, attemptedAt: context.now }].slice(-TYPE_CHAIN_MAX_RECENT_ATTEMPTS),
-    cooldownUntil: { ...state.cooldownUntil, [playerId]: context.now + TYPE_CHAIN_INVALID_COOLDOWN_MS },
+    cooldownUntil: setPlayerCooldown(state.cooldownUntil, playerId, context.now, TYPE_CHAIN_INVALID_COOLDOWN_MS),
     lastAttempt: { ...state.lastAttempt, [playerId]: { reason, pokemonName: pokemon.name, attemptedAt: context.now } },
     playerStats: { ...state.playerStats, [playerId]: { ...stats, invalidAttempts: stats.invalidAttempts + 1 } },
   };
@@ -142,7 +143,7 @@ export const typeChainGame: MiniGameModule<TypeChainConfig, TypeChainState, Type
     if (state.currentPlayerId !== playerId) return { state, accepted: false, error: 'No es tu turno.' };
     if (!state.activePlayerIds.includes(playerId) || !isPlayerRequired(context, playerId)) return { state, accepted: false, error: 'Ya no participas en esta cadena.' };
     if (context.now >= (state.roundEndsAt ?? 0)) return { state, accepted: false, error: 'El turno ha terminado.' };
-    if (context.now < (state.cooldownUntil[playerId] ?? 0)) return { state, accepted: false, error: `Espera ${Math.ceil(((state.cooldownUntil[playerId] ?? 0) - context.now) / 100) / 10}s antes de volver a intentar.` };
+    if (cooldownRemainingMs(context.now, state.cooldownUntil[playerId]) > 0) return { state, accepted: false, error: cooldownMessage(context.now, state.cooldownUntil[playerId]) };
     const candidate = context.pokemon.byId(action.pokemonId); if (!candidate) return { state, accepted: false, error: 'Pokémon desconocido.' };
     if (!state.poolIds.includes(candidate.id)) return { state: invalidAttempt(state, playerId, candidate, 'OUT_OF_POOL', context), accepted: true };
     if (state.usedPokemonIds.includes(candidate.id)) return { state: invalidAttempt(state, playerId, candidate, 'ALREADY_USED', context), accepted: true };

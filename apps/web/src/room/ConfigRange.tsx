@@ -89,7 +89,7 @@ export function ConfigRange({ label, value, min, max, step = 1, disabled, accent
           }
         }}
       />
-      {hint && <span className="mt-2 block text-xs font-bold text-ink/45">{hint}</span>}
+      {hint && <span className="mt-2 block text-xs font-bold text-ink/65">{hint}</span>}
     </label>
   );
 }

@@ -1,6 +1,6 @@
 import type { Pokemon } from '../../pokemon/types.js';
-import { pointsForPosition } from '../../scoring.js';
-import type { GameResults, GameStanding } from '../contracts.js';
+import { buildRankedResults, pointsForPosition } from '../../scoring.js';
+import type { GameResults } from '../contracts.js';
 import type { ZoomedPokemonConfig, ZoomedPokemonHintKind } from './config.js';
 import type { ZoomedPokemonHint, ZoomedPokemonPlayerStats, ZoomedPokemonState } from './types.js';
 
@@ -83,15 +83,10 @@ export function zoomedPoints(playerCount: number, solveOrder: number): number { 
 
 export function buildZoomedPokemonResults(state: ZoomedPokemonState): GameResults {
   if (state.phase !== 'GAME_RESULTS') throw new Error('Results are unavailable before the game finishes');
-  const ordered = state.playerIds.map((playerId) => ({ playerId, points: state.scores[playerId] ?? 0, stats: state.playerStats[playerId] ?? emptyZoomedPokemonStats() }))
-    .sort((a, b) => b.points - a.points || b.stats.correct - a.stats.correct || b.stats.firstPositions - a.stats.firstPositions || a.playerId.localeCompare(b.playerId));
-  let position = 0; let priorPoints: number | null = null;
-  const standings: GameStanding[] = ordered.map((entry, index) => {
-    if (entry.points !== priorPoints) position = index + 1; priorPoints = entry.points;
-    return { playerId: entry.playerId, position, points: entry.points, won: position === 1, stats: { ...entry.stats } };
+  return buildRankedResults(state.playerIds.map((playerId) => ({ playerId, points: state.scores[playerId] ?? 0, stats: state.playerStats[playerId] ?? emptyZoomedPokemonStats() })), {
+    compare: (left, right) => right.points - left.points || right.stats.correct - left.stats.correct || right.stats.firstPositions - left.stats.firstPositions || left.playerId.localeCompare(right.playerId),
+    tieKey: (entry) => entry.points,
   });
-  const leaders = standings.filter((entry) => entry.position === 1);
-  return { winnerId: leaders.length === 1 ? leaders[0]!.playerId : null, standings };
 }
 
 export function supportsArtwork(config: ZoomedPokemonConfig, pokemonId: string, artworkIds: ReadonlySet<string>): boolean {

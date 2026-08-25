@@ -1,5 +1,6 @@
 import type { Pokemon } from '../../pokemon/types.js';
-import type { GameResults, GameStanding } from '../contracts.js';
+import { buildRankedResults } from '../../scoring.js';
+import type { GameResults } from '../contracts.js';
 import type { HigherLowerCategory, HigherLowerDifficulty } from './config.js';
 import type { HigherLowerChoice, HigherLowerState } from './types.js';
 
@@ -43,13 +44,12 @@ export function selectPokemonByDifficulty(
 export function streakBonus(streak: number): number { return STREAK_BONUSES.find((entry) => streak >= entry.streak)?.bonus ?? 0; }
 export function buildHigherLowerResults(state: HigherLowerState): GameResults {
   if (state.phase !== 'GAME_RESULTS') throw new Error('Results unavailable');
-  const ordered = state.playerIds.map((playerId) => ({ playerId, points: state.scores[playerId] ?? 0, stats: state.playerStats[playerId]! })).sort((a, b) => b.points - a.points || a.playerId.localeCompare(b.playerId));
-  let prior: number | null = null; let position = 0;
-  const standings: GameStanding[] = ordered.map((entry, index) => {
-    if (entry.points !== prior) position = index + 1; prior = entry.points;
+  return buildRankedResults(state.playerIds.map((playerId) => ({ playerId, points: state.scores[playerId] ?? 0, stats: state.playerStats[playerId]! })), {
+    compare: (left, right) => right.points - left.points || left.playerId.localeCompare(right.playerId),
+    tieKey: (entry) => entry.points,
+    mapStats: (entry) => {
     const resolvedRounds = entry.stats.correct + entry.stats.incorrect;
-    return { playerId: entry.playerId, position, points: entry.points, stats: { ...entry.stats, accuracy: resolvedRounds ? Math.round(entry.stats.correct / resolvedRounds * 100) : 0 } };
+      return { ...entry.stats, accuracy: resolvedRounds ? Math.round(entry.stats.correct / resolvedRounds * 100) : 0 };
+    },
   });
-  const leaders = standings.filter((entry) => entry.position === 1);
-  return { winnerId: leaders.length === 1 ? leaders[0]!.playerId : null, standings };
 }

@@ -1,8 +1,9 @@
 import { z } from 'zod';
+import { pokemonGenerationsSchema } from '../config.js';
 import { GENERATIONS } from '../../pokemon/types.js';
 
 export const pokedexDistanceConfigSchema = z.object({
-  generations: z.array(z.number().int().min(1).max(9)).min(1).transform((values) => [...new Set(values)].sort()),
+  generations: pokemonGenerationsSchema,
   roundSeconds: z.number().int().min(10).max(60),
 });
 

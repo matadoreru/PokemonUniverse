@@ -16,6 +16,8 @@ export interface RoomMember {
 export interface GameRuntime {
   resultId: string;
   gameId: string;
+  /** Stable roster captured at game start; room code never inspects opaque game state. */
+  participantIds: readonly string[];
   module: RegisteredGame;
   config: unknown;
   state: any;

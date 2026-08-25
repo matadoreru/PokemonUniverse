@@ -1,5 +1,6 @@
 import type { Pokemon, PokemonType } from '../../pokemon/types.js';
-import type { GameResults, GameStanding } from '../contracts.js';
+import { buildRankedResults } from '../../scoring.js';
+import type { GameResults } from '../contracts.js';
 import type { TypeDuelState } from './types.js';
 export const TYPE_DUEL_WIN_POINTS = 5;
 export const TYPE_DUEL_ATTEMPT_COOLDOWN_MS = 1_000;
@@ -21,8 +22,9 @@ export function chooseBalancedPair(playerIds: readonly string[], counts: Readonl
 }
 export function buildTypeDuelResults(state: TypeDuelState): GameResults {
   if (state.phase !== 'GAME_RESULTS') throw new Error('Results unavailable');
-  const ordered = state.playerIds.map((playerId) => ({ playerId, points: state.scores[playerId] ?? 0, stats: state.playerStats[playerId]! })).sort((a, b) => b.points - a.points || a.playerId.localeCompare(b.playerId));
-  let prior: number | null = null; let position = 0;
-  const standings: GameStanding[] = ordered.map((entry, index) => { if (entry.points !== prior) position = index + 1; prior = entry.points; return { playerId: entry.playerId, position, points: entry.points, stats: { ...entry.stats, winRate: entry.stats.duelsPlayed ? Math.round(entry.stats.duelsWon / entry.stats.duelsPlayed * 100) : 0, averageCorrectTimeMs: entry.stats.correctAttempts ? Math.round(entry.stats.correctTimeTotalMs / entry.stats.correctAttempts) : 0 } }; });
-  const leaders = standings.filter((entry) => entry.position === 1); return { winnerId: leaders.length === 1 ? leaders[0]!.playerId : null, standings };
+  return buildRankedResults(state.playerIds.map((playerId) => ({ playerId, points: state.scores[playerId] ?? 0, stats: state.playerStats[playerId]! })), {
+    compare: (left, right) => right.points - left.points || left.playerId.localeCompare(right.playerId),
+    tieKey: (entry) => entry.points,
+    mapStats: (entry) => ({ ...entry.stats, winRate: entry.stats.duelsPlayed ? Math.round(entry.stats.duelsWon / entry.stats.duelsPlayed * 100) : 0, averageCorrectTimeMs: entry.stats.correctAttempts ? Math.round(entry.stats.correctTimeTotalMs / entry.stats.correctAttempts) : 0 }),
+  });
 }

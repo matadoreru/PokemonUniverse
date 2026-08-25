@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { pokemonGenerationsSchema } from '../config.js';
 import { GENERATIONS } from '../../pokemon/types.js';
 
 export const BINGO_FAMILY_KEYS = [
@@ -16,7 +17,7 @@ export const pokemonBingoConfigSchema = z.object({
   width: z.number().int().min(2).max(6),
   height: z.number().int().min(2).max(6),
   durationSeconds: z.number().int().min(60).max(300),
-  generations: z.array(z.number().int().min(1).max(9)).min(1).transform((values) => [...new Set(values)].sort()),
+  generations: pokemonGenerationsSchema,
   maxConditionsPerCell: z.union([z.literal(1), z.literal(2)]),
   families: bingoFamiliesSchema,
 }).strict();
@@ -35,4 +36,3 @@ export const defaultPokemonBingoConfig: PokemonBingoConfig = {
 export function activeBingoFamilies(config: PokemonBingoConfig): BingoFamilyKey[] {
   return BINGO_FAMILY_KEYS.filter((key) => config.families[key]);
 }
-

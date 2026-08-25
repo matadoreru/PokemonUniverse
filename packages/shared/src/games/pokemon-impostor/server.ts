@@ -1,5 +1,6 @@
 import type { Pokemon } from '../../pokemon/types.js';
-import { allConnectedRequiredCompleted, connectedRequiredPlayerIds, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { connectedRequiredPlayerIds, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultPokemonImpostorConfig, pokemonImpostorConfigSchema, type PokemonImpostorConfig } from './config.js';
 import { buildPokemonImpostorResults, impostorWinner } from './rules.js';
 import {
@@ -244,7 +245,7 @@ export const pokemonImpostorGame: MiniGameModule<PokemonImpostorConfig, PokemonI
       votes: { ...state.votes, [playerId]: { targetId: action.targetId, votedAt: context.now } },
       playerStats: { ...state.playerStats, [playerId]: { ...stats, votesCast: stats.votesCast + 1 } },
     };
-    if (allConnectedRequiredCompleted(context, next.aliveIds, (id) => Boolean(next.votes[id]))) next = resolveVoting(next, context);
+    next = resolveWhenRequiredPlayersComplete(next, context, next.aliveIds, (id) => Boolean(next.votes[id]), resolveVoting, 'VOTING');
     return { state: next, accepted: true };
   },
 
@@ -278,10 +279,7 @@ export const pokemonImpostorGame: MiniGameModule<PokemonImpostorConfig, PokemonI
       const currentId = state.clueOrder[state.currentClueTurnIndex];
       if (currentId && !isPlayerRequired(context, currentId)) return advanceClueTurn(state, context, 'DISCONNECTED');
     }
-    if (state.phase === 'VOTING' && allConnectedRequiredCompleted(context, state.aliveIds, (id) => Boolean(state.votes[id]))) {
-      return resolveVoting(state, context);
-    }
-    return state;
+    return resolveWhenRequiredPlayersComplete(state, context, state.aliveIds, (id) => Boolean(state.votes[id]), resolveVoting, 'VOTING');
   },
 
   getPublicState(state) {

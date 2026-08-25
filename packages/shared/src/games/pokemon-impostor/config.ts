@@ -1,8 +1,9 @@
 import { z } from 'zod';
+import { pokemonGenerationsSchema } from '../config.js';
 import { GENERATIONS } from '../../pokemon/types.js';
 
 export const pokemonImpostorConfigSchema = z.object({
-  generations: z.array(z.number().int().min(1).max(9)).min(1).transform((values) => [...new Set(values)].sort()),
+  generations: pokemonGenerationsSchema,
   impostorCount: z.number().int().min(1).max(10),
   clueSeconds: z.number().int().min(10).max(120),
   voteSeconds: z.number().int().min(10).max(90),

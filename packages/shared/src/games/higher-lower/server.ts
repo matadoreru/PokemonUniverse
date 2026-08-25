@@ -1,5 +1,6 @@
 import type { Pokemon } from '../../pokemon/types.js';
-import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { advanceTimedRound, resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultHigherLowerConfig, higherLowerConfigSchema, type HigherLowerConfig } from './config.js';
 import { buildHigherLowerResults, higherLowerAnswer, HIGHER_LOWER_POINTS, pokemonCategoryValue, selectPokemonByDifficulty, streakBonus } from './rules.js';
 import { higherLowerActionSchema, type HigherLowerAction, type HigherLowerPlayerState, type HigherLowerPublicState, type HigherLowerState, type HigherLowerStats } from './types.js';
@@ -46,6 +47,7 @@ function reveal(state: HigherLowerState, context: GameContext): HigherLowerState
   return { ...state, phase: 'ROUND_RESULTS', scores, streaks, playerStats, roundEndsAt: null, nextTransitionAt: context.now + REVEAL_MS, lastRound: { previousValue, currentValue, correctAnswer, outcomes } };
 }
 function finish(state: HigherLowerState): HigherLowerState { return { ...state, phase: 'GAME_RESULTS', roundEndsAt: null, nextTransitionAt: null }; }
+function beginNextRound(state: HigherLowerState, context: GameContext): HigherLowerState { return beginRound({ ...state, previousPokemonId: state.currentPokemonId! }, context); }
 
 export const higherLowerGame: MiniGameModule<HigherLowerConfig, HigherLowerState, HigherLowerAction, HigherLowerPublicState> = {
   manifest, configSchema: higherLowerConfigSchema, actionSchema: higherLowerActionSchema, defaultConfig: defaultHigherLowerConfig,
@@ -63,18 +65,11 @@ export const higherLowerGame: MiniGameModule<HigherLowerConfig, HigherLowerState
     if (context.now >= (state.roundEndsAt ?? 0)) return { state, accepted: false, error: 'El tiempo ha terminado.' };
     if (state.answers[playerId]) return { state, accepted: false, error: 'Tu respuesta ya está bloqueada.' };
     let next = { ...state, answers: { ...state.answers, [playerId]: { choice: action.choice, answeredAt: context.now } } };
-    if (allConnectedRequiredCompleted(context, next.playerIds, (id) => Boolean(next.answers[id]))) next = reveal(next, context);
+    next = resolveWhenRequiredPlayersComplete(next, context, next.playerIds, (id) => Boolean(next.answers[id]), reveal);
     return { state: next, accepted: true };
   },
-  handleTimeout(state, context) {
-    if (state.phase === 'ROUND_ACTIVE' && context.now >= (state.roundEndsAt ?? Infinity)) return reveal(state, context);
-    if (state.phase === 'ROUND_RESULTS' && context.now >= (state.nextTransitionAt ?? Infinity)) return state.roundNumber >= state.config.rounds ? finish(state) : beginRound({ ...state, previousPokemonId: state.currentPokemonId! }, context);
-    return state;
-  },
-  handlePresenceChange(state, context) {
-    if (state.phase === 'ROUND_ACTIVE' && allConnectedRequiredCompleted(context, state.playerIds, (id) => Boolean(state.answers[id]))) return reveal(state, context);
-    return state;
-  },
+  handleTimeout(state, context) { return advanceTimedRound(state, context, { beginNext: beginNextRound, resolveActive: reveal, finish, isComplete: (current) => current.roundNumber >= current.config.rounds }); },
+  handlePresenceChange(state, context) { return resolveWhenRequiredPlayersComplete(state, context, state.playerIds, (id) => Boolean(state.answers[id]), reveal); },
   getPublicState(state, context) {
     const revealPhase = state.phase === 'ROUND_RESULTS' || state.phase === 'GAME_RESULTS'; const previous = context.pokemon.byId(state.previousPokemonId)!; const current = context.pokemon.byId(state.currentPokemonId ?? state.previousPokemonId)!; const category = state.category ?? state.config.categories[0]!;
     const showAnswers = state.config.answerVisibility === 'REALTIME' || revealPhase;

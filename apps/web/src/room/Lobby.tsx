@@ -65,21 +65,21 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
         : gameClient.validateConfig?.(room.selectedGameConfig) ?? null;
 
   return (
-    <section className="mx-auto max-w-[92rem] px-4 py-5 sm:px-6 md:py-8">
-      <header className="mb-5 rounded-[1.75rem] border-2 border-ink/10 bg-surface/85 p-4 shadow-card backdrop-blur sm:flex sm:items-center sm:justify-between sm:gap-5 md:p-5">
+    <section className="page-shell max-w-[92rem]">
+      <header className="panel mb-5 p-4 sm:flex sm:items-center sm:justify-between sm:gap-5">
         <div className="flex min-w-0 items-center justify-between gap-4 sm:justify-start">
           <div>
             <span className="label !mb-0">Código de sala</span>
             <button className="group flex min-h-11 items-center gap-2 text-left font-display text-3xl font-bold tracking-[.14em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aqua sm:text-4xl" onClick={copyCode} aria-label={`Copiar código de sala ${room.code}`}>
               {room.code}
-              {copied ? <Check size={21} className="shrink-0 text-leaf" /> : <Copy size={20} className="shrink-0 text-ink/30 transition group-hover:text-aqua" />}
+              {copied ? <Check size={21} className="shrink-0 text-leaf" /> : <Copy size={20} className="shrink-0 text-ink/50 transition group-hover:text-aqua" />}
             </button>
             <span className="block h-4 text-xs font-extrabold text-leaf" aria-live="polite">{copied ? 'Copiado ✓' : ''}</span>
           </div>
           <span className="chip shrink-0 sm:hidden">{connectedPlayers} conectados</span>
         </div>
         <div className="mt-4 flex flex-wrap items-start justify-between gap-3 sm:mt-0 sm:justify-end">
-          <div className="hidden text-right lg:block"><p className="font-extrabold">{connectedPlayers} entrenador{connectedPlayers === 1 ? '' : 'es'} conectado{connectedPlayers === 1 ? '' : 's'}</p><p className="text-xs font-bold text-ink/40">Tu rol: {roleLabels[roomRole]}</p></div>
+          <div className="hidden text-right lg:block"><p className="font-extrabold">{connectedPlayers} entrenador{connectedPlayers === 1 ? '' : 'es'} conectado{connectedPlayers === 1 ? '' : 's'}</p><p className="text-xs font-bold text-ink/60">Tu rol: {roleLabels[roomRole]}</p></div>
           <button className="btn-ghost" onClick={onLeave}><LogOut size={18} /> Salir</button>
           <div className="min-w-40 text-right">
             <button className="btn-primary w-full" disabled={Boolean(startReason)} onClick={() => void onStart().catch(report)} aria-describedby="start-help"><Play size={18} fill="currentColor" /> Empezar</button>
@@ -88,8 +88,8 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
         </div>
       </header>
 
-      <div className="grid items-start gap-5 xl:grid-cols-[20rem_minmax(0,1fr)]">
-        <aside className="card !p-4 md:!p-5 xl:sticky xl:top-5">
+      <div className="grid items-start gap-4 xl:grid-cols-[19rem_minmax(0,1fr)]">
+        <aside className="card !p-4 xl:sticky xl:top-20">
           <div className="mb-4 flex items-center justify-between">
             <div><span className="label !mb-0">Sala</span><h2 className="font-display text-2xl font-bold">Entrenadores</h2></div>
             <span className="chip"><UsersRound className="mr-1.5" size={15} /> {room.members.length} / {room.maxPlayers}</span>
@@ -102,7 +102,7 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
             onTransferHost={transferHost}
             onKick={kick}
           />
-          <div className="mt-4 rounded-2xl bg-ink/[.035] p-3 text-xs font-bold leading-relaxed text-ink/45">
+          <div className="mt-4 rounded-2xl bg-ink/[.035] p-3 text-xs font-bold leading-relaxed text-ink/65">
             El Host conserva su rol durante 30 segundos si pierde la conexión. Después se transfiere al entrenador conectado más antiguo.
           </div>
         </aside>
@@ -113,15 +113,15 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
               <div className="flex min-w-0 items-center gap-3"><span className="step-number">1</span><div><span className="label !mb-0">Elegir juego</span><h2 className="truncate font-display text-2xl font-bold">Minijuegos</h2></div></div>
               {!canChangeGame && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}
             </div>
-            <div className={`grid gap-3 sm:grid-cols-2 2xl:grid-cols-3 ${!canChangeGame ? 'lobby-readonly' : ''}`} aria-describedby={!canChangeGame ? 'game-permission-help' : undefined}>
+            <div className={`grid gap-3 sm:grid-cols-2 xl:grid-cols-3 ${!canChangeGame ? 'lobby-readonly' : ''}`} aria-describedby={!canChangeGame ? 'game-permission-help' : undefined}>
               {room.availableGames.map((game) => {
                 const selected = game.id === room.selectedGameId;
-                const clientGame = clientGameRegistry.get(game.id);
+                clientGameRegistry.get(game.id);
                 return (
-                  <button key={game.id} type="button" disabled={!canChangeGame} aria-pressed={selected} onClick={() => selectGame(game.id)} className={`group min-h-32 rounded-2xl border-2 p-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aqua ${selected ? 'border-aqua bg-aqua/10 shadow-[inset_4px_0_0_#52c7e8]' : 'border-ink/10 bg-surface-raised hover:border-aqua/55 hover:-translate-y-0.5'}`}>
-                    <span className="mb-2 flex items-start justify-between gap-2"><span className="text-2xl" aria-hidden="true">{clientGame.icon}</span>{selected && <span className="rounded-full bg-aqua px-2 py-1 text-[.68rem] font-extrabold uppercase tracking-wide text-night">Activo</span>}</span>
+                  <button key={game.id} type="button" disabled={!canChangeGame} aria-pressed={selected} onClick={() => selectGame(game.id)} className={`group min-h-28 rounded-xl border p-3.5 text-left transition-colors ${selected ? 'border-aqua bg-aqua/10' : 'border-ink/10 bg-surface-raised hover:border-aqua/55 hover:bg-ink/[.05]'}`}>
+                    <span className="mb-2 flex items-start justify-between gap-2"><span className="text-2xl" aria-hidden="true">{game.icon}</span>{selected && <span className="rounded-full bg-aqua px-2 py-1 text-[.68rem] font-extrabold uppercase tracking-wide text-night">Activo</span>}</span>
                     <strong className="block font-display text-lg">{game.name}</strong>
-                    <span className="mt-1 block text-sm font-bold leading-snug text-ink/50">{game.description}</span>
+                    <span className="mt-1 block text-sm font-bold leading-snug text-ink/65">{game.description}</span>
                   </button>
                 );
               })}
@@ -131,8 +131,8 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
 
           <article className="card !p-4 md:!p-6">
             <div className="mb-5 flex items-start justify-between gap-3 border-b border-ink/10 pb-5">
-              <div className="flex min-w-0 items-center gap-3"><span className="step-number">2</span><div><span className="label !mb-0">Configurar juego</span><h2 className="font-display text-2xl font-bold">{gameClient.name}</h2><p className="mt-1 font-semibold text-ink/50">{gameClient.description}</p></div></div>
-              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-aqua/15 text-aqua"><Settings2 /></div>
+              <div className="flex min-w-0 items-center gap-3"><span className="step-number">2</span><div><span className="label !mb-0">Configurar juego</span><h2 className="font-display text-2xl font-bold">{selectedManifest.name}</h2><p className="mt-1 font-semibold text-ink/65">{selectedManifest.description}</p></div></div>
+              <div className="hidden h-10 w-10 shrink-0 place-items-center rounded-xl bg-aqua/15 text-aqua sm:grid"><Settings2 size={20} /></div>
             </div>
             {!canEditGame && <div className="mb-4 flex items-center gap-2 rounded-xl border border-electric/20 bg-electric/5 px-3 py-2 text-sm font-bold text-ink/60"><LockKeyhole size={15} className="text-electric" /> Solo el host y los co-hosts pueden cambiar esta configuración.</div>}
             <div className={!canEditGame ? 'lobby-readonly' : ''} title={!canEditGame ? 'Solo el host y los co-hosts pueden cambiar esta configuración.' : undefined}>

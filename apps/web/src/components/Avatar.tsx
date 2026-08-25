@@ -16,6 +16,6 @@ export function Avatar({ name, avatar, size = 'md', presence, className = '' }: 
   useEffect(() => setFailed(false), [source]);
   return <span className={`relative inline-grid shrink-0 place-items-center overflow-visible rounded-full bg-gradient-to-br from-aqua to-electric font-display font-bold text-night ${sizeClasses[size]} ${className}`} aria-label={`Avatar de ${name}`}>
     {source && !failed ? <img className="h-full w-full rounded-full object-cover" src={source} alt="" onError={() => setFailed(true)} /> : <span aria-hidden="true">{name.trim().slice(0, 1).toUpperCase() || '?'}</span>}
-    {presence && <span className={`absolute -bottom-0.5 -right-0.5 h-[28%] min-h-2 min-w-2 w-[28%] rounded-full border-2 border-surface-raised ${presenceClasses[presence]}`} title={presence === 'CONNECTED' ? 'Conectado' : presence === 'TEMPORARILY_DISCONNECTED' ? 'Reconectando' : 'Desconectado'} />}
+    {presence && <span className={`absolute -bottom-0.5 -right-0.5 h-[28%] min-h-2 min-w-2 w-[28%] rounded-full border border-surface-raised ${presenceClasses[presence]}`} title={presence === 'CONNECTED' ? 'Conectado' : presence === 'TEMPORARILY_DISCONNECTED' ? 'Reconectando' : 'Desconectado'} />}
   </span>;
 }

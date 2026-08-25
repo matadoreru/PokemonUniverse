@@ -1,6 +1,7 @@
 import { pointsForPosition } from '../../scoring.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { connectedRequiredPlayerIds, isPlayerRequired, type GameContext, type GameResults, type MiniGameModule } from '../contracts.js';
+import { advanceTimedRound } from '../infrastructure/timing.js';
 import { activePokeddleClues, defaultPokeddleRaceConfig, pokeddleRaceConfigSchema, type PokeddleRaceConfig } from './config.js';
 import { buildPokeddleFeedback, hasCompletePokeddleMetadata, shufflePokeddlePool } from './rules.js';
 import { pokeddleRaceActionSchema, type PokeddleBoardRow, type PokeddlePublicBoard, type PokeddleRaceAction, type PokeddleRacePlayerState, type PokeddleRacePublicState, type PokeddleRaceState, type PokeddleResultStats } from './types.js';
@@ -129,11 +130,7 @@ export const pokeddleRaceGame: MiniGameModule<PokeddleRaceConfig, PokeddleRaceSt
     if (allRequiredGuessed(next, context)) next = resolveRound(next, context);
     return { state: next, accepted: true };
   },
-  handleTimeout(state, context) {
-    if (state.phase === 'ROUND_ACTIVE' && context.now >= (state.roundEndsAt ?? Infinity)) return resolveRound(state, context);
-    if (state.phase === 'ROUND_RESULTS' && context.now >= (state.nextTransitionAt ?? Infinity)) return isRaceComplete(state) ? finish(state) : beginRound(state, context);
-    return state;
-  },
+  handleTimeout(state, context) { return advanceTimedRound(state, context, { beginNext: beginRound, resolveActive: resolveRound, finish, isComplete: isRaceComplete }); },
   handlePresenceChange(state, context) { return state.phase === 'ROUND_ACTIVE' && allRequiredGuessed(state, context) ? resolveRound(state, context) : state; },
   getPublicState(state, context) {
     return {
@@ -150,4 +147,3 @@ export const pokeddleRaceGame: MiniGameModule<PokeddleRaceConfig, PokeddleRaceSt
   isFinished(state) { return state.phase === 'GAME_RESULTS'; },
   getResults(state) { return buildPokeddleResults(state); },
 };
-

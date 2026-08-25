@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import type { AvatarRef } from './avatar.js';
-import type { MiniGameManifest } from './games/contracts.js';
+import type { GamePhase, MiniGameManifest } from './games/contracts.js';
 
-export type RoomPhase = 'LOBBY' | 'GAME_STARTING' | 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'TIEBREAKER_ACTIVE' | 'ROLE_REVEAL' | 'CLUE_PHASE' | 'VOTING' | 'VOTE_RESULTS' | 'ELIMINATION' | 'SELECTING_TYPES' | 'TYPE_REVEAL' | 'INVALID_COMBINATION' | 'POKEMON_SEARCH' | 'TURN_ACTIVE' | 'GAME_RESULTS' | 'SESSION_RESULTS';
+export type RoomPhase = 'LOBBY' | GamePhase | 'SESSION_RESULTS';
 export type MemberRole = 'PLAYER' | 'SPECTATOR';
 export const ROOM_ROLES = ['HOST', 'CO_HOST', 'MEMBER'] as const;
 export type RoomRole = (typeof ROOM_ROLES)[number];
