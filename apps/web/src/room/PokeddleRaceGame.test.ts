@@ -115,7 +115,7 @@ describe('Pokédle race interaction state', () => {
 
   it('mounts only one complete rival board and keeps accessible controls', () => {
     const game = gameState();
-    const room = { code: 'ABC234', phase: 'ROUND_ACTIVE', hostId: 'p1', maxPlayers: 8, selectedGameId: 'pokeddle-race', selectedGameConfig: { generations: [1, 2, 3, 4], roundSeconds: 20 }, sessionMode: { type: 'INFINITE' }, gamesPlayed: 0, serverNow: Date.now(), availableGames: [], game, gamePlayerState: playerState, members: ['p1', 'p2', 'p3'].map((id, index) => ({ id, displayName: ['Eru', 'Ana', 'Pedro'][index]!, avatar: { type: 'PRESET', value: 'trainer-berry' }, connected: true, presence: 'CONNECTED', roomRole: index ? 'MEMBER' : 'HOST', role: 'PLAYER', isHost: index === 0, sessionPoints: 0 })) } as RoomView;
+    const room = { code: 'ABC234', phase: 'ROUND_ACTIVE', hostId: 'p1', maxPlayers: 8, selectedGameId: 'pokeddle-race', selectedGameConfig: { generations: [1, 2, 3, 4], roundSeconds: 20 }, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0, serverNow: Date.now(), availableGames: [], game, gamePlayerState: playerState, members: ['p1', 'p2', 'p3'].map((id, index) => ({ id, displayName: ['Eru', 'Ana', 'Pedro'][index]!, avatar: { type: 'PRESET', value: 'trainer-berry' }, connected: true, presence: 'CONNECTED', roomRole: index ? 'MEMBER' : 'HOST', role: 'PLAYER', isHost: index === 0, sessionPoints: 0 })) } as RoomView;
     const markup = renderToStaticMarkup(createElement(PokeddleRaceGame, { room, selfId: 'p1', onAction: async () => undefined }));
     expect(markup.match(/data-board-mode="self"/g)).toHaveLength(1);
     expect(markup.match(/data-board-mode="spectator"/g)).toHaveLength(1);

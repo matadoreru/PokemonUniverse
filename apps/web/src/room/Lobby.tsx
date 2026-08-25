@@ -1,7 +1,8 @@
-import { hasRoomPermission, type RoomRole, type RoomView, type SessionMode } from '@pokemon-universe/shared';
+import { hasRoomPermission, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared';
 import { Check, Copy, LockKeyhole, LogOut, Play, Settings2, UsersRound } from 'lucide-react';
 import { useState } from 'react';
 import { clientGameRegistry } from '../games/registry';
+import { GameSelectionConfig } from './GameSelectionConfig';
 import { PlayerList } from './PlayerList';
 
 interface Props {
@@ -12,20 +13,20 @@ interface Props {
   onSelectGame(gameId: string): Promise<void>;
   onConfig(config: unknown): Promise<void>;
   onSession(mode: SessionMode): Promise<void>;
+  onGameSelection(mode: GameSelectionMode): Promise<void>;
   onSetRoomRole(playerId: string, role: 'CO_HOST' | 'MEMBER'): Promise<void>;
   onTransferHost(playerId: string): Promise<void>;
   onKick(playerId: string): Promise<void>;
   onEndSession(): void;
 }
 
-const roleLabels: Record<RoomRole, string> = { HOST: 'Host', CO_HOST: 'Co-host', MEMBER: 'Miembro' };
-
-export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, onSession, onSetRoomRole, onTransferHost, onKick, onEndSession }: Props) {
+export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, onSession, onGameSelection, onSetRoomRole, onTransferHost, onKick, onEndSession }: Props) {
   const self = room.members.find((member) => member.id === selfId);
   const roomRole = self?.roomRole ?? 'MEMBER';
   const canEditGame = hasRoomPermission(roomRole, 'EDIT_GAME_CONFIG');
   const canChangeGame = hasRoomPermission(roomRole, 'CHANGE_GAME');
   const canEditSession = hasRoomPermission(roomRole, 'EDIT_SESSION');
+  const canEditGameSelection = hasRoomPermission(roomRole, 'EDIT_GAME_SELECTION');
   const canStart = hasRoomPermission(roomRole, 'START_GAME');
   const canManageRoles = hasRoomPermission(roomRole, 'MANAGE_ROLES');
   const gameClient = clientGameRegistry.get(room.selectedGameId);
@@ -37,6 +38,7 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
 
   const report = (caught: unknown) => setError(caught instanceof Error ? caught.message : 'Ha ocurrido un error.');
   const session = (mode: SessionMode) => { if (canEditSession) void onSession(mode).catch(report); };
+  const gameSelection = (mode: GameSelectionMode) => { if (canEditGameSelection) void onGameSelection(mode).catch(report); };
   const selectGame = (gameId: string) => {
     if (!canChangeGame || gameId === room.selectedGameId) return;
     void onSelectGame(gameId).catch(report);
@@ -56,13 +58,19 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
     void onKick(playerId).catch(report);
   };
 
+  const randomPlayable = room.gameSelectionMode.type === 'RANDOM' && room.gameSelectionMode.gameIds.some((gameId) => {
+    const manifest = room.availableGames.find((game) => game.id === gameId);
+    return Boolean(manifest && connectedPlayers >= manifest.minPlayers && (!manifest.maxPlayers || connectedPlayers <= manifest.maxPlayers));
+  });
   const startReason = !canStart
     ? 'Solo el host puede iniciar la partida.'
-    : !enoughPlayers
+    : room.gameSelectionMode.type === 'RANDOM' && !randomPlayable
+      ? 'Ningún minijuego aleatorio admite el número actual de jugadores.'
+    : room.gameSelectionMode.type !== 'RANDOM' && !enoughPlayers
       ? `Se necesitan al menos ${selectedManifest.minPlayers} jugadores conectados.`
-      : selectedManifest.maxPlayers && connectedPlayers > selectedManifest.maxPlayers
+      : room.gameSelectionMode.type !== 'RANDOM' && selectedManifest.maxPlayers && connectedPlayers > selectedManifest.maxPlayers
         ? `Este juego admite un máximo de ${selectedManifest.maxPlayers} jugadores.`
-        : gameClient.validateConfig?.(room.selectedGameConfig) ?? null;
+        : room.gameSelectionMode.type === 'RANDOM' ? null : gameClient.validateConfig?.(room.selectedGameConfig) ?? null;
 
   return (
     <section className="page-shell max-w-[92rem]">
@@ -79,7 +87,7 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
           <span className="chip shrink-0 sm:hidden">{connectedPlayers} conectados</span>
         </div>
         <div className="mt-4 flex flex-wrap items-start justify-between gap-3 sm:mt-0 sm:justify-end">
-          <div className="hidden text-right lg:block"><p className="font-extrabold">{connectedPlayers} entrenador{connectedPlayers === 1 ? '' : 'es'} conectado{connectedPlayers === 1 ? '' : 's'}</p><p className="text-xs font-bold text-ink/60">Tu rol: {roleLabels[roomRole]}</p></div>
+          <div className="hidden text-right lg:block"><p className="font-extrabold">{connectedPlayers} jugador{connectedPlayers === 1 ? '' : 'es'} conectado{connectedPlayers === 1 ? '' : 's'}</p></div>
           <button className="btn-ghost" onClick={onLeave}><LogOut size={18} /> Salir</button>
           <div className="min-w-40 text-right">
             <button className="btn-primary w-full" disabled={Boolean(startReason)} onClick={() => void onStart().catch(report)} aria-describedby="start-help"><Play size={18} fill="currentColor" /> Empezar</button>
@@ -102,9 +110,6 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
             onTransferHost={transferHost}
             onKick={kick}
           />
-          <div className="mt-4 rounded-2xl bg-ink/[.035] p-3 text-xs font-bold leading-relaxed text-ink/65">
-            El Host conserva su rol durante 30 segundos si pierde la conexión. Después se transfiere al entrenador conectado más antiguo.
-          </div>
         </aside>
 
         <main className="min-w-0 space-y-5">
@@ -141,12 +146,22 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
           </article>
 
           <article className="card !p-4 md:!p-6">
-            <div className="mb-5 flex items-center justify-between gap-3"><div className="flex items-center gap-3"><span className="step-number">3</span><div><span className="label !mb-0">Formato de sesión</span><h2 className="font-display text-2xl font-bold">Cómo se decide el ganador</h2></div></div>{!canEditSession && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}</div>
+            <div className="mb-5 flex items-center justify-between gap-3"><div className="flex items-center gap-3"><span className="step-number">3</span><div><span className="label !mb-0">Rotación de juegos</span><h2 className="font-display text-2xl font-bold">Cómo se elige cada minijuego</h2></div></div>{!canEditGameSelection && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}</div>
+            <div className={!canEditGameSelection ? 'lobby-readonly' : ''}>
+              <GameSelectionConfig availableGames={room.availableGames} mode={room.gameSelectionMode} disabled={!canEditGameSelection} onChange={gameSelection} />
+            </div>
+            {!canEditGameSelection && <p className="permission-help">Solo el host y los co-hosts pueden cambiar la rotación.</p>}
+          </article>
+
+          <article className="card !p-4 md:!p-6">
+            <div className="mb-5 flex items-center justify-between gap-3"><div className="flex items-center gap-3"><span className="step-number">4</span><div><span className="label !mb-0">Formato de sesión</span><h2 className="font-display text-2xl font-bold">Cómo se decide el ganador</h2></div></div>{!canEditSession && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}</div>
             <div className={`grid gap-3 sm:grid-cols-3 ${!canEditSession ? 'lobby-readonly' : ''}`}>
               <button disabled={!canEditSession} aria-pressed={room.sessionMode.type === 'INFINITE'} className={`session-card ${room.sessionMode.type === 'INFINITE' ? 'session-card-selected' : ''}`} onClick={() => session({ type: 'INFINITE' })}><strong>∞ Infinito</strong><span>Hasta que el host pare</span></button>
-              <button disabled={!canEditSession} aria-pressed={room.sessionMode.type === 'GAME_COUNT'} className={`session-card ${room.sessionMode.type === 'GAME_COUNT' ? 'session-card-selected' : ''}`} onClick={() => session({ type: 'GAME_COUNT', target: 5 })}><strong>5 partidas</strong><span>Gana por puntuación</span></button>
-              <button disabled={!canEditSession} aria-pressed={room.sessionMode.type === 'POINT_TARGET'} className={`session-card ${room.sessionMode.type === 'POINT_TARGET' ? 'session-card-selected' : ''}`} onClick={() => session({ type: 'POINT_TARGET', target: 50 })}><strong>50 puntos</strong><span>Primero en llegar</span></button>
+              <button disabled={!canEditSession} aria-pressed={room.sessionMode.type === 'GAME_COUNT'} className={`session-card ${room.sessionMode.type === 'GAME_COUNT' ? 'session-card-selected' : ''}`} onClick={() => session({ type: 'GAME_COUNT', target: room.sessionMode.type === 'GAME_COUNT' ? room.sessionMode.target : 5 })}><strong>{room.sessionMode.type === 'GAME_COUNT' ? `${room.sessionMode.target} partidas` : 'Por partidas'}</strong><span>Gana por puntuación</span></button>
+              <button disabled={!canEditSession} aria-pressed={room.sessionMode.type === 'POINT_TARGET'} className={`session-card ${room.sessionMode.type === 'POINT_TARGET' ? 'session-card-selected' : ''}`} onClick={() => session({ type: 'POINT_TARGET', target: room.sessionMode.type === 'POINT_TARGET' ? room.sessionMode.target : 50 })}><strong>{room.sessionMode.type === 'POINT_TARGET' ? `${room.sessionMode.target} puntos` : 'Por puntos'}</strong><span>Primero en llegar</span></button>
             </div>
+            {room.sessionMode.type === 'GAME_COUNT' && <label className="mt-4 block max-w-xs"><span className="label">Número de partidas</span><input type="number" className="field" min={1} max={100} disabled={!canEditSession} value={room.sessionMode.target} onChange={(event) => { const target = Number(event.target.value); if (Number.isInteger(target) && target >= 1 && target <= 100) session({ type: 'GAME_COUNT', target }); }} /></label>}
+            {room.sessionMode.type === 'POINT_TARGET' && <label className="mt-4 block max-w-xs"><span className="label">Puntos para ganar</span><input type="number" className="field" min={5} max={10000} step={5} disabled={!canEditSession} value={room.sessionMode.target} onChange={(event) => { const target = Number(event.target.value); if (Number.isInteger(target) && target >= 5 && target <= 10000) session({ type: 'POINT_TARGET', target }); }} /></label>}
             {!canEditSession && <p className="permission-help">Solo el host y los co-hosts pueden cambiar el formato.</p>}
             {hasRoomPermission(roomRole, 'END_SESSION') && room.gamesPlayed > 0 && <button className="mt-4 text-sm font-extrabold text-berry underline" onClick={onEndSession}>Finalizar sesión y ver clasificación</button>}
           </article>

@@ -51,7 +51,6 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
 
       <div>
         <span className="label">Dificultad de comparación</span>
-        <p className="mb-3 text-sm text-ink/70">A mayor dificultad, más parecidos serán los valores de los dos Pokémon.</p>
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
           {HIGHER_LOWER_DIFFICULTIES.map((difficulty) => {
             const copy = difficultyCopy[difficulty];
@@ -76,7 +75,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <span className="label">Mostrar valor anterior</span>
+          <span className="label">Mostrar el valor del anterior Pokemon</span>
           <div className="grid grid-cols-2 gap-2">
             {([[true, 'Sí'], [false, 'No']] as const).map(([choice, label]) => (
               <button type="button" key={String(choice)} onClick={() => void onChange({ ...value, showPreviousValue: choice })} className={`rounded-xl border py-2 font-bold ${value.showPreviousValue === choice ? 'border-berry bg-berry text-white' : 'border-ink/10 bg-surface-raised'}`}>
@@ -86,10 +85,10 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
           </div>
         </div>
         <div>
-          <span className="label">Mostrar respuestas</span>
+          <span className="label">Mostrar votaciones de los otros jugadores</span>
           <div className="grid grid-cols-2 gap-2">
             <button type="button" onClick={() => void onChange({ ...value, answerVisibility: 'REALTIME' })} className={`rounded-xl border py-2 font-bold ${value.answerVisibility === 'REALTIME' ? 'border-leaf bg-leaf text-night' : 'border-ink/10 bg-surface-raised'}`}>En directo</button>
-            <button type="button" onClick={() => void onChange({ ...value, answerVisibility: 'REVEAL' })} className={`rounded-xl border py-2 font-bold ${value.answerVisibility === 'REVEAL' ? 'border-leaf bg-leaf text-night' : 'border-ink/10 bg-surface-raised'}`}>En reveal</button>
+            <button type="button" onClick={() => void onChange({ ...value, answerVisibility: 'REVEAL' })} className={`rounded-xl border py-2 font-bold ${value.answerVisibility === 'REVEAL' ? 'border-leaf bg-leaf text-night' : 'border-ink/10 bg-surface-raised'}`}>Luego de votar</button>
           </div>
         </div>
       </div>

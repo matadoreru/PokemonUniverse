@@ -1,10 +1,10 @@
-import { DoorOpen, KeyRound, LoaderCircle, Plus } from 'lucide-react';
+import { DoorOpen, KeyRound, LoaderCircle, LogOut, Plus } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRoom } from '../room/RoomContext';
 
 export function PlayPage() {
-  const { createRoom, joinRoom, connected, room } = useRoom();
+  const { createRoom, joinRoom, leaveRoom, connected, room } = useRoom();
   const navigate = useNavigate();
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
@@ -24,20 +24,34 @@ export function PlayPage() {
     await run(() => joinRoom(code));
   }
 
+  async function leave() {
+    setBusy(true);
+    setError('');
+    try { await leaveRoom(); }
+    catch (caught) { setError(caught instanceof Error ? caught.message : 'No se ha podido salir de la sala.'); }
+    finally { setBusy(false); }
+  }
+
   if (room) return <section className="mx-auto max-w-xl px-4 py-10 text-center sm:px-5 sm:py-16">
     <div className="card">
       <DoorOpen className="mx-auto text-aqua" size={48} />
       <h1 className="mt-4 font-display text-3xl font-bold">Ya tienes una sala activa</h1>
       <p className="mt-2 font-semibold text-ink/65">Código <strong className="tracking-widest text-ink">{room.code}</strong></p>
-      <button className="btn-primary mt-6 w-full sm:w-auto" onClick={() => navigate('/room')}>Volver a la sala</button>
+      <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+        <button type="button" className="btn-primary w-full sm:w-auto" disabled={busy} onClick={() => navigate('/room')}>Volver a la sala</button>
+        <button type="button" className="btn-ghost w-full sm:w-auto" disabled={busy || !connected} onClick={() => void leave()}>
+          {busy ? <LoaderCircle className="animate-spin" size={18} /> : <LogOut size={18} />}
+          {busy ? 'Saliendo…' : 'Salir de la sala'}
+        </button>
+      </div>
+      {error && <p role="alert" className="status-error mt-4">{error}</p>}
     </div>
   </section>;
 
   return <section className="mx-auto max-w-xl px-4 pb-12 pt-6 sm:px-5 sm:pb-16 sm:pt-10">
     <header className="mb-7 text-center">
-      <span className="label !mb-2 text-aqua">Multijugador privado</span>
       <h1 className="font-display text-4xl font-bold sm:text-5xl">Entrar en partida</h1>
-      <p className="mx-auto mt-3 max-w-md font-semibold text-ink/65">Crea una sala nueva o utiliza el código que te ha enviado otro entrenador.</p>
+      <p className="mx-auto mt-3 max-w-md font-semibold text-ink/65">Crea una sala nueva o únete a una existente.</p>
     </header>
 
     <article className="card !p-4 sm:!p-6">
@@ -45,7 +59,6 @@ export function PlayPage() {
         {busy ? <LoaderCircle className="animate-spin" size={20} /> : <Plus size={21} />}
         {busy ? 'Preparando sala…' : 'Crear sala privada'}
       </button>
-      <p className="mt-2 text-center text-sm font-bold text-ink/60">Se crea al instante con la configuración predeterminada.</p>
 
       <div className="my-7 flex items-center gap-3" aria-hidden="true">
         <span className="h-px flex-1 bg-ink/10" />
@@ -71,7 +84,6 @@ export function PlayPage() {
           minLength={6}
           maxLength={6}
         />
-        <p id="room-code-help" className="mt-2 text-sm font-bold text-ink/60">Seis letras o números, sin espacios.</p>
         <button className="btn-primary mt-4 w-full" disabled={busy || !connected || code.length !== 6}>
           {busy ? <LoaderCircle className="animate-spin" size={20} /> : <DoorOpen size={20} />}
           {busy ? 'Entrando…' : 'Unirse a la sala'}
@@ -81,6 +93,6 @@ export function PlayPage() {
       {error && <p role="alert" className="status-error mt-4 text-center">{error}</p>}
     </article>
 
-    <p className="mt-5 text-center text-sm font-bold text-ink/60">El host podrá elegir el minijuego y configurar la partida desde el lobby.</p>
+    <p className="mt-5 text-center text-sm font-bold text-ink/60">Podrás elegir el minijuego y configurar la partida cuando crees a una sala.</p>
   </section>;
 }

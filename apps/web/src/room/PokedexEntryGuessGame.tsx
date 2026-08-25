@@ -24,7 +24,7 @@ function describeHint(hint: PokedexEntryGuessHint): string {
 }
 
 function EntryCard({ text }: { text: string }) {
-  return <section aria-labelledby="pokedex-entry-heading" className="relative overflow-hidden rounded-2xl border border-aqua/20 bg-[linear-gradient(145deg,rgba(29,201,224,.08),rgba(255,255,255,.02))] px-5 py-7 shadow-card sm:px-9 sm:py-10"><BookOpenText className="absolute right-5 top-5 text-aqua/10" size={92} aria-hidden="true" /><span className="label text-aqua">Entrada Pokédex</span><h2 id="pokedex-entry-heading" className="sr-only">Descripción oficial en español</h2><blockquote className="relative max-w-4xl font-display text-2xl leading-relaxed text-ink sm:text-3xl sm:leading-relaxed"><span aria-hidden="true" className="mr-1 text-aqua">“</span>{text}<span aria-hidden="true" className="ml-1 text-aqua">”</span></blockquote><p className="mt-4 text-xs font-black uppercase tracking-[.15em] text-ink/50">Entrada oficial en español · ¿A qué Pokémon pertenece?</p></section>;
+  return <section aria-labelledby="pokedex-entry-heading" className="relative overflow-hidden rounded-2xl border border-aqua/20 bg-[linear-gradient(145deg,rgba(29,201,224,.08),rgba(255,255,255,.02))] px-5 py-7 shadow-card sm:px-9 sm:py-10"><BookOpenText className="absolute right-5 top-5 text-aqua/10" size={92} aria-hidden="true" /><h2 id="pokedex-entry-heading" className="sr-only">Descripción oficial en español</h2><blockquote className="relative max-w-4xl font-display text-2xl leading-relaxed text-ink sm:text-3xl sm:leading-relaxed"><span aria-hidden="true" className="mr-1 text-aqua">“</span>{text}<span aria-hidden="true" className="ml-1 text-aqua">”</span></blockquote></section>;
 }
 
 function HintPanel({ hints }: { hints: PokedexEntryGuessHint[] }) {

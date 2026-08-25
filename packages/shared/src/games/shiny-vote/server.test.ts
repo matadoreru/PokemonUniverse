@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { GameContext, GamePlayer, Pokemon, PokemonCatalog, ShinyCandidateMode, ShinyOptionId, ShinyVoteState } from '../../index.js';
-import { AUTHENTIC_SHINY_FILTER, shinyVoteGame } from '../../index.js';
+import { shinyVoteGame } from '../../index.js';
 
 const pokemon: Pokemon[] = Array.from({ length: 8 }, (_, index) => ({
   id: `pokemon-${index + 1}`,
@@ -36,12 +36,12 @@ function vote(state: ShinyVoteState, playerId: string, optionId: ShinyOptionId, 
 }
 
 describe('public shiny voting', () => {
-  it('supports four versions of the same Pokémon with visibly distinct fake filters', () => {
+  it('supports four versions of the same Pokémon with distinct server-side palettes', () => {
     const fixture = setup();
     expect(new Set(fixture.state.options.map((option) => option.pokemonId)).size).toBe(1);
-    expect(new Set(fixture.state.options.map((option) => option.visualFilter)).size).toBe(4);
+    expect(new Set(fixture.state.options.map((option) => JSON.stringify(option.recolor))).size).toBe(4);
     const fakeOptions = fixture.state.options.filter((option) => option.id !== fixture.state.correctOptionId);
-    expect(fakeOptions.every((option) => /hue-rotate\((64|137|211|278|329)deg\)/.test(option.visualFilter))).toBe(true);
+    expect(fakeOptions.every((option) => option.recolor && option.recolor.saturationScale < 1)).toBe(true);
   });
 
   it('builds fake recolors from normal sprites and sometimes from official shiny sprites', () => {
@@ -50,7 +50,7 @@ describe('public shiny voting', () => {
     const fakeOptions = fixture.state.options.filter((option) => option.id !== fixture.state.correctOptionId);
     expect(fakeOptions.some((option) => !option.sprite.includes('/shiny/'))).toBe(true);
     expect(fakeOptions.some((option) => option.sprite.includes('/shiny/'))).toBe(true);
-    expect(fakeOptions.every((option) => option.visualFilter !== AUTHENTIC_SHINY_FILTER)).toBe(true);
+    expect(fakeOptions.every((option) => option.recolor !== null)).toBe(true);
   });
 
   it('supports four different Pokémon when configured by the host', () => {
@@ -62,11 +62,11 @@ describe('public shiny voting', () => {
   it.each([3, 4, 5, 6])('creates exactly one official shiny among %i configurable options', (optionCount) => {
     const fixture = setup(2, 'SAME_POKEMON', optionCount);
     expect(fixture.state.options).toHaveLength(optionCount);
-    const authenticOptions = fixture.state.options.filter((option) => option.visualFilter === AUTHENTIC_SHINY_FILTER);
+    const authenticOptions = fixture.state.options.filter((option) => option.recolor === null);
     expect(authenticOptions).toHaveLength(1);
     expect(authenticOptions[0]).toMatchObject({ id: fixture.state.correctOptionId });
     expect(authenticOptions[0]?.sprite).toContain('/shiny/');
-    expect(new Set(fixture.state.options.map((option) => option.visualFilter)).size).toBe(optionCount);
+    expect(new Set(fixture.state.options.map((option) => JSON.stringify(option.recolor))).size).toBe(optionCount);
   });
 
   it('uses unique Pokémon from only the configured generations in different mode', () => {
@@ -94,6 +94,20 @@ describe('public shiny voting', () => {
     expect(publicState.lastRound).toBeNull();
     expect(publicState.options[0]?.sprite).toMatch(/^\/api\/rooms\/PIKA42\/games\//);
     expect(publicState.options[0]?.sprite).not.toContain('shiny');
+    expect(publicState.options.every((option) => !('recolor' in option))).toBe(true);
+
+    const authenticAsset = shinyVoteGame.resolveAsset!(fixture.state, {
+      assetToken: fixture.state.assetToken,
+      roundNumber: fixture.state.roundNumber,
+      assetId: fixture.state.correctOptionId!,
+    }, fixture.context);
+    const fakeAsset = shinyVoteGame.resolveAsset!(fixture.state, {
+      assetToken: fixture.state.assetToken,
+      roundNumber: fixture.state.roundNumber,
+      assetId: fixture.state.options.find((option) => option.id !== fixture.state.correctOptionId)!.id,
+    }, fixture.context);
+    expect(authenticAsset).toMatchObject({ transform: 'PIXEL_ART' });
+    expect(fakeAsset).toMatchObject({ transform: 'PALETTE_RECOLOR', recolor: expect.any(Object) });
 
     const result = vote(fixture.state, 'pedro', 'C', fixture.context);
     expect(result.accepted).toBe(true);

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { GamePhase, GameResults } from '../contracts.js';
+import type { GameAssetRecolor, GamePhase, GameResults } from '../contracts.js';
 import type { ShinyVoteConfig } from './config.js';
 
 export const SHINY_OPTION_IDS = ['A', 'B', 'C', 'D', 'E', 'F'] as const;
@@ -10,7 +10,11 @@ export interface ShinyOption {
   pokemonId: string;
   pokemonName: string;
   sprite: string;
-  visualFilter: string;
+}
+
+export interface ShinyOptionState extends ShinyOption {
+  /** Never published: null identifies the official shiny in authoritative state. */
+  recolor: GameAssetRecolor | null;
 }
 
 export interface ShinyVote {
@@ -42,7 +46,7 @@ export interface ShinyVoteState {
   assetToken: string;
   playerIds: string[];
   roundNumber: number;
-  options: ShinyOption[];
+  options: ShinyOptionState[];
   correctOptionId: ShinyOptionId | null;
   votes: Record<string, ShinyVote>;
   scores: Record<string, number>;
@@ -51,7 +55,7 @@ export interface ShinyVoteState {
   roundEndsAt: number | null;
   nextTransitionAt: number | null;
   lastRound: ShinyRoundResult | null;
-  preparedOptions: ShinyOption[] | null;
+  preparedOptions: ShinyOptionState[] | null;
   preparedCorrectOptionId: ShinyOptionId | null;
 }
 

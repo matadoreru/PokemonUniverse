@@ -2,13 +2,14 @@ import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultShinyVoteConfig, shinyVoteConfigSchema, type ShinyVoteConfig } from './config.js';
-import { AUTHENTIC_SHINY_FILTER, fakeShinyFilter, useShinySpriteForFake } from './filters.js';
+import { fakeShinyPalette, useShinySpriteForFake } from './filters.js';
 import { buildShinyResults, emptyShinyStats } from './rules.js';
 import {
   SHINY_OPTION_IDS,
   shinyVoteActionSchema,
   type ShinyOption,
   type ShinyOptionId,
+  type ShinyOptionState,
   type ShinyVoteAction,
   type ShinyVotePublicState,
   type ShinyVoteState,
@@ -19,7 +20,7 @@ const manifest = {
   id: 'shiny-vote',
   name: 'Shiny Quiz',
   icon: '✨',
-  description: 'Encuentra el shiny verdadero entre varios candidatos. Los votos se ven en directo.',
+  description: 'Encuentra el shiny verdadero entre varios candidatos.',
   minPlayers: 1,
   profileStats: {
     metrics: [
@@ -48,7 +49,7 @@ function shinySprite(pokemon: Pokemon): string {
   return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${pokemon.nationalDexNumber}.png`;
 }
 
-function createOptions(state: ShinyVoteState, context: GameContext): { options: ShinyOption[]; correctOptionId: ShinyOptionId } {
+function createOptions(state: ShinyVoteState, context: GameContext): { options: ShinyOptionState[]; correctOptionId: ShinyOptionId } {
   const samePokemon = state.config.candidateMode === 'SAME_POKEMON';
   const optionIds = SHINY_OPTION_IDS.slice(0, state.config.optionCount);
   const requiredPokemon = samePokemon ? 1 : optionIds.length;
@@ -56,18 +57,17 @@ function createOptions(state: ShinyVoteState, context: GameContext): { options: 
   if (selected.length < requiredPokemon) throw new Error(`At least ${requiredPokemon} Pokémon are required for the selected generations`);
   const candidates = samePokemon ? optionIds.map(() => selected[0]!) : selected;
   const correctIndex = Math.min(Math.floor(context.random() * optionIds.length), optionIds.length - 1);
-  let fakeFilterIndex = 0;
+  let fakePaletteIndex = 0;
   return {
     options: candidates.map((pokemon, index) => {
       const authentic = index === correctIndex;
-      const visualFilter = authentic ? AUTHENTIC_SHINY_FILTER : fakeShinyFilter(fakeFilterIndex++);
       const useShinyBase = authentic || useShinySpriteForFake(context.random);
       return {
         id: optionIds[index]!,
         pokemonId: pokemon.id,
         pokemonName: pokemon.name,
         sprite: useShinyBase ? shinySprite(pokemon) : pokemon.sprite,
-        visualFilter,
+        recolor: authentic ? null : fakeShinyPalette(fakePaletteIndex++),
       };
     }),
     correctOptionId: optionIds[correctIndex]!,
@@ -208,8 +208,10 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
   getPublicState(state, context) {
     const reveal = state.phase === 'ROUND_RESULTS' || state.phase === 'GAME_RESULTS';
     const results = state.phase === 'GAME_RESULTS' ? buildShinyResults(state) : null;
-    const options = state.options.map((option) => ({
-      ...option,
+    const options: ShinyOption[] = state.options.map((option) => ({
+      id: option.id,
+      pokemonId: option.pokemonId,
+      pokemonName: option.pokemonName,
       sprite: context.roomCode
         ? `/api/rooms/${encodeURIComponent(context.roomCode)}/games/${state.assetToken}/rounds/${state.roundNumber}/options/${option.id}/sprite`
         : option.sprite,
@@ -241,7 +243,11 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
   },
   resolveAsset(state, request) {
     if (state.assetToken !== request.assetToken || state.roundNumber !== request.roundNumber) return null;
-    return state.options.find((option) => option.id === request.assetId)?.sprite ?? null;
+    const option = state.options.find((candidate) => candidate.id === request.assetId);
+    if (!option) return null;
+    return option.recolor
+      ? { source: option.sprite, transform: 'PALETTE_RECOLOR', recolor: option.recolor }
+      : { source: option.sprite, transform: 'PIXEL_ART' };
   },
   isFinished(state) { return state.phase === 'GAME_RESULTS'; },
   getResults(state) { return buildShinyResults(state); },

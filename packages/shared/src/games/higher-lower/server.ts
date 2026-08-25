@@ -8,7 +8,7 @@ import { higherLowerActionSchema, type HigherLowerAction, type HigherLowerPlayer
 const REVEAL_MS = 3_000;
 const manifest = {
   id: 'higher-lower', name: 'Higher or Lower', icon: '📈',
-  description: 'Compara stats Pokémon, acierta si suben, empatan o bajan y encadena rachas.', minPlayers: 1,
+  description: 'Acierta si la stat de dos Pokémon es mayor, menor o igual.', minPlayers: 1,
   profileStats: {
     metrics: [
       { key: 'correct', label: 'Respuestas correctas', aggregation: 'SUM' },

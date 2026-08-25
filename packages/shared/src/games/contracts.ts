@@ -130,12 +130,20 @@ export interface GameAssetRequest {
   assetId: string;
 }
 
-export type GameAssetTransform = 'ORIGINAL' | 'SILHOUETTE' | 'NORMALIZED' | 'FOCUSED_NORMALIZED';
+export type GameAssetTransform = 'ORIGINAL' | 'SILHOUETTE' | 'NORMALIZED' | 'FOCUSED_NORMALIZED' | 'PIXEL_ART' | 'PALETTE_RECOLOR';
+export interface GameAssetRecolor {
+  hueShiftDegrees: number;
+  saturationScale: number;
+  lightnessScale: number;
+  contrast: number;
+}
 export interface GameAssetResolution {
   source: string;
   transform: GameAssetTransform;
   /** Used only by FOCUSED_NORMALIZED to deterministically select an alpha-safe focus. */
   focusSeed?: number;
+  /** Used only by PALETTE_RECOLOR. It is retained in opaque server state. */
+  recolor?: GameAssetRecolor;
 }
 
 export interface MiniGameModule<TConfig, TState, TAction, TPublicState> {

@@ -17,13 +17,12 @@ function PlayerPill({ member, result }: { member: RoomMemberView; result?: 'corr
 
 function PokemonSprite({ option }: { option: ShinyOption }) {
   const [loaded, setLoaded] = useState(false);
-  return <div className="relative mx-auto grid h-40 w-40 place-items-center sm:h-44 sm:w-44">
+  return <div className="relative mx-auto grid h-48 w-48 place-items-center">
     {!loaded && <LoaderCircle className="absolute animate-spin text-aqua" aria-label="Cargando sprite" size={34} />}
     <img
       key={option.sprite}
-      className={`h-full w-full object-contain [image-rendering:auto] transition-opacity duration-150 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+      className={`h-full w-full object-contain [image-rendering:pixelated] transition-opacity duration-150 ${loaded ? 'opacity-100' : 'opacity-0'}`}
       src={imageSource(option.sprite)}
-      style={{ filter: option.visualFilter }}
       alt={`Candidato ${option.id}: ${option.pokemonName}`}
       onLoad={() => setLoaded(true)}
       onError={() => setLoaded(true)}
@@ -99,7 +98,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
           const voters = Object.entries(game.votes).filter(([, vote]) => vote.optionId === option.id).map(([playerId]) => members.get(playerId)).filter((member): member is RoomMemberView => Boolean(member));
           return <OptionCard key={option.id} option={option} voters={voters} selected={(ownVote?.optionId ?? draft) === option.id} disabled={!canVote || submitting} reveal={reveal} correct={game.correctOptionId === option.id} onSelect={() => setDraft(option.id)} />;
         })}</div>
-        {canVote && <div className="sticky bottom-3 z-10 mx-auto mt-4 flex max-w-lg flex-col items-center gap-2 rounded-2xl border border-ink/10 bg-surface/95 p-3 shadow-card sm:flex-row"><p className="flex-1 text-center font-bold sm:text-left">{draft ? <>Has elegido <strong className="text-berry">{draft}</strong>. Al confirmar no podrás cambiar.</> : 'Selecciona una tarjeta para preparar tu voto.'}</p><button className="btn-primary whitespace-nowrap" disabled={!draft || submitting} onClick={() => void confirmVote()}>{submitting ? 'Confirmando…' : `Confirmar voto${draft ? ` ${draft}` : ''}`}</button></div>}
+        {canVote && <div className="sticky bottom-3 z-10 mx-auto mt-4 flex max-w-lg flex-col items-center gap-2 rounded-2xl border border-ink/10 bg-surface/95 p-3 shadow-card sm:flex-row"><p className="flex-1 text-center font-bold sm:text-left">{draft ? <>Has elegido <strong className="text-berry">{draft}</strong>.</> : 'Selecciona una tarjeta para preparar tu voto.'}</p><button className="btn-primary whitespace-nowrap" disabled={!draft || submitting} onClick={() => void confirmVote()}>{submitting ? 'Confirmando…' : `Confirmar voto${draft ? ` ${draft}` : ''}`}</button></div>}
         {ownVote && active && <div className="mt-4 rounded-2xl border border-leaf/40 bg-leaf/10 p-3 text-center font-extrabold text-leaf"><Check className="mr-2 inline" size={20} />Tu voto por {ownVote.optionId} está bloqueado en el servidor.</div>}
         {!participant && active && <div className="mt-4 rounded-2xl bg-aqua/10 p-3 text-center font-bold"><Eye className="mr-2 inline" size={20} />Estás viendo la votación en directo como espectador.</div>}
         {error && <p className="mt-3 rounded-xl bg-berry/10 p-3 text-center font-bold text-berry">{error}</p>}

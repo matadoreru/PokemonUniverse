@@ -12,7 +12,7 @@ function publicGame(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'GAME_RESULTS' = '
 }
 
 function room(game: WhosThatPokemonPublicState, player: WhosThatPokemonPlayerState, spectator = false): RoomView {
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'whos-that-pokemon', selectedGameConfig: defaultWhosThatPokemonConfig, sessionMode: { type: 'INFINITE' }, gamesPlayed: 0, serverNow: Date.now(), game, gamePlayerState: player, members: [
+  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'whos-that-pokemon', selectedGameConfig: defaultWhosThatPokemonConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0, serverNow: Date.now(), game, gamePlayerState: player, members: [
     { id: 'p1', displayName: 'Eru', avatar: { type: 'PRESET', value: 'trainer-berry' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: spectator ? 'SPECTATOR' : 'PLAYER', isHost: true, sessionPoints: 5 },
     { id: 'p2', displayName: 'Ana', avatar: { type: 'PRESET', value: 'trainer-aqua' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, sessionPoints: 0 },
   ] };

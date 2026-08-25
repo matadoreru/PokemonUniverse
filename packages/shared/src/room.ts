@@ -2,17 +2,17 @@ import { z } from 'zod';
 import type { AvatarRef } from './avatar.js';
 import type { GamePhase, MiniGameManifest } from './games/contracts.js';
 
-export type RoomPhase = 'LOBBY' | GamePhase | 'SESSION_RESULTS';
+export type RoomPhase = 'LOBBY' | GamePhase | 'NEXT_GAME_VOTE' | 'NEXT_GAME_VOTE_RESULTS' | 'SESSION_RESULTS';
 export type MemberRole = 'PLAYER' | 'SPECTATOR';
 export const ROOM_ROLES = ['HOST', 'CO_HOST', 'MEMBER'] as const;
 export type RoomRole = (typeof ROOM_ROLES)[number];
 export const assignableRoomRoleSchema = z.enum(['CO_HOST', 'MEMBER']);
 export type AssignableRoomRole = z.infer<typeof assignableRoomRoleSchema>;
-export const ROOM_PERMISSIONS = ['CHANGE_GAME', 'EDIT_GAME_CONFIG', 'EDIT_SESSION', 'START_GAME', 'END_SESSION', 'MANAGE_ROLES', 'KICK_MEMBER', 'TRANSFER_HOST'] as const;
+export const ROOM_PERMISSIONS = ['CHANGE_GAME', 'EDIT_GAME_CONFIG', 'EDIT_SESSION', 'EDIT_GAME_SELECTION', 'START_GAME', 'END_SESSION', 'MANAGE_ROLES', 'KICK_MEMBER', 'TRANSFER_HOST'] as const;
 export type RoomPermission = (typeof ROOM_PERMISSIONS)[number];
 const ROOM_ROLE_PERMISSIONS: Record<RoomRole, readonly RoomPermission[]> = {
   HOST: ROOM_PERMISSIONS,
-  CO_HOST: ['CHANGE_GAME', 'EDIT_GAME_CONFIG', 'EDIT_SESSION'],
+  CO_HOST: ['CHANGE_GAME', 'EDIT_GAME_CONFIG', 'EDIT_SESSION', 'EDIT_GAME_SELECTION'],
   MEMBER: [],
 };
 
@@ -40,6 +40,22 @@ export type SessionMode =
   | { type: 'GAME_COUNT'; target: number }
   | { type: 'POINT_TARGET'; target: number };
 
+export type GameSelectionMode =
+  | { type: 'FIXED' }
+  | { type: 'RANDOM'; gameIds: string[] }
+  | { type: 'VOTE'; gameIds: string[] };
+
+export interface NextGameVoteView {
+  options: MiniGameManifest[];
+  eligibleVoterIds: string[];
+  votedPlayerIds: string[];
+  ownVoteGameId: string | null;
+  endsAt: number | null;
+  resolvedGameId: string | null;
+  tallies: Record<string, number> | null;
+  nextTransitionAt: number | null;
+}
+
 export interface RoomView {
   code: string;
   phase: RoomPhase;
@@ -50,6 +66,8 @@ export interface RoomView {
   selectedGameId: string;
   selectedGameConfig: unknown;
   sessionMode: SessionMode;
+  gameSelectionMode: GameSelectionMode;
+  nextGameVote: NextGameVoteView | null;
   gamesPlayed: number;
   game: unknown | null;
   gamePlayerState: unknown | null;
@@ -64,6 +82,14 @@ export const sessionModeSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('POINT_TARGET'), target: z.number().int().min(5).max(10000) }),
 ]);
 
+const randomGameIdsSchema = z.array(z.string().min(1)).min(2, 'Selecciona al menos 2 minijuegos.').refine((ids) => new Set(ids).size === ids.length, 'Los minijuegos no pueden repetirse.');
+const voteGameIdsSchema = z.array(z.string().min(1)).min(3, 'Selecciona al menos 3 minijuegos.').refine((ids) => new Set(ids).size === ids.length, 'Los minijuegos no pueden repetirse.');
+export const gameSelectionModeSchema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('FIXED') }),
+  z.object({ type: z.literal('RANDOM'), gameIds: randomGameIdsSchema }),
+  z.object({ type: z.literal('VOTE'), gameIds: voteGameIdsSchema }),
+]);
+
 export interface ClientToServerEvents {
   'room:create': (payload: { maxPlayers?: number }, ack: SocketAck<{ room: RoomView }>) => void;
   'room:join': (payload: { code: string }, ack: SocketAck<{ room: RoomView }>) => void;
@@ -71,6 +97,8 @@ export interface ClientToServerEvents {
   'room:select-game': (payload: { gameId: string }, ack: SocketAck) => void;
   'room:update-config': (payload: { config: unknown }, ack: SocketAck) => void;
   'room:update-session': (payload: { mode: SessionMode }, ack: SocketAck) => void;
+  'room:update-game-selection': (payload: { mode: GameSelectionMode }, ack: SocketAck) => void;
+  'room:vote-next-game': (payload: { gameId: string }, ack: SocketAck) => void;
   'room:set-role': (payload: { playerId: string; role: AssignableRoomRole }, ack: SocketAck) => void;
   'room:transfer-host': (payload: { playerId: string }, ack: SocketAck) => void;
   'room:kick': (payload: { playerId: string }, ack: SocketAck) => void;

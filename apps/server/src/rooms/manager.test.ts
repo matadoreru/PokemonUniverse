@@ -479,6 +479,87 @@ describe('room multi-game lifecycle', () => {
     expect(manager.store.roomForPlayer(host.id)).toBeUndefined();
   });
 
+  it('validates game-selection pools and lets co-hosts configure the rotation', () => {
+    const manager = new RoomManager(io() as any, catalog);
+    const host = identity('host', 'Host'); const cohost = identity('cohost', 'Ana');
+    const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
+    (manager as any).join(socket('cohost-socket'), cohost, room.code);
+    (manager as any).setRoomRole(host.id, cohost.id, 'CO_HOST');
+
+    expect(() => (manager as any).updateGameSelection(cohost.id, { type: 'RANDOM', gameIds: ['higher-lower'] })).toThrow(/2 minijuegos/);
+    expect(() => (manager as any).updateGameSelection(cohost.id, { type: 'VOTE', gameIds: ['higher-lower', 'shiny-vote', 'missing'] })).toThrow(/desconocido/);
+    (manager as any).updateGameSelection(cohost.id, { type: 'VOTE', gameIds: ['higher-lower', 'shiny-vote', 'pokemon-bingo'] });
+    expect(room.gameSelectionMode).toEqual({ type: 'VOTE', gameIds: ['higher-lower', 'shiny-vote', 'pokemon-bingo'] });
+  });
+
+  it('selects a compatible random minigame at start and avoids an immediate repeat', () => {
+    const manager = new RoomManager(io() as any, catalog);
+    const host = identity('host', 'Host');
+    const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
+    (manager as any).selectGame(host.id, 'higher-lower');
+    (manager as any).updateGameSelection(host.id, { type: 'RANDOM', gameIds: ['higher-lower', 'shiny-vote'] });
+
+    (manager as any).startGame(host.id);
+
+    expect(room.selectedGameId).toBe('shiny-vote');
+    expect(room.game?.gameId).toBe('shiny-vote');
+  });
+
+  it('runs a private next-game vote, closes early when everyone votes and returns to the lobby after reveal', () => {
+    vi.useFakeTimers(); vi.setSystemTime(50_000);
+    const manager = new RoomManager(io() as any, catalog);
+    const host = identity('host', 'Host'); const guest = identity('guest', 'Ana');
+    const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
+    (manager as any).join(socket('guest-socket'), guest, room.code);
+    (manager as any).selectGame(host.id, 'higher-lower');
+    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'REALTIME', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
+    (manager as any).updateGameSelection(host.id, { type: 'VOTE', gameIds: ['higher-lower', 'shiny-vote', 'pokemon-bingo'] });
+    (manager as any).startGame(host.id);
+    (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' });
+    (manager as any).action(guest.id, { type: 'ANSWER', choice: 'LOWER' });
+    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room);
+
+    expect(room.phase).toBe('NEXT_GAME_VOTE');
+    expect(room.nextGameVote?.optionGameIds).toHaveLength(3);
+    expect((manager as any).view(room, guest.id).nextGameVote).toMatchObject({ ownVoteGameId: null, tallies: null, votedPlayerIds: [] });
+
+    const [hostChoice, guestChoice] = room.nextGameVote!.optionGameIds;
+    (manager as any).voteNextGame(host.id, hostChoice);
+    expect((manager as any).view(room, host.id).nextGameVote.ownVoteGameId).toBe(hostChoice);
+    expect((manager as any).view(room, guest.id).nextGameVote).toMatchObject({ ownVoteGameId: null, tallies: null, votedPlayerIds: [host.id] });
+    (manager as any).disconnect(host.id, 'host-socket');
+    const restoredHostSocket = socket('host-restored');
+    (manager as any).restore(restoredHostSocket, host);
+    expect(restoredHostSocket.emit).toHaveBeenCalledWith('session:restored', expect.objectContaining({ nextGameVote: expect.objectContaining({ ownVoteGameId: hostChoice }) }));
+    (manager as any).voteNextGame(guest.id, guestChoice);
+
+    expect(room.phase).toBe('NEXT_GAME_VOTE_RESULTS');
+    expect(room.nextGameVote?.tallies).toMatchObject({ [hostChoice!]: 1, [guestChoice!]: 1 });
+    expect([hostChoice, guestChoice]).toContain(room.nextGameVote?.resolvedGameId);
+
+    vi.advanceTimersByTime(3_005);
+    expect(room.phase).toBe('LOBBY');
+    expect(room.game).toBeNull();
+    expect(room.nextGameVote).toBeNull();
+  });
+
+  it('resolves the next-game vote after 15 seconds even when players abstain', () => {
+    vi.useFakeTimers(); vi.setSystemTime(80_000);
+    const manager = new RoomManager(io() as any, catalog);
+    const host = identity('host', 'Host'); const guest = identity('guest', 'Ana');
+    const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
+    (manager as any).join(socket('guest-socket'), guest, room.code);
+    room.gameSelectionMode = { type: 'VOTE', gameIds: ['higher-lower', 'shiny-vote', 'pokemon-bingo'] };
+    (manager as any).beginNextGameVote(room);
+    (manager as any).schedule(room);
+
+    vi.advanceTimersByTime(15_005);
+
+    expect(room.phase).toBe('NEXT_GAME_VOTE_RESULTS');
+    expect(room.nextGameVote?.resolvedGameId).toBeTruthy();
+    expect(Object.values(room.nextGameVote?.tallies ?? {})).toEqual([0, 0, 0]);
+  });
+
   it('expires an active identity without losing historical game data or blocking the round', () => {
     vi.useFakeTimers(); vi.setSystemTime(20_000);
     const manager = new RoomManager(io() as any, catalog);

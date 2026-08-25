@@ -1,4 +1,4 @@
-import type { RoomView, SessionMode } from '@pokemon-universe/shared';
+import type { GameSelectionMode, RoomView, SessionMode } from '@pokemon-universe/shared';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import { createSocket, type GameSocket } from '../lib/socket';
@@ -14,6 +14,8 @@ interface RoomContextValue {
   selectGame(gameId: string): Promise<void>;
   updateConfig(config: unknown): Promise<void>;
   updateSession(mode: SessionMode): Promise<void>;
+  updateGameSelection(mode: GameSelectionMode): Promise<void>;
+  voteNextGame(gameId: string): Promise<void>;
   setRoomRole(playerId: string, role: 'CO_HOST' | 'MEMBER'): Promise<void>;
   transferHost(playerId: string): Promise<void>;
   kick(playerId: string): Promise<void>;
@@ -61,6 +63,8 @@ export function RoomProvider({ children }: PropsWithChildren) {
     async selectGame(gameId) { await emit('room:select-game', { gameId }); },
     async updateConfig(config) { await emit('room:update-config', { config }); },
     async updateSession(mode) { await emit('room:update-session', { mode }); },
+    async updateGameSelection(mode) { await emit('room:update-game-selection', { mode }); },
+    async voteNextGame(gameId) { await emit('room:vote-next-game', { gameId }); },
     async setRoomRole(playerId, role) { await emit('room:set-role', { playerId, role }); },
     async transferHost(playerId) { await emit('room:transfer-host', { playerId }); },
     async kick(playerId) { await emit('room:kick', { playerId }); },

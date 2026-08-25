@@ -81,6 +81,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 .modal-dialog::backdrop { background: rgb(var(--color-night) / .78); }
 
+.pokemon-selector-results { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+
 .lobby-readonly { opacity: .72; }
 .lobby-readonly button:disabled, .lobby-readonly input:disabled { cursor: not-allowed; }
 .lobby-readonly button:disabled { filter: saturate(.62); }

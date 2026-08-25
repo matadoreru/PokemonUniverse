@@ -8,9 +8,11 @@ The repository is split into three boundaries:
 
 ## State and authority
 
-The room state machine uses `LOBBY → game-owned phases → GAME_RESULTS → SESSION_RESULTS`. Round games use active/results phases; Pokémon Impostor uses `ROLE_REVEAL → ordered CLUE_PHASE turns → VOTING → VOTE_RESULTS → ELIMINATION`, while Type Duel owns its private type-selection, reveal and Pokémon-search phases. A game module owns every middle state. There are no combinations of gameplay booleans.
+The room state machine uses `LOBBY → game-owned phases → GAME_RESULTS → SESSION_RESULTS`. When the room uses player voting to rotate minigames, a non-final game instead continues through `NEXT_GAME_VOTE → NEXT_GAME_VOTE_RESULTS → LOBBY`. Round games use active/results phases; Pokémon Impostor uses `ROLE_REVEAL → ordered CLUE_PHASE turns → VOTING → VOTE_RESULTS → ELIMINATION`, while Type Duel owns its private type-selection, reveal and Pokémon-search phases. A game module owns every gameplay state; the room coordinator owns only the inter-game vote. There are no combinations of gameplay booleans.
 
 `LiveRoom` owns only room lifecycle data: code, host, members, selected game id, per-game configurations, session progress and the optional active runtime. A `GameRuntime` captures the selected module, game id, stable participant roster, validated configuration and opaque module state. Room presence code uses that roster and never inspects a game's private state shape. Returning to the lobby discards that runtime and restores connected members to player status; it does not recreate the room or sockets.
+
+Session duration and minigame rotation are independent settings. Duration remains infinite, game-count based or point-target based. Rotation is fixed, server-random from a host/co-host-selected pool, or a 15-second vote between three server-sampled entries from that pool. The first game in voting mode is selected by the host. Votes are accepted synchronously, immutable, private until resolution, and close early when every connected member has voted; ties use a server-side random choice. The winning minigame is revealed for three seconds before the existing room returns to the lobby with its per-game configuration preserved.
 
 The shared `GameRegistry` is additive and rejects duplicate ids. Its manifests are included in every public room view, so the lobby selector and client strategy registry use the same authoritative metadata. Selecting another manifest switches to that game's preserved configuration; starting a game instantiates only that module. Optional module facilities such as private asset resolution remain behind the same contract rather than adding game-specific branches to the room coordinator.
 
@@ -26,7 +28,7 @@ Presence has three room-level states: `CONNECTED`, `TEMPORARILY_DISCONNECTED` an
 
 An active identity is retained in the running engine after grace expires when its historical state is needed for results, but it is no longer eligible for actions or future waits. A reconnect inside the 30-second grace restores the same private projection. Returning to the lobby keeps temporarily disconnected identities reserved until their own grace expires; definitive departures are removed. Host ownership transfers to the oldest connected member only after definitive departure, not on a transient socket loss.
 
-The shiny answer is absent from the public state during voting. Candidate images use opaque, round-scoped application URLs; the server resolves and caches the trusted upstream sprite without exposing a semantic `/shiny/` URL to clients. During the reveal, the public projection adds the correct option and per-player outcome for three seconds.
+The shiny answer is absent from the public state during voting. Candidate images use opaque, round-scoped application URLs; the server recolours decoys pixel by pixel with restrained HSL palette shifts, preserves neutral outlines and shading, and normalizes every candidate to the same crisp pixel-art PNG. Recolour metadata and semantic `/shiny/` source URLs never enter the public projection. During the reveal, the public projection adds the correct option and per-player outcome for three seconds.
 
 ## Pokémon data
 

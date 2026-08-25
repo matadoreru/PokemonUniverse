@@ -1,22 +1,20 @@
-/**
- * Central palette for fake shinies. Values are intentionally pronounced while
- * keeping transparent sprites readable against both light and dark surfaces.
- */
-export const AUTHENTIC_SHINY_FILTER = 'brightness(1) saturate(1) contrast(1) hue-rotate(0deg)';
+import type { GameAssetRecolor } from '../contracts.js';
+
 /** Some decoys start from the official shiny palette before being recolored. */
 export const FAKE_SHINY_SPRITE_PROBABILITY = 0.35;
 
-export const FAKE_SHINY_FILTERS = [
-  'hue-rotate(64deg) saturate(2.15) contrast(1.2) brightness(1.06)',
-  'hue-rotate(137deg) saturate(2.3) contrast(1.16) brightness(0.96)',
-  'hue-rotate(211deg) saturate(2.05) contrast(1.24) brightness(1.08)',
-  'hue-rotate(278deg) saturate(2.4) contrast(1.18) brightness(0.94)',
-  'hue-rotate(329deg) saturate(2.2) contrast(1.22) brightness(1.1)',
-  'hue-rotate(25deg) saturate(1.95) contrast(1.28) brightness(0.92)',
-] as const;
+/** Restrained palette shifts emulate official recolours without clipping highlights or shadows. */
+export const FAKE_SHINY_PALETTES = [
+  { hueShiftDegrees: 28, saturationScale: 0.9, lightnessScale: 1.02, contrast: 0.97 },
+  { hueShiftDegrees: 76, saturationScale: 0.82, lightnessScale: 0.99, contrast: 0.95 },
+  { hueShiftDegrees: 142, saturationScale: 0.86, lightnessScale: 1.01, contrast: 0.96 },
+  { hueShiftDegrees: 196, saturationScale: 0.8, lightnessScale: 1.03, contrast: 0.94 },
+  { hueShiftDegrees: 248, saturationScale: 0.84, lightnessScale: 0.98, contrast: 0.96 },
+  { hueShiftDegrees: 310, saturationScale: 0.88, lightnessScale: 1.02, contrast: 0.95 },
+] as const satisfies readonly GameAssetRecolor[];
 
-export function fakeShinyFilter(index: number): string {
-  return FAKE_SHINY_FILTERS[index % FAKE_SHINY_FILTERS.length]!;
+export function fakeShinyPalette(index: number): GameAssetRecolor {
+  return FAKE_SHINY_PALETTES[index % FAKE_SHINY_PALETTES.length]!;
 }
 
 export function useShinySpriteForFake(random: () => number): boolean {
