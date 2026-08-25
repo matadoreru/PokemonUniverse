@@ -98,7 +98,7 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
       ? 'La votación necesita al menos 3 minijuegos compatibles.'
       : room.gameSelectionMode.type !== 'RANDOM' && selectedGameReason
         ? selectedGameReason
-        : room.gameSelectionMode.type === 'RANDOM' ? null : gameClient.validateConfig?.(room.selectedGameConfig) ?? null;
+        : room.gameSelectionMode.type === 'RANDOM' ? null : gameClient.validateConfig?.(room.selectedGameConfig, room) ?? null;
 
   return (
     <section className="page-shell max-w-[92rem]">
@@ -173,7 +173,7 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
             </div>
             {!canEditGame && <div className="mb-4 flex items-center gap-2 rounded-xl border border-electric/20 bg-electric/5 px-3 py-2 text-sm font-bold text-ink/60"><LockKeyhole size={15} className="text-electric" /> Solo el host y los co-hosts pueden cambiar esta configuración.</div>}
             <div className={!canEditGame ? 'lobby-readonly' : ''} title={!canEditGame ? 'Solo el host y los co-hosts pueden cambiar esta configuración.' : undefined}>
-              <Suspense fallback={<GameLoadingFallback compact />}><gameClient.ConfigPanel config={room.selectedGameConfig} disabled={!canEditGame} onChange={onConfig} /></Suspense>
+              <Suspense fallback={<GameLoadingFallback compact />}><gameClient.ConfigPanel config={room.selectedGameConfig} disabled={!canEditGame} room={room} selfId={selfId} onChange={onConfig} /></Suspense>
             </div>
           </article>
 

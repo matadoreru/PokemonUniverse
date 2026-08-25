@@ -1,4 +1,4 @@
-import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, roomCodeSchema, sessionModeSchema, supportsPlayerCount, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck } from '@pokemon-universe/shared';
+import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, roomCodeSchema, sessionModeSchema, supportsPlayerCount, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck, type SubjectiveCategory } from '@pokemon-universe/shared';
 import { randomInt, randomUUID } from 'node:crypto';
 import type { Server, Socket } from 'socket.io';
 import { env } from '../config.js';
@@ -26,6 +26,7 @@ export class RoomManager {
     private readonly io: GameServer,
     private readonly pokemon: PokemonCatalog,
     private readonly pokemonVisuals: PokemonVisualCatalog = { artworkFor: () => null, artworkPokemonIds: () => [] },
+    private readonly customCategoriesForUser: (userId: string) => readonly SubjectiveCategory[] = () => [],
   ) {}
 
   bind(socket: GameSocket): void {
@@ -133,6 +134,11 @@ export class RoomManager {
     const participant = room.sessionParticipants.get(userId);
     if (participant) participant.identity = member.identity;
     this.broadcast(room);
+  }
+
+  updateHostCategories(userId: string): void {
+    const room = this.store.roomForPlayer(userId);
+    if (room?.hostId === userId) this.broadcast(room);
   }
 
   private leave(socket: GameSocket, playerId: string): Record<string, never> {
@@ -300,7 +306,7 @@ export class RoomManager {
     const module = gameRegistry.get(room.selectedGameId)!;
     if (players.length < module.manifest.minPlayers) throw new Error(`Se necesitan al menos ${module.manifest.minPlayers} jugadores.`);
     if (module.manifest.maxPlayers && players.length > module.manifest.maxPlayers) throw new Error(`Este juego admite un máximo de ${module.manifest.maxPlayers} jugadores.`);
-    const context = { players, pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage };
+    const context = { players, pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage, hostCustomCategories: this.hostCustomCategories(room) };
     const config = module.configSchema.parse(room.gameConfigs.get(room.selectedGameId));
     let state = module.createInitialState(config, context);
     state = module.start(state, context);
@@ -515,7 +521,12 @@ export class RoomManager {
       displayName: member.identity.displayName,
       connected: member.presence === 'CONNECTED',
       active: member.role === 'PLAYER' && member.presence !== 'LEFT',
-    })), pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage };
+    })), pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage, hostCustomCategories: this.hostCustomCategories(room) };
+  }
+
+  private hostCustomCategories(room: LiveRoom): readonly SubjectiveCategory[] {
+    const host = room.members.get(room.hostId);
+    return host?.identity.kind === 'USER' ? this.customCategoriesForUser(host.identity.id) : [];
   }
 
   gameAsset(code: string, assetToken: string, roundNumber: number, assetId: string): string | GameAssetResolution | null {
@@ -557,6 +568,7 @@ export class RoomManager {
       game: room.game ? room.game.module.getPublicState(room.game.state, context) : null,
       gamePlayerState: room.game ? room.game.module.getPlayerState(room.game.state, playerId, context) : null,
       serverNow: Date.now(),
+      hostCustomCategoryCount: this.hostCustomCategories(room).length,
     };
   }
 

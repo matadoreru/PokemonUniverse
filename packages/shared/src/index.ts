@@ -1,5 +1,6 @@
 export * from './auth.js';
 export * from './avatar.js';
+export * from './custom-category.js';
 export * from './room.js';
 export * from './scoring.js';
 export * from './pokemon/types.js';
@@ -20,3 +21,6 @@ export * from './games/pokedex-entry-guess/index.js';
 export * from './games/type-chain/index.js';
 export * from './games/guess-from-stats/index.js';
 export * from './games/zoomed-pokemon/index.js';
+export * from './games/poke-taboo/index.js';
+export * from './games/one-of-us-is-fake/index.js';
+export * from './games/pokemon-bluff-auction/index.js';

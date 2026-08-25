@@ -96,6 +96,8 @@ export interface RoomView {
   game: unknown | null;
   gamePlayerState: unknown | null;
   serverNow: number;
+  /** Enabled custom categories owned by the host; used for lobby validation only. */
+  hostCustomCategoryCount?: number;
 }
 
 export const roomCodeSchema = z.string().trim().toUpperCase().regex(/^[A-Z2-9]{6}$/);

@@ -105,7 +105,7 @@ describe('room multi-game lifecycle', () => {
     const room = manager.store.get(created.room.code)!;
     (manager as any).join(guestSocket, guest, room.code);
 
-    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokedex-entry-guess', 'type-chain', 'guess-from-stats', 'zoomed-pokemon']);
+    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokedex-entry-guess', 'type-chain', 'guess-from-stats', 'zoomed-pokemon', 'poke-taboo', 'one-of-us-is-fake', 'pokemon-bluff-auction']);
     expect(room.selectedGameId).toBe('pokedex-distance');
     expect(room.members.size).toBe(2);
 
@@ -169,7 +169,26 @@ describe('room multi-game lifecycle', () => {
     expect(() => (manager as any).selectGame(guest.id, 'shiny-vote')).toThrow(/No tienes permiso/);
     expect(() => (manager as any).selectGame(host.id, 'missing-game')).toThrow(/Unknown game/);
     expect(room.selectedGameId).toBe('pokedex-distance');
-    expect(created.room.availableGames).toHaveLength(13);
+    expect(created.room.availableGames).toHaveLength(16);
+  });
+
+  it('injects the registered host category snapshot without exposing round secrets', () => {
+    const categories = [{ id: 'c1', text: 'Pokémon para una excursión' }, { id: 'c2', text: 'Pokémon para vigilar una casa' }];
+    const manager = new RoomManager(io() as any, catalog, { artworkFor: () => null, artworkPokemonIds: () => [] }, (userId) => userId === 'host' ? categories : []);
+    const host: AuthUser = { ...identity('host', 'Host'), kind: 'USER', email: 'host@example.com' };
+    const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
+    (manager as any).join(socket('p2-socket'), identity('p2', 'Ana'), room.code);
+    (manager as any).join(socket('p3-socket'), identity('p3', 'Carlos'), room.code);
+    (manager as any).selectGame(host.id, 'one-of-us-is-fake');
+    (manager as any).updateConfig(host.id, { generations: [1], selectionSeconds: 30, discussionSeconds: 180, rounds: 1, fakeKnows: false, categorySource: 'CUSTOM', includeRegionalForms: true });
+    expect((manager as any).view(room, host.id).hostCustomCategoryCount).toBe(2);
+    startReady(manager, room, host.id);
+    const hostView = (manager as any).view(room, host.id);
+    expect(hostView.gamePlayerState).toMatchObject({ role: 'PLAYER', myCategory: expect.any(String) });
+    expect(hostView.gamePlayerState).not.toHaveProperty('isFake');
+    expect(hostView.game).not.toHaveProperty('fakePlayerId'); expect(hostView.game).not.toHaveProperty('mainCategory'); expect(hostView.game).not.toHaveProperty('fakeCategory');
+    expect(JSON.stringify(hostView.game)).not.toContain('Pokémon para una excursión');
+    expect(JSON.stringify(hostView.game)).not.toContain('Pokémon para vigilar una casa');
   });
 
   it('broadcasts avatar changes and keeps the lightweight reference in the room', () => {

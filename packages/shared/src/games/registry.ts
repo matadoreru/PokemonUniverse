@@ -12,6 +12,9 @@ import { pokedexEntryGuessGame } from './pokedex-entry-guess/server.js';
 import { typeChainGame } from './type-chain/server.js';
 import { guessFromStatsGame } from './guess-from-stats/server.js';
 import { zoomedPokemonGame } from './zoomed-pokemon/server.js';
+import { pokeTabooGame } from './poke-taboo/server.js';
+import { oneOfUsIsFakeGame } from './one-of-us-is-fake/server.js';
+import { pokemonBluffAuctionGame } from './pokemon-bluff-auction/server.js';
 
 export type RegisteredGame = MiniGameModule<any, any, any, any>;
 
@@ -41,4 +44,7 @@ export const gameRegistry = new GameRegistry()
   .register(pokedexEntryGuessGame)
   .register(typeChainGame)
   .register(guessFromStatsGame)
-  .register(zoomedPokemonGame);
+  .register(zoomedPokemonGame)
+  .register(pokeTabooGame)
+  .register(oneOfUsIsFakeGame)
+  .register(pokemonBluffAuctionGame);

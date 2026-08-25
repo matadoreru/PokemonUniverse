@@ -16,6 +16,9 @@ export type GamePhase =
   | 'INVALID_COMBINATION'
   | 'POKEMON_SEARCH'
   | 'TURN_ACTIVE'
+  | 'CHOICE_REVEAL'
+  | 'DISCUSSION'
+  | 'REVOTE'
   | 'GAME_RESULTS';
 
 export interface GamePlayer {
@@ -57,6 +60,13 @@ export interface GameContext {
   preloadImage?: (source: string) => void;
   /** Server-owned visual sources. Local artwork paths never enter public game state. */
   pokemonVisuals?: PokemonVisualCatalog;
+  /** Enabled, persistent categories owned by the current room host. */
+  hostCustomCategories?: readonly SubjectiveCategory[];
+}
+
+export interface SubjectiveCategory {
+  id: string;
+  text: string;
 }
 
 export interface PokemonVisualAsset {

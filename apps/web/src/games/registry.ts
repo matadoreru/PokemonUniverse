@@ -4,16 +4,17 @@ import { validateGuessFromStatsConfig } from './guess-from-stats/validation';
 import { validatePokeddleConfig } from './pokeddle-race/validation';
 import { validatePokemonBingoConfig } from './pokemon-bingo/validation';
 import { validateZoomedPokemonConfig } from './zoomed-pokemon/validation';
+import { validateOneOfUsIsFakeConfig } from './one-of-us-is-fake/validation';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
-export interface GameConfigProps { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }
+export interface GameConfigProps { config: unknown; disabled: boolean; room: RoomView; selfId: string; onChange(config: unknown): Promise<void> }
 export interface MiniGameClientModule {
   id: string;
   ConfigPanel: ComponentType<GameConfigProps>;
   ActiveGame: ComponentType<ActiveGameProps>;
   Results: ComponentType<GameResultsProps>;
-  validateConfig?(config: unknown): string | null;
+  validateConfig?(config: unknown, room?: RoomView): string | null;
   preloadConfig(): Promise<unknown>;
   preloadGameplay(): Promise<unknown>;
 }
@@ -44,7 +45,7 @@ function clientModule(definition: {
   config: LazyComponentDefinition;
   active: LazyComponentDefinition;
   results: LazyComponentDefinition;
-  validateConfig?(config: unknown): string | null;
+  validateConfig?(config: unknown, room?: RoomView): string | null;
 }): MiniGameClientModule {
   const config = preloadableComponent<GameConfigProps>(definition.config);
   const active = preloadableComponent<ActiveGameProps>(definition.active);
@@ -144,4 +145,20 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   active: component(() => import('../room/ZoomedPokemonGame'), 'ZoomedPokemonGame'),
   results: component(() => import('../room/ZoomedPokemonResults'), 'ZoomedPokemonResults'),
   validateConfig: validateZoomedPokemonConfig,
+})).register(clientModule({
+  id: 'poke-taboo',
+  config: component(() => import('./poke-taboo/ConfigPanel'), 'PokeTabooConfigPanel'),
+  active: component(() => import('../room/PokeTabooGame'), 'PokeTabooGame'),
+  results: component(() => import('../room/PokeTabooResults'), 'PokeTabooResults'),
+})).register(clientModule({
+  id: 'one-of-us-is-fake',
+  config: component(() => import('./one-of-us-is-fake/ConfigPanel'), 'OneOfUsIsFakeConfigPanel'),
+  active: component(() => import('../room/OneOfUsIsFakeGame'), 'OneOfUsIsFakeGame'),
+  results: component(() => import('../room/OneOfUsIsFakeResults'), 'OneOfUsIsFakeResults'),
+  validateConfig: validateOneOfUsIsFakeConfig,
+})).register(clientModule({
+  id: 'pokemon-bluff-auction',
+  config: component(() => import('./pokemon-bluff-auction/ConfigPanel'), 'PokemonBluffAuctionConfigPanel'),
+  active: component(() => import('../room/PokemonBluffAuctionGame'), 'PokemonBluffAuctionGame'),
+  results: component(() => import('../room/PokemonBluffAuctionResults'), 'PokemonBluffAuctionResults'),
 }));

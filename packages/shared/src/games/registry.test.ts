@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { defaultGuessFromStatsConfig, defaultHigherLowerConfig, defaultLearnsetGuessConfig, defaultPokedexDistanceConfig, defaultPokedexEntryGuessConfig, defaultPokeddleRaceConfig, defaultPokemonBingoConfig, defaultPokemonImpostorConfig, defaultShinyVoteConfig, defaultTypeChainConfig, defaultTypeDuelConfig, defaultWhosThatPokemonConfig, defaultZoomedPokemonConfig, GameRegistry, gameRegistry, guessFromStatsGame, higherLowerGame, learnsetGuessGame, pokeddleRaceGame, pokemonBingoGame, pokedexDistanceGame, pokedexEntryGuessGame, pokemonImpostorGame, shinyVoteGame, typeChainGame, typeDuelGame, whosThatPokemonGame, zoomedPokemonGame } from '../index.js';
+import { defaultGuessFromStatsConfig, defaultHigherLowerConfig, defaultLearnsetGuessConfig, defaultOneOfUsIsFakeConfig, defaultPokedexDistanceConfig, defaultPokedexEntryGuessConfig, defaultPokeTabooConfig, defaultPokeddleRaceConfig, defaultPokemonBingoConfig, defaultPokemonBluffAuctionConfig, defaultPokemonImpostorConfig, defaultShinyVoteConfig, defaultTypeChainConfig, defaultTypeDuelConfig, defaultWhosThatPokemonConfig, defaultZoomedPokemonConfig, GameRegistry, gameRegistry, guessFromStatsGame, higherLowerGame, learnsetGuessGame, oneOfUsIsFakeGame, pokeTabooGame, pokeddleRaceGame, pokemonBingoGame, pokemonBluffAuctionGame, pokedexDistanceGame, pokedexEntryGuessGame, pokemonImpostorGame, shinyVoteGame, typeChainGame, typeDuelGame, whosThatPokemonGame, zoomedPokemonGame } from '../index.js';
 
 describe('multi-game registry', () => {
   it('registers every minigame simultaneously', () => {
@@ -17,6 +17,9 @@ describe('multi-game registry', () => {
       ['type-chain', 'Type Chain'],
       ['guess-from-stats', 'Guess from Stats'],
       ['zoomed-pokemon', 'Zoomed Pokémon'],
+      ['poke-taboo', 'PokéTaboo'],
+      ['one-of-us-is-fake', 'One of Us Is Fake'],
+      ['pokemon-bluff-auction', 'Pokémon Bluff Auction'],
     ]);
   });
 
@@ -29,8 +32,8 @@ describe('multi-game registry', () => {
     expect(shiny).toBe(shinyVoteGame);
     expect(impostor).toBe(pokemonImpostorGame);
     const pokeddle = gameRegistry.get('pokeddle-race'); const bingo = gameRegistry.get('pokemon-bingo'); const who = gameRegistry.get('whos-that-pokemon'); const entryGuess = gameRegistry.get('pokedex-entry-guess'); const typeChain = gameRegistry.get('type-chain'); const statsGuess = gameRegistry.get('guess-from-stats');
-    const zoomed = gameRegistry.get('zoomed-pokemon');
-    expect(higherLower).toBe(higherLowerGame); expect(typeDuel).toBe(typeDuelGame); expect(learnset).toBe(learnsetGuessGame); expect(pokeddle).toBe(pokeddleRaceGame); expect(bingo).toBe(pokemonBingoGame); expect(who).toBe(whosThatPokemonGame); expect(entryGuess).toBe(pokedexEntryGuessGame); expect(typeChain).toBe(typeChainGame); expect(statsGuess).toBe(guessFromStatsGame); expect(zoomed).toBe(zoomedPokemonGame); expect(gameRegistry.list()).toHaveLength(13);
+    const zoomed = gameRegistry.get('zoomed-pokemon'); const taboo = gameRegistry.get('poke-taboo'); const fake = gameRegistry.get('one-of-us-is-fake'); const bluff = gameRegistry.get('pokemon-bluff-auction');
+    expect(higherLower).toBe(higherLowerGame); expect(typeDuel).toBe(typeDuelGame); expect(learnset).toBe(learnsetGuessGame); expect(pokeddle).toBe(pokeddleRaceGame); expect(bingo).toBe(pokemonBingoGame); expect(who).toBe(whosThatPokemonGame); expect(entryGuess).toBe(pokedexEntryGuessGame); expect(typeChain).toBe(typeChainGame); expect(statsGuess).toBe(guessFromStatsGame); expect(zoomed).toBe(zoomedPokemonGame); expect(taboo).toBe(pokeTabooGame); expect(fake).toBe(oneOfUsIsFakeGame); expect(bluff).toBe(pokemonBluffAuctionGame); expect(gameRegistry.list()).toHaveLength(16);
     expect(pokedex?.defaultConfig).toEqual(defaultPokedexDistanceConfig);
     expect(shiny?.defaultConfig).toEqual(defaultShinyVoteConfig);
     expect(impostor?.defaultConfig).toEqual(defaultPokemonImpostorConfig);
@@ -42,12 +45,15 @@ describe('multi-game registry', () => {
     expect(typeChain?.defaultConfig).toEqual(defaultTypeChainConfig);
     expect(statsGuess?.defaultConfig).toEqual(defaultGuessFromStatsConfig);
     expect(zoomed?.defaultConfig).toEqual(defaultZoomedPokemonConfig);
+    expect(taboo?.defaultConfig).toEqual(defaultPokeTabooConfig);
+    expect(fake?.defaultConfig).toEqual(defaultOneOfUsIsFakeConfig);
+    expect(bluff?.defaultConfig).toEqual(defaultPokemonBluffAuctionConfig);
   });
 
   it('rejects duplicate ids instead of silently replacing a game', () => {
-    const registry = new GameRegistry().register(pokedexDistanceGame).register(shinyVoteGame).register(pokemonImpostorGame).register(higherLowerGame).register(typeDuelGame).register(learnsetGuessGame).register(pokeddleRaceGame).register(pokemonBingoGame).register(whosThatPokemonGame).register(pokedexEntryGuessGame).register(typeChainGame).register(guessFromStatsGame).register(zoomedPokemonGame);
+    const registry = new GameRegistry().register(pokedexDistanceGame).register(shinyVoteGame).register(pokemonImpostorGame).register(higherLowerGame).register(typeDuelGame).register(learnsetGuessGame).register(pokeddleRaceGame).register(pokemonBingoGame).register(whosThatPokemonGame).register(pokedexEntryGuessGame).register(typeChainGame).register(guessFromStatsGame).register(zoomedPokemonGame).register(pokeTabooGame).register(oneOfUsIsFakeGame).register(pokemonBluffAuctionGame);
     expect(() => registry.register(pokedexDistanceGame)).toThrow(/Duplicate game id/);
-    expect(registry.list()).toEqual([pokedexDistanceGame, shinyVoteGame, pokemonImpostorGame, higherLowerGame, typeDuelGame, learnsetGuessGame, pokeddleRaceGame, pokemonBingoGame, whosThatPokemonGame, pokedexEntryGuessGame, typeChainGame, guessFromStatsGame, zoomedPokemonGame]);
+    expect(registry.list()).toEqual([pokedexDistanceGame, shinyVoteGame, pokemonImpostorGame, higherLowerGame, typeDuelGame, learnsetGuessGame, pokeddleRaceGame, pokemonBingoGame, whosThatPokemonGame, pokedexEntryGuessGame, typeChainGame, guessFromStatsGame, zoomedPokemonGame, pokeTabooGame, oneOfUsIsFakeGame, pokemonBluffAuctionGame]);
   });
 
   it('exposes a profile statistics definition for every registered game', () => {

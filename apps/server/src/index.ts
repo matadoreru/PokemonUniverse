@@ -20,8 +20,12 @@ import { loadPokemonCatalog } from './pokemon/catalog.js';
 import { CatalogPokemonRepository } from './pokemon/repository.js';
 import { loadPokemonVisualCatalog } from './pokemon/visual-assets.js';
 import { RoomManager } from './rooms/manager.js';
+import { PrismaCustomCategoryRepository } from './categories/prisma-repository.js';
+import { createCustomCategoryRouter } from './categories/routes.js';
+import { CustomCategoryService } from './categories/service.js';
 
 const app = express();
+const customCategories = new CustomCategoryService(new PrismaCustomCategoryRepository(prisma));
 app.set('trust proxy', 1);
 app.use(helmet());
 app.use(cors({ origin: env.WEB_ORIGIN, credentials: true }));
@@ -33,12 +37,14 @@ app.use(rateLimit({
 }));
 app.use(optionalAuth);
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 30, skip: (req) => req.path.startsWith('/avatars/') }), authRouter);
+app.use('/api/categories', createCustomCategoryRouter(customCategories));
 app.use('/api', apiRouter);
 
 app.use((error: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {
   void next;
   if (error instanceof ZodError) { res.status(400).json({ error: error.issues[0]?.message ?? 'Invalid input', issues: error.issues }); return; }
   if (error instanceof AvatarValidationError) { res.status(error.status).json({ error: error.message }); return; }
+  if (error instanceof Error && 'status' in error && typeof error.status === 'number') { res.status(error.status).json({ error: error.message }); return; }
   if (typeof error === 'object' && error !== null && ('status' in error && error.status === 413 || 'type' in error && error.type === 'entity.too.large')) {
     res.status(413).json({ error: 'La imagen supera el límite de 5 MB.' }); return;
   }
@@ -62,9 +68,11 @@ io.use(async (socket, next) => {
 });
 
 const catalog = await loadPokemonCatalog();
+await customCategories.load();
 registerPokemonRepository(new CatalogPokemonRepository(catalog));
 const pokemonVisuals = await loadPokemonVisualCatalog(catalog);
-const rooms = new RoomManager(io, catalog, pokemonVisuals);
+const rooms = new RoomManager(io, catalog, pokemonVisuals, (userId) => customCategories.enabled(userId));
+customCategories.onChanged((userId) => rooms.updateHostCategories(userId));
 onAvatarUpdated((userId, avatar) => rooms.updateIdentityAvatar(userId, avatar));
 registerGameImageResolver((code, assetToken, roundNumber, optionId) => rooms.gameAsset(code, assetToken, roundNumber, optionId));
 io.on('connection', (socket) => {

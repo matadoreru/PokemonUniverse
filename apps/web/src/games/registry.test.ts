@@ -7,6 +7,9 @@ describe('client minigame registry', () => {
       'pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess',
       'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokedex-entry-guess', 'type-chain',
       'guess-from-stats', 'zoomed-pokemon',
+      'poke-taboo',
+      'one-of-us-is-fake',
+      'pokemon-bluff-auction',
     ]);
   });
 

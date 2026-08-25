@@ -22,6 +22,21 @@ model User {
   stats        UserStats?
   gameStats    UserGameStats[]
   results      PlayerGameResult[]
+  customCategories CustomCategory[]
+}
+
+model CustomCategory {
+  id             String   @id @default(cuid())
+  userId         String
+  text           String
+  normalizedText String
+  enabled        Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, normalizedText])
+  @@index([userId])
 }
 
 model UserStats {
