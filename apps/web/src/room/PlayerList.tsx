@@ -1,5 +1,5 @@
 import type { PokedexDistancePublicState, RoomMemberView } from '@pokemon-universe/shared';
-import { ArrowRightLeft, Crown, Eye, MoreVertical, Star, UserMinus, UserRoundCog, WifiOff } from 'lucide-react';
+import { ArrowRightLeft, CheckCircle2, Circle, Crown, Eye, MoreVertical, Star, UserMinus, UserRoundCog, WifiOff } from 'lucide-react';
 import { memo } from 'react';
 import { Avatar } from '../components/Avatar';
 
@@ -24,6 +24,7 @@ function sameMembers(left: RoomMemberView[], right: RoomMemberView[]): boolean {
     const other = right[index];
     return other && member.id === other.id && member.displayName === other.displayName && member.roomRole === other.roomRole
       && member.presence === other.presence && member.sessionPoints === other.sessionPoints && member.role === other.role
+      && member.ready === other.ready
       && JSON.stringify(member.avatar) === JSON.stringify(other.avatar);
   });
 }
@@ -36,6 +37,14 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
         const RoleIcon = role.icon;
         const manageable = canManage && member.roomRole !== 'HOST' && member.id !== selfId;
         const selection = game?.selections[member.id];
+        const readiness = member.roomRole === 'HOST'
+          ? { label: 'Controla el inicio', className: 'text-electric', icon: Crown }
+          : member.presence !== 'CONNECTED'
+            ? { label: member.presence === 'LEFT' ? 'Fuera de la sala' : 'Reconectando…', className: 'text-electric', icon: WifiOff }
+            : member.ready
+              ? { label: 'Listo', className: 'text-leaf', icon: CheckCircle2 }
+              : { label: 'Sin confirmar', className: 'text-ink/55', icon: Circle };
+        const ReadinessIcon = readiness.icon;
         return (
           <div key={member.id} className={`relative flex min-h-16 items-center gap-3 rounded-2xl border p-2.5 ${member.presence === 'LEFT' ? 'border-ink/5 bg-ink/[.03] opacity-60' : 'border-ink/10 bg-surface-raised'}`}>
             <Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} size="md" />
@@ -45,10 +54,11 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
                 {member.id === selfId && <span className="text-xs text-ink/55">(tú)</span>}
                 {!member.connected && <WifiOff size={14} className="shrink-0 text-electric" aria-hidden="true" />}
               </div>
-              {selection ? <p className="truncate text-sm font-bold text-ink/70">→ {selection.pokemonName}</p> : game && member.role === 'PLAYER' ? <p className="text-sm font-bold text-ink/55">seleccionando…</p> : <div className="mt-0.5 flex items-center gap-2 text-xs font-extrabold">
+              {selection ? <p className="truncate text-sm font-bold text-ink/70">→ {selection.pokemonName}</p> : game && member.role === 'PLAYER' ? <p className="text-sm font-bold text-ink/55">seleccionando…</p> : <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-extrabold">
                 <span className={`inline-flex items-center gap-1 ${role.className}`}>{RoleIcon && <RoleIcon size={13} fill="currentColor" />} {role.label}</span>
                 <span className="text-ink/45">·</span>
                 <span className="text-ink/60">{member.role === 'SPECTATOR' ? 'Espectador' : `${member.sessionPoints} pts`}</span>
+                {!game && <><span className="text-ink/45">·</span><span className={`inline-flex items-center gap-1 ${readiness.className}`}><ReadinessIcon size={13} aria-hidden="true" /> {readiness.label}</span></>}
               </div>}
             </div>
             {selection && <img className="h-12 w-12 object-contain" src={selection.sprite} alt="" />}

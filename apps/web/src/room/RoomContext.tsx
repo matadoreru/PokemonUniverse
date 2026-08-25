@@ -20,6 +20,7 @@ interface RoomContextValue {
   setRoomRole(playerId: string, role: 'CO_HOST' | 'MEMBER'): Promise<void>;
   transferHost(playerId: string): Promise<void>;
   kick(playerId: string): Promise<void>;
+  setReady(ready: boolean): Promise<void>;
   startGame(): Promise<void>;
   continueSession(): Promise<void>;
   returnLobby(): Promise<void>;
@@ -83,6 +84,7 @@ export function RoomProvider({ children }: PropsWithChildren) {
     async setRoomRole(playerId, role) { await emit('room:set-role', { playerId, role }); },
     async transferHost(playerId) { await emit('room:transfer-host', { playerId }); },
     async kick(playerId) { await emit('room:kick', { playerId }); },
+    async setReady(ready) { await emit('room:set-ready', { ready }); },
     async startGame() { await emit('room:start-game', {}); },
     async continueSession() {
       if (continuationRef.current) return continuationRef.current;

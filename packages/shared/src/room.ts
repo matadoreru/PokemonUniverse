@@ -20,6 +20,12 @@ export function hasRoomPermission(role: RoomRole, permission: RoomPermission): b
   return ROOM_ROLE_PERMISSIONS[role].includes(permission);
 }
 
+export function formatPendingReadyNames(displayNames: readonly string[]): string {
+  const visible = displayNames.slice(0, 3).join(', ');
+  const remaining = displayNames.length - 3;
+  return remaining > 0 ? `${visible} y ${remaining} más` : visible;
+}
+
 export type PresenceStatus = 'CONNECTED' | 'TEMPORARILY_DISCONNECTED' | 'LEFT';
 
 export interface RoomMemberView {
@@ -32,7 +38,23 @@ export interface RoomMemberView {
   /** Participation role for the current minigame, independent from room permissions. */
   role: MemberRole;
   isHost: boolean;
+  /** Lobby acknowledgement. The host controls starting and does not need to mark ready. */
+  ready: boolean;
   sessionPoints: number;
+}
+
+export interface SessionStandingView {
+  id: string;
+  displayName: string;
+  avatar: AvatarRef;
+  sessionPoints: number;
+}
+
+export interface SessionGameSummaryView {
+  gameNumber: number;
+  gameId: string;
+  winnerIds: string[];
+  points: Record<string, number>;
 }
 
 export type SessionMode =
@@ -69,6 +91,8 @@ export interface RoomView {
   gameSelectionMode: GameSelectionMode;
   nextGameVote: NextGameVoteView | null;
   gamesPlayed: number;
+  sessionStandings: SessionStandingView[];
+  sessionHistory: SessionGameSummaryView[];
   game: unknown | null;
   gamePlayerState: unknown | null;
   serverNow: number;
@@ -102,6 +126,7 @@ export interface ClientToServerEvents {
   'room:set-role': (payload: { playerId: string; role: AssignableRoomRole }, ack: SocketAck) => void;
   'room:transfer-host': (payload: { playerId: string }, ack: SocketAck) => void;
   'room:kick': (payload: { playerId: string }, ack: SocketAck) => void;
+  'room:set-ready': (payload: { ready: boolean }, ack: SocketAck) => void;
   'room:start-game': (_: unknown, ack: SocketAck) => void;
   'room:continue-session': (_: unknown, ack: SocketAck) => void;
   'room:return-lobby': (_: unknown, ack: SocketAck) => void;

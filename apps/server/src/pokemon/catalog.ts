@@ -1,9 +1,10 @@
-import type { Generation, LearnsetPokemonCatalog, Move, MoveCategory, PokedexEntry, PokedexEntryPokemonCatalog, Pokemon, PokemonEvolutionInfo, PokemonLegendaryStatus, PokemonType, ResolvedLevelUpMove } from '@pokemon-universe/shared';
+import { isSupportedRegionalFormId, type Generation, type LearnsetPokemonCatalog, type Move, type MoveCategory, type PokedexEntry, type PokedexEntryPokemonCatalog, type Pokemon, type PokemonEvolutionInfo, type PokemonLegendaryStatus, type PokemonType, type ResolvedLevelUpMove } from '@pokemon-universe/shared';
 import { prisma } from '../db.js';
 
 interface CatalogLearnsetEntry { pokemonId: string; moveId: string; referenceGeneration: number; level: number }
 
 export class InMemoryPokemonCatalog implements LearnsetPokemonCatalog, PokedexEntryPokemonCatalog {
+  private readonly entries: readonly Pokemon[];
   private readonly idIndex: Map<string, Pokemon>;
   private readonly dexIndex: Map<number, Pokemon>;
   private readonly moveIndex: Map<string, Move>;
@@ -11,14 +12,15 @@ export class InMemoryPokemonCatalog implements LearnsetPokemonCatalog, PokedexEn
   private readonly evolutionIndex: Map<string, PokemonEvolutionInfo>;
   private readonly pokedexEntryIndex = new Map<string, PokedexEntry[]>();
   constructor(
-    private readonly entries: readonly Pokemon[],
+    entries: readonly Pokemon[],
     moves: readonly Move[] = [],
     learnsets: readonly CatalogLearnsetEntry[] = [],
     evolution: Readonly<Record<string, PokemonEvolutionInfo>> = {},
     pokedexEntries: readonly PokedexEntry[] = [],
   ) {
-    this.idIndex = new Map(entries.map((pokemon) => [pokemon.id, pokemon]));
-    this.dexIndex = new Map(entries.filter((pokemon) => pokemon.isDefault !== false).map((pokemon) => [pokemon.nationalDexNumber, pokemon]));
+    this.entries = entries.filter((pokemon) => pokemon.isDefault !== false || isSupportedRegionalFormId(pokemon.id));
+    this.idIndex = new Map(this.entries.map((pokemon) => [pokemon.id, pokemon]));
+    this.dexIndex = new Map(this.entries.filter((pokemon) => pokemon.isDefault !== false).map((pokemon) => [pokemon.nationalDexNumber, pokemon]));
     this.moveIndex = new Map(moves.map((move) => [move.id, move]));
     this.evolutionIndex = new Map(Object.entries(evolution));
     for (const entry of learnsets) {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { gameSelectionModeSchema, hasRoomPermission, ROOM_PERMISSIONS } from './room.js';
+import { formatPendingReadyNames, gameSelectionModeSchema, hasRoomPermission, ROOM_PERMISSIONS } from './room.js';
 
 describe('room permissions', () => {
   it('gives the Host every room permission', () => {
@@ -29,5 +29,12 @@ describe('game selection mode', () => {
     expect(gameSelectionModeSchema.safeParse({ type: 'VOTE', gameIds: ['one', 'two'] }).success).toBe(false);
     expect(gameSelectionModeSchema.safeParse({ type: 'VOTE', gameIds: ['one', 'two', 'two'] }).success).toBe(false);
     expect(gameSelectionModeSchema.parse({ type: 'RANDOM', gameIds: ['one', 'two'] })).toEqual({ type: 'RANDOM', gameIds: ['one', 'two'] });
+  });
+});
+
+describe('ready-state copy', () => {
+  it('bounds the displayed names in large rooms', () => {
+    expect(formatPendingReadyNames(['Ana', 'Leo'])).toBe('Ana, Leo');
+    expect(formatPendingReadyNames(['Ana', 'Leo', 'Marta', 'Pablo', 'Eva'])).toBe('Ana, Leo, Marta y 2 más');
   });
 });

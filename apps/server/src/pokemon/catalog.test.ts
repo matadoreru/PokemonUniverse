@@ -6,6 +6,7 @@ const battleData = { hp: 35, attack: 100, defense: 50, specialAttack: 50, specia
 const entries: Pokemon[] = [
   { ...battleData, id: 'dugtrio', nationalDexNumber: 51, name: 'Dugtrio', generation: 1, isDefault: true, sprite: '/dugtrio.png', types: ['ground'] },
   { ...battleData, id: 'dugtrio-alola', nationalDexNumber: 51, name: 'Dugtrio de Alola', generation: 1, isDefault: false, sprite: '/dugtrio-alola.png', types: ['ground', 'steel'] },
+  { ...battleData, id: 'frillish-female', nationalDexNumber: 592, name: 'Frillish', generation: 5, isDefault: false, sprite: '/frillish.png', types: ['water', 'ghost'] },
 ];
 
 describe('InMemoryPokemonCatalog forms', () => {
@@ -18,6 +19,13 @@ describe('InMemoryPokemonCatalog forms', () => {
     const catalog = new InMemoryPokemonCatalog(entries);
     expect(catalog.forGenerations([1]).map((pokemon) => pokemon.id)).toEqual(['dugtrio']);
     expect(catalog.forGenerations([1], { includeForms: true }).map((pokemon) => pokemon.id)).toEqual(['dugtrio', 'dugtrio-alola']);
+  });
+
+  it('drops unsupported cosmetic forms from every public and game lookup', () => {
+    const catalog = new InMemoryPokemonCatalog(entries);
+    expect(catalog.all().map((pokemon) => pokemon.id)).not.toContain('frillish-female');
+    expect(catalog.byId('frillish-female')).toBeUndefined();
+    expect(catalog.forGenerations([5], { includeForms: true })).toEqual([]);
   });
 
   it('resolves normalized move metadata and orders level-up learnsets', () => {

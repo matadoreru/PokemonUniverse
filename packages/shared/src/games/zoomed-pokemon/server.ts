@@ -54,7 +54,6 @@ function chooseVisual(config: ZoomedPokemonConfig, pokemon: Pokemon, context: Ga
   let selected: PokemonVisualAsset | null = null;
   if (config.imageMode === 'ARTWORK') selected = artwork;
   else if (config.imageMode === 'SPRITE') selected = usableSprite ? spriteAsset(pokemon) : null;
-  else if (artwork && usableSprite) selected = context.random() < 0.5 ? artwork : spriteAsset(pokemon);
   else selected = artwork ?? (usableSprite ? spriteAsset(pokemon) : null);
   if (!selected) throw new Error('El Pokémon seleccionado no dispone de una imagen válida.');
   return { pokemonId: pokemon.id, source: selected.source, location: selected.location, focusSeed: Math.floor(context.random() * 0x7fff_ffff) };

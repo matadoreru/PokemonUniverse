@@ -1,4 +1,4 @@
-import { assignableRoomRoleSchema, gameRegistry, gameSelectionModeSchema, hasRoomPermission, roomCodeSchema, sessionModeSchema, supportsPlayerCount, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck } from '@pokemon-universe/shared';
+import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, roomCodeSchema, sessionModeSchema, supportsPlayerCount, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck } from '@pokemon-universe/shared';
 import { randomInt, randomUUID } from 'node:crypto';
 import type { Server, Socket } from 'socket.io';
 import { env } from '../config.js';
@@ -14,6 +14,7 @@ type GameSocket = Socket<ClientToServerEvents, ServerToClientEvents, Record<stri
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const NEXT_GAME_VOTE_MS = 15_000;
 const NEXT_GAME_VOTE_RESULT_MS = 3_000;
+const MAX_SESSION_HISTORY = 100;
 
 function roomCode(): string {
   return Array.from({ length: 6 }, () => CODE_ALPHABET[randomInt(CODE_ALPHABET.length)]).join('');
@@ -47,6 +48,7 @@ export class RoomManager {
     socket.on('room:set-role', (payload, ack) => currentSocket(ack, () => this.setRoomRole(identity.id, payload.playerId, payload.role)));
     socket.on('room:transfer-host', (payload, ack) => currentSocket(ack, () => this.transferHostManually(identity.id, payload.playerId)));
     socket.on('room:kick', (payload, ack) => currentSocket(ack, () => this.kick(identity.id, payload.playerId)));
+    socket.on('room:set-ready', (payload, ack) => currentSocket(ack, () => this.setReady(identity.id, payload.ready)));
     socket.on('room:start-game', (_payload, ack) => currentSocket(ack, () => this.startGame(identity.id)));
     socket.on('room:continue-session', (_payload, ack) => currentSocket(ack, () => this.continueSession(identity.id)));
     socket.on('room:return-lobby', (_payload, ack) => currentSocket(ack, () => this.returnLobby(identity.id)));
@@ -89,9 +91,10 @@ export class RoomManager {
       selectedGameId: module.manifest.id,
       gameConfigs: new Map(gameRegistry.list().map((game) => [game.manifest.id, game.configSchema.parse(game.defaultConfig)])),
       sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null,
-      gamesPlayed: 0, game: null, transitionTimer: null,
+      gamesPlayed: 0, sessionParticipants: new Map(), sessionHistory: [], game: null, transitionTimer: null,
     };
     room.members.set(identity.id, this.member(identity, socket.id, 'PLAYER', 'HOST'));
+    room.sessionParticipants.set(identity.id, { identity, sessionPoints: 0 });
     this.store.save(room); this.store.attachPlayer(identity.id, code); void socket.join(code);
     return { room: this.view(room, identity.id) };
   }
@@ -112,18 +115,24 @@ export class RoomManager {
       room.members.set(identity.id, this.member(identity, socket.id, room.phase === 'LOBBY' ? 'PLAYER' : 'SPECTATOR', 'MEMBER'));
       this.store.attachPlayer(identity.id, room.code);
     }
+    const participant = room.sessionParticipants.get(identity.id);
+    if (participant) participant.identity = identity;
+    else room.sessionParticipants.set(identity.id, { identity, sessionPoints: current?.sessionPoints ?? 0 });
     void socket.join(room.code); this.applyPresenceChange(room);
     return { room: this.view(room, identity.id) };
   }
 
   private member(identity: AuthUser, socketId: string, role: 'PLAYER' | 'SPECTATOR', roomRole: RoomRole): RoomMember {
-    return { identity, connected: true, presence: 'CONNECTED', roomRole, socketId, role, sessionPoints: 0, joinedAt: Date.now(), disconnectTimer: null };
+    return { identity, connected: true, presence: 'CONNECTED', roomRole, socketId, role, ready: false, sessionPoints: 0, joinedAt: Date.now(), disconnectTimer: null };
   }
 
   updateIdentityAvatar(userId: string, avatar: AvatarRef): void {
     const room = this.store.roomForPlayer(userId); const member = room?.members.get(userId);
     if (!room || !member) return;
-    member.identity = { ...member.identity, avatar }; this.broadcast(room);
+    member.identity = { ...member.identity, avatar };
+    const participant = room.sessionParticipants.get(userId);
+    if (participant) participant.identity = member.identity;
+    this.broadcast(room);
   }
 
   private leave(socket: GameSocket, playerId: string): Record<string, never> {
@@ -158,7 +167,12 @@ export class RoomManager {
     if (!next) return;
     for (const member of room.members.values()) if (member.roomRole === 'HOST') member.roomRole = 'MEMBER';
     next.roomRole = 'HOST';
+    next.ready = false;
     room.hostId = next.identity.id;
+  }
+
+  private resetReadiness(room: LiveRoom): void {
+    for (const member of room.members.values()) member.ready = false;
   }
 
   private selectGame(playerId: string, gameId: string): Record<string, never> {
@@ -166,6 +180,7 @@ export class RoomManager {
     const module = gameRegistry.get(gameId); if (!module) throw new Error('Unknown game');
     room.selectedGameId = gameId;
     if (!room.gameConfigs.has(gameId)) room.gameConfigs.set(gameId, module.configSchema.parse(module.defaultConfig));
+    this.resetReadiness(room);
     this.broadcast(room); return {};
   }
 
@@ -173,11 +188,12 @@ export class RoomManager {
     const room = this.permissionRoom(playerId, 'EDIT_GAME_CONFIG'); this.assertLobby(room);
     const module = gameRegistry.get(room.selectedGameId)!;
     room.gameConfigs.set(room.selectedGameId, module.configSchema.parse(config));
+    this.resetReadiness(room);
     this.broadcast(room); return {};
   }
 
   private updateSession(playerId: string, mode: unknown): Record<string, never> {
-    const room = this.permissionRoom(playerId, 'EDIT_SESSION'); this.assertLobby(room); room.sessionMode = sessionModeSchema.parse(mode); this.broadcast(room); return {};
+    const room = this.permissionRoom(playerId, 'EDIT_SESSION'); this.assertLobby(room); room.sessionMode = sessionModeSchema.parse(mode); this.resetReadiness(room); this.broadcast(room); return {};
   }
 
   private updateGameSelection(playerId: string, mode: unknown): Record<string, never> {
@@ -190,7 +206,7 @@ export class RoomManager {
         if (!supportsPlayerCount(game.manifest, playerCount)) throw new Error(`${game.manifest.name} no admite ${playerCount} jugadores conectados.`);
       }
     }
-    room.gameSelectionMode = parsed; this.broadcast(room); return {};
+    room.gameSelectionMode = parsed; this.resetReadiness(room); this.broadcast(room); return {};
   }
 
   private setRoomRole(actorId: string, playerId: string, requestedRole: AssignableRoomRole): Record<string, never> {
@@ -207,8 +223,8 @@ export class RoomManager {
     const target = room.members.get(playerId);
     if (!target || target.presence !== 'CONNECTED') throw new Error('Solo puedes transferir el Host a un jugador conectado.');
     const priorHost = room.members.get(room.hostId);
-    if (priorHost) priorHost.roomRole = 'CO_HOST';
-    target.roomRole = 'HOST'; room.hostId = playerId; this.broadcast(room); return {};
+    if (priorHost) { priorHost.roomRole = 'CO_HOST'; priorHost.ready = false; }
+    target.roomRole = 'HOST'; target.ready = false; room.hostId = playerId; this.broadcast(room); return {};
   }
 
   private kick(actorId: string, playerId: string): Record<string, never> {
@@ -217,6 +233,15 @@ export class RoomManager {
     const member = room.members.get(playerId); if (!member) throw new Error('Player not found');
     if (member.socketId) this.io.to(member.socketId).emit('room:kicked', 'El host te ha expulsado de la sala.');
     room.members.delete(playerId); this.store.detachPlayer(playerId); this.broadcast(room); return {};
+  }
+
+  private setReady(playerId: string, requestedReady: unknown): Record<string, never> {
+    const room = this.requiredRoom(playerId); this.assertLobby(room);
+    const member = room.members.get(playerId);
+    if (!member || member.presence !== 'CONNECTED') throw new Error('No puedes cambiar tu estado de preparación ahora.');
+    if (member.roomRole === 'HOST') throw new Error('El host inicia la partida y no necesita marcarse como listo.');
+    if (typeof requestedReady !== 'boolean') throw new Error('Estado de preparación inválido.');
+    member.ready = requestedReady; this.broadcast(room); return {};
   }
 
   private randomItem<T>(items: readonly T[]): T {
@@ -263,6 +288,8 @@ export class RoomManager {
 
   private startGame(playerId: string): Record<string, never> {
     const room = this.permissionRoom(playerId, 'START_GAME'); this.assertLobby(room);
+    const pending = [...room.members.values()].filter((member) => member.presence === 'CONNECTED' && member.identity.id !== room.hostId && !member.ready);
+    if (pending.length > 0) throw new Error(`Falta por confirmar: ${formatPendingReadyNames(pending.map((member) => member.identity.displayName))}.`);
     this.assertRotationReady(room);
     this.selectRandomGame(room);
     this.launchGame(room); return {};
@@ -277,7 +304,7 @@ export class RoomManager {
     const config = module.configSchema.parse(room.gameConfigs.get(room.selectedGameId));
     let state = module.createInitialState(config, context);
     state = module.start(state, context);
-    for (const member of room.members.values()) member.role = member.presence === 'CONNECTED' ? 'PLAYER' : 'SPECTATOR';
+    for (const member of room.members.values()) { member.role = member.presence === 'CONNECTED' ? 'PLAYER' : 'SPECTATOR'; member.ready = false; }
     room.game = { resultId: randomUUID(), gameId: module.manifest.id, participantIds: players.map((player) => player.id), module, config, state, startedAt: context.now, resultsApplied: false };
     room.phase = state.phase; this.syncAndBroadcast(room);
   }
@@ -362,6 +389,9 @@ export class RoomManager {
   }
 
   private applyPresenceChange(room: LiveRoom): void {
+    if (room.phase === 'LOBBY' || room.phase === 'GAME_RESULTS' || room.phase === 'SESSION_RESULTS') {
+      this.broadcast(room); return;
+    }
     if (room.nextGameVote) {
       if (room.phase === 'NEXT_GAME_VOTE') {
         const eligibleIds = this.eligibleNextGameVoterIds(room);
@@ -391,8 +421,22 @@ export class RoomManager {
     const game = room.game!; game.resultsApplied = true; room.gamesPlayed += 1;
     const results = game.module.getResults(game.state);
     for (const standing of results.standings) {
-      const member = room.members.get(standing.playerId); if (member) member.sessionPoints += standing.points;
+      const member = room.members.get(standing.playerId);
+      if (member) member.sessionPoints += standing.points;
+      let participant = room.sessionParticipants.get(standing.playerId);
+      if (!participant && member) {
+        participant = { identity: member.identity, sessionPoints: 0 };
+        room.sessionParticipants.set(standing.playerId, participant);
+      }
+      if (participant) participant.sessionPoints += standing.points;
     }
+    room.sessionHistory.push({
+      gameNumber: room.gamesPlayed,
+      gameId: game.gameId,
+      winnerIds: results.standings.filter((standing) => standing.won ?? standing.position === 1).map((standing) => standing.playerId),
+      points: Object.fromEntries(results.standings.map((standing) => [standing.playerId, standing.points])),
+    });
+    if (room.sessionHistory.length > MAX_SESSION_HISTORY) room.sessionHistory.splice(0, room.sessionHistory.length - MAX_SESSION_HISTORY);
     const mode = room.sessionMode;
     const sessionFinished = mode.type === 'GAME_COUNT' ? room.gamesPlayed >= mode.target
       : mode.type === 'POINT_TARGET' ? [...room.members.values()].some((member) => member.sessionPoints >= mode.target)
@@ -405,9 +449,12 @@ export class RoomManager {
   private resetToLobby(room: LiveRoom, resetSession: boolean): void {
     for (const [id, member] of room.members) {
       if (member.presence === 'LEFT') { room.members.delete(id); this.store.detachPlayer(id); continue; }
-      member.role = 'PLAYER'; if (resetSession) member.sessionPoints = 0;
+      member.role = 'PLAYER'; member.ready = false; if (resetSession) member.sessionPoints = 0;
     }
-    if (resetSession) room.gamesPlayed = 0;
+    if (resetSession) {
+      room.gamesPlayed = 0; room.sessionHistory = [];
+      room.sessionParticipants = new Map([...room.members.values()].map((member) => [member.identity.id, { identity: member.identity, sessionPoints: 0 }]));
+    }
     room.game = null; room.nextGameVote = null; room.phase = 'LOBBY';
   }
 
@@ -497,12 +544,16 @@ export class RoomManager {
       code: room.code, phase: room.phase, hostId: room.hostId, maxPlayers: room.maxPlayers,
       members: [...room.members.values()].map((member) => ({
         id: member.identity.id, displayName: member.identity.displayName, avatar: member.identity.avatar,
-        connected: member.connected, presence: member.presence, roomRole: member.roomRole, role: member.role, isHost: member.identity.id === room.hostId, sessionPoints: member.sessionPoints,
+        connected: member.connected, presence: member.presence, roomRole: member.roomRole, role: member.role, isHost: member.identity.id === room.hostId, ready: member.ready, sessionPoints: member.sessionPoints,
       })),
       availableGames: gameRegistry.manifests(),
       selectedGameId: room.selectedGameId, selectedGameConfig: room.gameConfigs.get(room.selectedGameId), sessionMode: room.sessionMode,
       gameSelectionMode: room.gameSelectionMode, nextGameVote,
       gamesPlayed: room.gamesPlayed,
+      sessionStandings: [...room.sessionParticipants.values()].map((participant) => ({
+        id: participant.identity.id, displayName: participant.identity.displayName, avatar: participant.identity.avatar, sessionPoints: participant.sessionPoints,
+      })),
+      sessionHistory: room.sessionHistory,
       game: room.game ? room.game.module.getPublicState(room.game.state, context) : null,
       gamePlayerState: room.game ? room.game.module.getPlayerState(room.game.state, playerId, context) : null,
       serverNow: Date.now(),

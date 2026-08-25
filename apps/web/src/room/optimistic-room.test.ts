@@ -6,7 +6,7 @@ function room(overrides: Partial<RoomView> = {}): RoomView {
   return {
     code: 'ABC234', phase: 'LOBBY', hostId: 'host', maxPlayers: 8, members: [], availableGames: [],
     selectedGameId: 'shiny-vote', selectedGameConfig: { showVotes: true }, sessionMode: { type: 'INFINITE' },
-    gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0, game: null,
+    gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: null,
     gamePlayerState: null, serverNow: 1_000, ...overrides,
   };
 }

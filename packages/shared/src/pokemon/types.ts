@@ -81,6 +81,12 @@ export interface Pokemon {
   types: PokemonType[];
 }
 
+/** Forms intentionally imported by the authoritative catalog. Other PokéAPI variants are cosmetic or battle-only. */
+export function isSupportedRegionalFormId(id: string): boolean {
+  return /-(alola|galar|hisui|paldea)$/.test(id)
+    || /^tauros-paldea-(combat|blaze|aqua)-breed$/.test(id);
+}
+
 export interface PokemonCatalog {
   all(): readonly Pokemon[];
   byId(id: string): Pokemon | undefined;

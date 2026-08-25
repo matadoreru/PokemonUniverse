@@ -1,5 +1,5 @@
-import { hasRoomPermission, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared';
-import { Check, Copy, LockKeyhole, LogOut, Play, Settings2, UsersRound } from 'lucide-react';
+import { formatPendingReadyNames, hasRoomPermission, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared';
+import { Check, CheckCircle2, Copy, LockKeyhole, LogOut, Play, Settings2, UsersRound, WifiOff } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
 import { GameLoadingFallback } from '../components/LoadingFallback';
 import { clientGameRegistry } from '../games/registry';
@@ -10,6 +10,7 @@ interface Props {
   room: RoomView;
   selfId: string;
   onLeave(): void;
+  onReady(ready: boolean): Promise<void>;
   onStart(): Promise<void>;
   onSelectGame(gameId: string): Promise<void>;
   onConfig(config: unknown): Promise<void>;
@@ -21,7 +22,7 @@ interface Props {
   onEndSession(): void;
 }
 
-export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, onSession, onGameSelection, onSetRoomRole, onTransferHost, onKick, onEndSession }: Props) {
+export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, onConfig, onSession, onGameSelection, onSetRoomRole, onTransferHost, onKick, onEndSession }: Props) {
   const self = room.members.find((member) => member.id === selfId);
   const roomRole = self?.roomRole ?? 'MEMBER';
   const canEditGame = hasRoomPermission(roomRole, 'EDIT_GAME_CONFIG');
@@ -33,8 +34,12 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
   const gameClient = clientGameRegistry.get(room.selectedGameId);
   const selectedManifest = room.availableGames.find((game) => game.id === room.selectedGameId)!;
   const connectedPlayers = room.members.filter((member) => member.presence === 'CONNECTED').length;
+  const pendingReady = room.members.filter((member) => member.presence === 'CONNECTED' && member.id !== room.hostId && !member.ready);
+  const hostMember = room.members.find((member) => member.id === room.hostId);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState('');
+  const [readyBusy, setReadyBusy] = useState(false);
+  const [starting, setStarting] = useState(false);
 
   useEffect(() => {
     const preloadTimer = window.setTimeout(() => { void gameClient.preloadGameplay().catch(() => undefined); }, 600);
@@ -42,6 +47,17 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
   }, [gameClient]);
 
   const report = (caught: unknown) => setError(caught instanceof Error ? caught.message : 'Ha ocurrido un error.');
+  const toggleReady = async () => {
+    if (!self || self.roomRole === 'HOST' || readyBusy) return;
+    setReadyBusy(true); setError('');
+    try { await onReady(!self.ready); } catch (caught) { report(caught); }
+    finally { setReadyBusy(false); }
+  };
+  const start = async () => {
+    if (starting) return;
+    setStarting(true); setError('');
+    try { await onStart(); } catch (caught) { report(caught); setStarting(false); }
+  };
   const session = (mode: SessionMode) => { if (canEditSession) void onSession(mode).catch(report); };
   const gameSelection = (mode: GameSelectionMode) => { if (canEditGameSelection) void onGameSelection(mode).catch(report); };
   const selectGame = (gameId: string) => {
@@ -74,6 +90,8 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
       : null;
   const startReason = !canStart
     ? 'Solo el host puede iniciar la partida.'
+    : pendingReady.length > 0
+      ? `Falta por confirmar: ${formatPendingReadyNames(pendingReady.map((member) => member.displayName))}.`
     : room.gameSelectionMode.type === 'RANDOM' && rotationPlayableCount < 2
       ? 'La rotación aleatoria necesita al menos 2 minijuegos compatibles.'
     : room.gameSelectionMode.type === 'VOTE' && rotationPlayableCount < 3
@@ -98,13 +116,16 @@ export function Lobby({ room, selfId, onLeave, onStart, onSelectGame, onConfig, 
         </div>
         <div className="mt-4 flex flex-wrap items-start justify-between gap-3 sm:mt-0 sm:justify-end">
           <div className="hidden text-right lg:block"><p className="font-extrabold">{connectedPlayers} jugador{connectedPlayers === 1 ? '' : 'es'} conectado{connectedPlayers === 1 ? '' : 's'}</p></div>
+          {self?.roomRole !== 'HOST' && <button type="button" className={self?.ready ? 'btn-ghost border-leaf/40 text-leaf' : 'btn-secondary'} disabled={readyBusy || self?.presence !== 'CONNECTED'} aria-pressed={Boolean(self?.ready)} onClick={() => void toggleReady()}><CheckCircle2 size={18} /> {readyBusy ? 'Guardando…' : self?.ready ? 'Estoy listo' : 'Marcarme listo'}</button>}
           <button className="btn-ghost" onClick={onLeave}><LogOut size={18} /> Salir</button>
           <div className="min-w-40 text-right">
-            <button className="btn-primary w-full" disabled={Boolean(startReason)} onClick={() => void onStart().catch(report)} aria-describedby="start-help"><Play size={18} fill="currentColor" /> Empezar</button>
+            <button className="btn-primary w-full" disabled={Boolean(startReason) || starting} onClick={() => void start()} aria-describedby="start-help"><Play size={18} fill="currentColor" /> {starting ? 'Iniciando…' : 'Empezar'}</button>
             <p id="start-help" className={`mt-2 text-xs font-bold ${startReason ? 'text-berry' : 'text-leaf'}`}>{startReason ?? 'La sala está lista.'}</p>
           </div>
         </div>
       </header>
+
+      {hostMember?.presence === 'TEMPORARILY_DISCONNECTED' && <div className="mb-5 flex items-start gap-3 rounded-xl border border-electric/30 bg-electric/10 px-4 py-3 font-bold" role="status" aria-live="polite"><WifiOff className="mt-0.5 shrink-0 text-electric" size={19} /><span><strong className="block">El host está reconectando.</strong><span className="text-sm text-ink/65">La sala conserva la configuración y esperará antes de transferir el control.</span></span></div>}
 
       <div className="grid items-start gap-4 xl:grid-cols-[19rem_minmax(0,1fr)]">
         <aside className="card !p-4 xl:sticky xl:top-20">

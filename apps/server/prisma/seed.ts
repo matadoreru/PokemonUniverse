@@ -1,4 +1,4 @@
-import { type Generation, type MoveCategory, type PokemonType } from '@pokemon-universe/shared';
+import { isSupportedRegionalFormId, type Generation, type MoveCategory, type PokemonType } from '@pokemon-universe/shared';
 import { PrismaClient } from '@prisma/client';
 import { extractCanonicalLevelUpEntries } from '../src/pokemon/learnset-source.js';
 import { extractSpanishPokedexEntries, type SourceFlavorTextEntry } from '../src/pokemon/pokedex-entry-source.js';
@@ -98,7 +98,7 @@ function fetchSpecies(identifier: number): Promise<PokeApiSpecies> {
 function fetchMove(url: string, name: string): Promise<PokeApiMove> { return fetchJson(url, `move ${name}`); }
 
 function regionalFormName(name: string): boolean {
-  return /-(alola|galar|hisui|paldea)$/.test(name) || /^tauros-paldea-(combat|blaze|aqua)-breed$/.test(name);
+  return isSupportedRegionalFormId(name);
 }
 
 async function fetchRegionalFormNames(): Promise<string[]> {

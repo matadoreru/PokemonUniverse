@@ -33,6 +33,10 @@ describe('Zoomed Pokémon visual modes and exact targets', () => {
     expect(zoomedPokemonPool({ ...defaultZoomedPokemonConfig, generations: [1, 5], imageMode: 'ARTWORK' }, context).map((p) => p.id)).toEqual(['volcarona', 'gengar-mega']);
     expect(zoomedPokemonPool({ ...defaultZoomedPokemonConfig, generations: [1], imageMode: 'MIXED' }, context).map((p) => p.id)).toContain('butterfree');
   });
+  it('prefers high-resolution artwork in mixed mode when it is available', () => {
+    const fixture = setup({ imageMode: 'MIXED' }, () => 0.9);
+    expect(fixture.state.visual).toMatchObject({ pokemonId: 'volcarona', source: 'ARTWORK', location: 'local-artwork:volcarona' });
+  });
   it('blocks artwork mode with no available artwork and sprite mode never depends on artworks', () => {
     const context = setup().context; context.pokemonVisuals = { artworkFor: () => null, artworkPokemonIds: () => [] };
     expect(() => zoomedPokemonGame.createInitialState({ ...defaultZoomedPokemonConfig, generations: [5], imageMode: 'ARTWORK' }, context)).toThrow(/No hay artworks/);

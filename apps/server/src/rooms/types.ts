@@ -1,4 +1,4 @@
-import type { AuthUser, GameSelectionMode, MemberRole, PresenceStatus, RoomRole, SessionMode } from '@pokemon-universe/shared';
+import type { AuthUser, GameSelectionMode, MemberRole, PresenceStatus, RoomRole, SessionGameSummaryView, SessionMode } from '@pokemon-universe/shared';
 import type { RegisteredGame } from '@pokemon-universe/shared';
 
 export interface RoomMember {
@@ -8,6 +8,7 @@ export interface RoomMember {
   roomRole: RoomRole;
   socketId: string | null;
   role: MemberRole;
+  ready: boolean;
   sessionPoints: number;
   joinedAt: number;
   disconnectTimer: NodeJS.Timeout | null;
@@ -34,6 +35,11 @@ export interface NextGameVote {
   nextTransitionAt: number | null;
 }
 
+export interface SessionParticipant {
+  identity: AuthUser;
+  sessionPoints: number;
+}
+
 export interface LiveRoom {
   code: string;
   hostId: string;
@@ -46,6 +52,8 @@ export interface LiveRoom {
   gameSelectionMode: GameSelectionMode;
   nextGameVote: NextGameVote | null;
   gamesPlayed: number;
+  sessionParticipants: Map<string, SessionParticipant>;
+  sessionHistory: SessionGameSummaryView[];
   game: GameRuntime | null;
   transitionTimer: NodeJS.Timeout | null;
 }

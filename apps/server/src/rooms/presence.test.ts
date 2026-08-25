@@ -3,7 +3,7 @@ import { gameRetainsPlayer, markLeft, markTemporarilyDisconnected, oldestConnect
 import type { LiveRoom, RoomMember } from './types.js';
 
 function member(id: string, joinedAt: number): RoomMember {
-  return { identity: { id, displayName: id, kind: 'GUEST', avatar: { type: 'DEFAULT' } }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', socketId: id, role: 'PLAYER', sessionPoints: 0, joinedAt, disconnectTimer: null };
+  return { identity: { id, displayName: id, kind: 'GUEST', avatar: { type: 'DEFAULT' } }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', socketId: id, role: 'PLAYER', ready: false, sessionPoints: 0, joinedAt, disconnectTimer: null };
 }
 
 describe('room presence service', () => {
