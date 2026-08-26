@@ -177,16 +177,11 @@ export class RoomManager {
     room.hostId = next.identity.id;
   }
 
-  private resetReadiness(room: LiveRoom): void {
-    for (const member of room.members.values()) member.ready = false;
-  }
-
   private selectGame(playerId: string, gameId: string): Record<string, never> {
     const room = this.permissionRoom(playerId, 'CHANGE_GAME'); this.assertLobby(room);
     const module = gameRegistry.get(gameId); if (!module) throw new Error('Unknown game');
     room.selectedGameId = gameId;
     if (!room.gameConfigs.has(gameId)) room.gameConfigs.set(gameId, module.configSchema.parse(module.defaultConfig));
-    this.resetReadiness(room);
     this.broadcast(room); return {};
   }
 
@@ -194,12 +189,11 @@ export class RoomManager {
     const room = this.permissionRoom(playerId, 'EDIT_GAME_CONFIG'); this.assertLobby(room);
     const module = gameRegistry.get(room.selectedGameId)!;
     room.gameConfigs.set(room.selectedGameId, module.configSchema.parse(config));
-    this.resetReadiness(room);
     this.broadcast(room); return {};
   }
 
   private updateSession(playerId: string, mode: unknown): Record<string, never> {
-    const room = this.permissionRoom(playerId, 'EDIT_SESSION'); this.assertLobby(room); room.sessionMode = sessionModeSchema.parse(mode); this.resetReadiness(room); this.broadcast(room); return {};
+    const room = this.permissionRoom(playerId, 'EDIT_SESSION'); this.assertLobby(room); room.sessionMode = sessionModeSchema.parse(mode); this.broadcast(room); return {};
   }
 
   private updateGameSelection(playerId: string, mode: unknown): Record<string, never> {
@@ -212,7 +206,7 @@ export class RoomManager {
         if (!supportsPlayerCount(game.manifest, playerCount)) throw new Error(`${game.manifest.name} no admite ${playerCount} jugadores conectados.`);
       }
     }
-    room.gameSelectionMode = parsed; this.resetReadiness(room); this.broadcast(room); return {};
+    room.gameSelectionMode = parsed; this.broadcast(room); return {};
   }
 
   private setRoomRole(actorId: string, playerId: string, requestedRole: AssignableRoomRole): Record<string, never> {

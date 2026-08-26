@@ -113,7 +113,7 @@ function finishRound(state: PokemonBluffAuctionState, context: GameContext, succ
     bidderId, bid, success, reason,
     condition: { description: state.condition!.description, clauses: [...state.condition!.clauses] },
     attempts: [...state.attempts], correctCount: state.correctCount, incorrectCount: state.incorrectCount,
-    validPokemonCount: state.validPokemonIds.length, pointsAwarded,
+    validPokemonCount: reason === 'IMPOSSIBLE' ? state.validPokemonIds.length : null, pointsAwarded,
   };
   return { ...state, phase: 'ROUND_RESULTS', scores, playerStats, roundEndsAt: null, nextTransitionAt: context.now + BLUFF_RESULT_REVEAL_MS, lastRound };
 }

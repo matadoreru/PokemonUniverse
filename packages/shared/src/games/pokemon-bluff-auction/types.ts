@@ -42,7 +42,7 @@ export interface BluffAuctionRoundResult {
   attempts: BluffAuctionAttempt[];
   correctCount: number;
   incorrectCount: number;
-  validPokemonCount: number;
+  validPokemonCount: number | null;
   pointsAwarded: Record<string, number>;
 }
 

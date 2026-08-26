@@ -235,7 +235,7 @@ describe('room multi-game lifecycle', () => {
     expect(room.members.has(member.id)).toBe(false);
   });
 
-  it('requires connected guests to confirm they are ready and resets readiness after lobby changes', () => {
+  it('requires connected guests to confirm once and preserves readiness across lobby configuration changes', () => {
     const manager = new RoomManager(io() as any, catalog);
     const host = identity('host', 'Host'); const guest = identity('guest', 'Ana');
     const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
@@ -248,9 +248,18 @@ describe('room multi-game lifecycle', () => {
     (manager as any).setReady(guest.id, true);
     expect(room.members.get(guest.id)?.ready).toBe(true);
     (manager as any).selectGame(host.id, 'shiny-vote');
-    expect(room.members.get(guest.id)?.ready).toBe(false);
+    expect(room.members.get(guest.id)?.ready).toBe(true);
 
-    (manager as any).setReady(guest.id, true);
+    const config = room.gameConfigs.get('shiny-vote') as Record<string, unknown>;
+    (manager as any).updateConfig(host.id, { ...config, showVotes: false });
+    expect(room.members.get(guest.id)?.ready).toBe(true);
+
+    (manager as any).updateSession(host.id, { type: 'GAME_COUNT', target: 5 });
+    expect(room.members.get(guest.id)?.ready).toBe(true);
+
+    (manager as any).updateGameSelection(host.id, { type: 'RANDOM', gameIds: ['pokedex-distance', 'shiny-vote'] });
+    expect(room.members.get(guest.id)?.ready).toBe(true);
+
     (manager as any).startGame(host.id);
     expect(room.phase).not.toBe('LOBBY');
     expect([...room.members.values()].every((member) => !member.ready)).toBe(true);

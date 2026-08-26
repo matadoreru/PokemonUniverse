@@ -113,7 +113,7 @@ describe('Pokémon Bluff Auction', () => {
     const fixture = setup(); let state = reachDemonstration(forceCondition(fixture.state, ['charizard', 'arcanine']), fixture.context, 2); const bidder = state.bidderId!;
     state = act(state, bidder, { type: 'SUBMIT_POKEMON', pokemonId: 'charizard' }, fixture.context).state;
     state = act(state, bidder, { type: 'SUBMIT_POKEMON', pokemonId: 'arcanine' }, fixture.context).state;
-    expect(state.phase).toBe('ROUND_RESULTS'); expect(state.lastRound).toMatchObject({ success: true, reason: 'COMPLETED', correctCount: 2, bid: 2 });
+    expect(state.phase).toBe('ROUND_RESULTS'); expect(state.lastRound).toMatchObject({ success: true, reason: 'COMPLETED', correctCount: 2, bid: 2, validPokemonCount: null });
     expect(state.scores[bidder]).toBe(BLUFF_BIDDER_SUCCESS_POINTS);
     for (const id of state.playerIds.filter((id) => id !== bidder)) expect(state.scores[id]).toBe(0);
     expect(state.playerStats[bidder]).toMatchObject({ roundsWon: 1, completedBids: 1, failedBids: 0, highestCompletedBid: 2, correctPokemon: 2 });
