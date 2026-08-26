@@ -27,3 +27,4 @@ export * from './games/one-of-us-is-fake/index.js';
 export * from './games/pokemon-bluff-auction/index.js';
 export * from './games/sketchmon/index.js';
 export * from './games/pokemon-connections/index.js';
+export * from './games/pokemon-team-auction/index.js';

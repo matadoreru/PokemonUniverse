@@ -84,6 +84,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .pokemon-selector-results { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
 .sketchmon-canvas { display: block; width: 100%; aspect-ratio: 4 / 3; touch-action: none; background: white; }
 
+@media (max-width: 640px) {
+  .connections-submit { position: sticky; bottom: .5rem; z-index: 10; border: 1px solid rgb(var(--color-ink) / .1); border-radius: .75rem; background: rgb(var(--color-surface) / .97); padding: .75rem; }
+  .connections-submit .btn-primary { width: 100%; }
+}
+
 .lobby-readonly { opacity: .72; }
 .lobby-readonly button:disabled, .lobby-readonly input:disabled { cursor: not-allowed; }
 .lobby-readonly button:disabled { filter: saturate(.62); }
@@ -103,7 +108,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .pokeball-mark::after { content: ''; position: absolute; inset: 32%; border: 3px solid rgb(var(--color-night)); border-radius: 50%; background: rgb(var(--color-surface)); }
 .timer-pulse { animation: timer-pulse .7s ease-in-out infinite alternate; }
 @keyframes timer-pulse { to { transform: scale(1.06); color: #ef476f; } }
-.reveal-pop { animation: reveal-pop .45s cubic-bezier(.2,.9,.3,1.25); }
+.reveal-pop { animation: reveal-pop .45s cubic-bezier(.16,1,.3,1); }
 @keyframes reveal-pop { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
 .pokeddle-feedback { height: 100%; transition: background-color .18s ease, color .18s ease; }
 .pokeddle-row-enter { animation: pokeddle-row-enter .38s cubic-bezier(.2,.8,.3,1); }

@@ -17,6 +17,7 @@ import { oneOfUsIsFakeGame } from './one-of-us-is-fake/server.js';
 import { pokemonBluffAuctionGame } from './pokemon-bluff-auction/server.js';
 import { sketchmonGame } from './sketchmon/server.js';
 import { pokemonConnectionsGame } from './pokemon-connections/server.js';
+import { pokemonTeamAuctionGame } from './pokemon-team-auction/server.js';
 
 export type RegisteredGame = MiniGameModule<any, any, any, any>;
 
@@ -51,4 +52,5 @@ export const gameRegistry = new GameRegistry()
   .register(oneOfUsIsFakeGame)
   .register(pokemonBluffAuctionGame)
   .register(sketchmonGame)
-  .register(pokemonConnectionsGame);
+  .register(pokemonConnectionsGame)
+  .register(pokemonTeamAuctionGame);

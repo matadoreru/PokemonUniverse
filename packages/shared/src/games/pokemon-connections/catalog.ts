@@ -112,6 +112,7 @@ function rotate<T>(values: readonly T[], offset: number): T[] {
 }
 
 function resolvedCategoryDefinitions(pool: readonly Pokemon[]): CategoryDefinition[] {
+  const availableGenerations = new Set(pool.map((pokemon) => pokemon.generation));
   const dynamic: CategoryDefinition[] = [
     ...POKEMON_TYPES.map((type) => ({
       id: `type-${type}`,
@@ -145,7 +146,11 @@ function resolvedCategoryDefinitions(pool: readonly Pokemon[]): CategoryDefiniti
       id: 'mythical', label: 'Pokémon singulares', explanation: 'Tienen la clasificación oficial de Pokémon singular.',
       matches: (pokemon) => pokemon.legendaryStatus === 'MYTHICAL',
     },
-    ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map((generation) => ({
+    {
+      id: 'ordinary', label: 'No son legendarios ni singulares', explanation: 'Tienen la clasificación oficial de Pokémon común.',
+      matches: (pokemon) => pokemon.legendaryStatus === 'NORMAL',
+    },
+    ...(availableGenerations.size > 1 ? [1, 2, 3, 4, 5, 6, 7, 8, 9] : []).map((generation) => ({
       id: `generation-${generation}`,
       label: `Debutaron en la generación ${generation}`,
       explanation: `Todos aparecieron por primera vez en la generación ${generation}.`,
@@ -227,7 +232,7 @@ export function generateConnectionsPuzzle(
   }
   const generated = dynamicPuzzle(pool, options.groupSize, groupCount, context);
   if (!generated) {
-    throw new Error('No se puede construir un puzle inequívoco con estas generaciones y tamaño. Amplía las generaciones o reduce el tablero.');
+    throw new Error('No se puede construir un puzle válido con estas generaciones y tamaño. Amplía las generaciones o reduce el tablero.');
   }
   return generated;
 }

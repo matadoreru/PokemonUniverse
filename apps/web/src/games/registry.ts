@@ -166,4 +166,14 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   config: component(() => import('./sketchmon/ConfigPanel'), 'SketchmonConfigPanel'),
   active: component(() => import('../room/SketchmonGame'), 'SketchmonGame'),
   results: component(() => import('../room/SketchmonResults'), 'SketchmonResults'),
+})).register(clientModule({
+  id: 'pokemon-connections',
+  config: component(() => import('./pokemon-connections/ConfigPanel'), 'PokemonConnectionsConfigPanel'),
+  active: component(() => import('../room/PokemonConnectionsGame'), 'PokemonConnectionsGame'),
+  results: component(() => import('../room/PokemonConnectionsResults'), 'PokemonConnectionsResults'),
+})).register(clientModule({
+  id: 'pokemon-team-auction',
+  config: component(() => import('./pokemon-team-auction/ConfigPanel'), 'PokemonTeamAuctionConfigPanel'),
+  active: component(() => import('../room/PokemonTeamAuctionGame'), 'PokemonTeamAuctionGame'),
+  results: component(() => import('../room/PokemonTeamAuctionResults'), 'PokemonTeamAuctionResults'),
 }));

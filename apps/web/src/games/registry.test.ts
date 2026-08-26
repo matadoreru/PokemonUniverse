@@ -11,6 +11,8 @@ describe('client minigame registry', () => {
       'one-of-us-is-fake',
       'pokemon-bluff-auction',
       'sketchmon',
+      'pokemon-connections',
+      'pokemon-team-auction',
     ]);
   });
 
