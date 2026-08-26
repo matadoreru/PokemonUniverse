@@ -1,5 +1,7 @@
 # Despliegue de Pokémon Universe como Tabi
 
+> Para la instalación recomendada con PRE automático y promoción manual del mismo SHA a PRO, sigue primero [`docs/pre-production.md`](docs/pre-production.md). Este documento conserva el detalle operativo del stack.
+
 La publicación replica el modelo operativo de Tabi, adaptado a las dos imágenes de esta aplicación:
 
 ```text
@@ -13,7 +15,7 @@ Cloudflare Tunnel → 127.0.0.1:8080 → pokemon-universe-web (nginx)
 ```
 
 PostgreSQL no publica puertos. GitHub Actions valida el proyecto y publica imágenes `linux/amd64` y `linux/arm64` en
-GHCR con los tags `latest` y el SHA completo del commit. El servidor solo descarga imágenes ya verificadas; no compila.
+GHCR con el SHA completo del commit y el tag móvil `pre`. El tag `latest` solo se mueve después de promocionar correctamente ese SHA a PRO. El servidor solo descarga imágenes ya verificadas; no compila.
 
 ## 1. Publicar las imágenes
 
@@ -21,8 +23,8 @@ Sube el proyecto a GitHub con rama principal `main`. El workflow `.github/workfl
 prueba, typecheck, lint, tests, build y auditoría antes de publicar:
 
 ```text
-ghcr.io/matadoreru/pokemon-universe-server:latest
-ghcr.io/matadoreru/pokemon-universe-web:latest
+ghcr.io/matadoreru/pokemon-universe-server:pre
+ghcr.io/matadoreru/pokemon-universe-web:pre
 ghcr.io/matadoreru/pokemon-universe-server:<commit-sha>
 ghcr.io/matadoreru/pokemon-universe-web:<commit-sha>
 ```

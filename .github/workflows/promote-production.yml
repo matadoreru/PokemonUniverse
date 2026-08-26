@@ -1,0 +1,123 @@
+name: Promote current PRE image to production
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  resolve_pre_image:
+    name: Resolve the immutable SHA running in PRE
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: pre
+      url: ${{ vars.PUBLIC_URL }}
+    outputs:
+      image_sha: ${{ steps.resolve.outputs.image_sha }}
+    env:
+      DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+      DEPLOY_PORT: ${{ vars.DEPLOY_PORT || '22' }}
+      DEPLOY_USER: ${{ vars.DEPLOY_USER }}
+      DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+      DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+    steps:
+      - name: Configure verified SSH access
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${DEPLOY_HOST:?Define DEPLOY_HOST in the pre environment}"
+          : "${DEPLOY_USER:?Define DEPLOY_USER in the pre environment}"
+          : "${DEPLOY_PATH:?Define DEPLOY_PATH in the pre environment}"
+          : "${DEPLOY_SSH_KEY:?Define DEPLOY_SSH_KEY in the pre environment}"
+          : "${DEPLOY_KNOWN_HOSTS:?Define DEPLOY_KNOWN_HOSTS in the pre environment}"
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_SSH_KEY" > "$HOME/.ssh/pokemon-universe"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/pokemon-universe" "$HOME/.ssh/known_hosts"
+
+      - name: Read PRE server image
+        id: resolve
+        shell: bash
+        run: |
+          set -euo pipefail
+          image_ref=$(ssh -i "$HOME/.ssh/pokemon-universe" -p "$DEPLOY_PORT" \
+            -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "set -eu; cd '$DEPLOY_PATH'; container=\$(docker compose ps -q server); test -n \"\$container\"; docker inspect \"\$container\" --format '{{.Config.Image}}'")
+          image_sha=${image_ref##*:}
+          if ! printf '%s' "$image_sha" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "PRE no está ejecutando una imagen etiquetada con un SHA inmutable: $image_ref" >&2
+            exit 1
+          fi
+          echo "image_sha=$image_sha" >> "$GITHUB_OUTPUT"
+          echo "### Candidato de PRE: \`$image_sha\`" >> "$GITHUB_STEP_SUMMARY"
+
+  deploy_production:
+    name: Approve and deploy the PRE SHA to production
+    needs: resolve_pre_image
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pokemon-universe-production
+      cancel-in-progress: false
+    environment:
+      name: production
+      url: ${{ vars.PUBLIC_URL }}
+    env:
+      IMAGE_SHA: ${{ needs.resolve_pre_image.outputs.image_sha }}
+      DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+      DEPLOY_PORT: ${{ vars.DEPLOY_PORT || '22' }}
+      DEPLOY_USER: ${{ vars.DEPLOY_USER }}
+      DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+      DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+    steps:
+      - name: Configure verified SSH access
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${DEPLOY_HOST:?Define DEPLOY_HOST in the production environment}"
+          : "${DEPLOY_USER:?Define DEPLOY_USER in the production environment}"
+          : "${DEPLOY_PATH:?Define DEPLOY_PATH in the production environment}"
+          : "${DEPLOY_SSH_KEY:?Define DEPLOY_SSH_KEY in the production environment}"
+          : "${DEPLOY_KNOWN_HOSTS:?Define DEPLOY_KNOWN_HOSTS in the production environment}"
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_SSH_KEY" > "$HOME/.ssh/pokemon-universe"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/pokemon-universe" "$HOME/.ssh/known_hosts"
+
+      - name: Deploy the exact PRE image to production
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/pokemon-universe" -p "$DEPLOY_PORT" \
+            -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "set -eu; cd '$DEPLOY_PATH'; git fetch --prune origin; git checkout --detach '$IMAGE_SHA'; chmod +x scripts/*.sh; ./scripts/deploy.sh '$IMAGE_SHA'"
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Point latest at the promoted multi-platform images
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker buildx imagetools create \
+            --tag "ghcr.io/${GITHUB_REPOSITORY_OWNER}/pokemon-universe-server:latest" \
+            "ghcr.io/${GITHUB_REPOSITORY_OWNER}/pokemon-universe-server:$IMAGE_SHA"
+          docker buildx imagetools create \
+            --tag "ghcr.io/${GITHUB_REPOSITORY_OWNER}/pokemon-universe-web:latest" \
+            "ghcr.io/${GITHUB_REPOSITORY_OWNER}/pokemon-universe-web:$IMAGE_SHA"
+
+      - name: Publish promotion summary
+        run: echo "### PRO promocionado desde PRE con \`$IMAGE_SHA\`" >> "$GITHUB_STEP_SUMMARY"

@@ -1,9 +1,9 @@
-name: pokemon-universe
+name: "${PU_COMPOSE_PROJECT_NAME:-pokemon-universe}"
 
 services:
   postgres:
     image: postgres:17-alpine
-    container_name: pokemon-universe-postgres
+    container_name: "${PU_COMPOSE_PROJECT_NAME:-pokemon-universe}-postgres"
     restart: unless-stopped
     environment:
       POSTGRES_DB: "${PU_POSTGRES_DB:-pokemon_universe}"
@@ -35,7 +35,7 @@ services:
 
   server:
     image: "${PU_SERVER_IMAGE:-ghcr.io/matadoreru/pokemon-universe-server}:${PU_IMAGE_TAG:-latest}"
-    container_name: pokemon-universe-server
+    container_name: "${PU_COMPOSE_PROJECT_NAME:-pokemon-universe}-server"
     restart: unless-stopped
     environment:
       NODE_ENV: production
@@ -76,7 +76,7 @@ services:
 
   web:
     image: "${PU_WEB_IMAGE:-ghcr.io/matadoreru/pokemon-universe-web}:${PU_IMAGE_TAG:-latest}"
-    container_name: pokemon-universe-web
+    container_name: "${PU_COMPOSE_PROJECT_NAME:-pokemon-universe}-web"
     restart: unless-stopped
     ports:
       - "127.0.0.1:${PU_HOST_PORT:-8080}:8080"
@@ -104,6 +104,6 @@ services:
 
 volumes:
   pokemon_universe_postgres_data:
-    name: pokemon_universe_postgres_data
+    name: "${PU_POSTGRES_VOLUME:-pokemon_universe_postgres_data}"
   pokemon_universe_avatar_data:
-    name: pokemon_universe_avatar_data
+    name: "${PU_AVATAR_VOLUME:-pokemon_universe_avatar_data}"
