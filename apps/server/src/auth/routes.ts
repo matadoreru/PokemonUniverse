@@ -34,6 +34,16 @@ function identityFromUser(user: { id: string; username: string; email: string; a
   return { id: user.id, displayName: user.username, email: user.email, kind: 'USER', avatar: avatarFromUser(user) };
 }
 
+function guestIdentity(displayName: string, avatar: AvatarRef): AuthUser {
+  return { id: `guest_${randomUUID()}`, displayName, kind: 'GUEST', avatar };
+}
+
+function removePriorGuestAvatar(identity: AuthUser | undefined, except?: string): void {
+  if (identity?.kind === 'GUEST' && identity.avatar.type === 'CUSTOM' && identity.avatar.value !== except) {
+    void avatarService.remove(identity.avatar.value).catch(() => undefined);
+  }
+}
+
 async function applyAvatar(userId: string, avatar: AvatarRef): Promise<AuthUser> {
   const previous = await prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { avatarType: true, avatarValue: true } });
   const user = await prisma.user.update({
@@ -75,13 +85,31 @@ authRouter.post('/login', async (req, res, next) => {
 authRouter.post('/guest', async (req, res, next) => {
   try {
     const { displayName, avatarPresetId } = guestSchema.parse(req.body);
-    const identity: AuthUser = { id: `guest_${randomUUID()}`, displayName, kind: 'GUEST', avatar: avatarPresetId ? { type: 'PRESET', value: avatarPresetId } : DEFAULT_AVATAR };
+    const identity = guestIdentity(displayName, avatarPresetId ? { type: 'PRESET', value: avatarPresetId } : DEFAULT_AVATAR);
     await establish(res, identity);
+    removePriorGuestAvatar(req.auth);
     res.status(201).json({ user: identity });
   } catch (error) { next(error); }
 });
 
-authRouter.post('/logout', (_req, res) => { res.clearCookie(AUTH_COOKIE, cookieOptions); res.status(204).end(); });
+authRouter.post('/guest/custom-avatar', avatarRateLimit, express.raw({ type: ['image/jpeg', 'image/png', 'image/webp'], limit: MAX_AVATAR_UPLOAD_BYTES }), async (req, res, next) => {
+  let stored: AvatarRef & { type: 'CUSTOM' } | null = null;
+  try {
+    const { displayName } = guestSchema.parse({ displayName: req.query.displayName });
+    if (!Buffer.isBuffer(req.body)) { res.status(415).json({ error: 'Usa una imagen JPEG, PNG o WEBP.' }); return; }
+    const processed = await avatarService.processAndStore(req.body, req.get('Content-Type') ?? '');
+    stored = processed;
+    const identity = guestIdentity(displayName, processed);
+    await establish(res, identity);
+    removePriorGuestAvatar(req.auth, processed.value);
+    res.status(201).json({ user: identity });
+  } catch (error) {
+    if (stored) await avatarService.remove(stored.value).catch(() => undefined);
+    next(error);
+  }
+});
+
+authRouter.post('/logout', (req, res) => { removePriorGuestAvatar(req.auth); res.clearCookie(AUTH_COOKIE, cookieOptions); res.status(204).end(); });
 authRouter.get('/me', (req, res) => { res.json({ user: req.auth ?? null }); });
 
 authRouter.get('/avatars/:filename', async (req, res, next) => {

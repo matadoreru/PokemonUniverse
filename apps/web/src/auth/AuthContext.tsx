@@ -1,4 +1,4 @@
-import type { AuthUser } from '@pokemon-universe/shared';
+import type { AuthUser, AvatarPresetId } from '@pokemon-universe/shared';
 import { createContext, useContext, useEffect, useMemo, useState, type PropsWithChildren } from 'react';
 import { api } from '../lib/api';
 
@@ -7,7 +7,7 @@ interface AuthContextValue {
   loading: boolean;
   login(email: string, password: string): Promise<void>;
   register(username: string, email: string, password: string): Promise<void>;
-  guest(displayName: string, avatarPresetId?: string): Promise<void>;
+  guest(displayName: string, avatar?: AvatarPresetId | Blob): Promise<void>;
   updateUser(user: AuthUser): void;
   logout(): Promise<void>;
 }
@@ -22,7 +22,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
     user, loading,
     async login(email, password) { const body = await api<{ user: AuthUser }>('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }); setUser(body.user); },
     async register(username, email, password) { const body = await api<{ user: AuthUser }>('/auth/register', { method: 'POST', body: JSON.stringify({ username, email, password }) }); setUser(body.user); },
-    async guest(displayName, avatarPresetId) { const body = await api<{ user: AuthUser }>('/auth/guest', { method: 'POST', body: JSON.stringify({ displayName, ...(avatarPresetId ? { avatarPresetId } : {}) }) }); setUser(body.user); },
+    async guest(displayName, avatar) {
+      const body = avatar instanceof Blob
+        ? await api<{ user: AuthUser }>(`/auth/guest/custom-avatar?displayName=${encodeURIComponent(displayName)}`, { method: 'POST', headers: { 'Content-Type': avatar.type }, body: avatar })
+        : await api<{ user: AuthUser }>('/auth/guest', { method: 'POST', body: JSON.stringify({ displayName, ...(avatar ? { avatarPresetId: avatar } : {}) }) });
+      setUser(body.user);
+    },
     updateUser(nextUser) { setUser(nextUser); },
     async logout() { await api('/auth/logout', { method: 'POST' }); setUser(null); },
   }), [loading, user]);

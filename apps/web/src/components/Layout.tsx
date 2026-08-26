@@ -26,6 +26,6 @@ export function Layout() {
   return <div className="flex min-h-screen flex-col">
     <AppHeader user={user} onLogout={() => void logout().then(() => navigate('/'))} />
     <main className="flex-1"><Suspense fallback={<RouteLoadingFallback />}><Outlet /></Suspense></main>
-    <footer className="mx-auto max-w-7xl px-5 py-8 text-center text-sm font-bold text-ink/60">Proyecto fan no afiliado a Nintendo, Game Freak ni The Pokémon Company.</footer>
+    <footer className="mx-auto max-w-7xl px-5 py-8 text-center text-sm font-bold text-ink/60">Proyecto fan no afiliado a Nintendo, Game Freak ni The Pokémon Company. Todos los nombres de productos son marcas registradas de sus respectivos dueños.</footer>
   </div>;
 }
