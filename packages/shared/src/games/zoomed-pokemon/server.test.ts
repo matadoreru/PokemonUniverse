@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { GameContext, Pokemon, PokemonCatalog, PokemonVisualCatalog } from '../../index.js';
 import { defaultZoomedPokemonConfig } from './config.js';
-import { alphaBounds, buildZoomedHints, localAlphaDensity, validFocusPoint, zoomedPoints, zoomStageAt, zoomStageSchedule, ZOOMED_POKEMON_ZOOM_STAGES } from './rules.js';
+import { alphaBounds, buildZoomedHints, localAlphaDensity, validFocusPoint, zoomBonusForStage, zoomedPoints, zoomStageAt, zoomStageSchedule, ZOOMED_POKEMON_ZOOM_BONUSES, ZOOMED_POKEMON_ZOOM_STAGES } from './rules.js';
 import { ZOOMED_POKEMON_COOLDOWN_MS, ZOOMED_POKEMON_REVEAL_MS, zoomedPokemonGame, zoomedPokemonPool } from './server.js';
 import type { ZoomedPokemonState } from './types.js';
 
@@ -98,7 +98,7 @@ describe('alpha analysis, safe focus and progressive crop', () => {
   });
   it('calculates stage boundaries proportionally and restores the authoritative current stage', () => {
     expect(zoomStageSchedule(1_000, 20)).toEqual([6_000, 11_000, 16_000]); expect(zoomStageAt(1_000, 20, 15_999)).toBe(2);
-    const fixture = setup({ roundSeconds: 20 }); fixture.now(11_000); const state = zoomedPokemonGame.handleTimeout(fixture.state, fixture.context); expect(state.currentZoomStage).toBe(2); expect(zoomedPokemonGame.getPublicState(state, fixture.context).currentZoomStage).toBe(2);
+    const fixture = setup({ roundSeconds: 20 }); fixture.now(11_000); const state = zoomedPokemonGame.handleTimeout(fixture.state, fixture.context); expect(state.currentZoomStage).toBe(2); expect(zoomedPokemonGame.getPublicState(state, fixture.context)).toMatchObject({ currentZoomStage: 2, currentZoomBonus: 2 });
   });
 });
 
@@ -108,11 +108,15 @@ describe('authoritative attempts, order, score and round lifecycle', () => {
     expect(result.accepted).toBe(true); expect(result.state.attempts[0]?.guessedPokemon.name).toBe('butterfree'); expect(result.state.cooldownUntil.p1).toBe(1_000 + ZOOMED_POKEMON_COOLDOWN_MS);
     expect(guess(result.state, 'p1', 'gengar', fixture.context).accepted).toBe(false); fixture.now(2_000); result = guess(result.state, 'p1', 'gengar', fixture.context); expect(result.accepted).toBe(true);
   });
-  it('records server acceptance order and scores only by position, never by zoom stage', () => {
+  it('adds a decreasing zoom bonus to the points awarded by solve order', () => {
     const fixture = setup(); fixture.now(2_000); let state = guess(fixture.state, 'p2', 'volcarona', fixture.context).state;
     fixture.now(20_000); state = guess(state, 'p1', 'volcarona', fixture.context).state;
-    expect(state.solves.p2).toMatchObject({ solveOrder: 1, points: zoomedPoints(3, 1), zoomStage: 0 }); expect(state.solves.p1).toMatchObject({ solveOrder: 2, points: zoomedPoints(3, 2), zoomStage: 2 });
-    expect(state.solves.p2!.points).toBe(6); expect(state.solves.p1!.points).toBe(3);
+    expect(ZOOMED_POKEMON_ZOOM_BONUSES).toEqual([4, 3, 2, 1]);
+    expect(ZOOMED_POKEMON_ZOOM_STAGES.map((_, stage) => zoomBonusForStage(stage))).toEqual([4, 3, 2, 1]);
+    expect(state.solves.p2).toMatchObject({ solveOrder: 1, points: zoomedPoints(3, 1, 0), zoomStage: 0, zoomBonus: 4 });
+    expect(state.solves.p1).toMatchObject({ solveOrder: 2, points: zoomedPoints(3, 2, 2), zoomStage: 2, zoomBonus: 2 });
+    expect(state.solves.p2!.points).toBe(10); expect(state.solves.p1!.points).toBe(5);
+    expect(() => zoomBonusForStage(4)).toThrow(RangeError);
   });
   it('does not reveal a correct answer, locks solved players, and rejects spectators', () => {
     const fixture = setup(); const solved = guess(fixture.state, 'p1', 'volcarona', fixture.context).state; const view = zoomedPokemonGame.getPublicState(solved, fixture.context);

@@ -5,7 +5,8 @@ import { defaultPokemonBluffAuctionConfig, pokemonBluffAuctionConfigSchema, type
 import { BLUFF_BIDDER_SUCCESS_POINTS, BLUFF_OTHERS_SUCCESS_POINTS, buildPokemonBluffAuctionResults, emptyBluffAuctionStats } from './rules.js';
 import { pokemonBluffAuctionActionSchema, type BluffAuctionRoundResult, type PokemonBluffAuctionAction, type PokemonBluffAuctionPlayerState, type PokemonBluffAuctionPublicState, type PokemonBluffAuctionState } from './types.js';
 
-export const BLUFF_SECONDS_PER_ATTEMPT = 5;
+export const BLUFF_SECONDS_PER_CORRECT_ATTEMPT = 5;
+export const BLUFF_SECONDS_PER_INCORRECT_ATTEMPT = 3;
 export const BLUFF_RESULT_REVEAL_MS = 5_000;
 
 const manifest = {
@@ -197,12 +198,14 @@ export const pokemonBluffAuctionGame: MiniGameModule<PokemonBluffAuctionConfig, 
       ...state, usedPokemonIds: [...state.usedPokemonIds, pokemon.id],
       attempts: [...state.attempts, { pokemon: { id: pokemon.id, name: pokemon.name, sprite: pokemon.sprite }, result: correct ? 'CORRECT' : 'INCORRECT', submittedAt: context.now }],
       correctCount: state.correctCount + (correct ? 1 : 0), incorrectCount: state.incorrectCount + (correct ? 0 : 1),
-      roundEndsAt: (state.roundEndsAt ?? context.now) + BLUFF_SECONDS_PER_ATTEMPT * 1_000,
+      roundEndsAt: (state.roundEndsAt ?? context.now) + (correct ? BLUFF_SECONDS_PER_CORRECT_ATTEMPT : -BLUFF_SECONDS_PER_INCORRECT_ATTEMPT) * 1_000,
       playerStats: { ...state.playerStats, [playerId]: {
         ...stats, correctPokemon: stats.correctPokemon + (correct ? 1 : 0), incorrectPokemon: stats.incorrectPokemon + (correct ? 0 : 1),
       } },
     };
-    return { state: next.correctCount >= (next.targetBid ?? Infinity) ? finishRound(next, context, true, 'COMPLETED') : next, accepted: true };
+    if (next.correctCount >= (next.targetBid ?? Infinity)) return { state: finishRound(next, context, true, 'COMPLETED'), accepted: true };
+    if ((next.roundEndsAt ?? Infinity) <= context.now) return { state: finishRound(next, context, false, 'TIMEOUT'), accepted: true };
+    return { state: next, accepted: true };
   },
   handleTimeout(state, context) {
     if (state.phase === 'POKEMON_SEARCH' && context.now >= (state.roundEndsAt ?? Infinity)) return finishRound(state, context, false, 'TIMEOUT');

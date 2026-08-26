@@ -161,4 +161,9 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   config: component(() => import('./pokemon-bluff-auction/ConfigPanel'), 'PokemonBluffAuctionConfigPanel'),
   active: component(() => import('../room/PokemonBluffAuctionGame'), 'PokemonBluffAuctionGame'),
   results: component(() => import('../room/PokemonBluffAuctionResults'), 'PokemonBluffAuctionResults'),
+})).register(clientModule({
+  id: 'sketchmon',
+  config: component(() => import('./sketchmon/ConfigPanel'), 'SketchmonConfigPanel'),
+  active: component(() => import('../room/SketchmonGame'), 'SketchmonGame'),
+  results: component(() => import('../room/SketchmonResults'), 'SketchmonResults'),
 }));

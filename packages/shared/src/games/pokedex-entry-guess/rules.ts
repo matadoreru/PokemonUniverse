@@ -8,12 +8,15 @@ export function pokedexEntryReferenceGeneration(generations: readonly number[]):
 export function pokedexEntryKey(entry: PokedexEntry): string { return `${entry.pokemonId}:${entry.generation}:${entry.version}`; }
 
 export function resolvePokedexEntry(entries: readonly PokedexEntry[], referenceGeneration: number, random: () => number, excluded = new Set<string>()): PokedexEntry | null {
-  const eligible = entries.filter((entry) => entry.language === 'es' && entry.generation <= referenceGeneration);
-  if (!eligible.length) return null;
-  const generation = Math.max(...eligible.map((entry) => entry.generation));
-  const newest = eligible.filter((entry) => entry.generation === generation);
-  const unused = newest.filter((entry) => !excluded.has(pokedexEntryKey(entry)));
-  const choices = unused.length ? unused : newest;
+  const spanish = entries.filter((entry) => entry.language === 'es');
+  if (!spanish.length) return null;
+  const historical = spanish.filter((entry) => entry.generation <= referenceGeneration);
+  const generation = historical.length
+    ? Math.max(...historical.map((entry) => entry.generation))
+    : Math.min(...spanish.map((entry) => entry.generation));
+  const nearest = spanish.filter((entry) => entry.generation === generation);
+  const unused = nearest.filter((entry) => !excluded.has(pokedexEntryKey(entry)));
+  const choices = unused.length ? unused : nearest;
   return choices[Math.min(Math.floor(random() * choices.length), choices.length - 1)] ?? null;
 }
 

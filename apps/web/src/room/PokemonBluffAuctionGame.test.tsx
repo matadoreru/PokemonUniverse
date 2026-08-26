@@ -52,7 +52,7 @@ describe('Pokémon Bluff Auction presentation', () => {
     const bidder = renderToStaticMarkup(createElement(PokemonBluffAuctionGame, {
       room: room(publicGame, { role: 'PLAYER', canRaise: false, canPass: false, canSubmitPokemon: true }), selfId: 'p3', onAction: async () => undefined,
     }));
-    expect(bidder).toContain('Nombra Pokémon'); expect(bidder).toContain('Dragonite'); expect(bidder).toContain('Pikachu'); expect(bidder).toContain('Correctos'); expect(bidder).toContain('1/5');
+    expect(bidder).toContain('Nombra Pokémon'); expect(bidder).toContain('Acierto: +5 segundos · Fallo: −3 segundos.'); expect(bidder).toContain('Dragonite'); expect(bidder).toContain('Pikachu'); expect(bidder).toContain('Correctos'); expect(bidder).toContain('1/5');
     const watcher = renderToStaticMarkup(createElement(PokemonBluffAuctionGame, {
       room: room(publicGame, { role: 'PLAYER', canRaise: false, canPass: false, canSubmitPokemon: false }), selfId: 'p1', onAction: async () => undefined,
     }));
@@ -65,6 +65,6 @@ describe('Pokémon Bluff Auction presentation', () => {
     const html = renderToStaticMarkup(createElement(PokemonBluffAuctionGame, {
       room: room(publicGame, { role: 'SPECTATOR', canRaise: false, canPass: false, canSubmitPokemon: false }), selfId: 'spectator', onAction: async () => undefined,
     }));
-    expect(html).toContain('Garchomp'); expect(html).toContain('Ya utilizado · no suma tiempo');
+    expect(html).toContain('Garchomp'); expect(html).toContain('Ya utilizado · no cambia el tiempo');
   });
 });

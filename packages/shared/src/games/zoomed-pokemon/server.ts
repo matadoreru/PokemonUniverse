@@ -2,7 +2,7 @@ import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, type PokemonVisualAsset } from '../contracts.js';
 import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
 import { defaultZoomedPokemonConfig, zoomedPokemonConfigSchema, type ZoomedPokemonConfig } from './config.js';
-import { buildZoomedHints, buildZoomedPokemonResults, emptyZoomedPokemonStats, isUsableZoomedSprite, supportsArtwork, zoomedPoints, zoomStageAt, zoomStageSchedule, ZOOMED_POKEMON_ZOOM_STAGES } from './rules.js';
+import { buildZoomedHints, buildZoomedPokemonResults, emptyZoomedPokemonStats, isUsableZoomedSprite, supportsArtwork, zoomBonusForStage, zoomedPoints, zoomStageAt, zoomStageSchedule, ZOOMED_POKEMON_ZOOM_STAGES } from './rules.js';
 import { zoomedPokemonActionSchema, type ZoomedPokemonAction, type ZoomedPokemonPlayerState, type ZoomedPokemonPublicState, type ZoomedPokemonState, type ZoomedPokemonVisual } from './types.js';
 
 export const ZOOMED_POKEMON_COOLDOWN_MS = 1_000;
@@ -124,13 +124,14 @@ export const zoomedPokemonGame: MiniGameModule<ZoomedPokemonConfig, ZoomedPokemo
     if (!guessed || !state.guessPoolIds.includes(guessed.id)) return { state, accepted: false, error: 'Ese Pokémon o forma no pertenece al pool configurado.' };
     const attemptCount = (state.attemptCounts[playerId] ?? 0) + 1; const stats = state.playerStats[playerId] ?? emptyZoomedPokemonStats();
     if (guessed.id === state.targetPokemonId) {
-      const solveOrder = Object.keys(state.solves).length + 1; const points = zoomedPoints(state.playerIds.length, solveOrder);
+      const solveOrder = Object.keys(state.solves).length + 1;
       const elapsedMs = context.now - state.roundStartedAt!; const zoomStage = zoomStageAt(state.roundStartedAt!, state.config.roundSeconds, context.now);
+      const zoomBonus = zoomBonusForStage(zoomStage); const points = zoomedPoints(state.playerIds.length, solveOrder, zoomStage);
       const source = state.visual?.source ?? 'SPRITE';
       let next: ZoomedPokemonState = {
         ...state,
         attemptCounts: { ...state.attemptCounts, [playerId]: attemptCount },
-        solves: { ...state.solves, [playerId]: { solvedAt: context.now, elapsedMs, solveOrder, zoomStage, zoom: ZOOMED_POKEMON_ZOOM_STAGES[zoomStage]!, points, attempts: attemptCount } },
+        solves: { ...state.solves, [playerId]: { solvedAt: context.now, elapsedMs, solveOrder, zoomStage, zoom: ZOOMED_POKEMON_ZOOM_STAGES[zoomStage]!, zoomBonus, points, attempts: attemptCount } },
         lastAttemptResult: { ...state.lastAttemptResult, [playerId]: { result: 'CORRECT', attemptedAt: context.now } },
         scores: { ...state.scores, [playerId]: (state.scores[playerId] ?? 0) + points },
         playerStats: { ...state.playerStats, [playerId]: {
@@ -173,7 +174,7 @@ export const zoomedPokemonGame: MiniGameModule<ZoomedPokemonConfig, ZoomedPokemo
     return {
       gameId: 'zoomed-pokemon', phase: state.phase, roundNumber: state.roundNumber, totalRounds: state.config.rounds,
       imageUrl: active ? assetPath(state, context, 'active') : null, imageSourceType: active ? state.visual!.source : null, focusPoint: { x: 0.5, y: 0.5 }, zoomStages: ZOOMED_POKEMON_ZOOM_STAGES,
-      currentZoomStage: state.currentZoomStage, visibleHints: active && state.config.hintsEnabled && target ? buildZoomedHints(target, state.config.hintKinds) : [],
+      currentZoomStage: state.currentZoomStage, currentZoomBonus: zoomBonusForStage(state.currentZoomStage), visibleHints: active && state.config.hintsEnabled && target ? buildZoomedHints(target, state.config.hintKinds) : [],
       attempts: state.attempts, solves: Object.fromEntries(Object.entries(state.solves).map(([id, solve]) => [id, { solveOrder: solve.solveOrder, zoomStage: solve.zoomStage }])), scores: state.scores,
       roundStartedAt: state.roundStartedAt, roundEndsAt: state.roundEndsAt, nextTransitionAt: state.nextTransitionAt, lastRound,
       results: state.phase === 'GAME_RESULTS' ? buildZoomedPokemonResults(state) : null,

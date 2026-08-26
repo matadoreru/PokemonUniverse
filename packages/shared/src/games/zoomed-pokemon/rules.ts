@@ -6,6 +6,7 @@ import type { ZoomedPokemonHint, ZoomedPokemonPlayerStats, ZoomedPokemonState } 
 
 /** Discrete, centralized camera levels. The final stage intentionally remains cropped. */
 export const ZOOMED_POKEMON_ZOOM_STAGES = [5, 3.5, 2.5, 1.7] as const;
+export const ZOOMED_POKEMON_ZOOM_BONUSES = [4, 3, 2, 1] as const;
 export const ZOOMED_POKEMON_ALPHA_THRESHOLD = 24;
 export const ZOOMED_POKEMON_MIN_LOCAL_DENSITY = 0.32;
 
@@ -79,7 +80,15 @@ export function emptyZoomedPokemonStats(): ZoomedPokemonPlayerStats {
   return { correct: 0, missed: 0, totalAttempts: 0, firstTry: 0, firstPositions: 0, solveTimeTotalMs: 0, bestTimeMs: 0, maxZoomSolves: 0, solveStageTotal: 0, pointsFromRounds: 0, solvesBySprite: 0, solvesByArtwork: 0 };
 }
 
-export function zoomedPoints(playerCount: number, solveOrder: number): number { return pointsForPosition(playerCount, solveOrder); }
+export function zoomBonusForStage(zoomStage: number): number {
+  const bonus = ZOOMED_POKEMON_ZOOM_BONUSES[zoomStage];
+  if (!Number.isInteger(zoomStage) || bonus === undefined) throw new RangeError('Invalid zoom stage');
+  return bonus;
+}
+
+export function zoomedPoints(playerCount: number, solveOrder: number, zoomStage: number): number {
+  return pointsForPosition(playerCount, solveOrder) + zoomBonusForStage(zoomStage);
+}
 
 export function buildZoomedPokemonResults(state: ZoomedPokemonState): GameResults {
   if (state.phase !== 'GAME_RESULTS') throw new Error('Results are unavailable before the game finishes');

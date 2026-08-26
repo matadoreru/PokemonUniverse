@@ -16,15 +16,18 @@ function entry(pokemonId: string, generation: number, version: string, text: str
 const pokemon = [
   mon('pikachu', 25, 'Pikachu', 1, ['electric'], { evolutionStage: 2, evolutionStageCount: 3 }),
   mon('mr-mime', 122, 'Mr. Mime', 1, ['psychic', 'fairy']),
+  mon('chikorita', 152, 'Chikorita', 2, ['grass']),
+  mon('cyndaquil', 155, 'Cyndaquil', 2, ['fire']),
   mon('absol', 359, 'Absol', 3, ['dark'], { evolutionStage: 1, evolutionStageCount: 1 }),
   mon('vulpix-alola', 37, 'Vulpix de Alola', 1, ['ice'], { isDefault: false }),
   mon('missing', 999, 'Missing', 3, ['normal']),
 ];
 const entries = [
-  entry('pikachu', 1, 'yellow', 'PIKACHU almacena electricidad en sus mejillas.'),
   entry('pikachu', 3, 'emerald', 'Si Pikachu se enfada, libera la energía acumulada.'),
   entry('pikachu', 4, 'diamond', 'Pikachu vive en grupos.'),
-  entry('mr-mime', 1, 'yellow', 'Mr. Mime crea paredes invisibles.'),
+  entry('mr-mime', 3, 'emerald', 'Mr. Mime crea paredes invisibles.'),
+  entry('chikorita', 3, 'emerald', 'Al agitar la hoja de su cabeza, libera un aroma dulce.'),
+  entry('cyndaquil', 3, 'emerald', 'Se protege encendiendo las llamas de su lomo.'),
   entry('absol', 3, 'emerald', 'Se dice que Absol aparece para advertir de catástrofes.'),
   entry('absol', 3, 'ruby', 'Absol detecta cambios sutiles en el entorno.'),
   entry('vulpix-alola', 7, 'sun', 'Vulpix de Alola vive en montañas nevadas.'),
@@ -50,10 +53,28 @@ describe('Pokédex Entry Guess selection and Spanish entry resolution', () => {
     expect(pokedexEntryReferenceGeneration([1, 2, 4, 7])).toBe(7);
   });
 
-  it('uses the reference generation, falls back backwards and never selects a future entry', () => {
+  it('prefers the newest historical entry and uses the earliest later Spanish entry only as fallback', () => {
     expect(resolvePokedexEntry(entries.filter((item) => item.pokemonId === 'pikachu'), 3, () => 0)?.version).toBe('emerald');
-    expect(resolvePokedexEntry(entries.filter((item) => item.pokemonId === 'pikachu'), 2, () => 0)?.version).toBe('yellow');
-    expect(resolvePokedexEntry(entries.filter((item) => item.pokemonId === 'pikachu'), 2, () => 0)?.generation).toBe(1);
+    expect(resolvePokedexEntry(entries.filter((item) => item.pokemonId === 'pikachu'), 4, () => 0)?.version).toBe('diamond');
+    expect(resolvePokedexEntry(entries.filter((item) => item.pokemonId === 'pikachu'), 1, () => 0)?.generation).toBe(3);
+    const historical = [entry('pikachu', 1, 'yellow', 'Entrada antigua.'), entry('pikachu', 3, 'emerald', 'Entrada posterior.')];
+    expect(resolvePokedexEntry(historical, 2, () => 0)?.generation).toBe(1);
+  });
+
+  it('supports a generation 1-only game when official Spanish entries begin in a later generation', () => {
+    const fixture = setup({ generations: [1] });
+    expect(pokedexEntryCandidatePool(fixture.state.config, fixture.context).map((candidate) => candidate.pokemon.id)).toEqual(['pikachu', 'mr-mime']);
+    expect(fixture.state.referenceGeneration).toBe(1);
+    expect(fixture.state.roundDeck).toHaveLength(2);
+    expect(fixture.state.roundDeck.every((target) => target.entry.generation === 3)).toBe(true);
+  });
+
+  it('supports a generation 2-only game when official Spanish entries begin in generation 3', () => {
+    const fixture = setup({ generations: [2] });
+    expect(pokedexEntryCandidatePool(fixture.state.config, fixture.context).map((candidate) => candidate.pokemon.id)).toEqual(['chikorita', 'cyndaquil']);
+    expect(fixture.state.referenceGeneration).toBe(2);
+    expect(fixture.state.roundDeck).toHaveLength(2);
+    expect(fixture.state.roundDeck.every((target) => target.entry.generation === 3)).toBe(true);
   });
 
   it('selects deterministically among multiple Spanish entries at the newest eligible generation', () => {

@@ -1,5 +1,6 @@
 import { isSupportedRegionalFormId, type Generation, type MoveCategory, type PokemonType } from '@pokemon-universe/shared';
 import { PrismaClient } from '@prisma/client';
+import { extractSpanishAbilityName, type SourceAbilityName } from '../src/pokemon/ability-source.js';
 import { extractCanonicalLevelUpEntries } from '../src/pokemon/learnset-source.js';
 import { extractSpanishPokedexEntries, type SourceFlavorTextEntry } from '../src/pokemon/pokedex-entry-source.js';
 
@@ -15,7 +16,7 @@ const LEARNSET_SYNC_VERSION = 1;
 const EVOLUTION_SYNC_KEY = 'evolution-positions';
 const EVOLUTION_SYNC_VERSION = 2;
 const POKEDDLE_METADATA_SYNC_KEY = 'pokeddle-species-metadata';
-const POKEDDLE_METADATA_SYNC_VERSION = 2;
+const POKEDDLE_METADATA_SYNC_VERSION = 3;
 const POKEDEX_ENTRY_SYNC_KEY = 'spanish-pokedex-entries';
 const POKEDEX_ENTRY_SYNC_VERSION = 1;
 const MIN_SPANISH_POKEDEX_ENTRIES = 500;
@@ -35,7 +36,7 @@ interface PokeApiPokemon {
   types: Array<{ slot: number; type: { name: string } }>;
   height: number;
   weight: number;
-  abilities: Array<{ ability: { name: string }; is_hidden: boolean }>;
+  abilities: Array<{ ability: { name: string; url: string }; is_hidden: boolean }>;
   moves: Array<{ move: { name: string; url: string }; version_group_details: PokeApiVersionDetail[] }>;
 }
 
@@ -44,6 +45,11 @@ interface PokeApiMove {
   names: Array<{ name: string; language: { name: string } }>;
   type: { name: string };
   damage_class: { name: string };
+}
+
+interface PokeApiAbility {
+  name: string;
+  names: SourceAbilityName[];
 }
 
 interface PokeApiSpecies {
@@ -97,6 +103,8 @@ function fetchSpecies(identifier: number): Promise<PokeApiSpecies> {
 
 function fetchMove(url: string, name: string): Promise<PokeApiMove> { return fetchJson(url, `move ${name}`); }
 
+function fetchAbility(url: string, name: string): Promise<PokeApiAbility> { return fetchJson(url, `ability ${name}`); }
+
 function regionalFormName(name: string): boolean {
   return isSupportedRegionalFormId(name);
 }
@@ -122,7 +130,7 @@ function regionalDisplayName(pokemon: PokeApiPokemon): string {
   return `${displayName(pokemon.species.name)} de ${regionLabels[region[1]!]!}${detail}`;
 }
 
-function toEntry(pokemon: PokeApiPokemon, isDefault: boolean, species: PokeApiSpecies) {
+function toEntry(pokemon: PokeApiPokemon, isDefault: boolean, species: PokeApiSpecies, spanishAbilityNames: ReadonlyMap<string, string>) {
   const nationalDexNumber = nationalDexNumberFor(pokemon);
   const stats = Object.fromEntries(pokemon.stats.map((entry) => [entry.stat.name, entry.base_stat]));
   const hp = stats.hp ?? 0; const attack = stats.attack ?? 0; const defense = stats.defense ?? 0;
@@ -136,8 +144,30 @@ function toEntry(pokemon: PokeApiPokemon, isDefault: boolean, species: PokeApiSp
     heightDecimeters: pokemon.height, weightHectograms: pokemon.weight,
     legendaryStatus: species.is_mythical ? 'MYTHICAL' : species.is_legendary ? 'LEGENDARY' : 'NORMAL',
     color: species.color.name,
-    abilities: [...new Set(pokemon.abilities.map((entry) => entry.ability.name))].sort(),
+    abilities: [...new Set(pokemon.abilities.map((entry) => {
+      const spanishName = spanishAbilityNames.get(entry.ability.name);
+      if (!spanishName) throw new Error(`Missing Spanish ability name for ${entry.ability.name}`);
+      return spanishName;
+    }))].sort((left, right) => left.localeCompare(right, 'es')),
   };
+}
+
+async function fetchSpanishAbilityNames(pokemon: readonly PokeApiPokemon[]): Promise<Map<string, string>> {
+  const sources = new Map<string, string>();
+  for (const entry of pokemon) for (const ability of entry.abilities) sources.set(ability.ability.name, ability.ability.url);
+  const names = [...sources.keys()].sort();
+  const result = new Map<string, string>();
+  for (let start = 0; start < names.length; start += BATCH_SIZE) {
+    const batch = names.slice(start, start + BATCH_SIZE);
+    const abilities = await Promise.all(batch.map((name) => fetchAbility(sources.get(name)!, name)));
+    for (const ability of abilities) {
+      const spanishName = extractSpanishAbilityName(ability.names);
+      if (!spanishName) throw new Error(`PokéAPI has no official Spanish name for ability ${ability.name}`);
+      result.set(ability.name, spanishName);
+    }
+    console.info(`Loaded Spanish ability names ${start + 1}-${Math.min(start + BATCH_SIZE, names.length)} / ${names.length}`);
+  }
+  return result;
 }
 
 async function fetchPokemonRange(): Promise<PokeApiPokemon[]> {
@@ -254,13 +284,19 @@ async function main(): Promise<void> {
   const defaultPokemon = needsBase || needsLearnsets || needsEvolution || needsMetadata || needsPokedexEntries ? await fetchPokemonRange() : [];
   const species = needsBase || needsRegional || needsEvolution || needsMetadata || needsPokedexEntries ? await fetchSpeciesRange() : [];
   const speciesByName = new Map(species.map((entry) => [entry.name, entry]));
-  if (needsBase || needsMetadata) await upsertPokemon(defaultPokemon.map((pokemon) => toEntry(pokemon, true, speciesByName.get(pokemon.species.name)!)));
-  if (needsRegional) {
+  const regional: PokeApiPokemon[] = [];
+  if (needsRegional || needsMetadata) {
     const regionalNames = await fetchRegionalFormNames();
     if (regionalNames.length < MIN_REGIONAL_FORM_COUNT) throw new Error(`Expected at least ${MIN_REGIONAL_FORM_COUNT} regional forms, received ${regionalNames.length}`);
-    const regional: PokeApiPokemon[] = [];
     for (let start = 0; start < regionalNames.length; start += BATCH_SIZE) regional.push(...await Promise.all(regionalNames.slice(start, start + BATCH_SIZE).map(fetchPokemon)));
-    await upsertPokemon(regional.map((pokemon) => toEntry(pokemon, false, speciesByName.get(pokemon.species.name)!))); console.info(`Seeded ${regional.length} regional forms.`);
+  }
+  if (needsBase || needsRegional || needsMetadata) {
+    const spanishAbilityNames = await fetchSpanishAbilityNames([...defaultPokemon, ...regional]);
+    if (needsBase || needsMetadata) await upsertPokemon(defaultPokemon.map((pokemon) => toEntry(pokemon, true, speciesByName.get(pokemon.species.name)!, spanishAbilityNames)));
+    if (needsRegional || needsMetadata) {
+      await upsertPokemon(regional.map((pokemon) => toEntry(pokemon, false, speciesByName.get(pokemon.species.name)!, spanishAbilityNames)));
+      console.info(`Seeded ${regional.length} regional forms.`);
+    }
   }
   if (needsLearnsets) {
     await syncLearnsets(defaultPokemon);

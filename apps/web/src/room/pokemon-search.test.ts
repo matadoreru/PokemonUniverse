@@ -51,4 +51,8 @@ describe('Pokédex Distance Pokémon search', () => {
     expect(firstSelectablePokemonOption(pokemon, 'emo', new Set())?.id).toBe('emolga');
     expect(firstSelectablePokemonOption(pokemon, 'emo', new Set(['emolga']))?.id).toBe('remoraid');
   });
+
+  it('respects a game-specific result limit', () => {
+    expect(searchPokemonOptions(pokemon, 'a', 5)).toHaveLength(5);
+  });
 });

@@ -3,7 +3,7 @@ import type { GameContext, Pokemon, PokemonCatalog } from '../../index.js';
 import { pokemonMatchesBluffAuctionCondition } from './conditions.js';
 import { defaultPokemonBluffAuctionConfig } from './config.js';
 import { BLUFF_BIDDER_SUCCESS_POINTS, BLUFF_OTHERS_SUCCESS_POINTS } from './rules.js';
-import { BLUFF_RESULT_REVEAL_MS, BLUFF_SECONDS_PER_ATTEMPT, pokemonBluffAuctionGame } from './server.js';
+import { BLUFF_RESULT_REVEAL_MS, BLUFF_SECONDS_PER_CORRECT_ATTEMPT, BLUFF_SECONDS_PER_INCORRECT_ATTEMPT, pokemonBluffAuctionGame } from './server.js';
 import type { PokemonBluffAuctionState } from './types.js';
 
 const pokemon: Pokemon[] = [
@@ -91,13 +91,20 @@ describe('Pokémon Bluff Auction', () => {
     expect(state.phase).toBe('POKEMON_SEARCH'); expect(state.targetBid).toBe(1);
   });
 
-  it('starts the authoritative timer at the configured duration and adds five seconds for every unique attempt', () => {
+  it('adds five seconds for a correct answer and removes three for an incorrect answer', () => {
     const fixture = setup({ demonstrationSeconds: 30 }); let state = reachDemonstration(forceCondition(fixture.state, ['charizard', 'arcanine']), fixture.context, 2);
     expect(state.roundEndsAt).toBe(31_000);
     state = act(state, state.bidderId!, { type: 'SUBMIT_POKEMON', pokemonId: 'charizard' }, fixture.context).state;
-    expect(state.roundEndsAt).toBe(31_000 + BLUFF_SECONDS_PER_ATTEMPT * 1_000); expect(state.correctCount).toBe(1);
+    expect(state.roundEndsAt).toBe(31_000 + BLUFF_SECONDS_PER_CORRECT_ATTEMPT * 1_000); expect(state.correctCount).toBe(1);
     state = act(state, state.bidderId!, { type: 'SUBMIT_POKEMON', pokemonId: 'venusaur' }, fixture.context).state;
-    expect(state.phase).toBe('POKEMON_SEARCH'); expect(state.roundEndsAt).toBe(41_000); expect(state.incorrectCount).toBe(1);
+    expect(state.phase).toBe('POKEMON_SEARCH'); expect(state.roundEndsAt).toBe(36_000 - BLUFF_SECONDS_PER_INCORRECT_ATTEMPT * 1_000); expect(state.incorrectCount).toBe(1);
+  });
+
+  it('ends the round immediately when an incorrect answer consumes the remaining time', () => {
+    const fixture = setup({ demonstrationSeconds: 20 }); let state = reachDemonstration(forceCondition(fixture.state, ['charizard', 'arcanine']), fixture.context, 2);
+    fixture.setNow(state.roundEndsAt! - 2_000);
+    state = act(state, state.bidderId!, { type: 'SUBMIT_POKEMON', pokemonId: 'venusaur' }, fixture.context).state;
+    expect(state.phase).toBe('ROUND_RESULTS'); expect(state.lastRound).toMatchObject({ success: false, reason: 'TIMEOUT', incorrectCount: 1 });
   });
 
   it('publishes incorrect attempts without eliminating the bidder and rejects duplicate credit without extending time', () => {

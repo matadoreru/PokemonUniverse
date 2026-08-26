@@ -15,6 +15,8 @@ import { zoomedPokemonGame } from './zoomed-pokemon/server.js';
 import { pokeTabooGame } from './poke-taboo/server.js';
 import { oneOfUsIsFakeGame } from './one-of-us-is-fake/server.js';
 import { pokemonBluffAuctionGame } from './pokemon-bluff-auction/server.js';
+import { sketchmonGame } from './sketchmon/server.js';
+import { pokemonConnectionsGame } from './pokemon-connections/server.js';
 
 export type RegisteredGame = MiniGameModule<any, any, any, any>;
 
@@ -47,4 +49,6 @@ export const gameRegistry = new GameRegistry()
   .register(zoomedPokemonGame)
   .register(pokeTabooGame)
   .register(oneOfUsIsFakeGame)
-  .register(pokemonBluffAuctionGame);
+  .register(pokemonBluffAuctionGame)
+  .register(sketchmonGame)
+  .register(pokemonConnectionsGame);

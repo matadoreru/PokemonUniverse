@@ -10,6 +10,7 @@ describe('client minigame registry', () => {
       'poke-taboo',
       'one-of-us-is-fake',
       'pokemon-bluff-auction',
+      'sketchmon',
     ]);
   });
 

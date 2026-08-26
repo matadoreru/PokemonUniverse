@@ -22,6 +22,7 @@ export interface ZoomedPokemonSolve {
   solveOrder: number;
   zoomStage: number;
   zoom: number;
+  zoomBonus: number;
   points: number;
   attempts: number;
 }
@@ -90,6 +91,7 @@ export interface ZoomedPokemonPublicState {
   focusPoint: { x: 0.5; y: 0.5 };
   zoomStages: readonly number[];
   currentZoomStage: number;
+  currentZoomBonus: number;
   visibleHints: ZoomedPokemonHint[];
   attempts: ZoomedPokemonAttempt[];
   solves: Record<string, Pick<ZoomedPokemonSolve, 'solveOrder' | 'zoomStage'>>;
