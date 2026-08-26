@@ -1,4 +1,4 @@
-import type { Pokemon } from '@pokemon-universe/shared';
+import { isSupportedRegionalFormId, type Pokemon } from '@pokemon-universe/shared';
 import { describe, expect, it } from 'vitest';
 import { InMemoryPokemonCatalog } from './catalog.js';
 
@@ -7,6 +7,12 @@ const entries: Pokemon[] = [
   { ...battleData, id: 'dugtrio', nationalDexNumber: 51, name: 'Dugtrio', generation: 1, isDefault: true, sprite: '/dugtrio.png', types: ['ground'] },
   { ...battleData, id: 'dugtrio-alola', nationalDexNumber: 51, name: 'Dugtrio de Alola', generation: 1, isDefault: false, sprite: '/dugtrio-alola.png', types: ['ground', 'steel'] },
   { ...battleData, id: 'frillish-female', nationalDexNumber: 592, name: 'Frillish', generation: 5, isDefault: false, sprite: '/frillish.png', types: ['water', 'ghost'] },
+  { ...battleData, id: 'dudunsparce-two-segment', nationalDexNumber: 982, name: 'Dudunsparce', generation: 9, isDefault: true, sprite: '/dudunsparce.png', types: ['normal'] },
+  { ...battleData, id: 'dudunsparce', nationalDexNumber: 982, name: 'Dudunsparce', generation: 9, isDefault: true, sprite: '/stale-dudunsparce.png', types: ['normal'] },
+  { ...battleData, id: 'darmanitan-galar-standard', nationalDexNumber: 555, name: 'Darmanitan de Galar', generation: 5, isDefault: false, sprite: '/darmanitan-galar.png', types: ['ice'] },
+  { ...battleData, id: 'basculin-white-striped', nationalDexNumber: 550, name: 'Basculin (Raya Blanca)', generation: 5, isDefault: false, sprite: '/basculin-white.png', types: ['water'] },
+  { ...battleData, id: 'darmanitan-galar-zen', nationalDexNumber: 555, name: 'Darmanitan de Galar (Zen)', generation: 5, isDefault: false, sprite: '/darmanitan-galar-zen.png', types: ['ice', 'fire'] },
+  { ...battleData, id: 'raticate-totem-alola', nationalDexNumber: 20, name: 'Raticate de Alola', generation: 1, isDefault: false, sprite: '/raticate-totem.png', types: ['dark', 'normal'] },
 ];
 
 describe('InMemoryPokemonCatalog forms', () => {
@@ -24,8 +30,27 @@ describe('InMemoryPokemonCatalog forms', () => {
   it('drops unsupported cosmetic forms from every public and game lookup', () => {
     const catalog = new InMemoryPokemonCatalog(entries);
     expect(catalog.all().map((pokemon) => pokemon.id)).not.toContain('frillish-female');
+    expect(catalog.all().map((pokemon) => pokemon.id)).not.toContain('darmanitan-galar-zen');
+    expect(catalog.all().map((pokemon) => pokemon.id)).not.toContain('raticate-totem-alola');
     expect(catalog.byId('frillish-female')).toBeUndefined();
-    expect(catalog.forGenerations([5], { includeForms: true })).toEqual([]);
+  });
+
+  it('keeps one authoritative default when stale aliases share a National Pokédex number', () => {
+    const catalog = new InMemoryPokemonCatalog(entries);
+    expect(catalog.forGenerations([9], { includeForms: true }).map((pokemon) => pokemon.id)).toEqual(['dudunsparce-two-segment']);
+    expect(catalog.byId('dudunsparce-two-segment')?.name).toBe('Dudunsparce');
+    expect(catalog.byId('dudunsparce')).toBeUndefined();
+  });
+
+  it('includes every playable regional-form exception and excludes its battle-only form', () => {
+    const catalog = new InMemoryPokemonCatalog(entries);
+    expect(catalog.forGenerations([5], { includeForms: true }).map((pokemon) => pokemon.id)).toEqual([
+      'darmanitan-galar-standard', 'basculin-white-striped',
+    ]);
+    expect(isSupportedRegionalFormId('darmanitan-galar-standard')).toBe(true);
+    expect(isSupportedRegionalFormId('basculin-white-striped')).toBe(true);
+    expect(isSupportedRegionalFormId('darmanitan-galar-zen')).toBe(false);
+    expect(isSupportedRegionalFormId('raticate-totem-alola')).toBe(false);
   });
 
   it('resolves normalized move metadata and orders level-up learnsets', () => {

@@ -83,8 +83,11 @@ export interface Pokemon {
 
 /** Forms intentionally imported by the authoritative catalog. Other PokéAPI variants are cosmetic or battle-only. */
 export function isSupportedRegionalFormId(id: string): boolean {
+  if (/-totem(?:-|$)/.test(id)) return false;
   return /-(alola|galar|hisui|paldea)$/.test(id)
-    || /^tauros-paldea-(combat|blaze|aqua)-breed$/.test(id);
+    || /^tauros-paldea-(combat|blaze|aqua)-breed$/.test(id)
+    || id === 'darmanitan-galar-standard'
+    || id === 'basculin-white-striped';
 }
 
 export interface PokemonCatalog {

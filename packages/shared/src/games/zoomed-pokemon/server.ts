@@ -104,7 +104,7 @@ export const zoomedPokemonGame: MiniGameModule<ZoomedPokemonConfig, ZoomedPokemo
       throw new Error('No hay imágenes válidas para las generaciones seleccionadas.');
     }
     const playerIds = context.players.map((player) => player.id);
-    const guessPoolIds = context.pokemon.forGenerations(parsed.generations, { includeForms: parsed.includeForms }).filter(isUsableZoomedSprite).map((pokemon) => pokemon.id);
+    const guessPoolIds = context.pokemon.forGenerations(parsed.generations, { includeForms: parsed.includeForms }).map((pokemon) => pokemon.id);
     const randomToken = Array.from({ length: 3 }, () => Math.floor(context.random() * 0x1_0000_0000).toString(36)).join('-');
     return {
       phase: 'GAME_STARTING', config: parsed, assetToken: `${context.now.toString(36)}-${randomToken}`, playerIds, poolIds: pool.map((pokemon) => pokemon.id), guessPoolIds, roundNumber: 0,

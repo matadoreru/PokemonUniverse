@@ -18,7 +18,13 @@ export class InMemoryPokemonCatalog implements LearnsetPokemonCatalog, PokedexEn
     evolution: Readonly<Record<string, PokemonEvolutionInfo>> = {},
     pokedexEntries: readonly PokedexEntry[] = [],
   ) {
-    this.entries = entries.filter((pokemon) => pokemon.isDefault !== false || isSupportedRegionalFormId(pokemon.id));
+    const defaultDexNumbers = new Set<number>();
+    this.entries = entries.filter((pokemon) => {
+      if (pokemon.isDefault === false) return isSupportedRegionalFormId(pokemon.id);
+      if (defaultDexNumbers.has(pokemon.nationalDexNumber)) return false;
+      defaultDexNumbers.add(pokemon.nationalDexNumber);
+      return true;
+    });
     this.idIndex = new Map(this.entries.map((pokemon) => [pokemon.id, pokemon]));
     this.dexIndex = new Map(this.entries.filter((pokemon) => pokemon.isDefault !== false).map((pokemon) => [pokemon.nationalDexNumber, pokemon]));
     this.moveIndex = new Map(moves.map((move) => [move.id, move]));
@@ -49,7 +55,7 @@ export class InMemoryPokemonCatalog implements LearnsetPokemonCatalog, PokedexEn
 
 export async function loadPokemonCatalog(): Promise<InMemoryPokemonCatalog> {
   const [rows, moveRows, learnsetRows, pokedexEntryRows] = await Promise.all([
-    prisma.pokemon.findMany({ orderBy: [{ nationalDexNumber: 'asc' }, { isDefault: 'desc' }, { name: 'asc' }] }),
+    prisma.pokemon.findMany({ orderBy: [{ nationalDexNumber: 'asc' }, { isDefault: 'desc' }, { name: 'asc' }, { updatedAt: 'desc' }, { id: 'asc' }] }),
     prisma.move.findMany(),
     prisma.pokemonLevelUpMove.findMany({ orderBy: [{ pokemonId: 'asc' }, { referenceGeneration: 'asc' }, { level: 'asc' }] }),
     prisma.pokedexEntry.findMany({ orderBy: [{ pokemonId: 'asc' }, { generation: 'desc' }, { version: 'asc' }] }),

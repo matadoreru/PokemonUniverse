@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 const LAST_NATIONAL_DEX_NUMBER = 1_025;
 const GENERATION_ENDS = [151, 251, 386, 493, 649, 721, 809, 905, 1_025] as const;
 const BATCH_SIZE = 25;
-const MIN_REGIONAL_FORM_COUNT = 50;
+const MIN_REGIONAL_FORM_COUNT = 58;
 const MIN_LEARNSET_ENTRIES = 5_000;
 const MIN_MOVE_COUNT = 500;
 const LEARNSET_SYNC_KEY = 'canonical-level-up-learnsets';
@@ -114,6 +114,7 @@ function nationalDexNumberFor(pokemon: PokeApiPokemon): number {
 }
 
 function regionalDisplayName(pokemon: PokeApiPokemon): string {
+  if (pokemon.name === 'basculin-white-striped') return `${displayName(pokemon.species.name)} (Raya Blanca)`;
   const region = /-(alola|galar|hisui|paldea)(?:-(.+))?$/.exec(pokemon.name);
   if (!region) return displayName(pokemon.species.name);
   const regionLabels: Record<string, string> = { alola: 'Alola', galar: 'Galar', hisui: 'Hisui', paldea: 'Paldea' };

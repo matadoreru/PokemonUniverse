@@ -8,9 +8,17 @@ import type { ZoomedPokemonState } from './types.js';
 function mon(id: string, dex: number, generation: number, extra: Partial<Pokemon> = {}): Pokemon {
   return { id, nationalDexNumber: dex, name: id.replaceAll('-', ' '), generation, isDefault: true, sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${dex}.png`, hp: 1, attack: 1, defense: 1, specialAttack: 1, specialDefense: 1, speed: 1, baseStatTotal: 6, types: ['bug', 'fire'], evolutionStage: 2, evolutionStageCount: 2, legendaryStatus: 'NORMAL', ...extra };
 }
-const entries = [mon('volcarona', 637, 5), mon('butterfree', 12, 1), mon('gengar', 94, 1), mon('gengar-mega', 10038, 1, { isDefault: false, nationalDexNumber: 94 }), mon('broken', 999, 9, { sprite: '' })];
+const entries = [
+  mon('volcarona', 637, 5), mon('butterfree', 12, 1), mon('gengar', 94, 1),
+  mon('gengar-mega', 10038, 1, { isDefault: false, nationalDexNumber: 94 }),
+  mon('dudunsparce-two-segment', 982, 9, { name: 'Dudunsparce' }),
+  mon('wooper', 194, 2, { name: 'Wooper' }),
+  mon('wooper-paldea', 10253, 2, { name: 'Wooper de Paldea', isDefault: false, nationalDexNumber: 194 }),
+  mon('art-only', 1000, 6, { name: 'Art Only', sprite: '' }),
+  mon('broken', 999, 9, { sprite: '' }),
+];
 const pokemon: PokemonCatalog = { all: () => entries, byId: (id) => entries.find((entry) => entry.id === id), byDexNumber: (dex) => entries.find((entry) => entry.nationalDexNumber === dex && entry.isDefault !== false), forGenerations: (generations, options) => entries.filter((entry) => generations.includes(entry.generation) && (options?.includeForms || entry.isDefault !== false)) };
-const artworks = new Map(['volcarona', 'gengar-mega'].map((id) => [id, { pokemonId: id, source: 'ARTWORK' as const, location: `local-artwork:${id}` }]));
+const artworks = new Map(['volcarona', 'gengar-mega', 'art-only'].map((id) => [id, { pokemonId: id, source: 'ARTWORK' as const, location: `local-artwork:${id}` }]));
 const visuals: PokemonVisualCatalog = { artworkFor: (id) => artworks.get(id) ?? null, artworkPokemonIds: () => [...artworks.keys()] };
 
 function setup(overrides: Partial<typeof defaultZoomedPokemonConfig> = {}, random = () => 0, count = 3) {
@@ -46,6 +54,23 @@ describe('Zoomed Pokémon visual modes and exact targets', () => {
     const fixture = setup({ generations: [1], imageMode: 'ARTWORK' });
     expect(fixture.state.targetPokemonId).toBe('gengar-mega'); const wrong = guess(fixture.state, 'p1', 'gengar', fixture.context); expect(wrong.accepted).toBe(true); expect(wrong.state.solves.p1).toBeUndefined();
     fixture.now(fixture.context.now + ZOOMED_POKEMON_COOLDOWN_MS); expect(guess(wrong.state, 'p1', 'gengar-mega', fixture.context).accepted).toBe(true);
+  });
+  it('accepts Dudunsparce and regional forms by their exact authoritative ids', () => {
+    const dudunsparce = setup({ generations: [9], imageMode: 'SPRITE' });
+    expect(dudunsparce.state.targetPokemonId).toBe('dudunsparce-two-segment');
+    expect(guess(dudunsparce.state, 'p1', 'dudunsparce-two-segment', dudunsparce.context).state.solves.p1).toBeDefined();
+
+    const regional = setup({ generations: [2], imageMode: 'SPRITE' }, () => 0.999);
+    expect(regional.state.targetPokemonId).toBe('wooper-paldea');
+    const wrongForm = guess(regional.state, 'p1', 'wooper', regional.context);
+    expect(wrongForm.accepted).toBe(true); expect(wrongForm.state.solves.p1).toBeUndefined();
+    regional.now(regional.context.now + ZOOMED_POKEMON_COOLDOWN_MS);
+    expect(guess(wrongForm.state, 'p1', 'wooper-paldea', regional.context).state.solves.p1).toBeDefined();
+  });
+  it('allows an artwork-backed target to be guessed even when it has no sprite', () => {
+    const fixture = setup({ generations: [6], imageMode: 'ARTWORK' });
+    expect(fixture.state.targetPokemonId).toBe('art-only');
+    expect(guess(fixture.state, 'p1', 'art-only', fixture.context).state.solves.p1).toBeDefined();
   });
   it('keeps one target, visual and focus seed shared by every player without public identity leakage', () => {
     const fixture = setup({ imageMode: 'ARTWORK' }); const view = zoomedPokemonGame.getPublicState(fixture.state, fixture.context);
