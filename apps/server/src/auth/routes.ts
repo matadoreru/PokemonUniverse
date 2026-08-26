@@ -1,4 +1,4 @@
-import { avatarPresetIdSchema, DEFAULT_AVATAR, gameRegistry, guestSchema, loginSchema, registerSchema, type AuthUser, type AvatarRef, type UserProfileResponse } from '@pokemon-universe/shared';
+import { avatarPresetIdSchema, DEFAULT_AVATAR, gameRegistry, guestSchema, loginSchema, registerSchema, type AuthUser, type AvatarRef, type UserProfileResponse, type UserRole } from '@pokemon-universe/shared';
 import bcrypt from 'bcryptjs';
 import express, { Router, type Response } from 'express';
 import rateLimit from 'express-rate-limit';
@@ -30,8 +30,8 @@ function avatarFromUser(user: { avatarType: string; avatarValue: string | null; 
   return DEFAULT_AVATAR;
 }
 
-function identityFromUser(user: { id: string; username: string; email: string; avatarType: string; avatarValue: string | null; avatarVersion: number }): AuthUser {
-  return { id: user.id, displayName: user.username, email: user.email, kind: 'USER', avatar: avatarFromUser(user) };
+function identityFromUser(user: { id: string; username: string; email: string; role: UserRole; avatarType: string; avatarValue: string | null; avatarVersion: number }): AuthUser {
+  return { id: user.id, displayName: user.username, email: user.email, role: user.role, kind: 'USER', avatar: avatarFromUser(user) };
 }
 
 function guestIdentity(displayName: string, avatar: AvatarRef): AuthUser {

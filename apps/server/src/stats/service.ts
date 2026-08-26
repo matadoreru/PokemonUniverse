@@ -37,10 +37,14 @@ export async function persistGameResults(room: LiveRoom, results: GameResults, r
   for (let attempt = 1; attempt <= MAX_TRANSACTION_ATTEMPTS; attempt += 1) {
     try {
       await prisma.$transaction(async (tx) => {
-        const history = await tx.gameHistory.create({ data: {
-          resultId, roomCode: room.code, gameId, playerCount: standings.length,
-          config: config as Prisma.InputJsonValue, startedAt: new Date(startedAt),
-        } });
+        const existing = await tx.gameHistory.findUnique({ where: { resultId }, select: { id: true, status: true } });
+        if (existing?.status === 'COMPLETED') return;
+        const history = existing
+          ? await tx.gameHistory.update({ where: { resultId }, data: { status: 'COMPLETED', endedAt: new Date() } })
+          : await tx.gameHistory.create({ data: {
+            resultId, roomHistoryId: room.historyId, roomCode: room.code, gameId, playerCount: standings.length,
+            config: config as Prisma.InputJsonValue, status: 'COMPLETED', startedAt: new Date(startedAt), endedAt: new Date(),
+          } });
         for (const { standing, member } of standings) {
           const userId = member.identity.kind === 'USER' ? member.identity.id : null;
           await tx.playerGameResult.create({ data: {

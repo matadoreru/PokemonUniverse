@@ -5,6 +5,7 @@ export class InMemoryRoomStore {
   private readonly rooms = new Map<string, LiveRoom>();
   private readonly playerRooms = new Map<string, string>();
   get(code: string): LiveRoom | undefined { return this.rooms.get(code); }
+  list(): LiveRoom[] { return [...this.rooms.values()]; }
   roomForPlayer(playerId: string): LiveRoom | undefined {
     const code = this.playerRooms.get(playerId);
     return code ? this.rooms.get(code) : undefined;

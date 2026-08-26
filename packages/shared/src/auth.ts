@@ -2,6 +2,9 @@ import { z } from 'zod';
 import { avatarPresetIdSchema, type AvatarRef } from './avatar.js';
 import { displayNameSchema } from './room.js';
 
+export const userRoleSchema = z.enum(['USER', 'ADMIN']);
+export type UserRole = z.infer<typeof userRoleSchema>;
+
 export const registerSchema = z.object({
   username: z.string().trim().min(3).max(24).regex(/^[a-zA-Z0-9_]+$/),
   email: z.string().trim().toLowerCase().email().max(254),
@@ -15,5 +18,6 @@ export interface AuthUser {
   displayName: string;
   kind: 'USER' | 'GUEST';
   email?: string;
+  role?: UserRole;
   avatar: AvatarRef;
 }

@@ -8,6 +8,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum RoomHistoryStatus {
+  ACTIVE
+  CLOSED
+  INTERRUPTED
+}
+
+enum GameHistoryStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+  INTERRUPTED
+}
+
 model User {
   id           String             @id @default(cuid())
   username     String             @unique
@@ -17,12 +35,14 @@ model User {
   avatarType   String             @default("DEFAULT")
   avatarValue  String?
   avatarVersion Int               @default(0)
+  role         UserRole           @default(USER)
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
   stats        UserStats?
   gameStats    UserGameStats[]
   results      PlayerGameResult[]
   customCategories CustomCategory[]
+  hostedRooms  RoomHistory[]      @relation("RoomHost")
 }
 
 model CustomCategory {
@@ -64,15 +84,39 @@ model UserGameStats {
 model GameHistory {
   id          String             @id @default(cuid())
   resultId    String             @unique
+  roomHistoryId String?
   roomCode    String
   gameId      String
   playerCount Int
   config      Json
+  status      GameHistoryStatus  @default(IN_PROGRESS)
   startedAt   DateTime
-  endedAt     DateTime           @default(now())
+  endedAt     DateTime?
+  roomHistory RoomHistory?       @relation(fields: [roomHistoryId], references: [id], onDelete: SetNull)
   results     PlayerGameResult[]
 
+  @@index([status, startedAt])
+  @@index([roomHistoryId])
   @@index([gameId, endedAt])
+}
+
+model RoomHistory {
+  id              String            @id
+  roomCode        String
+  hostUserId      String?
+  hostDisplayName String
+  maxPlayers      Int
+  status          RoomHistoryStatus @default(ACTIVE)
+  closeReason     String?
+  createdAt       DateTime
+  endedAt         DateTime?
+  updatedAt       DateTime          @updatedAt
+  hostUser        User?             @relation("RoomHost", fields: [hostUserId], references: [id], onDelete: SetNull)
+  games           GameHistory[]
+
+  @@index([status, createdAt])
+  @@index([roomCode, createdAt])
+  @@index([hostUserId])
 }
 
 model PlayerGameResult {

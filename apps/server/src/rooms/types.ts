@@ -24,6 +24,7 @@ export interface GameRuntime {
   state: any;
   startedAt: number;
   resultsApplied: boolean;
+  auditReady: Promise<void>;
 }
 
 export interface NextGameVote {
@@ -41,6 +42,7 @@ export interface SessionParticipant {
 }
 
 export interface LiveRoom {
+  historyId: string;
   code: string;
   hostId: string;
   phase: import('@pokemon-universe/shared').RoomPhase;
@@ -56,4 +58,6 @@ export interface LiveRoom {
   sessionHistory: SessionGameSummaryView[];
   game: GameRuntime | null;
   transitionTimer: NodeJS.Timeout | null;
+  createdAt: number;
+  updatedAt: number;
 }

@@ -18,10 +18,14 @@ vi.mock('../db.js', () => ({
       database.transactionAttempts += 1; database.transactionOptions.push(options);
       if (database.transactionFailures > 0) { database.transactionFailures -= 1; throw { code: 'P2034' }; }
       return callback({
-        gameHistory: { create: vi.fn(({ data }: { data: { resultId: string } }) => {
+        gameHistory: {
+          findUnique: vi.fn(({ where }: { where: { resultId: string } }) => database.resultIds.has(where.resultId) ? { id: `history-${where.resultId}`, status: 'COMPLETED' } : null),
+          update: vi.fn(({ where }: { where: { resultId: string } }) => ({ id: `history-${where.resultId}`, status: 'COMPLETED' })),
+          create: vi.fn(({ data }: { data: { resultId: string } }) => {
           if (database.resultIds.has(data.resultId)) throw { code: 'P2002' };
           database.resultIds.add(data.resultId); return { id: `history-${data.resultId}` };
-        }) },
+          }),
+        },
         playerGameResult: { create: database.playerResultsCreated },
         userStats: { upsert: database.userStatsUpdated },
         userGameStats: { findUnique: vi.fn(() => null), upsert: database.gameStatsUpdated },

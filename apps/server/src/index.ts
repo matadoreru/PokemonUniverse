@@ -9,6 +9,8 @@ import { parse } from 'cookie';
 import { Server } from 'socket.io';
 import { ZodError } from 'zod';
 import { authRouter } from './auth/routes.js';
+import { createPrismaRoomAuditSink, interruptStaleActivity } from './admin/audit.js';
+import { createAdminRouter } from './admin/routes.js';
 import { optionalAuth } from './auth/middleware.js';
 import { onAvatarUpdated } from './auth/profile-events.js';
 import { AUTH_COOKIE, verifyIdentity } from './auth/tokens.js';
@@ -26,6 +28,7 @@ import { CustomCategoryService } from './categories/service.js';
 
 const app = express();
 const customCategories = new CustomCategoryService(new PrismaCustomCategoryRepository(prisma));
+const roomRegistry: { current: RoomManager | null } = { current: null };
 app.set('trust proxy', 1);
 app.use(helmet());
 app.use(cors({ origin: env.WEB_ORIGIN, credentials: true }));
@@ -38,6 +41,7 @@ app.use(rateLimit({
 app.use(optionalAuth);
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 30, skip: (req) => req.path.startsWith('/avatars/') }), authRouter);
 app.use('/api/categories', createCustomCategoryRouter(customCategories));
+app.use('/api/admin', createAdminRouter(() => roomRegistry.current?.adminRooms() ?? []));
 app.use('/api', apiRouter);
 
 app.use((error: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -67,11 +71,13 @@ io.use(async (socket, next) => {
   } catch { next(new Error('Authentication required')); }
 });
 
+await interruptStaleActivity();
 const catalog = await loadPokemonCatalog();
 await customCategories.load();
 registerPokemonRepository(new CatalogPokemonRepository(catalog));
 const pokemonVisuals = await loadPokemonVisualCatalog(catalog);
-const rooms = new RoomManager(io, catalog, pokemonVisuals, (userId) => customCategories.enabled(userId));
+const rooms = new RoomManager(io, catalog, pokemonVisuals, (userId) => customCategories.enabled(userId), createPrismaRoomAuditSink());
+roomRegistry.current = rooms;
 customCategories.onChanged((userId) => rooms.updateHostCategories(userId));
 onAvatarUpdated((userId, avatar) => rooms.updateIdentityAvatar(userId, avatar));
 registerGameImageResolver((code, assetToken, roundNumber, optionId) => rooms.gameAsset(code, assetToken, roundNumber, optionId));
@@ -88,7 +94,7 @@ io.on('connection', (socket) => {
 httpServer.listen(env.PORT, () => console.info(`API listening on :${env.PORT} with ${catalog.all().length} Pokémon and ${pokemonVisuals.artworkPokemonIds().length} local artworks`));
 
 async function shutdown(): Promise<void> {
-  io.close(); httpServer.close(); await prisma.$disconnect(); process.exit(0);
+  io.close(); httpServer.close(); await interruptStaleActivity(); await prisma.$disconnect(); process.exit(0);
 }
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);

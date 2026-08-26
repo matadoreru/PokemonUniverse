@@ -1,4 +1,5 @@
 export * from './auth.js';
+export * from './admin.js';
 export * from './avatar.js';
 export * from './custom-category.js';
 export * from './room.js';

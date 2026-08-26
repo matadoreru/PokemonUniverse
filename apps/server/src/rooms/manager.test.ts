@@ -75,6 +75,29 @@ describe('room multi-game lifecycle', () => {
     expect(manager.store.roomForPlayer(host.id)).toBeUndefined();
   });
 
+  it('audits room and game starts while exposing only an admin-safe live projection', () => {
+    const audit = { roomCreated: vi.fn(() => Promise.resolve()), roomClosed: vi.fn(() => Promise.resolve()), gameStarted: vi.fn(() => Promise.resolve()) };
+    const manager = new RoomManager(io() as any, catalog, undefined, undefined, audit);
+    const host: AuthUser = { ...identity('host-user', 'Host'), kind: 'USER', email: 'host@example.com', role: 'ADMIN' };
+    const guest = identity('guest-user', 'Guest');
+    const created = (manager as any).create(socket('host-socket'), host, 8);
+    const room = manager.store.get(created.room.code)!;
+    (manager as any).join(socket('guest-socket'), guest, room.code);
+
+    expect(audit.roomCreated).toHaveBeenCalledWith(expect.objectContaining({ id: room.historyId, code: room.code, hostUserId: host.id }));
+    startReady(manager, room, host.id);
+    expect(audit.gameStarted).toHaveBeenCalledWith(expect.objectContaining({ roomHistoryId: room.historyId, roomCode: room.code, playerCount: 2 }));
+
+    const snapshot = manager.adminRooms()[0]!;
+    expect(snapshot).toMatchObject({ code: room.code, gameId: room.game?.gameId, connectedPlayers: 2 });
+    expect(JSON.stringify(snapshot)).not.toContain('targetDexNumber');
+    expect(JSON.stringify(snapshot)).not.toContain('host@example.com');
+
+    (manager as any).finalDisconnect(room, host.id, true);
+    (manager as any).finalDisconnect(room, guest.id, true);
+    expect(audit.roomClosed).toHaveBeenCalledWith(expect.objectContaining({ id: room.historyId, gameResultId: room.game?.resultId }));
+  });
+
   it('rejects mutations from a socket replaced by a newer connection', () => {
     const manager = new RoomManager(io() as any, catalog); const host = identity('host', 'Host'); const first = boundSocket('host-old', host);
     manager.bind(first as any);
@@ -93,7 +116,7 @@ describe('room multi-game lifecycle', () => {
     expect(manager.store.get(room.code)).toBeUndefined();
   });
 
-  it('plays Pokédex Distance and Shiny Quiz in the same room without leaking game state', () => {
+  it('plays Pokédex Distance and Shiny Quiz in the same room without leaking game state', async () => {
     const transport = io();
     const manager = new RoomManager(transport as any, catalog);
     const host = identity('pedro', 'Pedro');
@@ -155,7 +178,7 @@ describe('room multi-game lifecycle', () => {
     expect(room.game).toBeNull();
     expect(room.members.get(host.id)?.socketId).toBe('socket-pedro');
     expect(room.members.get(guest.id)?.socketId).toBe('socket-ana');
-    expect(persistGameResults).toHaveBeenCalledTimes(2);
+    await vi.waitFor(() => expect(persistGameResults).toHaveBeenCalledTimes(2));
   });
 
   it('rejects Members changing games and rejects unknown ids without altering the registry', () => {

@@ -1,7 +1,8 @@
-import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, roomCodeSchema, sessionModeSchema, supportsPlayerCount, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck, type SubjectiveCategory } from '@pokemon-universe/shared';
+import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, roomCodeSchema, sessionModeSchema, supportsPlayerCount, type AdminActiveRoom, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck, type SubjectiveCategory } from '@pokemon-universe/shared';
 import { randomInt, randomUUID } from 'node:crypto';
 import type { Server, Socket } from 'socket.io';
 import { env } from '../config.js';
+import { noOpRoomAuditSink, type RoomAuditSink } from '../admin/audit.js';
 import { preloadGameImage } from '../http/game-image-cache.js';
 import { persistGameResults } from '../stats/service.js';
 import { InMemoryRoomStore } from './store.js';
@@ -27,6 +28,7 @@ export class RoomManager {
     private readonly pokemon: PokemonCatalog,
     private readonly pokemonVisuals: PokemonVisualCatalog = { artworkFor: () => null, artworkPokemonIds: () => [] },
     private readonly customCategoriesForUser: (userId: string) => readonly SubjectiveCategory[] = () => [],
+    private readonly audit: RoomAuditSink = noOpRoomAuditSink,
   ) {}
 
   bind(socket: GameSocket): void {
@@ -87,16 +89,22 @@ export class RoomManager {
     const desiredMax = requestedMax ?? env.ROOM_MAX_PLAYERS;
     if (!Number.isInteger(desiredMax) || desiredMax < 2) throw new Error('Room capacity must be an integer of at least 2');
     const maxPlayers = Math.min(desiredMax, 100);
+    const now = Date.now();
     const room: LiveRoom = {
-      code, hostId: identity.id, phase: 'LOBBY', members: new Map(), maxPlayers,
+      historyId: randomUUID(), code, hostId: identity.id, phase: 'LOBBY', members: new Map(), maxPlayers,
       selectedGameId: module.manifest.id,
       gameConfigs: new Map(gameRegistry.list().map((game) => [game.manifest.id, game.configSchema.parse(game.defaultConfig)])),
       sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null,
       gamesPlayed: 0, sessionParticipants: new Map(), sessionHistory: [], game: null, transitionTimer: null,
+      createdAt: now, updatedAt: now,
     };
     room.members.set(identity.id, this.member(identity, socket.id, 'PLAYER', 'HOST'));
     room.sessionParticipants.set(identity.id, { identity, sessionPoints: 0 });
     this.store.save(room); this.store.attachPlayer(identity.id, code); void socket.join(code);
+    void this.audit.roomCreated({
+      id: room.historyId, code, hostUserId: identity.kind === 'USER' ? identity.id : null,
+      hostDisplayName: identity.displayName, maxPlayers, createdAt: now,
+    }).catch((error) => console.error('Failed to persist room creation', error));
     return { room: this.view(room, identity.id) };
   }
 
@@ -164,7 +172,12 @@ export class RoomManager {
     if (!retainedByLiveGame) room.members.delete(playerId);
     this.store.detachPlayer(playerId);
     if (room.hostId === playerId) this.transferHost(room);
-    if (![...room.members.values()].some((candidate) => candidate.presence !== 'LEFT')) { room.transitionTimer = cancelTimer(room.transitionTimer); this.store.delete(room.code); return; }
+    if (![...room.members.values()].some((candidate) => candidate.presence !== 'LEFT')) {
+      room.transitionTimer = cancelTimer(room.transitionTimer); this.store.delete(room.code);
+      void this.audit.roomClosed({ id: room.historyId, reason: explicit ? 'EMPTY_AFTER_LEAVE' : 'EMPTY_AFTER_TIMEOUT', gameResultId: room.game?.resultsApplied === false ? room.game.resultId : null, endedAt: Date.now() })
+        .catch((error) => console.error('Failed to persist room closure', error));
+      return;
+    }
     this.applyPresenceChange(room);
   }
 
@@ -305,7 +318,12 @@ export class RoomManager {
     let state = module.createInitialState(config, context);
     state = module.start(state, context);
     for (const member of room.members.values()) { member.role = member.presence === 'CONNECTED' ? 'PLAYER' : 'SPECTATOR'; member.ready = false; }
-    room.game = { resultId: randomUUID(), gameId: module.manifest.id, participantIds: players.map((player) => player.id), module, config, state, startedAt: context.now, resultsApplied: false };
+    const resultId = randomUUID();
+    const auditReady = this.audit.gameStarted({
+      resultId, roomHistoryId: room.historyId, roomCode: room.code,
+      gameId: module.manifest.id, playerCount: players.length, config, startedAt: context.now,
+    });
+    room.game = { resultId, gameId: module.manifest.id, participantIds: players.map((player) => player.id), module, config, state, startedAt: context.now, resultsApplied: false, auditReady };
     room.phase = state.phase; this.syncAndBroadcast(room);
   }
 
@@ -443,7 +461,9 @@ export class RoomManager {
       : false;
     room.phase = sessionFinished ? 'SESSION_RESULTS' : 'GAME_RESULTS';
     if (!sessionFinished && room.gameSelectionMode.type === 'VOTE') this.beginNextGameVote(room);
-    void persistGameResults(room, results, game.resultId, game.startedAt, game.gameId, game.config).catch((error) => console.error('Failed to persist game results', error));
+    void game.auditReady.catch((error) => console.error('Failed to persist game start', error))
+      .then(() => persistGameResults(room, results, game.resultId, game.startedAt, game.gameId, game.config))
+      .catch((error) => console.error('Failed to persist game results', error));
   }
 
   private resetToLobby(room: LiveRoom, resetSession: boolean): void {
@@ -530,6 +550,26 @@ export class RoomManager {
     return game.module.resolveAsset(game.state, { assetToken, roundNumber, assetId }, this.context(room));
   }
 
+  adminRooms(): AdminActiveRoom[] {
+    return this.store.list().map((room) => {
+      const host = room.members.get(room.hostId);
+      const liveGame = room.game?.resultsApplied === false ? room.game : null;
+      const manifest = liveGame ? gameRegistry.get(liveGame.gameId)?.manifest : null;
+      const participants = [...room.members.values()].map((member) => ({
+        id: member.identity.id, displayName: member.identity.displayName, kind: member.identity.kind,
+        presence: member.presence, roomRole: member.roomRole,
+      }));
+      return {
+        id: room.historyId, code: room.code, phase: room.phase, gameId: liveGame?.gameId ?? null,
+        gameName: manifest?.name ?? null,
+        connectedPlayers: participants.filter((participant) => participant.presence === 'CONNECTED').length,
+        totalPlayers: participants.filter((participant) => participant.presence !== 'LEFT').length,
+        maxPlayers: room.maxPlayers, hostDisplayName: host?.identity.displayName ?? 'Sin host',
+        createdAt: new Date(room.createdAt).toISOString(), updatedAt: new Date(room.updatedAt).toISOString(), participants,
+      };
+    });
+  }
+
   private view(room: LiveRoom, playerId: string): RoomView {
     const context = this.context(room);
     const connectedVoterIds = this.eligibleNextGameVoterIds(room);
@@ -567,6 +607,7 @@ export class RoomManager {
   }
 
   private broadcast(room: LiveRoom): void {
+    room.updatedAt = Date.now();
     for (const member of room.members.values()) {
       if (member.socketId) this.io.to(member.socketId).emit('room:state', this.view(room, member.identity.id));
     }

@@ -1,5 +1,5 @@
 import type { AuthUser } from '@pokemon-universe/shared';
-import { LogOut } from 'lucide-react';
+import { LogOut, ShieldCheck } from 'lucide-react';
 import { Suspense } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
@@ -14,7 +14,8 @@ export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(
       <span>Pokémon <span className="text-berry">Universe</span></span>
     </Link>
     {user ? <div className="flex min-w-0 items-center justify-self-end gap-1 sm:gap-2">
-      {user.kind === 'USER' && <Link className="flex min-h-10 min-w-10 items-center justify-center gap-2 rounded-xl px-1.5 text-sm font-extrabold no-underline transition hover:bg-ink/[0.06] sm:px-2.5" to="/profile" aria-label={`Abrir perfil de ${user.displayName}`}><Avatar name={user.displayName} avatar={user.avatar} size="sm" /><span className="hidden max-w-36 truncate sm:inline">{user.displayName}</span></Link>}
+      {user.kind === 'USER' && user.role === 'ADMIN' && <Link className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl px-2 text-sm font-extrabold text-ink/70 no-underline transition hover:bg-ink/[0.06] hover:text-ink" to="/admin" aria-label="Abrir panel de administración" title="Administración"><ShieldCheck size={19} /><span className="hidden lg:inline">Administración</span></Link>}
+      {user.kind === 'USER' && <Link className={`${user.role === 'ADMIN' ? 'hidden sm:flex' : 'flex'} min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl px-1.5 text-sm font-extrabold no-underline transition hover:bg-ink/[0.06] sm:px-2.5`} to="/profile" aria-label={`Abrir perfil de ${user.displayName}`}><Avatar name={user.displayName} avatar={user.avatar} size="sm" /><span className="hidden max-w-36 truncate sm:inline">{user.displayName}</span></Link>}
       {user.kind === 'GUEST' && <span className="inline-flex min-h-10 items-center gap-2 rounded-xl px-1.5 sm:bg-ink/5 sm:px-2.5"><Avatar name={user.displayName} avatar={user.avatar} size="sm" /><span className="hidden max-w-36 truncate text-sm font-extrabold sm:inline">{user.displayName}</span></span>}
       <button aria-label="Cerrar sesión" title="Cerrar sesión" className="icon-button" onClick={onLogout}><LogOut size={19} /></button>
     </div> : <span />}
