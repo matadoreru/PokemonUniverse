@@ -52,17 +52,18 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          image_ref=$(ssh -i "$HOME/.ssh/pokemon-universe" -p "$DEPLOY_PORT" \
+          image_metadata=$(ssh -i "$HOME/.ssh/pokemon-universe" -p "$DEPLOY_PORT" \
             -o BatchMode=yes -o StrictHostKeyChecking=yes \
             "$DEPLOY_USER@$DEPLOY_HOST" \
-            "set -eu; cd '$DEPLOY_PATH'; container=\$(docker compose ps -q server); test -n \"\$container\"; docker inspect \"\$container\" --format '{{.Config.Image}}'")
-          image_sha=${image_ref##*:}
+            "set -eu; cd '$DEPLOY_PATH'; container=\$(docker compose ps -q server); test -n \"\$container\"; docker inspect \"\$container\" --format '{{.Config.Image}}{{println}}{{range .Config.Env}}{{println .}}{{end}}'")
+          image_ref=$(printf '%s\n' "$image_metadata" | sed -n '1p')
+          image_sha=$(printf '%s\n' "$image_metadata" | sed -n 's/^PU_COMMIT_SHA=//p' | head -n 1)
           if ! printf '%s' "$image_sha" | grep -Eq '^[0-9a-f]{40}$'; then
-            echo "PRE no está ejecutando una imagen etiquetada con un SHA inmutable: $image_ref" >&2
+            echo "PRE no expone un SHA de commit inmutable (imagen: $image_ref)" >&2
             exit 1
           fi
           echo "image_sha=$image_sha" >> "$GITHUB_OUTPUT"
-          echo "### Candidato de PRE: \`$image_sha\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Candidato de PRE: \`$image_sha\` (\`$image_ref\`)" >> "$GITHUB_STEP_SUMMARY"
 
   deploy_production:
     name: Approve and deploy the PRE SHA to production

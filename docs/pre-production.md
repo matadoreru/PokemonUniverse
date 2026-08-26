@@ -187,6 +187,11 @@ cd /srv/docker/pokemon-universe && docker compose ps
 
 El campo `commit` de `/api/health` debe coincidir en ambos entornos justo después de una promoción.
 
+El tag `pre` sirve para el arranque inicial y para inspección manual. La
+promoción obtiene el SHA inmutable incorporado en la imagen que PRE está
+ejecutando, incluso si un reinicio manual de Compose vuelve a mostrar el alias
+`:pre` en el nombre de la imagen.
+
 ## 10. Rollback
 
 Los despliegues crean un backup y restauran las imágenes anteriores si falla el healthcheck. Para volver manualmente a un SHA anterior:
