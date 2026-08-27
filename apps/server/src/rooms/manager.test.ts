@@ -650,10 +650,15 @@ describe('room multi-game lifecycle', () => {
     const second = room.game!.state.turnOrder[room.game!.state.turnIndex]!; (manager as any).action(second, { type: 'RAISE_BID', amount: 3 });
     const visible = (manager as any).view(room, guest.id); expect(visible.game.currentBid).toBe(3); expect(visible.game.bidHistory).toEqual(expect.arrayContaining([expect.objectContaining({ type: 'BID', amount: 3 })])); expect(visible.game.participants[first].coins).toBe(10);
     (manager as any).action(first, { type: 'PASS_BID' }); expect(room.game!.state.lotHistory[0]).toMatchObject({ winnerId: second, bid: 3 }); expect(room.game!.state.participants[second].coins).toBe(7);
+    room.sessionMode = { type: 'GAME_COUNT', target: 1 };
+    room.gameSelectionMode = { type: 'RANDOM', gameIds: ['pokemon-team-auction', 'higher-lower'] };
     for (const participant of Object.values(room.game!.state.participants) as Array<{ coins: number }>) participant.coins = 0;
     (manager as any).applyPresenceChange(room);
     expect(room.phase).toBe('GAME_RESULTS');
-    const resultView = (manager as any).view(room, host.id); expect(resultView.game.results).toBeTruthy(); expect(resultView.game.lotHistory.some((lot: { winnerId: string | null }) => lot.winnerId === null)).toBe(true);
+    const resultView = (manager as any).view(room, host.id); expect(resultView.game.results.standings.map((standing: { playerId: string }) => standing.playerId).sort()).toEqual([guest.id, host.id]); expect(resultView.game.lotHistory.some((lot: { winnerId: string | null }) => lot.winnerId === null)).toBe(true);
+    (manager as any).disconnect(guest.id, 'guest-socket'); const restoredSocket = socket('guest-restored'); (manager as any).restore(restoredSocket, guest);
+    expect(restoredSocket.emit).toHaveBeenCalledWith('session:restored', expect.objectContaining({ phase: 'GAME_RESULTS', game: expect.objectContaining({ participants: expect.objectContaining({ [host.id]: expect.anything(), [guest.id]: expect.anything() }), results: expect.objectContaining({ standings: expect.arrayContaining([expect.objectContaining({ playerId: host.id }), expect.objectContaining({ playerId: guest.id })]) }) }) }));
+    (manager as any).continueSession(host.id); expect(room.phase).toBe('SESSION_RESULTS');
     (manager as any).returnLobby(host.id); expect(room.phase).toBe('LOBBY');
   });
 
@@ -961,6 +966,10 @@ describe('room multi-game lifecycle', () => {
     (manager as any).action(guest.id, { type: 'ANSWER', choice: 'LOWER' });
     room.game!.state.nextTransitionAt = 0; (manager as any).tick(room);
 
+    expect(room.phase).toBe('GAME_RESULTS');
+    expect(room.nextGameVote).toBeNull();
+    expect((manager as any).view(room, guest.id).game.results.standings).toHaveLength(2);
+    (manager as any).continueSession(host.id);
     expect(room.phase).toBe('NEXT_GAME_VOTE');
     expect(room.nextGameVote?.optionGameIds).toHaveLength(3);
     expect((manager as any).view(room, guest.id).nextGameVote).toMatchObject({ ownVoteGameId: null, tallies: null, votedPlayerIds: [] });

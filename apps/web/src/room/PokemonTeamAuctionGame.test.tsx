@@ -33,6 +33,19 @@ describe('Pokémon Team Auction client', () => {
     expect(markup).toContain('Pokémon sin dueño'); expect(markup).toContain('mewtwo'); expect(markup).toContain('BST 534'); expect(markup).toContain('Continuar sesión');
   });
 
+  it('shows every team before offering the final session ranking in mixed mode', () => {
+    const finalRoom = room(publicGame('GAME_RESULTS'), { role: 'SPECTATOR', canRaise: false, canPass: false, minimumBid: 1, coins: 0, team: [] });
+    finalRoom.sessionMode = { type: 'GAME_COUNT', target: 1 };
+    finalRoom.gameSelectionMode = { type: 'RANDOM', gameIds: ['pokemon-team-auction', 'higher-lower'] };
+    finalRoom.gamesPlayed = 1;
+    finalRoom.sessionStandings = [
+      { id: 'p1', displayName: 'Eru', avatar: { type: 'PRESET', value: 'trainer-berry' }, sessionPoints: 534 },
+      { id: 'p2', displayName: 'Ana', avatar: { type: 'PRESET', value: 'trainer-aqua' }, sessionPoints: 0 },
+    ];
+    const markup = renderToStaticMarkup(createElement(PokemonTeamAuctionResults, { room: finalRoom, selfId: 'p1', onLobby: () => undefined, onEnd: () => undefined }));
+    expect(markup).toContain('Eru'); expect(markup).toContain('Ana'); expect(markup).toContain('charizard'); expect(markup).toContain('0 Pokémon'); expect(markup).toContain('Ver clasificación final');
+  });
+
   it('supports spectators and exposes the configured budget, generations and forms toggle', () => {
     const spectator = renderToStaticMarkup(createElement(PokemonTeamAuctionGame, { room: room(publicGame(), { role: 'SPECTATOR', canRaise: false, canPass: false, minimumBid: 1, coins: 0, team: [] }), selfId: 'watcher', onAction: async () => undefined }));
     expect(spectator).toContain('Estás observando'); expect(spectator).not.toContain('Pasar este Pokémon');

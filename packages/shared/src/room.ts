@@ -62,6 +62,13 @@ export type SessionMode =
   | { type: 'GAME_COUNT'; target: number }
   | { type: 'POINT_TARGET'; target: number };
 
+export function isSessionComplete(mode: SessionMode, gamesPlayed: number, sessionPoints: Iterable<number>): boolean {
+  if (mode.type === 'INFINITE') return false;
+  if (mode.type === 'GAME_COUNT') return gamesPlayed >= mode.target;
+  for (const points of sessionPoints) if (points >= mode.target) return true;
+  return false;
+}
+
 export type GameSelectionMode =
   | { type: 'FIXED' }
   | { type: 'RANDOM'; gameIds: string[] }

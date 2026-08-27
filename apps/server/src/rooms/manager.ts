@@ -1,4 +1,4 @@
-import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, roomCodeSchema, sessionModeSchema, supportsPlayerCount, validateGameConfigReadiness, type AdminActiveRoom, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck, type SubjectiveCategory, type WouldYouRatherPromptPair } from '@pokemon-universe/shared';
+import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, isSessionComplete, roomCodeSchema, sessionModeSchema, supportsPlayerCount, validateGameConfigReadiness, type AdminActiveRoom, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck, type SubjectiveCategory, type WouldYouRatherPromptPair } from '@pokemon-universe/shared';
 import { randomInt, randomUUID } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 import type { Server, Socket } from 'socket.io';
@@ -502,12 +502,7 @@ export class RoomManager {
       points: Object.fromEntries(results.standings.map((standing) => [standing.playerId, standing.points])),
     });
     if (room.sessionHistory.length > MAX_SESSION_HISTORY) room.sessionHistory.splice(0, room.sessionHistory.length - MAX_SESSION_HISTORY);
-    const mode = room.sessionMode;
-    const sessionFinished = mode.type === 'GAME_COUNT' ? room.gamesPlayed >= mode.target
-      : mode.type === 'POINT_TARGET' ? [...room.members.values()].some((member) => member.sessionPoints >= mode.target)
-      : false;
-    room.phase = sessionFinished ? 'SESSION_RESULTS' : 'GAME_RESULTS';
-    if (!sessionFinished && room.gameSelectionMode.type === 'VOTE') this.beginNextGameVote(room);
+    room.phase = 'GAME_RESULTS';
     void game.auditReady.catch((error) => console.error('Failed to persist game start', error))
       .then(() => persistGameResults(room, results, game.resultId, game.startedAt, game.gameId, game.config))
       .catch((error) => console.error('Failed to persist game results', error));
@@ -535,8 +530,14 @@ export class RoomManager {
   private continueSession(playerId: string): Record<string, never> {
     const room = this.permissionRoom(playerId, 'START_GAME');
     if (room.phase !== 'GAME_RESULTS') throw new Error('La partida todavía no ha terminado.');
+    if (isSessionComplete(room.sessionMode, room.gamesPlayed, [...room.sessionParticipants.values()].map((participant) => participant.sessionPoints))) {
+      room.phase = 'SESSION_RESULTS'; this.broadcast(room); return {};
+    }
+    if (room.gameSelectionMode.type === 'VOTE') {
+      if (!this.beginNextGameVote(room)) this.resetToLobby(room, false);
+      this.broadcast(room); this.schedule(room); return {};
+    }
     this.resetToLobby(room, false);
-    if (room.gameSelectionMode.type === 'VOTE') { this.broadcast(room); return {}; }
     try {
       this.assertRotationReady(room);
       this.selectRandomGame(room);
