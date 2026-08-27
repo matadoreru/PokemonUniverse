@@ -65,7 +65,11 @@ export function GameSelectionConfig({ availableGames, mode, playerCount, disable
     const games = normalized
       ? availableGames.filter((game) => normalizeSearch(`${game.name} ${game.description}`).includes(normalized))
       : availableGames;
-    return [...games].sort((left, right) => Number(selected.has(right.id)) - Number(selected.has(left.id)) || left.name.localeCompare(right.name, 'es'));
+    return [...games].sort((left, right) =>
+      Number(Boolean(right.recommended)) - Number(Boolean(left.recommended))
+      || Number(selected.has(right.id)) - Number(selected.has(left.id))
+      || left.name.localeCompare(right.name, 'es'),
+    );
   }, [availableGames, query, selectedKey]);
 
   const readiness = useMemo(() => selectedIds.map((gameId) => {

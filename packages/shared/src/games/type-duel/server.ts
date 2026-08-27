@@ -5,7 +5,7 @@ import { buildTypeDuelResults, chooseBalancedPair, isValidPokemonForTypes, requi
 import { typeDuelActionSchema, type TypeDuelAction, type TypeDuelPlayerState, type TypeDuelPublicState, type TypeDuelRoundResult, type TypeDuelState, type TypeDuelStats } from './types.js';
 const TYPE_REVEAL_MS = 2_000; const INVALID_COMBINATION_MS = 3_000; export const TYPE_DUEL_RESULT_MS = 10_000;
 const manifest = {
-  id: 'type-duel', name: 'Type Duel', icon: '⚔️',
+  id: 'type-duel', name: 'Type Duel', recommended: true, icon: '⚔️',
   description: 'Elige un tipo en secreto y corre contra otro entrenador para encontrar la combinación exacta.', minPlayers: 2,
   profileStats: {
     metrics: [

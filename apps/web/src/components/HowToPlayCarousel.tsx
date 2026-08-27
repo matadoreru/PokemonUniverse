@@ -13,8 +13,8 @@ const slides = [
     </div>,
   },
   {
-    eyebrow: '2 · Hablar es mejor',
-    title: 'Conecta una llamada con tus amigos',
+    eyebrow: '2 · En llamada mejor',
+    title: 'Conectate a una llamada con tus amigos',
     description: 'Recomendamos estar en una llamada de voz, por ejemplo en Discord, Zoom o vuestra app favorita. Muchos juegos ganan muchísimo cuando podéis comentar y reíros juntos.',
     visual: <div className="flex w-full max-w-sm items-center gap-4 rounded-xl border border-berry/20 bg-berry/[.07] p-4" aria-hidden="true">
       <span className="grid h-16 w-16 shrink-0 place-items-center rounded-xl bg-berry text-white shadow-card"><Headphones size={34} /></span>
@@ -24,7 +24,7 @@ const slides = [
   {
     eyebrow: '3 · Prepara la partida',
     title: 'Elige juego, modo y configuración',
-    description: 'En el lobby podéis leer cada juego antes de elegirlo. La persona anfitriona configura sus reglas y decide cómo rota la sesión.',
+    description: 'En el lobby podéis leer cada juego antes de elegirlo. La persona anfitriona configura sus reglas (cada minijuego tiene las suyas propias) y decide cómo rota la sesión (los modos de rotacion random y votacion recomendamos configurar los minijuegos uno a uno para mejor experie).',
     visual: <div className="w-full max-w-sm overflow-hidden rounded-xl border border-ink/10 bg-surface" aria-hidden="true">
       <div className="flex border-b border-ink/10 bg-surface-raised p-1.5 text-xs font-black"><span className="flex-1 rounded-lg bg-aqua px-2 py-2 text-center text-night">Minijuego</span><span className="flex-1 px-2 py-2 text-center text-ink/55">Configuración</span><span className="flex-1 px-2 py-2 text-center text-ink/55">Modo</span></div>
       <div className="space-y-2 p-3"><div className="flex items-center gap-2 rounded-lg bg-aqua/[.08] p-2"><Gamepad2 className="text-aqua" size={20} /><strong className="text-sm">Pokémon Connections</strong></div><div className="flex items-center gap-2 rounded-lg bg-ink/[.04] p-2"><SlidersHorizontal className="text-berry" size={20} /><span className="text-sm font-bold">4 grupos · 120 segundos</span></div></div>
@@ -32,8 +32,8 @@ const slides = [
   },
   {
     eyebrow: '4 · A jugar',
-    title: 'Compite, coopera y suma puntos',
-    description: 'Cada minijuego tiene reglas propias. Las respuestas privadas se mantienen ocultas hasta el momento de la revelación.',
+    title: 'Juega con o contra tus amigos',
+    description: 'Cada minijuego tiene reglas propias. Juega y divertete!',
     visual: <div className="grid w-full max-w-sm grid-cols-3 gap-2" aria-hidden="true">
       <div className="rounded-xl bg-electric/15 p-3 text-center"><Sparkles className="mx-auto text-electric" /><strong className="mt-2 block text-sm">Descubre</strong></div>
       <div className="rounded-xl bg-aqua/10 p-3 text-center"><Users className="mx-auto text-aqua" /><strong className="mt-2 block text-sm">Comparte</strong></div>

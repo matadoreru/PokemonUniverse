@@ -34,7 +34,11 @@ export class GameRegistry {
   }
   get(id: string): RegisteredGame | undefined { return this.games.get(id); }
   list(): RegisteredGame[] { return [...this.games.values()]; }
-  manifests(): MiniGameManifest[] { return this.list().map((game) => ({ ...game.manifest })); }
+  manifests(): MiniGameManifest[] {
+    return this.list()
+      .map((game) => ({ ...game.manifest }))
+      .sort((left, right) => Number(Boolean(right.recommended)) - Number(Boolean(left.recommended)));
+  }
 }
 
 /** Registration is additive: adding a game never replaces an existing module. */

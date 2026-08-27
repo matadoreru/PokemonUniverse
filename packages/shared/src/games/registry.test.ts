@@ -4,11 +4,14 @@ import { defaultGuessFromStatsConfig, defaultHigherLowerConfig, defaultLearnsetG
 describe('multi-game registry', () => {
   it('registers every minigame simultaneously', () => {
     expect(gameRegistry.manifests().map((game) => [game.id, game.name])).toEqual([
-      ['pokedex-distance', 'Pokédex Distance'],
       ['shiny-vote', 'Shiny Quiz'],
       ['pokemon-impostor', 'Pokémon Impostor'],
-      ['higher-lower', 'Higher or Lower'],
       ['type-duel', 'Type Duel'],
+      ['zoomed-pokemon', 'Zoomed Pokémon'],
+      ['pokemon-team-auction', 'Pokémon Team Auction'],
+      ['pokemon-red-flag', 'Pokémon Red Flag / Green Flag'],
+      ['pokedex-distance', 'Pokédex Distance'],
+      ['higher-lower', 'Higher or Lower'],
       ['learnset-guess', 'Learnset Guess'],
       ['pokeddle-race', 'Pokédle Race'],
       ['pokemon-bingo', 'Pokémon Bingo'],
@@ -16,35 +19,32 @@ describe('multi-game registry', () => {
       ['pokedex-entry-guess', 'Pokédex Entry Guess'],
       ['type-chain', 'Type Chain'],
       ['guess-from-stats', 'Guess from Stats'],
-      ['zoomed-pokemon', 'Zoomed Pokémon'],
       ['poke-taboo', 'PokéTaboo'],
       ['one-of-us-is-fake', 'One of Us Is Fake'],
       ['pokemon-bluff-auction', 'Pokémon Bluff Auction'],
       ['sketchmon', 'Sketchmon'],
       ['pokemon-connections', 'Pokémon Connections'],
-      ['pokemon-team-auction', 'Pokémon Team Auction'],
       ['secret-ranking', 'Secret Ranking'],
       ['most-likely-to', 'Most Likely To'],
       ['would-you-rather', 'Would You Rather Pokémon'],
-      ['pokemon-red-flag', 'Pokémon Red Flag / Green Flag'],
     ]);
   });
 
   it('marks only the games introduced after the original catalog as experimental', () => {
     expect(gameRegistry.manifests().filter((game) => game.experimental).map((game) => game.id)).toEqual([
+      'pokemon-team-auction',
+      'pokemon-red-flag',
       'sketchmon',
       'pokemon-connections',
-      'pokemon-team-auction',
       'secret-ranking',
       'most-likely-to',
       'would-you-rather',
-      'pokemon-red-flag',
     ]);
   });
 
   it('exposes the curated recommended games through shared manifest metadata', () => {
     expect(gameRegistry.manifests().filter((game) => game.recommended).map((game) => game.id)).toEqual([
-      'pokemon-impostor', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokemon-connections',
+      'shiny-vote', 'pokemon-impostor', 'type-duel', 'zoomed-pokemon', 'pokemon-team-auction', 'pokemon-red-flag',
     ]);
   });
 

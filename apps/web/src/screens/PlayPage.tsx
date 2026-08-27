@@ -95,8 +95,6 @@ export function PlayPage() {
 
           {error && <p role="alert" className="status-error mt-4 text-center">{error}</p>}
         </article>
-
-        <p className="mt-5 text-center text-sm font-bold text-ink/60">Podrás elegir el minijuego y configurar la partida cuando crees una sala.</p>
       </div>
       <HowToPlayCarousel />
     </div>

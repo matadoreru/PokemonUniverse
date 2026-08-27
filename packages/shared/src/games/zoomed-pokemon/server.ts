@@ -9,7 +9,7 @@ export const ZOOMED_POKEMON_COOLDOWN_MS = 1_000;
 export const ZOOMED_POKEMON_REVEAL_MS = 4_000;
 
 const manifest = {
-  id: 'zoomed-pokemon', name: 'Zoomed Pokémon', icon: '🔎',
+  id: 'zoomed-pokemon', name: 'Zoomed Pokémon', recommended: true, icon: '🔎',
   description: 'Reconoce el Pokémon mientras una cámara compartida se aleja progresivamente.', minPlayers: 1, maxPlayers: 8,
   profileStats: {
     metrics: [

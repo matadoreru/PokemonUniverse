@@ -19,6 +19,7 @@ const REVEAL_DURATION_MS = 3_000;
 const manifest = {
   id: 'shiny-vote',
   name: 'Shiny Quiz',
+  recommended: true,
   icon: '✨',
   description: 'Encuentra el shiny verdadero entre varios candidatos.',
   minPlayers: 1,

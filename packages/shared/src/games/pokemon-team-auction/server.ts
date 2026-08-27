@@ -6,6 +6,7 @@ import { pokemonTeamAuctionActionSchema, type PokemonTeamAuctionAction, type Pok
 const manifest = {
   id: 'pokemon-team-auction',
   name: 'Pokémon Team Auction',
+  recommended: true,
   icon: '💰',
   description: 'Construye tu equipo pujando por Pokémon en una subasta visible.',
   experimental: true,

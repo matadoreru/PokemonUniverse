@@ -10,6 +10,7 @@ export const POKEMON_RED_FLAG_REVEAL_MS = 8_000;
 const manifest = {
   id: 'pokemon-red-flag',
   name: 'Pokémon Red Flag / Green Flag',
+  recommended: true,
   icon: '🚩',
   description: 'Escribe la red o green flag más divertida de un Pokémon y gana la votación anónima.',
   experimental: true,

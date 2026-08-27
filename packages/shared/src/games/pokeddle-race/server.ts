@@ -12,7 +12,6 @@ const reveal = (pokemon: Pokemon) => ({ id: pokemon.id, name: pokemon.name, spri
 
 const manifest = {
   id: 'pokeddle-race', name: 'Pokédle Race', icon: '🏁',
-  recommended: true,
   description: 'Descubre tu Pokémon secreto mediante pistas comparativas antes que tus rivales.', minPlayers: 2, maxPlayers: 8,
   profileStats: {
     metrics: [

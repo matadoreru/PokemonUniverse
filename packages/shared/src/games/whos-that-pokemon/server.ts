@@ -10,7 +10,6 @@ export const WHOS_THAT_POKEMON_REVEAL_MS = 4_000;
 
 const manifest = {
   id: 'whos-that-pokemon', name: '¿Quién es ese Pokémon?', icon: '❓',
-  recommended: true,
   description: 'Reconoce la silueta antes que nadie y suma más puntos cuanto más rápido aciertes.', minPlayers: 1, maxPlayers: 8,
   profileStats: {
     metrics: [

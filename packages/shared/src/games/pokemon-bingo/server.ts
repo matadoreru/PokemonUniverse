@@ -14,7 +14,6 @@ const completedCells = (board: BingoBoardState) => Object.keys(board.assignments
 
 const manifest = {
   id: 'pokemon-bingo', name: 'Pokémon Bingo', icon: '🎉',
-  recommended: true,
   description: 'Completa antes que nadie un tablero de condiciones con Pokémon distintos.', minPlayers: 1, maxPlayers: 8,
   profileStats: {
     metrics: [
