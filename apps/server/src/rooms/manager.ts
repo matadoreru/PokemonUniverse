@@ -5,6 +5,7 @@ import { env } from '../config.js';
 import { noOpRoomAuditSink, type RoomAuditSink } from '../admin/audit.js';
 import { preloadGameImage } from '../http/game-image-cache.js';
 import { persistGameResults } from '../stats/service.js';
+import { noOpUserGameConfigPreferences, type UserGameConfigPreferences } from '../game-configs/service.js';
 import { InMemoryRoomStore } from './store.js';
 import { gameRetainsPlayer, markLeft, markTemporarilyDisconnected, oldestConnectedMember, restoreMember } from './presence.js';
 import { cancelTimer, earliestDeadline, scheduleDeadline } from './timers.js';
@@ -29,6 +30,7 @@ export class RoomManager {
     private readonly pokemonVisuals: PokemonVisualCatalog = { artworkFor: () => null, artworkPokemonIds: () => [] },
     private readonly customCategoriesForUser: (userId: string) => readonly SubjectiveCategory[] = () => [],
     private readonly audit: RoomAuditSink = noOpRoomAuditSink,
+    private readonly userGameConfigs: UserGameConfigPreferences = noOpUserGameConfigPreferences,
   ) {}
 
   bind(socket: GameSocket): void {
@@ -90,10 +92,14 @@ export class RoomManager {
     if (!Number.isInteger(desiredMax) || desiredMax < 2) throw new Error('Room capacity must be an integer of at least 2');
     const maxPlayers = Math.min(desiredMax, 100);
     const now = Date.now();
+    const storedConfigs = identity.kind === 'USER' ? this.userGameConfigs.forUser(identity.id) : new Map<string, unknown>();
     const room: LiveRoom = {
       historyId: randomUUID(), code, hostId: identity.id, phase: 'LOBBY', members: new Map(), maxPlayers,
       selectedGameId: module.manifest.id,
-      gameConfigs: new Map(gameRegistry.list().map((game) => [game.manifest.id, game.configSchema.parse(game.defaultConfig)])),
+      gameConfigs: new Map(gameRegistry.list().map((game) => [
+        game.manifest.id,
+        game.configSchema.parse(storedConfigs.get(game.manifest.id) ?? game.defaultConfig),
+      ])),
       sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null,
       gamesPlayed: 0, sessionParticipants: new Map(), sessionHistory: [], game: null, transitionTimer: null,
       createdAt: now, updatedAt: now,
@@ -201,7 +207,10 @@ export class RoomManager {
   private updateConfig(playerId: string, config: unknown): Record<string, never> {
     const room = this.permissionRoom(playerId, 'EDIT_GAME_CONFIG'); this.assertLobby(room);
     const module = gameRegistry.get(room.selectedGameId)!;
-    room.gameConfigs.set(room.selectedGameId, module.configSchema.parse(config));
+    const parsed = module.configSchema.parse(config);
+    room.gameConfigs.set(room.selectedGameId, parsed);
+    const actor = room.members.get(playerId)?.identity;
+    if (actor?.kind === 'USER') this.userGameConfigs.save(actor.id, room.selectedGameId, parsed);
     this.broadcast(room); return {};
   }
 

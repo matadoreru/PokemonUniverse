@@ -1,0 +1,36 @@
+import type { MostLikelyToConfig, RoomView, SubjectivePromptSource } from '@pokemon-universe/shared';
+import { Clock3, MessagesSquare, Repeat2, Sparkles, Tags } from 'lucide-react';
+import { useAuth } from '../../auth/AuthContext';
+import { GenerationSelector } from '../../components/GenerationSelector';
+import { CustomCategoryManager } from '../one-of-us-is-fake/CustomCategoryManager';
+
+const roundPresets = [1, 3, 5, 10];
+const selectionTimes = [30, 45, 60, 90];
+const votingTimes = [15, 30, 45, 60];
+const sources: Array<{ id: SubjectivePromptSource; title: string; detail: string }> = [
+  { id: 'OFFICIAL', title: 'Oficiales', detail: 'Situaciones incluidas y listas para jugar.' },
+  { id: 'CUSTOM', title: 'Personales', detail: 'Solo las preguntas activas del anfitrión.' },
+  { id: 'BOTH', title: 'Mezcladas', detail: 'Combina el catálogo oficial con el personal.' },
+];
+
+function OptionButton({ selected, onClick, children }: { selected: boolean; onClick(): void; children: React.ReactNode }) {
+  return <button type="button" aria-pressed={selected} onClick={onClick} className={`min-h-11 rounded-xl border font-extrabold transition-colors ${selected ? 'border-electric bg-electric text-night' : 'border-ink/10 bg-surface-raised text-ink/65 hover:border-aqua'}`}>{children}</button>;
+}
+
+export function MostLikelyToConfigPanel({ config, disabled, room, selfId, onChange }: { config: unknown; disabled: boolean; room: RoomView; selfId: string; onChange(config: unknown): Promise<void> }) {
+  const value = config as MostLikelyToConfig;
+  const { user } = useAuth();
+  const isHost = room.hostId === selfId;
+  const registeredHost = isHost && user?.kind === 'USER';
+  return <fieldset disabled={disabled} className="space-y-7">
+    <GenerationSelector selected={value.generations} label="Generaciones" description="Cada jugador busca su respuesta dentro de este pool; las elecciones duplicadas están permitidas." onChange={(generations) => void onChange({ ...value, generations })} />
+    <section aria-labelledby="most-likely-rounds"><div className="mb-2 flex items-center gap-2"><Repeat2 className="text-aqua" size={19} /><span id="most-likely-rounds" className="font-extrabold">Rondas</span></div><div className="grid grid-cols-5 gap-2">{roundPresets.map((rounds) => <OptionButton key={rounds} selected={value.rounds === rounds} onClick={() => void onChange({ ...value, rounds })}>{rounds}</OptionButton>)}<label><span className="sr-only">Número personalizado de rondas</span><input className="field min-h-11 text-center font-extrabold" type="number" min={1} max={10} value={value.rounds} onChange={(event) => { const rounds = Number(event.target.value); if (Number.isInteger(rounds) && rounds >= 1 && rounds <= 10) void onChange({ ...value, rounds }); }} /></label></div></section>
+    <div className="grid gap-6 lg:grid-cols-2">
+      <section aria-labelledby="most-likely-selection-time"><div className="mb-2 flex items-center gap-2"><Clock3 className="text-aqua" size={19} /><span id="most-likely-selection-time" className="font-extrabold">Tiempo para responder</span></div><div className="grid grid-cols-5 gap-2">{selectionTimes.map((selectionSeconds) => <OptionButton key={selectionSeconds} selected={value.selectionSeconds === selectionSeconds} onClick={() => void onChange({ ...value, selectionSeconds })}>{selectionSeconds}s</OptionButton>)}<label><span className="sr-only">Tiempo personalizado para responder</span><input className="field min-h-11 text-center font-extrabold" type="number" min={15} max={120} value={value.selectionSeconds} onChange={(event) => { const selectionSeconds = Number(event.target.value); if (Number.isInteger(selectionSeconds) && selectionSeconds >= 15 && selectionSeconds <= 120) void onChange({ ...value, selectionSeconds }); }} /></label></div></section>
+      <section aria-labelledby="most-likely-voting-time"><div className="mb-2 flex items-center gap-2"><MessagesSquare className="text-aqua" size={19} /><span id="most-likely-voting-time" className="font-extrabold">Tiempo para votar</span></div><div className="grid grid-cols-5 gap-2">{votingTimes.map((votingSeconds) => <OptionButton key={votingSeconds} selected={value.votingSeconds === votingSeconds} onClick={() => void onChange({ ...value, votingSeconds })}>{votingSeconds}s</OptionButton>)}<label><span className="sr-only">Tiempo personalizado para votar</span><input className="field min-h-11 text-center font-extrabold" type="number" min={15} max={120} value={value.votingSeconds} onChange={(event) => { const votingSeconds = Number(event.target.value); if (Number.isInteger(votingSeconds) && votingSeconds >= 15 && votingSeconds <= 120) void onChange({ ...value, votingSeconds }); }} /></label></div></section>
+    </div>
+    <section aria-labelledby="most-likely-source"><div className="mb-3 flex items-center gap-2"><Tags className="text-aqua" size={19} /><span id="most-likely-source" className="font-extrabold">Fuente de preguntas</span></div><div className="grid gap-2 md:grid-cols-3">{sources.map((source) => <button type="button" key={source.id} aria-pressed={value.promptSource === source.id} onClick={() => void onChange({ ...value, promptSource: source.id })} className={`min-h-24 rounded-xl border p-3 text-left transition-colors ${value.promptSource === source.id ? 'border-aqua bg-aqua/10' : 'border-ink/10 bg-surface-raised hover:border-aqua/50'}`}><strong className="block font-display text-lg">{source.title}</strong><small className="mt-1 block font-bold leading-snug text-ink/60">{source.detail}</small></button>)}</div>{registeredHost ? <div className="mt-4"><CustomCategoryManager disabled={disabled} minimumActive={1} title="Mis preguntas subjetivas" description="Se comparten con los demás juegos subjetivos y permanecen guardadas en tu cuenta." placeholder="¿Qué Pokémon sería más probable que montase una banda?" emptyText="Todavía no has creado preguntas personales." /></div> : <p className="mt-4 rounded-xl bg-ink/[.04] p-3 text-sm font-bold text-ink/65">{isHost ? 'Crea una cuenta para guardar preguntas personales de forma permanente.' : `Las preguntas personales pertenecen al host. Hay ${room.hostCustomCategoryCount ?? 0} activas.`}</p>}</section>
+    <button type="button" aria-pressed={value.includeForms} onClick={() => void onChange({ ...value, includeForms: !value.includeForms })} className={`flex min-h-20 w-full items-center gap-3 rounded-xl border p-3 text-left transition-colors ${value.includeForms ? 'border-aqua bg-aqua/10' : 'border-ink/10 bg-surface-raised hover:border-aqua/45'}`}><span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${value.includeForms ? 'bg-aqua text-night' : 'bg-ink/[.07]'}`}><Sparkles size={20} /></span><span className="min-w-0 flex-1"><strong className="block font-display text-lg">Incluir formas alternativas</strong><small className="block font-bold text-ink/65">Las formas regionales y alternativas son respuestas independientes.</small></span><span className="font-black text-leaf">{value.includeForms ? '✓' : ''}</span></button>
+    <p className="rounded-xl bg-electric/[.07] p-3 text-sm font-bold text-ink/70">Las respuestas permanecen secretas hasta la votación. No puedes votar la tuya; cada autor ganador recibe 3 puntos.</p>
+  </fieldset>;
+}

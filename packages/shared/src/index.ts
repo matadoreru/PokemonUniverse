@@ -28,3 +28,5 @@ export * from './games/pokemon-bluff-auction/index.js';
 export * from './games/sketchmon/index.js';
 export * from './games/pokemon-connections/index.js';
 export * from './games/pokemon-team-auction/index.js';
+export * from './games/secret-ranking/index.js';
+export * from './games/most-likely-to/index.js';

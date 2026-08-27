@@ -25,9 +25,12 @@ import { RoomManager } from './rooms/manager.js';
 import { PrismaCustomCategoryRepository } from './categories/prisma-repository.js';
 import { createCustomCategoryRouter } from './categories/routes.js';
 import { CustomCategoryService } from './categories/service.js';
+import { PrismaUserGameConfigRepository } from './game-configs/prisma-repository.js';
+import { UserGameConfigService } from './game-configs/service.js';
 
 const app = express();
 const customCategories = new CustomCategoryService(new PrismaCustomCategoryRepository(prisma));
+const userGameConfigs = new UserGameConfigService(new PrismaUserGameConfigRepository(prisma));
 const roomRegistry: { current: RoomManager | null } = { current: null };
 app.set('trust proxy', 1);
 app.use(helmet());
@@ -74,9 +77,10 @@ io.use(async (socket, next) => {
 await interruptStaleActivity();
 const catalog = await loadPokemonCatalog();
 await customCategories.load();
+await userGameConfigs.load();
 registerPokemonRepository(new CatalogPokemonRepository(catalog));
 const pokemonVisuals = await loadPokemonVisualCatalog(catalog);
-const rooms = new RoomManager(io, catalog, pokemonVisuals, (userId) => customCategories.enabled(userId), createPrismaRoomAuditSink());
+const rooms = new RoomManager(io, catalog, pokemonVisuals, (userId) => customCategories.enabled(userId), createPrismaRoomAuditSink(), userGameConfigs);
 roomRegistry.current = rooms;
 customCategories.onChanged((userId) => rooms.updateHostCategories(userId));
 onAvatarUpdated((userId, avatar) => rooms.updateIdentityAvatar(userId, avatar));
@@ -94,7 +98,7 @@ io.on('connection', (socket) => {
 httpServer.listen(env.PORT, () => console.info(`API listening on :${env.PORT} with ${catalog.all().length} Pokémon and ${pokemonVisuals.artworkPokemonIds().length} local artworks`));
 
 async function shutdown(): Promise<void> {
-  io.close(); httpServer.close(); await interruptStaleActivity(); await prisma.$disconnect(); process.exit(0);
+  io.close(); httpServer.close(); await userGameConfigs.flush(); await interruptStaleActivity(); await prisma.$disconnect(); process.exit(0);
 }
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);

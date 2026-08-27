@@ -13,6 +13,8 @@ describe('client minigame registry', () => {
       'sketchmon',
       'pokemon-connections',
       'pokemon-team-auction',
+      'secret-ranking',
+      'most-likely-to',
     ]);
   });
 

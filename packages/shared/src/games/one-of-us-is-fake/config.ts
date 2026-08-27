@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { GENERATIONS } from '../../pokemon/types.js';
-import { pokemonGenerationsSchema } from '../config.js';
+import { pokemonGenerationsSchema, subjectivePromptSourceSchema, type SubjectivePromptSource } from '../config.js';
 
-export const categorySourceSchema = z.enum(['OFFICIAL', 'CUSTOM', 'BOTH']);
-export type CategorySource = z.infer<typeof categorySourceSchema>;
+export const categorySourceSchema = subjectivePromptSourceSchema;
+export type CategorySource = SubjectivePromptSource;
 
 export const oneOfUsIsFakeConfigSchema = z.object({
   generations: pokemonGenerationsSchema,

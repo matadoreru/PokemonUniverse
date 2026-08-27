@@ -18,6 +18,8 @@ import { pokemonBluffAuctionGame } from './pokemon-bluff-auction/server.js';
 import { sketchmonGame } from './sketchmon/server.js';
 import { pokemonConnectionsGame } from './pokemon-connections/server.js';
 import { pokemonTeamAuctionGame } from './pokemon-team-auction/server.js';
+import { secretRankingGame } from './secret-ranking/server.js';
+import { mostLikelyToGame } from './most-likely-to/server.js';
 
 export type RegisteredGame = MiniGameModule<any, any, any, any>;
 
@@ -53,4 +55,6 @@ export const gameRegistry = new GameRegistry()
   .register(pokemonBluffAuctionGame)
   .register(sketchmonGame)
   .register(pokemonConnectionsGame)
-  .register(pokemonTeamAuctionGame);
+  .register(pokemonTeamAuctionGame)
+  .register(secretRankingGame)
+  .register(mostLikelyToGame);

@@ -8,3 +8,7 @@ const lastGeneration = GENERATIONS.at(-1)!;
 export const pokemonGenerationsSchema = z.array(z.number().int().min(firstGeneration).max(lastGeneration))
   .min(1)
   .transform((values) => [...new Set(values)].sort((left, right) => left - right));
+
+/** Source selector shared by games backed by official and host-owned subjective prompts. */
+export const subjectivePromptSourceSchema = z.enum(['OFFICIAL', 'CUSTOM', 'BOTH']);
+export type SubjectivePromptSource = z.infer<typeof subjectivePromptSourceSchema>;

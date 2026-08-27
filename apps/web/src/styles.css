@@ -72,6 +72,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .session-card strong { @apply block font-display text-lg; }
   .session-card span { @apply mt-0.5 block text-sm font-bold text-ink/65; }
   .session-card-selected { @apply border-aqua bg-aqua/10; }
+  .lobby-game-grid { @apply grid max-h-[17rem] gap-2 overflow-y-auto pr-1; grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr)); scrollbar-gutter: stable; }
+  .lobby-game-option { @apply flex min-h-16 items-center gap-2.5 rounded-xl border border-ink/10 bg-surface-raised px-3 py-2 text-left transition-colors hover:border-aqua/50 hover:bg-ink/[.055] disabled:cursor-not-allowed; }
+  .lobby-game-option-selected { @apply border-aqua bg-aqua/10; }
   .status-error { @apply rounded-xl border border-berry/25 bg-berry/10 px-3.5 py-3 text-sm font-extrabold text-berry; }
   .empty-state { @apply rounded-xl border border-dashed border-ink/20 bg-ink/[.025] p-6 text-center text-ink/65; }
   .skeleton { @apply animate-pulse rounded-lg bg-ink/10; }
@@ -85,6 +88,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .sketchmon-canvas { display: block; width: 100%; aspect-ratio: 4 / 3; touch-action: none; background: white; }
 
 @media (max-width: 640px) {
+  .lobby-game-grid { max-height: 21rem; }
   .connections-submit { position: sticky; bottom: .5rem; z-index: 10; border: 1px solid rgb(var(--color-ink) / .1); border-radius: .75rem; background: rgb(var(--color-surface) / .97); padding: .75rem; }
   .connections-submit .btn-primary { width: 100%; }
 }

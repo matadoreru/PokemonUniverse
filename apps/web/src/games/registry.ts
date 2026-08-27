@@ -5,6 +5,8 @@ import { validatePokeddleConfig } from './pokeddle-race/validation';
 import { validatePokemonBingoConfig } from './pokemon-bingo/validation';
 import { validateZoomedPokemonConfig } from './zoomed-pokemon/validation';
 import { validateOneOfUsIsFakeConfig } from './one-of-us-is-fake/validation';
+import { validateSecretRankingConfig } from './secret-ranking/validation';
+import { validateMostLikelyToConfig } from './most-likely-to/validation';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
@@ -176,4 +178,16 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   config: component(() => import('./pokemon-team-auction/ConfigPanel'), 'PokemonTeamAuctionConfigPanel'),
   active: component(() => import('../room/PokemonTeamAuctionGame'), 'PokemonTeamAuctionGame'),
   results: component(() => import('../room/PokemonTeamAuctionResults'), 'PokemonTeamAuctionResults'),
+})).register(clientModule({
+  id: 'secret-ranking',
+  config: component(() => import('./secret-ranking/ConfigPanel'), 'SecretRankingConfigPanel'),
+  active: component(() => import('../room/SecretRankingGame'), 'SecretRankingGame'),
+  results: component(() => import('../room/SecretRankingResults'), 'SecretRankingResults'),
+  validateConfig: validateSecretRankingConfig,
+})).register(clientModule({
+  id: 'most-likely-to',
+  config: component(() => import('./most-likely-to/ConfigPanel'), 'MostLikelyToConfigPanel'),
+  active: component(() => import('../room/MostLikelyToGame'), 'MostLikelyToGame'),
+  results: component(() => import('../room/MostLikelyToResults'), 'MostLikelyToResults'),
+  validateConfig: validateMostLikelyToConfig,
 }));
