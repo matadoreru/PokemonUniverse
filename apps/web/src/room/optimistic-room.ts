@@ -13,7 +13,11 @@ interface PendingUpdate {
 function applyUpdate(room: RoomView, update: OptimisticLobbyUpdate): RoomView {
   if (room.phase !== 'LOBBY') return room;
   if (update.kind === 'config') {
-    return room.selectedGameId === update.gameId ? { ...room, selectedGameConfig: update.config } : room;
+    const gameConfigs = { ...room.gameConfigs, [update.gameId]: update.config };
+    const customizedGameIds = [...new Set([...(room.customizedGameIds ?? []), update.gameId])];
+    return room.selectedGameId === update.gameId
+      ? { ...room, gameConfigs, customizedGameIds, selectedGameConfig: update.config }
+      : { ...room, gameConfigs, customizedGameIds };
   }
   if (update.kind === 'session') return { ...room, sessionMode: update.mode };
   return { ...room, gameSelectionMode: update.mode };

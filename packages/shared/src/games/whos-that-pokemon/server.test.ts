@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { GameContext, Pokemon, PokemonCatalog } from '../../index.js';
 import { defaultWhosThatPokemonConfig } from './config.js';
-import { buildWhoPokemonHints, isUsableWhoPokemonSprite, whoPokemonHintSchedule, whoPokemonPoints } from './rules.js';
+import { buildWhoPokemonHints, isUsableWhoPokemonSprite, whoPokemonHintSchedule, whoPokemonScore } from './rules.js';
 import { WHOS_THAT_POKEMON_COOLDOWN_MS, WHOS_THAT_POKEMON_REVEAL_MS, whosThatPokemonGame, whosThatPokemonPool } from './server.js';
 import type { WhosThatPokemonPlayerState, WhosThatPokemonState } from './types.js';
 
@@ -124,8 +124,8 @@ describe('authoritative attempts, cooldown and simultaneous solving', () => {
   it('marks a correct player publicly without revealing the answer and lets others continue', () => {
     const fixture = setup({ generations: [4] }); fixture.setNow(2_000);
     const solved = guess(fixture.state, 'p1', 'lucario', fixture.context).state; const view = whosThatPokemonGame.getPublicState(solved, fixture.context);
-    expect(solved.phase).toBe('ROUND_ACTIVE'); expect(view.solvedPlayerIds).toEqual(['p1']); expect(JSON.stringify(view)).not.toMatch(/lucario|448\.png/i);
-    expect(whosThatPokemonGame.getPlayerState(solved, 'p1', fixture.context)).toMatchObject({ solved: true, canGuess: false, roundPoints: 5 });
+    expect(solved.phase).toBe('ROUND_ACTIVE'); expect(view.solvedPlayers).toEqual([{ playerId: 'p1', solveOrder: 1 }]); expect(JSON.stringify(view)).not.toMatch(/lucario|448\.png/i);
+    expect(whosThatPokemonGame.getPlayerState(solved, 'p1', fixture.context)).toMatchObject({ solved: true, canGuess: false, solveOrder: 1, roundPoints: 13 });
     expect((whosThatPokemonGame.getPlayerState(solved, 'p2', fixture.context) as WhosThatPokemonPlayerState).canGuess).toBe(true);
     expect(guess(solved, 'p1', 'lucario', fixture.context).accepted).toBe(false);
   });
@@ -148,10 +148,11 @@ describe('authoritative attempts, cooldown and simultaneous solving', () => {
 });
 
 describe('timer, points, hints and final statistics', () => {
-  it('awards five temporal bands, equal points within a band and zero for timeout', () => {
-    expect(whoPokemonPoints(0, 20, 1_000)).toBe(5); expect(whoPokemonPoints(0, 20, 3_000)).toBe(5);
-    expect(whoPokemonPoints(0, 20, 5_000)).toBe(4); expect(whoPokemonPoints(0, 20, 10_000)).toBe(3);
-    expect(whoPokemonPoints(0, 20, 15_000)).toBe(2); expect(whoPokemonPoints(0, 20, 19_500)).toBe(1);
+  it('awards a continuous speed score plus a clear podium bonus and zero for timeout', () => {
+    expect(whoPokemonScore(0, 20, 1_000, 1)).toEqual({ speedPoints: 10, placementBonus: 3, totalPoints: 13 });
+    expect(whoPokemonScore(0, 20, 3_000, 2)).toEqual({ speedPoints: 9, placementBonus: 2, totalPoints: 11 });
+    expect(whoPokemonScore(0, 20, 10_000, 3)).toEqual({ speedPoints: 5, placementBonus: 1, totalPoints: 6 });
+    expect(whoPokemonScore(0, 20, 19_500, 4)).toEqual({ speedPoints: 1, placementBonus: 0, totalPoints: 1 });
     const timeout = setup({ generations: [4], rounds: 1 }); timeout.setNow(timeout.state.roundEndsAt!);
     const state = whosThatPokemonGame.handleTimeout(timeout.state, timeout.context); expect(state.scores).toEqual({ p1: 0, p2: 0 }); expect(state.playerStats.p1?.missed).toBe(1);
   });
@@ -169,7 +170,7 @@ describe('timer, points, hints and final statistics', () => {
     let state = guess(fixture.state, 'p1', 'lucario', fixture.context).state;
     fixture.setNow(state.nextTransitionAt!); state = whosThatPokemonGame.handleTimeout(state, fixture.context);
     const restored = { game: whosThatPokemonGame.getPublicState(state, fixture.context), player: whosThatPokemonGame.getPlayerState(state, 'p1', fixture.context) };
-    expect(restored).toMatchObject({ game: { roundNumber: 1, roundEndsAt: expect.any(Number), solvedPlayerIds: ['p1'], visibleHints: [{ kind: 'GENERATION' }] }, player: { solved: true, canGuess: false } });
+    expect(restored).toMatchObject({ game: { roundNumber: 1, roundEndsAt: expect.any(Number), solvedPlayers: [{ playerId: 'p1', solveOrder: 1 }], visibleHints: [{ kind: 'GENERATION' }] }, player: { solved: true, canGuess: false, solveOrder: 1 } });
     expect(JSON.stringify(restored)).not.toMatch(/lucario|448\.png/i);
   });
 
@@ -179,10 +180,10 @@ describe('timer, points, hints and final statistics', () => {
     fixture.setNow(10_000); state = guess(state, 'p1', 'lucario', fixture.context).state; expect(state.phase).toBe('ROUND_RESULTS');
     fixture.setNow(state.nextTransitionAt!); state = whosThatPokemonGame.handleTimeout(state, fixture.context); expect(state.phase).toBe('GAME_RESULTS');
     const results = whosThatPokemonGame.getResults(state); expect(results.standings.map((entry) => entry.playerId)).toEqual(['p2', 'p1']);
-    expect(results.standings.find((entry) => entry.playerId === 'p1')?.stats).toMatchObject({ correct: 1, missed: 0, totalAttempts: 2, firstTry: 0, bestTimeMs: 9000, pointsFromRounds: 3 });
+    expect(results.standings.find((entry) => entry.playerId === 'p1')?.stats).toMatchObject({ correct: 1, missed: 0, totalAttempts: 2, firstTry: 0, roundFirsts: 0, bestTimeMs: 9000, pointsFromRounds: 8 });
   });
 
-  it('preserves a real shared position when the final score is tied', () => {
+  it('uses solve order to break otherwise simultaneous answers', () => {
     const fixture = setup({ generations: [4], rounds: 1 });
     fixture.setNow(2_000);
     let state = guess(fixture.state, 'p1', 'lucario', fixture.context).state;
@@ -191,10 +192,11 @@ describe('timer, points, hints and final statistics', () => {
     state = whosThatPokemonGame.handleTimeout(state, fixture.context);
 
     const results = whosThatPokemonGame.getResults(state);
+    expect(state.lastRound?.solves).toMatchObject({ p1: { solveOrder: 1 }, p2: { solveOrder: 2 } });
     expect(results.standings.map(({ position, points, won }) => ({ position, points, won }))).toEqual([
-      { position: 1, points: 5, won: true },
-      { position: 1, points: 5, won: true },
+      { position: 1, points: 13, won: true },
+      { position: 2, points: 12, won: false },
     ]);
-    expect(results.winnerId).toBeNull();
+    expect(results.winnerId).toBe('p1');
   });
 });

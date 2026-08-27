@@ -10,7 +10,7 @@ const room: RoomView = {
     { id: 'guest', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: true, sessionPoints: 0 },
   ],
   availableGames: [
-    { id: 'pokedex-distance', name: 'Pokédex Distance', icon: '🎯', description: 'Elige el número más cercano.', minPlayers: 2, profileStats: { metrics: [] } },
+    { id: 'pokedex-distance', name: 'Pokédex Distance', icon: '🎯', description: 'Elige el número más cercano.', recommended: true, minPlayers: 2, profileStats: { metrics: [] } },
     { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero.', experimental: true, minPlayers: 1, profileStats: { metrics: [] } },
   ],
   selectedGameId: 'pokedex-distance', selectedGameConfig: { generations: [1], roundSeconds: 20 },
@@ -24,7 +24,7 @@ describe('lobby information hierarchy', () => {
   it('keeps game descriptions visible and separates the lobby into accessible tabs', () => {
     const markup = renderToStaticMarkup(<Lobby
       room={room} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
-      onSelectGame={noOp} onConfig={noOp} onSession={noOp} onGameSelection={noOp}
+      onSelectGame={noOp} onConfig={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
       onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
     />);
 
@@ -36,6 +36,7 @@ describe('lobby information hierarchy', () => {
     expect(markup).toContain('Elige el número más cercano.');
     expect(markup).toContain('Encuentra el shiny verdadero.');
     expect(markup).toContain('Experimental');
+    expect(markup).toContain('>TOP<');
     expect(markup).toContain('placeholder="Buscar entre 2 juegos"');
     expect(markup).toContain('Hablando es mejor');
     expect(markup).toContain('Discord, Zoom');

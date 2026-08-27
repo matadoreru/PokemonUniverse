@@ -95,6 +95,32 @@ describe('Sketchmon', () => {
     expect(cleared.state.strokes).toEqual([]);
     const restored = sketchmonGame.handleAction(cleared.state, 'p1', { type: 'UNDO_STROKE' }, fixture.context);
     expect(restored.state.strokes).toHaveLength(1);
+    const redone = sketchmonGame.handleAction(restored.state, 'p1', { type: 'REDO_STROKE' }, fixture.context);
+    expect(redone.state.strokes).toEqual([]);
+  });
+
+  it('supports fill strokes and does not impose an artificial drawing-length limit', () => {
+    const fixture = setup(); let state = fixture.state;
+    state = sketchmonGame.handleAction(state, 'p1', { type: 'DRAW_BATCH', operations: [{ kind: 'START', stroke: { id: 'fill_1', tool: 'FILL', color: '#ef4444', width: 8, points: [{ x: .5, y: .5 }] } }] }, fixture.context).state;
+    expect(state.strokes[0]).toMatchObject({ tool: 'FILL', color: '#ef4444' });
+    for (let start = 0; start < 304; start += 8) {
+      const operations = Array.from({ length: Math.min(8, 304 - start) }, (_, index) => ({
+        kind: 'START' as const,
+        stroke: { id: `unbounded_${start + index}`, tool: 'PENCIL' as const, color: '#182033' as const, width: 8, points: [{ x: .1, y: .1 }] },
+      }));
+      const result = sketchmonGame.handleAction(state, 'p1', { type: 'DRAW_BATCH', operations }, fixture.context);
+      expect(result.accepted).toBe(true); state = result.state;
+    }
+    expect(state.strokes).toHaveLength(305);
+  });
+
+  it('keeps the authoritative undo/redo projection consistent after reconnecting', () => {
+    const fixture = setup(); let state = draw(fixture.state, 'p1', fixture.context).state;
+    state = sketchmonGame.handleAction(state, 'p1', { type: 'UNDO_STROKE' }, fixture.context).state;
+    expect(sketchmonGame.getPublicState(state, fixture.context).strokes).toEqual([]);
+    state = sketchmonGame.handleAction(state, 'p1', { type: 'REDO_STROKE' }, fixture.context).state;
+    const restored = sketchmonGame.getPublicState(state, fixture.context);
+    expect(restored.strokes).toEqual(state.strokes); expect(restored.strokes[0]?.points).toHaveLength(2);
   });
 
   it('publishes multiple wrong guesses, applies cooldown and ends on the first correct answer', () => {

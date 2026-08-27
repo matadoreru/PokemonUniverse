@@ -8,12 +8,13 @@ import { describeBingoCondition, hasCompleteBingoMetadata, pokemonMatchesBingoCe
 import { pokemonBingoActionSchema, type BingoBoardState, type BingoPrivateAttempt, type BingoPublicBoard, type PokemonBingoAction, type PokemonBingoPlayerState, type PokemonBingoPublicState, type PokemonBingoState } from './types.js';
 
 export const BINGO_INCORRECT_COOLDOWN_MS = 1_000;
-export const BINGO_REVEAL_MS = 2_200;
+export const BINGO_REVEAL_MS = 8_000;
 const pokemonView = (pokemon: Pokemon) => ({ id: pokemon.id, name: pokemon.name, sprite: pokemon.sprite });
 const completedCells = (board: BingoBoardState) => Object.keys(board.assignments).length;
 
 const manifest = {
   id: 'pokemon-bingo', name: 'Pokémon Bingo', icon: '🎉',
+  recommended: true,
   description: 'Completa antes que nadie un tablero de condiciones con Pokémon distintos.', minPlayers: 1, maxPlayers: 8,
   profileStats: {
     metrics: [
@@ -111,6 +112,11 @@ export const pokemonBingoGame: MiniGameModule<PokemonBingoConfig, PokemonBingoSt
   },
   start(state, context) { return { ...state, phase: 'ROUND_ACTIVE', gameStartedAt: context.now, roundEndsAt: context.now + state.config.durationSeconds * 1_000 }; },
   handleAction(state, playerId, action, context) {
+    if (action.type === 'SKIP_RESULTS') {
+      if (state.phase !== 'ROUND_RESULTS') return { state, accepted: false, error: 'El resultado todavía no se puede saltar.' };
+      if (!context.hostId || playerId !== context.hostId) return { state, accepted: false, error: 'Solo el host puede continuar.' };
+      return { state: finish(state), accepted: true };
+    }
     if (state.phase !== 'ROUND_ACTIVE') return { state, accepted: false, error: 'La partida ya ha terminado.' };
     if (!state.playerIds.includes(playerId) || !isPlayerRequired(context, playerId)) return { state, accepted: false, error: 'No puedes modificar este tablero.' };
     if (context.now >= (state.roundEndsAt ?? 0)) return { state: finish(state), accepted: false, error: 'El tiempo ha terminado.' };

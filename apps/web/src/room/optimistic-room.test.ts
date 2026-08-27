@@ -39,6 +39,17 @@ describe('optimistic lobby room projection', () => {
     expect(published.at(-1)?.selectedGameConfig).toEqual({ showVotes: false });
   });
 
+  it('keeps an off-screen rotation game edit in the public config map', () => {
+    const projection = new OptimisticRoomProjection();
+    projection.setAuthoritative(room({ gameConfigs: { 'shiny-vote': { rounds: 3 }, 'higher-lower': { rounds: 5 } } }));
+
+    projection.begin({ kind: 'config', gameId: 'higher-lower', config: { rounds: 9 } });
+
+    expect(projection.view()?.selectedGameConfig).toEqual({ showVotes: true });
+    expect(projection.view()?.gameConfigs?.['higher-lower']).toEqual({ rounds: 9 });
+    expect(projection.view()?.customizedGameIds).toContain('higher-lower');
+  });
+
   it('does not regress to an older server broadcast while a newer edit is pending', async () => {
     const projection = new OptimisticRoomProjection();
     projection.setAuthoritative(room({ selectedGameConfig: { rounds: 5 } }));
@@ -86,11 +97,13 @@ describe('optimistic lobby room projection', () => {
     expect(projection.setAuthoritative(active)).toBe(active);
   });
 
-  it('does not apply a pending config to a different selected game', () => {
+  it('keeps a pending config scoped to its game when the selected game changes', () => {
     const projection = new OptimisticRoomProjection(); projection.setAuthoritative(room());
     projection.begin({ kind: 'config', gameId: 'shiny-vote', config: { showVotes: false } });
     const changedGame = room({ selectedGameId: 'higher-lower', selectedGameConfig: { rounds: 5 } });
-    expect(projection.setAuthoritative(changedGame)).toBe(changedGame);
+    const projected = projection.setAuthoritative(changedGame);
+    expect(projected?.selectedGameConfig).toEqual({ rounds: 5 });
+    expect(projected?.gameConfigs?.['shiny-vote']).toEqual({ showVotes: false });
   });
 
   it('drops unconfirmed edits when the socket disconnects', () => {

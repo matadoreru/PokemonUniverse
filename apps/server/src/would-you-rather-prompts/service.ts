@@ -1,4 +1,4 @@
-import { createCustomWouldYouRatherPromptSchema, updateCustomWouldYouRatherPromptSchema, type CustomWouldYouRatherPromptView, type WouldYouRatherPromptPair } from '@pokemon-universe/shared';
+import { createCustomWouldYouRatherPromptSchema, importCustomWouldYouRatherPromptsSchema, updateCustomWouldYouRatherPromptSchema, type CustomWouldYouRatherPromptView, type WouldYouRatherPromptPair } from '@pokemon-universe/shared';
 
 export interface StoredWouldYouRatherPrompt {
   id: string;
@@ -85,6 +85,20 @@ export class WouldYouRatherPromptService {
     this.notify(userId); return view(updated);
   }
 
+  async import(userId: string, input: unknown): Promise<CustomWouldYouRatherPromptView[]> {
+    const { prompts } = importCustomWouldYouRatherPromptsSchema.parse(input);
+    const keys = prompts.map((prompt) => wouldYouRatherPromptKey(prompt.optionA, prompt.optionB));
+    if (new Set(keys).size !== keys.length) throw new DuplicateWouldYouRatherPromptError('El JSON contiene dilemas duplicados o invertidos.');
+    for (const key of keys) this.assertUnique(userId, key);
+    const created: StoredWouldYouRatherPrompt[] = [];
+    for (const [index, prompt] of prompts.entries()) {
+      created.push(await this.repository.create(userId, prompt.optionA, prompt.optionB, keys[index]!));
+    }
+    for (const prompt of created) this.insertCached(prompt);
+    this.notify(userId);
+    return created.map(view);
+  }
+
   async delete(userId: string, id: string): Promise<void> {
     if (!(await this.repository.delete(userId, id))) throw new WouldYouRatherPromptNotFoundError();
     this.byUser.set(userId, (this.byUser.get(userId) ?? []).filter((prompt) => prompt.id !== id));
@@ -108,7 +122,7 @@ export class WouldYouRatherPromptService {
 
 export class DuplicateWouldYouRatherPromptError extends Error {
   readonly status = 409;
-  constructor() { super('Ya tienes una pareja igual o equivalente.'); }
+  constructor(message = 'Ya tienes una pareja igual o equivalente.') { super(message); }
 }
 export class InvalidWouldYouRatherPromptError extends Error {
   readonly status = 400;

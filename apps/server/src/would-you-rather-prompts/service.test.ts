@@ -57,4 +57,18 @@ describe('WouldYouRatherPromptService', () => {
     const restarted = new WouldYouRatherPromptService(repository); await restarted.load();
     expect(restarted.list('u1')).toHaveLength(1);
   });
+
+  it('imports a versioned JSON batch and rejects duplicates before writing', async () => {
+    const repository = new MemoryRepository(); const service = new WouldYouRatherPromptService(repository); await service.load();
+    const imported = await service.import('u1', { version: 1, prompts: [
+      { optionA: 'Entrenar con Pikachu', optionB: 'Dormir con Snorlax' },
+      { optionA: 'Volar con Dragonite', optionB: 'Nadar con Lapras' },
+    ] });
+    expect(imported).toHaveLength(2); expect(service.enabled('u1')).toHaveLength(2);
+    await expect(service.import('u1', { version: 1, prompts: [
+      { optionA: 'Elegir a Eevee', optionB: 'Elegir a Mew' },
+      { optionA: 'elegir a mew', optionB: 'ELEGIR A EEVEE' },
+    ] })).rejects.toThrow(/JSON contiene dilemas duplicados/);
+    expect(repository.prompts).toHaveLength(2);
+  });
 });

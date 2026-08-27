@@ -26,7 +26,7 @@ describe('multi-game registry', () => {
       ['secret-ranking', 'Secret Ranking'],
       ['most-likely-to', 'Most Likely To'],
       ['would-you-rather', 'Would You Rather Pokémon'],
-      ['pokemon-red-flag', 'Pokémon Red Flag'],
+      ['pokemon-red-flag', 'Pokémon Red Flag / Green Flag'],
     ]);
   });
 
@@ -39,6 +39,12 @@ describe('multi-game registry', () => {
       'most-likely-to',
       'would-you-rather',
       'pokemon-red-flag',
+    ]);
+  });
+
+  it('exposes the curated recommended games through shared manifest metadata', () => {
+    expect(gameRegistry.manifests().filter((game) => game.recommended).map((game) => game.id)).toEqual([
+      'pokemon-impostor', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokemon-connections',
     ]);
   });
 

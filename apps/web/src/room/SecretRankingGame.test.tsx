@@ -39,6 +39,7 @@ describe('Secret Ranking client', () => {
     expect(html).toContain('Subir Eevee');
     expect(html).toContain('Bajar Pikachu');
     expect(html).toContain('Solo se muestra quién ha terminado');
+    expect(html).toContain('h-20 w-20');
     expect(html).not.toContain('Distancia 8');
   });
 

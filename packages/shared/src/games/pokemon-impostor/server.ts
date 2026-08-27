@@ -21,6 +21,7 @@ const ELIMINATION_MS = 4_000;
 const manifest = {
   id: 'pokemon-impostor',
   name: 'Pokémon Impostor',
+  recommended: true,
   icon: '🕵️',
   description: 'Da pistas, detecta a quienes no conocen el Pokémon y expulsa a los impostores.',
   minPlayers: 3,

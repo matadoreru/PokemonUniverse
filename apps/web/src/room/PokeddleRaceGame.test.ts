@@ -51,6 +51,12 @@ describe('Pokédle feedback presentation', () => {
     expect(formatPokeddleFeedback('types', { kind: 'TYPES', value: ['fire'], result: 'PARTIAL' })).toMatchObject({ result: '~ Parcial', semantic: 'partial' });
     expect(formatPokeddleFeedback('types', { kind: 'TYPES', value: ['water'], result: 'NONE' })).toMatchObject({ result: '× Ninguno', semantic: 'none' });
   });
+
+  it('describes Pokémon without an evolution line without calling them stage one', () => {
+    const presentation = formatPokeddleFeedback('evolutionStage', { kind: 'EVOLUTION', value: { stage: 1, stages: 1 }, result: 'MATCH' });
+    expect(presentation.value).toBe('Sin evolución · No tiene etapas evolutivas');
+    expect(String(presentation.value)).not.toContain('Etapa 1');
+  });
 });
 
 describe('Pokédle responsive board model', () => {

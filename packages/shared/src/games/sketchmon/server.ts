@@ -8,8 +8,6 @@ import { sketchmonActionSchema, type SketchmonAction, type SketchmonGalleryEntry
 export const SKETCHMON_GUESS_COOLDOWN_MS = 750;
 export const SKETCHMON_REVEAL_MS = 6_000;
 export const SKETCHMON_SPRITE_PREVIEW_MS = 3_000;
-export const SKETCHMON_MAX_STROKES = 300;
-export const SKETCHMON_MAX_POINTS = 2_500;
 
 const manifest = {
   id: 'sketchmon', name: 'Sketchmon', icon: '🎨',
@@ -56,10 +54,6 @@ function reveal(pokemon: Pokemon): SketchmonPokemonReveal {
 
 function cloneDrawing(strokes: readonly SketchmonStroke[]): SketchmonStroke[] {
   return strokes.map((stroke) => ({ ...stroke, points: stroke.points.map((point) => ({ ...point })) }));
-}
-
-function drawingPointCount(strokes: readonly SketchmonStroke[]): number {
-  return strokes.reduce((total, stroke) => total + stroke.points.length, 0);
 }
 
 export function sketchmonHintDeadlines(roundStartedAt: number, roundSeconds: number): number[] {
@@ -109,7 +103,7 @@ function incrementDrawingFailure(state: SketchmonState, drawerId: string): Sketc
 
 function finish(state: SketchmonState): SketchmonState {
   return {
-    ...state, phase: 'GAME_RESULTS', targetPokemonId: null, drawerId: null, strokes: [], visibleHints: [], attempts: [],
+    ...state, phase: 'GAME_RESULTS', targetPokemonId: null, drawerId: null, strokes: [], undoStack: [], redoStack: [], visibleHints: [], attempts: [],
     roundStartedAt: null, roundEndsAt: null, nextTransitionAt: null, lastRound: null,
   };
 }
@@ -140,7 +134,7 @@ function beginNextRound(initial: SketchmonState, context: GameContext): Sketchmo
     const previewEndsAt = state.config.memoryPreviewEnabled ? roundStartedAt + SKETCHMON_SPRITE_PREVIEW_MS : null;
     return {
       ...state, phase: 'ROUND_ACTIVE', roundNumber, targetPokemonId: target.id, drawerId,
-      usedPokemonIds: [...new Set([...state.usedPokemonIds, target.id])], strokes: [], clearedStrokes: null, visibleHints: [], attempts: [],
+      usedPokemonIds: [...new Set([...state.usedPokemonIds, target.id])], strokes: [], undoStack: [], redoStack: [], visibleHints: [], attempts: [],
       attemptCounts: {}, cooldownUntil: {}, roundStartedAt,
       roundEndsAt: roundStartedAt + state.config.roundSeconds * 1_000,
       nextTransitionAt: firstHintAt === null ? previewEndsAt : previewEndsAt === null ? firstHintAt : Math.min(firstHintAt, previewEndsAt),
@@ -198,19 +192,21 @@ function resolveRound(state: SketchmonState, context: GameContext, winnerId: str
 
 function applyDrawingBatch(state: SketchmonState, action: Extract<SketchmonAction, { type: 'DRAW_BATCH' }>): GameActionResult<SketchmonState> {
   const strokes = cloneDrawing(state.strokes);
+  const undoStack = state.undoStack.map(cloneDrawing);
+  let redoStack = state.redoStack.map(cloneDrawing);
   for (const operation of action.operations) {
     if (operation.kind === 'START') {
       if (strokes.some((stroke) => stroke.id === operation.stroke.id)) return { state, accepted: false, error: 'Ese trazo ya existe.' };
-      if (strokes.length >= SKETCHMON_MAX_STROKES) return { state, accepted: false, error: 'Has alcanzado el límite de trazos de esta ronda.' };
+      undoStack.push(cloneDrawing(strokes));
+      redoStack = [];
       strokes.push({ ...operation.stroke, points: operation.stroke.points.map((point) => ({ ...point })) });
     } else {
       const stroke = strokes.find((candidate) => candidate.id === operation.strokeId);
       if (!stroke) return { state, accepted: false, error: 'No se puede continuar un trazo inexistente.' };
       stroke.points.push(...operation.points.map((point) => ({ ...point })));
     }
-    if (drawingPointCount(strokes) > SKETCHMON_MAX_POINTS) return { state, accepted: false, error: 'El dibujo ha alcanzado su límite de detalle.' };
   }
-  return { state: { ...state, strokes }, accepted: true };
+  return { state: { ...state, strokes, undoStack, redoStack }, accepted: true };
 }
 
 export const sketchmonGame: MiniGameModule<SketchmonConfig, SketchmonState, SketchmonAction, SketchmonPublicState> = {
@@ -227,7 +223,7 @@ export const sketchmonGame: MiniGameModule<SketchmonConfig, SketchmonState, Sket
     return {
       phase: 'GAME_STARTING', config: parsed, playerIds, drawerOrder: drawerOrder(playerIds, parsed.laps, context.random),
       poolIds: pool.map((pokemon) => pokemon.id), usedPokemonIds: [], roundNumber: 0, targetPokemonId: null,
-      drawerId: null, strokes: [], clearedStrokes: null, visibleHints: [], attempts: [], attemptCounts: {}, cooldownUntil: {},
+      drawerId: null, strokes: [], undoStack: [], redoStack: [], visibleHints: [], attempts: [], attemptCounts: {}, cooldownUntil: {},
       scores: Object.fromEntries(playerIds.map((id) => [id, 0])),
       playerStats: Object.fromEntries(playerIds.map((id) => [id, emptySketchmonStats()])),
       roundStartedAt: null, roundEndsAt: null, nextTransitionAt: null, lastRound: null, gallery: [],
@@ -246,15 +242,18 @@ export const sketchmonGame: MiniGameModule<SketchmonConfig, SketchmonState, Sket
       if (playerId !== state.drawerId) return { state, accepted: false, error: 'Solo quien dibuja puede añadir trazos.' };
       return applyDrawingBatch(state, action);
     }
-    if (action.type === 'UNDO_STROKE' || action.type === 'CLEAR_DRAWING') {
+    if (action.type === 'UNDO_STROKE' || action.type === 'REDO_STROKE' || action.type === 'CLEAR_DRAWING') {
       if (playerId !== state.drawerId) return { state, accepted: false, error: 'Solo quien dibuja puede editar el lienzo.' };
       if (action.type === 'CLEAR_DRAWING') {
-        return { state: { ...state, strokes: [], clearedStrokes: state.strokes.length ? cloneDrawing(state.strokes) : state.clearedStrokes }, accepted: true };
+        if (!state.strokes.length) return { state, accepted: true };
+        return { state: { ...state, strokes: [], undoStack: [...state.undoStack.map(cloneDrawing), cloneDrawing(state.strokes)], redoStack: [] }, accepted: true };
       }
-      if (!state.strokes.length && state.clearedStrokes) {
-        return { state: { ...state, strokes: cloneDrawing(state.clearedStrokes), clearedStrokes: null }, accepted: true };
+      if (action.type === 'UNDO_STROKE') {
+        const previous = state.undoStack.at(-1); if (!previous) return { state, accepted: true };
+        return { state: { ...state, strokes: cloneDrawing(previous), undoStack: state.undoStack.slice(0, -1).map(cloneDrawing), redoStack: [...state.redoStack.map(cloneDrawing), cloneDrawing(state.strokes)] }, accepted: true };
       }
-      return { state: { ...state, strokes: state.strokes.slice(0, -1) }, accepted: true };
+      const next = state.redoStack.at(-1); if (!next) return { state, accepted: true };
+      return { state: { ...state, strokes: cloneDrawing(next), undoStack: [...state.undoStack.map(cloneDrawing), cloneDrawing(state.strokes)], redoStack: state.redoStack.slice(0, -1).map(cloneDrawing) }, accepted: true };
     }
     if (playerId === state.drawerId) return { state, accepted: false, error: 'Quien dibuja no puede adivinar.' };
     if (cooldownRemainingMs(context.now, state.cooldownUntil[playerId]) > 0) return { state, accepted: false, error: cooldownMessage(context.now, state.cooldownUntil[playerId]) };
@@ -284,7 +283,7 @@ export const sketchmonGame: MiniGameModule<SketchmonConfig, SketchmonState, Sket
     if (state.phase !== 'ROUND_ACTIVE' || !state.drawerId || isPlayerRequired(context, state.drawerId)) return state;
     const canceled = incrementDrawingFailure(state, state.drawerId);
     return beginNextRound({
-      ...canceled, targetPokemonId: null, drawerId: null, strokes: [], clearedStrokes: null, visibleHints: [], attempts: [],
+      ...canceled, targetPokemonId: null, drawerId: null, strokes: [], undoStack: [], redoStack: [], visibleHints: [], attempts: [],
       roundStartedAt: null, roundEndsAt: null, nextTransitionAt: null, lastRound: null,
     }, context);
   },

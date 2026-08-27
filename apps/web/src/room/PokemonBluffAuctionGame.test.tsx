@@ -2,7 +2,7 @@ import type { PokemonBluffAuctionPlayerState, PokemonBluffAuctionPublicState, Ro
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { PokemonBluffAuctionGame } from './PokemonBluffAuctionGame';
+import { confirmBluffAuctionPass, PokemonBluffAuctionGame } from './PokemonBluffAuctionGame';
 
 const players = ['Ana', 'Pedro', 'Carlos'].map((displayName, index) => ({
   id: `p${index + 1}`, displayName, avatar: { type: 'DEFAULT' as const }, connected: true,
@@ -42,6 +42,13 @@ describe('Pokémon Bluff Auction presentation', () => {
     expect(html).toContain('Tipo Agua + Velocidad &gt; 80'); expect(html).toContain('Puja actual'); expect(html).toContain('5');
     expect(html).toContain('Ana'); expect(html).toContain('ESTÁ PUJANDO'); expect(html).toContain('PASÓ'); expect(html).toContain('Pasar esta ronda');
     expect(html).not.toContain('validPokemon'); expect(html).not.toContain('respuestas válidas');
+  });
+
+  it('requires explicit confirmation before passing', () => {
+    let message = '';
+    expect(confirmBluffAuctionPass((value) => { message = value; return false; })).toBe(false);
+    expect(message).toContain('Quedarás fuera de esta ronda');
+    expect(confirmBluffAuctionPass(() => true)).toBe(true);
   });
 
   it('shows the shared search only to the bidder and exposes public progress without solution count', () => {

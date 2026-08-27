@@ -87,6 +87,10 @@ export interface RoomView {
   availableGames: MiniGameManifest[];
   selectedGameId: string;
   selectedGameConfig: unknown;
+  /** Lobby-safe configuration for every registered game, keyed by game id. */
+  gameConfigs?: Record<string, unknown>;
+  /** Games whose saved configuration differs from the registered defaults. */
+  customizedGameIds?: string[];
   sessionMode: SessionMode;
   gameSelectionMode: GameSelectionMode;
   nextGameVote: NextGameVoteView | null;
@@ -124,6 +128,7 @@ export interface ClientToServerEvents {
   'room:leave': (_: unknown, ack: SocketAck) => void;
   'room:select-game': (payload: { gameId: string }, ack: SocketAck) => void;
   'room:update-config': (payload: { config: unknown }, ack: SocketAck) => void;
+  'room:update-game-config': (payload: { gameId: string; config: unknown }, ack: SocketAck) => void;
   'room:update-session': (payload: { mode: SessionMode }, ack: SocketAck) => void;
   'room:update-game-selection': (payload: { mode: GameSelectionMode }, ack: SocketAck) => void;
   'room:vote-next-game': (payload: { gameId: string }, ack: SocketAck) => void;

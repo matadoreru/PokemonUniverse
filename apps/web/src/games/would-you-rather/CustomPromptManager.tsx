@@ -1,7 +1,8 @@
 import type { CustomWouldYouRatherPromptView } from '@pokemon-universe/shared';
-import { Check, Pencil, Plus, Power, Save, Trash2, X } from 'lucide-react';
+import { Check, FileJson, Pencil, Plus, Power, Save, Trash2, Upload, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { api } from '../../lib/api';
+import { parseWouldYouRatherImportJson, WOULD_YOU_RATHER_JSON_EXAMPLE } from './json-import';
 
 export function CustomWouldYouRatherPromptManager({ disabled }: { disabled: boolean }) {
   const [prompts, setPrompts] = useState<CustomWouldYouRatherPromptView[]>([]);
@@ -9,6 +10,7 @@ export function CustomWouldYouRatherPromptManager({ disabled }: { disabled: bool
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingA, setEditingA] = useState(''); const [editingB, setEditingB] = useState('');
   const [busyId, setBusyId] = useState(''); const [loading, setLoading] = useState(true); const [error, setError] = useState('');
+  const [importJson, setImportJson] = useState('');
 
   useEffect(() => {
     let active = true;
@@ -39,11 +41,20 @@ export function CustomWouldYouRatherPromptManager({ disabled }: { disabled: bool
     await run(prompt.id, async () => { await api(`/would-you-rather-prompts/${prompt.id}`, { method: 'DELETE' }); setPrompts((current) => current.filter((item) => item.id !== prompt.id)); });
   };
   const enabledCount = prompts.filter((prompt) => prompt.enabled).length;
+  const importPrompts = async () => {
+    let payload;
+    try { payload = parseWouldYouRatherImportJson(importJson); } catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudo leer el JSON.'); return; }
+    await run('import', async () => {
+      const body = await api<{ prompts: CustomWouldYouRatherPromptView[] }>('/would-you-rather-prompts/import', { method: 'POST', body: JSON.stringify(payload) });
+      setPrompts((current) => [...current, ...body.prompts]); setImportJson('');
+    });
+  };
 
   return <section className="rounded-2xl border border-ink/10 bg-surface-raised/70 p-4" aria-labelledby="custom-wyr-title">
     <div className="flex flex-wrap items-start justify-between gap-3"><div><span className="label !mb-0">Cuenta del host</span><h3 id="custom-wyr-title" className="font-display text-xl">Mis dilemas</h3><p className="mt-1 text-sm font-bold text-ink/60">Se guardan en tu cuenta y solo se usan en Would You Rather.</p></div><span className={`chip ${enabledCount >= 1 ? '!bg-leaf/10 !text-leaf' : '!bg-electric/10 !text-electric'}`}><Check size={14} /> {enabledCount} activos</span></div>
     <div className="mt-4 grid gap-2 lg:grid-cols-[1fr_auto_1fr_auto]"><label><span className="sr-only">Nueva opción A</span><input className="field min-h-11" maxLength={180} value={optionA} onChange={(event) => setOptionA(event.target.value)} placeholder="Opción A" disabled={disabled || busyId === 'new'} /></label><strong className="self-center text-center font-display text-berry">VS</strong><label><span className="sr-only">Nueva opción B</span><input className="field min-h-11" maxLength={180} value={optionB} onChange={(event) => setOptionB(event.target.value)} placeholder="Opción B" disabled={disabled || busyId === 'new'} onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); void create(); } }} /></label><button type="button" className="btn-secondary shrink-0" disabled={disabled || optionA.trim().length < 4 || optionB.trim().length < 4 || Boolean(busyId)} onClick={() => void create()}><Plus size={18} /> Añadir</button></div>
     {error && <p className="mt-3 rounded-xl bg-berry/10 px-3 py-2 text-sm font-bold text-berry" role="alert">{error}</p>}
+    <details className="mt-4 rounded-xl border border-ink/10 bg-ink/[.025] p-3"><summary className="flex cursor-pointer list-none items-center gap-2 font-extrabold"><FileJson className="text-aqua" size={18} /> Importar dilemas desde JSON</summary><div className="mt-3"><p className="text-sm font-bold text-ink/65">Formato: objeto con <code>version: 1</code> y <code>prompts</code> (1–100 elementos). Cada elemento necesita <code>optionA</code> y <code>optionB</code>, textos distintos de 4–180 caracteres.</p><div className="mt-2 flex flex-wrap gap-2"><button type="button" className="btn-ghost min-h-9 !px-3 text-sm" disabled={disabled || Boolean(busyId)} onClick={() => setImportJson(WOULD_YOU_RATHER_JSON_EXAMPLE)}>Cargar ejemplo</button></div><label className="mt-3 block"><span className="label">JSON para importar</span><textarea className="field min-h-44 resize-y font-mono text-sm" value={importJson} onChange={(event) => setImportJson(event.target.value)} disabled={disabled || Boolean(busyId)} spellCheck={false} placeholder={WOULD_YOU_RATHER_JSON_EXAMPLE} /></label><button type="button" className="btn-secondary mt-3" disabled={disabled || !importJson.trim() || Boolean(busyId)} onClick={() => void importPrompts()}><Upload size={18} />{busyId === 'import' ? 'Importando…' : 'Validar e importar'}</button></div></details>
     {loading ? <p className="py-5 text-sm font-bold text-ink/60">Cargando dilemas…</p> : prompts.length === 0 ? <p className="mt-4 rounded-xl border border-dashed border-ink/15 p-4 text-center text-sm font-bold text-ink/55">Todavía no has creado dilemas personales.</p> : <ul className="mt-4 max-h-96 space-y-2 overflow-y-auto pr-1">{prompts.map((prompt) => <li key={prompt.id} className={`rounded-xl border p-2.5 ${prompt.enabled ? 'border-aqua/20 bg-aqua/[.04]' : 'border-ink/10 bg-ink/[.025] opacity-70'}`}>
       {editingId === prompt.id ? <div className="grid gap-2 lg:grid-cols-[1fr_1fr_auto_auto]"><input className="field min-h-10" maxLength={180} value={editingA} onChange={(event) => setEditingA(event.target.value)} aria-label="Editar opción A" autoFocus /><input className="field min-h-10" maxLength={180} value={editingB} onChange={(event) => setEditingB(event.target.value)} aria-label="Editar opción B" /><button type="button" className="btn-ghost min-h-10 !px-3" disabled={editingA.trim().length < 4 || editingB.trim().length < 4 || Boolean(busyId)} onClick={() => void update(prompt.id, { optionA: editingA.trim(), optionB: editingB.trim() })}><Save size={17} /> Guardar</button><button type="button" className="btn-ghost min-h-10 !px-3" onClick={() => setEditingId(null)}><X size={17} /> Cancelar</button></div> : <div className="flex items-center gap-2"><button type="button" className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${prompt.enabled ? 'bg-leaf/15 text-leaf' : 'bg-ink/10 text-ink/50'}`} aria-label={prompt.enabled ? 'Desactivar dilema' : 'Activar dilema'} disabled={disabled || Boolean(busyId)} onClick={() => void update(prompt.id, { enabled: !prompt.enabled })}><Power size={17} /></button><p className="min-w-0 flex-1 text-sm font-bold leading-snug"><span className="text-aqua">A.</span> {prompt.optionA} <span className="mx-1 text-berry">VS</span> <span className="text-electric">B.</span> {prompt.optionB}</p><button type="button" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-ink/55 hover:bg-aqua/10 hover:text-aqua" aria-label="Editar dilema" disabled={disabled || Boolean(busyId)} onClick={() => { setEditingId(prompt.id); setEditingA(prompt.optionA); setEditingB(prompt.optionB); }}><Pencil size={17} /></button><button type="button" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-ink/55 hover:bg-berry/10 hover:text-berry" aria-label="Eliminar dilema" disabled={disabled || Boolean(busyId)} onClick={() => void remove(prompt)}><Trash2 size={17} /></button></div>}
     </li>)}</ul>}

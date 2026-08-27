@@ -2,7 +2,7 @@ import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
 import { defaultWhosThatPokemonConfig, whosThatPokemonConfigSchema, type WhosThatPokemonConfig } from './config.js';
-import { buildWhoPokemonHints, buildWhoPokemonResults, emptyWhoPokemonStats, isUsableWhoPokemonSprite, whoPokemonHintSchedule, whoPokemonPoints } from './rules.js';
+import { buildWhoPokemonHints, buildWhoPokemonResults, emptyWhoPokemonStats, isUsableWhoPokemonSprite, whoPokemonHintSchedule, whoPokemonScore } from './rules.js';
 import { whosThatPokemonActionSchema, type WhosThatPokemonAction, type WhosThatPokemonPlayerState, type WhosThatPokemonPublicState, type WhosThatPokemonRoundPublicResult, type WhosThatPokemonState } from './types.js';
 
 export const WHOS_THAT_POKEMON_COOLDOWN_MS = 1_000;
@@ -10,6 +10,7 @@ export const WHOS_THAT_POKEMON_REVEAL_MS = 4_000;
 
 const manifest = {
   id: 'whos-that-pokemon', name: '¿Quién es ese Pokémon?', icon: '❓',
+  recommended: true,
   description: 'Reconoce la silueta antes que nadie y suma más puntos cuanto más rápido aciertes.', minPlayers: 1, maxPlayers: 8,
   profileStats: {
     metrics: [
@@ -17,6 +18,7 @@ const manifest = {
       { key: 'missed', label: 'Pokémon no acertados', aggregation: 'SUM' as const },
       { key: 'totalAttempts', label: 'Intentos totales', aggregation: 'SUM' as const },
       { key: 'firstTry', label: 'Aciertos al primer intento', aggregation: 'SUM' as const },
+      { key: 'roundFirsts', label: 'Primeros puestos', aggregation: 'SUM' as const },
       { key: 'solveTimeTotalMs', label: 'Tiempo total en aciertos', aggregation: 'SUM' as const, format: 'DURATION_MS' as const },
       { key: 'bestTimeMs', label: 'Mejor tiempo', aggregation: 'MIN' as const, format: 'DURATION_MS' as const },
       { key: 'pointsFromRounds', label: 'Puntos en rondas', aggregation: 'SUM' as const },
@@ -109,15 +111,18 @@ export const whosThatPokemonGame: MiniGameModule<WhosThatPokemonConfig, WhosThat
     const attemptCount = (state.attemptCounts[playerId] ?? 0) + 1;
     const stats = state.playerStats[playerId] ?? emptyWhoPokemonStats();
     if (guessed.id === state.targetPokemonId) {
-      const elapsedMs = context.now - state.roundStartedAt!; const points = whoPokemonPoints(state.roundStartedAt!, state.config.roundSeconds, context.now);
+      const elapsedMs = context.now - state.roundStartedAt!;
+      const solveOrder = Object.keys(state.solves).length + 1;
+      const score = whoPokemonScore(state.roundStartedAt!, state.config.roundSeconds, context.now, solveOrder);
+      const points = score.totalPoints;
       let next: WhosThatPokemonState = {
         ...state,
         attemptCounts: { ...state.attemptCounts, [playerId]: attemptCount },
-        solves: { ...state.solves, [playerId]: { solvedAt: context.now, elapsedMs, points, attempts: attemptCount } },
+        solves: { ...state.solves, [playerId]: { solveOrder, solvedAt: context.now, elapsedMs, speedPoints: score.speedPoints, placementBonus: score.placementBonus, points, attempts: attemptCount } },
         lastAttemptResult: { ...state.lastAttemptResult, [playerId]: { result: 'CORRECT', attemptedAt: context.now } },
         scores: { ...state.scores, [playerId]: (state.scores[playerId] ?? 0) + points },
         playerStats: { ...state.playerStats, [playerId]: {
-          ...stats, correct: stats.correct + 1, totalAttempts: stats.totalAttempts + 1, firstTry: stats.firstTry + (attemptCount === 1 ? 1 : 0),
+          ...stats, correct: stats.correct + 1, totalAttempts: stats.totalAttempts + 1, firstTry: stats.firstTry + (attemptCount === 1 ? 1 : 0), roundFirsts: stats.roundFirsts + (solveOrder === 1 ? 1 : 0),
           solveTimeTotalMs: stats.solveTimeTotalMs + elapsedMs, bestTimeMs: stats.bestTimeMs <= 0 ? elapsedMs : Math.min(stats.bestTimeMs, elapsedMs), pointsFromRounds: stats.pointsFromRounds + points,
         } },
       };
@@ -152,7 +157,7 @@ export const whosThatPokemonGame: MiniGameModule<WhosThatPokemonConfig, WhosThat
       gameId: 'whos-that-pokemon', phase: state.phase, roundNumber: state.roundNumber, totalRounds: state.config.rounds,
       silhouetteSprite: state.phase === 'ROUND_ACTIVE' && target ? assetPath(state, context, 'shadow') : null,
       visibleHints: state.phase === 'ROUND_ACTIVE' && state.config.hintsEnabled && target ? buildWhoPokemonHints(target).slice(0, state.revealedHintCount) : [],
-      attempts: state.attempts, solvedPlayerIds: Object.keys(state.solves), scores: state.scores,
+      attempts: state.attempts, solvedPlayers: Object.entries(state.solves).map(([playerId, solve]) => ({ playerId, solveOrder: solve.solveOrder })).sort((left, right) => left.solveOrder - right.solveOrder), scores: state.scores,
       roundStartedAt: state.roundStartedAt, roundEndsAt: state.roundEndsAt, nextTransitionAt: state.nextTransitionAt,
       lastRound: publicRoundResult(state, context), results: state.phase === 'GAME_RESULTS' ? buildWhoPokemonResults(state) : null,
     };
@@ -161,7 +166,7 @@ export const whosThatPokemonGame: MiniGameModule<WhosThatPokemonConfig, WhosThat
     const solve = state.solves[playerId];
     return {
       canGuess: state.phase === 'ROUND_ACTIVE' && state.playerIds.includes(playerId) && isPlayerRequired(context, playerId) && !solve,
-      solved: Boolean(solve), cooldownUntil: state.cooldownUntil[playerId] ?? null, roundPoints: solve?.points ?? 0,
+      solved: Boolean(solve), solveOrder: solve?.solveOrder ?? null, cooldownUntil: state.cooldownUntil[playerId] ?? null, roundPoints: solve?.points ?? 0,
       attemptCount: state.attemptCounts[playerId] ?? 0, lastAttempt: state.lastAttemptResult[playerId] ?? null,
     };
   },

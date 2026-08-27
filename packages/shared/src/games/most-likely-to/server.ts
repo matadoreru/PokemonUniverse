@@ -1,5 +1,6 @@
 import type { Pokemon } from '../../pokemon/types.js';
 import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, type SubjectiveCategory } from '../contracts.js';
+import { allEligibleRunoffVotersCompleted, eligibleRunoffVoterIds, leadingRunoffCandidateIds, recordRunoffVoteRound } from '../infrastructure/runoff-voting.js';
 import { defaultMostLikelyToConfig, mostLikelyToConfigSchema, type MostLikelyToConfig } from './config.js';
 import { officialMostLikelyToPrompts } from './prompts.js';
 import { buildMostLikelyToResults, emptyMostLikelyToStats, MOST_LIKELY_TO_WIN_POINTS } from './rules.js';
@@ -75,15 +76,15 @@ function beginRound(state: MostLikelyToState, context: GameContext): MostLikelyT
 }
 
 function eligibleVoterIds(state: MostLikelyToState, context: GameContext): string[] {
-  return state.playerIds.filter((playerId) => isPlayerRequired(context, playerId) && state.voteCandidates.some((candidateId) => candidateId !== playerId));
+  return eligibleRunoffVoterIds(state.playerIds, state.voteCandidates, (playerId) => isPlayerRequired(context, playerId), (playerId, candidateId) => candidateId !== playerId);
 }
 
 function allEligibleVoted(state: MostLikelyToState, context: GameContext): boolean {
-  return eligibleVoterIds(state, context).every((playerId) => Boolean(state.votes[playerId]));
+  return allEligibleRunoffVotersCompleted(eligibleVoterIds(state, context), state.votes);
 }
 
 function voteRecord(state: MostLikelyToState): MostLikelyToVoteRound {
-  return { number: state.voteRoundNumber, candidateIds: [...state.voteCandidates], votes: { ...state.votes } };
+  return recordRunoffVoteRound(state.voteRoundNumber, state.voteCandidates, state.votes);
 }
 
 function finishRound(state: MostLikelyToState, winnerIds: string[], voteHistory: MostLikelyToVoteRound[], context: GameContext): MostLikelyToState {
@@ -137,10 +138,7 @@ function resolveVote(state: MostLikelyToState, context: GameContext): MostLikely
   if (state.voteCandidates.length === 0) return finishRound(state, [], state.voteHistory, context);
   const recorded = voteRecord(state);
   const history = [...state.voteHistory, recorded];
-  const tallies = Object.fromEntries(state.voteCandidates.map((candidateId) => [candidateId, 0]));
-  for (const targetId of Object.values(state.votes)) if (targetId in tallies) tallies[targetId] = (tallies[targetId] ?? 0) + 1;
-  const maximum = Math.max(...Object.values(tallies));
-  const tied = state.voteCandidates.filter((candidateId) => tallies[candidateId] === maximum);
+  const tied = leadingRunoffCandidateIds(state.voteCandidates, state.votes);
   if (tied.length === 1) return finishRound(state, tied, history, context);
   if (state.phase === 'REVOTE') return finishRound(state, tied, history, context);
   return {

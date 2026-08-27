@@ -159,6 +159,14 @@ describe('Pokémon Bluff Auction', () => {
     expect(fixture.state.conditionTemplates.every((template) => template.candidatePokemonIds.length >= 3 && template.candidatePokemonIds.length <= 5)).toBe(true);
   });
 
+  it('matches curated dog, cat, starter and fossil categories by stable National Dex identity', () => {
+    expect(pokemonMatchesBluffAuctionCondition(mon('growlithe', 58, 1, ['fire'], 350, 60, 70, 'intimidate'), { conditions: [{ kind: 'CURATED_CATEGORY', category: 'DOG' }] })).toBe(true);
+    expect(pokemonMatchesBluffAuctionCondition(mon('meowth', 52, 1, ['normal'], 290, 90, 45, 'pickup'), { conditions: [{ kind: 'CURATED_CATEGORY', category: 'CAT' }] })).toBe(true);
+    expect(pokemonMatchesBluffAuctionCondition(pokemon[0]!, { conditions: [{ kind: 'CURATED_CATEGORY', category: 'STARTER' }] })).toBe(false);
+    expect(pokemonMatchesBluffAuctionCondition(mon('omanyte', 138, 1, ['rock', 'water'], 355, 35, 40, 'swift-swim'), { conditions: [{ kind: 'CURATED_CATEGORY', category: 'FOSSIL' }] })).toBe(true);
+    expect(pokemonMatchesBluffAuctionCondition(mon('pikachu', 25, 1, ['electric'], 320, 90, 55, 'static'), { conditions: [{ kind: 'CURATED_CATEGORY', category: 'DOG' }] })).toBe(false);
+  });
+
   it('uses only configured generations and excludes every non-default form', () => {
     const fixture = setup({ generations: [1] });
     expect(fixture.state.poolIds).not.toContain('suicune'); expect(fixture.state.poolIds).not.toContain('raichu-alola');

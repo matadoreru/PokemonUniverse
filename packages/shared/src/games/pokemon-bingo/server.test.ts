@@ -19,7 +19,7 @@ const catalog: PokemonCatalog = { all: () => pokemon, byId: (id) => pokemon.find
 function randomSource() { let value = 123_456_789; return () => { value = value * 1_103_515_245 + 12_345 & 0x7fffffff; return value / 0x80000000; }; }
 function config(overrides: Partial<PokemonBingoConfig> = {}): PokemonBingoConfig { return { ...defaultPokemonBingoConfig, width: 2, height: 2, generations: [1, 2, 3], families: { ...defaultPokemonBingoConfig.families }, ...overrides }; }
 function setup(playerCount = 2, overrides: Partial<PokemonBingoConfig> = {}) {
-  let now = 1_000; const context: GameContext = { players: Array.from({ length: playerCount }, (_, index) => ({ id: `p${index + 1}`, displayName: `Player ${index + 1}`, connected: true, active: true })), pokemon: catalog, now, random: randomSource() };
+  let now = 1_000; const context: GameContext = { players: Array.from({ length: playerCount }, (_, index) => ({ id: `p${index + 1}`, displayName: `Player ${index + 1}`, connected: true, active: true })), pokemon: catalog, now, random: randomSource(), hostId: 'p1' };
   let state = pokemonBingoGame.createInitialState(config(overrides), context); state = pokemonBingoGame.start(state, context);
   return { state, context, setNow(value: number) { now = value; context.now = value; } };
 }
@@ -135,5 +135,11 @@ describe('Pokémon Bingo authoritative assignments and race', () => {
     expect(pokemonBingoGame.manifest.profileStats.derivedMetrics?.map((metric) => metric.key)).toEqual(['completionRate', 'bingoRate']);
   });
 
-  it('uses the short authoritative Bingo transition', () => { const fixture = setup(); const state = { ...fixture.state, phase: 'ROUND_RESULTS' as const, winnerId: 'p1', bingoAt: fixture.context.now, roundEndsAt: null, nextTransitionAt: fixture.context.now + BINGO_REVEAL_MS }; fixture.setNow(state.nextTransitionAt); expect(pokemonBingoGame.handleTimeout(state, fixture.context).phase).toBe('GAME_RESULTS'); });
+  it('keeps the Bingo reveal visible for eight seconds and lets only the host skip it', () => {
+    const fixture = setup(); const state = { ...fixture.state, phase: 'ROUND_RESULTS' as const, winnerId: 'p1', bingoAt: fixture.context.now, roundEndsAt: null, nextTransitionAt: fixture.context.now + BINGO_REVEAL_MS };
+    expect(BINGO_REVEAL_MS).toBe(8_000);
+    expect(action(state, 'p2', { type: 'SKIP_RESULTS' }, fixture.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/host/) });
+    expect(action(state, 'p1', { type: 'SKIP_RESULTS' }, fixture.context)).toMatchObject({ accepted: true, state: { phase: 'GAME_RESULTS', nextTransitionAt: null } });
+    fixture.setNow(state.nextTransitionAt); expect(pokemonBingoGame.handleTimeout(state, fixture.context).phase).toBe('GAME_RESULTS');
+  });
 });

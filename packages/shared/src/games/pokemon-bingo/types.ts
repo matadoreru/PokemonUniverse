@@ -61,9 +61,9 @@ export interface PokemonBingoPlayerState {
 }
 
 export const pokemonBingoActionSchema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('SKIP_RESULTS') }).strict(),
   z.object({ type: z.literal('ASSIGN_POKEMON'), cellId: z.string().min(1).max(64), pokemonId: z.string().min(1).max(64), moveExisting: z.boolean().optional() }).strict(),
   z.object({ type: z.literal('MOVE_POKEMON'), fromCellId: z.string().min(1).max(64), toCellId: z.string().min(1).max(64) }).strict(),
   z.object({ type: z.literal('REMOVE_POKEMON'), cellId: z.string().min(1).max(64) }).strict(),
 ]);
 export type PokemonBingoAction = z.infer<typeof pokemonBingoActionSchema>;
-

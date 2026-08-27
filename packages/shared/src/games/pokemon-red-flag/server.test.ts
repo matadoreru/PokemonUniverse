@@ -14,11 +14,11 @@ const catalog: PokemonCatalog = {
   forGenerations: (generations) => entries.filter((pokemon) => generations.includes(pokemon.generation)),
 };
 
-function setup(overrides: Partial<typeof defaultPokemonRedFlagConfig> = {}, playerCount = 3) {
+function setup(overrides: Partial<typeof defaultPokemonRedFlagConfig> = {}, playerCount = 3, random = () => 0) {
   let now = 1_000;
   const context: GameContext = {
     players: Array.from({ length: playerCount }, (_, index) => ({ id: `p${index + 1}`, displayName: `P${index + 1}`, connected: true, active: true })),
-    pokemon: catalog, get now() { return now; }, random: () => 0,
+    pokemon: catalog, get now() { return now; }, random,
   };
   const config = { ...defaultPokemonRedFlagConfig, generations: [1], rounds: 1, ...overrides };
   let state = pokemonRedFlagGame.createInitialState(config, context); state = pokemonRedFlagGame.start(state, context);
@@ -34,9 +34,27 @@ function vote(state: PokemonRedFlagState, playerId: string, authorId: string, co
 
 describe('Pokémon Red Flag rules', () => {
   it('requires three players and defaults to five configurable 30-second rounds', () => {
-    expect(defaultPokemonRedFlagConfig).toMatchObject({ rounds: 5, phaseSeconds: 30 });
+    expect(defaultPokemonRedFlagConfig).toMatchObject({ rounds: 5, phaseSeconds: 30, mode: 'RED' });
     expect(() => setup({}, 2)).toThrow(/al menos 3/);
     expect(setup().state.pokemonDeckIds).toHaveLength(entries.length);
+    expect(() => pokemonRedFlagGame.actionSchema.parse({ type: 'SUBMIT_RED_FLAG', text: 'x'.repeat(101) })).toThrow(/100/);
+  });
+
+  it('selects red, green or a deterministic 50/50 mode per round', () => {
+    expect(setup({ mode: 'RED' }).state.flagMode).toBe('RED');
+    expect(setup({ mode: 'GREEN' }).state.flagMode).toBe('GREEN');
+    expect(setup({ mode: 'MIXED' }, 3, () => 0).state.flagMode).toBe('RED');
+    expect(setup({ mode: 'MIXED' }, 3, () => .75).state.flagMode).toBe('GREEN');
+  });
+
+  it('commits the last non-empty synchronized draft at timeout and ignores empty drafts', () => {
+    const fixture = setup(); let state = fixture.state;
+    state = pokemonRedFlagGame.handleAction(state, 'p1', { type: 'UPDATE_RED_FLAG_DRAFT', text: '  Siempre comparte sus bayas.  ' }, fixture.context).state;
+    state = pokemonRedFlagGame.handleAction(state, 'p2', { type: 'UPDATE_RED_FLAG_DRAFT', text: '   ' }, fixture.context).state;
+    expect(pokemonRedFlagGame.getPlayerState(state, 'p1', fixture.context)).toMatchObject({ ownDraft: '  Siempre comparte sus bayas.  ', ownAnswer: null });
+    fixture.setNow(state.roundEndsAt!); state = pokemonRedFlagGame.handleTimeout(state, fixture.context);
+    expect(state.phase).toBe('VOTING'); expect(Object.values(state.answers)).toHaveLength(1);
+    expect(Object.values(state.answers)[0]?.text).toBe('Siempre comparte sus bayas.'); expect(state.answers[state.answerSlots.p2!]).toBeUndefined();
   });
 
   it('locks answers and keeps their text private until anonymous voting', () => {
@@ -48,7 +66,7 @@ describe('Pokémon Red Flag rules', () => {
     expect(JSON.stringify(publicState)).not.toContain('contraseña');
     expect(pokemonRedFlagGame.getPlayerState(result.state, 'p1', fixture.context)).toMatchObject({ ownAnswer: { text: expect.stringContaining('contraseña') }, canSubmit: false });
     expect(pokemonRedFlagGame.getPlayerState(result.state, 'p2', fixture.context)).toMatchObject({ ownAnswer: null });
-    expect(answer(result.state, 'p1', 'Intenta cambiarla.', fixture.context)).toMatchObject({ accepted: false, error: 'Tu red flag ya está bloqueada.' });
+    expect(answer(result.state, 'p1', 'Intenta cambiarla.', fixture.context)).toMatchObject({ accepted: false, error: 'Tu respuesta ya está bloqueada.' });
   });
 
   it('reveals anonymous entries, rejects self-votes and hides ballot targets', () => {
@@ -56,7 +74,8 @@ describe('Pokémon Red Flag rules', () => {
     for (const playerId of state.playerIds) state = answer(state, playerId, `Red flag divertida de ${playerId}.`, fixture.context).state;
     expect(state.phase).toBe('VOTING'); const publicState = pokemonRedFlagGame.getPublicState(state, fixture.context);
     expect(publicState.revealedAnswers).toHaveLength(3); expect(JSON.stringify(publicState.revealedAnswers)).not.toContain('authorId');
-    expect(vote(state, 'p1', 'p1', fixture.context)).toMatchObject({ accepted: false, error: 'No puedes votar tu propia red flag.' });
+    expect(publicState.revealedAnswers.map((entry) => entry.id)).not.toEqual(Object.keys(state.answers));
+    expect(vote(state, 'p1', 'p1', fixture.context)).toMatchObject({ accepted: false, error: 'No puedes votar tu propia respuesta.' });
     const accepted = vote(state, 'p1', 'p2', fixture.context); expect(accepted.accepted).toBe(true);
     const hiddenVote = pokemonRedFlagGame.getPublicState(accepted.state, fixture.context);
     expect(hiddenVote.votedPlayerIds).toEqual(['p1']); expect(JSON.stringify(hiddenVote)).not.toContain(`"p1":"${state.answerSlots.p2}"`);
@@ -77,10 +96,13 @@ describe('Pokémon Red Flag rules', () => {
     for (const playerId of state.playerIds) state = answer(state, playerId, `Red flag divertida de ${playerId}.`, fixture.context).state;
     state = vote(state, 'p1', 'p2', fixture.context).state; state = vote(state, 'p2', 'p1', fixture.context).state;
     state = vote(state, 'p3', 'p2', fixture.context).state; state = vote(state, 'p4', 'p1', fixture.context).state;
-    expect(state.phase).toBe('REVOTE'); expect(state.voteCandidates).toEqual([state.answerSlots.p1, state.answerSlots.p2]);
+    expect(state.phase).toBe('REVOTE'); expect(new Set(state.voteCandidates)).toEqual(new Set([state.answerSlots.p1!, state.answerSlots.p2!]));
+    expect(pokemonRedFlagGame.getPlayerState(state, 'p1', fixture.context)).toMatchObject({ canVote: true, ownVoteAnswerId: null });
+    fixture.context.players[0]!.connected = false; expect(pokemonRedFlagGame.getPlayerState(state, 'p1', fixture.context)).toMatchObject({ role: 'SPECTATOR', canVote: false });
+    fixture.context.players[0]!.connected = true; expect(pokemonRedFlagGame.getPlayerState(state, 'p1', fixture.context)).toMatchObject({ role: 'PLAYER', canVote: true, ownVoteAnswerId: null });
     state = vote(state, 'p1', 'p2', fixture.context).state; state = vote(state, 'p2', 'p1', fixture.context).state;
     state = vote(state, 'p3', 'p2', fixture.context).state; state = vote(state, 'p4', 'p1', fixture.context).state;
-    expect(state.phase).toBe('ROUND_RESULTS'); expect(state.lastRound?.winnerIds).toEqual(['p1', 'p2']);
+    expect(state.phase).toBe('ROUND_RESULTS'); expect(new Set(state.lastRound?.winnerIds)).toEqual(new Set(['p1', 'p2']));
     expect(state.scores).toEqual({ p1: 3, p2: 3, p3: 0, p4: 0 }); expect(state.playerStats.p1).toMatchObject({ sharedWins: 1, soloWins: 0 });
   });
 
@@ -98,7 +120,7 @@ describe('Pokémon Red Flag rules', () => {
     const fixture = setup(); let state = fixture.state;
     state = answer(state, 'p1', 'Nunca devuelve lo que pide prestado.', fixture.context).state;
     fixture.context.players[0]!.connected = false;
-    expect(pokemonRedFlagGame.getPlayerState(state, 'p1', fixture.context)).toEqual({ role: 'SPECTATOR', canSubmit: false, ownAnswer: null, canVote: false, ownVoteAnswerId: null, ownAnswerId: null });
+    expect(pokemonRedFlagGame.getPlayerState(state, 'p1', fixture.context)).toEqual({ role: 'SPECTATOR', canSubmit: false, ownDraft: '', ownAnswer: null, canVote: false, ownVoteAnswerId: null, ownAnswerId: null });
     fixture.context.players[0]!.connected = true;
     expect(pokemonRedFlagGame.getPlayerState(state, 'p1', fixture.context)).toMatchObject({ role: 'PLAYER', ownAnswer: { text: 'Nunca devuelve lo que pide prestado.' } });
     fixture.context.players[2]!.connected = false;

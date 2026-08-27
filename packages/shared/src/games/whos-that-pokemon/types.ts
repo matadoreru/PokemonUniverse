@@ -17,8 +17,11 @@ export interface WhosThatPokemonAttempt {
 }
 
 export interface WhosThatPokemonSolve {
+  solveOrder: number;
   solvedAt: number;
   elapsedMs: number;
+  speedPoints: number;
+  placementBonus: number;
   points: number;
   attempts: number;
 }
@@ -28,6 +31,7 @@ export interface WhosThatPokemonPlayerStats {
   missed: number;
   totalAttempts: number;
   firstTry: number;
+  roundFirsts: number;
   solveTimeTotalMs: number;
   bestTimeMs: number;
   pointsFromRounds: number;
@@ -76,7 +80,7 @@ export interface WhosThatPokemonPublicState {
   silhouetteSprite: string | null;
   visibleHints: WhosThatPokemonHint[];
   attempts: WhosThatPokemonAttempt[];
-  solvedPlayerIds: string[];
+  solvedPlayers: Array<{ playerId: string; solveOrder: number }>;
   scores: Record<string, number>;
   roundStartedAt: number | null;
   roundEndsAt: number | null;
@@ -88,6 +92,7 @@ export interface WhosThatPokemonPublicState {
 export interface WhosThatPokemonPlayerState {
   canGuess: boolean;
   solved: boolean;
+  solveOrder: number | null;
   cooldownUntil: number | null;
   roundPoints: number;
   attemptCount: number;

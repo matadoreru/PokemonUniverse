@@ -148,8 +148,9 @@ export const learnsetGuessGame: MiniGameModule<LearnsetGuessConfig, LearnsetGues
     if (!guessed || guessed.isDefault === false || !state.config.generations.includes(guessed.generation)) return { state, accepted: false, error: 'Pokémon no disponible en esta partida.' };
     if (guessed.id === state.correctPokemonId) {
       const revealStage = state.revealedExtraGroups; const points = learnsetPoints(revealStage); const stats = state.playerStats[playerId] ?? emptyLearnsetStats();
+      const solveOrder = Object.keys(state.solves).length + 1;
       let next: LearnsetGuessState = {
-        ...state, solves: { ...state.solves, [playerId]: { solvedAt: context.now, revealStage, points } }, scores: { ...state.scores, [playerId]: (state.scores[playerId] ?? 0) + points },
+        ...state, solves: { ...state.solves, [playerId]: { solveOrder, solvedAt: context.now, revealStage, points } }, scores: { ...state.scores, [playerId]: (state.scores[playerId] ?? 0) + points },
         playerStats: { ...state.playerStats, [playerId]: { ...stats, correct: stats.correct + 1, initialSolves: stats.initialSolves + (revealStage === 0 ? 1 : 0), pointsFromSolves: stats.pointsFromSolves + points, bestRoundPoints: Math.max(stats.bestRoundPoints, points) } },
       };
       next = resolveWhenRequiredPlayersComplete(next, context, next.playerIds, (id) => Boolean(next.solves[id]), resolveRound);
@@ -182,14 +183,14 @@ export const learnsetGuessGame: MiniGameModule<LearnsetGuessConfig, LearnsetGues
       referenceGeneration: state.referenceGeneration, referenceSource: GENERATION_LEARNSET_SOURCES[state.referenceGeneration].label,
       visibleGroups: state.phase === 'ROUND_ACTIVE' ? publicGroups(state) : [],
       evolutionHint: state.phase === 'ROUND_ACTIVE' && state.config.showEvolution && state.evolutionInfo ? evolutionHint(state.evolutionInfo.stage, state.evolutionInfo.stages) : null,
-      attempts: state.attempts, solvedPlayerIds: Object.keys(state.solves), roundStartedAt: state.roundStartedAt,
+      attempts: state.attempts, solvedPlayers: Object.entries(state.solves).map(([playerId, solve]) => ({ playerId, solveOrder: solve.solveOrder })).sort((left, right) => left.solveOrder - right.solveOrder), roundStartedAt: state.roundStartedAt,
       roundEndsAt: state.roundEndsAt, nextTransitionAt: state.nextTransitionAt, lastRound: state.phase === 'ROUND_RESULTS' ? state.lastRound : null,
       scores: state.scores, results: state.phase === 'GAME_RESULTS' ? buildLearnsetResults(state) : null,
     };
   },
   getPlayerState(state, playerId, context): LearnsetGuessPlayerState {
     const solve = state.solves[playerId];
-    return { canGuess: state.phase === 'ROUND_ACTIVE' && state.playerIds.includes(playerId) && isPlayerRequired(context, playerId) && !solve, solved: Boolean(solve), cooldownUntil: state.cooldownUntil[playerId] ?? null, roundPoints: solve?.points ?? 0 };
+    return { canGuess: state.phase === 'ROUND_ACTIVE' && state.playerIds.includes(playerId) && isPlayerRequired(context, playerId) && !solve, solved: Boolean(solve), solveOrder: solve?.solveOrder ?? null, cooldownUntil: state.cooldownUntil[playerId] ?? null, roundPoints: solve?.points ?? 0 };
   },
   isFinished(state) { return state.phase === 'GAME_RESULTS'; }, getResults(state) { return buildLearnsetResults(state); },
 };

@@ -98,6 +98,9 @@ describe('Most Likely To rules', () => {
     state = vote(state, 'p1', 'p2', fixture.context).state; state = vote(state, 'p2', 'p1', fixture.context).state;
     state = vote(state, 'p3', 'p2', fixture.context).state; state = vote(state, 'p4', 'p1', fixture.context).state;
     expect(state.phase).toBe('REVOTE'); expect(state.voteCandidates).toEqual(['p1', 'p2']);
+    expect(mostLikelyToGame.getPlayerState(state, 'p1', fixture.context)).toMatchObject({ canVote: true, ownVotePlayerId: null });
+    fixture.context.players[0]!.connected = false; expect(mostLikelyToGame.getPlayerState(state, 'p1', fixture.context)).toMatchObject({ role: 'SPECTATOR', canVote: false });
+    fixture.context.players[0]!.connected = true; expect(mostLikelyToGame.getPlayerState(state, 'p1', fixture.context)).toMatchObject({ role: 'PLAYER', canVote: true, ownVotePlayerId: null });
     state = vote(state, 'p1', 'p2', fixture.context).state; state = vote(state, 'p2', 'p1', fixture.context).state;
     state = vote(state, 'p3', 'p2', fixture.context).state; state = vote(state, 'p4', 'p1', fixture.context).state;
     expect(state.phase).toBe('ROUND_RESULTS'); expect(state.lastRound?.winnerIds).toEqual(['p1', 'p2']);

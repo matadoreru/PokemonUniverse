@@ -1,5 +1,6 @@
-import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, roomCodeSchema, sessionModeSchema, supportsPlayerCount, type AdminActiveRoom, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck, type SubjectiveCategory, type WouldYouRatherPromptPair } from '@pokemon-universe/shared';
+import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, roomCodeSchema, sessionModeSchema, supportsPlayerCount, validateGameConfigReadiness, type AdminActiveRoom, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck, type SubjectiveCategory, type WouldYouRatherPromptPair } from '@pokemon-universe/shared';
 import { randomInt, randomUUID } from 'node:crypto';
+import { isDeepStrictEqual } from 'node:util';
 import type { Server, Socket } from 'socket.io';
 import { env } from '../config.js';
 import { noOpRoomAuditSink, type RoomAuditSink } from '../admin/audit.js';
@@ -48,6 +49,7 @@ export class RoomManager {
     socket.on('room:leave', (_payload, ack) => currentSocket(ack, () => this.leave(socket, identity.id)));
     socket.on('room:select-game', (payload, ack) => currentSocket(ack, () => this.selectGame(identity.id, payload.gameId)));
     socket.on('room:update-config', (payload, ack) => currentSocket(ack, () => this.updateConfig(identity.id, payload.config)));
+    socket.on('room:update-game-config', (payload, ack) => currentSocket(ack, () => this.updateGameConfig(identity.id, payload.gameId, payload.config)));
     socket.on('room:update-session', (payload, ack) => currentSocket(ack, () => this.updateSession(identity.id, payload.mode)));
     socket.on('room:update-game-selection', (payload, ack) => currentSocket(ack, () => this.updateGameSelection(identity.id, payload.mode)));
     socket.on('room:vote-next-game', (payload, ack) => currentSocket(ack, () => this.voteNextGame(identity.id, payload.gameId)));
@@ -211,12 +213,17 @@ export class RoomManager {
   }
 
   private updateConfig(playerId: string, config: unknown): Record<string, never> {
+    const room = this.requiredRoom(playerId);
+    return this.updateGameConfig(playerId, room.selectedGameId, config);
+  }
+
+  private updateGameConfig(playerId: string, gameId: string, config: unknown): Record<string, never> {
     const room = this.permissionRoom(playerId, 'EDIT_GAME_CONFIG'); this.assertLobby(room);
-    const module = gameRegistry.get(room.selectedGameId)!;
+    const module = gameRegistry.get(gameId); if (!module) throw new Error('Minijuego desconocido.');
     const parsed = module.configSchema.parse(config);
-    room.gameConfigs.set(room.selectedGameId, parsed);
+    room.gameConfigs.set(gameId, parsed);
     const actor = room.members.get(playerId)?.identity;
-    if (actor?.kind === 'USER') this.userGameConfigs.save(actor.id, room.selectedGameId, parsed);
+    if (actor?.kind === 'USER') this.userGameConfigs.save(actor.id, gameId, parsed);
     this.broadcast(room); return {};
   }
 
@@ -294,13 +301,33 @@ export class RoomManager {
   private playableGameIds(room: LiveRoom, gameIds: readonly string[]): string[] {
     const playerCount = this.connectedPlayerCount(room);
     return gameIds.filter((gameId) => {
-      const manifest = gameRegistry.get(gameId)?.manifest;
-      return Boolean(manifest && supportsPlayerCount(manifest, playerCount));
+      const module = gameRegistry.get(gameId);
+      if (!module || !supportsPlayerCount(module.manifest, playerCount)) return false;
+      const parsed = module.configSchema.safeParse(room.gameConfigs.get(gameId));
+      return parsed.success && validateGameConfigReadiness(gameId, parsed.data, {
+        hostCustomCategoryCount: this.hostCustomCategories(room).length,
+        hostWouldYouRatherPromptCount: this.hostWouldYouRatherPrompts(room).length,
+      }) === null;
+    });
+  }
+
+  private gameConfigReadinessReason(room: LiveRoom, gameId: string): string | null {
+    const module = gameRegistry.get(gameId); if (!module) return 'Minijuego desconocido.';
+    const parsed = module.configSchema.safeParse(room.gameConfigs.get(gameId));
+    if (!parsed.success) return parsed.error.issues[0]?.message ?? 'Configuración inválida.';
+    return validateGameConfigReadiness(gameId, parsed.data, {
+      hostCustomCategoryCount: this.hostCustomCategories(room).length,
+      hostWouldYouRatherPromptCount: this.hostWouldYouRatherPrompts(room).length,
     });
   }
 
   private assertRotationReady(room: LiveRoom): void {
     const mode = room.gameSelectionMode; if (mode.type === 'FIXED') return;
+    for (const gameId of mode.gameIds) {
+      const module = gameRegistry.get(gameId); if (!module) throw new Error(`Minijuego desconocido: ${gameId}`);
+      const configReason = this.gameConfigReadinessReason(room, gameId);
+      if (configReason) throw new Error(`${module.manifest.name}: ${configReason}`);
+    }
     const playableCount = this.playableGameIds(room, mode.gameIds).length;
     const minimum = mode.type === 'VOTE' ? 3 : 2;
     if (playableCount < minimum) throw new Error(`La rotación ${mode.type === 'VOTE' ? 'por votación' : 'aleatoria'} necesita al menos ${minimum} minijuegos compatibles con el número actual de jugadores.`);
@@ -330,6 +357,11 @@ export class RoomManager {
     if (module.manifest.maxPlayers && players.length > module.manifest.maxPlayers) throw new Error(`Este juego admite un máximo de ${module.manifest.maxPlayers} jugadores.`);
     const context = { players, pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage, hostCustomCategories: this.hostCustomCategories(room), hostWouldYouRatherPrompts: this.hostWouldYouRatherPrompts(room) };
     const config = module.configSchema.parse(room.gameConfigs.get(room.selectedGameId));
+    const configReason = validateGameConfigReadiness(module.manifest.id, config, {
+      hostCustomCategoryCount: context.hostCustomCategories.length,
+      hostWouldYouRatherPromptCount: context.hostWouldYouRatherPrompts.length,
+    });
+    if (configReason) throw new Error(`${module.manifest.name}: ${configReason}`);
     let state = module.createInitialState(config, context);
     state = module.start(state, context);
     for (const member of room.members.values()) { member.role = member.presence === 'CONNECTED' ? 'PLAYER' : 'SPECTATOR'; member.ready = false; }
@@ -613,6 +645,8 @@ export class RoomManager {
       })),
       availableGames: gameRegistry.manifests(),
       selectedGameId: room.selectedGameId, selectedGameConfig: room.gameConfigs.get(room.selectedGameId), sessionMode: room.sessionMode,
+      gameConfigs: Object.fromEntries(room.gameConfigs),
+      customizedGameIds: gameRegistry.list().filter((module) => !isDeepStrictEqual(room.gameConfigs.get(module.manifest.id), module.defaultConfig)).map((module) => module.manifest.id),
       gameSelectionMode: room.gameSelectionMode, nextGameVote,
       gamesPlayed: room.gamesPlayed,
       sessionStandings: [...room.sessionParticipants.values()].map((participant) => ({

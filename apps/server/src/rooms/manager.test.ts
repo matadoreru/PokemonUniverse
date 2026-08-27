@@ -112,6 +112,35 @@ describe('room multi-game lifecycle', () => {
     expect(room.gameConfigs.get('pokedex-distance')).toEqual({ generations: [1], roundSeconds: 25 });
   });
 
+  it('edits and publishes a rotation game without changing the selected minigame', () => {
+    const manager = new RoomManager(io() as any, catalog); const host = identity('host', 'Host');
+    const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
+    const nextConfig = { ...(room.gameConfigs.get('shiny-vote') as Record<string, unknown>), rounds: 7 };
+
+    (manager as any).updateGameConfig(host.id, 'shiny-vote', nextConfig);
+
+    expect(room.selectedGameId).toBe('pokedex-distance');
+    expect(room.gameConfigs.get('shiny-vote')).toEqual(nextConfig);
+    expect((manager as any).view(room, host.id)).toMatchObject({
+      selectedGameId: 'pokedex-distance',
+      gameConfigs: { 'shiny-vote': nextConfig },
+      customizedGameIds: expect.arrayContaining(['shiny-vote']),
+    });
+  });
+
+  it('blocks a rotation when one included game has incomplete semantic configuration', () => {
+    const manager = new RoomManager(io() as any, catalog); const host = identity('host', 'Host'); const guest = identity('guest', 'Ana');
+    const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
+    (manager as any).join(socket('guest-socket'), guest, room.code);
+    const pokeddle = room.gameConfigs.get('pokeddle-race') as Record<string, unknown>;
+    const clues = Object.fromEntries(Object.keys(pokeddle.clues as Record<string, boolean>).map((key) => [key, false]));
+    (manager as any).updateGameConfig(host.id, 'pokeddle-race', { ...pokeddle, clues });
+    (manager as any).updateGameSelection(host.id, { type: 'RANDOM', gameIds: ['pokeddle-race', 'shiny-vote'] });
+    (manager as any).setReady(guest.id, true);
+
+    expect(() => (manager as any).startGame(host.id)).toThrow(/Pokédle Race: Selecciona al menos una pista/);
+  });
+
   it('audits room and game starts while exposing only an admin-safe live projection', () => {
     const audit = { roomCreated: vi.fn(() => Promise.resolve()), roomClosed: vi.fn(() => Promise.resolve()), gameStarted: vi.fn(() => Promise.resolve()) };
     const manager = new RoomManager(io() as any, catalog, undefined, undefined, audit);
@@ -413,7 +442,7 @@ describe('room multi-game lifecycle', () => {
     startReady(manager, room, host.id); const answerId = room.game!.state.correctPokemonId;
     expect(JSON.stringify((manager as any).view(room, guest.id))).not.toContain('correctPokemonId');
     (manager as any).action(host.id, { type: 'GUESS_POKEMON', pokemonId: answerId });
-    const guestView = (manager as any).view(room, guest.id); expect(guestView.game.solvedPlayerIds).toEqual([host.id]); expect(JSON.stringify(guestView.game)).not.toContain(answerId);
+    const guestView = (manager as any).view(room, guest.id); expect(guestView.game.solvedPlayers).toEqual([{ playerId: host.id, solveOrder: 1 }]); expect(JSON.stringify(guestView.game)).not.toContain(answerId);
     (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: answerId });
     room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); (manager as any).returnLobby(host.id);
     (manager as any).selectGame(host.id, 'shiny-vote'); (manager as any).selectGame(host.id, 'pokemon-impostor'); (manager as any).selectGame(host.id, 'pokedex-distance');
@@ -465,7 +494,7 @@ describe('room multi-game lifecycle', () => {
     (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 10, rounds: 1, hintsEnabled: false, includeRegionalForms: false });
     startReady(manager, room, host.id); const targetId = room.game!.state.targetPokemonId; const wrongId = pokemon.find((entry) => entry.id !== targetId)!.id;
     const activeView = (manager as any).view(room, guest.id);
-    expect(activeView.game).toMatchObject({ gameId: 'whos-that-pokemon', visibleHints: [], solvedPlayerIds: [] });
+    expect(activeView.game).toMatchObject({ gameId: 'whos-that-pokemon', visibleHints: [], solvedPlayers: [] });
     expect(activeView.game.silhouetteSprite).toMatch(/\/options\/shadow\/sprite$/);
     expect(JSON.stringify(activeView)).not.toContain(targetId);
     expect(manager.gameAsset(room.code, room.game!.state.assetToken, 1, 'shadow')).toMatchObject({ transform: 'SILHOUETTE' });
@@ -475,7 +504,7 @@ describe('room multi-game lifecycle', () => {
     expect((manager as any).view(room, host.id).game.attempts[0]).toMatchObject({ playerId: guest.id, guessedPokemon: { id: wrongId } });
     room.game!.state.cooldownUntil.guest = 0;
     (manager as any).action(host.id, { type: 'GUESS_POKEMON', pokemonId: targetId });
-    const stillHidden = (manager as any).view(room, guest.id); expect(stillHidden.game.solvedPlayerIds).toEqual([host.id]); expect(JSON.stringify(stillHidden.game)).not.toContain(targetId);
+    const stillHidden = (manager as any).view(room, guest.id); expect(stillHidden.game.solvedPlayers).toEqual([{ playerId: host.id, solveOrder: 1 }]); expect(JSON.stringify(stillHidden.game)).not.toContain(targetId);
     (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: targetId }); expect(room.phase).toBe('ROUND_RESULTS');
     expect((manager as any).view(room, guest.id).game.lastRound.pokemon.name).toBe(pokemon.find((entry) => entry.id === targetId)!.name);
     expect(manager.gameAsset(room.code, room.game!.state.assetToken, 1, 'reveal')).toMatchObject({ transform: 'ORIGINAL' });
@@ -880,10 +909,10 @@ describe('room multi-game lifecycle', () => {
       const guest = identity(`guest-${index}`, `Guest ${index}`);
       (manager as any).join(socket(`guest-socket-${index}`), guest, room.code);
     }
-    room.gameSelectionMode = { type: 'VOTE', gameIds: ['pokemon-bingo', 'whos-that-pokemon', 'zoomed-pokemon', 'higher-lower', 'shiny-vote'] };
+    room.gameSelectionMode = { type: 'VOTE', gameIds: ['pokemon-bingo', 'whos-that-pokemon', 'pokedex-distance', 'higher-lower', 'shiny-vote'] };
 
     expect((manager as any).beginNextGameVote(room)).toBe(true);
-    expect(new Set(room.nextGameVote?.optionGameIds)).toEqual(new Set(['zoomed-pokemon', 'higher-lower', 'shiny-vote']));
+    expect(new Set(room.nextGameVote?.optionGameIds)).toEqual(new Set(['pokedex-distance', 'higher-lower', 'shiny-vote']));
   });
 
   it('rejects a vote when a new connection makes its minigame incompatible', () => {

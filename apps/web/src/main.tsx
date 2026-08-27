@@ -6,6 +6,7 @@ import { Layout } from './components/Layout';
 import { RequireAuth } from './components/RequireAuth';
 import { RequireAdmin } from './components/RequireAdmin';
 import { HomePage } from './screens/HomePage';
+import { RotationPreview } from './screens/RotationPreview';
 import './styles.css';
 
 const AuthPage = lazy(() => import('./screens/AuthPage').then((module) => ({ default: module.AuthPage })));
@@ -18,6 +19,7 @@ const AdminPage = lazy(() => import('./screens/AdminPage').then((module) => ({ d
 const protectedPage = (page: ReactNode) => <RequireAuth>{page}</RequireAuth>;
 const router = createBrowserRouter([{ element: <Layout />, children: [
   { path: '/', element: <HomePage /> }, { path: '/auth', element: <AuthPage /> },
+  { path: '/rotation-preview', element: <RotationPreview /> },
   { path: '/profile', element: protectedPage(<ProfilePage />) },
   { path: '/admin', element: <RequireAdmin><AdminPage /></RequireAdmin> },
   { element: protectedPage(<RoomSessionLayout />), children: [

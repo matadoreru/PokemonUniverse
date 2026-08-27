@@ -70,7 +70,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .permission-help { @apply mt-3 text-sm font-bold text-ink/65; }
   .session-card { @apply min-h-20 rounded-xl border border-ink/10 bg-surface-raised p-3.5 text-left transition-colors hover:border-aqua/50 hover:bg-ink/[.06] disabled:cursor-not-allowed; }
   .session-card strong { @apply block font-display text-lg; }
-  .session-card span { @apply mt-0.5 block text-sm font-bold text-ink/65; }
+  .session-card > span:last-child { @apply mt-0.5 block text-sm font-bold text-ink/65; }
   .session-card-selected { @apply border-aqua bg-aqua/10; }
   .lobby-tab { @apply inline-flex min-h-12 min-w-0 items-center justify-center gap-2 border-b-2 border-transparent px-1 text-xs font-extrabold text-ink/55 transition-colors hover:text-ink sm:px-4 sm:text-sm; }
   .lobby-tab-active { @apply border-aqua text-ink; }
@@ -78,6 +78,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .lobby-game-option { @apply flex min-h-44 flex-col items-stretch rounded-xl border border-ink/10 bg-surface-raised p-3.5 text-left transition-colors hover:border-aqua/50 hover:bg-ink/[.055] disabled:cursor-not-allowed; }
   .lobby-game-option-selected { @apply border-aqua bg-aqua/10; }
   .experimental-badge { @apply inline-flex min-h-6 items-center rounded-full px-2 py-0.5 text-[.68rem] font-black text-white; background: #c92a42; }
+  .recommended-badge { @apply inline-flex min-h-6 items-center rounded-full bg-electric px-2 py-0.5 text-[.68rem] font-black text-night; }
   .status-error { @apply rounded-xl border border-berry/25 bg-berry/10 px-3.5 py-3 text-sm font-extrabold text-berry; }
   .empty-state { @apply rounded-xl border border-dashed border-ink/20 bg-ink/[.025] p-6 text-center text-ink/65; }
   .skeleton { @apply animate-pulse rounded-lg bg-ink/10; }

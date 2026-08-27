@@ -3,6 +3,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { SketchmonGame } from './SketchmonGame';
+import { sketchmonHistoryShortcut } from './SketchmonCanvas';
 
 function publicGame(): SketchmonPublicState {
   return {
@@ -38,7 +39,14 @@ describe('Sketchmon role presentation', () => {
     } }), selfId: 'p1', onAction: async () => undefined }));
     expect(markup).toContain('SOLO TÚ PUEDES VER ESTO'); expect(markup).toContain('Lucario');
     expect(markup).toContain('Lápiz'); expect(markup).toContain('Limpiar lienzo');
+    expect(markup).toContain('Relleno'); expect(markup).toContain('Rehacer último trazo'); expect(markup).toContain('Ctrl+Z deshace');
     expect(markup).not.toContain('Buscar respuesta para el dibujo');
+  });
+
+  it('maps Ctrl+Z and Ctrl+Shift+Z to authoritative history actions', () => {
+    expect(sketchmonHistoryShortcut({ ctrlKey: true, metaKey: false, shiftKey: false, key: 'z' })).toBe('UNDO_STROKE');
+    expect(sketchmonHistoryShortcut({ ctrlKey: true, metaKey: false, shiftKey: true, key: 'Z' })).toBe('REDO_STROKE');
+    expect(sketchmonHistoryShortcut({ ctrlKey: false, metaKey: false, shiftKey: false, key: 'z' })).toBeNull();
   });
 
   it('gives guessers the live canvas, public attempts and search without leaking the secret', () => {

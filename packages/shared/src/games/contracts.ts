@@ -105,6 +105,8 @@ export interface MiniGameManifest {
   description: string;
   /** Marks recently introduced games that may still receive rule or balance changes. */
   experimental?: boolean;
+  /** Highlights polished, approachable games in selection surfaces. */
+  recommended?: boolean;
   minPlayers: number;
   maxPlayers?: number;
   profileStats: ProfileStatsDefinition;

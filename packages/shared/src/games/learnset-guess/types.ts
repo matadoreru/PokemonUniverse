@@ -21,6 +21,7 @@ export interface LearnsetGuessAttempt {
 }
 
 export interface LearnsetGuessSolve {
+  solveOrder: number;
   solvedAt: number;
   revealStage: number;
   points: number;
@@ -78,7 +79,7 @@ export interface LearnsetGuessPublicState {
   visibleGroups: LearnsetMoveGroup[];
   evolutionHint: string | null;
   attempts: LearnsetGuessAttempt[];
-  solvedPlayerIds: string[];
+  solvedPlayers: Array<{ playerId: string; solveOrder: number }>;
   roundStartedAt: number | null;
   roundEndsAt: number | null;
   nextTransitionAt: number | null;
@@ -90,6 +91,7 @@ export interface LearnsetGuessPublicState {
 export interface LearnsetGuessPlayerState {
   canGuess: boolean;
   solved: boolean;
+  solveOrder: number | null;
   cooldownUntil: number | null;
   roundPoints: number;
 }

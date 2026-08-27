@@ -3,9 +3,12 @@ import type { PokemonType } from '../../pokemon/types.js';
 import type { GamePhase, GameResults } from '../contracts.js';
 import type { SketchmonConfig } from './config.js';
 
-export const SKETCHMON_COLORS = ['#182033', '#e24671', '#10a6c3', '#27965c', '#e1a817', '#7457c7', '#9a5b3c'] as const;
+export const SKETCHMON_COLORS = [
+  '#182033', '#ffffff', '#7b8496', '#e24671', '#ef4444', '#f97316', '#e1a817',
+  '#84cc16', '#27965c', '#10a6c3', '#2563eb', '#7457c7', '#d946ef', '#9a5b3c',
+] as const;
 
-export type SketchmonTool = 'PENCIL' | 'ERASER';
+export type SketchmonTool = 'PENCIL' | 'ERASER' | 'FILL';
 export type SketchmonColor = (typeof SKETCHMON_COLORS)[number];
 export interface SketchmonPoint { x: number; y: number }
 export interface SketchmonStroke {
@@ -82,7 +85,8 @@ export interface SketchmonState {
   targetPokemonId: string | null;
   drawerId: string | null;
   strokes: SketchmonStroke[];
-  clearedStrokes: SketchmonStroke[] | null;
+  undoStack: SketchmonStroke[][];
+  redoStack: SketchmonStroke[][];
   visibleHints: SketchmonHint[];
   attempts: SketchmonAttempt[];
   attemptCounts: Record<string, number>;
@@ -129,7 +133,7 @@ const strokeStartSchema = z.object({
   kind: z.literal('START'),
   stroke: z.object({
     id: strokeIdSchema,
-    tool: z.enum(['PENCIL', 'ERASER']),
+    tool: z.enum(['PENCIL', 'ERASER', 'FILL']),
     color: z.enum(SKETCHMON_COLORS),
     width: z.number().int().min(2).max(32),
     points: z.array(pointSchema).min(1).max(32),
@@ -144,6 +148,7 @@ const strokeAppendSchema = z.object({
 export const sketchmonActionSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('DRAW_BATCH'), operations: z.array(z.discriminatedUnion('kind', [strokeStartSchema, strokeAppendSchema])).min(1).max(8) }).strict(),
   z.object({ type: z.literal('UNDO_STROKE') }).strict(),
+  z.object({ type: z.literal('REDO_STROKE') }).strict(),
   z.object({ type: z.literal('CLEAR_DRAWING') }).strict(),
   z.object({ type: z.literal('GUESS_POKEMON'), pokemonId: z.string().min(1).max(96) }).strict(),
 ]);

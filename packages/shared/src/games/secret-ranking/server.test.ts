@@ -3,6 +3,7 @@ import type { GameContext, Pokemon, PokemonCatalog } from '../../index.js';
 import { defaultSecretRankingConfig } from './config.js';
 import { secretRankingDistances } from './rules.js';
 import { secretRankingGame } from './server.js';
+import { officialSecretRankingPrompts } from './prompts.js';
 import type { SecretRankingState } from './types.js';
 
 function pokemon(id: string, number: number): Pokemon {
@@ -48,6 +49,8 @@ describe('Secret Ranking rules', () => {
     expect(new Set(fixture.state.currentPokemonIds).size).toBe(5);
     expect(fixture.state.currentPromptId).toMatch(/^secret-ranking-official-/);
     expect(fixture.state.roundEndsAt).toBe(46_000);
+    expect(officialSecretRankingPrompts.length).toBeGreaterThanOrEqual(75);
+    expect(officialSecretRankingPrompts.some((prompt) => /funeral ficticio|cadáver de película/.test(prompt.text))).toBe(true);
   });
 
   it('uses only host prompts when configured and rejects an empty custom catalog', () => {

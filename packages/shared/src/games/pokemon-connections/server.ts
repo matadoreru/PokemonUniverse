@@ -9,6 +9,7 @@ export const POKEMON_CONNECTIONS_REVEAL_MS = 30_000;
 const manifest = {
   id: 'pokemon-connections',
   name: 'Pokémon Connections',
+  recommended: true,
   icon: '🧩',
   description: 'Encuentra en privado los grupos de Pokémon que comparten una conexión.',
   experimental: true,

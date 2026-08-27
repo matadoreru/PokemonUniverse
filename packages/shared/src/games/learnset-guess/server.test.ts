@@ -90,9 +90,9 @@ describe('Learnset Guess', () => {
 
   it('marks a correct player privately without exposing or publishing the answer', () => {
     const fixture = setup(); const solved = guess(fixture.state, 'p1', 'pikachu', fixture.context); const publicState = learnsetGuessGame.getPublicState(solved.state, fixture.context);
-    expect(solved.state.phase).toBe('ROUND_ACTIVE'); expect(publicState.solvedPlayerIds).toEqual(['p1']); expect(publicState.attempts).toEqual([]);
+    expect(solved.state.phase).toBe('ROUND_ACTIVE'); expect(publicState.solvedPlayers).toEqual([{ playerId: 'p1', solveOrder: 1 }]); expect(publicState.attempts).toEqual([]);
     expect(JSON.stringify(publicState)).not.toContain('correctPokemonId'); expect(JSON.stringify(publicState)).not.toContain('Pikachu');
-    expect(learnsetGuessGame.getPlayerState(solved.state, 'p1', fixture.context)).toEqual({ canGuess: false, solved: true, cooldownUntil: null, roundPoints: 5 });
+    expect(learnsetGuessGame.getPlayerState(solved.state, 'p1', fixture.context)).toEqual({ canGuess: false, solved: true, solveOrder: 1, cooldownUntil: null, roundPoints: 5 });
     expect(guess(solved.state, 'p1', 'pikachu', fixture.context).accepted).toBe(false); expect(guess(solved.state, 'p2', 'charmander', fixture.context).accepted).toBe(true);
   });
 
@@ -126,7 +126,7 @@ describe('Learnset Guess', () => {
 
   it('reduces points by reveal stage to a configurable floor and allows equal stage scores', () => {
     expect([0, 1, 2, 3, 4, 9].map(learnsetPoints)).toEqual([5, 4, 3, 2, 1, 1]);
-    const fixture = setup(); const staged = { ...fixture.state, revealedExtraGroups: 2 }; let state = guess(staged, 'p1', 'pikachu', fixture.context).state; state = guess(state, 'p2', 'pikachu', fixture.context).state; expect(state.solves.p1?.points).toBe(3); expect(state.solves.p2?.points).toBe(3);
+    const fixture = setup(); const staged = { ...fixture.state, revealedExtraGroups: 2 }; let state = guess(staged, 'p1', 'pikachu', fixture.context).state; state = guess(state, 'p2', 'pikachu', fixture.context).state; expect(state.solves.p1).toMatchObject({ points: 3, solveOrder: 1 }); expect(state.solves.p2).toMatchObject({ points: 3, solveOrder: 2 });
   });
 
   it('restores only safe private progress and rejects spectators', () => {

@@ -8,6 +8,8 @@ export interface PokemonRedFlagPokemon {
   sprite: string;
 }
 
+export type PokemonFlagMode = 'RED' | 'GREEN';
+
 export interface PokemonRedFlagStats {
   roundsPlayed: number;
   answersSubmitted: number;
@@ -33,6 +35,7 @@ export interface PokemonRedFlagVoteRound {
 }
 
 export interface PokemonRedFlagRoundResult {
+  flagMode: PokemonFlagMode;
   pokemon: PokemonRedFlagPokemon;
   answers: Array<PokemonRedFlagAnswer & { votesReceived: number; won: boolean }>;
   voteRounds: PokemonRedFlagVoteRound[];
@@ -49,8 +52,11 @@ export interface PokemonRedFlagState {
   pokemonDeckIds: string[];
   roundNumber: number;
   currentPokemon: PokemonRedFlagPokemon | null;
+  flagMode: PokemonFlagMode;
   answerSlots: Record<string, string>;
+  drafts: Record<string, string>;
   answers: Record<string, PokemonRedFlagAnswer>;
+  answerOrder: string[];
   votes: Record<string, string>;
   voteCandidates: string[];
   voteRoundNumber: number;
@@ -68,6 +74,7 @@ export interface PokemonRedFlagPublicState {
   roundNumber: number;
   totalRounds: number;
   pokemon: PokemonRedFlagPokemon | null;
+  flagMode: PokemonFlagMode;
   playerIds: string[];
   submittedPlayerIds: string[];
   revealedAnswers: Array<{ id: string; text: string }>;
@@ -82,11 +89,12 @@ export interface PokemonRedFlagPublicState {
 }
 
 export type PokemonRedFlagPlayerState =
-  | { role: 'PLAYER'; canSubmit: boolean; ownAnswer: { id: string; text: string } | null; canVote: boolean; ownVoteAnswerId: string | null; ownAnswerId: string | null }
-  | { role: 'SPECTATOR'; canSubmit: false; ownAnswer: null; canVote: false; ownVoteAnswerId: null; ownAnswerId: null };
+  | { role: 'PLAYER'; canSubmit: boolean; ownDraft: string; ownAnswer: { id: string; text: string } | null; canVote: boolean; ownVoteAnswerId: string | null; ownAnswerId: string | null }
+  | { role: 'SPECTATOR'; canSubmit: false; ownDraft: ''; ownAnswer: null; canVote: false; ownVoteAnswerId: null; ownAnswerId: null };
 
 export const pokemonRedFlagActionSchema = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('SUBMIT_RED_FLAG'), text: z.string().trim().min(4, 'Escribe al menos 4 caracteres.').max(240, 'La red flag no puede superar 240 caracteres.') }).strict(),
+  z.object({ type: z.literal('UPDATE_RED_FLAG_DRAFT'), text: z.string().max(100, 'La respuesta no puede superar 100 caracteres.') }).strict(),
+  z.object({ type: z.literal('SUBMIT_RED_FLAG'), text: z.string().trim().min(1, 'Escribe una respuesta antes de enviarla.').max(100, 'La respuesta no puede superar 100 caracteres.') }).strict(),
   z.object({ type: z.literal('VOTE_RED_FLAG'), answerId: z.string().min(1).max(96) }).strict(),
 ]);
 

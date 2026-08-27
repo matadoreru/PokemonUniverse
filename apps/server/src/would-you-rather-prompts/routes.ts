@@ -12,6 +12,9 @@ export function createWouldYouRatherPromptRouter(service: WouldYouRatherPromptSe
   router.post('/', async (req, res, next) => {
     try { res.status(201).json({ prompt: await service.create(req.auth!.id, req.body) }); } catch (error) { next(error); }
   });
+  router.post('/import', async (req, res, next) => {
+    try { res.status(201).json({ prompts: await service.import(req.auth!.id, req.body) }); } catch (error) { next(error); }
+  });
   router.patch('/:id', async (req, res, next) => {
     try { res.json({ prompt: await service.update(req.auth!.id, idSchema.parse(req.params.id), req.body) }); } catch (error) { next(error); }
   });

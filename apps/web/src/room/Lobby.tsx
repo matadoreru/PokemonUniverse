@@ -14,6 +14,7 @@ interface Props {
   onStart(): Promise<void>;
   onSelectGame(gameId: string): Promise<void>;
   onConfig(config: unknown): Promise<void>;
+  onGameConfig(gameId: string, config: unknown): Promise<void>;
   onSession(mode: SessionMode): Promise<void>;
   onGameSelection(mode: GameSelectionMode): Promise<void>;
   onSetRoomRole(playerId: string, role: 'CO_HOST' | 'MEMBER'): Promise<void>;
@@ -29,7 +30,7 @@ function normalizeSearch(value: string): string {
 type LobbyTab = 'games' | 'config' | 'session';
 const lobbyTabs: LobbyTab[] = ['games', 'config', 'session'];
 
-export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, onConfig, onSession, onGameSelection, onSetRoomRole, onTransferHost, onKick, onEndSession }: Props) {
+export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, onConfig, onGameConfig, onSession, onGameSelection, onSetRoomRole, onTransferHost, onKick, onEndSession }: Props) {
   const self = room.members.find((member) => member.id === selfId);
   const roomRole = self?.roomRole ?? 'MEMBER';
   const canEditGame = hasRoomPermission(roomRole, 'EDIT_GAME_CONFIG');
@@ -104,6 +105,14 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
     const manifest = room.availableGames.find((game) => game.id === gameId);
     return Boolean(manifest && supportsPlayerCount(manifest, connectedPlayers));
   }).length : 0;
+  const rotationConfigReason = room.gameSelectionMode.type === 'FIXED' ? null : room.gameSelectionMode.gameIds.map((gameId) => {
+    const manifest = room.availableGames.find((game) => game.id === gameId);
+    if (!manifest || !supportsPlayerCount(manifest, connectedPlayers)) return null;
+    const candidate = clientGameRegistry.get(gameId);
+    const config = room.gameConfigs?.[gameId] ?? (gameId === room.selectedGameId ? room.selectedGameConfig : {});
+    const reason = candidate.validateConfig?.(config, room) ?? null;
+    return reason ? `${manifest.name}: ${reason}` : null;
+  }).find((reason) => reason !== null) ?? null;
   const selectedGameReason = connectedPlayers < selectedManifest.minPlayers
     ? `Se necesitan al menos ${selectedManifest.minPlayers} jugadores conectados.`
     : selectedManifest.maxPlayers !== undefined && connectedPlayers > selectedManifest.maxPlayers
@@ -117,6 +126,8 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
       ? 'La rotación aleatoria necesita al menos 2 minijuegos compatibles.'
     : room.gameSelectionMode.type === 'VOTE' && rotationPlayableCount < 3
       ? 'La votación necesita al menos 3 minijuegos compatibles.'
+    : rotationConfigReason
+      ? rotationConfigReason
       : room.gameSelectionMode.type !== 'RANDOM' && selectedGameReason
         ? selectedGameReason
       : room.gameSelectionMode.type === 'RANDOM' ? null : gameClient.validateConfig?.(room.selectedGameConfig, room) ?? null;
@@ -188,6 +199,7 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
                       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-ink/[.07] text-xl" aria-hidden="true">{game.icon}</span>
                       <span className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1.5">
                         {game.experimental && <span className="experimental-badge">Experimental</span>}
+                        {game.recommended && <span className="recommended-badge">TOP</span>}
                         {selected && <span className="inline-flex items-center gap-1 text-xs font-extrabold text-aqua"><CheckCircle2 size={15} /> Seleccionado</span>}
                       </span>
                     </span>
@@ -207,7 +219,7 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
               <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <span className="label !mb-0">Minijuego seleccionado</span>
-                  <div className="flex flex-wrap items-center gap-2"><h2 className="font-display text-2xl font-bold">Ajustes de {selectedManifest.name}</h2>{selectedManifest.experimental && <span className="experimental-badge">Experimental</span>}</div>
+                  <div className="flex flex-wrap items-center gap-2"><h2 className="font-display text-2xl font-bold">Ajustes de {selectedManifest.name}</h2>{selectedManifest.experimental && <span className="experimental-badge">Experimental</span>}{selectedManifest.recommended && <span className="recommended-badge">TOP</span>}</div>
                   <p className="mt-1 max-w-3xl text-sm font-bold text-ink/60">{selectedManifest.description} · {playerRange}.</p>
                 </div>
                 {!canEditGame && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}
@@ -226,7 +238,7 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
               </div>
               <section aria-labelledby="rotation-heading">
                 <div className="mb-3 flex items-center justify-between gap-3"><div><h3 id="rotation-heading" className="font-display text-lg font-bold">Rotación de minijuegos</h3><p className="text-sm font-bold text-ink/60">Decide qué ocurre al terminar cada partida.</p></div>{!canEditGameSelection && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}</div>
-                <div className={!canEditGameSelection ? 'lobby-readonly' : ''}><GameSelectionConfig availableGames={room.availableGames} mode={room.gameSelectionMode} playerCount={connectedPlayers} disabled={!canEditGameSelection} onChange={gameSelection} /></div>
+                <GameSelectionConfig availableGames={room.availableGames} mode={room.gameSelectionMode} playerCount={connectedPlayers} disabled={!canEditGameSelection} configDisabled={!canEditGame} room={room} selfId={selfId} onChange={gameSelection} onConfig={onGameConfig} />
               </section>
               <section className="mt-6 border-t border-ink/10 pt-5" aria-labelledby="format-heading">
                 <div className="mb-3 flex items-center justify-between gap-3"><div><h3 id="format-heading" className="font-display text-lg font-bold">Final de la sesión</h3><p className="text-sm font-bold text-ink/60">Elige cuándo se decide la clasificación final.</p></div>{!canEditSession && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}</div>

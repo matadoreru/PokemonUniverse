@@ -14,6 +14,7 @@ interface RoomContextValue {
   leaveRoom(): Promise<void>;
   selectGame(gameId: string): Promise<void>;
   updateConfig(config: unknown): Promise<void>;
+  updateGameConfig(gameId: string, config: unknown): Promise<void>;
   updateSession(mode: SessionMode): Promise<void>;
   updateGameSelection(mode: GameSelectionMode): Promise<void>;
   voteNextGame(gameId: string): Promise<void>;
@@ -77,6 +78,9 @@ export function RoomProvider({ children }: PropsWithChildren) {
       const gameId = projectionRef.current.view()?.selectedGameId;
       if (!gameId) { await emit('room:update-config', { config }); return; }
       await optimisticEmit('room:update-config', { config }, { kind: 'config', gameId, config });
+    },
+    async updateGameConfig(gameId, config) {
+      await optimisticEmit('room:update-game-config', { gameId, config }, { kind: 'config', gameId, config });
     },
     async updateSession(mode) { await optimisticEmit('room:update-session', { mode }, { kind: 'session', mode }); },
     async updateGameSelection(mode) { await optimisticEmit('room:update-game-selection', { mode }, { kind: 'game-selection', mode }); },

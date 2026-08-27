@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ServerTimer } from '../components/ServerTimer';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { gameAvailabilityReason } from './GameSelectionConfig';
+import { summarizeGameConfig } from './game-config-summary';
 
 export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; selfId: string; onVote(gameId: string): Promise<void>; onEnd(): void }) {
   const vote = room.nextGameVote!;
@@ -55,7 +56,8 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
         const unavailableReason = active ? gameAvailabilityReason(game, playerCount) : null;
         return <button key={game.id} type="button" disabled={!canVote || submitting || Boolean(unavailableReason)} aria-pressed={selected} title={unavailableReason ?? undefined} onClick={() => setDraft(game.id)} className={`relative min-h-0 rounded-2xl border p-4 text-left transition-colors md:min-h-48 md:p-5 ${winner ? 'border-leaf bg-leaf/10' : selected ? 'border-aqua bg-aqua/10' : active ? 'border-ink/10 bg-surface hover:border-aqua/60 hover:bg-ink/[.04]' : 'border-ink/10 bg-surface-raised opacity-70'} disabled:cursor-default`}>
           <span className="mb-3 flex items-start justify-between gap-3 md:mb-5"><span className="text-3xl md:text-4xl" aria-hidden="true">{game.icon}</span>{winner ? <span className="chip bg-leaf/15 text-leaf"><Trophy size={15} /> Ganador</span> : selected && <span className="chip bg-aqua/15 text-aqua"><Check size={15} /> Tu voto</span>}</span>
-          <strong className="block font-display text-xl">{game.name}</strong><span className={`mt-1 block text-sm font-bold leading-snug ${unavailableReason ? 'text-berry' : 'text-ink/60'}`}>{unavailableReason ?? game.description}</span>
+          <span className="flex flex-wrap items-center gap-2"><strong className="font-display text-xl">{game.name}</strong>{game.recommended && <span className="recommended-badge">TOP</span>}{game.experimental && <span className="experimental-badge">Experimental</span>}</span><span className={`mt-1 block text-sm font-bold leading-snug ${unavailableReason ? 'text-berry' : 'text-ink/60'}`}>{unavailableReason ?? game.description}</span>
+          {!unavailableReason && <span className="mt-3 inline-flex rounded-lg bg-ink/[.06] px-2.5 py-1.5 text-xs font-extrabold text-ink/60">{summarizeGameConfig(room.gameConfigs?.[game.id])}</span>}
           {!active && <span className="mt-4 inline-flex items-center gap-1.5 font-extrabold text-ink/70"><Vote size={17} /> {tally} {tally === 1 ? 'voto' : 'votos'}</span>}
         </button>;
       })}

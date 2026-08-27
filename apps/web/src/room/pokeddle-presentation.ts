@@ -107,7 +107,7 @@ export function formatPokeddleFeedback(key: PokeddleClueKey, entry: PokeddleFeed
 
   if (entry.kind === 'NUMERIC') value = numericValue(key, entry.value);
   else if (entry.kind === 'TYPES') value = entry.value.map((type) => pokemonTypeLabels[type] ?? formatPokemonWords(type)).join(' / ');
-  else if (entry.kind === 'EVOLUTION') value = entry.value.stages === 1 ? 'No evoluciona' : `Etapa ${entry.value.stage}/${entry.value.stages}`;
+  else if (entry.kind === 'EVOLUTION') value = entry.value.stages <= 1 ? 'Sin evolución · No tiene etapas evolutivas' : `Etapa ${entry.value.stage}/${entry.value.stages}`;
   else if (entry.kind === 'ABILITIES') {
     value = entry.value.map(formatPokemonWords).join(', ');
     result = entry.matches ? `${entry.matches} coincide${entry.matches === 1 ? '' : 'n'}` : 'Ninguna';
