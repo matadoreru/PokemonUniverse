@@ -52,6 +52,7 @@ export interface PokemonConnectionsRoundResult {
   players: Record<string, {
     status: Exclude<ConnectionPlayerStatus, 'PLAYING'>;
     foundGroups: number;
+    foundGroupIds: string[];
     mistakesUsed: number;
     completionRank: number | null;
     elapsedMs: number | null;
@@ -69,6 +70,7 @@ export interface PokemonConnectionsState {
   puzzleSource: 'CURATED' | 'DYNAMIC';
   puzzleKey: string;
   usedPuzzleKeys: string[];
+  recentCategoryIds: string[];
   progress: Record<string, PokemonConnectionsProgress>;
   completionOrder: string[];
   scores: Record<string, number>;
@@ -110,9 +112,12 @@ export type PokemonConnectionsPlayerState =
     lastAttempt: ConnectionAttemptFeedback | null;
   };
 
-export const pokemonConnectionsActionSchema = z.object({
-  type: z.literal('SUBMIT_GROUP'),
-  pokemonIds: z.array(z.string().min(1).max(96)).min(3).max(5),
-}).strict();
+export const pokemonConnectionsActionSchema = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('SUBMIT_GROUP'),
+    pokemonIds: z.array(z.string().min(1).max(96)).min(3).max(5),
+  }).strict(),
+  z.object({ type: z.literal('ADVANCE_ROUND') }).strict(),
+]);
 
 export type PokemonConnectionsAction = z.infer<typeof pokemonConnectionsActionSchema>;

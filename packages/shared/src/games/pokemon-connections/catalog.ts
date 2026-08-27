@@ -73,6 +73,66 @@ export const connectionCategoryCatalog: readonly CategoryDefinition[] = [
     id: 'artificial-objects', label: 'Objetos animados', explanation: 'Su diseño convierte un objeto cotidiano en Pokémon.',
     pokemonIds: ['magnemite', 'voltorb', 'electrode', 'klink', 'litwick', 'chandelure', 'trubbish', 'vanillite', 'honedge', 'klefki', 'sinistea', 'polteageist'],
   },
+  {
+    id: 'grass-partners', label: 'Compañeros iniciales de tipo Planta', explanation: 'Se pueden elegir como primer compañero de una región y empiezan con tipo Planta.',
+    pokemonIds: ['bulbasaur', 'chikorita', 'treecko', 'turtwig', 'snivy', 'chespin', 'rowlet', 'grookey', 'sprigatito'],
+  },
+  {
+    id: 'fire-partners', label: 'Compañeros iniciales de tipo Fuego', explanation: 'Se pueden elegir como primer compañero de una región y empiezan con tipo Fuego.',
+    pokemonIds: ['charmander', 'cyndaquil', 'torchic', 'chimchar', 'tepig', 'fennekin', 'litten', 'scorbunny', 'fuecoco'],
+  },
+  {
+    id: 'water-partners', label: 'Compañeros iniciales de tipo Agua', explanation: 'Se pueden elegir como primer compañero de una región y empiezan con tipo Agua.',
+    pokemonIds: ['squirtle', 'totodile', 'mudkip', 'piplup', 'oshawott', 'froakie', 'popplio', 'sobble', 'quaxly'],
+  },
+  {
+    id: 'regional-birds', label: 'Aves de las primeras rutas', explanation: 'Pertenecen a familias de aves que aparecen al principio de sus regiones.',
+    pokemonIds: ['pidgeot', 'noctowl', 'swellow', 'staraptor', 'unfezant', 'talonflame', 'toucannon', 'corviknight', 'kilowattrel'],
+  },
+  {
+    id: 'trade-evolution', label: 'Evolucionan al intercambiarlos', explanation: 'Su método evolutivo clásico requiere un intercambio.',
+    pokemonIds: ['kadabra', 'machoke', 'graveler', 'haunter', 'boldore', 'gurdurr', 'phantump', 'pumpkaboo'],
+  },
+  {
+    id: 'branch-evolution', label: 'Tienen una evolución ramificada', explanation: 'Pueden evolucionar en especies diferentes según las condiciones.',
+    pokemonIds: ['gloom', 'poliwhirl', 'slowpoke', 'tyrogue', 'wurmple', 'snorunt', 'clamperl', 'kirlia'],
+  },
+  {
+    id: 'friendship-evolution', label: 'Evolucionan con amistad', explanation: 'Una amistad alta forma parte de su método de evolución.',
+    pokemonIds: ['golbat', 'chansey', 'togetic', 'azurill', 'budew', 'buneary', 'riolu', 'snom'],
+  },
+  {
+    id: 'stone-evolution', label: 'Evolucionan con una piedra', explanation: 'Necesitan una piedra evolutiva para alcanzar su siguiente fase.',
+    pokemonIds: ['vulpix', 'growlithe', 'staryu', 'gloom', 'sunkern', 'minccino', 'helioptile', 'charjabug'],
+  },
+  {
+    id: 'turtles', label: 'Pokémon con aspecto de tortuga', explanation: 'Su diseño está inspirado en tortugas terrestres o marinas.',
+    pokemonIds: ['squirtle', 'torkoal', 'turtwig', 'carracosta', 'turtonator', 'chewtle'],
+  },
+  {
+    id: 'snakes', label: 'Pokémon con aspecto de serpiente', explanation: 'Tienen un cuerpo y diseño inspirados en serpientes.',
+    pokemonIds: ['ekans', 'arbok', 'dunsparce', 'seviper', 'snivy', 'silicobra'],
+  },
+  {
+    id: 'monkeys', label: 'Pokémon con aspecto de simio', explanation: 'Su diseño está inspirado en monos u otros simios.',
+    pokemonIds: ['mankey', 'aipom', 'chimchar', 'pansage', 'grookey'],
+  },
+  {
+    id: 'horses', label: 'Pokémon con aspecto equino', explanation: 'Su diseño está inspirado en caballos, cebras o asnos.',
+    pokemonIds: ['ponyta', 'blitzle', 'mudbray', 'glastrier', 'spectrier'],
+  },
+  {
+    id: 'crustaceans', label: 'Pokémon crustáceos', explanation: 'Su diseño toma rasgos de cangrejos u otros crustáceos.',
+    pokemonIds: ['krabby', 'corphish', 'dwebble', 'clauncher', 'crabrawler', 'klawf'],
+  },
+  {
+    id: 'frogs', label: 'Pokémon con aspecto de rana', explanation: 'Su diseño está inspirado en ranas, sapos o renacuajos.',
+    pokemonIds: ['poliwag', 'politoed', 'croagunk', 'tympole', 'froakie', 'greninja', 'bellibolt'],
+  },
+  {
+    id: 'mythical-balanced-stats', label: 'Singulares con 100 en cada estadística', explanation: 'Sus seis estadísticas base tienen exactamente 100 puntos.',
+    pokemonIds: ['mew', 'celebi', 'jirachi', 'manaphy', 'shaymin-land'],
+  },
 ];
 
 const curatedTemplates: readonly CuratedTemplate[] = [
@@ -92,6 +152,42 @@ const curatedTemplates: readonly CuratedTemplate[] = [
       { categoryId: 'bears', pokemonIds: ['teddiursa', 'cubchoo', 'stufful', 'kubfu'] },
       { categoryId: 'baby', pokemonIds: ['pichu', 'togepi', 'riolu', 'toxel'] },
       { categoryId: 'pseudo-final', pokemonIds: ['dragonite', 'tyranitar', 'metagross', 'garchomp'] },
+    ],
+  },
+  {
+    id: 'first-partners-connections',
+    groups: [
+      { categoryId: 'grass-partners', pokemonIds: ['bulbasaur', 'chikorita', 'treecko', 'turtwig'] },
+      { categoryId: 'fire-partners', pokemonIds: ['charmander', 'cyndaquil', 'torchic', 'chimchar'] },
+      { categoryId: 'water-partners', pokemonIds: ['squirtle', 'totodile', 'mudkip', 'piplup'] },
+      { categoryId: 'regional-birds', pokemonIds: ['pidgeot', 'noctowl', 'swellow', 'staraptor'] },
+    ],
+  },
+  {
+    id: 'evolution-methods-connections',
+    groups: [
+      { categoryId: 'trade-evolution', pokemonIds: ['kadabra', 'machoke', 'graveler', 'haunter'] },
+      { categoryId: 'branch-evolution', pokemonIds: ['poliwhirl', 'slowpoke', 'snorunt', 'kirlia'] },
+      { categoryId: 'friendship-evolution', pokemonIds: ['golbat', 'chansey', 'buneary', 'riolu'] },
+      { categoryId: 'stone-evolution', pokemonIds: ['vulpix', 'growlithe', 'staryu', 'sunkern'] },
+    ],
+  },
+  {
+    id: 'animal-shapes-connections',
+    groups: [
+      { categoryId: 'turtles', pokemonIds: ['squirtle', 'torkoal', 'carracosta', 'chewtle'] },
+      { categoryId: 'snakes', pokemonIds: ['ekans', 'dunsparce', 'seviper', 'silicobra'] },
+      { categoryId: 'monkeys', pokemonIds: ['mankey', 'aipom', 'pansage', 'grookey'] },
+      { categoryId: 'horses', pokemonIds: ['ponyta', 'blitzle', 'mudbray', 'spectrier'] },
+    ],
+  },
+  {
+    id: 'nature-connections',
+    groups: [
+      { categoryId: 'crustaceans', pokemonIds: ['krabby', 'corphish', 'dwebble', 'klawf'] },
+      { categoryId: 'frogs', pokemonIds: ['politoed', 'croagunk', 'greninja', 'bellibolt'] },
+      { categoryId: 'mythical-balanced-stats', pokemonIds: ['mew', 'celebi', 'jirachi', 'manaphy'] },
+      { categoryId: 'electric-rodents', pokemonIds: ['plusle', 'pachirisu', 'dedenne', 'togedemaru'] },
     ],
   },
 ];
@@ -190,11 +286,14 @@ function curatedCandidates(pool: readonly Pokemon[], groupCount: number): Genera
   });
 }
 
-function dynamicPuzzle(pool: readonly Pokemon[], groupSize: number, groupCount: number, context: GameContext): GeneratedConnectionsPuzzle | null {
+function dynamicPuzzle(pool: readonly Pokemon[], groupSize: number, groupCount: number, context: GameContext, excludedCategoryIds: ReadonlySet<string>): GeneratedConnectionsPuzzle | null {
   const candidates = resolvedCategoryDefinitions(pool)
     .map((definition) => ({ definition, members: shuffled(membersFor(definition, pool), context.random) }))
     .filter(({ members }) => members.length >= groupSize);
-  const randomized = shuffled(candidates, context.random);
+  const randomized = [
+    ...shuffled(candidates.filter(({ definition }) => !excludedCategoryIds.has(definition.id)), context.random),
+    ...shuffled(candidates.filter(({ definition }) => excludedCategoryIds.has(definition.id)), context.random),
+  ];
   for (let attempt = 0; attempt < Math.max(1, randomized.length * 4); attempt += 1) {
     const used = new Set<string>();
     const groups: ConnectionAnswerGroup[] = [];
@@ -218,19 +317,23 @@ function dynamicPuzzle(pool: readonly Pokemon[], groupSize: number, groupCount: 
 
 export function generateConnectionsPuzzle(
   context: GameContext,
-  options: { groupSize: number; pokemonCount: number; generations: readonly number[]; usedPuzzleKeys?: readonly string[] },
+  options: { groupSize: number; pokemonCount: number; generations: readonly number[]; usedPuzzleKeys?: readonly string[]; excludedCategoryIds?: readonly string[] },
 ): GeneratedConnectionsPuzzle {
   const pool = context.pokemon.forGenerations(options.generations).filter((pokemon) => pokemon.isDefault !== false && pokemon.sprite);
   const groupCount = options.pokemonCount / options.groupSize;
   if (!Number.isInteger(groupCount)) throw new Error('El tamaño del tablero no forma grupos completos.');
   const used = new Set(options.usedPuzzleKeys ?? []);
+  const excludedCategoryIds = new Set(options.excludedCategoryIds ?? []);
+  let curatedFallback: GeneratedConnectionsPuzzle[] = [];
   if (options.groupSize === 4 && (options.pokemonCount === 12 || options.pokemonCount === 16)) {
     const curated = curatedCandidates(pool, groupCount);
     const fresh = curated.filter((puzzle) => !used.has(puzzle.key));
-    const candidates = fresh.length > 0 ? fresh : curated;
+    const candidates = fresh.filter((puzzle) => puzzle.groups.every((group) => !excludedCategoryIds.has(group.categoryId)));
     if (candidates.length > 0) return candidates[Math.floor(context.random() * candidates.length)]!;
+    curatedFallback = fresh.length > 0 ? fresh : curated;
   }
-  const generated = dynamicPuzzle(pool, options.groupSize, groupCount, context);
+  const generated = dynamicPuzzle(pool, options.groupSize, groupCount, context, excludedCategoryIds);
+  if (!generated && curatedFallback.length > 0) return curatedFallback[Math.floor(context.random() * curatedFallback.length)]!;
   if (!generated) {
     throw new Error('No se puede construir un puzle válido con estas generaciones y tamaño. Amplía las generaciones o reduce el tablero.');
   }

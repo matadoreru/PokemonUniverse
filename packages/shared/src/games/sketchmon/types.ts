@@ -35,6 +35,13 @@ export interface SketchmonPokemonReveal {
   types: PokemonType[];
 }
 
+export interface SketchmonDrawerPokemon {
+  name: string;
+  sprite: string | null;
+  previewEndsAt: number | null;
+  types: PokemonType[];
+}
+
 export interface SketchmonRoundResult {
   reason: 'GUESSED' | 'TIMEOUT';
   pokemon: SketchmonPokemonReveal;
@@ -112,7 +119,7 @@ export interface SketchmonPublicState {
 }
 
 export type SketchmonPlayerState =
-  | { role: 'DRAWER'; canDraw: boolean; secretPokemon: SketchmonPokemonReveal | null }
+  | { role: 'DRAWER'; canDraw: boolean; secretPokemon: SketchmonDrawerPokemon | null }
   | { role: 'GUESSER'; canGuess: boolean; cooldownUntil: number | null; attemptCount: number }
   | { role: 'SPECTATOR' };
 

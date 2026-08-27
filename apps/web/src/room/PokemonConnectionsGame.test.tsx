@@ -20,8 +20,8 @@ function publicGame(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'GAME_RESULTS' = '
     source: 'CURATED' as const,
     groups,
     players: {
-      p1: { status: 'SOLVED' as const, foundGroups: 3, mistakesUsed: 1, completionRank: 1, elapsedMs: 12_000, pointsAwarded: 6 },
-      p2: { status: 'TIMED_OUT' as const, foundGroups: 1, mistakesUsed: 2, completionRank: null, elapsedMs: null, pointsAwarded: 1 },
+      p1: { status: 'SOLVED' as const, foundGroups: 3, foundGroupIds: ['group-1', 'group-2', 'group-3'], mistakesUsed: 1, completionRank: 1, elapsedMs: 12_000, pointsAwarded: 6 },
+      p2: { status: 'TIMED_OUT' as const, foundGroups: 1, foundGroupIds: ['group-1'], mistakesUsed: 2, completionRank: null, elapsedMs: null, pointsAwarded: 1 },
     },
   };
   return {
@@ -81,6 +81,10 @@ describe('Pokémon Connections client', () => {
     expect(reveal).toContain('Pokémon fósiles');
     expect(reveal).toContain('Evoluciones de Eevee');
     expect(reveal).toContain('12.0s');
+    expect(reveal).toContain('Siguiente puzle');
+    const missedReveal = renderToStaticMarkup(createElement(PokemonConnectionsGame, { room: room(publicGame('ROUND_RESULTS'), playing), selfId: 'p2', onAction: async () => undefined }));
+    expect(missedReveal).toContain('No encontrada');
+    expect(missedReveal).toContain('Encontrada');
   });
 
   it('offers every agreed setting and the standard session result actions', () => {

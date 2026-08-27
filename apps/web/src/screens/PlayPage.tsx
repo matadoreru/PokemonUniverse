@@ -1,6 +1,7 @@
 import { DoorOpen, KeyRound, LoaderCircle, LogOut, Plus } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { HowToPlayCarousel } from '../components/HowToPlayCarousel';
 import { useRoom } from '../room/RoomContext';
 
 export function PlayPage() {
@@ -48,51 +49,56 @@ export function PlayPage() {
     </div>
   </section>;
 
-  return <section className="mx-auto max-w-xl px-4 pb-12 pt-6 sm:px-5 sm:pb-16 sm:pt-10">
+  return <section className="mx-auto max-w-6xl px-4 pb-12 pt-6 sm:px-5 sm:pb-16 sm:pt-10">
     <header className="mb-7 text-center">
       <h1 className="font-display text-4xl font-bold sm:text-5xl">Entrar en partida</h1>
       <p className="mx-auto mt-3 max-w-md font-semibold text-ink/65">Crea una sala nueva o únete a una existente.</p>
     </header>
 
-    <article className="card !p-4 sm:!p-6">
-      <button className="btn-secondary w-full" disabled={busy || !connected} onClick={() => void run(createRoom)}>
-        {busy ? <LoaderCircle className="animate-spin" size={20} /> : <Plus size={21} />}
-        {busy ? 'Preparando sala…' : 'Crear sala privada'}
-      </button>
+    <div className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]">
+      <div className="flex flex-col">
+        <article className="card flex-1 !p-4 sm:!p-6">
+          <button className="btn-secondary w-full" disabled={busy || !connected} onClick={() => void run(createRoom)}>
+            {busy ? <LoaderCircle className="animate-spin" size={20} /> : <Plus size={21} />}
+            {busy ? 'Preparando sala…' : 'Crear sala privada'}
+          </button>
 
-      <div className="my-7 flex items-center gap-3" aria-hidden="true">
-        <span className="h-px flex-1 bg-ink/10" />
-        <span className="text-xs font-black uppercase tracking-[.2em] text-ink/55">O únete a una sala</span>
-        <span className="h-px flex-1 bg-ink/10" />
+          <div className="my-7 flex items-center gap-3" aria-hidden="true">
+            <span className="h-px flex-1 bg-ink/10" />
+            <span className="text-xs font-black uppercase tracking-[.2em] text-ink/55">O únete a una sala</span>
+            <span className="h-px flex-1 bg-ink/10" />
+          </div>
+
+          <form onSubmit={join}>
+            <label htmlFor="room-code" className="mb-2 flex items-center justify-between gap-3">
+              <span className="flex items-center gap-2 font-extrabold"><KeyRound size={18} className="text-aqua" /> Código de sala</span>
+              <span className="text-xs font-black tabular-nums text-ink/55">{code.length}/6</span>
+            </label>
+            <input
+              id="room-code"
+              aria-describedby="room-code-help"
+              className="field text-center font-display text-2xl uppercase tracking-[.32em] sm:text-3xl"
+              value={code}
+              onChange={(event) => { setCode(event.target.value.toUpperCase().replace(/[^A-Z2-9]/g, '').slice(0, 6)); setError(''); }}
+              placeholder="PIKA42"
+              autoComplete="off"
+              spellCheck={false}
+              required
+              minLength={6}
+              maxLength={6}
+            />
+            <button className="btn-primary mt-4 w-full" disabled={busy || !connected || code.length !== 6}>
+              {busy ? <LoaderCircle className="animate-spin" size={20} /> : <DoorOpen size={20} />}
+              {busy ? 'Entrando…' : 'Unirse a la sala'}
+            </button>
+          </form>
+
+          {error && <p role="alert" className="status-error mt-4 text-center">{error}</p>}
+        </article>
+
+        <p className="mt-5 text-center text-sm font-bold text-ink/60">Podrás elegir el minijuego y configurar la partida cuando crees una sala.</p>
       </div>
-
-      <form onSubmit={join}>
-        <label htmlFor="room-code" className="mb-2 flex items-center justify-between gap-3">
-          <span className="flex items-center gap-2 font-extrabold"><KeyRound size={18} className="text-aqua" /> Código de sala</span>
-          <span className="text-xs font-black tabular-nums text-ink/55">{code.length}/6</span>
-        </label>
-        <input
-          id="room-code"
-          aria-describedby="room-code-help"
-          className="field text-center font-display text-2xl uppercase tracking-[.32em] sm:text-3xl"
-          value={code}
-          onChange={(event) => { setCode(event.target.value.toUpperCase().replace(/[^A-Z2-9]/g, '').slice(0, 6)); setError(''); }}
-          placeholder="PIKA42"
-          autoComplete="off"
-          spellCheck={false}
-          required
-          minLength={6}
-          maxLength={6}
-        />
-        <button className="btn-primary mt-4 w-full" disabled={busy || !connected || code.length !== 6}>
-          {busy ? <LoaderCircle className="animate-spin" size={20} /> : <DoorOpen size={20} />}
-          {busy ? 'Entrando…' : 'Unirse a la sala'}
-        </button>
-      </form>
-
-      {error && <p role="alert" className="status-error mt-4 text-center">{error}</p>}
-    </article>
-
-    <p className="mt-5 text-center text-sm font-bold text-ink/60">Podrás elegir el minijuego y configurar la partida cuando crees a una sala.</p>
+      <HowToPlayCarousel />
+    </div>
   </section>;
 }

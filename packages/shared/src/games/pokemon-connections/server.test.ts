@@ -13,6 +13,13 @@ const classicIds = [
   'vanillite', 'slurpuff', 'appletun', 'alcremie',
 ];
 
+const companionIds = [
+  'meowth', 'skitty', 'glameow', 'purrloin',
+  'teddiursa', 'cubchoo', 'stufful', 'kubfu',
+  'pichu', 'togepi', 'riolu', 'toxel',
+  'dragonite', 'tyranitar', 'metagross', 'garchomp',
+];
+
 function mon(id: string, index: number, extra: Partial<Pokemon> = {}): Pokemon {
   return {
     id, nationalDexNumber: index + 1, name: id, generation: 1, isDefault: true, sprite: `/${id}.png`,
@@ -34,7 +41,7 @@ function catalog(entries: Pokemon[]): PokemonCatalog {
 function setup(overrides: Partial<typeof defaultPokemonConnectionsConfig> = {}, count = 2) {
   const entries = classicIds.map((id, index) => mon(id, index));
   const players = Array.from({ length: count }, (_, index) => ({ id: `p${index + 1}`, displayName: `P${index + 1}`, connected: true, active: true }));
-  const context: GameContext = { players, pokemon: catalog(entries), now: 1_000, random: () => 0 };
+  const context: GameContext = { players, pokemon: catalog(entries), now: 1_000, random: () => 0, hostId: 'p1' };
   const config = { ...defaultPokemonConnectionsConfig, generations: [1], rounds: 1, ...overrides };
   let state = pokemonConnectionsGame.createInitialState(config, context);
   state = pokemonConnectionsGame.start(state, context);
@@ -64,6 +71,19 @@ describe('Pokémon Connections puzzle construction and config', () => {
     expect(generated.source).toBe('DYNAMIC');
     expect(generated.groups).toHaveLength(3);
     expect(new Set(generated.groups.flatMap((group) => group.pokemon.map((pokemon) => pokemon.id)))).toHaveLength(9);
+  });
+
+  it('avoids recently used categories when another curated puzzle is available', () => {
+    const entries = [...classicIds, ...companionIds].map((id, index) => mon(id, index));
+    const context: GameContext = { players: [], pokemon: catalog(entries), now: 1_000, random: () => 0 };
+    const first = generateConnectionsPuzzle(context, { generations: [1], groupSize: 4, pokemonCount: 16 });
+    const firstCategories = first.groups.map((group) => group.categoryId);
+    const second = generateConnectionsPuzzle(context, {
+      generations: [1], groupSize: 4, pokemonCount: 16,
+      usedPuzzleKeys: [first.key], excludedCategoryIds: firstCategories,
+    });
+    expect(second.key).not.toBe(first.key);
+    expect(second.groups.every((group) => !firstCategories.includes(group.categoryId))).toBe(true);
   });
 
   it('awards the agreed completion podium bonuses', () => {
@@ -144,5 +164,16 @@ describe('Pokémon Connections authoritative private play', () => {
     state = pokemonConnectionsGame.handleTimeout(state, fixture.context);
     expect(state.phase).toBe('GAME_RESULTS');
     expect(pokemonConnectionsGame.getResults(state).standings).toHaveLength(2);
+  });
+
+  it('lets only the host advance during the 30-second reveal', () => {
+    const fixture = setup({ rounds: 2 });
+    fixture.context.now = fixture.state.roundEndsAt!;
+    const revealed = pokemonConnectionsGame.handleTimeout(fixture.state, fixture.context);
+    const guest = pokemonConnectionsGame.handleAction(revealed, 'p2', { type: 'ADVANCE_ROUND' }, fixture.context);
+    expect(guest).toMatchObject({ accepted: false, error: expect.stringMatching(/Solo el Host/) });
+    const host = pokemonConnectionsGame.handleAction(revealed, 'p1', { type: 'ADVANCE_ROUND' }, fixture.context);
+    expect(host.accepted).toBe(true);
+    expect(host.state).toMatchObject({ phase: 'ROUND_ACTIVE', roundNumber: 2 });
   });
 });

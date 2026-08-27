@@ -25,7 +25,7 @@ function room(player: SketchmonPlayerState): RoomView {
       { id: 'p3', displayName: 'Carlos', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 0 },
     ],
     availableGames: [{ id: 'sketchmon', name: 'Sketchmon', icon: '🎨', description: 'Dibuja', minPlayers: 2, profileStats: { metrics: [] } }],
-    selectedGameId: 'sketchmon', selectedGameConfig: { generations: [1, 4], roundSeconds: 90, laps: 1, hintsEnabled: true, includeForms: false },
+    selectedGameId: 'sketchmon', selectedGameConfig: { generations: [1, 4], roundSeconds: 90, laps: 1, hintsEnabled: true, memoryPreviewEnabled: false, includeForms: false },
     sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0,
     sessionStandings: [], sessionHistory: [], game: publicGame(), gamePlayerState: player, serverNow: 1_000,
   };
@@ -34,7 +34,7 @@ function room(player: SketchmonPlayerState): RoomView {
 describe('Sketchmon role presentation', () => {
   it('shows the secret and drawing tools only to the drawer', () => {
     const markup = renderToStaticMarkup(createElement(SketchmonGame, { room: room({ role: 'DRAWER', canDraw: true, secretPokemon: {
-      id: 'lucario', name: 'Lucario', sprite: '/lucario.png', generation: 4, types: ['fighting', 'steel'],
+      name: 'Lucario', sprite: '/lucario.png', previewEndsAt: null, types: ['fighting', 'steel'],
     } }), selfId: 'p1', onAction: async () => undefined }));
     expect(markup).toContain('SOLO TÚ PUEDES VER ESTO'); expect(markup).toContain('Lucario');
     expect(markup).toContain('Lápiz'); expect(markup).toContain('Limpiar lienzo');

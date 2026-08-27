@@ -1,5 +1,5 @@
 import type { SketchmonConfig } from '@pokemon-universe/shared';
-import { Clock3, Lightbulb, Repeat2, Sparkles } from 'lucide-react';
+import { Brain, Clock3, Lightbulb, Repeat2, Sparkles } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 
@@ -34,10 +34,11 @@ export function SketchmonConfigPanel({ config, disabled, onChange }: { config: u
         <p className="mt-2 text-sm font-bold text-ink/60">Cada jugador dibuja una vez por vuelta, en un orden nuevo.</p>
       </section>
     </div>
-    <div className="grid gap-3 lg:grid-cols-2">
+    <div className="grid gap-3 lg:grid-cols-3">
+      <ToggleCard active={value.memoryPreviewEnabled} icon={<Brain size={20} />} title="Memoria de 3 segundos" description="Muestra el sprite 3 segundos y después deja únicamente el nombre." onClick={() => void onChange({ ...value, memoryPreviewEnabled: !value.memoryPreviewEnabled })} />
       <ToggleCard active={value.hintsEnabled} icon={<Lightbulb size={20} />} title="Pistas automáticas" description="Revela generación, tipos y evolución durante la ronda. Desactivadas por defecto." onClick={() => void onChange({ ...value, hintsEnabled: !value.hintsEnabled })} />
       <ToggleCard active={value.includeForms} icon={<Sparkles size={20} />} title="Formas compatibles" description="Incluye formas regionales; hay que acertar la forma exacta." onClick={() => void onChange({ ...value, includeForms: !value.includeForms })} />
     </div>
-    <p className="rounded-xl bg-ink/[.04] p-3 text-sm font-bold text-ink/65">El Pokémon secreto solo aparece en la pantalla de quien dibuja. Los demás reciben el dibujo y las pistas, nunca su identidad.</p>
+    <p className="rounded-xl bg-ink/[.04] p-3 text-sm font-bold text-ink/65">El Pokémon secreto solo se envía a quien dibuja. Con el modo memoria, el servidor retira el sprite tras 3 segundos; los demás nunca reciben su identidad.</p>
   </fieldset>;
 }

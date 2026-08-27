@@ -7,6 +7,7 @@ import { sketchmonActionSchema, type SketchmonAction, type SketchmonGalleryEntry
 
 export const SKETCHMON_GUESS_COOLDOWN_MS = 750;
 export const SKETCHMON_REVEAL_MS = 6_000;
+export const SKETCHMON_SPRITE_PREVIEW_MS = 3_000;
 export const SKETCHMON_MAX_STROKES = 300;
 export const SKETCHMON_MAX_POINTS = 2_500;
 
@@ -83,14 +84,20 @@ function hintsFor(pokemon: Pokemon): SketchmonHint[] {
 }
 
 function advanceHints(state: SketchmonState, context: GameContext): SketchmonState {
-  if (state.phase !== 'ROUND_ACTIVE' || !state.config.hintsEnabled || state.roundStartedAt === null) return state;
+  if (state.phase !== 'ROUND_ACTIVE' || state.roundStartedAt === null) return state;
   const target = context.pokemon.byId(state.targetPokemonId ?? '');
-  if (!target) return state;
-  const deadlines = sketchmonHintDeadlines(state.roundStartedAt, state.config.roundSeconds);
+  const deadlines = state.config.hintsEnabled ? sketchmonHintDeadlines(state.roundStartedAt, state.config.roundSeconds) : [];
   const revealedCount = deadlines.filter((deadline) => context.now >= deadline).length;
-  const nextTransitionAt = deadlines[revealedCount] ?? null;
-  if (revealedCount === state.visibleHints.length && nextTransitionAt === state.nextTransitionAt) return state;
-  return { ...state, visibleHints: hintsFor(target).slice(0, revealedCount), nextTransitionAt };
+  const pending = [
+    deadlines[revealedCount],
+    state.config.memoryPreviewEnabled && context.now < state.roundStartedAt + SKETCHMON_SPRITE_PREVIEW_MS
+      ? state.roundStartedAt + SKETCHMON_SPRITE_PREVIEW_MS
+      : undefined,
+  ].filter((deadline): deadline is number => deadline !== undefined);
+  const nextTransitionAt = pending.length ? Math.min(...pending) : null;
+  const visibleHints = target && state.config.hintsEnabled ? hintsFor(target).slice(0, revealedCount) : state.visibleHints;
+  if (visibleHints.length === state.visibleHints.length && nextTransitionAt === state.nextTransitionAt) return state;
+  return { ...state, visibleHints, nextTransitionAt };
 }
 
 function incrementDrawingFailure(state: SketchmonState, drawerId: string): SketchmonState {
@@ -129,12 +136,14 @@ function beginNextRound(initial: SketchmonState, context: GameContext): Sketchmo
     const target = selectTarget(state, context);
     context.preloadImage?.(target.sprite);
     const roundStartedAt = context.now;
+    const firstHintAt = state.config.hintsEnabled ? sketchmonHintDeadlines(roundStartedAt, state.config.roundSeconds)[0]! : null;
+    const previewEndsAt = state.config.memoryPreviewEnabled ? roundStartedAt + SKETCHMON_SPRITE_PREVIEW_MS : null;
     return {
       ...state, phase: 'ROUND_ACTIVE', roundNumber, targetPokemonId: target.id, drawerId,
       usedPokemonIds: [...new Set([...state.usedPokemonIds, target.id])], strokes: [], clearedStrokes: null, visibleHints: [], attempts: [],
       attemptCounts: {}, cooldownUntil: {}, roundStartedAt,
       roundEndsAt: roundStartedAt + state.config.roundSeconds * 1_000,
-      nextTransitionAt: state.config.hintsEnabled ? sketchmonHintDeadlines(roundStartedAt, state.config.roundSeconds)[0]! : null,
+      nextTransitionAt: firstHintAt === null ? previewEndsAt : previewEndsAt === null ? firstHintAt : Math.min(firstHintAt, previewEndsAt),
       lastRound: null,
     };
   }
@@ -302,7 +311,19 @@ export const sketchmonGame: MiniGameModule<SketchmonConfig, SketchmonState, Sket
     if (!participating) return { role: 'SPECTATOR' };
     if (state.phase === 'ROUND_ACTIVE' && playerId === state.drawerId) {
       const target = context.pokemon.byId(state.targetPokemonId ?? '');
-      return { role: 'DRAWER', canDraw: Boolean(target), secretPokemon: target ? reveal(target) : null };
+      const previewEndsAt = state.config.memoryPreviewEnabled && state.roundStartedAt !== null
+        ? state.roundStartedAt + SKETCHMON_SPRITE_PREVIEW_MS
+        : null;
+      const previewVisible = previewEndsAt === null || context.now < previewEndsAt;
+      return {
+        role: 'DRAWER', canDraw: Boolean(target),
+        secretPokemon: target ? {
+          name: target.name,
+          sprite: previewVisible ? target.sprite : null,
+          previewEndsAt,
+          types: state.config.memoryPreviewEnabled ? [] : [...target.types],
+        } : null,
+      };
     }
     return {
       role: 'GUESSER', canGuess: state.phase === 'ROUND_ACTIVE' && playerId !== state.drawerId,

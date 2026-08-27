@@ -12,6 +12,7 @@ export const sketchmonConfigSchema = z.object({
   ),
   laps: z.number().int().min(1).max(3),
   hintsEnabled: z.boolean(),
+  memoryPreviewEnabled: z.boolean(),
   includeForms: z.boolean(),
 }).strict();
 
@@ -22,5 +23,6 @@ export const defaultSketchmonConfig: SketchmonConfig = {
   roundSeconds: 90,
   laps: 1,
   hintsEnabled: false,
+  memoryPreviewEnabled: false,
   includeForms: false,
 };

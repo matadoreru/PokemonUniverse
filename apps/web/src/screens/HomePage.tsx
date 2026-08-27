@@ -5,6 +5,7 @@ import { useAuth } from '../auth/AuthContext';
 export function HomePage() {
   const { user } = useAuth();
   return <section className="mx-auto flex min-h-[calc(100vh-12rem)] max-w-7xl items-center px-5 py-10 md:px-8 md:py-16">
+    <div className="grid w-full items-center gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,.95fr)] lg:gap-12">
       <div className="max-w-3xl">
         <h1 className="font-display text-4xl font-bold leading-[1.02] tracking-[-.03em] sm:text-5xl lg:text-6xl">Colección de minijuegos Pokémon, <span className="text-berry">en una sola sala.</span></h1>
         <p className="mt-5 max-w-[65ch] text-lg font-semibold leading-relaxed text-ink/70">Crea una sala privada, invita a tus amigos y juega minijuegos juntos.</p>
@@ -18,5 +19,17 @@ export function HomePage() {
           <span className="inline-flex items-center gap-2"><UsersRound size={17} className="text-leaf" /> Salas privadas</span>
         </div>
       </div>
-    </section>;
+      <figure className="flex min-w-0 justify-center lg:justify-end">
+        <img
+          src="/logoText.png"
+          alt="Pokémon Universe"
+          className="h-auto w-full max-w-72 select-none object-contain sm:max-w-sm lg:max-w-[34rem]"
+          width="1254"
+          height="1254"
+          decoding="async"
+          fetchPriority="high"
+        />
+      </figure>
+    </div>
+  </section>;
 }

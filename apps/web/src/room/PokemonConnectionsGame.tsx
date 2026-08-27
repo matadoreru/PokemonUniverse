@@ -1,5 +1,5 @@
 import type { ConnectionAnswerGroup, ConnectionPlayerStatus, PokemonConnectionsPlayerState, PokemonConnectionsPublicState, RoomMemberView, RoomView } from '@pokemon-universe/shared';
-import { Check, CheckCircle2, Eye, Lightbulb, LockKeyhole, Puzzle, ShieldX, Sparkles, Trophy, X } from 'lucide-react';
+import { ArrowRight, Check, CheckCircle2, Eye, Lightbulb, LockKeyhole, Puzzle, ShieldX, Sparkles, Trophy, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';
@@ -22,21 +22,30 @@ function statusTone(status: ConnectionPlayerStatus): string {
   return 'text-aqua';
 }
 
-function FoundGroup({ group }: { group: ConnectionAnswerGroup }) {
-  return <article className="overflow-hidden rounded-xl bg-leaf/[.08] reveal-pop"><header className="px-3 pt-3 text-center"><strong className="font-display text-lg text-leaf">{group.label}</strong><p className="text-xs font-bold text-ink/60">{group.explanation}</p></header><div className="grid grid-cols-3 gap-1 p-2 sm:grid-cols-4 lg:grid-cols-5">{group.pokemon.map((pokemon) => <div key={pokemon.id} className="min-w-0 text-center"><img src={pokemon.sprite} alt="" className="mx-auto h-12 w-12 object-contain [image-rendering:pixelated]" /><span className="block truncate text-xs font-extrabold">{pokemon.name}</span></div>)}</div></article>;
+function FoundGroup({ group, tone = 'found' }: { group: ConnectionAnswerGroup; tone?: 'found' | 'missed' | 'neutral' }) {
+  const colors = tone === 'missed' ? 'border-berry/25 bg-berry/[.09] text-berry' : tone === 'neutral' ? 'border-ink/10 bg-ink/[.04] text-ink' : 'border-leaf/20 bg-leaf/[.08] text-leaf';
+  return <article className={`overflow-hidden rounded-xl border reveal-pop ${colors}`}><header className="px-3 pt-3 text-center"><span className="text-[.65rem] font-black uppercase tracking-[.14em]">{tone === 'missed' ? 'No encontrada' : tone === 'found' ? 'Encontrada' : 'Solución'}</span><strong className="block font-display text-lg">{group.label}</strong><p className="text-xs font-bold text-ink/60">{group.explanation}</p></header><div className="grid grid-cols-3 gap-1 p-2 sm:grid-cols-4 lg:grid-cols-5">{group.pokemon.map((pokemon) => <div key={pokemon.id} className="min-w-0 text-center text-ink"><img src={pokemon.sprite} alt="" className="mx-auto h-12 w-12 object-contain [image-rendering:pixelated]" /><span className="block truncate text-xs font-extrabold">{pokemon.name}</span></div>)}</div></article>;
 }
 
 function ProgressPanel({ room, game }: { room: RoomView; game: PokemonConnectionsPublicState }) {
   return <section className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card" aria-labelledby="connections-progress"><h2 id="connections-progress" className="mb-3 font-display text-xl">Progreso del grupo</h2><div className="space-y-2">{Object.entries(game.playerProgress).map(([id, progress]) => { const person = member(room, id); return <div key={id} className="flex min-h-12 items-center gap-2 rounded-xl bg-surface-raised px-3 py-2"><Avatar name={person?.displayName ?? id} avatar={person?.avatar} presence={person?.presence} size="sm" /><span className="min-w-0 flex-1"><strong className="block truncate">{person?.displayName ?? id}</strong><small className={`font-extrabold ${statusTone(progress.status)}`}>{statusLabel(progress.status)}</small></span><strong className="text-sm">{progress.foundGroups}/{game.groupCount}</strong></div>; })}</div></section>;
 }
 
-function RoundReveal({ room, game, serverOffset }: { room: RoomView; game: PokemonConnectionsPublicState; serverOffset: number }) {
+function RoundReveal({ room, game, selfId, serverOffset, onAction }: { room: RoomView; game: PokemonConnectionsPublicState; selfId: string; serverOffset: number; onAction(action: unknown): Promise<void> }) {
   const result = game.lastRound!;
+  const [pending, setPending] = useState(false);
+  const ownResult = result.players[selfId];
+  const ownFound = new Set(ownResult?.foundGroupIds ?? []);
+  const isHost = room.hostId === selfId;
   const ordered = Object.entries(result.players).sort(([, left], [, right]) => (left.completionRank ?? Infinity) - (right.completionRank ?? Infinity) || right.pointsAwarded - left.pointsAwarded);
-  return <section className="mx-auto max-w-7xl px-3 py-5 sm:px-5"><div className="overflow-hidden rounded-2xl border border-leaf/25 bg-surface shadow-card reveal-pop"><header className="flex flex-wrap items-start justify-between gap-3 border-b border-ink/10 p-4 sm:p-6"><div><span className="label !mb-0">Puzle {game.roundNumber} · Solución {result.source === 'CURATED' ? 'curada' : 'generada'}</span><h1 className="font-display text-3xl text-leaf sm:text-4xl">Estas eran las conexiones</h1></div><ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Siguiente puzle" /></header><div className="grid gap-5 p-4 sm:p-6 xl:grid-cols-[minmax(0,1fr)_22rem]"><main className="grid content-start gap-3 md:grid-cols-2">{result.groups.map((group) => <FoundGroup key={group.id} group={group} />)}</main><aside><h2 className="mb-3 font-display text-xl">Clasificación de la ronda</h2><div className="space-y-2">{ordered.map(([id, progress]) => { const person = member(room, id); return <article key={id} className="flex items-center gap-2 rounded-xl bg-surface-raised p-3"><strong className="w-7 text-center text-lg">{progress.completionRank && progress.completionRank <= 3 ? ['🥇', '🥈', '🥉'][progress.completionRank - 1] : '—'}</strong><Avatar name={person?.displayName ?? id} avatar={person?.avatar} size="sm" /><span className="min-w-0 flex-1"><strong className="block truncate">{person?.displayName ?? id}</strong><small className={`font-bold ${statusTone(progress.status)}`}>{progress.foundGroups}/{game.groupCount} grupos{progress.elapsedMs !== null ? ` · ${(progress.elapsedMs / 1_000).toFixed(1)}s` : ''}</small></span><strong className="text-leaf">+{progress.pointsAwarded}</strong></article>; })}</div></aside></div></div></section>;
+  async function advance() {
+    setPending(true);
+    try { await onAction({ type: 'ADVANCE_ROUND' }); } finally { setPending(false); }
+  }
+  return <section className="mx-auto max-w-7xl px-3 py-5 sm:px-5"><div className="overflow-hidden rounded-2xl border border-leaf/25 bg-surface shadow-card reveal-pop"><header className="flex flex-wrap items-start justify-between gap-3 border-b border-ink/10 p-4 sm:p-6"><div><span className="label !mb-0">Puzle {game.roundNumber} · Solución {result.source === 'CURATED' ? 'curada' : 'generada'}</span><h1 className="font-display text-3xl text-leaf sm:text-4xl">Estas eran las conexiones</h1><p className="mt-1 text-sm font-bold text-ink/60">Las que no encontraste aparecen en rojo. Hay 30 segundos para revisar la solución.</p></div><div className="flex flex-col items-end gap-2"><ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Avance automático" />{isHost && <button type="button" className="btn-primary !min-h-10" disabled={pending} onClick={() => void advance()}>{game.roundNumber >= game.totalRounds ? 'Ver clasificación' : 'Siguiente puzle'} <ArrowRight size={18} /></button>}</div></header><div className="grid gap-5 p-4 sm:p-6 xl:grid-cols-[minmax(0,1fr)_22rem]"><main className="grid content-start gap-3 md:grid-cols-2">{result.groups.map((group) => <FoundGroup key={group.id} group={group} tone={ownResult ? ownFound.has(group.id) ? 'found' : 'missed' : 'neutral'} />)}</main><aside><h2 className="mb-3 font-display text-xl">Clasificación de la ronda</h2><div className="space-y-2">{ordered.map(([id, progress]) => { const person = member(room, id); return <article key={id} className="flex items-center gap-2 rounded-xl bg-surface-raised p-3"><strong className="w-7 text-center text-lg">{progress.completionRank && progress.completionRank <= 3 ? ['🥇', '🥈', '🥉'][progress.completionRank - 1] : '—'}</strong><Avatar name={person?.displayName ?? id} avatar={person?.avatar} size="sm" /><span className="min-w-0 flex-1"><strong className="block truncate">{person?.displayName ?? id}</strong><small className={`font-bold ${statusTone(progress.status)}`}>{progress.foundGroups}/{game.groupCount} grupos{progress.elapsedMs !== null ? ` · ${(progress.elapsedMs / 1_000).toFixed(1)}s` : ''}</small></span><strong className="text-leaf">+{progress.pointsAwarded}</strong></article>; })}</div></aside></div></div></section>;
 }
 
-export function PokemonConnectionsGame({ room, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function PokemonConnectionsGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
   const game = room.game as PokemonConnectionsPublicState;
   const player = room.gamePlayerState as PokemonConnectionsPlayerState;
   const serverOffset = useServerOffset(room.serverNow);
@@ -45,7 +54,7 @@ export function PokemonConnectionsGame({ room, onAction }: { room: RoomView; sel
   useEffect(() => { setSelected([]); setSubmitting(false); }, [game.roundNumber]);
   const foundIds = useMemo(() => new Set(player.role === 'PLAYER' ? player.foundGroups.flatMap((group) => group.pokemon.map((pokemon) => pokemon.id)) : []), [player]);
   useEffect(() => { setSelected((current) => current.filter((id) => !foundIds.has(id))); }, [foundIds]);
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} serverOffset={serverOffset} />;
+  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} selfId={selfId} serverOffset={serverOffset} onAction={onAction} />;
   const canSubmit = player.role === 'PLAYER' && player.canSubmit && !submitting;
   function toggle(id: string) {
     if (!canSubmit || foundIds.has(id)) return;

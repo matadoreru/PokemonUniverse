@@ -2,7 +2,7 @@ import type { GameContext, Pokemon, PokemonCatalog } from '../../index.js';
 import { describe, expect, it } from 'vitest';
 import { defaultSketchmonConfig } from './config.js';
 import { SKETCHMON_DRAWER_POINTS, sketchmonGuesserPoints } from './rules.js';
-import { SKETCHMON_GUESS_COOLDOWN_MS, SKETCHMON_REVEAL_MS, sketchmonGame } from './server.js';
+import { SKETCHMON_GUESS_COOLDOWN_MS, SKETCHMON_REVEAL_MS, SKETCHMON_SPRITE_PREVIEW_MS, sketchmonGame } from './server.js';
 import type { SketchmonPlayerState, SketchmonState } from './types.js';
 
 const entries: Pokemon[] = [
@@ -124,6 +124,22 @@ describe('Sketchmon', () => {
     expect(state.nextTransitionAt).toBeNull();
   });
 
+  it('withdraws the sprite after the configurable three-second memory preview', () => {
+    const fixture = setup({ memoryPreviewEnabled: true, hintsEnabled: true, roundSeconds: 90 });
+    let state = fixture.state;
+    const target = entries.find((entry) => entry.id === state.targetPokemonId)!;
+    expect(state.nextTransitionAt).toBe(1_000 + SKETCHMON_SPRITE_PREVIEW_MS);
+    expect(sketchmonGame.getPlayerState(state, 'p1', fixture.context)).toMatchObject({
+      role: 'DRAWER', secretPokemon: { name: target.name, sprite: target.sprite, types: [] },
+    });
+    fixture.setNow(state.nextTransitionAt!);
+    state = sketchmonGame.handleTimeout(state, fixture.context);
+    expect(state.nextTransitionAt).toBe(31_000);
+    expect(sketchmonGame.getPlayerState(state, 'p1', fixture.context)).toMatchObject({
+      role: 'DRAWER', secretPokemon: { name: target.name, sprite: null, previewEndsAt: 4_000, types: [] },
+    });
+  });
+
   it('never leaks the secret to public or guesser projections before reveal', () => {
     const fixture = setup(); const target = fixture.state.targetPokemonId!;
     const publicState = sketchmonGame.getPublicState(fixture.state, fixture.context);
@@ -131,7 +147,7 @@ describe('Sketchmon', () => {
     const guesser = sketchmonGame.getPlayerState(fixture.state, 'p2', fixture.context) as SketchmonPlayerState;
     expect(JSON.stringify(publicState)).not.toContain(target);
     expect(JSON.stringify(guesser)).not.toContain(target);
-    expect(drawer).toMatchObject({ role: 'DRAWER', canDraw: true, secretPokemon: { id: target } });
+    expect(drawer).toMatchObject({ role: 'DRAWER', canDraw: true, secretPokemon: { name: entries.find((entry) => entry.id === target)?.name, sprite: `/${target}.png` } });
     expect(guesser).toEqual({ role: 'GUESSER', canGuess: true, cooldownUntil: null, attemptCount: 0 });
   });
 

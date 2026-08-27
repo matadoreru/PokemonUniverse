@@ -4,7 +4,7 @@ import { defaultPokemonConnectionsConfig, pokemonConnectionsConfigSchema, type P
 import { buildPokemonConnectionsResults, completionBonus, emptyPokemonConnectionsStats } from './rules.js';
 import { pokemonConnectionsActionSchema, type ConnectionAnswerGroup, type PokemonConnectionsAction, type PokemonConnectionsPlayerState, type PokemonConnectionsProgress, type PokemonConnectionsPublicState, type PokemonConnectionsRoundResult, type PokemonConnectionsState } from './types.js';
 
-export const POKEMON_CONNECTIONS_REVEAL_MS = 8_000;
+export const POKEMON_CONNECTIONS_REVEAL_MS = 30_000;
 
 const manifest = {
   id: 'pokemon-connections',
@@ -52,8 +52,10 @@ function preparePuzzle(state: PokemonConnectionsState, context: GameContext): Po
     pokemonCount: state.config.pokemonCount,
     generations: state.config.generations,
     usedPuzzleKeys: state.usedPuzzleKeys,
+    excludedCategoryIds: state.recentCategoryIds,
   });
   const usedPuzzleKeys = [...state.usedPuzzleKeys, puzzle.key];
+  const recentCategoryIds = [...state.recentCategoryIds, ...puzzle.groups.map((group) => group.categoryId)];
   return {
     ...state,
     board: shuffledConnectionsBoard(puzzle.groups, context.random),
@@ -61,6 +63,7 @@ function preparePuzzle(state: PokemonConnectionsState, context: GameContext): Po
     puzzleSource: puzzle.source,
     puzzleKey: puzzle.key,
     usedPuzzleKeys: usedPuzzleKeys.length > 50 ? usedPuzzleKeys.slice(-50) : usedPuzzleKeys,
+    recentCategoryIds: recentCategoryIds.length > 12 ? recentCategoryIds.slice(-12) : recentCategoryIds,
   };
 }
 
@@ -127,6 +130,7 @@ function finishRound(state: PokemonConnectionsState, context: GameContext): Poke
     return [playerId, {
       status: player.status as Exclude<typeof player.status, 'PLAYING'>,
       foundGroups: player.foundGroupIds.length,
+      foundGroupIds: [...player.foundGroupIds],
       mistakesUsed: player.mistakesUsed,
       completionRank: player.completionRank,
       elapsedMs: player.completedAt === null || state.roundStartedAt === null ? null : player.completedAt - state.roundStartedAt,
@@ -159,7 +163,7 @@ export const pokemonConnectionsGame: MiniGameModule<PokemonConnectionsConfig, Po
     const playerIds = context.players.map((player) => player.id);
     const base: PokemonConnectionsState = {
       phase: 'GAME_STARTING', config: parsed, playerIds, roundNumber: 0,
-      board: [], answerGroups: [], puzzleSource: 'DYNAMIC', puzzleKey: '', usedPuzzleKeys: [],
+      board: [], answerGroups: [], puzzleSource: 'DYNAMIC', puzzleKey: '', usedPuzzleKeys: [], recentCategoryIds: [],
       progress: createProgress(playerIds), completionOrder: [],
       scores: Object.fromEntries(playerIds.map((playerId) => [playerId, 0])),
       playerStats: Object.fromEntries(playerIds.map((playerId) => [playerId, emptyPokemonConnectionsStats()])),
@@ -171,6 +175,11 @@ export const pokemonConnectionsGame: MiniGameModule<PokemonConnectionsConfig, Po
     return activatePreparedRound(state, context);
   },
   handleAction(state, playerId, action, context): GameActionResult<PokemonConnectionsState> {
+    if (action.type === 'ADVANCE_ROUND') {
+      if (state.phase !== 'ROUND_RESULTS') return { state, accepted: false, error: 'La solución aún no se está mostrando.' };
+      if (!context.hostId || context.hostId !== playerId) return { state, accepted: false, error: 'Solo el Host puede avanzar el puzle.' };
+      return { state: beginNextRound(state, context), accepted: true };
+    }
     if (state.phase !== 'ROUND_ACTIVE') return { state, accepted: false, error: 'La ronda no está activa.' };
     if (!state.playerIds.includes(playerId) || !isPlayerRequired(context, playerId)) return { state, accepted: false, error: 'No puedes participar en esta ronda.' };
     const current = state.progress[playerId];
@@ -253,7 +262,7 @@ export const pokemonConnectionsGame: MiniGameModule<PokemonConnectionsConfig, Po
       lastRound: (state.phase === 'ROUND_RESULTS' || state.phase === 'GAME_RESULTS') && state.lastRound ? {
         ...state.lastRound,
         groups: state.lastRound.groups.map(cloneGroup),
-        players: Object.fromEntries(Object.entries(state.lastRound.players).map(([id, player]) => [id, { ...player }])),
+        players: Object.fromEntries(Object.entries(state.lastRound.players).map(([id, player]) => [id, { ...player, foundGroupIds: [...player.foundGroupIds] }])),
       } : null,
       results: state.phase === 'GAME_RESULTS' ? buildPokemonConnectionsResults(state) : null,
     };

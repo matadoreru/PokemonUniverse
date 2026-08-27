@@ -1,5 +1,5 @@
 import type { Pokemon, RoomMemberView, RoomView, SketchmonPlayerState, SketchmonPublicState } from '@pokemon-universe/shared';
-import { CheckCircle2, Clock3, Eye, History, Lightbulb, Palette, Search, XCircle } from 'lucide-react';
+import { CheckCircle2, Clock3, Eye, EyeOff, History, Lightbulb, Palette, Search, XCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { PokemonTypeBadge } from '../components/PokemonTypeBadge';
 import { ServerTimer } from '../components/ServerTimer';
@@ -22,15 +22,20 @@ function DrawerBanner({ room, game }: { room: RoomView; game: SketchmonPublicSta
   </div>;
 }
 
-function SecretPokemon({ player }: { player: Extract<SketchmonPlayerState, { role: 'DRAWER' }> }) {
+function SecretPokemon({ player, serverOffset }: { player: Extract<SketchmonPlayerState, { role: 'DRAWER' }>; serverOffset: number }) {
   const pokemon = player.secretPokemon;
+  const previewRemainingMs = useRemainingMs(pokemon?.previewEndsAt, serverOffset);
   if (!pokemon) return <div className="skeleton min-h-56" />;
+  const spriteVisible = Boolean(pokemon.sprite) && (pokemon.previewEndsAt === null || previewRemainingMs > 0);
   return <aside className="rounded-xl border border-berry/20 bg-berry/[.06] p-4 text-center" aria-labelledby="sketchmon-secret">
     <span className="text-xs font-black text-berry">SOLO TÚ PUEDES VER ESTO</span>
     <h2 id="sketchmon-secret" className="font-display text-xl">Tu Pokémon</h2>
-    <img src={pokemon.sprite} alt={pokemon.name} className="mx-auto h-36 w-36 object-contain [image-rendering:pixelated]" />
+    <div className="grid h-36 place-items-center">
+      {spriteVisible ? <div className="relative"><img src={pokemon.sprite!} alt={pokemon.name} className="h-32 w-32 object-contain [image-rendering:pixelated]" />{pokemon.previewEndsAt !== null && <span className="absolute right-0 top-0 rounded-full bg-night px-2 py-1 text-xs font-black text-white">{Math.max(1, Math.ceil(previewRemainingMs / 1_000))}s</span>}</div> : <div className="text-ink/45"><EyeOff className="mx-auto" size={42} /><strong className="mt-2 block text-sm">Referencia oculta</strong></div>}
+    </div>
     <strong className="block break-words font-display text-2xl text-aqua">{pokemon.name}</strong>
     <div className="mt-2 flex flex-wrap justify-center gap-1.5">{pokemon.types.map((type) => <PokemonTypeBadge key={type} type={type} compact />)}</div>
+    {pokemon.previewEndsAt !== null && <p className="mt-2 text-xs font-bold text-ink/60">{spriteVisible ? 'Memoriza su aspecto antes de que desaparezca.' : 'Ahora dibuja de memoria: solo conservarás el nombre.'}</p>}
     <p className="mt-3 text-sm font-extrabold text-berry">No escribas letras, números, nombres ni símbolos que revelen directamente el Pokémon.</p>
   </aside>;
 }
@@ -79,6 +84,6 @@ export function SketchmonGame({ room, onAction }: { room: RoomView; selfId: stri
   const serverOffset = useServerOffset(room.serverNow); const drawer = memberFor(room, game.drawerId);
   if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} serverOffset={serverOffset} />;
   return <section className="mx-auto max-w-[90rem] overflow-x-clip px-3 py-4 sm:px-5"><header className="mb-4 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-ink/10 bg-surface px-4 py-3 shadow-card"><div><span className="text-xs font-black text-ink/60">Vuelta {game.lapNumber}/{game.totalLaps} · Dibujo {game.roundNumber}/{game.totalRounds}</span><h1 className="font-display text-2xl sm:text-3xl">Sketchmon</h1></div><DrawerBanner room={room} game={game} /><ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} /></header>
-    <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]"><main className="min-w-0 rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-5"><div className={player.role === 'DRAWER' ? 'grid items-start gap-4 lg:grid-cols-[14rem_minmax(0,1fr)]' : ''}>{player.role === 'DRAWER' && <SecretPokemon player={player} />}<div className="min-w-0">{player.role !== 'DRAWER' && <div className="mb-3 text-center"><Eye className="mx-auto text-aqua" size={30} /><h2 className="font-display text-xl">{drawer?.displayName ?? 'El dibujante'} está dibujando</h2><p className="text-sm font-bold text-ink/60">Observa los trazos en tiempo real y prueba todas las respuestas que necesites.</p></div>}{player.role === 'DRAWER' ? <SketchmonCanvas key={game.roundNumber} strokes={game.strokes} onAction={onAction} /> : <div className="relative overflow-hidden rounded-xl border border-night/15 bg-white shadow-inner"><SketchmonCanvasSurface strokes={game.strokes} label={`Dibujo en directo de ${drawer?.displayName ?? 'otro jugador'}`} /></div>}{player.role !== 'DRAWER' && !game.strokes.length && <p className="mt-2 text-center text-sm font-bold text-ink/55">Esperando el primer trazo…</p>}<HintPanel game={game} />{player.role === 'GUESSER' && <GuessPanel pokemon={pokemon} player={player} game={game} serverOffset={serverOffset} loadError={loadError} onAction={onAction} />}{player.role === 'SPECTATOR' && <div className="mt-4 rounded-xl bg-ink/[.04] p-4 text-center font-bold text-ink/65">Estás observando esta ronda.</div>}</div></div></main><aside className="grid gap-4 md:grid-cols-2 xl:sticky xl:top-20 xl:grid-cols-1"><AttemptsPanel room={room} game={game} /><TurnOrder room={room} game={game} /></aside></div>
+    <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]"><main className="min-w-0 rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-5"><div className={player.role === 'DRAWER' ? 'grid items-start gap-4 lg:grid-cols-[14rem_minmax(0,1fr)]' : ''}>{player.role === 'DRAWER' && <SecretPokemon player={player} serverOffset={serverOffset} />}<div className="min-w-0">{player.role !== 'DRAWER' && <div className="mb-3 text-center"><Eye className="mx-auto text-aqua" size={30} /><h2 className="font-display text-xl">{drawer?.displayName ?? 'El dibujante'} está dibujando</h2><p className="text-sm font-bold text-ink/60">Observa los trazos en tiempo real y prueba todas las respuestas que necesites.</p></div>}{player.role === 'DRAWER' ? <SketchmonCanvas key={game.roundNumber} strokes={game.strokes} onAction={onAction} /> : <div className="relative overflow-hidden rounded-xl border border-night/15 bg-white shadow-inner"><SketchmonCanvasSurface strokes={game.strokes} label={`Dibujo en directo de ${drawer?.displayName ?? 'otro jugador'}`} /></div>}{player.role !== 'DRAWER' && !game.strokes.length && <p className="mt-2 text-center text-sm font-bold text-ink/55">Esperando el primer trazo…</p>}<HintPanel game={game} />{player.role === 'GUESSER' && <GuessPanel pokemon={pokemon} player={player} game={game} serverOffset={serverOffset} loadError={loadError} onAction={onAction} />}{player.role === 'SPECTATOR' && <div className="mt-4 rounded-xl bg-ink/[.04] p-4 text-center font-bold text-ink/65">Estás observando esta ronda.</div>}</div></div></main><aside className="grid gap-4 md:grid-cols-2 xl:sticky xl:top-20 xl:grid-cols-1"><AttemptsPanel room={room} game={game} /><TurnOrder room={room} game={game} /></aside></div>
   </section>;
 }
