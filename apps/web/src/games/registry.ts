@@ -7,6 +7,7 @@ import { validateZoomedPokemonConfig } from './zoomed-pokemon/validation';
 import { validateOneOfUsIsFakeConfig } from './one-of-us-is-fake/validation';
 import { validateSecretRankingConfig } from './secret-ranking/validation';
 import { validateMostLikelyToConfig } from './most-likely-to/validation';
+import { validateWouldYouRatherConfig } from './would-you-rather/validation';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
@@ -190,4 +191,15 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   active: component(() => import('../room/MostLikelyToGame'), 'MostLikelyToGame'),
   results: component(() => import('../room/MostLikelyToResults'), 'MostLikelyToResults'),
   validateConfig: validateMostLikelyToConfig,
+})).register(clientModule({
+  id: 'would-you-rather',
+  config: component(() => import('./would-you-rather/ConfigPanel'), 'WouldYouRatherConfigPanel'),
+  active: component(() => import('../room/WouldYouRatherGame'), 'WouldYouRatherGame'),
+  results: component(() => import('../room/WouldYouRatherResults'), 'WouldYouRatherResults'),
+  validateConfig: validateWouldYouRatherConfig,
+})).register(clientModule({
+  id: 'pokemon-red-flag',
+  config: component(() => import('./pokemon-red-flag/ConfigPanel'), 'PokemonRedFlagConfigPanel'),
+  active: component(() => import('../room/PokemonRedFlagGame'), 'PokemonRedFlagGame'),
+  results: component(() => import('../room/PokemonRedFlagResults'), 'PokemonRedFlagResults'),
 }));

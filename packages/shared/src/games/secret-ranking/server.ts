@@ -12,6 +12,7 @@ const manifest = {
   name: 'Secret Ranking',
   icon: '📋',
   description: 'Ordena cinco Pokémon en secreto e intenta pensar como el resto del grupo.',
+  experimental: true,
   minPlayers: 3,
   profileStats: {
     metrics: [

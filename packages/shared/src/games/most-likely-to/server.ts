@@ -9,9 +9,10 @@ export const MOST_LIKELY_TO_REVEAL_MS = 8_000;
 
 const manifest = {
   id: 'most-likely-to',
-  name: 'Most Likely To — Pokémon Edition',
+  name: 'Most Likely To',
   icon: '👉',
   description: 'Elige qué Pokémon encaja mejor con una situación y convence al grupo.',
+  experimental: true,
   minPlayers: 3,
   profileStats: {
     metrics: [

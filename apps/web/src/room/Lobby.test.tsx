@@ -11,7 +11,7 @@ const room: RoomView = {
   ],
   availableGames: [
     { id: 'pokedex-distance', name: 'Pokédex Distance', icon: '🎯', description: 'Elige el número más cercano.', minPlayers: 2, profileStats: { metrics: [] } },
-    { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero.', minPlayers: 1, profileStats: { metrics: [] } },
+    { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero.', experimental: true, minPlayers: 1, profileStats: { metrics: [] } },
   ],
   selectedGameId: 'pokedex-distance', selectedGameConfig: { generations: [1], roundSeconds: 20 },
   sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null,
@@ -21,22 +21,25 @@ const room: RoomView = {
 const noOp = async () => undefined;
 
 describe('lobby information hierarchy', () => {
-  it('orders game selection, configuration, players and start while keeping the catalog searchable', () => {
+  it('keeps game descriptions visible and separates the lobby into accessible tabs', () => {
     const markup = renderToStaticMarkup(<Lobby
       room={room} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
       onSelectGame={noOp} onConfig={noOp} onSession={noOp} onGameSelection={noOp}
       onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
     />);
 
-    const selection = markup.indexOf('Elige un minijuego');
-    const configuration = markup.indexOf('Ajustes de Pokédex Distance');
-    const players = markup.indexOf('>Jugadores<');
-    const start = markup.indexOf('Iniciar partida');
-    expect(selection).toBeGreaterThan(-1);
-    expect(configuration).toBeGreaterThan(selection);
-    expect(players).toBeGreaterThan(configuration);
-    expect(start).toBeGreaterThan(players);
+    expect(markup).toContain('role="tablist"');
+    expect(markup).toContain('aria-selected="true"');
+    expect(markup).toContain('Minijuegos');
+    expect(markup).toContain('Configuración');
+    expect(markup).toContain('Modo y sesión');
+    expect(markup).toContain('Elige el número más cercano.');
+    expect(markup).toContain('Encuentra el shiny verdadero.');
+    expect(markup).toContain('Experimental');
     expect(markup).toContain('placeholder="Buscar entre 2 juegos"');
-    expect(markup).toContain('aria-expanded="false"');
+    expect(markup).toContain('Hablando es mejor');
+    expect(markup).toContain('Discord, Zoom');
+    expect(markup).toContain('>Jugadores<');
+    expect(markup).toContain('Iniciar partida');
   });
 });

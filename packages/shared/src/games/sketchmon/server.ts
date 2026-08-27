@@ -12,7 +12,7 @@ export const SKETCHMON_MAX_POINTS = 2_500;
 
 const manifest = {
   id: 'sketchmon', name: 'Sketchmon', icon: '🎨',
-  description: 'Dibuja un Pokémon en tiempo real para que el resto lo descubra.', minPlayers: 2,
+  description: 'Dibuja un Pokémon en tiempo real para que el resto lo descubra.', experimental: true, minPlayers: 2,
   profileStats: {
     metrics: [
       { key: 'guessedPokemon', label: 'Pokémon adivinados', aggregation: 'SUM' },

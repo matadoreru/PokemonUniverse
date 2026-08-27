@@ -8,6 +8,7 @@ const manifest = {
   name: 'Pokémon Team Auction',
   icon: '💰',
   description: 'Construye tu equipo pujando por Pokémon en una subasta visible.',
+  experimental: true,
   minPlayers: 2,
   profileStats: {
     metrics: [

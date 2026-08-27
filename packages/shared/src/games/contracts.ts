@@ -62,11 +62,19 @@ export interface GameContext {
   pokemonVisuals?: PokemonVisualCatalog;
   /** Enabled, persistent categories owned by the current room host. */
   hostCustomCategories?: readonly SubjectiveCategory[];
+  /** Enabled, persistent Would You Rather pairs owned by the current room host. */
+  hostWouldYouRatherPrompts?: readonly WouldYouRatherPromptPair[];
 }
 
 export interface SubjectiveCategory {
   id: string;
   text: string;
+}
+
+export interface WouldYouRatherPromptPair {
+  id: string;
+  optionA: string;
+  optionB: string;
 }
 
 export interface PokemonVisualAsset {
@@ -95,6 +103,8 @@ export interface MiniGameManifest {
   name: string;
   icon: string;
   description: string;
+  /** Marks recently introduced games that may still receive rule or balance changes. */
+  experimental?: boolean;
   minPlayers: number;
   maxPlayers?: number;
   profileStats: ProfileStatsDefinition;

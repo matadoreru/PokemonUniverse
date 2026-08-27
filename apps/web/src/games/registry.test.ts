@@ -15,6 +15,8 @@ describe('client minigame registry', () => {
       'pokemon-team-auction',
       'secret-ranking',
       'most-likely-to',
+      'would-you-rather',
+      'pokemon-red-flag',
     ]);
   });
 

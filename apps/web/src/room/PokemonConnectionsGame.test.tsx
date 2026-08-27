@@ -89,7 +89,7 @@ describe('Pokémon Connections client', () => {
     expect(config).toContain('Total del tablero');
     expect(config).toContain('Errores permitidos');
     expect(config).toContain('Tiempo por puzle');
-    expect(config).toContain('Los grupos y errores no se revelan');
+    expect(config).toContain('Un intento con todos menos uno');
     const results = renderToStaticMarkup(createElement(PokemonConnectionsResults, { room: room(publicGame('GAME_RESULTS'), playing), selfId: 'p1', onLobby: () => undefined, onEnd: () => undefined }));
     expect(results).toContain('Mentes bien conectadas');
     expect(results).toContain('Continuar sesión');

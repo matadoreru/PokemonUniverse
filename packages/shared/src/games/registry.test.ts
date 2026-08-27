@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { defaultGuessFromStatsConfig, defaultHigherLowerConfig, defaultLearnsetGuessConfig, defaultMostLikelyToConfig, defaultOneOfUsIsFakeConfig, defaultPokedexDistanceConfig, defaultPokedexEntryGuessConfig, defaultPokeTabooConfig, defaultPokeddleRaceConfig, defaultPokemonBingoConfig, defaultPokemonBluffAuctionConfig, defaultPokemonConnectionsConfig, defaultPokemonImpostorConfig, defaultPokemonTeamAuctionConfig, defaultSecretRankingConfig, defaultShinyVoteConfig, defaultSketchmonConfig, defaultTypeChainConfig, defaultTypeDuelConfig, defaultWhosThatPokemonConfig, defaultZoomedPokemonConfig, GameRegistry, gameRegistry, guessFromStatsGame, higherLowerGame, learnsetGuessGame, mostLikelyToGame, oneOfUsIsFakeGame, pokeTabooGame, pokeddleRaceGame, pokemonBingoGame, pokemonBluffAuctionGame, pokemonConnectionsGame, pokemonTeamAuctionGame, pokedexDistanceGame, pokedexEntryGuessGame, pokemonImpostorGame, secretRankingGame, shinyVoteGame, sketchmonGame, typeChainGame, typeDuelGame, whosThatPokemonGame, zoomedPokemonGame } from '../index.js';
+import { defaultGuessFromStatsConfig, defaultHigherLowerConfig, defaultLearnsetGuessConfig, defaultMostLikelyToConfig, defaultOneOfUsIsFakeConfig, defaultPokedexDistanceConfig, defaultPokedexEntryGuessConfig, defaultPokeTabooConfig, defaultPokeddleRaceConfig, defaultPokemonBingoConfig, defaultPokemonBluffAuctionConfig, defaultPokemonConnectionsConfig, defaultPokemonImpostorConfig, defaultPokemonRedFlagConfig, defaultPokemonTeamAuctionConfig, defaultSecretRankingConfig, defaultShinyVoteConfig, defaultSketchmonConfig, defaultTypeChainConfig, defaultTypeDuelConfig, defaultWhosThatPokemonConfig, defaultWouldYouRatherConfig, defaultZoomedPokemonConfig, GameRegistry, gameRegistry, guessFromStatsGame, higherLowerGame, learnsetGuessGame, mostLikelyToGame, oneOfUsIsFakeGame, pokeTabooGame, pokeddleRaceGame, pokemonBingoGame, pokemonBluffAuctionGame, pokemonConnectionsGame, pokemonRedFlagGame, pokemonTeamAuctionGame, pokedexDistanceGame, pokedexEntryGuessGame, pokemonImpostorGame, secretRankingGame, shinyVoteGame, sketchmonGame, typeChainGame, typeDuelGame, whosThatPokemonGame, wouldYouRatherGame, zoomedPokemonGame } from '../index.js';
 
 describe('multi-game registry', () => {
   it('registers every minigame simultaneously', () => {
@@ -24,7 +24,21 @@ describe('multi-game registry', () => {
       ['pokemon-connections', 'Pokémon Connections'],
       ['pokemon-team-auction', 'Pokémon Team Auction'],
       ['secret-ranking', 'Secret Ranking'],
-      ['most-likely-to', 'Most Likely To — Pokémon Edition'],
+      ['most-likely-to', 'Most Likely To'],
+      ['would-you-rather', 'Would You Rather Pokémon'],
+      ['pokemon-red-flag', 'Pokémon Red Flag'],
+    ]);
+  });
+
+  it('marks only the games introduced after the original catalog as experimental', () => {
+    expect(gameRegistry.manifests().filter((game) => game.experimental).map((game) => game.id)).toEqual([
+      'sketchmon',
+      'pokemon-connections',
+      'pokemon-team-auction',
+      'secret-ranking',
+      'most-likely-to',
+      'would-you-rather',
+      'pokemon-red-flag',
     ]);
   });
 
@@ -37,8 +51,8 @@ describe('multi-game registry', () => {
     expect(shiny).toBe(shinyVoteGame);
     expect(impostor).toBe(pokemonImpostorGame);
     const pokeddle = gameRegistry.get('pokeddle-race'); const bingo = gameRegistry.get('pokemon-bingo'); const who = gameRegistry.get('whos-that-pokemon'); const entryGuess = gameRegistry.get('pokedex-entry-guess'); const typeChain = gameRegistry.get('type-chain'); const statsGuess = gameRegistry.get('guess-from-stats');
-    const zoomed = gameRegistry.get('zoomed-pokemon'); const taboo = gameRegistry.get('poke-taboo'); const fake = gameRegistry.get('one-of-us-is-fake'); const bluff = gameRegistry.get('pokemon-bluff-auction'); const sketchmon = gameRegistry.get('sketchmon'); const connections = gameRegistry.get('pokemon-connections'); const teamAuction = gameRegistry.get('pokemon-team-auction'); const secretRanking = gameRegistry.get('secret-ranking'); const mostLikelyTo = gameRegistry.get('most-likely-to');
-    expect(higherLower).toBe(higherLowerGame); expect(typeDuel).toBe(typeDuelGame); expect(learnset).toBe(learnsetGuessGame); expect(pokeddle).toBe(pokeddleRaceGame); expect(bingo).toBe(pokemonBingoGame); expect(who).toBe(whosThatPokemonGame); expect(entryGuess).toBe(pokedexEntryGuessGame); expect(typeChain).toBe(typeChainGame); expect(statsGuess).toBe(guessFromStatsGame); expect(zoomed).toBe(zoomedPokemonGame); expect(taboo).toBe(pokeTabooGame); expect(fake).toBe(oneOfUsIsFakeGame); expect(bluff).toBe(pokemonBluffAuctionGame); expect(sketchmon).toBe(sketchmonGame); expect(connections).toBe(pokemonConnectionsGame); expect(teamAuction).toBe(pokemonTeamAuctionGame); expect(secretRanking).toBe(secretRankingGame); expect(mostLikelyTo).toBe(mostLikelyToGame); expect(gameRegistry.list()).toHaveLength(21);
+    const zoomed = gameRegistry.get('zoomed-pokemon'); const taboo = gameRegistry.get('poke-taboo'); const fake = gameRegistry.get('one-of-us-is-fake'); const bluff = gameRegistry.get('pokemon-bluff-auction'); const sketchmon = gameRegistry.get('sketchmon'); const connections = gameRegistry.get('pokemon-connections'); const teamAuction = gameRegistry.get('pokemon-team-auction'); const secretRanking = gameRegistry.get('secret-ranking'); const mostLikelyTo = gameRegistry.get('most-likely-to'); const wouldYouRather = gameRegistry.get('would-you-rather'); const redFlag = gameRegistry.get('pokemon-red-flag');
+    expect(higherLower).toBe(higherLowerGame); expect(typeDuel).toBe(typeDuelGame); expect(learnset).toBe(learnsetGuessGame); expect(pokeddle).toBe(pokeddleRaceGame); expect(bingo).toBe(pokemonBingoGame); expect(who).toBe(whosThatPokemonGame); expect(entryGuess).toBe(pokedexEntryGuessGame); expect(typeChain).toBe(typeChainGame); expect(statsGuess).toBe(guessFromStatsGame); expect(zoomed).toBe(zoomedPokemonGame); expect(taboo).toBe(pokeTabooGame); expect(fake).toBe(oneOfUsIsFakeGame); expect(bluff).toBe(pokemonBluffAuctionGame); expect(sketchmon).toBe(sketchmonGame); expect(connections).toBe(pokemonConnectionsGame); expect(teamAuction).toBe(pokemonTeamAuctionGame); expect(secretRanking).toBe(secretRankingGame); expect(mostLikelyTo).toBe(mostLikelyToGame); expect(wouldYouRather).toBe(wouldYouRatherGame); expect(redFlag).toBe(pokemonRedFlagGame); expect(gameRegistry.list()).toHaveLength(23);
     expect(pokedex?.defaultConfig).toEqual(defaultPokedexDistanceConfig);
     expect(shiny?.defaultConfig).toEqual(defaultShinyVoteConfig);
     expect(impostor?.defaultConfig).toEqual(defaultPokemonImpostorConfig);
@@ -58,12 +72,14 @@ describe('multi-game registry', () => {
     expect(teamAuction?.defaultConfig).toEqual(defaultPokemonTeamAuctionConfig);
     expect(secretRanking?.defaultConfig).toEqual(defaultSecretRankingConfig);
     expect(mostLikelyTo?.defaultConfig).toEqual(defaultMostLikelyToConfig);
+    expect(wouldYouRather?.defaultConfig).toEqual(defaultWouldYouRatherConfig);
+    expect(redFlag?.defaultConfig).toEqual(defaultPokemonRedFlagConfig);
   });
 
   it('rejects duplicate ids instead of silently replacing a game', () => {
-    const registry = new GameRegistry().register(pokedexDistanceGame).register(shinyVoteGame).register(pokemonImpostorGame).register(higherLowerGame).register(typeDuelGame).register(learnsetGuessGame).register(pokeddleRaceGame).register(pokemonBingoGame).register(whosThatPokemonGame).register(pokedexEntryGuessGame).register(typeChainGame).register(guessFromStatsGame).register(zoomedPokemonGame).register(pokeTabooGame).register(oneOfUsIsFakeGame).register(pokemonBluffAuctionGame).register(sketchmonGame).register(pokemonConnectionsGame).register(pokemonTeamAuctionGame).register(secretRankingGame).register(mostLikelyToGame);
+    const registry = new GameRegistry().register(pokedexDistanceGame).register(shinyVoteGame).register(pokemonImpostorGame).register(higherLowerGame).register(typeDuelGame).register(learnsetGuessGame).register(pokeddleRaceGame).register(pokemonBingoGame).register(whosThatPokemonGame).register(pokedexEntryGuessGame).register(typeChainGame).register(guessFromStatsGame).register(zoomedPokemonGame).register(pokeTabooGame).register(oneOfUsIsFakeGame).register(pokemonBluffAuctionGame).register(sketchmonGame).register(pokemonConnectionsGame).register(pokemonTeamAuctionGame).register(secretRankingGame).register(mostLikelyToGame).register(wouldYouRatherGame).register(pokemonRedFlagGame);
     expect(() => registry.register(pokedexDistanceGame)).toThrow(/Duplicate game id/);
-    expect(registry.list()).toEqual([pokedexDistanceGame, shinyVoteGame, pokemonImpostorGame, higherLowerGame, typeDuelGame, learnsetGuessGame, pokeddleRaceGame, pokemonBingoGame, whosThatPokemonGame, pokedexEntryGuessGame, typeChainGame, guessFromStatsGame, zoomedPokemonGame, pokeTabooGame, oneOfUsIsFakeGame, pokemonBluffAuctionGame, sketchmonGame, pokemonConnectionsGame, pokemonTeamAuctionGame, secretRankingGame, mostLikelyToGame]);
+    expect(registry.list()).toEqual([pokedexDistanceGame, shinyVoteGame, pokemonImpostorGame, higherLowerGame, typeDuelGame, learnsetGuessGame, pokeddleRaceGame, pokemonBingoGame, whosThatPokemonGame, pokedexEntryGuessGame, typeChainGame, guessFromStatsGame, zoomedPokemonGame, pokeTabooGame, oneOfUsIsFakeGame, pokemonBluffAuctionGame, sketchmonGame, pokemonConnectionsGame, pokemonTeamAuctionGame, secretRankingGame, mostLikelyToGame, wouldYouRatherGame, pokemonRedFlagGame]);
   });
 
   it('exposes a profile statistics definition for every registered game', () => {

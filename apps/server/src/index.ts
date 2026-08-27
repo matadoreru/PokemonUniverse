@@ -27,10 +27,14 @@ import { createCustomCategoryRouter } from './categories/routes.js';
 import { CustomCategoryService } from './categories/service.js';
 import { PrismaUserGameConfigRepository } from './game-configs/prisma-repository.js';
 import { UserGameConfigService } from './game-configs/service.js';
+import { PrismaWouldYouRatherPromptRepository } from './would-you-rather-prompts/prisma-repository.js';
+import { createWouldYouRatherPromptRouter } from './would-you-rather-prompts/routes.js';
+import { WouldYouRatherPromptService } from './would-you-rather-prompts/service.js';
 
 const app = express();
 const customCategories = new CustomCategoryService(new PrismaCustomCategoryRepository(prisma));
 const userGameConfigs = new UserGameConfigService(new PrismaUserGameConfigRepository(prisma));
+const wouldYouRatherPrompts = new WouldYouRatherPromptService(new PrismaWouldYouRatherPromptRepository(prisma));
 const roomRegistry: { current: RoomManager | null } = { current: null };
 app.set('trust proxy', 1);
 app.use(helmet());
@@ -44,6 +48,7 @@ app.use(rateLimit({
 app.use(optionalAuth);
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 30, skip: (req) => req.path.startsWith('/avatars/') }), authRouter);
 app.use('/api/categories', createCustomCategoryRouter(customCategories));
+app.use('/api/would-you-rather-prompts', createWouldYouRatherPromptRouter(wouldYouRatherPrompts));
 app.use('/api/admin', createAdminRouter(() => roomRegistry.current?.adminRooms() ?? []));
 app.use('/api', apiRouter);
 
@@ -78,11 +83,13 @@ await interruptStaleActivity();
 const catalog = await loadPokemonCatalog();
 await customCategories.load();
 await userGameConfigs.load();
+await wouldYouRatherPrompts.load();
 registerPokemonRepository(new CatalogPokemonRepository(catalog));
 const pokemonVisuals = await loadPokemonVisualCatalog(catalog);
-const rooms = new RoomManager(io, catalog, pokemonVisuals, (userId) => customCategories.enabled(userId), createPrismaRoomAuditSink(), userGameConfigs);
+const rooms = new RoomManager(io, catalog, pokemonVisuals, (userId) => customCategories.enabled(userId), createPrismaRoomAuditSink(), userGameConfigs, (userId) => wouldYouRatherPrompts.enabled(userId));
 roomRegistry.current = rooms;
 customCategories.onChanged((userId) => rooms.updateHostCategories(userId));
+wouldYouRatherPrompts.onChanged((userId) => rooms.updateHostWouldYouRatherPrompts(userId));
 onAvatarUpdated((userId, avatar) => rooms.updateIdentityAvatar(userId, avatar));
 registerGameImageResolver((code, assetToken, roundNumber, optionId) => rooms.gameAsset(code, assetToken, roundNumber, optionId));
 io.on('connection', (socket) => {

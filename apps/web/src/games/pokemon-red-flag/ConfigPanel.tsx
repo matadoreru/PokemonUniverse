@@ -1,0 +1,20 @@
+import type { PokemonRedFlagConfig } from '@pokemon-universe/shared';
+import { Clock3, Repeat2, Sparkles } from 'lucide-react';
+import { GenerationSelector } from '../../components/GenerationSelector';
+
+const roundPresets = [1, 3, 5, 10];
+const timePresets = [15, 30, 45, 60];
+
+function OptionButton({ selected, onClick, children }: { selected: boolean; onClick(): void; children: React.ReactNode }) {
+  return <button type="button" aria-pressed={selected} onClick={onClick} className={`min-h-11 rounded-xl border font-extrabold transition-colors ${selected ? 'border-electric bg-electric text-night' : 'border-ink/10 bg-surface-raised text-ink/65 hover:border-aqua'}`}>{children}</button>;
+}
+
+export function PokemonRedFlagConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
+  const value = config as PokemonRedFlagConfig;
+  return <fieldset disabled={disabled} className="space-y-7">
+    <GenerationSelector selected={value.generations} label="Generaciones disponibles" description="El Pokémon protagonista de cada ronda se elige del pool configurado." onChange={(generations) => void onChange({ ...value, generations })} />
+    <section aria-labelledby="red-flag-rounds"><div className="mb-2 flex items-center gap-2"><Repeat2 className="text-aqua" size={19} /><span id="red-flag-rounds" className="font-extrabold">Rondas</span></div><div className="grid grid-cols-5 gap-2">{roundPresets.map((rounds) => <OptionButton key={rounds} selected={value.rounds === rounds} onClick={() => void onChange({ ...value, rounds })}>{rounds}</OptionButton>)}<label><span className="sr-only">Número personalizado de rondas</span><input className="field min-h-11 text-center font-extrabold" type="number" min={1} max={10} value={value.rounds} onChange={(event) => { const rounds = Number(event.target.value); if (Number.isInteger(rounds) && rounds >= 1 && rounds <= 10) void onChange({ ...value, rounds }); }} /></label></div></section>
+    <section aria-labelledby="red-flag-time"><div className="mb-2 flex items-center gap-2"><Clock3 className="text-aqua" size={19} /><span id="red-flag-time" className="font-extrabold">Tiempo por fase</span></div><div className="grid grid-cols-5 gap-2">{timePresets.map((phaseSeconds) => <OptionButton key={phaseSeconds} selected={value.phaseSeconds === phaseSeconds} onClick={() => void onChange({ ...value, phaseSeconds })}>{phaseSeconds}s</OptionButton>)}<label><span className="sr-only">Tiempo personalizado por fase</span><input className="field min-h-11 text-center font-extrabold" type="number" min={15} max={120} value={value.phaseSeconds} onChange={(event) => { const phaseSeconds = Number(event.target.value); if (Number.isInteger(phaseSeconds) && phaseSeconds >= 15 && phaseSeconds <= 120) void onChange({ ...value, phaseSeconds }); }} /></label></div><p className="mt-2 text-sm font-bold text-ink/60">Se aplica por separado a escribir, votar y, si hace falta, revotar.</p></section>
+    <button type="button" aria-pressed={value.includeForms} onClick={() => void onChange({ ...value, includeForms: !value.includeForms })} className={`flex min-h-20 w-full items-center gap-3 rounded-xl border p-3 text-left transition-colors ${value.includeForms ? 'border-aqua bg-aqua/10' : 'border-ink/10 bg-surface-raised hover:border-aqua/45'}`}><span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${value.includeForms ? 'bg-aqua text-night' : 'bg-ink/[.07]'}`}><Sparkles size={20} /></span><span className="min-w-0 flex-1"><strong className="block font-display text-lg">Incluir formas alternativas</strong><small className="block font-bold text-ink/65">Las formas regionales y alternativas pueden protagonizar su propia ronda.</small></span><span className="font-black text-leaf">{value.includeForms ? '✓' : ''}</span></button>
+  </fieldset>;
+}

@@ -165,7 +165,7 @@ describe('room multi-game lifecycle', () => {
     const room = manager.store.get(created.room.code)!;
     (manager as any).join(guestSocket, guest, room.code);
 
-    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokedex-entry-guess', 'type-chain', 'guess-from-stats', 'zoomed-pokemon', 'poke-taboo', 'one-of-us-is-fake', 'pokemon-bluff-auction', 'sketchmon', 'pokemon-connections', 'pokemon-team-auction', 'secret-ranking', 'most-likely-to']);
+    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokedex-entry-guess', 'type-chain', 'guess-from-stats', 'zoomed-pokemon', 'poke-taboo', 'one-of-us-is-fake', 'pokemon-bluff-auction', 'sketchmon', 'pokemon-connections', 'pokemon-team-auction', 'secret-ranking', 'most-likely-to', 'would-you-rather', 'pokemon-red-flag']);
     expect(room.selectedGameId).toBe('pokedex-distance');
     expect(room.members.size).toBe(2);
 
@@ -229,7 +229,7 @@ describe('room multi-game lifecycle', () => {
     expect(() => (manager as any).selectGame(guest.id, 'shiny-vote')).toThrow(/No tienes permiso/);
     expect(() => (manager as any).selectGame(host.id, 'missing-game')).toThrow(/Unknown game/);
     expect(room.selectedGameId).toBe('pokedex-distance');
-    expect(created.room.availableGames).toHaveLength(21);
+    expect(created.room.availableGames).toHaveLength(23);
   });
 
   it('injects the registered host category snapshot without exposing round secrets', () => {
@@ -658,6 +658,42 @@ describe('room multi-game lifecycle', () => {
     (manager as any).action(guest.id, { type: 'VOTE_ANSWER', playerId: host.id }); (manager as any).action(third.id, { type: 'VOTE_ANSWER', playerId: guest.id });
     expect(room.phase).toBe('ROUND_RESULTS'); const result = (manager as any).view(room, host.id); expect(result.game.lastRound.winnerIds).toEqual(['guest']); expect(result.game.lastRound.pointsAwarded.guest).toBe(3);
     room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); expect((manager as any).view(room, host.id).game.results.winnerId).toBe('guest');
+  });
+
+  it('plays Would You Rather with socket-specific ballots and a synchronized reveal', () => {
+    const pairs = [{ id: 'custom-1', optionA: 'Vivir con Gengar', optionB: 'Viajar con Magikarp' }];
+    const manager = new RoomManager(io() as any, catalog, undefined, undefined, undefined, undefined, (userId) => userId === 'host' ? pairs : []);
+    const host: AuthUser = { ...identity('host', 'Host'), kind: 'USER', email: 'host@example.com' }; const guest = identity('guest', 'Guest'); const third = identity('third', 'Third');
+    const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
+    (manager as any).join(socket('guest-socket'), guest, room.code); (manager as any).join(socket('third-socket'), third, room.code);
+    (manager as any).selectGame(host.id, 'would-you-rather'); const defaults = room.gameConfigs.get('would-you-rather') as Record<string, unknown>;
+    (manager as any).updateConfig(host.id, { ...defaults, rounds: 1, promptSource: 'CUSTOM' });
+    expect((manager as any).view(room, host.id).hostWouldYouRatherPromptCount).toBe(1); startReady(manager, room, host.id);
+    (manager as any).action(host.id, { type: 'SUBMIT_BALLOT', preference: 'A', prediction: 'B' });
+    const guestView = (manager as any).view(room, guest.id); expect(guestView.game.submittedPlayerIds).toEqual(['host']); expect(JSON.stringify(guestView.game)).not.toContain('"preference"');
+    expect((manager as any).view(room, host.id).gamePlayerState.ownBallot).toEqual({ preference: 'A', prediction: 'B' });
+    (manager as any).action(guest.id, { type: 'SUBMIT_BALLOT', preference: 'A', prediction: 'A' });
+    (manager as any).action(third.id, { type: 'SUBMIT_BALLOT', preference: 'B', prediction: 'A' });
+    expect(room.phase).toBe('ROUND_RESULTS'); const result = (manager as any).view(room, guest.id); expect(result.game.lastRound).toMatchObject({ majority: 'A', totals: { A: 2, B: 1 } });
+    expect(result.game.lastRound.players).toEqual(expect.arrayContaining([expect.objectContaining({ playerId: 'host', preference: 'A', prediction: 'B', totalPoints: 1 })]));
+  });
+
+  it('plays Pokémon Red Flag without revealing texts, authors or ballot targets early', () => {
+    const manager = new RoomManager(io() as any, catalog); const host = identity('host', 'Host'); const guest = identity('guest', 'Guest'); const third = identity('third', 'Third');
+    const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
+    (manager as any).join(socket('guest-socket'), guest, room.code); (manager as any).join(socket('third-socket'), third, room.code);
+    (manager as any).selectGame(host.id, 'pokemon-red-flag'); const defaults = room.gameConfigs.get('pokemon-red-flag') as Record<string, unknown>;
+    (manager as any).updateConfig(host.id, { ...defaults, generations: [1], rounds: 1, includeForms: false }); startReady(manager, room, host.id);
+    (manager as any).action(host.id, { type: 'SUBMIT_RED_FLAG', text: 'Dice que su ex era un Ditto.' });
+    const hidden = (manager as any).view(room, guest.id); expect(hidden.game.submittedPlayerIds).toEqual(['host']); expect(hidden.game.revealedAnswers).toEqual([]); expect(JSON.stringify(hidden.game)).not.toContain('Ditto');
+    expect((manager as any).view(room, host.id).gamePlayerState.ownAnswer.text).toContain('Ditto');
+    (manager as any).action(guest.id, { type: 'SUBMIT_RED_FLAG', text: 'Comparte ubicación con Hypno.' });
+    (manager as any).action(third.id, { type: 'SUBMIT_RED_FLAG', text: 'Lleva a su madre a todas las citas.' });
+    expect(room.phase).toBe('VOTING'); const voting = (manager as any).view(room, third.id); expect(voting.game.revealedAnswers).toHaveLength(3); expect(JSON.stringify(voting.game.revealedAnswers)).not.toContain('authorId');
+    const slots = room.game!.state.answerSlots; (manager as any).action(host.id, { type: 'VOTE_RED_FLAG', answerId: slots.guest });
+    const privateVote = (manager as any).view(room, third.id); expect(privateVote.game.votedPlayerIds).toEqual(['host']); expect(JSON.stringify(privateVote.game)).not.toContain(`"host":"${slots.guest}"`);
+    (manager as any).action(guest.id, { type: 'VOTE_RED_FLAG', answerId: slots.host }); (manager as any).action(third.id, { type: 'VOTE_RED_FLAG', answerId: slots.guest });
+    expect(room.phase).toBe('ROUND_RESULTS'); const reveal = (manager as any).view(room, host.id); expect(reveal.game.lastRound.winnerIds).toEqual(['guest']); expect(reveal.game.lastRound.answers.find((answer: { authorId: string }) => answer.authorId === 'guest').text).toContain('Hypno');
   });
 
   it('uses connected required players globally without deleting accepted actions', () => {

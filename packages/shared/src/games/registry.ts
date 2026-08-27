@@ -20,6 +20,8 @@ import { pokemonConnectionsGame } from './pokemon-connections/server.js';
 import { pokemonTeamAuctionGame } from './pokemon-team-auction/server.js';
 import { secretRankingGame } from './secret-ranking/server.js';
 import { mostLikelyToGame } from './most-likely-to/server.js';
+import { wouldYouRatherGame } from './would-you-rather/server.js';
+import { pokemonRedFlagGame } from './pokemon-red-flag/server.js';
 
 export type RegisteredGame = MiniGameModule<any, any, any, any>;
 
@@ -57,4 +59,6 @@ export const gameRegistry = new GameRegistry()
   .register(pokemonConnectionsGame)
   .register(pokemonTeamAuctionGame)
   .register(secretRankingGame)
-  .register(mostLikelyToGame);
+  .register(mostLikelyToGame)
+  .register(wouldYouRatherGame)
+  .register(pokemonRedFlagGame);

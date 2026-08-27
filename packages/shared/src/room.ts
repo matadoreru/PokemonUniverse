@@ -98,6 +98,8 @@ export interface RoomView {
   serverNow: number;
   /** Enabled custom categories owned by the host; used for lobby validation only. */
   hostCustomCategoryCount?: number;
+  /** Enabled custom Would You Rather pairs owned by the host; used for lobby validation only. */
+  hostWouldYouRatherPromptCount?: number;
 }
 
 export const roomCodeSchema = z.string().trim().toUpperCase().regex(/^[A-Z2-9]{6}$/);

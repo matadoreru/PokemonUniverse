@@ -43,6 +43,7 @@ model User {
   gameConfigs  UserGameConfig[]
   results      PlayerGameResult[]
   customCategories CustomCategory[]
+  wouldYouRatherPrompts CustomWouldYouRatherPrompt[]
   hostedRooms  RoomHistory[]      @relation("RoomHost")
 }
 
@@ -70,6 +71,21 @@ model CustomCategory {
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, normalizedText])
+  @@index([userId])
+}
+
+model CustomWouldYouRatherPrompt {
+  id            String   @id @default(cuid())
+  userId        String
+  optionA       String
+  optionB       String
+  normalizedKey String
+  enabled       Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, normalizedKey])
   @@index([userId])
 }
 

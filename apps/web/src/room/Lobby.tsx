@@ -1,5 +1,5 @@
 import { formatPendingReadyNames, hasRoomPermission, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared';
-import { Check, CheckCircle2, ChevronDown, Copy, Gamepad2, LockKeyhole, LogOut, Play, Search, Settings2, SlidersHorizontal, UsersRound, WifiOff } from 'lucide-react';
+import { Check, CheckCircle2, Copy, Gamepad2, Headphones, LockKeyhole, LogOut, Play, Search, Settings2, Shuffle, UsersRound, WifiOff } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
 import { GameLoadingFallback } from '../components/LoadingFallback';
 import { clientGameRegistry } from '../games/registry';
@@ -26,6 +26,9 @@ function normalizeSearch(value: string): string {
   return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase('es').trim();
 }
 
+type LobbyTab = 'games' | 'config' | 'session';
+const lobbyTabs: LobbyTab[] = ['games', 'config', 'session'];
+
 export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, onConfig, onSession, onGameSelection, onSetRoomRole, onTransferHost, onKick, onEndSession }: Props) {
   const self = room.members.find((member) => member.id === selfId);
   const roomRole = self?.roomRole ?? 'MEMBER';
@@ -45,9 +48,7 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
   const [readyBusy, setReadyBusy] = useState(false);
   const [starting, setStarting] = useState(false);
   const [gameQuery, setGameQuery] = useState('');
-  const [sessionExpanded, setSessionExpanded] = useState(
-    room.gameSelectionMode.type !== 'FIXED' || room.sessionMode.type !== 'INFINITE' || room.gamesPlayed > 0,
-  );
+  const [activeTab, setActiveTab] = useState<LobbyTab>('games');
 
   useEffect(() => {
     const preloadTimer = window.setTimeout(() => { void gameClient.preloadGameplay().catch(() => undefined); }, 600);
@@ -71,6 +72,18 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
   const selectGame = (gameId: string) => {
     if (!canChangeGame || gameId === room.selectedGameId) return;
     void onSelectGame(gameId).catch(report);
+  };
+  const moveTabFocus = (event: React.KeyboardEvent<HTMLButtonElement>, current: LobbyTab) => {
+    const currentIndex = lobbyTabs.indexOf(current);
+    const next = event.key === 'ArrowRight'
+      ? lobbyTabs[(currentIndex + 1) % lobbyTabs.length]
+      : event.key === 'ArrowLeft'
+        ? lobbyTabs[(currentIndex - 1 + lobbyTabs.length) % lobbyTabs.length]
+        : event.key === 'Home' ? lobbyTabs[0] : event.key === 'End' ? lobbyTabs.at(-1) : undefined;
+    if (!next) return;
+    event.preventDefault();
+    setActiveTab(next);
+    document.getElementById(`lobby-tab-${next}`)?.focus();
   };
   const copyCode = () => void navigator.clipboard.writeText(room.code).then(() => {
     setCopied(true);
@@ -135,22 +148,34 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
 
       {hostMember?.presence === 'TEMPORARILY_DISCONNECTED' && <div className="mb-4 flex items-start gap-3 rounded-xl border border-electric/30 bg-electric/10 px-4 py-3 font-bold" role="status" aria-live="polite"><WifiOff className="mt-0.5 shrink-0 text-electric" size={19} /><span><strong className="block">El host está reconectando.</strong><span className="text-sm text-ink/65">La sala conserva la configuración y esperará antes de transferir el control.</span></span></div>}
 
-      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_21rem] xl:grid-cols-[minmax(0,1fr)_23rem]">
-        <main className="min-w-0 space-y-4">
-          <article className="panel overflow-hidden">
-            <section className="p-4 sm:p-5" aria-labelledby="lobby-game-heading">
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex min-w-0 items-center gap-3"><span className="step-number">1</span><div><span className="label !mb-0">Selección de juego</span><h2 id="lobby-game-heading" className="font-display text-2xl font-bold">Elige un minijuego</h2></div></div>
-                {!canChangeGame && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}
-              </div>
+      <aside className="voice-callout mb-4 flex items-center gap-3 rounded-2xl border border-aqua/30 bg-aqua/[.08] px-4 py-3 sm:px-5" aria-label="Recomendación para jugar">
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-aqua text-night"><Headphones size={23} /></span>
+        <div>
+          <strong className="block font-display text-lg">Hablando es mejor</strong>
+          <p className="text-sm font-bold text-ink/70">Te recomendamos estar en una llamada de voz con tus amigos, por Discord, Zoom o vuestra aplicación favorita.</p>
+        </div>
+      </aside>
 
-              <div className="mb-3 grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(13rem,.7fr)] sm:items-center">
-                <div className="flex min-w-0 items-center gap-3 rounded-xl bg-aqua/[.08] px-3 py-2.5">
-                  <span className="text-2xl" aria-hidden="true">{selectedManifest.icon}</span>
-                  <span className="min-w-0 flex-1"><strong className="block truncate font-display text-lg">{selectedManifest.name}</strong><span className="block truncate text-sm font-bold text-ink/65">{selectedManifest.description}</span></span>
-                  <span className="hidden shrink-0 text-xs font-extrabold text-aqua xl:inline">{playerRange}</span>
+      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_21rem] xl:grid-cols-[minmax(0,1fr)_23rem]">
+        <main className="min-w-0">
+          <article className="panel overflow-hidden">
+            <nav className="grid grid-cols-3 border-b border-ink/10 bg-ink/[.025] px-2 pt-2 sm:px-4" role="tablist" aria-label="Secciones del lobby">
+              <button id="lobby-tab-games" type="button" role="tab" tabIndex={activeTab === 'games' ? 0 : -1} aria-selected={activeTab === 'games'} aria-controls="lobby-panel-games" onClick={() => setActiveTab('games')} onKeyDown={(event) => moveTabFocus(event, 'games')} className={`lobby-tab ${activeTab === 'games' ? 'lobby-tab-active' : ''}`}><Gamepad2 className="hidden sm:block" size={18} /> Minijuegos</button>
+              <button id="lobby-tab-config" type="button" role="tab" tabIndex={activeTab === 'config' ? 0 : -1} aria-selected={activeTab === 'config'} aria-controls="lobby-panel-config" onClick={() => setActiveTab('config')} onKeyDown={(event) => moveTabFocus(event, 'config')} className={`lobby-tab ${activeTab === 'config' ? 'lobby-tab-active' : ''}`}><Settings2 className="hidden sm:block" size={18} /> Configuración</button>
+              <button id="lobby-tab-session" type="button" role="tab" tabIndex={activeTab === 'session' ? 0 : -1} aria-label="Modo y sesión" aria-selected={activeTab === 'session'} aria-controls="lobby-panel-session" onClick={() => setActiveTab('session')} onKeyDown={(event) => moveTabFocus(event, 'session')} className={`lobby-tab ${activeTab === 'session' ? 'lobby-tab-active' : ''}`}><Shuffle className="hidden sm:block" size={18} /> Modo<span className="hidden sm:inline"> y sesión</span></button>
+            </nav>
+
+            <section id="lobby-panel-games" role="tabpanel" aria-labelledby="lobby-tab-games" hidden={activeTab !== 'games'} className="p-4 sm:p-5">
+              <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <span className="label !mb-0">Catálogo completo</span>
+                  <h2 className="font-display text-2xl font-bold">Elige un minijuego</h2>
+                  <p className="mt-1 text-sm font-bold text-ink/60">Consulta las reglas básicas de cada juego antes de elegir.</p>
                 </div>
-                <label className="relative block"><span className="sr-only">Buscar minijuego</span><Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/50" size={18} /><input className="field !pl-10" type="search" value={gameQuery} onChange={(event) => setGameQuery(event.target.value)} placeholder={`Buscar entre ${room.availableGames.length} juegos`} /></label>
+                <div className="flex w-full items-center gap-2 sm:w-auto">
+                  {!canChangeGame && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}
+                  <label className="relative block min-w-0 flex-1 sm:w-72"><span className="sr-only">Buscar minijuego</span><Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/50" size={18} /><input className="field !pl-10" type="search" value={gameQuery} onChange={(event) => setGameQuery(event.target.value)} placeholder={`Buscar entre ${room.availableGames.length} juegos`} /></label>
+                </div>
               </div>
 
               <div className={`lobby-game-grid ${!canChangeGame ? 'lobby-readonly' : ''}`} aria-describedby={!canChangeGame ? 'game-permission-help' : undefined}>
@@ -159,7 +184,18 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
                   const candidate = clientGameRegistry.get(game.id);
                   const preloadConfig = () => { void candidate.preloadConfig().catch(() => undefined); };
                   return <button key={game.id} type="button" disabled={!canChangeGame} aria-pressed={selected} onClick={() => selectGame(game.id)} onPointerEnter={preloadConfig} onFocus={preloadConfig} className={`lobby-game-option ${selected ? 'lobby-game-option-selected' : ''}`}>
-                    <span className="text-xl" aria-hidden="true">{game.icon}</span><span className="min-w-0 flex-1"><strong className="block truncate">{game.name}</strong><small className="block text-xs font-bold text-ink/55">{game.minPlayers}{game.maxPlayers ? `–${game.maxPlayers}` : '+'} jugadores</small></span>{selected && <CheckCircle2 className="shrink-0 text-aqua" size={18} aria-label="Seleccionado" />}
+                    <span className="flex items-start justify-between gap-3">
+                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-ink/[.07] text-xl" aria-hidden="true">{game.icon}</span>
+                      <span className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1.5">
+                        {game.experimental && <span className="experimental-badge">Experimental</span>}
+                        {selected && <span className="inline-flex items-center gap-1 text-xs font-extrabold text-aqua"><CheckCircle2 size={15} /> Seleccionado</span>}
+                      </span>
+                    </span>
+                    <span className="mt-3 block min-w-0">
+                      <strong className="block font-display text-lg leading-tight">{game.name}</strong>
+                      <span className="mt-1.5 block text-sm font-bold leading-snug text-ink/65">{game.description}</span>
+                    </span>
+                    <small className="mt-3 block text-xs font-extrabold text-ink/50">{game.minPlayers}{game.maxPlayers ? `–${game.maxPlayers}` : '+'} jugadores</small>
                   </button>;
                 })}
                 {visibleGames.length === 0 && <div className="empty-state col-span-full !p-4"><Gamepad2 className="mx-auto mb-1 text-ink/45" size={22} /><p className="font-bold">No hay minijuegos que coincidan con “{gameQuery.trim()}”.</p></div>}
@@ -167,25 +203,27 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
               {!canChangeGame && <p id="game-permission-help" className="permission-help">Solo el host y los co-hosts pueden cambiar el minijuego.</p>}
             </section>
 
-            <section className="border-t border-ink/10 p-4 sm:p-5" aria-labelledby="lobby-config-heading">
-              <div className="mb-5 flex items-start justify-between gap-3">
-                <div className="flex min-w-0 items-center gap-3"><span className="step-number">2</span><div><span className="label !mb-0">Configuración del juego</span><h2 id="lobby-config-heading" className="font-display text-2xl font-bold">Ajustes de {selectedManifest.name}</h2></div></div>
-                <Settings2 className="mt-1 hidden shrink-0 text-aqua sm:block" size={21} />
+            <section id="lobby-panel-config" role="tabpanel" aria-labelledby="lobby-tab-config" hidden={activeTab !== 'config'} className="p-4 sm:p-5">
+              <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <span className="label !mb-0">Minijuego seleccionado</span>
+                  <div className="flex flex-wrap items-center gap-2"><h2 className="font-display text-2xl font-bold">Ajustes de {selectedManifest.name}</h2>{selectedManifest.experimental && <span className="experimental-badge">Experimental</span>}</div>
+                  <p className="mt-1 max-w-3xl text-sm font-bold text-ink/60">{selectedManifest.description} · {playerRange}.</p>
+                </div>
+                {!canEditGame && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}
               </div>
               {!canEditGame && <div className="mb-4 flex items-center gap-2 rounded-xl bg-electric/[.07] px-3 py-2 text-sm font-bold text-ink/65"><LockKeyhole size={15} className="text-electric" /> Solo el host y los co-hosts pueden cambiar estos ajustes.</div>}
               <div className={!canEditGame ? 'lobby-readonly' : ''} title={!canEditGame ? 'Solo el host y los co-hosts pueden cambiar esta configuración.' : undefined}>
                 <Suspense fallback={<GameLoadingFallback compact />}><gameClient.ConfigPanel config={room.selectedGameConfig} disabled={!canEditGame} room={room} selfId={selfId} onChange={onConfig} /></Suspense>
               </div>
             </section>
-          </article>
 
-          <section className="panel" aria-labelledby="session-settings-heading">
-            <button type="button" className="flex min-h-16 w-full items-center gap-3 px-4 py-3 text-left sm:px-5" aria-expanded={sessionExpanded} aria-controls="session-settings-content" onClick={() => setSessionExpanded((expanded) => !expanded)}>
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-ink/[.07] text-aqua"><SlidersHorizontal size={19} /></span>
-              <span className="min-w-0 flex-1"><strong id="session-settings-heading" className="block font-display text-lg">Ajustes de sesión</strong><span className="block truncate text-sm font-bold text-ink/60">Rotación {room.gameSelectionMode.type === 'FIXED' ? 'fija' : room.gameSelectionMode.type === 'RANDOM' ? 'aleatoria' : 'por votación'} · {room.sessionMode.type === 'INFINITE' ? 'sin límite' : room.sessionMode.type === 'GAME_COUNT' ? `${room.sessionMode.target} partidas` : `${room.sessionMode.target} puntos`}</span></span>
-              <ChevronDown className={`shrink-0 text-ink/55 transition-transform duration-200 ${sessionExpanded ? 'rotate-180' : ''}`} size={20} />
-            </button>
-            <div id="session-settings-content" hidden={!sessionExpanded} className="border-t border-ink/10 p-4 sm:p-5">
+            <section id="lobby-panel-session" role="tabpanel" aria-labelledby="lobby-tab-session" hidden={activeTab !== 'session'} className="p-4 sm:p-5">
+              <div className="mb-5">
+                <span className="label !mb-0">Formato de la partida</span>
+                <h2 className="font-display text-2xl font-bold">Modo y sesión</h2>
+                <p className="mt-1 text-sm font-bold text-ink/60">Define cómo se eligen los juegos y cuándo termina la clasificación.</p>
+              </div>
               <section aria-labelledby="rotation-heading">
                 <div className="mb-3 flex items-center justify-between gap-3"><div><h3 id="rotation-heading" className="font-display text-lg font-bold">Rotación de minijuegos</h3><p className="text-sm font-bold text-ink/60">Decide qué ocurre al terminar cada partida.</p></div>{!canEditGameSelection && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}</div>
                 <div className={!canEditGameSelection ? 'lobby-readonly' : ''}><GameSelectionConfig availableGames={room.availableGames} mode={room.gameSelectionMode} playerCount={connectedPlayers} disabled={!canEditGameSelection} onChange={gameSelection} /></div>
@@ -201,19 +239,19 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
                 {room.sessionMode.type === 'POINT_TARGET' && <label className="mt-3 block max-w-xs"><span className="label">Puntos para ganar</span><input type="number" className="field" min={5} max={10000} step={5} disabled={!canEditSession} value={room.sessionMode.target} onChange={(event) => { const target = Number(event.target.value); if (Number.isInteger(target) && target >= 5 && target <= 10000) session({ type: 'POINT_TARGET', target }); }} /></label>}
                 {hasRoomPermission(roomRole, 'END_SESSION') && room.gamesPlayed > 0 && <button className="mt-4 text-sm font-extrabold text-berry underline" onClick={onEndSession}>Finalizar sesión y ver clasificación</button>}
               </section>
-            </div>
-          </section>
+            </section>
+          </article>
         </main>
 
         <aside className="card !p-4 lg:sticky lg:top-20">
           <div className="mb-4 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3"><span className="step-number">3</span><div><span className="label !mb-0">Sala</span><h2 className="font-display text-xl font-bold">Jugadores</h2></div></div>
+            <div><span className="label !mb-0">Sala</span><h2 className="font-display text-xl font-bold">Jugadores</h2></div>
             <span className="chip"><UsersRound className="mr-1.5" size={15} /> {connectedPlayers} / {room.maxPlayers}</span>
           </div>
           <PlayerList members={room.members} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(report)} onTransferHost={transferHost} onKick={kick} />
 
           <div className="mt-4 border-t border-ink/10 pt-4">
-            <div className="mb-3 flex items-center gap-3"><span className="step-number">4</span><div><span className="label !mb-0">Todo listo</span><h2 className="font-display text-xl font-bold">Iniciar partida</h2></div></div>
+            <div className="mb-3"><span className="label !mb-0">Todo listo</span><h2 className="font-display text-xl font-bold">Iniciar partida</h2></div>
             {self?.roomRole !== 'HOST' && <button type="button" className={`mb-2 w-full ${self?.ready ? 'btn-ghost border-leaf/40 text-leaf' : 'btn-secondary'}`} disabled={readyBusy || self?.presence !== 'CONNECTED'} aria-pressed={Boolean(self?.ready)} onClick={() => void toggleReady()}><CheckCircle2 size={18} /> {readyBusy ? 'Guardando…' : self?.ready ? 'Estoy listo' : 'Marcarme listo'}</button>}
             <button className="btn-primary w-full" disabled={Boolean(startReason) || starting} onClick={() => void start()} aria-describedby="start-help"><Play size={18} fill="currentColor" /> {starting ? 'Iniciando…' : 'Empezar partida'}</button>
             <p id="start-help" className={`mt-2 text-sm font-bold ${startReason ? 'text-berry' : 'text-leaf'}`}>{startReason ?? 'La sala está lista.'}</p>

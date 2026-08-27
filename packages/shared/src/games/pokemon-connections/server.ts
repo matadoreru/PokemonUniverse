@@ -11,6 +11,7 @@ const manifest = {
   name: 'Pokémon Connections',
   icon: '🧩',
   description: 'Encuentra en privado los grupos de Pokémon que comparten una conexión.',
+  experimental: true,
   minPlayers: 1,
   profileStats: {
     metrics: [
