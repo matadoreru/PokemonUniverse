@@ -3,6 +3,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { requireAdmin } from '../auth/middleware.js';
 import { prisma } from '../db.js';
+import type { DataSyncService } from '../data-sync/service.js';
 
 const pageQuery = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -13,7 +14,7 @@ function paginated<T>(items: T[], page: number, total: number): PaginatedAdminRe
   return { items, page, pageSize: ADMIN_PAGE_SIZE, total, totalPages: Math.max(1, Math.ceil(total / ADMIN_PAGE_SIZE)) };
 }
 
-export function createAdminRouter(getActiveRooms: () => AdminActiveRoom[]): Router {
+export function createAdminRouter(getActiveRooms: () => AdminActiveRoom[], dataSync?: DataSyncService): Router {
   const router = Router();
   router.use(requireAdmin);
 
@@ -117,6 +118,26 @@ export function createAdminRouter(getActiveRooms: () => AdminActiveRoom[]): Rout
         createdAt: user.createdAt.toISOString(), updatedAt: user.updatedAt.toISOString(),
       }));
       res.json(paginated(items, query.page, total));
+    } catch (error) { next(error); }
+  });
+
+  router.get('/data-sync', async (_req, res, next) => {
+    try {
+      if (!dataSync) { res.status(503).json({ error: 'La sincronización de datos no está disponible' }); return; }
+      res.json({ sources: await dataSync.overview() });
+    } catch (error) { next(error); }
+  });
+
+  router.post('/data-sync/:source', async (req, res, next) => {
+    try {
+      if (!dataSync) { res.status(503).json({ error: 'La sincronización de datos no está disponible' }); return; }
+      const source = z.enum(['pokemon', 'tcg', 'all']).parse(req.params.source);
+      const body = z.object({ full: z.boolean().default(false), confirmFull: z.boolean().default(false) }).parse(req.body ?? {});
+      if (body.full && !body.confirmFull) { res.status(400).json({ error: 'El Full Sync requiere confirmación explícita' }); return; }
+      const mode = body.full ? 'FULL' : 'INCREMENTAL';
+      const task = source === 'all' ? dataSync.startAll(mode) : dataSync.start(source === 'pokemon' ? 'POKEAPI' : 'TCGDEX', source === 'tcg' && !body.full ? 'PRICE_REFRESH' : mode);
+      void task.catch(() => undefined);
+      res.status(202).json({ accepted: true, source, mode });
     } catch (error) { next(error); }
   });
 

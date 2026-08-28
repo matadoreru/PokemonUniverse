@@ -60,6 +60,8 @@ export interface Pokemon {
   /** False for regional/battle variants that share a National Pokédex number. */
   isDefault?: boolean;
   sprite: string;
+  /** Persisted shiny sprite reference populated by DataSync, never derived by a game. */
+  shinySprite?: string;
   hp: number;
   attack: number;
   defense: number;

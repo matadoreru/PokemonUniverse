@@ -7,7 +7,7 @@ const pokemon: Pokemon[] = Array.from({ length: 8 }, (_, index) => ({
   nationalDexNumber: index + 1,
   name: `Pokémon ${index + 1}`,
   generation: index < 6 ? 1 : 2,
-  sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index + 1}.png`,
+  sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index + 1}.png`, shinySprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${index + 1}.png`,
   hp: 50, attack: 50, defense: 50, specialAttack: 50, specialDefense: 50, speed: 50, baseStatTotal: 300, types: ['normal'],
 }));
 const catalog: PokemonCatalog = {

@@ -47,6 +47,10 @@ services:
       ROOM_MAX_PLAYERS: "${PU_ROOM_MAX_PLAYERS:-8}"
       RECONNECT_GRACE_MS: "${PU_RECONNECT_GRACE_MS:-30000}"
       AVATAR_STORAGE_DIR: "/data/avatars"
+      DATA_SYNC_ENABLED: "${PU_DATA_SYNC_ENABLED:-true}"
+      DATA_SYNC_HOUR: "${PU_DATA_SYNC_HOUR:-6}"
+      DATA_SYNC_MINUTE: "${PU_DATA_SYNC_MINUTE:-0}"
+      DATA_SYNC_TIMEZONE: "${PU_DATA_SYNC_TIMEZONE:-Europe/Madrid}"
     volumes:
       - pokemon_universe_avatar_data:/data/avatars
     depends_on:

@@ -1,9 +1,9 @@
-import type { AdminActiveRoom, AdminGameHistoryItem, AdminRoomHistoryItem, AdminSummary, AdminUserItem, PaginatedAdminResponse } from '@pokemon-universe/shared';
-import { Activity, CircleAlert, DoorOpen, Gamepad2, Search, ShieldCheck, Users } from 'lucide-react';
+import type { AdminActiveRoom, AdminDataSyncItem, AdminGameHistoryItem, AdminRoomHistoryItem, AdminSummary, AdminUserItem, PaginatedAdminResponse } from '@pokemon-universe/shared';
+import { Activity, CircleAlert, Database, DoorOpen, Gamepad2, RefreshCw, Search, ShieldCheck, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { api } from '../lib/api';
 
-type Tab = 'rooms' | 'games' | 'users';
+type Tab = 'rooms' | 'games' | 'users' | 'sync';
 type RoomMode = 'active' | 'history';
 const emptyPage = <T,>(): PaginatedAdminResponse<T> => ({ items: [], page: 1, pageSize: 20, total: 0, totalPages: 1 });
 
@@ -18,6 +18,8 @@ export function AdminPage() {
   const [roomHistory, setRoomHistory] = useState<PaginatedAdminResponse<AdminRoomHistoryItem>>(emptyPage);
   const [games, setGames] = useState<PaginatedAdminResponse<AdminGameHistoryItem>>(emptyPage);
   const [users, setUsers] = useState<PaginatedAdminResponse<AdminUserItem>>(emptyPage);
+  const [syncSources, setSyncSources] = useState<AdminDataSyncItem[]>([]);
+  const [syncing, setSyncing] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -26,6 +28,11 @@ export function AdminPage() {
   useEffect(() => {
     let active = true;
     const timer = setTimeout(() => {
+      if (tab === 'sync') {
+        setLoading(true); setError('');
+        void api<{ sources: AdminDataSyncItem[] }>('/admin/data-sync').then((data) => { if (active) setSyncSources(data.sources); }).catch((caught: Error) => { if (active) setError(caught.message); }).finally(() => { if (active) setLoading(false); });
+        return;
+      }
       const params = new URLSearchParams({ page: String(page) });
       if (search) params.set('search', search);
       if (status) params.set(tab === 'users' ? 'role' : 'status', status);
@@ -47,6 +54,12 @@ export function AdminPage() {
   }, [page, roomMode, search, status, tab]);
 
   useEffect(() => {
+    if (tab !== 'sync') return;
+    const interval = window.setInterval(() => void api<{ sources: AdminDataSyncItem[] }>('/admin/data-sync').then((data) => setSyncSources(data.sources)).catch(() => undefined), 5_000);
+    return () => window.clearInterval(interval);
+  }, [tab]);
+
+  useEffect(() => {
     if (tab !== 'rooms' || roomMode !== 'active') return;
     const interval = window.setInterval(() => {
       void Promise.all([api<AdminSummary>('/admin/summary'), api<PaginatedAdminResponse<AdminActiveRoom>>(`/admin/active-rooms?page=${page}&search=${encodeURIComponent(search)}`)])
@@ -63,6 +76,16 @@ export function AdminPage() {
       ? [['', 'Todos los estados'], ['IN_PROGRESS', 'En progreso'], ['COMPLETED', 'Completadas'], ['ABANDONED', 'Abandonadas'], ['INTERRUPTED', 'Interrumpidas']]
       : [['', 'Todos los estados'], ['ACTIVE', 'Activas'], ['CLOSED', 'Cerradas'], ['INTERRUPTED', 'Interrumpidas']], [tab]);
 
+  async function triggerSync(source: 'pokemon' | 'tcg' | 'all', full = false) {
+    if (full && !window.confirm('El Full Sync vuelve a consultar todo el dataset. Los datos actuales se conservarán si la fuente falla. ¿Quieres continuar?')) return;
+    setSyncing(source); setError('');
+    try {
+      await api(`/admin/data-sync/${source}`, { method: 'POST', body: JSON.stringify({ full, confirmFull: full }) });
+      const data = await api<{ sources: AdminDataSyncItem[] }>('/admin/data-sync'); setSyncSources(data.sources);
+    } catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudo iniciar la sincronización'); }
+    finally { setSyncing(''); }
+  }
+
   return <section className="page-shell">
     <header className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
       <div><span className="label">Acceso restringido</span><h1 className="font-display text-3xl font-bold sm:text-4xl">Actividad del universo</h1><p className="mt-1 font-semibold text-ink/65">Consulta operativa de salas, partidas y cuentas registradas.</p></div>
@@ -77,7 +100,7 @@ export function AdminPage() {
     </dl>
 
     <div className="mb-4 flex gap-1 overflow-x-auto border-b border-ink/10" role="tablist" aria-label="Secciones de administración">
-      {([['rooms', 'Salas', DoorOpen], ['games', 'Partidas', Gamepad2], ['users', 'Usuarios', Users]] as const).map(([id, label, Icon]) => <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)} className={`inline-flex min-h-11 min-w-max items-center gap-2 border-b-2 px-4 text-sm font-extrabold transition ${tab === id ? 'border-berry text-ink' : 'border-transparent text-ink/55 hover:text-ink'}`}><Icon size={18} />{label}</button>)}
+      {([['rooms', 'Salas', DoorOpen], ['games', 'Partidas', Gamepad2], ['users', 'Usuarios', Users], ['sync', 'Datos', Database]] as const).map(([id, label, Icon]) => <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)} className={`inline-flex min-h-11 min-w-max items-center gap-2 border-b-2 px-4 text-sm font-extrabold transition ${tab === id ? 'border-berry text-ink' : 'border-transparent text-ink/55 hover:text-ink'}`}><Icon size={18} />{label}</button>)}
     </div>
 
     {tab === 'rooms' && <div className="mb-4 inline-flex rounded-xl bg-ink/[.06] p-1" aria-label="Tipo de salas">
@@ -85,7 +108,7 @@ export function AdminPage() {
       <button className={`min-h-11 rounded-lg px-4 text-sm font-extrabold ${roomMode === 'history' ? 'bg-surface shadow-card' : 'text-ink/60'}`} onClick={() => setRoomMode('history')}>Historial</button>
     </div>}
 
-    <div className="panel overflow-hidden">
+    {tab === 'sync' ? <DataSyncPanel items={syncSources} loading={loading} error={error} syncing={syncing} onSync={triggerSync} /> : <div className="panel overflow-hidden">
       <div className="flex flex-col gap-3 border-b border-ink/10 p-3 sm:flex-row sm:items-center">
         <label className="relative flex-1"><span className="sr-only">Buscar</span><Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/45" size={18} /><input className="field pl-10" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={tab === 'users' ? 'Buscar usuario o email' : 'Buscar sala, anfitrión o jugador'} /></label>
         {!(tab === 'rooms' && roomMode === 'active') && <label><span className="sr-only">Filtrar estado</span><select className="field min-w-48" value={status} onChange={(event) => { setStatus(event.target.value); setPage(1); }}>{statusOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>}
@@ -97,7 +120,7 @@ export function AdminPage() {
         {tab === 'users' && <UsersTable items={users.items} />}
         <Pagination page={currentPage.page} totalPages={currentPage.totalPages} total={currentPage.total} onPage={setPage} />
       </>}
-    </div>
+    </div>}
   </section>;
 }
 
@@ -106,9 +129,18 @@ function Summary({ icon: Icon, label, value, tone }: { icon: typeof Users; label
 }
 
 function Status({ value }: { value: string }) {
-  const labels: Record<string, string> = { ACTIVE: 'Activa', CLOSED: 'Cerrada', IN_PROGRESS: 'En progreso', COMPLETED: 'Completada', ABANDONED: 'Abandonada', INTERRUPTED: 'Interrumpida', USER: 'Usuario', ADMIN: 'Administrador' };
-  const tone = value === 'ACTIVE' || value === 'IN_PROGRESS' ? 'bg-aqua/10 text-aqua' : value === 'COMPLETED' ? 'bg-leaf/10 text-leaf' : value === 'INTERRUPTED' || value === 'ABANDONED' ? 'bg-electric/10 text-electric' : value === 'ADMIN' ? 'bg-berry/10 text-berry' : 'bg-ink/[.07] text-ink/65';
+  const labels: Record<string, string> = { ACTIVE: 'Activa', CLOSED: 'Cerrada', IN_PROGRESS: 'En progreso', RUNNING: 'Sincronizando', COMPLETED: 'Disponible', NOT_READY: 'Pendiente', FAILED: 'Error', IDLE: 'En espera', ABANDONED: 'Abandonada', INTERRUPTED: 'Interrumpida', USER: 'Usuario', ADMIN: 'Administrador' };
+  const tone = value === 'ACTIVE' || value === 'IN_PROGRESS' || value === 'RUNNING' ? 'bg-aqua/10 text-aqua' : value === 'COMPLETED' ? 'bg-leaf/10 text-leaf' : value === 'FAILED' || value === 'INTERRUPTED' || value === 'ABANDONED' ? 'bg-electric/10 text-electric' : value === 'ADMIN' ? 'bg-berry/10 text-berry' : 'bg-ink/[.07] text-ink/65';
   return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-extrabold ${tone}`}>{labels[value] ?? value}</span>;
+}
+
+function DataSyncPanel({ items, loading, error, syncing, onSync }: { items: AdminDataSyncItem[]; loading: boolean; error: string; syncing: string; onSync(source: 'pokemon' | 'tcg' | 'all', full?: boolean): Promise<void> }) {
+  const active = items.some((item) => item.status === 'RUNNING') || Boolean(syncing);
+  return <section className="space-y-4" aria-labelledby="data-sync-title">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><h2 id="data-sync-title" className="font-display text-2xl">Fuentes de datos</h2><p className="mt-1 max-w-3xl text-sm font-semibold text-ink/65">PostgreSQL es la fuente de verdad. Las APIs externas solo actualizan estos datasets y un fallo conserva la última versión válida.</p></div><div className="flex flex-wrap gap-2"><button className="btn-ghost text-sm" disabled={active} onClick={() => void onSync('all')}><RefreshCw size={17} />Sincronizar todo</button><button className="btn-ghost text-sm text-electric" disabled={active} onClick={() => void onSync('all', true)}>Forzar Full Sync</button></div></div>
+    {error && <p className="status-error" role="alert">{error}</p>}
+    {loading && items.length === 0 ? <div className="panel"><LoadingRows /></div> : <div className="panel overflow-hidden"><div className="divide-y divide-ink/10">{items.map((item) => <article className="p-4 sm:p-5" key={item.source}><div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between"><div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h3 className="font-display text-xl">{item.source === 'POKEAPI' ? 'PokéAPI' : 'TCGdex'}</h3><Status value={item.status} /></div><dl className="mt-3 grid gap-x-7 gap-y-2 text-sm sm:grid-cols-2 xl:grid-cols-4"><Detail label="Última sync">{item.lastSyncAt ? formatDate(item.lastSyncAt) : 'Nunca'}</Detail><Detail label="Duración">{item.durationMs === null ? '—' : formatDuration(item.durationMs)}</Detail><Detail label="Procesados">{item.recordsProcessed.toLocaleString('es-ES')}</Detail><Detail label="Disponibles">{item.recordsAvailable.toLocaleString('es-ES')}</Detail><Detail label="Insertados">{item.inserted.toLocaleString('es-ES')}</Detail><Detail label="Actualizados">{item.updated.toLocaleString('es-ES')}</Detail><Detail label="Omitidos">{item.skipped.toLocaleString('es-ES')}</Detail><Detail label="Próxima">{formatDate(item.nextSyncAt)}</Detail></dl>{item.error && <p className="mt-3 rounded-xl bg-electric/10 px-3 py-2 text-sm font-bold text-electric" role="status">{item.error}</p>}</div><button className="btn-primary shrink-0 text-sm" disabled={active} onClick={() => void onSync(item.source === 'POKEAPI' ? 'pokemon' : 'tcg')}><RefreshCw className={item.status === 'RUNNING' ? 'animate-spin' : ''} size={17} />{item.source === 'POKEAPI' ? 'Sincronizar Pokémon' : 'Sincronizar TCG'}</button></div></article>)}</div></div>}
+  </section>;
 }
 
 function ActiveRooms({ items }: { items: AdminActiveRoom[] }) {
@@ -142,3 +174,4 @@ function Pagination({ page, totalPages, total, onPage }: { page: number; totalPa
 function LoadingRows() { return <div className="space-y-px" role="status" aria-label="Cargando registros">{Array.from({ length: 5 }, (_, index) => <div className="flex h-14 items-center gap-4 px-4" key={index}><span className="skeleton h-4 w-20" /><span className="skeleton h-4 flex-1" /><span className="skeleton h-4 w-24" /></div>)}</div>; }
 function formatDate(value: string): string { return new Intl.DateTimeFormat('es-ES', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value)); }
 function formatTime(value: string): string { return new Intl.DateTimeFormat('es-ES', { timeStyle: 'short' }).format(new Date(value)); }
+function formatDuration(value: number): string { return value < 1_000 ? `${value} ms` : value < 60_000 ? `${(value / 1_000).toFixed(1)} s` : `${Math.floor(value / 60_000)} min ${Math.round(value % 60_000 / 1_000)} s`; }

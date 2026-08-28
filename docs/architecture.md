@@ -6,6 +6,25 @@ The repository is split into three boundaries:
 - `apps/server`: authentication, PostgreSQL persistence, the live-room coordinator and Socket.IO transport. The coordinator sends intentions to a registered game module and publishes only its public projection.
 - `apps/web`: React screens and presentation. It never decides deadlines, winners, eliminations or whether a selection wins a race.
 
+## Local data authority
+
+All gameplay data is read through server repositories and services backed by
+PostgreSQL. The immutable in-memory Pokémon catalog is only a read cache rebuilt
+from PostgreSQL at startup; it is never populated from an external API.
+
+External sources are isolated under `apps/server/src/data-sync/`:
+
+```text
+PokéAPI / TCGdex -> DataSyncService -> PostgreSQL -> repositories -> games/web
+```
+
+On first boot, a missing Pokémon dataset is synchronized before rooms become
+available. TCGdex initializes in the background because no current game depends
+on it. Later runs are incremental: PokéAPI checks for dataset growth and TCGdex
+refreshes persisted prices daily. Failed runs are recorded without deleting or
+invalidating the last successful dataset. The scheduler defaults to 06:00 in
+`Europe/Madrid` and is configurable through the `DATA_SYNC_*` variables.
+
 ## State and authority
 
 The room state machine uses `LOBBY → game-owned phases → GAME_RESULTS → SESSION_RESULTS`. `GAME_RESULTS` is an obligatory, host-confirmed stop even when the session target has just been reached, so reconnecting clients always receive the last game's complete result before the session ranking. In a non-final session, continuing from `GAME_RESULTS` launches the same minigame in fixed mode or a compatible server-random minigame in random mode without passing through `LOBBY`. Player voting starts only after that confirmation and continues through `NEXT_GAME_VOTE → NEXT_GAME_VOTE_RESULTS`, then launches the compatible winner after its reveal. The coordinator falls back to `LOBBY` only when a changed player count leaves the configured rotation without enough compatible games. Round games use active/results phases; Pokémon Impostor uses `ROLE_REVEAL → ordered CLUE_PHASE turns → VOTING → VOTE_RESULTS → ELIMINATION`, while Type Duel owns its private type-selection, reveal and Pokémon-search phases. A game module owns every gameplay state; the room coordinator owns only the inter-game vote. There are no combinations of gameplay booleans.

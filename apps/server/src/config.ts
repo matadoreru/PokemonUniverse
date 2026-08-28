@@ -11,6 +11,10 @@ const schema = z.object({
   RECONNECT_GRACE_MS: z.coerce.number().int().min(5_000).max(300_000).default(30_000),
   AVATAR_STORAGE_DIR: z.string().min(1).default(process.env.NODE_ENV === 'production' ? '/data/avatars' : '.data/avatars'),
   PU_COMMIT_SHA: z.string().default(''),
+  DATA_SYNC_ENABLED: z.enum(['true', 'false']).default('true').transform((value) => value === 'true'),
+  DATA_SYNC_HOUR: z.coerce.number().int().min(0).max(23).default(6),
+  DATA_SYNC_MINUTE: z.coerce.number().int().min(0).max(59).default(0),
+  DATA_SYNC_TIMEZONE: z.string().min(1).default('Europe/Madrid'),
 });
 
 export const env = schema.parse(process.env);

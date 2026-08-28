@@ -1,5 +1,6 @@
 import { isSupportedRegionalFormId, type Generation, type MoveCategory, type PokemonType } from '@pokemon-universe/shared';
 import { PrismaClient } from '@prisma/client';
+import { pathToFileURL } from 'node:url';
 import { extractSpanishAbilityName, type SourceAbilityName } from '../src/pokemon/ability-source.js';
 import { extractCanonicalLevelUpEntries } from '../src/pokemon/learnset-source.js';
 import { extractSpanishPokedexEntries, type SourceFlavorTextEntry } from '../src/pokemon/pokedex-entry-source.js';
@@ -31,7 +32,8 @@ interface PokeApiPokemon {
   id: number;
   name: string;
   species: { name: string; url: string };
-  sprites: { front_default: string | null };
+  sprites: { front_default: string | null; front_shiny?: string | null; other?: { ['official-artwork']?: { front_default?: string | null }; home?: { front_default?: string | null } } };
+  cries?: { latest?: string | null; legacy?: string | null };
   stats: Array<{ base_stat: number; stat: { name: string } }>;
   types: Array<{ slot: number; type: { name: string } }>;
   height: number;
@@ -45,6 +47,11 @@ interface PokeApiMove {
   names: Array<{ name: string; language: { name: string } }>;
   type: { name: string };
   damage_class: { name: string };
+  power?: number | null;
+  accuracy?: number | null;
+  pp?: number | null;
+  priority?: number;
+  generation?: { name: string; url: string };
 }
 
 interface PokeApiAbility {
@@ -53,6 +60,7 @@ interface PokeApiAbility {
 }
 
 interface PokeApiSpecies {
+  id: number;
   name: string;
   names: Array<{ name: string; language: { name: string } }>;
   evolves_from_species: { name: string } | null;
@@ -60,6 +68,19 @@ interface PokeApiSpecies {
   is_mythical: boolean;
   color: { name: string };
   flavor_text_entries: SourceFlavorTextEntry[];
+  generation?: { name: string; url: string };
+  shape?: { name: string } | null;
+  habitat?: { name: string } | null;
+  growth_rate?: { name: string };
+  gender_rate?: number;
+  capture_rate?: number;
+  base_happiness?: number;
+  hatch_counter?: number;
+  is_baby?: boolean;
+  has_gender_differences?: boolean;
+  forms_switchable?: boolean;
+  evolution_chain?: { url: string };
+  pokedex_numbers?: Array<{ entry_number: number; pokedex: { name: string } }>;
 }
 
 interface PokeApiPokemonList { results: Array<{ name: string }> }
@@ -149,6 +170,15 @@ function toEntry(pokemon: PokeApiPokemon, isDefault: boolean, species: PokeApiSp
       if (!spanishName) throw new Error(`Missing Spanish ability name for ${entry.ability.name}`);
       return spanishName;
     }))].sort((left, right) => left.localeCompare(right, 'es')),
+    metadata: {
+      pokeApiId: pokemon.id,
+      species: pokemon.species.name,
+      cries: pokemon.cries ?? null,
+      artwork: pokemon.sprites.other?.['official-artwork']?.front_default ?? null,
+      homeArtwork: pokemon.sprites.other?.home?.front_default ?? null,
+      shinySprite: pokemon.sprites.front_shiny ?? null,
+    },
+    sourceUpdatedAt: new Date(),
   };
 }
 
@@ -206,12 +236,17 @@ async function syncLearnsets(pokemon: PokeApiPokemon[]): Promise<void> {
         name: move.names.find((entry) => entry.language.name === 'en')?.name ?? displayName(move.name),
         type: move.type.name as PokemonType, category: move.damage_class.name as MoveCategory,
         names: Object.fromEntries(move.names.filter((entry) => ['en', 'es'].includes(entry.language.name)).map((entry) => [entry.language.name, entry.name])),
+        power: move.power ?? null, accuracy: move.accuracy ?? null, pp: move.pp ?? null, priority: move.priority ?? 0,
+        generation: Number(/\/(\d+)\/?$/.exec(move.generation?.url ?? '')?.[1]) || null,
+        metadata: { source: 'pokeapi' },
       };
       return prisma.move.upsert({ where: { id: move.name }, create: { id: move.name, ...data }, update: data });
     }));
   }
-  await prisma.pokemonLevelUpMove.deleteMany({ where: { pokemonId: { in: pokemon.map((entry) => entry.name) } } });
-  for (let start = 0; start < entries.length; start += 1_000) await prisma.pokemonLevelUpMove.createMany({ data: entries.slice(start, start + 1_000), skipDuplicates: true });
+  await prisma.$transaction(async (transaction) => {
+    await transaction.pokemonLevelUpMove.deleteMany({ where: { pokemonId: { in: pokemon.map((entry) => entry.name) } } });
+    for (let start = 0; start < entries.length; start += 1_000) await transaction.pokemonLevelUpMove.createMany({ data: entries.slice(start, start + 1_000), skipDuplicates: true });
+  }, { timeout: 120_000 });
   console.info(`Seeded ${entries.length} canonical level-up entries across ${moves.length} moves.`);
 }
 
@@ -233,8 +268,32 @@ async function syncEvolution(defaultPokemon: PokeApiPokemon[], species: PokeApiS
     return prisma.pokemon.update({ where: { id: pokemonId }, data: { evolutionStage: normalizedStage, evolutionStages: stages } });
   });
   for (let start = 0; start < updates.length; start += 100) await prisma.$transaction(updates.slice(start, start + 100));
+  const edges = species.flatMap((entry) => {
+    const from = entry.evolves_from_species?.name; const to = pokemonIdBySpecies.get(entry.name); const fromId = from ? pokemonIdBySpecies.get(from) : undefined;
+    if (!fromId || !to) return [];
+    const chainId = Number(/\/(\d+)\/?$/.exec(entry.evolution_chain?.url ?? '')?.[1]) || entry.id;
+    return [{ id: `${chainId}:${fromId}:${to}`, chainId, fromPokemonId: fromId, toPokemonId: to }];
+  });
+  for (let start = 0; start < edges.length; start += 500) await prisma.pokemonEvolution.createMany({ data: edges.slice(start, start + 500), skipDuplicates: true });
   console.info(`Seeded evolution position for ${updates.length} Pokémon.`);
 }
+
+async function syncNormalizedSpecies(species: PokeApiSpecies[]): Promise<void> {
+  const generations = [...new Set(species.map((entry) => generationFor(entry.id)))];
+  for (const id of generations) await prisma.pokemonGeneration.upsert({ where: { id }, create: { id, slug: `generation-${id}`, name: `Generación ${id}` }, update: {} });
+  for (const entry of species) {
+    const generationId = generationFor(entry.id);
+    const evolutionChainId = Number(/\/(\d+)\/?$/.exec(entry.evolution_chain?.url ?? '')?.[1]) || null;
+    await prisma.pokemonSpecies.upsert({
+      where: { id: entry.id },
+      create: { id: entry.id, slug: entry.name, generationId, name: displayName(entry.name), names: Object.fromEntries(entry.names.map((name) => [name.language.name, name.name])), color: entry.color.name, shape: entry.shape?.name ?? null, habitat: entry.habitat?.name ?? null, growthRate: entry.growth_rate?.name ?? null, genderRate: entry.gender_rate ?? null, captureRate: entry.capture_rate ?? null, baseHappiness: entry.base_happiness ?? null, hatchCounter: entry.hatch_counter ?? null, isBaby: entry.is_baby ?? false, isLegendary: entry.is_legendary, isMythical: entry.is_mythical, hasGenderDifferences: entry.has_gender_differences ?? false, formsSwitchable: entry.forms_switchable ?? false, evolvesFromSpeciesId: entry.evolves_from_species ? speciesByNameId(species, entry.evolves_from_species.name) : null, evolutionChainId, metadata: { source: 'pokeapi' } },
+      update: { generationId, names: Object.fromEntries(entry.names.map((name) => [name.language.name, name.name])), color: entry.color.name, shape: entry.shape?.name ?? null, habitat: entry.habitat?.name ?? null, growthRate: entry.growth_rate?.name ?? null, genderRate: entry.gender_rate ?? null, captureRate: entry.capture_rate ?? null, baseHappiness: entry.base_happiness ?? null, hatchCounter: entry.hatch_counter ?? null, isBaby: entry.is_baby ?? false, isLegendary: entry.is_legendary, isMythical: entry.is_mythical, hasGenderDifferences: entry.has_gender_differences ?? false, formsSwitchable: entry.forms_switchable ?? false, evolvesFromSpeciesId: entry.evolves_from_species ? speciesByNameId(species, entry.evolves_from_species.name) : null, evolutionChainId },
+    });
+    await prisma.pokemonPokedexNumber.createMany({ data: (entry.pokedex_numbers ?? []).map((item) => ({ speciesId: entry.id, pokedex: item.pokedex.name, entryNumber: item.entry_number })), skipDuplicates: true });
+  }
+}
+
+function speciesByNameId(species: readonly PokeApiSpecies[], name: string): number | null { return species.find((entry) => entry.name === name)?.id ?? null; }
 
 async function upsertPokemon(entries: ReturnType<typeof toEntry>[]): Promise<void> {
   for (let start = 0; start < entries.length; start += 100) {
@@ -244,24 +303,28 @@ async function upsertPokemon(entries: ReturnType<typeof toEntry>[]): Promise<voi
 
 async function syncPokedexEntries(defaultPokemon: PokeApiPokemon[], species: PokeApiSpecies[]): Promise<void> {
   const speciesByName = new Map(species.map((entry) => [entry.name, entry]));
+  if (species.length) await syncNormalizedSpecies(species);
   const entries = defaultPokemon.flatMap((pokemon) => {
     const source = speciesByName.get(pokemon.species.name);
     return source ? extractSpanishPokedexEntries(pokemon.name, source.flavor_text_entries) : [];
   });
   const pokemonIds = defaultPokemon.map((pokemon) => pokemon.name);
-  await prisma.pokedexEntry.deleteMany({ where: { pokemonId: { in: pokemonIds } } });
-  for (let start = 0; start < entries.length; start += 1_000) {
-    await prisma.pokedexEntry.createMany({
-      data: entries.slice(start, start + 1_000).map((entry) => ({ ...entry, id: `${entry.pokemonId}:${entry.version}` })),
-      skipDuplicates: true,
-    });
-  }
   if (entries.length < MIN_SPANISH_POKEDEX_ENTRIES) throw new Error(`Expected at least ${MIN_SPANISH_POKEDEX_ENTRIES} Spanish Pokédex entries, received ${entries.length}`);
+  await prisma.$transaction(async (transaction) => {
+    await transaction.pokedexEntry.deleteMany({ where: { pokemonId: { in: pokemonIds } } });
+    for (let start = 0; start < entries.length; start += 1_000) {
+      await transaction.pokedexEntry.createMany({ data: entries.slice(start, start + 1_000).map((entry) => ({ ...entry, id: `${entry.pokemonId}:${entry.version}` })), skipDuplicates: true });
+    }
+  }, { timeout: 120_000 });
   console.info(`Seeded ${entries.length} official Spanish Pokédex entries.`);
 }
 
-async function main(): Promise<void> {
-  const force = process.env.POKEMON_SYNC === 'true';
+export interface PokemonSyncOptions { force?: boolean }
+
+/** Synchronizes PokéAPI into PostgreSQL. It only mutates a dataset after all
+ * remote prerequisites for that phase have been loaded successfully. */
+export async function syncPokemonData(options: PokemonSyncOptions = {}): Promise<void> {
+  const force = options.force ?? process.env.POKEMON_SYNC === 'true';
   const [enrichedDefaultCount, regionalFormCount, moveCount, learnsetCount, evolutionCount, metadataCount, pokedexEntryCount, syncRows] = await Promise.all([
     prisma.pokemon.count({ where: { isDefault: true, hp: { gt: 0 }, types: { isEmpty: false } } }),
     prisma.pokemon.count({ where: { isDefault: false } }), prisma.move.count(), prisma.pokemonLevelUpMove.count(),
@@ -313,4 +376,7 @@ async function main(): Promise<void> {
   }
 }
 
-main().finally(() => prisma.$disconnect());
+const invokedPath = process.argv[1] ? pathToFileURL(process.argv[1]).href : '';
+if (import.meta.url === invokedPath) {
+  syncPokemonData().finally(() => prisma.$disconnect());
+}

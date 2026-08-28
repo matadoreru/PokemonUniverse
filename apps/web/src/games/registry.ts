@@ -202,4 +202,9 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   config: component(() => import('./pokemon-red-flag/ConfigPanel'), 'PokemonRedFlagConfigPanel'),
   active: component(() => import('../room/PokemonRedFlagGame'), 'PokemonRedFlagGame'),
   results: component(() => import('../room/PokemonRedFlagResults'), 'PokemonRedFlagResults'),
+})).register(clientModule({
+  id: 'who-is-who-pokemon',
+  config: component(() => import('./who-is-who-pokemon/ConfigPanel'), 'WhoIsWhoPokemonConfigPanel'),
+  active: component(() => import('../room/WhoIsWhoPokemonGame'), 'WhoIsWhoPokemonGame'),
+  results: component(() => import('../room/WhoIsWhoPokemonResults'), 'WhoIsWhoPokemonResults'),
 }));

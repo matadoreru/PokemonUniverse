@@ -2,6 +2,15 @@
 
 El panel de consulta está disponible en `/admin` y la API en `/api/admin`. Ambas capas exigen una cuenta registrada con el rol `ADMIN`. La API comprueba el rol actual en PostgreSQL en cada petición; no confía únicamente en la sesión del navegador.
 
+## Sincronización de datos
+
+La pestaña **Datos** muestra PokéAPI y TCGdex, disponibilidad local, última
+ejecución, duración, contadores, error y próxima ejecución. Las acciones
+manuales responden inmediatamente y el panel consulta el progreso cada cinco
+segundos. Solo puede ejecutarse una sincronización por fuente; **Forzar Full
+Sync** exige confirmación y se reserva para recuperación o una recarga manual
+explícita. Un error conserva el dataset previamente válido en PostgreSQL.
+
 ## Conceder o retirar el rol
 
 La primera asignación se hace manualmente en la base de datos de cada entorno:

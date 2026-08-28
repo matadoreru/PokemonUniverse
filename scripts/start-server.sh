@@ -6,5 +6,4 @@ if [ ! -x "$prisma_bin" ]; then
   prisma_bin=./apps/server/node_modules/.bin/prisma
 fi
 "$prisma_bin" migrate deploy --schema apps/server/prisma/schema.prisma
-node apps/server/dist/prisma/seed.js
 exec node apps/server/dist/src/index.js

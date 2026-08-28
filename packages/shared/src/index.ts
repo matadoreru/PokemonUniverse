@@ -35,3 +35,4 @@ export * from './games/secret-ranking/index.js';
 export * from './games/most-likely-to/index.js';
 export * from './games/would-you-rather/index.js';
 export * from './games/pokemon-red-flag/index.js';
+export * from './games/who-is-who-pokemon/index.js';

@@ -81,6 +81,26 @@ export interface AdminUserItem {
   updatedAt: string;
 }
 
+export type AdminDataSyncSource = 'POKEAPI' | 'TCGDEX';
+export type AdminDataSyncStatus = 'IDLE' | 'RUNNING' | 'FAILED' | 'COMPLETED' | 'NOT_READY';
+
+export interface AdminDataSyncItem {
+  source: AdminDataSyncSource;
+  status: AdminDataSyncStatus;
+  ready: boolean;
+  lastSyncAt: string | null;
+  lastAttemptAt: string | null;
+  lastFullSyncAt: string | null;
+  durationMs: number | null;
+  recordsProcessed: number;
+  inserted: number;
+  updated: number;
+  skipped: number;
+  recordsAvailable: number;
+  error: string | null;
+  nextSyncAt: string;
+}
+
 export interface PaginatedAdminResponse<T> {
   items: T[];
   page: number;

@@ -30,12 +30,19 @@ import { UserGameConfigService } from './game-configs/service.js';
 import { PrismaWouldYouRatherPromptRepository } from './would-you-rather-prompts/prisma-repository.js';
 import { createWouldYouRatherPromptRouter } from './would-you-rather-prompts/routes.js';
 import { WouldYouRatherPromptService } from './would-you-rather-prompts/service.js';
+import { DataSyncService } from './data-sync/service.js';
+import { PokemonDataSync } from './data-sync/pokemon-data-sync.js';
+import { TcgDataSync } from './data-sync/tcg-data-sync.js';
+import { DataSyncScheduler, nextScheduledSync } from './data-sync/scheduler.js';
 
 const app = express();
 const customCategories = new CustomCategoryService(new PrismaCustomCategoryRepository(prisma));
 const userGameConfigs = new UserGameConfigService(new PrismaUserGameConfigRepository(prisma));
 const wouldYouRatherPrompts = new WouldYouRatherPromptService(new PrismaWouldYouRatherPromptRepository(prisma));
 const roomRegistry: { current: RoomManager | null } = { current: null };
+const syncSchedule = { hour: env.DATA_SYNC_HOUR, minute: env.DATA_SYNC_MINUTE, timeZone: env.DATA_SYNC_TIMEZONE };
+const dataSync = new DataSyncService(prisma, [new PokemonDataSync(), new TcgDataSync()], () => nextScheduledSync(new Date(), syncSchedule));
+const scheduler = new DataSyncScheduler(dataSync, syncSchedule);
 app.set('trust proxy', 1);
 app.use(helmet());
 app.use(cors({ origin: env.WEB_ORIGIN, credentials: true }));
@@ -49,7 +56,7 @@ app.use(optionalAuth);
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 30, skip: (req) => req.path.startsWith('/avatars/') }), authRouter);
 app.use('/api/categories', createCustomCategoryRouter(customCategories));
 app.use('/api/would-you-rather-prompts', createWouldYouRatherPromptRouter(wouldYouRatherPrompts));
-app.use('/api/admin', createAdminRouter(() => roomRegistry.current?.adminRooms() ?? []));
+app.use('/api/admin', createAdminRouter(() => roomRegistry.current?.adminRooms() ?? [], dataSync));
 app.use('/api', apiRouter);
 
 app.use((error: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -80,6 +87,8 @@ io.use(async (socket, next) => {
 });
 
 await interruptStaleActivity();
+await dataSync.recoverInterrupted();
+if (env.DATA_SYNC_ENABLED) await dataSync.ensureInitialPokemon();
 const catalog = await loadPokemonCatalog();
 await customCategories.load();
 await userGameConfigs.load();
@@ -102,10 +111,15 @@ io.on('connection', (socket) => {
   rooms.bind(socket);
 });
 
+if (env.DATA_SYNC_ENABLED) {
+  scheduler.start();
+  dataSync.startInitialTcgInBackground();
+}
+
 httpServer.listen(env.PORT, () => console.info(`API listening on :${env.PORT} with ${catalog.all().length} Pokémon and ${pokemonVisuals.artworkPokemonIds().length} local artworks`));
 
 async function shutdown(): Promise<void> {
-  io.close(); httpServer.close(); await userGameConfigs.flush(); await interruptStaleActivity(); await prisma.$disconnect(); process.exit(0);
+  scheduler.stop(); io.close(); httpServer.close(); await userGameConfigs.flush(); await interruptStaleActivity(); await prisma.$disconnect(); process.exit(0);
 }
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);

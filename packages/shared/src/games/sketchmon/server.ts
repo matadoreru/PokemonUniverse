@@ -11,7 +11,10 @@ export const SKETCHMON_SPRITE_PREVIEW_MS = 3_000;
 
 const manifest = {
   id: 'sketchmon', name: 'Sketchmon', icon: '🎨',
-  description: 'Dibuja un Pokémon en tiempo real para que el resto lo descubra.', experimental: true, minPlayers: 2,
+  description: 'Dibuja un Pokémon en tiempo real para que el resto lo descubra.',
+  experimental: false,
+  minPlayers: 2,
+
   profileStats: {
     metrics: [
       { key: 'guessedPokemon', label: 'Pokémon adivinados', aggregation: 'SUM' },

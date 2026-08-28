@@ -22,6 +22,7 @@ import { secretRankingGame } from './secret-ranking/server.js';
 import { mostLikelyToGame } from './most-likely-to/server.js';
 import { wouldYouRatherGame } from './would-you-rather/server.js';
 import { pokemonRedFlagGame } from './pokemon-red-flag/server.js';
+import { whoIsWhoPokemonGame } from './who-is-who-pokemon/server.js';
 
 export type RegisteredGame = MiniGameModule<any, any, any, any>;
 
@@ -65,4 +66,5 @@ export const gameRegistry = new GameRegistry()
   .register(secretRankingGame)
   .register(mostLikelyToGame)
   .register(wouldYouRatherGame)
-  .register(pokemonRedFlagGame);
+  .register(pokemonRedFlagGame)
+  .register(whoIsWhoPokemonGame);

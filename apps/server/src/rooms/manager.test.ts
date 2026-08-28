@@ -194,7 +194,7 @@ describe('room multi-game lifecycle', () => {
     const room = manager.store.get(created.room.code)!;
     (manager as any).join(guestSocket, guest, room.code);
 
-    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['shiny-vote', 'pokemon-impostor', 'type-duel', 'zoomed-pokemon', 'pokemon-team-auction', 'pokemon-red-flag', 'pokedex-distance', 'higher-lower', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokedex-entry-guess', 'type-chain', 'guess-from-stats', 'poke-taboo', 'one-of-us-is-fake', 'pokemon-bluff-auction', 'sketchmon', 'pokemon-connections', 'secret-ranking', 'most-likely-to', 'would-you-rather']);
+    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['shiny-vote', 'pokemon-impostor', 'type-duel', 'zoomed-pokemon', 'pokemon-team-auction', 'pokemon-red-flag', 'pokedex-distance', 'higher-lower', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokedex-entry-guess', 'type-chain', 'guess-from-stats', 'poke-taboo', 'one-of-us-is-fake', 'pokemon-bluff-auction', 'sketchmon', 'pokemon-connections', 'secret-ranking', 'most-likely-to', 'would-you-rather', 'who-is-who-pokemon']);
     expect(room.selectedGameId).toBe('pokedex-distance');
     expect(room.members.size).toBe(2);
 
@@ -258,7 +258,7 @@ describe('room multi-game lifecycle', () => {
     expect(() => (manager as any).selectGame(guest.id, 'shiny-vote')).toThrow(/No tienes permiso/);
     expect(() => (manager as any).selectGame(host.id, 'missing-game')).toThrow(/Unknown game/);
     expect(room.selectedGameId).toBe('pokedex-distance');
-    expect(created.room.availableGames).toHaveLength(23);
+    expect(created.room.availableGames).toHaveLength(24);
   });
 
   it('injects the registered host category snapshot without exposing round secrets', () => {

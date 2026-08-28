@@ -64,6 +64,7 @@ export async function loadPokemonCatalog(): Promise<InMemoryPokemonCatalog> {
   const pokemon = rows.map((row) => ({
     id: row.id, nationalDexNumber: row.nationalDexNumber, name: row.name,
     generation: row.generation, isDefault: row.isDefault, sprite: row.sprite,
+    ...(row.metadata && typeof row.metadata === 'object' && !Array.isArray(row.metadata) && typeof row.metadata.shinySprite === 'string' ? { shinySprite: row.metadata.shinySprite } : {}),
     hp: row.hp, attack: row.attack, defense: row.defense, specialAttack: row.specialAttack,
     specialDefense: row.specialDefense, speed: row.speed, baseStatTotal: row.baseStatTotal,
     heightDecimeters: row.heightDecimeters, weightHectograms: row.weightHectograms,

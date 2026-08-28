@@ -26,6 +26,25 @@ enum GameHistoryStatus {
   INTERRUPTED
 }
 
+enum DataSyncSource {
+  POKEAPI
+  TCGDEX
+}
+
+enum DataSyncStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+enum DataSyncMode {
+  INITIAL
+  INCREMENTAL
+  FULL
+  PRICE_REFRESH
+}
+
 model User {
   id           String             @id @default(cuid())
   username     String             @unique
@@ -188,10 +207,166 @@ model Pokemon {
   evolutionStages   Int?
   levelUpMoves      PokemonLevelUpMove[]
   pokedexEntries    PokedexEntry[]
+  speciesId         Int?
+  species           PokemonSpecies? @relation(fields: [speciesId], references: [id], onDelete: SetNull)
+  statRows          PokemonStat[]
+  typeRows          PokemonTypeAssignment[]
+  abilityRows       PokemonAbility[]
+  assetReferences   PokemonAssetReference[]
+  evolutionFrom     PokemonEvolution[] @relation("EvolutionFrom")
+  evolutionTo       PokemonEvolution[] @relation("EvolutionTo")
+  tcgCards          TcgCardPokemon[]
+  sourceUpdatedAt   DateTime?
+  metadata          Json?
   updatedAt         DateTime @updatedAt
 
   @@index([generation])
   @@index([nationalDexNumber])
+  @@index([speciesId])
+}
+
+model PokemonGeneration {
+  id          Int      @id
+  slug        String   @unique
+  name        String
+  mainRegion  String?
+  metadata    Json?
+  species     PokemonSpecies[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PokemonSpecies {
+  id                   Int      @id
+  slug                 String   @unique
+  generationId         Int
+  name                  String
+  names                 Json?
+  color                 String?
+  shape                 String?
+  habitat               String?
+  growthRate            String?
+  genderRate            Int?
+  captureRate           Int?
+  baseHappiness         Int?
+  hatchCounter          Int?
+  isBaby                Boolean  @default(false)
+  isLegendary           Boolean  @default(false)
+  isMythical            Boolean  @default(false)
+  hasGenderDifferences  Boolean  @default(false)
+  formsSwitchable       Boolean  @default(false)
+  evolvesFromSpeciesId  Int?
+  evolutionChainId      Int?
+  footprintUrl          String?
+  metadata              Json?
+  generation            PokemonGeneration @relation(fields: [generationId], references: [id], onDelete: Restrict)
+  forms                 Pokemon[]
+  pokedexNumbers        PokemonPokedexNumber[]
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([generationId])
+  @@index([evolutionChainId])
+}
+
+model PokemonPokedexNumber {
+  speciesId  Int
+  pokedex     String
+  entryNumber Int
+  species    PokemonSpecies @relation(fields: [speciesId], references: [id], onDelete: Cascade)
+
+  @@id([speciesId, pokedex])
+  @@index([pokedex, entryNumber])
+}
+
+model PokemonStat {
+  pokemonId String
+  stat      String
+  baseValue Int
+  effort    Int      @default(0)
+  pokemon   Pokemon  @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
+
+  @@id([pokemonId, stat])
+  @@index([stat, baseValue])
+}
+
+model PokemonType {
+  id        String   @id
+  name      String
+  names     Json?
+  metadata  Json?
+  pokemon   PokemonTypeAssignment[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PokemonTypeAssignment {
+  pokemonId String
+  typeId    String
+  slot      Int
+  pokemon   Pokemon     @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
+  type      PokemonType @relation(fields: [typeId], references: [id], onDelete: Restrict)
+
+  @@id([pokemonId, typeId])
+  @@unique([pokemonId, slot])
+  @@index([typeId])
+}
+
+model Ability {
+  id        String   @id
+  name      String
+  names     Json?
+  effect    Json?
+  metadata  Json?
+  pokemon   PokemonAbility[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PokemonAbility {
+  pokemonId String
+  abilityId String
+  slot      Int
+  isHidden  Boolean @default(false)
+  pokemon   Pokemon @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
+  ability   Ability @relation(fields: [abilityId], references: [id], onDelete: Restrict)
+
+  @@id([pokemonId, abilityId])
+  @@unique([pokemonId, slot])
+  @@index([abilityId])
+}
+
+model PokemonEvolution {
+  id            String   @id
+  chainId       Int
+  fromPokemonId String
+  toPokemonId   String
+  trigger       String?
+  minLevel      Int?
+  conditions    Json?
+  fromPokemon   Pokemon @relation("EvolutionFrom", fields: [fromPokemonId], references: [id], onDelete: Cascade)
+  toPokemon     Pokemon @relation("EvolutionTo", fields: [toPokemonId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([chainId, fromPokemonId, toPokemonId])
+  @@index([fromPokemonId])
+  @@index([toPokemonId])
+}
+
+model PokemonAssetReference {
+  id        String   @id
+  pokemonId String
+  kind      String
+  url       String
+  isPrimary Boolean  @default(false)
+  metadata  Json?
+  pokemon   Pokemon  @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([pokemonId, kind, url])
+  @@index([pokemonId, kind])
 }
 
 model PokedexEntry {
@@ -216,6 +391,12 @@ model Move {
   names             Json?
   learnsets         PokemonLevelUpMove[]
   updatedAt         DateTime @updatedAt
+  power             Int?
+  accuracy          Int?
+  pp                Int?
+  priority          Int      @default(0)
+  generation        Int?
+  metadata          Json?
 }
 
 model PokemonLevelUpMove {
@@ -235,4 +416,105 @@ model PokemonCatalogSync {
   key         String   @id
   version     Int
   completedAt DateTime @default(now()) @updatedAt
+}
+
+model TcgSet {
+  id          String   @id
+  name        String
+  series      String?
+  logoUrl     String?
+  symbolUrl   String?
+  releaseDate DateTime?
+  cardCount   Int?
+  metadata    Json?
+  cards       TcgCard[]
+  sourceUpdatedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([releaseDate])
+}
+
+model TcgCard {
+  id          String   @id
+  localId     String?
+  setId       String
+  name        String
+  category    String?
+  hp          Int?
+  rarity      String?
+  imageUrl    String?
+  illustrator String?
+  metadata    Json?
+  set         TcgSet @relation(fields: [setId], references: [id], onDelete: Restrict)
+  pokemon     TcgCardPokemon[]
+  prices      TcgCardPrice[]
+  sourceUpdatedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([setId])
+  @@index([name])
+  @@index([rarity])
+}
+
+model TcgCardPokemon {
+  cardId    String
+  pokemonId String
+  card      TcgCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  pokemon   Pokemon @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
+
+  @@id([cardId, pokemonId])
+  @@index([pokemonId])
+}
+
+model TcgCardPrice {
+  id         String   @id @default(cuid())
+  cardId     String
+  provider   String
+  currency   String
+  variant    String
+  market     Decimal? @db.Decimal(12, 4)
+  low        Decimal? @db.Decimal(12, 4)
+  mid        Decimal? @db.Decimal(12, 4)
+  high       Decimal? @db.Decimal(12, 4)
+  trend      Decimal? @db.Decimal(12, 4)
+  metadata   Json?
+  observedAt DateTime @default(now())
+  card       TcgCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([cardId, provider, currency, variant])
+  @@index([observedAt])
+}
+
+model DataSyncRun {
+  id             String         @id @default(cuid())
+  source         DataSyncSource
+  mode           DataSyncMode
+  status         DataSyncStatus @default(PENDING)
+  startedAt      DateTime?
+  completedAt    DateTime?
+  durationMs     Int?
+  recordsProcessed Int          @default(0)
+  inserted       Int            @default(0)
+  updated        Int            @default(0)
+  skipped        Int            @default(0)
+  error          String?
+  details        Json?
+  createdAt      DateTime       @default(now())
+
+  @@index([source, createdAt])
+  @@index([status])
+}
+
+model DataSyncState {
+  source          DataSyncSource @id
+  datasetVersion  String?
+  lastSuccessAt   DateTime?
+  lastAttemptAt   DateTime?
+  lastFullSyncAt  DateTime?
+  recordsAvailable Int           @default(0)
+  lastError       String?
+  metadata        Json?
+  updatedAt       DateTime       @updatedAt
 }

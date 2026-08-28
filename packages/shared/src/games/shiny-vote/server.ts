@@ -45,9 +45,7 @@ function takeRandom<T>(source: readonly T[], count: number, random: () => number
 }
 
 function shinySprite(pokemon: Pokemon): string {
-  const marker = '/sprites/pokemon/';
-  if (pokemon.sprite.includes(marker)) return pokemon.sprite.replace(marker, `${marker}shiny/`);
-  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${pokemon.nationalDexNumber}.png`;
+  return pokemon.shinySprite ?? pokemon.sprite;
 }
 
 function createOptions(state: ShinyVoteState, context: GameContext): { options: ShinyOptionState[]; correctOptionId: ShinyOptionId } {
