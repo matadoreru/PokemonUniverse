@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { useAuth } from '../auth/AuthContext';
 import { createSocket, type GameSocket } from '../lib/socket';
 import { OptimisticRoomProjection, runOptimisticLobbyMutation, type OptimisticLobbyUpdate } from './optimistic-room';
+import { attachWhoIsWhoCursorChannel } from './who-is-who-cursor-channel';
 
 interface RoomContextValue {
   room: RoomView | null;
@@ -45,6 +46,7 @@ export function RoomProvider({ children }: PropsWithChildren) {
     const projection = projectionRef.current;
     if (!user) { socketRef.current?.disconnect(); socketRef.current = null; setRoom(projection.setAuthoritative(null, true)); return; }
     const socket = createSocket(); socketRef.current = socket;
+    const detachCursorChannel = attachWhoIsWhoCursorChannel(socket);
     socket.on('connect', () => setConnected(true));
     socket.on('disconnect', () => { setConnected(false); setRoom(projection.clearPending()); });
     socket.on('room:state', (nextRoom) => setRoom(projection.setAuthoritative(nextRoom)));
@@ -52,7 +54,7 @@ export function RoomProvider({ children }: PropsWithChildren) {
     socket.on('room:kicked', (message) => { setRoom(projection.setAuthoritative(null, true)); setError(message); });
     socket.on('error:message', setError);
     socket.on('connect_error', (event) => setError(event.message));
-    return () => { socket.disconnect(); socketRef.current = null; projection.setAuthoritative(null, true); };
+    return () => { detachCursorChannel(); socket.disconnect(); socketRef.current = null; projection.setAuthoritative(null, true); };
   }, [user?.id]);
 
   const emit = useCallback(<T,>(event: string, payload: unknown): Promise<T> => new Promise((resolve, reject) => {

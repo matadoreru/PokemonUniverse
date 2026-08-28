@@ -19,7 +19,11 @@ export class CatalogPokemonRepository implements PokemonRepository {
       : this.catalog.all().filter((pokemon) => query.includeForms || pokemon.isDefault !== false);
     return [...source].sort((left, right) => left.nationalDexNumber - right.nationalDexNumber
       || Number(right.isDefault !== false) - Number(left.isDefault !== false)
-      || left.name.localeCompare(right.name));
+      || left.name.localeCompare(right.name)).map((pokemon) => {
+        const publicPokemon = { ...pokemon };
+        delete publicPokemon.palette;
+        return publicPokemon;
+      });
   }
 }
 

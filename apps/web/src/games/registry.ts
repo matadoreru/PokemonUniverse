@@ -208,6 +208,21 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   active: component(() => import('../room/TcgHigherLowerGame'), 'TcgHigherLowerGame'),
   results: component(() => import('../room/TcgHigherLowerResults'), 'TcgHigherLowerResults'),
 })).register(clientModule({
+  id: 'pokemon-cry-quiz',
+  config: component(() => import('./pokemon-cry-quiz/ConfigPanel'), 'PokemonCryQuizConfigPanel'),
+  active: component(() => import('../room/PokemonCryQuizGame'), 'PokemonCryQuizGame'),
+  results: component(() => import('../room/PokemonCryQuizResults'), 'PokemonCryQuizResults'),
+})).register(clientModule({
+  id: 'pokemon-trivia',
+  config: component(() => import('./pokemon-trivia/ConfigPanel'), 'PokemonTriviaConfigPanel'),
+  active: component(() => import('../room/PokemonTriviaGame'), 'PokemonTriviaGame'),
+  results: component(() => import('../room/PokemonTriviaResults'), 'PokemonTriviaResults'),
+})).register(clientModule({
+  id: 'pokemon-palette-guess',
+  config: component(() => import('./pokemon-palette-guess/ConfigPanel'), 'PokemonPaletteGuessConfigPanel'),
+  active: component(() => import('../room/PokemonPaletteGuessGame'), 'PokemonPaletteGuessGame'),
+  results: component(() => import('../room/PokemonPaletteGuessResults'), 'PokemonPaletteGuessResults'),
+})).register(clientModule({
   id: 'who-is-who-pokemon',
   config: component(() => import('./who-is-who-pokemon/ConfigPanel'), 'WhoIsWhoPokemonConfigPanel'),
   active: component(() => import('../room/WhoIsWhoPokemonGame'), 'WhoIsWhoPokemonGame'),

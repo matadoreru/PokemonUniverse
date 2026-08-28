@@ -61,19 +61,24 @@ export async function loadPokemonCatalog(): Promise<InMemoryPokemonCatalog> {
     prisma.pokedexEntry.findMany({ orderBy: [{ pokemonId: 'asc' }, { generation: 'desc' }, { version: 'asc' }] }),
   ]);
   if (rows.length === 0) throw new Error('Pokémon catalog is empty. Run `npm run db:seed`.');
-  const pokemon = rows.map((row) => ({
-    id: row.id, nationalDexNumber: row.nationalDexNumber, name: row.name,
-    generation: row.generation, isDefault: row.isDefault, sprite: row.sprite,
-    ...(row.metadata && typeof row.metadata === 'object' && !Array.isArray(row.metadata) && typeof row.metadata.shinySprite === 'string' ? { shinySprite: row.metadata.shinySprite } : {}),
-    hp: row.hp, attack: row.attack, defense: row.defense, specialAttack: row.specialAttack,
-    specialDefense: row.specialDefense, speed: row.speed, baseStatTotal: row.baseStatTotal,
-    heightDecimeters: row.heightDecimeters, weightHectograms: row.weightHectograms,
-    ...(row.evolutionStage ? { evolutionStage: row.evolutionStage } : {}),
-    ...(row.evolutionStages ? { evolutionStageCount: row.evolutionStages } : {}),
-    legendaryStatus: row.legendaryStatus as PokemonLegendaryStatus, color: row.color, abilities: row.abilities,
-    ...(row.names && typeof row.names === 'object' ? { names: row.names as Record<string, string> } : {}),
-    types: row.types as PokemonType[],
-  }));
+  const pokemon = rows.map((row) => {
+    const metadata = row.metadata && typeof row.metadata === 'object' && !Array.isArray(row.metadata) ? row.metadata as Record<string, unknown> : {};
+    const palette = Array.isArray(metadata.palette) ? metadata.palette.filter((color): color is string => typeof color === 'string' && /^#[0-9a-f]{6}$/i.test(color)) : [];
+    return {
+      id: row.id, nationalDexNumber: row.nationalDexNumber, name: row.name,
+      generation: row.generation, isDefault: row.isDefault, sprite: row.sprite,
+      ...(typeof metadata.shinySprite === 'string' ? { shinySprite: metadata.shinySprite } : {}),
+      ...(palette.length >= 3 ? { palette } : {}),
+      hp: row.hp, attack: row.attack, defense: row.defense, specialAttack: row.specialAttack,
+      specialDefense: row.specialDefense, speed: row.speed, baseStatTotal: row.baseStatTotal,
+      heightDecimeters: row.heightDecimeters, weightHectograms: row.weightHectograms,
+      ...(row.evolutionStage ? { evolutionStage: row.evolutionStage } : {}),
+      ...(row.evolutionStages ? { evolutionStageCount: row.evolutionStages } : {}),
+      legendaryStatus: row.legendaryStatus as PokemonLegendaryStatus, color: row.color, abilities: row.abilities,
+      ...(row.names && typeof row.names === 'object' ? { names: row.names as Record<string, string> } : {}),
+      types: row.types as PokemonType[],
+    };
+  });
   const moves: Move[] = moveRows.map((move) => ({
     id: move.id, name: move.name, type: move.type as PokemonType, category: move.category as MoveCategory,
     ...(move.names && typeof move.names === 'object' ? { names: move.names as Record<string, string> } : {}),

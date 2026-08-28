@@ -1,5 +1,6 @@
 import type { DataSyncMode, DataSyncSource, PrismaClient } from '@prisma/client';
 import type { DataSyncAdapter, SyncOverviewItem, SyncResult } from './types.js';
+import { countPersistedPokemonPalettes, MIN_PLAYABLE_POKEMON_PALETTES } from './pokemon-palette-sync.js';
 
 const SOURCES: DataSyncSource[] = ['POKEAPI', 'TCGDEX'];
 export class SyncAlreadyRunningError extends Error { status = 409; }
@@ -36,7 +37,8 @@ export class DataSyncService {
   async ensureInitialPokemon(): Promise<void> {
     const adapter = this.requireAdapter('POKEAPI');
     const available = await adapter.recordsAvailable();
-    if (available >= 1_025) {
+    const palettes = available >= 1_025 ? await countPersistedPokemonPalettes() : 0;
+    if (available >= 1_025 && palettes >= MIN_PLAYABLE_POKEMON_PALETTES) {
       await this.db.dataSyncState.upsert({ where: { source: 'POKEAPI' }, create: { source: 'POKEAPI', recordsAvailable: available, datasetVersion: String(available) }, update: { recordsAvailable: available } });
       return;
     }

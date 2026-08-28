@@ -4,6 +4,7 @@ import { prisma } from '../db.js';
 import type { DataSyncAdapter, SyncResult } from './types.js';
 import { SyncHttpClient } from './http-client.js';
 import { desiredAbilitiesFromMetadata, reconcilePokemonRelations } from './pokemon-relation-reconciler.js';
+import { countPersistedPokemonPalettes, MIN_PLAYABLE_POKEMON_PALETTES, syncMissingPokemonPalettes } from './pokemon-palette-sync.js';
 
 export class PokemonDataSync implements DataSyncAdapter {
   readonly source = 'POKEAPI' as const;
@@ -12,11 +13,15 @@ export class PokemonDataSync implements DataSyncAdapter {
   async run(mode: DataSyncMode): Promise<SyncResult> {
     const before = await prisma.pokemon.count();
     if (mode === 'INCREMENTAL') {
-      const remote = await this.http.json<{ count: number }>('https://pokeapi.co/api/v2/pokemon-species?limit=1', 'PokéAPI species version');
-      if (remote.count <= before) return { processed: 0, inserted: 0, updated: 0, skipped: before, datasetVersion: String(remote.count), details: { changeDetected: false } };
+      const paletteCount = await countPersistedPokemonPalettes();
+      if (paletteCount >= MIN_PLAYABLE_POKEMON_PALETTES) {
+        const remote = await this.http.json<{ count: number }>('https://pokeapi.co/api/v2/pokemon-species?limit=1', 'PokéAPI species version');
+        if (remote.count <= before) return { processed: 0, inserted: 0, updated: 0, skipped: before, datasetVersion: String(remote.count), details: { changeDetected: false, paletteCount } };
+      }
     }
     await syncPokemonData({ force: mode === 'FULL' });
     await this.backfillNormalizedData();
+    const palettes = await syncMissingPokemonPalettes(this.http);
     const after = await prisma.pokemon.count();
     return {
       processed: after,
@@ -24,6 +29,7 @@ export class PokemonDataSync implements DataSyncAdapter {
       updated: Math.min(before, after),
       skipped: mode === 'INCREMENTAL' && after === before ? after : 0,
       datasetVersion: String(after),
+      details: { palettes },
     };
   }
 

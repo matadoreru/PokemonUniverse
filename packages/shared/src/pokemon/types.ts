@@ -77,6 +77,8 @@ export interface Pokemon {
   legendaryStatus?: PokemonLegendaryStatus;
   /** Official species colour classification from PokéAPI, never sprite analysis. */
   color?: string;
+  /** Dominant sprite colours extracted and persisted exclusively by DataSync. */
+  palette?: readonly string[];
   /** Official Spanish names for normal and hidden abilities, intentionally kept together. */
   abilities?: string[];
   names?: LocalizedText;

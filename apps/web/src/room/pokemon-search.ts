@@ -1,5 +1,7 @@
 import type { Pokemon } from '@pokemon-universe/shared';
 
+type SearchablePokemon = Pick<Pokemon, 'id' | 'name' | 'sprite'> & Partial<Pick<Pokemon, 'isDefault'>>;
+
 export interface PokemonSearchOption {
   id: string;
   name: string;
@@ -13,7 +15,7 @@ export const normalizePokemonQuery = (value: string): string => value
   .trim();
 
 /** Search results intentionally omit Pokédex number and generation. */
-export function searchPokemonOptions(pokemon: readonly Pokemon[], query: string, limit = 40): PokemonSearchOption[] {
+export function searchPokemonOptions(pokemon: readonly SearchablePokemon[], query: string, limit = 40): PokemonSearchOption[] {
   const needle = normalizePokemonQuery(query);
   if (!needle || limit <= 0) return [];
   const ranked = pokemon

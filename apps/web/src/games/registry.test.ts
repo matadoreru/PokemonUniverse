@@ -18,6 +18,9 @@ describe('client minigame registry', () => {
       'would-you-rather',
       'pokemon-red-flag',
       'tcg-higher-lower',
+      'pokemon-cry-quiz',
+      'pokemon-trivia',
+      'pokemon-palette-guess',
       'who-is-who-pokemon',
     ]);
   });

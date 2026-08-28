@@ -21,6 +21,7 @@ import { apiRouter, registerGameImageResolver, registerPokemonRepository, regist
 import { loadPokemonCatalog } from './pokemon/catalog.js';
 import { CatalogPokemonRepository } from './pokemon/repository.js';
 import { loadPokemonVisualCatalog } from './pokemon/visual-assets.js';
+import { loadPokemonAudioCatalog } from './pokemon/audio-assets.js';
 import { RoomManager } from './rooms/manager.js';
 import { PrismaCustomCategoryRepository } from './categories/prisma-repository.js';
 import { createCustomCategoryRouter } from './categories/routes.js';
@@ -53,7 +54,7 @@ app.use(express.json({ limit: '32kb' }));
 app.use(cookieParser());
 app.use(rateLimit({
   windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false,
-  skip: (req) => /^\/api\/rooms\/[^/]+\/games\/[^/]+\/rounds\/\d+\/options\/[A-F]\/sprite$/.test(req.path),
+  skip: (req) => /^\/api\/rooms\/[^/]+\/games\/[^/]+\/rounds\/\d+\/options\/[^/]+\/(sprite|audio)$/.test(req.path),
 }));
 app.use(optionalAuth);
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 30, skip: (req) => req.path.startsWith('/avatars/') }), authRouter);
@@ -95,13 +96,14 @@ if (env.DATA_SYNC_ENABLED) await dataSync.ensureInitialPokemon();
 await tcgCards.refresh();
 dataSync.onCompleted(async (source) => { if (source === 'TCGDEX') await tcgCards.refresh(); });
 const catalog = await loadPokemonCatalog();
+const pokemonAudio = await loadPokemonAudioCatalog();
 await customCategories.load();
 await userGameConfigs.load();
 await wouldYouRatherPrompts.load();
 registerPokemonRepository(new CatalogPokemonRepository(catalog));
 registerTcgCardCatalog(tcgCards);
 const pokemonVisuals = await loadPokemonVisualCatalog(catalog);
-const rooms = new RoomManager(io, catalog, pokemonVisuals, (userId) => customCategories.enabled(userId), createPrismaRoomAuditSink(), userGameConfigs, (userId) => wouldYouRatherPrompts.enabled(userId), tcgCards);
+const rooms = new RoomManager(io, catalog, pokemonVisuals, (userId) => customCategories.enabled(userId), createPrismaRoomAuditSink(), userGameConfigs, (userId) => wouldYouRatherPrompts.enabled(userId), tcgCards, pokemonAudio);
 roomRegistry.current = rooms;
 customCategories.onChanged((userId) => rooms.updateHostCategories(userId));
 wouldYouRatherPrompts.onChanged((userId) => rooms.updateHostWouldYouRatherPrompts(userId));
@@ -109,7 +111,8 @@ onAvatarUpdated((userId, avatar) => rooms.updateIdentityAvatar(userId, avatar));
 registerGameImageResolver((code, assetToken, roundNumber, optionId) => rooms.gameAsset(code, assetToken, roundNumber, optionId));
 io.on('connection', (socket) => {
   const recentEvents: number[] = [];
-  socket.use((_event, next) => {
+  socket.use(([event], next) => {
+    if (event === 'who-is-who:cursor' || event === 'who-is-who:cursor-clear') { next(); return; }
     const now = Date.now(); while (recentEvents[0] && recentEvents[0] < now - 10_000) recentEvents.shift();
     if (recentEvents.length >= 50) { next(new Error('Rate limit exceeded')); return; }
     recentEvents.push(now); next();

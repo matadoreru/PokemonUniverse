@@ -16,6 +16,7 @@ const pokemon: Pokemon[] = Array.from({ length: 16 }, (_, index) => ({
   name: `Pokémon ${index + 1}`,
   generation: 1,
   sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index + 1}.png`,
+  palette: ['#183048', '#d86048', '#f0c030', '#4878c0', '#78a848', '#d8d8d8'].map((color, colorIndex) => colorIndex === 0 ? `#${(0x183048 + index).toString(16).padStart(6, '0')}` : color),
   hp: 40 + index, attack: 50 + index, defense: 45 + index, specialAttack: 55 + index, specialDefense: 50 + index, speed: 60 + index, baseStatTotal: 300 + index * 6, types: index === 0 ? ['fire'] : index === 1 ? ['water'] : index === 2 ? ['fire', 'water'] : ['normal'],
   heightDecimeters: 5 + index, weightHectograms: 50 + index, evolutionStage: 1, evolutionStageCount: 1,
   legendaryStatus: 'NORMAL', color: 'brown', abilities: ['run-away'],
@@ -194,7 +195,7 @@ describe('room multi-game lifecycle', () => {
     const room = manager.store.get(created.room.code)!;
     (manager as any).join(guestSocket, guest, room.code);
 
-    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['shiny-vote', 'pokemon-impostor', 'type-duel', 'zoomed-pokemon', 'pokemon-team-auction', 'pokemon-red-flag', 'tcg-higher-lower', 'pokedex-distance', 'higher-lower', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokedex-entry-guess', 'type-chain', 'guess-from-stats', 'poke-taboo', 'one-of-us-is-fake', 'pokemon-bluff-auction', 'sketchmon', 'pokemon-connections', 'secret-ranking', 'most-likely-to', 'would-you-rather', 'who-is-who-pokemon']);
+    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['shiny-vote', 'pokemon-impostor', 'type-duel', 'zoomed-pokemon', 'pokemon-team-auction', 'pokemon-red-flag', 'tcg-higher-lower', 'pokemon-cry-quiz', 'pokemon-trivia', 'pokemon-palette-guess', 'pokedex-distance', 'higher-lower', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokedex-entry-guess', 'type-chain', 'guess-from-stats', 'poke-taboo', 'one-of-us-is-fake', 'pokemon-bluff-auction', 'sketchmon', 'pokemon-connections', 'secret-ranking', 'most-likely-to', 'would-you-rather', 'who-is-who-pokemon']);
     expect(room.selectedGameId).toBe('pokedex-distance');
     expect(room.members.size).toBe(2);
 
@@ -264,6 +265,46 @@ describe('room multi-game lifecycle', () => {
     expect(restored.game.currentCard.price).toBeNull(); expect(JSON.stringify(restored)).not.toContain(JSON.stringify(secret));
   });
 
+  it('plays Adivina el Grito with an opaque PostgreSQL-backed audio projection and safe reconnect', () => {
+    const pokemonAudio = {
+      cryFor: (pokemonId: string, version: string) => version === 'LATEST' ? `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${pokemonId}.ogg` : null,
+      pokemonIds: () => pokemon.map(({ id }) => id),
+    };
+    const manager = new RoomManager(io() as any, catalog, undefined, undefined, undefined, undefined, undefined, undefined, pokemonAudio as any);
+    expect((manager as any).pokemonAudio).toBe(pokemonAudio);
+    const host = identity('cry-host', 'Host'); const guest = identity('cry-guest', 'Ana'); const hostSocket = boundSocket('cry-host-socket', host);
+    manager.bind(hostSocket as any); const createAck = vi.fn(); hostSocket.handlers.get('room:create')?.({ maxPlayers: 8 }, createAck); const room = manager.store.roomForPlayer(host.id)!;
+    (manager as any).join(socket('cry-guest-socket'), guest, room.code); (manager as any).selectGame(host.id, 'pokemon-cry-quiz');
+    (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 20, rounds: 1, cryVersion: 'LATEST', includeRegionalForms: false }); startReady(manager, room, host.id);
+    const targetId = room.game!.state.targetPokemonId; const view = (manager as any).view(room, host.id); const serialized = JSON.stringify(view);
+    expect(view.game.cryUrl).toMatch(/\/options\/cry\/audio$/); expect(serialized).not.toContain(targetId); expect(serialized).not.toContain('raw.githubusercontent.com/PokeAPI/cries');
+    expect(manager.gameAsset(room.code, room.game!.state.assetToken, 1, 'cry')).toMatch(/raw\.githubusercontent/);
+    const reconnect = boundSocket('cry-host-reconnected', host); manager.bind(reconnect as any); const restored = reconnect.emit.mock.calls.find(([event]) => event === 'session:restored')?.[1];
+    expect(restored.game.cryUrl).toMatch(/\/audio$/); expect(JSON.stringify(restored)).not.toContain(targetId);
+  });
+
+  it('plays Pokémon Trivia without exposing the correct option through Socket.IO or reconnect', () => {
+    const transport = io(); const manager = new RoomManager(transport as any, catalog);
+    const host = identity('trivia-host', 'Host'); const guest = identity('trivia-guest', 'Ana');
+    const created = (manager as any).create(socket('trivia-host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
+    (manager as any).join(socket('trivia-guest-socket'), guest, room.code); (manager as any).selectGame(host.id, 'pokemon-trivia');
+    (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 20, rounds: 1, optionCount: 3, questionTypes: ['TYPE'] }); startReady(manager, room, host.id);
+    const correctOptionId = room.game!.state.question.correctOptionId; const publicView = (manager as any).view(room, host.id); const serialized = JSON.stringify(publicView);
+    expect(publicView.game.options).toHaveLength(3); expect(serialized).not.toContain('correctOptionId'); expect(serialized).not.toContain('fact');
+    (manager as any).broadcast(room); expect(JSON.stringify(transport.emit.mock.calls)).not.toContain('correctOptionId');
+    const reconnect = boundSocket('trivia-host-reconnected', host); manager.bind(reconnect as any); const restored = reconnect.emit.mock.calls.find(([event]) => event === 'session:restored')?.[1];
+    expect(restored.game.lastRound).toBeNull(); expect(JSON.stringify(restored)).not.toContain('correctOptionId'); expect(correctOptionId).toMatch(/^[A-D]$/);
+  });
+
+  it('plays Adivina por la Paleta without exposing the target through Socket.IO or reconnect', () => {
+    const transport = io(); const manager = new RoomManager(transport as any, catalog); const host = identity('palette-host', 'Host'); const guest = identity('palette-guest', 'Ana');
+    const created = (manager as any).create(socket('palette-host-socket'), host, 8); const room = manager.store.get(created.room.code)!; (manager as any).join(socket('palette-guest-socket'), guest, room.code);
+    (manager as any).selectGame(host.id, 'pokemon-palette-guess'); (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 20, rounds: 1, paletteSize: 5 }); startReady(manager, room, host.id);
+    const target = room.game!.state.targetPokemonId; const view = (manager as any).view(room, host.id); expect(view.game.colors).toHaveLength(5); expect(JSON.stringify(view)).not.toContain(target); expect(JSON.stringify(view)).not.toContain('targetPokemonId');
+    (manager as any).broadcast(room); expect(JSON.stringify(transport.emit.mock.calls)).not.toContain(target);
+    const reconnect = boundSocket('palette-host-reconnected', host); manager.bind(reconnect as any); const restored = reconnect.emit.mock.calls.find(([event]) => event === 'session:restored')?.[1]; expect(restored.game.colors).toHaveLength(5); expect(JSON.stringify(restored)).not.toContain(target);
+  });
+
   it('rejects Members changing games and rejects unknown ids without altering the registry', () => {
     const manager = new RoomManager(io() as any, catalog);
     const host = identity('host', 'Host');
@@ -275,7 +316,7 @@ describe('room multi-game lifecycle', () => {
     expect(() => (manager as any).selectGame(guest.id, 'shiny-vote')).toThrow(/No tienes permiso/);
     expect(() => (manager as any).selectGame(host.id, 'missing-game')).toThrow(/Unknown game/);
     expect(room.selectedGameId).toBe('pokedex-distance');
-    expect(created.room.availableGames).toHaveLength(25);
+    expect(created.room.availableGames).toHaveLength(28);
   });
 
   it('injects the registered host category snapshot without exposing round secrets', () => {
@@ -1048,5 +1089,53 @@ describe('room multi-game lifecycle', () => {
     expect(room.game!.state).toMatchObject({ lastRound: { reason: 'NO_RESPONSE', eliminatedIds: ['carlos'] } });
     expect(room.members.get('carlos')?.role).toBe('SPECTATOR');
     expect(() => (manager as any).action('carlos', { type: 'SELECT_POKEMON', pokemonId: 'pokemon-3' })).toThrow(/Not in a room|cannot act/);
+  });
+
+  it('relays normalized Who Is Who cursors only to teammates with validation and rate limiting', () => {
+    const transport = io(); const manager = new RoomManager(transport as any, catalog);
+    const people = [identity('host', 'Host'), identity('ana', 'Ana'), identity('pepe', 'Pepe')]; const sockets = people.map((person) => socket(`socket-${person.id}`));
+    const created = (manager as any).create(sockets[0], people[0], 8); const room = manager.store.get(created.room.code)!; (manager as any).join(sockets[1], people[1], room.code); (manager as any).join(sockets[2], people[2], room.code);
+    (manager as any).selectGame('host', 'who-is-who-pokemon'); (manager as any).updateConfig('host', { generations: [1], boardSize: 6, includeForms: true, turnSeconds: 40, rounds: 2 }); startReady(manager, room, 'host');
+    const blueIds = room.game!.state.teams.BLUE.playerIds as string[]; const senderId = blueIds[0]!; const teammateId = blueIds[1]!; const rivalId = (room.game!.state.teams.RED.playerIds as string[])[0]!; transport.to.mockClear(); transport.emit.mockClear();
+    (manager as any).updateWhoIsWhoCursor(senderId, room.members.get(senderId)!.socketId, { x: 0.5, y: 0.25 });
+    expect(transport.to).toHaveBeenCalledWith(room.members.get(teammateId)!.socketId); expect(transport.to).not.toHaveBeenCalledWith(room.members.get(rivalId)!.socketId); expect(transport.emit).toHaveBeenCalledWith('who-is-who:cursor', expect.objectContaining({ playerId: senderId, x: 0.5, y: 0.25 }));
+    expect(() => (manager as any).updateWhoIsWhoCursor(senderId, room.members.get(senderId)!.socketId, { x: Infinity, y: 0 })).toThrow(); expect(() => (manager as any).updateWhoIsWhoCursor(senderId, room.members.get(senderId)!.socketId, { x: -1, y: 2 })).toThrow();
+    expect(() => (manager as any).updateWhoIsWhoCursor(senderId, room.members.get(senderId)!.socketId, { x: 0.5, y: 0.5, pokemonId: 'pokemon-1' })).toThrow(/incompleto/);
+    expect(() => (manager as any).updateWhoIsWhoCursor(senderId, room.members.get(senderId)!.socketId, { x: 0.5, y: 0.5, pokemonId: 'missing', cardX: 0.5, cardY: 0.5 })).toThrow(/no está/);
+    for (let index = 1; index < 30; index++) (manager as any).updateWhoIsWhoCursor(senderId, room.members.get(senderId)!.socketId, { x: 0, y: 1 });
+    expect(() => (manager as any).updateWhoIsWhoCursor(senderId, room.members.get(senderId)!.socketId, { x: 0, y: 1 })).toThrow(/Demasiadas/);
+    const spectator = identity('watcher', 'Watcher'); (manager as any).join(socket('socket-watcher'), spectator, room.code); expect(() => (manager as any).updateWhoIsWhoCursor(spectator.id, 'socket-watcher', { x: 0.5, y: 0.5 })).toThrow(/No puedes compartir/);
+  });
+
+  it('builds team-private Who Is Who socket projections for players, teammates, rivals and spectators', () => {
+    const manager = new RoomManager(io() as any, catalog);
+    const people = [identity('host', 'Host'), identity('ana', 'Ana'), identity('pepe', 'Pepe'), identity('eru', 'Eru')];
+    const created = (manager as any).create(socket('socket-host'), people[0], 8); const room = manager.store.get(created.room.code)!;
+    for (const person of people.slice(1)) (manager as any).join(socket(`socket-${person.id}`), person, room.code);
+    (manager as any).selectGame('host', 'who-is-who-pokemon');
+    (manager as any).updateConfig('host', { generations: [1], boardSize: 6, includeForms: true, turnSeconds: 40, rounds: 2 });
+    startReady(manager, room, 'host');
+    const blueIds = room.game!.state.teams.BLUE.playerIds as string[]; const redIds = room.game!.state.teams.RED.playerIds as string[];
+    const blueSecret = room.game!.state.teams.BLUE.secretPokemonId; const redSecret = room.game!.state.teams.RED.secretPokemonId; const discardedId = room.game!.state.board[0].id;
+    (manager as any).action(blueIds[0]!, { type: 'TOGGLE_DISCARD', pokemonId: discardedId });
+    const blueView = (manager as any).view(room, blueIds[0]!); const teammateView = (manager as any).view(room, blueIds[1]!); const redView = (manager as any).view(room, redIds[0]!);
+    const watcher = identity('watcher', 'Watcher'); (manager as any).join(socket('socket-watcher'), watcher, room.code); const spectatorView = (manager as any).view(room, watcher.id);
+
+    expect(blueView.gamePlayerState).toMatchObject({ team: 'BLUE', ownSecret: { id: blueSecret }, discardedPokemonIds: [discardedId] });
+    expect(teammateView.gamePlayerState).toMatchObject({ team: 'BLUE', ownSecret: { id: blueSecret }, discardedPokemonIds: [discardedId] });
+    expect(redView.gamePlayerState).toMatchObject({ team: 'RED', ownSecret: { id: redSecret }, discardedPokemonIds: [] });
+    expect(spectatorView.gamePlayerState).toMatchObject({ role: 'SPECTATOR', ownSecret: null, discardedPokemonIds: [] });
+    for (const view of [blueView, teammateView, redView, spectatorView]) {
+      expect(JSON.stringify(view)).not.toContain('secretPokemonId');
+      expect(view.game.revealedSecrets).toEqual({ BLUE: null, RED: null });
+    }
+  });
+
+  it('clears ephemeral Who Is Who cursors on disconnect and round change', () => {
+    const transport = io(); const manager = new RoomManager(transport as any, catalog); const host = identity('host', 'Host'); const peer = identity('peer', 'Peer'); const rival = identity('rival', 'Rival');
+    const created = (manager as any).create(socket('socket-host'), host, 8); const room = manager.store.get(created.room.code)!; (manager as any).join(socket('socket-peer'), peer, room.code); (manager as any).join(socket('socket-rival'), rival, room.code); (manager as any).selectGame(host.id, 'who-is-who-pokemon'); (manager as any).updateConfig(host.id, { generations: [1], boardSize: 6, includeForms: true, turnSeconds: 40, rounds: 2 }); startReady(manager, room, host.id);
+    const blue = room.game!.state.teams.BLUE.playerIds as string[]; const sender = blue[0]!; const teammate = blue[1]!; (manager as any).updateWhoIsWhoCursor(sender, room.members.get(sender)!.socketId, { x: 0.2, y: 0.8 }); transport.emit.mockClear();
+    (manager as any).disconnect(sender, room.members.get(sender)!.socketId); expect(transport.emit).toHaveBeenCalledWith('who-is-who:cursor-clear', { playerId: sender });
+    room.members.get(sender)!.connected = true; room.members.get(sender)!.presence = 'CONNECTED'; transport.emit.mockClear(); const blueActor = room.game!.state.teams.BLUE.playerIds.find((id: string) => room.members.get(id)?.presence === 'CONNECTED')!; (manager as any).action(blueActor, { type: 'END_TURN' }); const redActor = (room.game!.state.teams.RED.playerIds as string[])[0]!; (manager as any).action(redActor, { type: 'END_TURN' }); expect(transport.emit).toHaveBeenCalledWith('who-is-who:cursors-reset'); expect(teammate).toBeTruthy();
   });
 });

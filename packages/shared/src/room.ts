@@ -148,6 +148,8 @@ export interface ClientToServerEvents {
   'room:return-lobby': (_: unknown, ack: SocketAck) => void;
   'room:end-session': (_: unknown, ack: SocketAck) => void;
   'game:action': (payload: unknown, ack: SocketAck) => void;
+  'who-is-who:cursor': (payload: unknown, ack?: SocketAck) => void;
+  'who-is-who:cursor-clear': (_: unknown, ack?: SocketAck) => void;
 }
 
 export interface ServerToClientEvents {
@@ -155,6 +157,9 @@ export interface ServerToClientEvents {
   'room:kicked': (reason: string) => void;
   'session:restored': (room: RoomView) => void;
   'error:message': (message: string) => void;
+  'who-is-who:cursor': (cursor: import('./games/who-is-who-pokemon/types.js').WhoIsWhoCursorEvent) => void;
+  'who-is-who:cursor-clear': (payload: { playerId: string }) => void;
+  'who-is-who:cursors-reset': () => void;
 }
 
 export type SocketAck<T = Record<string, never>> = (response: ({ ok: true } & T) | { ok: false; error: string }) => void;

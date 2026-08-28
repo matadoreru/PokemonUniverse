@@ -4,7 +4,7 @@ import { CatalogPokemonRepository, parsePokemonSearchQuery } from './repository.
 
 const entries: Pokemon[] = [
   { id: 'form', nationalDexNumber: 1, name: 'Forma', generation: 1, isDefault: false, sprite: '', hp: 1, attack: 1, defense: 1, specialAttack: 1, specialDefense: 1, speed: 1, baseStatTotal: 6, types: ['normal'] },
-  { id: 'default', nationalDexNumber: 1, name: 'Base', generation: 1, isDefault: true, sprite: '', hp: 1, attack: 1, defense: 1, specialAttack: 1, specialDefense: 1, speed: 1, baseStatTotal: 6, types: ['normal'] },
+  { id: 'default', nationalDexNumber: 1, name: 'Base', generation: 1, isDefault: true, sprite: '', palette: ['#102030', '#405060', '#708090'], hp: 1, attack: 1, defense: 1, specialAttack: 1, specialDefense: 1, speed: 1, baseStatTotal: 6, types: ['normal'] },
 ];
 const catalog: PokemonCatalog = {
   all: () => entries,
@@ -18,6 +18,7 @@ describe('PokemonRepository', () => {
     expect(parsePokemonSearchQuery({ generations: '1,1,20,nope', includeForms: 'true' })).toEqual({ generations: [1], includeForms: true });
     const repository = new CatalogPokemonRepository(catalog);
     expect(repository.search({ generations: [1], includeForms: false }).map((entry) => entry.id)).toEqual(['default']);
+    expect(repository.search({ generations: [1], includeForms: false })[0]).not.toHaveProperty('palette');
     expect(repository.search({ generations: [1], includeForms: true }).map((entry) => entry.id)).toEqual(['default', 'form']);
   });
 });

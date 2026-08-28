@@ -18,11 +18,21 @@ export class SyncHttpClient {
   }
 
   async json<T>(url: string, label: string): Promise<T> {
+    const response = await this.request(url, label, 'application/json');
+    return response.json() as Promise<T>;
+  }
+
+  async bytes(url: string, label: string): Promise<Uint8Array> {
+    const response = await this.request(url, label, 'image/*');
+    return new Uint8Array(await response.arrayBuffer());
+  }
+
+  private async request(url: string, label: string, accept: string): Promise<Response> {
     let lastError: unknown;
     for (let attempt = 1; attempt <= this.attempts; attempt += 1) {
       try {
-        const response = await this.fetcher(url, { headers: { Accept: 'application/json', 'User-Agent': 'PokemonUniverse-DataSync/1.0' } });
-        if (response.ok) return response.json() as Promise<T>;
+        const response = await this.fetcher(url, { headers: { Accept: accept, 'User-Agent': 'PokemonUniverse-DataSync/1.0' } });
+        if (response.ok) return response;
         lastError = new Error(`${label} returned HTTP ${response.status}`);
         if (response.status < 500 && response.status !== 429) throw lastError;
         const retryAfter = Number(response.headers.get('retry-after'));

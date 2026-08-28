@@ -1,4 +1,4 @@
-import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, isSessionComplete, roomCodeSchema, sessionModeSchema, supportsPlayerCount, validateGameConfigReadiness, type AdminActiveRoom, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck, type SubjectiveCategory, type TcgCardCatalog, type WouldYouRatherPromptPair } from '@pokemon-universe/shared';
+import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, isSessionComplete, roomCodeSchema, sessionModeSchema, supportsPlayerCount, validateGameConfigReadiness, whoIsWhoCursorPositionSchema, type AdminActiveRoom, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonAudioCatalog, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck, type SubjectiveCategory, type TcgCardCatalog, type WhoIsWhoTeam, type WouldYouRatherPromptPair } from '@pokemon-universe/shared';
 import { randomInt, randomUUID } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 import type { Server, Socket } from 'socket.io';
@@ -25,6 +25,7 @@ function roomCode(): string {
 
 export class RoomManager {
   readonly store = new InMemoryRoomStore();
+  private readonly cursorRate = new Map<string, { startedAt: number; count: number }>();
   constructor(
     private readonly io: GameServer,
     private readonly pokemon: PokemonCatalog,
@@ -34,6 +35,7 @@ export class RoomManager {
     private readonly userGameConfigs: UserGameConfigPreferences = noOpUserGameConfigPreferences,
     private readonly wouldYouRatherPromptsForUser: (userId: string) => readonly WouldYouRatherPromptPair[] = () => [],
     private readonly tcgCards?: TcgCardCatalog,
+    private readonly pokemonAudio?: PokemonAudioCatalog,
   ) {}
 
   bind(socket: GameSocket): void {
@@ -63,12 +65,18 @@ export class RoomManager {
     socket.on('room:return-lobby', (_payload, ack) => currentSocket(ack, () => this.returnLobby(identity.id)));
     socket.on('room:end-session', (_payload, ack) => currentSocket(ack, () => this.endSession(identity.id)));
     socket.on('game:action', (payload, ack) => currentSocket(ack, () => this.action(identity.id, payload)));
+    socket.on('who-is-who:cursor', (payload, ack) => this.cursorEvent(ack, () => this.updateWhoIsWhoCursor(identity.id, socket.id, payload)));
+    socket.on('who-is-who:cursor-clear', (_payload, ack) => this.cursorEvent(ack, () => this.clearWhoIsWhoCursor(identity.id, socket.id)));
     socket.on('disconnect', () => this.disconnect(identity.id, socket.id));
   }
 
   private guard<T = Record<string, never>>(ack: SocketAck<T> | undefined, operation: () => T): void {
     if (typeof ack !== 'function') return;
     try { ack({ ok: true, ...operation() }); } catch (error) { ack({ ok: false, error: error instanceof Error ? error.message : 'Unexpected error' }); }
+  }
+
+  private cursorEvent(ack: SocketAck | undefined, operation: () => void): void {
+    try { operation(); ack?.({ ok: true } as Parameters<SocketAck>[0]); } catch (error) { ack?.({ ok: false, error: error instanceof Error ? error.message : 'Cursor rechazado' }); }
   }
 
   private assertActiveSocket(playerId: string, socketId: string): void {
@@ -174,6 +182,7 @@ export class RoomManager {
   private disconnect(playerId: string, socketId: string): void {
     const room = this.store.roomForPlayer(playerId); const member = room?.members.get(playerId);
     if (!room || !member || member.socketId !== socketId) return;
+    this.clearWhoIsWhoCursor(playerId, socketId, false);
     markTemporarilyDisconnected(member);
     this.applyPresenceChange(room);
     member.disconnectTimer = setTimeout(() => this.finalDisconnect(room, playerId, false), env.RECONNECT_GRACE_MS);
@@ -182,6 +191,7 @@ export class RoomManager {
   private finalDisconnect(room: LiveRoom, playerId: string, explicit: boolean): void {
     const member = room.members.get(playerId); if (!member) return;
     if (!explicit && member.connected) return;
+    this.clearWhoIsWhoCursor(playerId, member.socketId, false);
     markLeft(member);
     const retainedByLiveGame = gameRetainsPlayer(room, playerId);
     if (!retainedByLiveGame) room.members.delete(playerId);
@@ -356,7 +366,7 @@ export class RoomManager {
     const module = gameRegistry.get(room.selectedGameId)!;
     if (players.length < module.manifest.minPlayers) throw new Error(`Se necesitan al menos ${module.manifest.minPlayers} jugadores.`);
     if (module.manifest.maxPlayers && players.length > module.manifest.maxPlayers) throw new Error(`Este juego admite un máximo de ${module.manifest.maxPlayers} jugadores.`);
-    const context = { players, pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, tcgCards: this.tcgCards, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage, hostCustomCategories: this.hostCustomCategories(room), hostWouldYouRatherPrompts: this.hostWouldYouRatherPrompts(room) };
+    const context = { players, pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, ...(this.pokemonAudio ? { pokemonAudio: this.pokemonAudio } : {}), tcgCards: this.tcgCards, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage, hostCustomCategories: this.hostCustomCategories(room), hostWouldYouRatherPrompts: this.hostWouldYouRatherPrompts(room) };
     const config = module.configSchema.parse(room.gameConfigs.get(room.selectedGameId));
     const configReason = validateGameConfigReadiness(module.manifest.id, config, {
       hostCustomCategoryCount: context.hostCustomCategories.length,
@@ -372,6 +382,7 @@ export class RoomManager {
       gameId: module.manifest.id, playerCount: players.length, config, startedAt: context.now,
     });
     room.game = { resultId, gameId: module.manifest.id, participantIds: players.map((player) => player.id), module, config, state, startedAt: context.now, resultsApplied: false, auditReady };
+    this.resetWhoIsWhoCursors(room);
     room.phase = state.phase; this.syncAndBroadcast(room);
   }
 
@@ -383,9 +394,10 @@ export class RoomManager {
     if (!member || member.presence !== 'CONNECTED' || member.role !== 'PLAYER') throw new Error('You cannot act in the current game');
     const context = this.context(room);
     const action = game.module.actionSchema.parse(payload);
-    const result = game.module.handleAction(game.state, playerId, action, context);
+    const previousRound = game.state.roundNumber; const result = game.module.handleAction(game.state, playerId, action, context);
     game.state = result.state;
     if (!result.accepted) throw new Error(result.error ?? 'Action rejected');
+    if (game.gameId === 'who-is-who-pokemon' && (game.state.roundNumber !== previousRound || game.module.isFinished(game.state))) this.resetWhoIsWhoCursors(room);
     this.syncAndBroadcast(room); return {};
   }
 
@@ -450,7 +462,8 @@ export class RoomManager {
     }
     if (room.phase === 'LOBBY' || room.phase === 'GAME_RESULTS' || room.phase === 'SESSION_RESULTS') return;
     if (!room.game) return;
-    room.game.state = room.game.module.handleTimeout(room.game.state, this.context(room));
+    const previousRound = room.game.state.roundNumber; room.game.state = room.game.module.handleTimeout(room.game.state, this.context(room));
+    if (room.game.gameId === 'who-is-who-pokemon' && (room.game.state.roundNumber !== previousRound || room.game.module.isFinished(room.game.state))) this.resetWhoIsWhoCursors(room);
     this.syncAndBroadcast(room);
   }
 
@@ -484,6 +497,7 @@ export class RoomManager {
   }
 
   private finishGame(room: LiveRoom): void {
+    this.resetWhoIsWhoCursors(room);
     const game = room.game!; game.resultsApplied = true; room.gamesPlayed += 1;
     const results = game.module.getResults(game.state);
     for (const standing of results.standings) {
@@ -507,6 +521,37 @@ export class RoomManager {
     void game.auditReady.catch((error) => console.error('Failed to persist game start', error))
       .then(() => persistGameResults(room, results, game.resultId, game.startedAt, game.gameId, game.config))
       .catch((error) => console.error('Failed to persist game results', error));
+  }
+
+  private whoIsWhoTeam(room: LiveRoom, playerId: string): WhoIsWhoTeam | null {
+    if (room.game?.gameId !== 'who-is-who-pokemon' || room.phase !== 'TURN_ACTIVE') return null;
+    const teams = room.game.state.teams as Record<WhoIsWhoTeam, { playerIds: string[] }>;
+    return teams.BLUE.playerIds.includes(playerId) ? 'BLUE' : teams.RED.playerIds.includes(playerId) ? 'RED' : null;
+  }
+
+  private updateWhoIsWhoCursor(playerId: string, socketId: string, payload: unknown): void {
+    this.assertActiveSocket(playerId, socketId); const room = this.requiredRoom(playerId); const member = room.members.get(playerId);
+    const team = this.whoIsWhoTeam(room, playerId);
+    if (!team || !member || member.presence !== 'CONNECTED' || member.role !== 'PLAYER') throw new Error('No puedes compartir cursor en este momento.');
+    const position = whoIsWhoCursorPositionSchema.parse(payload);
+    if (position.pokemonId && !(room.game!.state.board as Array<{ id: string }>).some((pokemon) => pokemon.id === position.pokemonId)) throw new Error('Ese Pokémon no está en el tablero.');
+    const now = Date.now(); const key = `${room.code}:${playerId}`; const rate = this.cursorRate.get(key);
+    if (!rate || now - rate.startedAt >= 1_000) this.cursorRate.set(key, { startedAt: now, count: 1 });
+    else { if (rate.count >= 30) throw new Error('Demasiadas actualizaciones de cursor.'); rate.count += 1; }
+    const teamIds = (room.game!.state.teams as Record<WhoIsWhoTeam, { playerIds: string[] }>)[team].playerIds;
+    for (const teammateId of teamIds) { if (teammateId === playerId) continue; const target = room.members.get(teammateId); if (target?.presence === 'CONNECTED' && target.socketId) this.io.to(target.socketId).emit('who-is-who:cursor', { playerId, ...position, updatedAt: now }); }
+  }
+
+  private clearWhoIsWhoCursor(playerId: string, socketId: string | null, validateSocket = true): void {
+    if (validateSocket && socketId) this.assertActiveSocket(playerId, socketId); const room = this.store.roomForPlayer(playerId); if (!room) return;
+    const team = this.whoIsWhoTeam(room, playerId); this.cursorRate.delete(`${room.code}:${playerId}`); if (!team) return;
+    const teamIds = (room.game!.state.teams as Record<WhoIsWhoTeam, { playerIds: string[] }>)[team].playerIds;
+    for (const teammateId of teamIds) { if (teammateId === playerId) continue; const target = room.members.get(teammateId); if (target?.socketId) this.io.to(target.socketId).emit('who-is-who:cursor-clear', { playerId }); }
+  }
+
+  private resetWhoIsWhoCursors(room: LiveRoom): void {
+    for (const key of this.cursorRate.keys()) if (key.startsWith(`${room.code}:`)) this.cursorRate.delete(key);
+    for (const member of room.members.values()) if (member.socketId) this.io.to(member.socketId).emit('who-is-who:cursors-reset');
   }
 
   private resetToLobby(room: LiveRoom, resetSession: boolean): void {
@@ -584,7 +629,7 @@ export class RoomManager {
       displayName: member.identity.displayName,
       connected: member.presence === 'CONNECTED',
       active: member.role === 'PLAYER' && member.presence !== 'LEFT',
-    })), pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, tcgCards: this.tcgCards, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage, hostCustomCategories: this.hostCustomCategories(room), hostWouldYouRatherPrompts: this.hostWouldYouRatherPrompts(room) };
+    })), pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, ...(this.pokemonAudio ? { pokemonAudio: this.pokemonAudio } : {}), tcgCards: this.tcgCards, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage, hostCustomCategories: this.hostCustomCategories(room), hostWouldYouRatherPrompts: this.hostWouldYouRatherPrompts(room) };
   }
 
   private hostCustomCategories(room: LiveRoom): readonly SubjectiveCategory[] {

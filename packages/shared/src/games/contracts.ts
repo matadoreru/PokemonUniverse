@@ -63,10 +63,18 @@ export interface GameContext {
   preloadImage?: (source: string) => void;
   /** Server-owned visual sources. Local artwork paths never enter public game state. */
   pokemonVisuals?: PokemonVisualCatalog;
+  /** PostgreSQL-backed cry references. Raw source URLs never enter game projections. */
+  pokemonAudio?: PokemonAudioCatalog;
   /** Enabled, persistent categories owned by the current room host. */
   hostCustomCategories?: readonly SubjectiveCategory[];
   /** Enabled, persistent Would You Rather pairs owned by the current room host. */
   hostWouldYouRatherPrompts?: readonly WouldYouRatherPromptPair[];
+}
+
+export type PokemonCryVersion = 'LATEST' | 'LEGACY';
+export interface PokemonAudioCatalog {
+  cryFor(pokemonId: string, version: PokemonCryVersion): string | null;
+  pokemonIds(version?: PokemonCryVersion): readonly string[];
 }
 
 export interface SubjectiveCategory {

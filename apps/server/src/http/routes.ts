@@ -72,3 +72,17 @@ apiRouter.get('/rooms/:code/games/:assetToken/rounds/:roundNumber/options/:optio
     res.send(image.body);
   } catch (error) { next(error); }
 });
+
+apiRouter.get('/rooms/:code/games/:assetToken/rounds/:roundNumber/options/:optionId/audio', gameImageRateLimit, async (req, res, next) => {
+  try {
+    const roundNumber = Number(req.params.roundNumber);
+    if (!gameImageResolver || !Number.isInteger(roundNumber)) { res.status(404).end(); return; }
+    const source = gameImageResolver(routeParam(req.params.code), routeParam(req.params.assetToken), roundNumber, routeParam(req.params.optionId));
+    if (!source) { res.status(404).end(); return; }
+    const audio = await loadGameImage(source);
+    if (!/^(audio\/|application\/ogg)/.test(audio.contentType)) { res.status(415).end(); return; }
+    res.type(audio.contentType);
+    res.set('Cache-Control', 'private, max-age=86400, immutable');
+    res.send(audio.body);
+  } catch (error) { next(error); }
+});

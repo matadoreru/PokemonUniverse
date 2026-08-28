@@ -24,6 +24,9 @@ import { wouldYouRatherGame } from './would-you-rather/server.js';
 import { pokemonRedFlagGame } from './pokemon-red-flag/server.js';
 import { whoIsWhoPokemonGame } from './who-is-who-pokemon/server.js';
 import { tcgHigherLowerGame } from './tcg-higher-lower/server.js';
+import { pokemonCryQuizGame } from './pokemon-cry-quiz/server.js';
+import { pokemonTriviaGame } from './pokemon-trivia/server.js';
+import { pokemonPaletteGuessGame } from './pokemon-palette-guess/server.js';
 
 export type RegisteredGame = MiniGameModule<any, any, any, any>;
 
@@ -69,4 +72,7 @@ export const gameRegistry = new GameRegistry()
   .register(wouldYouRatherGame)
   .register(pokemonRedFlagGame)
   .register(tcgHigherLowerGame)
+  .register(pokemonCryQuizGame)
+  .register(pokemonTriviaGame)
+  .register(pokemonPaletteGuessGame)
   .register(whoIsWhoPokemonGame);
