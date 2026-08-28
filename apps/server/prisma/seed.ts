@@ -38,7 +38,7 @@ interface PokeApiPokemon {
   types: Array<{ slot: number; type: { name: string } }>;
   height: number;
   weight: number;
-  abilities: Array<{ ability: { name: string; url: string }; is_hidden: boolean }>;
+  abilities: Array<{ ability: { name: string; url: string }; is_hidden: boolean; slot: number }>;
   moves: Array<{ move: { name: string; url: string }; version_group_details: PokeApiVersionDetail[] }>;
 }
 
@@ -156,6 +156,11 @@ function toEntry(pokemon: PokeApiPokemon, isDefault: boolean, species: PokeApiSp
   const stats = Object.fromEntries(pokemon.stats.map((entry) => [entry.stat.name, entry.base_stat]));
   const hp = stats.hp ?? 0; const attack = stats.attack ?? 0; const defense = stats.defense ?? 0;
   const specialAttack = stats['special-attack'] ?? 0; const specialDefense = stats['special-defense'] ?? 0; const speed = stats.speed ?? 0;
+  const abilityRelations = [...pokemon.abilities].sort((left, right) => left.slot - right.slot).map((entry) => {
+    const name = spanishAbilityNames.get(entry.ability.name);
+    if (!name) throw new Error(`Missing Spanish ability name for ${entry.ability.name}`);
+    return { id: entry.ability.name, name, slot: entry.slot, isHidden: entry.is_hidden };
+  });
   return {
     id: pokemon.name, nationalDexNumber, name: isDefault ? displayName(pokemon.species.name) : regionalDisplayName(pokemon), generation: generationFor(nationalDexNumber), isDefault,
     sprite: pokemon.sprites.front_default ?? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
@@ -165,11 +170,7 @@ function toEntry(pokemon: PokeApiPokemon, isDefault: boolean, species: PokeApiSp
     heightDecimeters: pokemon.height, weightHectograms: pokemon.weight,
     legendaryStatus: species.is_mythical ? 'MYTHICAL' : species.is_legendary ? 'LEGENDARY' : 'NORMAL',
     color: species.color.name,
-    abilities: [...new Set(pokemon.abilities.map((entry) => {
-      const spanishName = spanishAbilityNames.get(entry.ability.name);
-      if (!spanishName) throw new Error(`Missing Spanish ability name for ${entry.ability.name}`);
-      return spanishName;
-    }))].sort((left, right) => left.localeCompare(right, 'es')),
+    abilities: [...new Set(abilityRelations.map((entry) => entry.name))],
     metadata: {
       pokeApiId: pokemon.id,
       species: pokemon.species.name,
@@ -177,6 +178,7 @@ function toEntry(pokemon: PokeApiPokemon, isDefault: boolean, species: PokeApiSp
       artwork: pokemon.sprites.other?.['official-artwork']?.front_default ?? null,
       homeArtwork: pokemon.sprites.other?.home?.front_default ?? null,
       shinySprite: pokemon.sprites.front_shiny ?? null,
+      abilityRelations,
     },
     sourceUpdatedAt: new Date(),
   };
@@ -265,16 +267,20 @@ async function syncEvolution(defaultPokemon: PokeApiPokemon[], species: PokeApiS
     // A terminal member of a short branch is still normalized as "final" even
     // when another branch in the same family contains an extra intermediate.
     const normalizedStage = (children.get(entry.name)?.length ?? 0) === 0 ? stages : stage(entry.name);
-    return prisma.pokemon.update({ where: { id: pokemonId }, data: { evolutionStage: normalizedStage, evolutionStages: stages } });
+    return [{ pokemonId, evolutionStage: normalizedStage, evolutionStages: stages }];
   });
-  for (let start = 0; start < updates.length; start += 100) await prisma.$transaction(updates.slice(start, start + 100));
   const edges = species.flatMap((entry) => {
     const from = entry.evolves_from_species?.name; const to = pokemonIdBySpecies.get(entry.name); const fromId = from ? pokemonIdBySpecies.get(from) : undefined;
     if (!fromId || !to) return [];
     const chainId = Number(/\/(\d+)\/?$/.exec(entry.evolution_chain?.url ?? '')?.[1]) || entry.id;
     return [{ id: `${chainId}:${fromId}:${to}`, chainId, fromPokemonId: fromId, toPokemonId: to }];
   });
-  for (let start = 0; start < edges.length; start += 500) await prisma.pokemonEvolution.createMany({ data: edges.slice(start, start + 500), skipDuplicates: true });
+  const synchronizedPokemonIds = [...pokemonIdBySpecies.values()];
+  await prisma.$transaction(async (transaction) => {
+    for (const update of updates) await transaction.pokemon.update({ where: { id: update.pokemonId }, data: { evolutionStage: update.evolutionStage, evolutionStages: update.evolutionStages } });
+    await transaction.pokemonEvolution.deleteMany({ where: { OR: [{ fromPokemonId: { in: synchronizedPokemonIds } }, { toPokemonId: { in: synchronizedPokemonIds } }] } });
+    for (let start = 0; start < edges.length; start += 500) await transaction.pokemonEvolution.createMany({ data: edges.slice(start, start + 500), skipDuplicates: true });
+  }, { timeout: 120_000 });
   console.info(`Seeded evolution position for ${updates.length} Pokémon.`);
 }
 
@@ -284,12 +290,15 @@ async function syncNormalizedSpecies(species: PokeApiSpecies[]): Promise<void> {
   for (const entry of species) {
     const generationId = generationFor(entry.id);
     const evolutionChainId = Number(/\/(\d+)\/?$/.exec(entry.evolution_chain?.url ?? '')?.[1]) || null;
-    await prisma.pokemonSpecies.upsert({
-      where: { id: entry.id },
-      create: { id: entry.id, slug: entry.name, generationId, name: displayName(entry.name), names: Object.fromEntries(entry.names.map((name) => [name.language.name, name.name])), color: entry.color.name, shape: entry.shape?.name ?? null, habitat: entry.habitat?.name ?? null, growthRate: entry.growth_rate?.name ?? null, genderRate: entry.gender_rate ?? null, captureRate: entry.capture_rate ?? null, baseHappiness: entry.base_happiness ?? null, hatchCounter: entry.hatch_counter ?? null, isBaby: entry.is_baby ?? false, isLegendary: entry.is_legendary, isMythical: entry.is_mythical, hasGenderDifferences: entry.has_gender_differences ?? false, formsSwitchable: entry.forms_switchable ?? false, evolvesFromSpeciesId: entry.evolves_from_species ? speciesByNameId(species, entry.evolves_from_species.name) : null, evolutionChainId, metadata: { source: 'pokeapi' } },
-      update: { generationId, names: Object.fromEntries(entry.names.map((name) => [name.language.name, name.name])), color: entry.color.name, shape: entry.shape?.name ?? null, habitat: entry.habitat?.name ?? null, growthRate: entry.growth_rate?.name ?? null, genderRate: entry.gender_rate ?? null, captureRate: entry.capture_rate ?? null, baseHappiness: entry.base_happiness ?? null, hatchCounter: entry.hatch_counter ?? null, isBaby: entry.is_baby ?? false, isLegendary: entry.is_legendary, isMythical: entry.is_mythical, hasGenderDifferences: entry.has_gender_differences ?? false, formsSwitchable: entry.forms_switchable ?? false, evolvesFromSpeciesId: entry.evolves_from_species ? speciesByNameId(species, entry.evolves_from_species.name) : null, evolutionChainId },
+    await prisma.$transaction(async (transaction) => {
+      await transaction.pokemonSpecies.upsert({
+        where: { id: entry.id },
+        create: { id: entry.id, slug: entry.name, generationId, name: displayName(entry.name), names: Object.fromEntries(entry.names.map((name) => [name.language.name, name.name])), color: entry.color.name, shape: entry.shape?.name ?? null, habitat: entry.habitat?.name ?? null, growthRate: entry.growth_rate?.name ?? null, genderRate: entry.gender_rate ?? null, captureRate: entry.capture_rate ?? null, baseHappiness: entry.base_happiness ?? null, hatchCounter: entry.hatch_counter ?? null, isBaby: entry.is_baby ?? false, isLegendary: entry.is_legendary, isMythical: entry.is_mythical, hasGenderDifferences: entry.has_gender_differences ?? false, formsSwitchable: entry.forms_switchable ?? false, evolvesFromSpeciesId: entry.evolves_from_species ? speciesByNameId(species, entry.evolves_from_species.name) : null, evolutionChainId, metadata: { source: 'pokeapi' } },
+        update: { generationId, names: Object.fromEntries(entry.names.map((name) => [name.language.name, name.name])), color: entry.color.name, shape: entry.shape?.name ?? null, habitat: entry.habitat?.name ?? null, growthRate: entry.growth_rate?.name ?? null, genderRate: entry.gender_rate ?? null, captureRate: entry.capture_rate ?? null, baseHappiness: entry.base_happiness ?? null, hatchCounter: entry.hatch_counter ?? null, isBaby: entry.is_baby ?? false, isLegendary: entry.is_legendary, isMythical: entry.is_mythical, hasGenderDifferences: entry.has_gender_differences ?? false, formsSwitchable: entry.forms_switchable ?? false, evolvesFromSpeciesId: entry.evolves_from_species ? speciesByNameId(species, entry.evolves_from_species.name) : null, evolutionChainId },
+      });
+      await transaction.pokemonPokedexNumber.deleteMany({ where: { speciesId: entry.id } });
+      await transaction.pokemonPokedexNumber.createMany({ data: (entry.pokedex_numbers ?? []).map((item) => ({ speciesId: entry.id, pokedex: item.pokedex.name, entryNumber: item.entry_number })), skipDuplicates: true });
     });
-    await prisma.pokemonPokedexNumber.createMany({ data: (entry.pokedex_numbers ?? []).map((item) => ({ speciesId: entry.id, pokedex: item.pokedex.name, entryNumber: item.entry_number })), skipDuplicates: true });
   }
 }
 

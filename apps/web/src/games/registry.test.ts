@@ -17,6 +17,7 @@ describe('client minigame registry', () => {
       'most-likely-to',
       'would-you-rather',
       'pokemon-red-flag',
+      'tcg-higher-lower',
       'who-is-who-pokemon',
     ]);
   });

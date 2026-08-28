@@ -1,4 +1,4 @@
-import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, isSessionComplete, roomCodeSchema, sessionModeSchema, supportsPlayerCount, validateGameConfigReadiness, type AdminActiveRoom, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck, type SubjectiveCategory, type WouldYouRatherPromptPair } from '@pokemon-universe/shared';
+import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, isSessionComplete, roomCodeSchema, sessionModeSchema, supportsPlayerCount, validateGameConfigReadiness, type AdminActiveRoom, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck, type SubjectiveCategory, type TcgCardCatalog, type WouldYouRatherPromptPair } from '@pokemon-universe/shared';
 import { randomInt, randomUUID } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 import type { Server, Socket } from 'socket.io';
@@ -33,6 +33,7 @@ export class RoomManager {
     private readonly audit: RoomAuditSink = noOpRoomAuditSink,
     private readonly userGameConfigs: UserGameConfigPreferences = noOpUserGameConfigPreferences,
     private readonly wouldYouRatherPromptsForUser: (userId: string) => readonly WouldYouRatherPromptPair[] = () => [],
+    private readonly tcgCards?: TcgCardCatalog,
   ) {}
 
   bind(socket: GameSocket): void {
@@ -355,7 +356,7 @@ export class RoomManager {
     const module = gameRegistry.get(room.selectedGameId)!;
     if (players.length < module.manifest.minPlayers) throw new Error(`Se necesitan al menos ${module.manifest.minPlayers} jugadores.`);
     if (module.manifest.maxPlayers && players.length > module.manifest.maxPlayers) throw new Error(`Este juego admite un máximo de ${module.manifest.maxPlayers} jugadores.`);
-    const context = { players, pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage, hostCustomCategories: this.hostCustomCategories(room), hostWouldYouRatherPrompts: this.hostWouldYouRatherPrompts(room) };
+    const context = { players, pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, tcgCards: this.tcgCards, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage, hostCustomCategories: this.hostCustomCategories(room), hostWouldYouRatherPrompts: this.hostWouldYouRatherPrompts(room) };
     const config = module.configSchema.parse(room.gameConfigs.get(room.selectedGameId));
     const configReason = validateGameConfigReadiness(module.manifest.id, config, {
       hostCustomCategoryCount: context.hostCustomCategories.length,
@@ -583,7 +584,7 @@ export class RoomManager {
       displayName: member.identity.displayName,
       connected: member.presence === 'CONNECTED',
       active: member.role === 'PLAYER' && member.presence !== 'LEFT',
-    })), pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage, hostCustomCategories: this.hostCustomCategories(room), hostWouldYouRatherPrompts: this.hostWouldYouRatherPrompts(room) };
+    })), pokemon: this.pokemon, pokemonVisuals: this.pokemonVisuals, tcgCards: this.tcgCards, now: Date.now(), random: Math.random, roomCode: room.code, hostId: room.hostId, preloadImage: preloadGameImage, hostCustomCategories: this.hostCustomCategories(room), hostWouldYouRatherPrompts: this.hostWouldYouRatherPrompts(room) };
   }
 
   private hostCustomCategories(room: LiveRoom): readonly SubjectiveCategory[] {

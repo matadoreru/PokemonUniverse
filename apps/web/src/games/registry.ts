@@ -203,6 +203,11 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   active: component(() => import('../room/PokemonRedFlagGame'), 'PokemonRedFlagGame'),
   results: component(() => import('../room/PokemonRedFlagResults'), 'PokemonRedFlagResults'),
 })).register(clientModule({
+  id: 'tcg-higher-lower',
+  config: component(() => import('./tcg-higher-lower/ConfigPanel'), 'TcgHigherLowerConfigPanel'),
+  active: component(() => import('../room/TcgHigherLowerGame'), 'TcgHigherLowerGame'),
+  results: component(() => import('../room/TcgHigherLowerResults'), 'TcgHigherLowerResults'),
+})).register(clientModule({
   id: 'who-is-who-pokemon',
   config: component(() => import('./who-is-who-pokemon/ConfigPanel'), 'WhoIsWhoPokemonConfigPanel'),
   active: component(() => import('../room/WhoIsWhoPokemonGame'), 'WhoIsWhoPokemonGame'),

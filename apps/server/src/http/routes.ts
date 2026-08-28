@@ -1,4 +1,4 @@
-import { gameRegistry, type GameAssetResolution } from '@pokemon-universe/shared';
+import { gameRegistry, tcgHigherLowerConfigSchema, type GameAssetResolution, type TcgCardCatalog } from '@pokemon-universe/shared';
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { prisma } from '../db.js';
@@ -10,6 +10,7 @@ import { loadGameImage } from './game-image-cache.js';
 export const apiRouter = Router();
 let gameImageResolver: ((code: string, assetToken: string, roundNumber: number, optionId: string) => string | GameAssetResolution | null) | null = null;
 let pokemonRepository: PokemonRepository | null = null;
+let tcgCardCatalog: TcgCardCatalog | null = null;
 const gameImageRateLimit = rateLimit({ windowMs: 60_000, limit: 5_000, standardHeaders: 'draft-7', legacyHeaders: false });
 
 export function registerGameImageResolver(resolver: typeof gameImageResolver): void {
@@ -19,6 +20,7 @@ export function registerGameImageResolver(resolver: typeof gameImageResolver): v
 export function registerPokemonRepository(repository: PokemonRepository): void {
   pokemonRepository = repository;
 }
+export function registerTcgCardCatalog(catalog: TcgCardCatalog): void { tcgCardCatalog = catalog; }
 
 function routeParam(value: string | string[] | undefined): string {
   return Array.isArray(value) ? value[0] ?? '' : value ?? '';
@@ -49,6 +51,13 @@ apiRouter.get('/pokemon', (req, res, next) => {
     res.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
     res.json({ pokemon });
   } catch (error) { next(error); }
+});
+
+apiRouter.get('/tcg/options', (_req, res, next) => {
+  try { if (!tcgCardCatalog) throw new Error('El catálogo TCG todavía no está disponible.'); res.json(tcgCardCatalog.options()); } catch (error) { next(error); }
+});
+apiRouter.post('/tcg/eligibility', (req, res, next) => {
+  try { if (!tcgCardCatalog) throw new Error('El catálogo TCG todavía no está disponible.'); const config = tcgHigherLowerConfigSchema.parse(req.body); res.json({ cardCount: tcgCardCatalog.cardsFor(config).length }); } catch (error) { next(error); }
 });
 
 apiRouter.get('/rooms/:code/games/:assetToken/rounds/:roundNumber/options/:optionId/sprite', gameImageRateLimit, async (req, res, next) => {

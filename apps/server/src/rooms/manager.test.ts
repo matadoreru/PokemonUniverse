@@ -194,7 +194,7 @@ describe('room multi-game lifecycle', () => {
     const room = manager.store.get(created.room.code)!;
     (manager as any).join(guestSocket, guest, room.code);
 
-    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['shiny-vote', 'pokemon-impostor', 'type-duel', 'zoomed-pokemon', 'pokemon-team-auction', 'pokemon-red-flag', 'pokedex-distance', 'higher-lower', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokedex-entry-guess', 'type-chain', 'guess-from-stats', 'poke-taboo', 'one-of-us-is-fake', 'pokemon-bluff-auction', 'sketchmon', 'pokemon-connections', 'secret-ranking', 'most-likely-to', 'would-you-rather', 'who-is-who-pokemon']);
+    expect(created.room.availableGames.map((game: { id: string }) => game.id)).toEqual(['shiny-vote', 'pokemon-impostor', 'type-duel', 'zoomed-pokemon', 'pokemon-team-auction', 'pokemon-red-flag', 'tcg-higher-lower', 'pokedex-distance', 'higher-lower', 'learnset-guess', 'pokeddle-race', 'pokemon-bingo', 'whos-that-pokemon', 'pokedex-entry-guess', 'type-chain', 'guess-from-stats', 'poke-taboo', 'one-of-us-is-fake', 'pokemon-bluff-auction', 'sketchmon', 'pokemon-connections', 'secret-ranking', 'most-likely-to', 'would-you-rather', 'who-is-who-pokemon']);
     expect(room.selectedGameId).toBe('pokedex-distance');
     expect(room.members.size).toBe(2);
 
@@ -247,6 +247,23 @@ describe('room multi-game lifecycle', () => {
     await vi.waitFor(() => expect(persistGameResults).toHaveBeenCalledTimes(2));
   });
 
+  it('keeps the TCG comparison price out of Socket.IO and reconnect projections until reveal', () => {
+    const transport = io();
+    const pricedCards = [
+      { id: 'tcg-a', name: 'Pikachu', localId: '1', setId: 'set', setName: 'Set', rarity: 'Rare', imageUrl: 'https://img.test/a.webp', price: '12.3456', currency: 'EUR', provider: 'cardmarket', variant: 'standard' },
+      { id: 'tcg-b', name: 'Charizard', localId: '2', setId: 'set', setName: 'Set', rarity: 'Rare', imageUrl: 'https://img.test/b.webp', price: '98.7654', currency: 'EUR', provider: 'cardmarket', variant: 'standard' },
+    ];
+    const tcgCards = { cardsFor: () => pricedCards, options: () => ({ ready: true, cardCount: 2, sets: [], rarities: [] }) };
+    const manager = new RoomManager(transport as any, catalog, undefined, undefined, undefined, undefined, undefined, tcgCards);
+    const host = identity('tcg-host', 'Host'); const created = (manager as any).create(socket('tcg-host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
+    (manager as any).selectGame(host.id, 'tcg-higher-lower'); (manager as any).updateConfig(host.id, { setIds: [], rarities: [], minPrice: null, maxPrice: null, rounds: 5, roundSeconds: 15 }); startReady(manager, room, host.id);
+    const secret = room.game!.state.sequence[1].price as string; const publicView = (manager as any).view(room, host.id);
+    expect(publicView.game.currentCard.price).toBeNull(); expect(JSON.stringify(publicView)).not.toContain(JSON.stringify(secret));
+    (manager as any).broadcast(room); expect(JSON.stringify(transport.emit.mock.calls)).not.toContain(JSON.stringify(secret));
+    const reconnect = boundSocket('tcg-host-reconnected', host); manager.bind(reconnect as any); const restored = reconnect.emit.mock.calls.find(([event]) => event === 'session:restored')?.[1];
+    expect(restored.game.currentCard.price).toBeNull(); expect(JSON.stringify(restored)).not.toContain(JSON.stringify(secret));
+  });
+
   it('rejects Members changing games and rejects unknown ids without altering the registry', () => {
     const manager = new RoomManager(io() as any, catalog);
     const host = identity('host', 'Host');
@@ -258,7 +275,7 @@ describe('room multi-game lifecycle', () => {
     expect(() => (manager as any).selectGame(guest.id, 'shiny-vote')).toThrow(/No tienes permiso/);
     expect(() => (manager as any).selectGame(host.id, 'missing-game')).toThrow(/Unknown game/);
     expect(room.selectedGameId).toBe('pokedex-distance');
-    expect(created.room.availableGames).toHaveLength(24);
+    expect(created.room.availableGames).toHaveLength(25);
   });
 
   it('injects the registered host category snapshot without exposing round secrets', () => {

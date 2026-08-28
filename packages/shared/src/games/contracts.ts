@@ -1,5 +1,6 @@
 import type { z } from 'zod';
 import type { PokemonCatalog } from '../pokemon/types.js';
+import type { TcgCardCatalog } from '../tcg/types.js';
 
 export type GamePhase =
   | 'GAME_STARTING'
@@ -53,6 +54,8 @@ export function allConnectedRequiredCompleted(
 export interface GameContext {
   players: readonly GamePlayer[];
   pokemon: PokemonCatalog;
+  /** PostgreSQL-backed TCG catalog. Never implemented by an external API client. */
+  tcgCards?: TcgCardCatalog | undefined;
   now: number;
   random: () => number;
   roomCode?: string;

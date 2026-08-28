@@ -80,7 +80,10 @@ export class TcgDataSync implements DataSyncAdapter {
           });
           if (exists) updated += 1; else { inserted += 1; existingIds.add(card.id); }
           const related = card.dexId?.length ? await prisma.pokemon.findMany({ where: { nationalDexNumber: { in: card.dexId }, isDefault: true }, select: { id: true } }) : [];
-          await prisma.tcgCardPokemon.createMany({ data: related.map((pokemon) => ({ cardId: card.id, pokemonId: pokemon.id })), skipDuplicates: true });
+          await prisma.$transaction(async (transaction) => {
+            await transaction.tcgCardPokemon.deleteMany({ where: { cardId: card.id } });
+            await transaction.tcgCardPokemon.createMany({ data: related.map((pokemon) => ({ cardId: card.id, pokemonId: pokemon.id })), skipDuplicates: true });
+          });
         } else updated += 1;
         for (const price of priceLeaves(card.pricing)) {
           await prisma.tcgCardPrice.upsert({

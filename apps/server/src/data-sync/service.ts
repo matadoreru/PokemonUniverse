@@ -7,6 +7,7 @@ export class SyncAlreadyRunningError extends Error { status = 409; }
 export class DataSyncService {
   private readonly adapters: Map<DataSyncSource, DataSyncAdapter>;
   private readonly active = new Map<DataSyncSource, Promise<SyncResult>>();
+  private readonly completedListeners = new Set<(source: DataSyncSource) => void | Promise<void>>();
 
   constructor(private readonly db: PrismaClient, adapters: readonly DataSyncAdapter[], private readonly nextSync: () => Date) {
     this.adapters = new Map(adapters.map((adapter) => [adapter.source, adapter]));
@@ -18,6 +19,7 @@ export class DataSyncService {
   }
 
   isRunning(source?: DataSyncSource): boolean { return source ? this.active.has(source) : this.active.size > 0; }
+  onCompleted(listener: (source: DataSyncSource) => void | Promise<void>): () => void { this.completedListeners.add(listener); return () => this.completedListeners.delete(listener); }
 
   start(source: DataSyncSource, mode: DataSyncMode): Promise<SyncResult> {
     if (this.active.has(source)) throw new SyncAlreadyRunningError(`${source} ya se está sincronizando`);
@@ -90,6 +92,7 @@ export class DataSyncService {
         this.db.dataSyncState.upsert({ where: { source }, create: { source, datasetVersion: result.datasetVersion ?? null, lastSuccessAt: completedAt, lastAttemptAt: startedAt, ...(mode === 'FULL' || mode === 'INITIAL' ? { lastFullSyncAt: completedAt } : {}), recordsAvailable: available }, update: { datasetVersion: result.datasetVersion ?? null, lastSuccessAt: completedAt, lastAttemptAt: startedAt, ...(mode === 'FULL' || mode === 'INITIAL' ? { lastFullSyncAt: completedAt } : {}), recordsAvailable: available, lastError: null } }),
       ]);
       console.info(`[DataSync] sync completed source=${source} inserted=${result.inserted} updated=${result.updated} skipped=${result.skipped} durationMs=${durationMs}`);
+      for (const listener of this.completedListeners) { try { await listener(source); } catch (error) { console.error(`[DataSync] post-sync refresh failed source=${source}`, error); } }
       return result;
     } catch (error) {
       const completedAt = new Date(); const message = error instanceof Error ? error.message : String(error); const durationMs = completedAt.getTime() - startedAt.getTime();
