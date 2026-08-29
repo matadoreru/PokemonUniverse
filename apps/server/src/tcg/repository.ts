@@ -23,8 +23,8 @@ export class PrismaTcgCardRepository implements TcgCardRepository {
   async loadComparableCards(): Promise<TcgCatalogCardRow[]> {
     const cards = await this.db.tcgCard.findMany({
       where: { imageUrl: { not: null }, prices: { some: { market: { not: null } } } },
-      select: { id: true, localId: true, name: true, rarity: true, imageUrl: true, set: { select: { id: true, name: true } }, pokemon: { select: { pokemon: { select: { generationId: true } } } }, prices: { where: { market: { not: null } }, select: { provider: true, currency: true, variant: true, market: true, observedAt: true } } },
+      select: { id: true, localId: true, name: true, rarity: true, imageUrl: true, set: { select: { id: true, name: true } }, pokemon: { select: { pokemon: { select: { generation: true } } } }, prices: { where: { market: { not: null } }, select: { provider: true, currency: true, variant: true, market: true, observedAt: true } } },
     });
-    return cards.map(({ pokemon, ...card }) => ({ ...card, pokemonGenerations: [...new Set(pokemon.map((relation) => relation.pokemon.generationId))], prices: card.prices.map((price) => ({ ...price, market: price.market?.toString() ?? null })) }));
+    return cards.map(({ pokemon, ...card }) => ({ ...card, pokemonGenerations: [...new Set(pokemon.map((relation) => relation.pokemon.generation))], prices: card.prices.map((price) => ({ ...price, market: price.market?.toString() ?? null })) }));
   }
 }

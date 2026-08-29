@@ -1095,7 +1095,7 @@ describe('room multi-game lifecycle', () => {
     const transport = io(); const manager = new RoomManager(transport as any, catalog);
     const people = [identity('host', 'Host'), identity('ana', 'Ana'), identity('pepe', 'Pepe')]; const sockets = people.map((person) => socket(`socket-${person.id}`));
     const created = (manager as any).create(sockets[0], people[0], 8); const room = manager.store.get(created.room.code)!; (manager as any).join(sockets[1], people[1], room.code); (manager as any).join(sockets[2], people[2], room.code);
-    (manager as any).selectGame('host', 'who-is-who-pokemon'); (manager as any).updateConfig('host', { generations: [1], boardSize: 6, includeForms: true, turnSeconds: 40, rounds: 2 }); startReady(manager, room, 'host');
+    (manager as any).selectGame('host', 'who-is-who-pokemon'); (manager as any).updateConfig('host', { generations: [1], boardSize: 6, includeForms: true, turnSeconds: 40, rounds: 2, secretSelection: 'RANDOM' }); startReady(manager, room, 'host');
     const blueIds = room.game!.state.teams.BLUE.playerIds as string[]; const senderId = blueIds[0]!; const teammateId = blueIds[1]!; const rivalId = (room.game!.state.teams.RED.playerIds as string[])[0]!; transport.to.mockClear(); transport.emit.mockClear();
     (manager as any).updateWhoIsWhoCursor(senderId, room.members.get(senderId)!.socketId, { x: 0.5, y: 0.25 });
     expect(transport.to).toHaveBeenCalledWith(room.members.get(teammateId)!.socketId); expect(transport.to).not.toHaveBeenCalledWith(room.members.get(rivalId)!.socketId); expect(transport.emit).toHaveBeenCalledWith('who-is-who:cursor', expect.objectContaining({ playerId: senderId, x: 0.5, y: 0.25 }));
@@ -1113,7 +1113,7 @@ describe('room multi-game lifecycle', () => {
     const created = (manager as any).create(socket('socket-host'), people[0], 8); const room = manager.store.get(created.room.code)!;
     for (const person of people.slice(1)) (manager as any).join(socket(`socket-${person.id}`), person, room.code);
     (manager as any).selectGame('host', 'who-is-who-pokemon');
-    (manager as any).updateConfig('host', { generations: [1], boardSize: 6, includeForms: true, turnSeconds: 40, rounds: 2 });
+    (manager as any).updateConfig('host', { generations: [1], boardSize: 6, includeForms: true, turnSeconds: 40, rounds: 2, secretSelection: 'RANDOM' });
     startReady(manager, room, 'host');
     const blueIds = room.game!.state.teams.BLUE.playerIds as string[]; const redIds = room.game!.state.teams.RED.playerIds as string[];
     const blueSecret = room.game!.state.teams.BLUE.secretPokemonId; const redSecret = room.game!.state.teams.RED.secretPokemonId; const discardedId = room.game!.state.board[0].id;
@@ -1133,7 +1133,7 @@ describe('room multi-game lifecycle', () => {
 
   it('clears ephemeral Who Is Who cursors on disconnect and round change', () => {
     const transport = io(); const manager = new RoomManager(transport as any, catalog); const host = identity('host', 'Host'); const peer = identity('peer', 'Peer'); const rival = identity('rival', 'Rival');
-    const created = (manager as any).create(socket('socket-host'), host, 8); const room = manager.store.get(created.room.code)!; (manager as any).join(socket('socket-peer'), peer, room.code); (manager as any).join(socket('socket-rival'), rival, room.code); (manager as any).selectGame(host.id, 'who-is-who-pokemon'); (manager as any).updateConfig(host.id, { generations: [1], boardSize: 6, includeForms: true, turnSeconds: 40, rounds: 2 }); startReady(manager, room, host.id);
+    const created = (manager as any).create(socket('socket-host'), host, 8); const room = manager.store.get(created.room.code)!; (manager as any).join(socket('socket-peer'), peer, room.code); (manager as any).join(socket('socket-rival'), rival, room.code); (manager as any).selectGame(host.id, 'who-is-who-pokemon'); (manager as any).updateConfig(host.id, { generations: [1], boardSize: 6, includeForms: true, turnSeconds: 40, rounds: 2, secretSelection: 'RANDOM' }); startReady(manager, room, host.id);
     const blue = room.game!.state.teams.BLUE.playerIds as string[]; const sender = blue[0]!; const teammate = blue[1]!; (manager as any).updateWhoIsWhoCursor(sender, room.members.get(sender)!.socketId, { x: 0.2, y: 0.8 }); transport.emit.mockClear();
     (manager as any).disconnect(sender, room.members.get(sender)!.socketId); expect(transport.emit).toHaveBeenCalledWith('who-is-who:cursor-clear', { playerId: sender });
     room.members.get(sender)!.connected = true; room.members.get(sender)!.presence = 'CONNECTED'; transport.emit.mockClear(); const blueActor = room.game!.state.teams.BLUE.playerIds.find((id: string) => room.members.get(id)?.presence === 'CONNECTED')!; (manager as any).action(blueActor, { type: 'END_TURN' }); const redActor = (room.game!.state.teams.RED.playerIds as string[])[0]!; (manager as any).action(redActor, { type: 'END_TURN' }); expect(transport.emit).toHaveBeenCalledWith('who-is-who:cursors-reset'); expect(teammate).toBeTruthy();
