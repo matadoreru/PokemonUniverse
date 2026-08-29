@@ -63,6 +63,12 @@ describe('TCG Higher or Lower', () => {
     expect(publicState.currentCard.price).toBeNull(); expect(publicState.lastRound).toBeNull(); expect(socketPayload).not.toContain(JSON.stringify(secret));
     const reconnect = JSON.parse(socketPayload) as { game: { currentCard: { price: unknown } } }; expect(reconnect.game.currentCard.price).toBeNull();
   });
+  it('hides card rarity while choosing when configured and reveals it with the result', () => {
+    const game = fixture(); let state = { ...game.state, config: { ...game.state.config, showRarity: false } };
+    const active = tcgHigherLowerGame.getPublicState(state, game.context); expect(active.previousCard.rarity).toBeNull(); expect(active.currentCard.rarity).toBeNull();
+    game.setNow(state.roundEndsAt!); state = tcgHigherLowerGame.handleTimeout(state, game.context);
+    const revealed = tcgHigherLowerGame.getPublicState(state, game.context); expect(revealed.previousCard.rarity).toBe('Rare'); expect(revealed.currentCard.rarity).toBe('Rare');
+  });
   it('keeps a price snapshot when the backing catalog changes mid-game', () => {
     const mutable = cards.map((card) => ({ ...card })); const game = fixture(mutable); const snapshot = game.state.sequence.map(({ price }) => price); mutable.forEach((card) => { card.price = '0'; }); expect(game.state.sequence.map(({ price }) => price)).toEqual(snapshot);
   });

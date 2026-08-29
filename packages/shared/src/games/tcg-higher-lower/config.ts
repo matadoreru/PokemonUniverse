@@ -10,6 +10,7 @@ export const tcgHigherLowerConfigSchema = z.object({
   rarities: z.array(z.string().min(1)).transform((items) => [...new Set(items)]),
   minPrice: optionalPriceSchema,
   maxPrice: optionalPriceSchema,
+  showRarity: z.boolean(),
   rounds: z.number().int().min(5).max(50),
   roundSeconds: z.number().int().min(5).max(60),
 }).superRefine((value, context) => {
@@ -20,7 +21,7 @@ export const tcgHigherLowerConfigSchema = z.object({
 
 export type TcgHigherLowerConfig = z.infer<typeof tcgHigherLowerConfigSchema>;
 export const defaultTcgHigherLowerConfig: TcgHigherLowerConfig = {
-  generations: [...GENERATIONS], setIds: [], rarities: [], minPrice: null, maxPrice: null, rounds: 10, roundSeconds: 15,
+  generations: [...GENERATIONS], setIds: [], rarities: [], minPrice: null, maxPrice: null, showRarity: true, rounds: 10, roundSeconds: 15,
 };
 
 export function canonicalTcgPrice(value: string): string | null {

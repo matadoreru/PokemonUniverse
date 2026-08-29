@@ -57,7 +57,7 @@ function reveal(state: TcgHigherLowerState, context: GameContext): TcgHigherLowe
 }
 
 function finish(state: TcgHigherLowerState): TcgHigherLowerState { return { ...state, phase: 'GAME_RESULTS', roundEndsAt: null, nextTransitionAt: null }; }
-function cardView(card: TcgComparableCard, price: string | null): TcgCardPublicView { return { id: card.id, name: card.name, localId: card.localId, setId: card.setId, setName: card.setName, rarity: card.rarity, imageUrl: card.imageUrl, price }; }
+function cardView(card: TcgComparableCard, price: string | null, showRarity: boolean): TcgCardPublicView { return { id: card.id, name: card.name, localId: card.localId, setId: card.setId, setName: card.setName, rarity: showRarity ? card.rarity : null, imageUrl: card.imageUrl, price }; }
 
 export const tcgHigherLowerGame: MiniGameModule<TcgHigherLowerConfig, TcgHigherLowerState, TcgHigherLowerAction, TcgHigherLowerPublicState> = {
   manifest, configSchema: tcgHigherLowerConfigSchema, actionSchema: tcgHigherLowerActionSchema, defaultConfig: defaultTcgHigherLowerConfig,
@@ -83,7 +83,7 @@ export const tcgHigherLowerGame: MiniGameModule<TcgHigherLowerConfig, TcgHigherL
   getPublicState(state) {
     const revealPhase = state.phase === 'ROUND_RESULTS' || state.phase === 'GAME_RESULTS'; const previous = state.sequence[Math.max(0, state.roundNumber - 1)]!; const current = state.sequence[Math.max(1, state.roundNumber)]!;
     return { gameId: 'tcg-higher-lower', phase: state.phase, playerIds: state.playerIds, roundNumber: state.roundNumber, totalRounds: state.config.rounds, currency: previous.currency,
-      previousCard: cardView(previous, previous.price), currentCard: cardView(current, revealPhase ? current.price : null), answeredIds: Object.keys(state.answers), scores: state.scores, streaks: state.streaks, roundStartedAt: state.roundStartedAt, roundEndsAt: state.roundEndsAt, nextTransitionAt: state.nextTransitionAt, lastRound: revealPhase ? state.lastRound : null, results: state.phase === 'GAME_RESULTS' ? buildTcgHigherLowerResults(state) : null };
+      previousCard: cardView(previous, previous.price, state.config.showRarity || revealPhase), currentCard: cardView(current, revealPhase ? current.price : null, state.config.showRarity || revealPhase), answeredIds: Object.keys(state.answers), scores: state.scores, streaks: state.streaks, roundStartedAt: state.roundStartedAt, roundEndsAt: state.roundEndsAt, nextTransitionAt: state.nextTransitionAt, lastRound: revealPhase ? state.lastRound : null, results: state.phase === 'GAME_RESULTS' ? buildTcgHigherLowerResults(state) : null };
   },
   getPlayerState(state, playerId): TcgHigherLowerPlayerState { return { canAnswer: state.phase === 'ROUND_ACTIVE' && state.playerIds.includes(playerId) && !state.answers[playerId], answer: state.answers[playerId] ?? null }; },
   isFinished: (state) => state.phase === 'GAME_RESULTS', getResults: buildTcgHigherLowerResults,

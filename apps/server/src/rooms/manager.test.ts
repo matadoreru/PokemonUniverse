@@ -257,7 +257,7 @@ describe('room multi-game lifecycle', () => {
     const tcgCards = { cardsFor: () => pricedCards, options: () => ({ ready: true, cardCount: 2, generations: [], sets: [], rarities: [] }) };
     const manager = new RoomManager(transport as any, catalog, undefined, undefined, undefined, undefined, undefined, tcgCards);
     const host = identity('tcg-host', 'Host'); const created = (manager as any).create(socket('tcg-host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
-    (manager as any).selectGame(host.id, 'tcg-higher-lower'); (manager as any).updateConfig(host.id, { generations: [1, 2, 3, 4, 5, 6, 7, 8, 9], setIds: [], rarities: [], minPrice: null, maxPrice: null, rounds: 5, roundSeconds: 15 }); startReady(manager, room, host.id);
+    (manager as any).selectGame(host.id, 'tcg-higher-lower'); (manager as any).updateConfig(host.id, { generations: [1, 2, 3, 4, 5, 6, 7, 8, 9], setIds: [], rarities: [], minPrice: null, maxPrice: null, showRarity: true, rounds: 5, roundSeconds: 15 }); startReady(manager, room, host.id);
     const secret = room.game!.state.sequence[1].price as string; const publicView = (manager as any).view(room, host.id);
     expect(publicView.game.currentCard.price).toBeNull(); expect(JSON.stringify(publicView)).not.toContain(JSON.stringify(secret));
     (manager as any).broadcast(room); expect(JSON.stringify(transport.emit.mock.calls)).not.toContain(JSON.stringify(secret));
