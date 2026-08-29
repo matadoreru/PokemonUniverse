@@ -8,10 +8,11 @@ export const whoIsWhoPokemonConfigSchema = z.object({
   includeForms: z.boolean(),
   turnSeconds: z.number().int().min(10).max(120),
   rounds: z.number().int().min(1).max(25),
+  secretSelection: z.enum(['RANDOM', 'PLAYER_CHOICE']),
 }).strict();
 
 export type WhoIsWhoPokemonConfig = z.infer<typeof whoIsWhoPokemonConfigSchema>;
 
 export const defaultWhoIsWhoPokemonConfig: WhoIsWhoPokemonConfig = {
-  generations: [...GENERATIONS], boardSize: 24, includeForms: true, turnSeconds: 40, rounds: 25,
+  generations: [...GENERATIONS], boardSize: 24, includeForms: true, turnSeconds: 40, rounds: 25, secretSelection: 'RANDOM',
 };

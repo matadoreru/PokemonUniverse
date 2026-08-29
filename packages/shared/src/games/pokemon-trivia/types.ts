@@ -19,6 +19,20 @@ export interface PokemonTriviaQuestion {
   fact: string;
 }
 
+export interface PokemonTriviaOptionDetails {
+  generation: number;
+  types: string[];
+  hp: number;
+  attack: number;
+  defense: number;
+  specialAttack: number;
+  specialDefense: number;
+  speed: number;
+  baseStatTotal: number;
+  heightDecimeters?: number;
+  weightHectograms?: number;
+}
+
 export interface PokemonTriviaAnswer {
   optionId: PokemonTriviaOptionId;
   answeredAt: number;
@@ -29,6 +43,7 @@ export interface PokemonTriviaRoundResult {
   fact: string;
   answers: Record<string, PokemonTriviaAnswer>;
   points: Record<string, number>;
+  optionDetails: Partial<Record<PokemonTriviaOptionId, PokemonTriviaOptionDetails>>;
 }
 
 export interface PokemonTriviaStats {

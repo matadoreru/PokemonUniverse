@@ -23,7 +23,9 @@ export function getComparableCardPrice(card: TcgCatalogCardRow, lane: TcgPriceLa
 }
 function eligibleCard(card: TcgCatalogCardRow): boolean { return Boolean(card.id.trim() && card.localId?.trim() && card.name.trim() && card.set.id.trim() && card.set.name.trim() && validImage(card.imageUrl)); }
 function matchesBase(card: TcgCatalogCardRow, filters: TcgCardFilters): boolean {
-  return (filters.setIds.length === 0 || filters.setIds.includes(card.set.id)) && (filters.rarities.length === 0 || card.rarity !== null && filters.rarities.includes(card.rarity));
+  return card.pokemonGenerations.some((generation) => filters.generations.includes(generation))
+    && (filters.setIds.length === 0 || filters.setIds.includes(card.set.id))
+    && (filters.rarities.length === 0 || card.rarity !== null && filters.rarities.includes(card.rarity));
 }
 
 export class CachedTcgCardCatalog implements TcgCardCatalog {
@@ -47,10 +49,12 @@ export class CachedTcgCardCatalog implements TcgCardCatalog {
     return [];
   }
   options(): TcgFilterOptions {
-    const priced = this.cards.filter((card) => card.prices.some((price) => price.market !== null && canonicalTcgPrice(price.market) !== null));
-    const sets = new Map<string, { name: string; ids: Set<string> }>(); const rarities = new Map<string, Set<string>>();
-    for (const card of priced) { const set = sets.get(card.set.id) ?? { name: card.set.name, ids: new Set<string>() }; set.ids.add(card.id); sets.set(card.set.id, set); if (card.rarity) { const ids = rarities.get(card.rarity) ?? new Set<string>(); ids.add(card.id); rarities.set(card.rarity, ids); } }
-    return { ready: this.cardsFor({ setIds: [], rarities: [], minPrice: null, maxPrice: null }).length >= 2, cardCount: priced.length,
+    const priced = this.cards.filter((card) => card.pokemonGenerations.length > 0 && card.prices.some((price) => price.market !== null && canonicalTcgPrice(price.market) !== null));
+    const sets = new Map<string, { name: string; ids: Set<string> }>(); const rarities = new Map<string, Set<string>>(); const generations = new Map<number, Set<string>>();
+    for (const card of priced) { const set = sets.get(card.set.id) ?? { name: card.set.name, ids: new Set<string>() }; set.ids.add(card.id); sets.set(card.set.id, set); for (const generation of card.pokemonGenerations) { const ids = generations.get(generation) ?? new Set<string>(); ids.add(card.id); generations.set(generation, ids); } if (card.rarity) { const ids = rarities.get(card.rarity) ?? new Set<string>(); ids.add(card.id); rarities.set(card.rarity, ids); } }
+    const allGenerations = [...generations.keys()].sort((a, b) => a - b);
+    return { ready: this.cardsFor({ generations: allGenerations, setIds: [], rarities: [], minPrice: null, maxPrice: null }).length >= 2, cardCount: priced.length,
+      generations: allGenerations.map((value) => ({ value, cardCount: generations.get(value)!.size })),
       sets: [...sets].map(([id, value]) => ({ id, name: value.name, cardCount: value.ids.size })).sort((a, b) => a.name.localeCompare(b.name)),
       rarities: [...rarities].map(([value, ids]) => ({ value, cardCount: ids.size })).sort((a, b) => a.value.localeCompare(b.value)),
     };

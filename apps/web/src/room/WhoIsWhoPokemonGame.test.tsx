@@ -18,7 +18,7 @@ const members: RoomView['members'] = ['blue-1', 'blue-2', 'red-1'].map((id, inde
 function game(): WhoIsWhoPublicState {
   return {
     gameId: 'who-is-who-pokemon', phase: 'TURN_ACTIVE', board,
-    teams: { BLUE: { playerIds: ['blue-1', 'blue-2'] }, RED: { playerIds: ['red-1'] } }, currentTeam: 'BLUE',
+    teams: { BLUE: { playerIds: ['blue-1', 'blue-2'], secretReady: true }, RED: { playerIds: ['red-1'], secretReady: true } }, currentTeam: 'BLUE',
     roundNumber: 2, turnNumber: 3, totalRounds: 25, roundStartedAt: 1_000, roundEndsAt: 31_000,
     guesses: [], winnerTeam: null, revealedSecrets: { BLUE: null, RED: null }, results: null,
   };
@@ -36,7 +36,7 @@ function room(player: WhoIsWhoPlayerState): RoomView {
 describe('Who is Who Pokémon table presentation', () => {
   it('renders two symmetric team boards and the own secret as the visual center', () => {
     const html = renderToStaticMarkup(createElement(WhoIsWhoPokemonGame, {
-      room: room({ role: 'PLAYER', team: 'BLUE', ownSecret: board[0]!, discardedPokemonIds: ['pikachu'], canManageBoard: true, canAct: true, canGuess: true, guessUsed: false, lastGuess: null }),
+      room: room({ role: 'PLAYER', team: 'BLUE', ownSecret: board[0]!, discardedPokemonIds: ['pikachu'], canChooseSecret: false, canManageBoard: true, canAct: true, canGuess: true, guessUsed: false, lastGuess: null }),
       selfId: 'blue-1', onAction: async () => undefined,
     }));
     expect(html).toContain('Equipo Azul'); expect(html).toContain('Equipo Rojo');
@@ -48,7 +48,7 @@ describe('Who is Who Pokémon table presentation', () => {
 
   it('does not render a secret or board controls for spectators', () => {
     const html = renderToStaticMarkup(createElement(WhoIsWhoPokemonGame, {
-      room: room({ role: 'SPECTATOR', team: null, ownSecret: null, discardedPokemonIds: [], canManageBoard: false, canAct: false, canGuess: false, guessUsed: false, lastGuess: null }),
+      room: room({ role: 'SPECTATOR', team: null, ownSecret: null, discardedPokemonIds: [], canChooseSecret: false, canManageBoard: false, canAct: false, canGuess: false, guessUsed: false, lastGuess: null }),
       selfId: 'spectator', onAction: async () => undefined,
     }));
     expect(html).toContain('TU POKÉMON'); expect(html).toContain('>?</span>');

@@ -1,6 +1,7 @@
 import { type TcgFilterOptions, type TcgHigherLowerConfig } from '@pokemon-universe/shared';
 import { AlertCircle, Check, ChevronDown, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { GenerationSelector } from '../../components/GenerationSelector';
 import { api } from '../../lib/api';
 import { ConfigRange } from '../../room/ConfigRange';
 
@@ -22,6 +23,7 @@ export function TcgHigherLowerConfigPanel({ config, disabled, onChange }: { conf
   const updatePrice = (key: 'minPrice' | 'maxPrice', raw: string) => void onChange({ ...value, [key]: raw.trim() === '' ? null : raw });
   return <fieldset disabled={disabled} className="space-y-5">
     {loadError && <p className="status-error"><AlertCircle className="inline" size={16} /> {loadError}</p>}
+    <GenerationSelector selected={value.generations} label="Generaciones de Pokémon" description="Incluye cartas protagonizadas por al menos un Pokémon de las generaciones elegidas. Las cartas de Entrenador sin Pokémon quedan fuera." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className="grid gap-3 md:grid-cols-2"><MultiFilter label="Sets" allLabel="Todos los sets" options={sets} selected={value.setIds} disabled={disabled} onChange={(setIds) => void onChange({ ...value, setIds })} /><MultiFilter label="Rareza" allLabel="Todas las rarezas" options={rarities} selected={value.rarities} disabled={disabled} onChange={(raritiesValue) => void onChange({ ...value, rarities: raritiesValue })} /></div>
     <div><span className="label">Rango de precio</span><div className="grid gap-3 sm:grid-cols-2"><label><span className="mb-1 block text-sm font-bold text-ink/65">Mínimo</span><input className="field" type="number" min="0" step="0.01" value={value.minPrice ?? ''} placeholder="Sin límite" onChange={(event) => updatePrice('minPrice', event.target.value)} /></label><label><span className="mb-1 block text-sm font-bold text-ink/65">Máximo</span><input className="field" type="number" min="0" step="0.01" value={value.maxPrice ?? ''} placeholder="Sin límite" onChange={(event) => updatePrice('maxPrice', event.target.value)} /></label></div></div>
     <div className="grid gap-4 md:grid-cols-2"><ConfigRange label="Tiempo por comparación" value={value.roundSeconds} min={5} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} /><ConfigRange label="Número de rondas" value={value.rounds} min={5} max={50} disabled={disabled} accent="aqua" formatValue={(rounds) => `${rounds} rondas`} onCommit={(rounds) => onChange({ ...value, rounds })} /></div>

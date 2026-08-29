@@ -97,6 +97,7 @@ await tcgCards.refresh();
 dataSync.onCompleted(async (source) => { if (source === 'TCGDEX') await tcgCards.refresh(); });
 const catalog = await loadPokemonCatalog();
 const pokemonAudio = await loadPokemonAudioCatalog();
+dataSync.onCompleted(async (source) => { if (source === 'POKEAPI') pokemonAudio.replaceWith(await loadPokemonAudioCatalog()); });
 await customCategories.load();
 await userGameConfigs.load();
 await wouldYouRatherPrompts.load();

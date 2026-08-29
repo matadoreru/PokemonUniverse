@@ -14,6 +14,7 @@ export interface TcgComparableCard {
 }
 
 export interface TcgCardFilters {
+  generations: readonly number[];
   setIds: readonly string[];
   rarities: readonly string[];
   minPrice: string | null;
@@ -22,9 +23,11 @@ export interface TcgCardFilters {
 
 export interface TcgSetOption { id: string; name: string; cardCount: number }
 export interface TcgRarityOption { value: string; cardCount: number }
+export interface TcgGenerationOption { value: number; cardCount: number }
 export interface TcgFilterOptions {
   ready: boolean;
   cardCount: number;
+  generations: TcgGenerationOption[];
   sets: TcgSetOption[];
   rarities: TcgRarityOption[];
 }
@@ -34,4 +37,3 @@ export interface TcgCardCatalog {
   cardsFor(filters: TcgCardFilters): readonly TcgComparableCard[];
   options(): TcgFilterOptions;
 }
-

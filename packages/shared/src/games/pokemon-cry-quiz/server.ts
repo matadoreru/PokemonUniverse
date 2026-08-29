@@ -76,6 +76,7 @@ export const pokemonCryQuizGame: MiniGameModule<PokemonCryQuizConfig, PokemonCry
   createInitialState(config, context) {
     const parsed = pokemonCryQuizConfigSchema.parse(config); const pool = pokemonCryPool(parsed, context);
     if (!context.pokemonAudio) throw new Error('El catálogo local de gritos no está disponible.');
+    if (context.pokemonAudio.pokemonIds().length === 0) throw new Error('PostgreSQL no contiene gritos. Ejecuta una sincronización completa de PokéAPI desde Administración y vuelve a intentarlo.');
     if (!pool.length) throw new Error('No hay gritos disponibles en PostgreSQL para las generaciones seleccionadas.');
     const playerIds = context.players.map((player) => player.id); const token = Array.from({ length: 3 }, () => Math.floor(context.random() * 0x1_0000_0000).toString(36)).join('-');
     return { phase: 'GAME_STARTING', config: parsed, assetToken: `${context.now.toString(36)}-${token}`, playerIds, poolIds: pool.map((pokemon) => pokemon.id), roundNumber: 0, targetPokemonId: null, currentCryVersion: null, usedPokemonIds: [], attempts: [], attemptCounts: {}, solves: {}, cooldownUntil: {}, lastAttemptResult: {}, scores: Object.fromEntries(playerIds.map((id) => [id, 0])), playerStats: Object.fromEntries(playerIds.map((id) => [id, emptyPokemonCryStats()])), roundStartedAt: null, roundEndsAt: null, nextTransitionAt: null, lastRound: null };

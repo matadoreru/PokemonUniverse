@@ -1,8 +1,11 @@
 import { z } from 'zod';
+import { GENERATIONS } from '../../pokemon/types.js';
+import { pokemonGenerationsSchema } from '../config.js';
 
 const optionalPriceSchema = z.string().regex(/^\d+(?:\.\d+)?$/, 'Introduce un precio válido.').nullable();
 
 export const tcgHigherLowerConfigSchema = z.object({
+  generations: pokemonGenerationsSchema,
   setIds: z.array(z.string().min(1)).transform((items) => [...new Set(items)]),
   rarities: z.array(z.string().min(1)).transform((items) => [...new Set(items)]),
   minPrice: optionalPriceSchema,
@@ -17,7 +20,7 @@ export const tcgHigherLowerConfigSchema = z.object({
 
 export type TcgHigherLowerConfig = z.infer<typeof tcgHigherLowerConfigSchema>;
 export const defaultTcgHigherLowerConfig: TcgHigherLowerConfig = {
-  setIds: [], rarities: [], minPrice: null, maxPrice: null, rounds: 10, roundSeconds: 15,
+  generations: [...GENERATIONS], setIds: [], rarities: [], minPrice: null, maxPrice: null, rounds: 10, roundSeconds: 15,
 };
 
 export function canonicalTcgPrice(value: string): string | null {

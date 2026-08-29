@@ -13,7 +13,7 @@ const cards: TcgComparableCard[] = [
 ];
 const pokemon = { all: () => [], byId: () => undefined, byDexNumber: () => undefined, forGenerations: () => [] } as PokemonCatalog;
 function fixture(pool = cards, playerIds = ['p1', 'p2']) {
-  let now = 1_000; const catalog: TcgCardCatalog = { cardsFor: (filters) => pool.filter((card) => (filters.setIds.length === 0 || filters.setIds.includes(card.setId)) && (filters.rarities.length === 0 || card.rarity !== null && filters.rarities.includes(card.rarity))), options: () => ({ ready: true, cardCount: pool.length, sets: [], rarities: [] }) };
+  let now = 1_000; const catalog: TcgCardCatalog = { cardsFor: (filters) => pool.filter((card) => (filters.setIds.length === 0 || filters.setIds.includes(card.setId)) && (filters.rarities.length === 0 || card.rarity !== null && filters.rarities.includes(card.rarity))), options: () => ({ ready: true, cardCount: pool.length, generations: [], sets: [], rarities: [] }) };
   const context: GameContext = { players: playerIds.map((id) => ({ id, displayName: id, connected: true, active: true })), pokemon, tcgCards: catalog, get now() { return now; }, random: () => 0.999 };
   const initial = tcgHigherLowerGame.createInitialState({ ...defaultTcgHigherLowerConfig, rounds: 5 }, context);
   return { context, setNow: (value: number) => { now = value; }, state: tcgHigherLowerGame.start(initial, context) };

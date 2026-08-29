@@ -3,7 +3,7 @@ import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGam
 import { advanceTimedRound, resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultPokemonTriviaConfig, pokemonTriviaConfigSchema, type PokemonTriviaConfig, type PokemonTriviaQuestionType } from './config.js';
 import { buildPokemonTriviaResults, emptyPokemonTriviaStats, pokemonTriviaPoints } from './rules.js';
-import { POKEMON_TRIVIA_OPTION_IDS, pokemonTriviaActionSchema, type PokemonTriviaAction, type PokemonTriviaOption, type PokemonTriviaPlayerState, type PokemonTriviaPublicState, type PokemonTriviaQuestion, type PokemonTriviaState } from './types.js';
+import { POKEMON_TRIVIA_OPTION_IDS, pokemonTriviaActionSchema, type PokemonTriviaAction, type PokemonTriviaOption, type PokemonTriviaPlayerState, type PokemonTriviaPublicState, type PokemonTriviaQuestion, type PokemonTriviaRoundResult, type PokemonTriviaState } from './types.js';
 
 export const POKEMON_TRIVIA_REVEAL_MS = 4_000;
 
@@ -109,7 +109,11 @@ function revealRound(state: PokemonTriviaState, context: GameContext): PokemonTr
     points[playerId] = earned; scores[playerId] = (scores[playerId] ?? 0) + earned;
     playerStats[playerId] = { ...previous, answers: previous.answers + (answer ? 1 : 0), correct: previous.correct + (correct ? 1 : 0), incorrect: previous.incorrect + (answer && !correct ? 1 : 0), unanswered: previous.unanswered + (answer ? 0 : 1), fastestCorrectMs: correct ? (previous.fastestCorrectMs <= 0 ? elapsedMs : Math.min(previous.fastestCorrectMs, elapsedMs)) : previous.fastestCorrectMs, correctTimeTotalMs: previous.correctTimeTotalMs + (correct ? elapsedMs : 0), pointsFromRounds: previous.pointsFromRounds + earned };
   }
-  return { ...state, phase: 'ROUND_RESULTS', scores, playerStats, roundEndsAt: null, nextTransitionAt: context.now + POKEMON_TRIVIA_REVEAL_MS, lastRound: { correctOptionId: state.question.correctOptionId, fact: state.question.fact, answers: { ...state.answers }, points } };
+  const optionDetails = Object.fromEntries(state.question.options.map((option) => {
+    const pokemon = context.pokemon.byId(option.pokemon.id)!;
+    return [option.id, { generation: pokemon.generation, types: [...pokemon.types], hp: pokemon.hp, attack: pokemon.attack, defense: pokemon.defense, specialAttack: pokemon.specialAttack, specialDefense: pokemon.specialDefense, speed: pokemon.speed, baseStatTotal: pokemon.baseStatTotal, ...(pokemon.heightDecimeters !== undefined ? { heightDecimeters: pokemon.heightDecimeters } : {}), ...(pokemon.weightHectograms !== undefined ? { weightHectograms: pokemon.weightHectograms } : {}) }];
+  })) as PokemonTriviaRoundResult['optionDetails'];
+  return { ...state, phase: 'ROUND_RESULTS', scores, playerStats, roundEndsAt: null, nextTransitionAt: context.now + POKEMON_TRIVIA_REVEAL_MS, lastRound: { correctOptionId: state.question.correctOptionId, fact: state.question.fact, answers: { ...state.answers }, points, optionDetails } };
 }
 
 const finish = (state: PokemonTriviaState): PokemonTriviaState => ({ ...state, phase: 'GAME_RESULTS', nextTransitionAt: null, roundEndsAt: null });

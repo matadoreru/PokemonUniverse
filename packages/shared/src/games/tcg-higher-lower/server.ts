@@ -63,7 +63,7 @@ export const tcgHigherLowerGame: MiniGameModule<TcgHigherLowerConfig, TcgHigherL
   manifest, configSchema: tcgHigherLowerConfigSchema, actionSchema: tcgHigherLowerActionSchema, defaultConfig: defaultTcgHigherLowerConfig,
   createInitialState(config, context) {
     const parsed = tcgHigherLowerConfigSchema.parse(config); const pool = context.tcgCards?.cardsFor(parsed) ?? [];
-    if (pool.length < 2) throw new Error('No hay al menos dos cartas TCG con imagen y precio comparable para estos filtros. Ajusta los sets, rarezas o precios.');
+    if (pool.length < 2) throw new Error('No hay al menos dos cartas TCG con imagen y precio comparable para estos filtros. Ajusta las generaciones, sets, rarezas o precios.');
     const empty: TcgHigherLowerStats = { comparisons: 0, correct: 0, incorrect: 0, sameCorrect: 0, answered: 0, bestStreak: 0 };
     return { phase: 'GAME_STARTING', config: parsed, playerIds: context.players.map(({ id }) => id), sequence: sequenceFor(pool, parsed.rounds + 1, context.random), roundNumber: 0, answers: {}, scores: Object.fromEntries(context.players.map(({ id }) => [id, 0])), streaks: Object.fromEntries(context.players.map(({ id }) => [id, 0])), playerStats: Object.fromEntries(context.players.map(({ id }) => [id, { ...empty }])), roundStartedAt: null, roundEndsAt: null, nextTransitionAt: null, lastRound: null };
   },

@@ -72,7 +72,8 @@ describe('Pokémon Trivia', () => {
   it('handles timeout, reveal, next round and final competition ranking', () => {
     const fixture = setup(); fixture.setNow(fixture.state.roundEndsAt!);
     let state = pokemonTriviaGame.handleTimeout(fixture.state, fixture.context); expect(state.phase).toBe('ROUND_RESULTS'); expect(state.playerStats.p1?.unanswered).toBe(1);
-    expect(pokemonTriviaGame.getPublicState(state, fixture.context).lastRound?.correctOptionId).toBeTruthy();
+    const reveal = pokemonTriviaGame.getPublicState(state, fixture.context).lastRound; expect(reveal?.correctOptionId).toBeTruthy();
+    expect(Object.values(reveal!.optionDetails)).toEqual(expect.arrayContaining([expect.objectContaining({ generation: expect.any(Number), hp: expect.any(Number), baseStatTotal: expect.any(Number) })]));
     fixture.setNow(state.nextTransitionAt!); state = pokemonTriviaGame.handleTimeout(state, fixture.context); expect(state.phase).toBe('ROUND_ACTIVE'); expect(state.roundNumber).toBe(2);
     fixture.setNow(state.roundEndsAt!); state = pokemonTriviaGame.handleTimeout(state, fixture.context); fixture.setNow(state.nextTransitionAt!); state = pokemonTriviaGame.handleTimeout(state, fixture.context);
     expect(state.phase).toBe('GAME_RESULTS'); expect(pokemonTriviaGame.getResults(state).standings).toHaveLength(2);
