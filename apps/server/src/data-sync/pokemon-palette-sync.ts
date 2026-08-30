@@ -3,8 +3,8 @@ import sharp from 'sharp';
 import { prisma } from '../db.js';
 import { SyncHttpClient } from './http-client.js';
 
-export const POKEMON_PALETTE_VERSION = 1;
-export const POKEMON_PALETTE_SIZE = 6;
+export const POKEMON_PALETTE_VERSION = 3;
+export const POKEMON_PALETTE_SIZE = 8;
 export const MIN_PLAYABLE_POKEMON_PALETTES = 100;
 
 type Metadata = Record<string, unknown>;
@@ -17,7 +17,15 @@ export function persistedPokemonPalette(metadata: unknown, sprite: string): stri
   const record = metadataRecord(metadata);
   if (record.paletteVersion !== POKEMON_PALETTE_VERSION || record.paletteSpriteUrl !== sprite || !Array.isArray(record.palette)) return null;
   const colors = record.palette.filter((color): color is string => typeof color === 'string' && /^#[0-9a-f]{6}$/i.test(color));
-  return colors.length >= 3 ? colors.slice(0, POKEMON_PALETTE_SIZE) : null;
+  const weights = Array.isArray(record.paletteWeights) ? record.paletteWeights.filter((weight): weight is number => typeof weight === 'number' && Number.isFinite(weight) && weight > 0) : [];
+  return colors.length >= 3 && weights.length === colors.length ? colors.slice(0, POKEMON_PALETTE_SIZE) : null;
+}
+
+export function persistedPokemonPaletteWeights(metadata: unknown, sprite: string): number[] | null {
+  const colors = persistedPokemonPalette(metadata, sprite); const record = metadataRecord(metadata);
+  if (!colors || !Array.isArray(record.paletteWeights)) return null;
+  const weights = record.paletteWeights.slice(0, colors.length) as number[]; const total = weights.reduce((sum, weight) => sum + weight, 0);
+  return total > 0 ? weights.map((weight) => weight / total) : null;
 }
 
 function hex(red: number, green: number, blue: number): string {
@@ -31,6 +39,10 @@ function distance(left: readonly number[], right: readonly number[]): number {
 /** Extracts a stable, alpha-aware palette from a sprite. Quantization keeps
  * results deterministic across machines and ignores transparent/background pixels. */
 export async function extractPokemonPalette(source: Uint8Array, size = POKEMON_PALETTE_SIZE): Promise<string[]> {
+  return (await extractPokemonPaletteData(source, size)).colors;
+}
+
+export async function extractPokemonPaletteData(source: Uint8Array, size = POKEMON_PALETTE_SIZE): Promise<{ colors: string[]; weights: number[] }> {
   const decoded = await sharp(source).ensureAlpha().resize(96, 96, { fit: 'inside', withoutEnlargement: true, kernel: sharp.kernel.nearest }).raw().toBuffer({ resolveWithObject: true });
   const buckets = new Map<string, { rgb: [number, number, number]; count: number }>();
   for (let index = 0; index < decoded.data.length; index += 4) {
@@ -48,7 +60,14 @@ export async function extractPokemonPalette(source: Uint8Array, size = POKEMON_P
     if (selected.length >= size) break;
   }
   if (selected.length < 3) throw new Error('El sprite no contiene una paleta suficientemente variada.');
-  return selected.map((color) => hex(...color));
+  const totals = selected.map(() => 0);
+  for (const bucket of ranked) {
+    let closest = 0;
+    for (let index = 1; index < selected.length; index += 1) if (distance(bucket.rgb, selected[index]!) < distance(bucket.rgb, selected[closest]!)) closest = index;
+    totals[closest] = totals[closest]! + bucket.count;
+  }
+  const total = totals.reduce((sum, count) => sum + count, 0);
+  return { colors: selected.map((color) => hex(...color)), weights: totals.map((count) => count / total) };
 }
 
 export async function countPersistedPokemonPalettes(): Promise<number> {
@@ -65,8 +84,8 @@ export async function syncMissingPokemonPalettes(http = new SyncHttpClient()): P
       try {
         const url = new URL(row.sprite);
         if (url.protocol !== 'https:' || url.hostname !== 'raw.githubusercontent.com') throw new Error('Untrusted sprite source');
-        const palette = await extractPokemonPalette(await http.bytes(row.sprite, `sprite palette ${row.id}`));
-        const metadata = { ...metadataRecord(row.metadata), palette, paletteVersion: POKEMON_PALETTE_VERSION, paletteSpriteUrl: row.sprite };
+        const { colors: palette, weights: paletteWeights } = await extractPokemonPaletteData(await http.bytes(row.sprite, `sprite palette ${row.id}`));
+        const metadata = { ...metadataRecord(row.metadata), palette, paletteWeights, paletteVersion: POKEMON_PALETTE_VERSION, paletteSpriteUrl: row.sprite };
         await prisma.pokemon.update({ where: { id: row.id }, data: { metadata: metadata as Prisma.InputJsonValue } });
         updated += 1;
       } catch (error) {

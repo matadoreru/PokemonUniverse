@@ -8,10 +8,16 @@ import { useServerOffset } from '../hooks/useServerTime';
 const typeLabels: Record<string, string> = { normal: 'Normal', fire: 'Fuego', water: 'Agua', electric: 'Eléctrico', grass: 'Planta', ice: 'Hielo', fighting: 'Lucha', poison: 'Veneno', ground: 'Tierra', flying: 'Volador', psychic: 'Psíquico', bug: 'Bicho', rock: 'Roca', ghost: 'Fantasma', dragon: 'Dragón', dark: 'Siniestro', steel: 'Acero', fairy: 'Hada' };
 
 function comparedValue(type: PokemonTriviaQuestionType | null, details: PokemonTriviaOptionDetails): string | null {
+  if (type === 'HP') return `PS ${details.hp}`;
+  if (type === 'ATTACK') return `Ataque ${details.attack}`;
+  if (type === 'DEFENSE') return `Defensa ${details.defense}`;
+  if (type === 'SPECIAL_ATTACK') return `Ataque Esp. ${details.specialAttack}`;
+  if (type === 'SPECIAL_DEFENSE') return `Defensa Esp. ${details.specialDefense}`;
   if (type === 'BST') return `BST ${details.baseStatTotal}`;
   if (type === 'SPEED') return `Velocidad ${details.speed}`;
   if (type === 'HEIGHT' && details.heightDecimeters !== undefined) return `${(details.heightDecimeters / 10).toLocaleString('es-ES')} m`;
   if (type === 'WEIGHT' && details.weightHectograms !== undefined) return `${(details.weightHectograms / 10).toLocaleString('es-ES')} kg`;
+  if (type === 'DEX_NUMBER') return `Pokédex N.º ${details.nationalDexNumber}`;
   if (type === 'GENERATION') return `Generación ${details.generation}`;
   if (type === 'TYPE') return details.types.map((type) => typeLabels[type] ?? type).join(' · ');
   return null;

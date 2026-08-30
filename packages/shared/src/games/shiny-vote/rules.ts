@@ -4,6 +4,14 @@ import type { ShinyVoteState } from './types.js';
 
 export function emptyShinyStats() { return { votes: 0, correctVotes: 0 }; }
 
+const SHINY_ORDER_BONUSES = [3, 2, 1] as const;
+
+/** Every correct answer earns one point; the first three correct voters earn
+ * an additional 3/2/1 points according to their authoritative vote time. */
+export function shinyPointsForOrder(solveOrder: number): number {
+  return 1 + (SHINY_ORDER_BONUSES[solveOrder - 1] ?? 0);
+}
+
 export function buildShinyResults(state: ShinyVoteState): GameResults {
   if (state.phase !== 'GAME_RESULTS') throw new Error('Results are unavailable before the game finishes');
   return buildRankedResults(state.playerIds.map((playerId) => ({

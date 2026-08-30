@@ -13,13 +13,13 @@ const options = [
 ];
 
 function room(game: PokemonTriviaPublicState, playerState: unknown): RoomView {
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'pokemon-trivia', selectedGameConfig: { generations: [1], roundSeconds: 20, rounds: 10, optionCount: 3, questionTypes: ['TYPE'] }, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], serverNow: 1_000, game, gamePlayerState: playerState, members: [
+  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'pokemon-trivia', selectedGameConfig: { generations: [1], roundSeconds: 20, rounds: 10, optionCount: 3, difficulty: 'NORMAL', questionTypes: ['TYPE'] }, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], serverNow: 1_000, game, gamePlayerState: playerState, members: [
     { id: 'p1', displayName: 'Eru', avatar: { type: 'PRESET', value: 'trainer-berry' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 0 },
     { id: 'p2', displayName: 'Ana', avatar: { type: 'PRESET', value: 'trainer-aqua' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 0 },
   ] } as unknown as RoomView;
 }
 
-const active: PokemonTriviaPublicState = { gameId: 'pokemon-trivia', phase: 'ROUND_ACTIVE', roundNumber: 1, totalRounds: 10, prompt: '¿Cuál es de tipo Eléctrico?', questionType: 'TYPE', options, answeredPlayerIds: [], scores: { p1: 0, p2: 0 }, roundStartedAt: 1_000, roundEndsAt: 21_000, nextTransitionAt: null, lastRound: null, results: null };
+const active: PokemonTriviaPublicState = { gameId: 'pokemon-trivia', phase: 'ROUND_ACTIVE', roundNumber: 1, totalRounds: 10, difficulty: 'NORMAL', prompt: '¿Cuál es de tipo Eléctrico?', questionType: 'TYPE', options, answeredPlayerIds: [], scores: { p1: 0, p2: 0 }, roundStartedAt: 1_000, roundEndsAt: 21_000, nextTransitionAt: null, lastRound: null, results: null };
 
 describe('Pokémon Trivia UI', () => {
   it('renders a responsive answer surface without leaking the correct option', () => {
@@ -29,7 +29,7 @@ describe('Pokémon Trivia UI', () => {
   });
 
   it('renders all configurable question categories', () => {
-    const markup = renderToStaticMarkup(createElement(PokemonTriviaConfigPanel, { config: { generations: [1], roundSeconds: 20, rounds: 10, optionCount: 4, questionTypes: ['TYPE', 'BST'] }, disabled: false, onChange: async () => undefined }));
+    const markup = renderToStaticMarkup(createElement(PokemonTriviaConfigPanel, { config: { generations: [1], roundSeconds: 20, rounds: 10, optionCount: 4, difficulty: 'NORMAL', questionTypes: ['TYPE', 'BST'] }, disabled: false, onChange: async () => undefined }));
     expect(markup).toContain('Categorías de preguntas'); expect(markup).toContain('Velocidad'); expect(markup).toContain('Peso');
   });
 

@@ -3,7 +3,7 @@ import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGam
 import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultShinyVoteConfig, shinyVoteConfigSchema, type ShinyVoteConfig } from './config.js';
 import { fakeShinyPalette, useShinySpriteForFake } from './filters.js';
-import { buildShinyResults, emptyShinyStats } from './rules.js';
+import { buildShinyResults, emptyShinyStats, shinyPointsForOrder } from './rules.js';
 import {
   SHINY_OPTION_IDS,
   shinyVoteActionSchema,
@@ -102,16 +102,20 @@ function beginRound(state: ShinyVoteState, context: GameContext): ShinyVoteState
 
 function revealRound(state: ShinyVoteState, context: GameContext): ShinyVoteState {
   if (state.phase !== 'ROUND_ACTIVE' || !state.correctOptionId) return state;
-  const correctPlayerIds = state.playerIds.filter((playerId) => state.votes[playerId]?.optionId === state.correctOptionId);
+  const playerOrder = new Map(state.playerIds.map((playerId, index) => [playerId, index]));
+  const correctPlayerIds = state.playerIds
+    .filter((playerId) => state.votes[playerId]?.optionId === state.correctOptionId)
+    .sort((left, right) => state.votes[left]!.votedAt - state.votes[right]!.votedAt || playerOrder.get(left)! - playerOrder.get(right)!);
   const missedPlayerIds = state.playerIds.filter((playerId) => state.votes[playerId]?.optionId !== state.correctOptionId);
   const correctSet = new Set(correctPlayerIds);
   const scores = { ...state.scores };
   const playerStats = { ...state.playerStats };
+  const correctOrder = new Map(correctPlayerIds.map((playerId, index) => [playerId, index + 1]));
   for (const playerId of state.playerIds) {
     const previous = state.playerStats[playerId] ?? emptyShinyStats();
     const voted = Boolean(state.votes[playerId]);
     const correct = correctSet.has(playerId);
-    scores[playerId] = (scores[playerId] ?? 0) + (correct ? 1 : 0);
+    scores[playerId] = (scores[playerId] ?? 0) + (correct ? shinyPointsForOrder(correctOrder.get(playerId)!) : 0);
     playerStats[playerId] = {
       votes: previous.votes + (voted ? 1 : 0),
       correctVotes: previous.correctVotes + (correct ? 1 : 0),

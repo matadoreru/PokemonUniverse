@@ -1,7 +1,7 @@
 import type { Pokemon, PokemonType } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { advanceTimedRound, resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
-import { defaultPokemonTriviaConfig, pokemonTriviaConfigSchema, type PokemonTriviaConfig, type PokemonTriviaQuestionType } from './config.js';
+import { defaultPokemonTriviaConfig, pokemonTriviaConfigSchema, POKEMON_TRIVIA_QUESTION_TYPES, type PokemonTriviaConfig, type PokemonTriviaQuestionType } from './config.js';
 import { buildPokemonTriviaResults, emptyPokemonTriviaStats, pokemonTriviaPoints } from './rules.js';
 import { POKEMON_TRIVIA_OPTION_IDS, pokemonTriviaActionSchema, type PokemonTriviaAction, type PokemonTriviaOption, type PokemonTriviaPlayerState, type PokemonTriviaPublicState, type PokemonTriviaQuestion, type PokemonTriviaRoundResult, type PokemonTriviaState } from './types.js';
 
@@ -18,6 +18,10 @@ const manifest = {
     { key: 'fastestCorrectMs', label: 'Respuesta más rápida', aggregation: 'MIN' as const, format: 'DURATION_MS' as const },
     { key: 'correctTimeTotalMs', label: 'Tiempo total en aciertos', aggregation: 'SUM' as const, format: 'DURATION_MS' as const },
     { key: 'pointsFromRounds', label: 'Puntos en rondas', aggregation: 'SUM' as const },
+    ...POKEMON_TRIVIA_QUESTION_TYPES.flatMap((type) => [
+      { key: `${type.toLowerCase()}Answers`, label: `${type}: respuestas`, aggregation: 'SUM' as const },
+      { key: `${type.toLowerCase()}Correct`, label: `${type}: aciertos`, aggregation: 'SUM' as const },
+    ]),
   ], derivedMetrics: [
     { key: 'accuracy', label: 'Precisión', kind: 'PERCENT' as const, numerator: 'correct', denominator: ['answers'] },
     { key: 'averageCorrectTime', label: 'Tiempo medio', kind: 'AVERAGE' as const, numerator: 'correctTimeTotalMs', denominator: ['correct'], format: 'DURATION_MS' as const },
@@ -48,7 +52,7 @@ function categoricalQuestion(type: 'TYPE' | 'GENERATION', pool: readonly Pokemon
   for (const target of targets) {
     const discriminator = type === 'TYPE' ? takeRandom(target.types, 1, random)[0] : target.generation;
     if (discriminator === undefined) continue;
-    const key = `${type}:${String(discriminator)}:${target.id}`;
+    const key = `${type}:${String(discriminator)}`;
     if (used.has(key)) continue;
     const distractors = pool.filter((candidate) => candidate.id !== target.id && (type === 'TYPE' ? !candidate.types.includes(discriminator as PokemonType) : candidate.generation !== discriminator));
     const selected = takeRandom(distractors, count - 1, random);
@@ -61,22 +65,32 @@ function categoricalQuestion(type: 'TYPE' | 'GENERATION', pool: readonly Pokemon
 }
 
 const numericQuestions: Record<Exclude<PokemonTriviaQuestionType, 'TYPE' | 'GENERATION'>, { prompt: string; value(pokemon: Pokemon): number | undefined; fact(value: number): string }> = {
+  HP: { prompt: '¿Cuál tiene más PS base?', value: (pokemon) => pokemon.hp, fact: (value) => `PS base ${value}` },
+  ATTACK: { prompt: '¿Cuál tiene mayor Ataque base?', value: (pokemon) => pokemon.attack, fact: (value) => `Ataque base ${value}` },
+  DEFENSE: { prompt: '¿Cuál tiene mayor Defensa base?', value: (pokemon) => pokemon.defense, fact: (value) => `Defensa base ${value}` },
+  SPECIAL_ATTACK: { prompt: '¿Cuál tiene mayor Ataque Especial base?', value: (pokemon) => pokemon.specialAttack, fact: (value) => `Ataque Especial base ${value}` },
+  SPECIAL_DEFENSE: { prompt: '¿Cuál tiene mayor Defensa Especial base?', value: (pokemon) => pokemon.specialDefense, fact: (value) => `Defensa Especial base ${value}` },
   BST: { prompt: '¿Cuál tiene el mayor total de estadísticas base?', value: (pokemon) => pokemon.baseStatTotal, fact: (value) => `BST ${value}` },
   SPEED: { prompt: '¿Cuál tiene mayor Velocidad base?', value: (pokemon) => pokemon.speed, fact: (value) => `Velocidad base ${value}` },
   HEIGHT: { prompt: '¿Cuál es el Pokémon más alto?', value: (pokemon) => pokemon.heightDecimeters, fact: (value) => `${(value / 10).toLocaleString('es-ES')} m` },
   WEIGHT: { prompt: '¿Cuál es el Pokémon más pesado?', value: (pokemon) => pokemon.weightHectograms, fact: (value) => `${(value / 10).toLocaleString('es-ES')} kg` },
+  DEX_NUMBER: { prompt: '¿Cuál aparece más tarde en la Pokédex Nacional?', value: (pokemon) => pokemon.nationalDexNumber, fact: (value) => `N.º ${value} de la Pokédex Nacional` },
 };
 
-function numericQuestion(type: keyof typeof numericQuestions, pool: readonly Pokemon[], count: number, used: ReadonlySet<string>, random: () => number): PokemonTriviaQuestion | null {
+function numericQuestion(type: keyof typeof numericQuestions, pool: readonly Pokemon[], count: number, difficulty: PokemonTriviaConfig['difficulty'], used: ReadonlySet<string>, random: () => number): PokemonTriviaQuestion | null {
   const definition = numericQuestions[type];
   const valid = pool.filter((pokemon) => (definition.value(pokemon) ?? 0) > 0);
   for (const target of takeRandom(valid, valid.length, random)) {
-    const targetValue = definition.value(target)!; const key = `${type}:${target.id}`;
-    if (used.has(key)) continue;
+    const targetValue = definition.value(target)!;
     const lower = valid.filter((candidate) => candidate.id !== target.id && definition.value(candidate)! < targetValue);
-    const selected = takeRandom(lower, count - 1, random);
+    const ordered = lower.sort((left, right) => definition.value(right)! - definition.value(left)!);
+    const easyStart = Math.min(Math.floor(ordered.length / 2), Math.max(0, ordered.length - (count - 1)));
+    const candidates = difficulty === 'HARD' ? ordered.slice(0, Math.max(count * 3, count - 1)) : difficulty === 'EASY' ? ordered.slice(easyStart) : ordered;
+    const selected = takeRandom(candidates, count - 1, random);
     if (selected.length !== count - 1) continue;
     const built = makeOptions([target, ...selected], target.id, random);
+    const key = `${type}:${built.options.map((option) => option.pokemon.id).sort().join(',')}`;
+    if (used.has(key)) continue;
     return { key, type, prompt: definition.prompt, ...built, fact: `${target.name}: ${definition.fact(targetValue)}.` };
   }
   return null;
@@ -85,10 +99,13 @@ function numericQuestion(type: keyof typeof numericQuestions, pool: readonly Pok
 export function createPokemonTriviaQuestion(state: PokemonTriviaState, context: GameContext): PokemonTriviaQuestion {
   const pool = state.poolIds.map((id) => context.pokemon.byId(id)).filter((pokemon): pokemon is Pokemon => Boolean(pokemon));
   const used = new Set(state.usedQuestionKeys);
-  for (const type of takeRandom(state.config.questionTypes, state.config.questionTypes.length, context.random)) {
+  const recent = new Set(state.recentQuestionTypes.slice(-2));
+  const preferred = state.config.questionTypes.filter((type) => !recent.has(type));
+  const typeOrder = preferred.length ? [...takeRandom(preferred, preferred.length, context.random), ...takeRandom(state.config.questionTypes.filter((type) => recent.has(type)), recent.size, context.random)] : takeRandom(state.config.questionTypes, state.config.questionTypes.length, context.random);
+  for (const type of typeOrder) {
     const question = type === 'TYPE' || type === 'GENERATION'
       ? categoricalQuestion(type, pool, state.config.optionCount, used, context.random)
-      : numericQuestion(type, pool, state.config.optionCount, used, context.random);
+      : numericQuestion(type, pool, state.config.optionCount, state.config.difficulty, used, context.random);
     if (question) return question;
   }
   if (used.size) return createPokemonTriviaQuestion({ ...state, usedQuestionKeys: [] }, context);
@@ -97,7 +114,7 @@ export function createPokemonTriviaQuestion(state: PokemonTriviaState, context: 
 
 function beginRound(state: PokemonTriviaState, context: GameContext): PokemonTriviaState {
   const question = createPokemonTriviaQuestion(state, context);
-  return { ...state, phase: 'ROUND_ACTIVE', roundNumber: state.roundNumber + 1, question, usedQuestionKeys: [...state.usedQuestionKeys, question.key], answers: {}, roundStartedAt: context.now, roundEndsAt: context.now + state.config.roundSeconds * 1_000, nextTransitionAt: null, lastRound: null };
+  return { ...state, phase: 'ROUND_ACTIVE', roundNumber: state.roundNumber + 1, question, usedQuestionKeys: [...state.usedQuestionKeys, question.key], recentQuestionTypes: [...state.recentQuestionTypes.slice(-1), question.type], answers: {}, roundStartedAt: context.now, roundEndsAt: context.now + state.config.roundSeconds * 1_000, nextTransitionAt: null, lastRound: null };
 }
 
 function revealRound(state: PokemonTriviaState, context: GameContext): PokemonTriviaState {
@@ -107,11 +124,11 @@ function revealRound(state: PokemonTriviaState, context: GameContext): PokemonTr
     const answer = state.answers[playerId]; const correct = answer?.optionId === state.question.correctOptionId; const previous = playerStats[playerId] ?? emptyPokemonTriviaStats();
     const elapsedMs = answer ? answer.answeredAt - state.roundStartedAt! : 0; const earned = correct ? pokemonTriviaPoints(state.roundStartedAt!, state.config.roundSeconds, answer!.answeredAt) : 0;
     points[playerId] = earned; scores[playerId] = (scores[playerId] ?? 0) + earned;
-    playerStats[playerId] = { ...previous, answers: previous.answers + (answer ? 1 : 0), correct: previous.correct + (correct ? 1 : 0), incorrect: previous.incorrect + (answer && !correct ? 1 : 0), unanswered: previous.unanswered + (answer ? 0 : 1), fastestCorrectMs: correct ? (previous.fastestCorrectMs <= 0 ? elapsedMs : Math.min(previous.fastestCorrectMs, elapsedMs)) : previous.fastestCorrectMs, correctTimeTotalMs: previous.correctTimeTotalMs + (correct ? elapsedMs : 0), pointsFromRounds: previous.pointsFromRounds + earned };
+    playerStats[playerId] = { ...previous, answers: previous.answers + (answer ? 1 : 0), correct: previous.correct + (correct ? 1 : 0), incorrect: previous.incorrect + (answer && !correct ? 1 : 0), unanswered: previous.unanswered + (answer ? 0 : 1), fastestCorrectMs: correct ? (previous.fastestCorrectMs <= 0 ? elapsedMs : Math.min(previous.fastestCorrectMs, elapsedMs)) : previous.fastestCorrectMs, correctTimeTotalMs: previous.correctTimeTotalMs + (correct ? elapsedMs : 0), pointsFromRounds: previous.pointsFromRounds + earned, categoryAnswers: { ...previous.categoryAnswers, [state.question.type]: previous.categoryAnswers[state.question.type] + (answer ? 1 : 0) }, categoryCorrect: { ...previous.categoryCorrect, [state.question.type]: previous.categoryCorrect[state.question.type] + (correct ? 1 : 0) } };
   }
   const optionDetails = Object.fromEntries(state.question.options.map((option) => {
     const pokemon = context.pokemon.byId(option.pokemon.id)!;
-    return [option.id, { generation: pokemon.generation, types: [...pokemon.types], hp: pokemon.hp, attack: pokemon.attack, defense: pokemon.defense, specialAttack: pokemon.specialAttack, specialDefense: pokemon.specialDefense, speed: pokemon.speed, baseStatTotal: pokemon.baseStatTotal, ...(pokemon.heightDecimeters !== undefined ? { heightDecimeters: pokemon.heightDecimeters } : {}), ...(pokemon.weightHectograms !== undefined ? { weightHectograms: pokemon.weightHectograms } : {}) }];
+    return [option.id, { nationalDexNumber: pokemon.nationalDexNumber, generation: pokemon.generation, types: [...pokemon.types], hp: pokemon.hp, attack: pokemon.attack, defense: pokemon.defense, specialAttack: pokemon.specialAttack, specialDefense: pokemon.specialDefense, speed: pokemon.speed, baseStatTotal: pokemon.baseStatTotal, ...(pokemon.heightDecimeters !== undefined ? { heightDecimeters: pokemon.heightDecimeters } : {}), ...(pokemon.weightHectograms !== undefined ? { weightHectograms: pokemon.weightHectograms } : {}) }];
   })) as PokemonTriviaRoundResult['optionDetails'];
   return { ...state, phase: 'ROUND_RESULTS', scores, playerStats, roundEndsAt: null, nextTransitionAt: context.now + POKEMON_TRIVIA_REVEAL_MS, lastRound: { correctOptionId: state.question.correctOptionId, fact: state.question.fact, answers: { ...state.answers }, points, optionDetails } };
 }
@@ -124,7 +141,7 @@ export const pokemonTriviaGame: MiniGameModule<PokemonTriviaConfig, PokemonTrivi
     const parsed = pokemonTriviaConfigSchema.parse(config); const pool = context.pokemon.forGenerations(parsed.generations).filter((pokemon) => pokemon.id && pokemon.name && pokemon.sprite);
     if (pool.length < parsed.optionCount) throw new Error(`Se necesitan al menos ${parsed.optionCount} Pokémon en las generaciones seleccionadas.`);
     const playerIds = context.players.map((player) => player.id);
-    return { phase: 'GAME_STARTING', config: parsed, playerIds, poolIds: pool.map((pokemon) => pokemon.id), roundNumber: 0, question: null, usedQuestionKeys: [], answers: {}, scores: Object.fromEntries(playerIds.map((id) => [id, 0])), playerStats: Object.fromEntries(playerIds.map((id) => [id, emptyPokemonTriviaStats()])), roundStartedAt: null, roundEndsAt: null, nextTransitionAt: null, lastRound: null };
+    return { phase: 'GAME_STARTING', config: parsed, playerIds, poolIds: pool.map((pokemon) => pokemon.id), roundNumber: 0, question: null, usedQuestionKeys: [], recentQuestionTypes: [], answers: {}, scores: Object.fromEntries(playerIds.map((id) => [id, 0])), playerStats: Object.fromEntries(playerIds.map((id) => [id, emptyPokemonTriviaStats()])), roundStartedAt: null, roundEndsAt: null, nextTransitionAt: null, lastRound: null };
   },
   start(state, context) { if (state.phase !== 'GAME_STARTING') throw new Error('La partida ya ha comenzado.'); return beginRound(state, context); },
   handleAction(state, playerId, action, context): GameActionResult<PokemonTriviaState> {
@@ -141,7 +158,7 @@ export const pokemonTriviaGame: MiniGameModule<PokemonTriviaConfig, PokemonTrivi
   handlePresenceChange(state, context) { return resolveWhenRequiredPlayersComplete(state, context, state.playerIds, (id) => Boolean(state.answers[id]), revealRound); },
   getPublicState(state) {
     const reveal = state.phase === 'ROUND_RESULTS' || state.phase === 'GAME_RESULTS';
-    return { gameId: 'pokemon-trivia', phase: state.phase, roundNumber: state.roundNumber, totalRounds: state.config.rounds, prompt: state.question?.prompt ?? null, questionType: state.question?.type ?? null, options: state.question?.options ?? [], answeredPlayerIds: Object.keys(state.answers), scores: state.scores, roundStartedAt: state.roundStartedAt, roundEndsAt: state.roundEndsAt, nextTransitionAt: state.nextTransitionAt, lastRound: reveal ? state.lastRound : null, results: state.phase === 'GAME_RESULTS' ? buildPokemonTriviaResults(state) : null };
+    return { gameId: 'pokemon-trivia', phase: state.phase, roundNumber: state.roundNumber, totalRounds: state.config.rounds, difficulty: state.config.difficulty, prompt: state.question?.prompt ?? null, questionType: state.question?.type ?? null, options: state.question?.options ?? [], answeredPlayerIds: Object.keys(state.answers), scores: state.scores, roundStartedAt: state.roundStartedAt, roundEndsAt: state.roundEndsAt, nextTransitionAt: state.nextTransitionAt, lastRound: reveal ? state.lastRound : null, results: state.phase === 'GAME_RESULTS' ? buildPokemonTriviaResults(state) : null };
   },
   getPlayerState(state, playerId, context): PokemonTriviaPlayerState {
     const participant = state.playerIds.includes(playerId);

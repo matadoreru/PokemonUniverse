@@ -64,11 +64,13 @@ export async function loadPokemonCatalog(): Promise<InMemoryPokemonCatalog> {
   const pokemon = rows.map((row) => {
     const metadata = row.metadata && typeof row.metadata === 'object' && !Array.isArray(row.metadata) ? row.metadata as Record<string, unknown> : {};
     const palette = Array.isArray(metadata.palette) ? metadata.palette.filter((color): color is string => typeof color === 'string' && /^#[0-9a-f]{6}$/i.test(color)) : [];
+    const paletteWeights = Array.isArray(metadata.paletteWeights) ? metadata.paletteWeights.filter((weight): weight is number => typeof weight === 'number' && Number.isFinite(weight) && weight > 0) : [];
     return {
       id: row.id, nationalDexNumber: row.nationalDexNumber, name: row.name,
       generation: row.generation, isDefault: row.isDefault, sprite: row.sprite,
       ...(typeof metadata.shinySprite === 'string' ? { shinySprite: metadata.shinySprite } : {}),
       ...(palette.length >= 3 ? { palette } : {}),
+      ...(palette.length >= 3 && paletteWeights.length === palette.length ? { paletteWeights } : {}),
       hp: row.hp, attack: row.attack, defense: row.defense, specialAttack: row.specialAttack,
       specialDefense: row.specialDefense, speed: row.speed, baseStatTotal: row.baseStatTotal,
       heightDecimeters: row.heightDecimeters, weightHectograms: row.weightHectograms,

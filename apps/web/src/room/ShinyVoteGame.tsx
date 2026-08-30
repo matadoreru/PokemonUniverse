@@ -1,4 +1,4 @@
-import type { RoomMemberView, RoomView, ShinyOption, ShinyOptionId, ShinyVotePlayerState, ShinyVotePublicState } from '@pokemon-universe/shared';
+import { shinyPointsForOrder, type RoomMemberView, type RoomView, type ShinyOption, type ShinyOptionId, type ShinyVotePlayerState, type ShinyVotePublicState } from '@pokemon-universe/shared';
 import { Check, Clock3, Eye, LoaderCircle, Sparkles, Trophy, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Avatar } from '../components/Avatar';
@@ -7,11 +7,11 @@ import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 const API_ORIGIN = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
 const imageSource = (source: string) => source.startsWith('/api/') ? `${API_ORIGIN}${source}` : source;
 
-function PlayerPill({ member, result }: { member: RoomMemberView; result?: 'correct' | 'wrong' | undefined }) {
+function PlayerPill({ member, result, points }: { member: RoomMemberView; result?: 'correct' | 'wrong' | undefined; points?: number }) {
   return <span className={`inline-flex max-w-full items-center gap-1.5 rounded-full border px-2 py-1 text-xs font-extrabold ${result === 'correct' ? 'border-leaf/40 bg-leaf/15 text-leaf' : result === 'wrong' ? 'border-berry/30 bg-berry/10 text-berry' : 'border-ink/10 bg-surface-raised/90'}`}>
     <Avatar name={member.displayName} avatar={member.avatar} size="xs" />
     <span className="truncate">{member.displayName}</span>
-    {result === 'correct' && <span>✓ +1</span>}{result === 'wrong' && <span>✗</span>}
+    {result === 'correct' && <span>✓ +{points ?? 1}</span>}{result === 'wrong' && <span>✗</span>}
   </span>;
 }
 
@@ -30,13 +30,14 @@ function PokemonSprite({ option }: { option: ShinyOption }) {
   </div>;
 }
 
-function OptionCard({ option, voters, selected, disabled, reveal, correct, onSelect }: {
+function OptionCard({ option, voters, selected, disabled, reveal, correct, correctPoints, onSelect }: {
   option: ShinyOption;
   voters: RoomMemberView[];
   selected: boolean;
   disabled: boolean;
   reveal: boolean;
   correct: boolean;
+  correctPoints: ReadonlyMap<string, number>;
   onSelect(): void;
 }) {
   const tone = reveal
@@ -47,7 +48,7 @@ function OptionCard({ option, voters, selected, disabled, reveal, correct, onSel
     <PokemonSprite key={option.sprite} option={option} />
     <strong className="w-full truncate text-center font-display text-lg">{option.pokemonName}</strong>
     <div className="mt-3 flex max-h-28 min-h-9 w-full flex-wrap content-start gap-1.5 overflow-y-auto rounded-xl bg-ink/[.035] p-2">
-      {voters.length > 0 ? voters.map((member) => <PlayerPill key={member.id} member={member} result={reveal ? (correct ? 'correct' : 'wrong') : undefined} />) : <span className="m-auto text-sm font-bold text-ink/50">—</span>}
+      {voters.length > 0 ? voters.map((member) => <PlayerPill key={member.id} member={member} result={reveal ? (correct ? 'correct' : 'wrong') : undefined} points={correctPoints.get(member.id) ?? 1} />) : <span className="m-auto text-sm font-bold text-ink/50">—</span>}
     </div>
   </button>;
 }
@@ -73,6 +74,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
   const canVote = active && participant && !ownVote;
   const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
   const ranking = [...game.playerIds].sort((a, b) => (game.scores[b] ?? 0) - (game.scores[a] ?? 0) || (members.get(a)?.displayName ?? '').localeCompare(members.get(b)?.displayName ?? ''));
+  const correctPoints = new Map((game.lastRound?.correctPlayerIds ?? []).map((id, index) => [id, shinyPointsForOrder(index + 1)]));
   const optionGrid = game.options.length === 3 ? 'md:grid-cols-3' : game.options.length === 4 ? 'sm:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3';
 
   useEffect(() => { setDraft(null); setError(''); }, [game.roundNumber]);
@@ -96,7 +98,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
       <div>
         <div className={`grid grid-cols-1 gap-4 ${optionGrid}`}>{game.options.map((option) => {
           const voters = Object.entries(game.votes).filter(([, vote]) => vote.optionId === option.id).map(([playerId]) => members.get(playerId)).filter((member): member is RoomMemberView => Boolean(member));
-          return <OptionCard key={option.id} option={option} voters={voters} selected={(ownVote?.optionId ?? draft) === option.id} disabled={!canVote || submitting} reveal={reveal} correct={game.correctOptionId === option.id} onSelect={() => setDraft(option.id)} />;
+          return <OptionCard key={option.id} option={option} voters={voters} selected={(ownVote?.optionId ?? draft) === option.id} disabled={!canVote || submitting} reveal={reveal} correct={game.correctOptionId === option.id} correctPoints={correctPoints} onSelect={() => setDraft(option.id)} />;
         })}</div>
         {canVote && <div className="sticky bottom-3 z-10 mx-auto mt-4 flex max-w-lg flex-col items-center gap-2 rounded-2xl border border-ink/10 bg-surface/95 p-3 shadow-card sm:flex-row"><p className="flex-1 text-center font-bold sm:text-left">{draft ? <>Has elegido <strong className="text-berry">{draft}</strong>.</> : 'Selecciona una tarjeta para preparar tu voto.'}</p><button className="btn-primary whitespace-nowrap" disabled={!draft || submitting} onClick={() => void confirmVote()}>{submitting ? 'Confirmando…' : `Confirmar voto${draft ? ` ${draft}` : ''}`}</button></div>}
         {ownVote && active && <div className="mt-4 rounded-2xl border border-leaf/40 bg-leaf/10 p-3 text-center font-extrabold text-leaf"><Check className="mr-2 inline" size={20} />Tu voto por {ownVote.optionId} está bloqueado en el servidor.</div>}
@@ -104,7 +106,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
         {error && <p className="mt-3 rounded-xl bg-berry/10 p-3 text-center font-bold text-berry">{error}</p>}
       </div>
       <aside className="space-y-4">
-        <div className="card !p-4"><h2 className="mb-3 font-display text-xl font-bold">{reveal ? 'Resultados de ronda' : game.showVotes ? 'Pendientes' : 'Jugadores'}</h2>{reveal ? <div className="space-y-2">{game.playerIds.map((id) => { const member = members.get(id); const vote = game.votes[id]; const correct = vote?.optionId === game.correctOptionId; return <div key={id} className="flex items-center gap-2 rounded-xl bg-ink/[.04] px-3 py-2 text-sm"><span className="min-w-0 flex-1 truncate font-extrabold">{member?.displayName ?? id}</span><span className="font-bold text-ink/65">→ {vote?.optionId ?? 'sin voto'}</span><strong className={correct ? 'text-leaf' : 'text-berry'}>{correct ? '✓ +1' : '✗'}</strong></div>; })}</div> : game.showVotes ? <div className="flex flex-wrap gap-2">{game.pendingPlayerIds.length > 0 ? game.pendingPlayerIds.map((id) => { const member = members.get(id); return member ? <PlayerPill key={id} member={member} /> : null; }) : <p className="font-extrabold text-leaf">✓ Todos han votado</p>}</div> : <div className="space-y-2">{game.playerIds.map((id) => <div key={id} className="flex items-center gap-2 rounded-xl bg-ink/[.04] px-3 py-2 text-sm"><span className="min-w-0 flex-1 truncate font-extrabold">{members.get(id)?.displayName ?? id}</span>{game.votedPlayerIds.includes(id) ? <strong className="text-leaf">✓ Ha votado</strong> : <span className="font-bold text-ink/55">…</span>}</div>)}</div>}</div>
+        <div className="card !p-4"><h2 className="mb-3 font-display text-xl font-bold">{reveal ? 'Resultados de ronda' : game.showVotes ? 'Pendientes' : 'Jugadores'}</h2>{reveal ? <div className="space-y-2">{game.playerIds.map((id) => { const member = members.get(id); const vote = game.votes[id]; const correct = vote?.optionId === game.correctOptionId; return <div key={id} className="flex items-center gap-2 rounded-xl bg-ink/[.04] px-3 py-2 text-sm"><span className="min-w-0 flex-1 truncate font-extrabold">{member?.displayName ?? id}</span><span className="font-bold text-ink/65">→ {vote?.optionId ?? 'sin voto'}</span><strong className={correct ? 'text-leaf' : 'text-berry'}>{correct ? `✓ +${correctPoints.get(id) ?? 1}` : '✗'}</strong></div>; })}</div> : game.showVotes ? <div className="flex flex-wrap gap-2">{game.pendingPlayerIds.length > 0 ? game.pendingPlayerIds.map((id) => { const member = members.get(id); return member ? <PlayerPill key={id} member={member} /> : null; }) : <p className="font-extrabold text-leaf">✓ Todos han votado</p>}</div> : <div className="space-y-2">{game.playerIds.map((id) => <div key={id} className="flex items-center gap-2 rounded-xl bg-ink/[.04] px-3 py-2 text-sm"><span className="min-w-0 flex-1 truncate font-extrabold">{members.get(id)?.displayName ?? id}</span>{game.votedPlayerIds.includes(id) ? <strong className="text-leaf">✓ Ha votado</strong> : <span className="font-bold text-ink/55">…</span>}</div>)}</div>}</div>
         <div className="card !p-4"><h2 className="mb-3 flex items-center gap-2 font-display text-xl font-bold"><Trophy size={19} className="text-berry" /> Clasificación</h2><div className="space-y-2">{ranking.map((id, index) => <div key={id} className="flex items-center gap-2 rounded-xl bg-ink/[.04] px-3 py-2"><span className="w-5 font-display font-bold">{index + 1}</span><span className="min-w-0 flex-1 truncate font-extrabold">{members.get(id)?.displayName ?? id}</span><strong className="text-berry">{game.scores[id] ?? 0}</strong></div>)}</div></div>
       </aside>
     </div>

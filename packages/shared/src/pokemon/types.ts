@@ -79,6 +79,8 @@ export interface Pokemon {
   color?: string;
   /** Dominant sprite colours extracted and persisted exclusively by DataSync. */
   palette?: readonly string[];
+  /** Approximate visible share of each palette colour, normalized by DataSync. */
+  paletteWeights?: readonly number[];
   /** Official Spanish names for normal and hidden abilities, intentionally kept together. */
   abilities?: string[];
   names?: LocalizedText;

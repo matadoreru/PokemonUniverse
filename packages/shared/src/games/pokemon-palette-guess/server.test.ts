@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { GameContext, Pokemon, PokemonCatalog } from '../../index.js';
 import { defaultPokemonPaletteGuessConfig } from './config.js';
 import { pokemonPaletteScore } from './rules.js';
-import { POKEMON_PALETTE_COOLDOWN_MS, pokemonPaletteGuessGame, pokemonPalettePool } from './server.js';
+import { buildPokemonPaletteHints, POKEMON_PALETTE_COOLDOWN_MS, pokemonPaletteGuessGame, pokemonPalettePool } from './server.js';
 import type { PokemonPaletteGuessPlayerState, PokemonPaletteGuessState } from './types.js';
 
 const palette = ['#183048', '#d86048', '#f0c030', '#4878c0', '#78a848', '#d8d8d8'];
@@ -17,14 +17,30 @@ const guess = (state: PokemonPaletteGuessState, playerId: string, pokemonId: str
 
 describe('Adivina por la Paleta', () => {
   it('validates configuration and excludes Pokémon without enough persisted colours', () => {
-    expect(() => pokemonPaletteGuessGame.configSchema.parse({ ...defaultPokemonPaletteGuessConfig, paletteSize: 2 })).toThrow();
-    expect(pokemonPalettePool({ ...defaultPokemonPaletteGuessConfig, generations: [1], paletteSize: 5 }, setup().context).map(({ id }) => id)).toEqual(['pikachu', 'raichu']);
-    expect(pokemonPalettePool({ ...defaultPokemonPaletteGuessConfig, generations: [1], paletteSize: 3 }, setup().context)).toHaveLength(3);
+    expect(() => pokemonPaletteGuessGame.configSchema.parse({ ...defaultPokemonPaletteGuessConfig, paletteSize: 4 })).toThrow();
+    expect(pokemonPaletteGuessGame.configSchema.parse({ ...defaultPokemonPaletteGuessConfig, paletteSize: 8 }).paletteSize).toBe(8);
+    expect(pokemonPalettePool({ ...defaultPokemonPaletteGuessConfig, generations: [1], paletteSize: 5 }, setup().context).map(({ id }) => id)).toEqual(['pikachu', 'raichu', 'mew']);
+    expect(pokemonPalettePool({ ...defaultPokemonPaletteGuessConfig, generations: [1], paletteSize: 8 }, setup().context)).toHaveLength(3);
+  });
+
+  it('shows every persisted colour when the palette has fewer colours than the configured maximum', () => {
+    const fixture = setup(8); fixture.state.targetPokemonId = 'mew';
+    expect(pokemonPaletteGuessGame.getPublicState(fixture.state, fixture.context).colors).toEqual(palette.slice(0, 3));
   });
 
   it('publishes only palette clues and keeps target identity private through reconnect', () => {
     const fixture = setup(); const projection = { game: pokemonPaletteGuessGame.getPublicState(fixture.state, fixture.context), player: pokemonPaletteGuessGame.getPlayerState(fixture.state, 'p1', fixture.context) };
     expect(projection.game.colors).toEqual(palette.slice(0, 5)); expect(JSON.stringify(projection)).not.toMatch(/pikachu|targetPokemonId|\/25\.png/i);
+  });
+
+  it('publishes configured hints and incorrect attempts without revealing the target', () => {
+    const fixture = setup(); fixture.state.config = { ...fixture.state.config, hintsEnabled: true, hintKinds: ['GENERATION', 'TYPE', 'EVOLUTION'] };
+    const hints = buildPokemonPaletteHints(pokemon[0]!, fixture.state.config.hintKinds);
+    let state = guess(fixture.state, 'p1', 'raichu', fixture.context).state;
+    const projection = pokemonPaletteGuessGame.getPublicState(state, fixture.context);
+    expect(projection.hints).toEqual(hints);
+    expect(projection.attempts).toMatchObject([{ playerId: 'p1', guessedPokemon: { name: 'Raichu' } }]);
+    expect(JSON.stringify(projection)).not.toMatch(/pikachu|targetPokemonId|\/25\.png/i);
   });
 
   it('supports attempts, cooldown and server-time scoring', () => {

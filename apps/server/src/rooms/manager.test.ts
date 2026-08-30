@@ -288,7 +288,7 @@ describe('room multi-game lifecycle', () => {
     const host = identity('trivia-host', 'Host'); const guest = identity('trivia-guest', 'Ana');
     const created = (manager as any).create(socket('trivia-host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
     (manager as any).join(socket('trivia-guest-socket'), guest, room.code); (manager as any).selectGame(host.id, 'pokemon-trivia');
-    (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 20, rounds: 1, optionCount: 3, questionTypes: ['TYPE'] }); startReady(manager, room, host.id);
+    (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 20, rounds: 1, optionCount: 3, difficulty: 'NORMAL', questionTypes: ['TYPE'] }); startReady(manager, room, host.id);
     const correctOptionId = room.game!.state.question.correctOptionId; const publicView = (manager as any).view(room, host.id); const serialized = JSON.stringify(publicView);
     expect(publicView.game.options).toHaveLength(3); expect(serialized).not.toContain('correctOptionId'); expect(serialized).not.toContain('fact');
     (manager as any).broadcast(room); expect(JSON.stringify(transport.emit.mock.calls)).not.toContain('correctOptionId');
@@ -299,7 +299,7 @@ describe('room multi-game lifecycle', () => {
   it('plays Adivina por la Paleta without exposing the target through Socket.IO or reconnect', () => {
     const transport = io(); const manager = new RoomManager(transport as any, catalog); const host = identity('palette-host', 'Host'); const guest = identity('palette-guest', 'Ana');
     const created = (manager as any).create(socket('palette-host-socket'), host, 8); const room = manager.store.get(created.room.code)!; (manager as any).join(socket('palette-guest-socket'), guest, room.code);
-    (manager as any).selectGame(host.id, 'pokemon-palette-guess'); (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 20, rounds: 1, paletteSize: 5 }); startReady(manager, room, host.id);
+    (manager as any).selectGame(host.id, 'pokemon-palette-guess'); (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 20, rounds: 1, paletteSize: 5, hintsEnabled: false, hintKinds: ['GENERATION', 'TYPE', 'EVOLUTION'] }); startReady(manager, room, host.id);
     const target = room.game!.state.targetPokemonId; const view = (manager as any).view(room, host.id); expect(view.game.colors).toHaveLength(5); expect(JSON.stringify(view)).not.toContain(target); expect(JSON.stringify(view)).not.toContain('targetPokemonId');
     (manager as any).broadcast(room); expect(JSON.stringify(transport.emit.mock.calls)).not.toContain(target);
     const reconnect = boundSocket('palette-host-reconnected', host); manager.bind(reconnect as any); const restored = reconnect.emit.mock.calls.find(([event]) => event === 'session:restored')?.[1]; expect(restored.game.colors).toHaveLength(5); expect(JSON.stringify(restored)).not.toContain(target);

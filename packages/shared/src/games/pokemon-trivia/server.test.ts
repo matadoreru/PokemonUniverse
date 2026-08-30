@@ -58,7 +58,14 @@ describe('Pokémon Trivia', () => {
     fixture.setNow(6_000); let state = answer(fixture.state, 'p1', correct, fixture.context).state;
     fixture.setNow(7_000); state = answer(state, 'p2', wrong, fixture.context).state;
     expect(state.phase).toBe('ROUND_RESULTS'); expect(state.lastRound?.points.p1).toBe(pokemonTriviaPoints(1_000, 20, 6_000)); expect(state.lastRound?.points.p2).toBe(0);
-    expect(state.playerStats.p1).toMatchObject({ answers: 1, correct: 1 }); expect(state.playerStats.p2).toMatchObject({ answers: 1, incorrect: 1 });
+    expect(state.playerStats.p1).toMatchObject({ answers: 1, correct: 1 }); expect(state.playerStats.p1?.categoryCorrect.TYPE).toBe(1); expect(state.playerStats.p2).toMatchObject({ answers: 1, incorrect: 1 });
+  });
+
+  it('rotates categories instead of serving near-identical consecutive questions', () => {
+    const fixture = setup(['HP', 'ATTACK', 'DEFENSE']); const firstType = fixture.state.question?.type;
+    fixture.setNow(fixture.state.roundEndsAt!); let state = pokemonTriviaGame.handleTimeout(fixture.state, fixture.context);
+    fixture.setNow(state.nextTransitionAt!); state = pokemonTriviaGame.handleTimeout(state, fixture.context);
+    expect(state.question?.type).not.toBe(firstType);
   });
 
   it('stops waiting for disconnected players and preserves accepted answers across reconnect', () => {

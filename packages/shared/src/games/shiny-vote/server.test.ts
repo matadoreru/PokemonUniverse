@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { GameContext, GamePlayer, Pokemon, PokemonCatalog, ShinyCandidateMode, ShinyOptionId, ShinyVoteState } from '../../index.js';
-import { shinyVoteGame } from '../../index.js';
+import { shinyPointsForOrder, shinyVoteGame } from '../../index.js';
 
 const pokemon: Pokemon[] = Array.from({ length: 8 }, (_, index) => ({
   id: `pokemon-${index + 1}`,
@@ -36,6 +36,10 @@ function vote(state: ShinyVoteState, playerId: string, optionId: ShinyOptionId, 
 }
 
 describe('public shiny voting', () => {
+  it('rewards correct answers by authoritative solve order', () => {
+    expect([1, 2, 3, 4, 5].map(shinyPointsForOrder)).toEqual([4, 3, 2, 1, 1]);
+  });
+
   it('supports four versions of the same Pokémon with distinct server-side palettes', () => {
     const fixture = setup();
     expect(new Set(fixture.state.options.map((option) => option.pokemonId)).size).toBe(1);
@@ -83,7 +87,7 @@ describe('public shiny voting', () => {
     expect(state.phase).toBe('ROUND_RESULTS');
     expect(state.options).toHaveLength(6);
     expect(state.correctOptionId).toBe('A');
-    expect(state.scores).toEqual({ pedro: 0, ana: 1, marta: 1 });
+    expect(state.scores).toEqual({ pedro: 0, ana: 4, marta: 3 });
   });
 
   it('keeps only the correct answer secret while votes and pending players are public', () => {
@@ -149,12 +153,14 @@ describe('public shiny voting', () => {
   it('does not wait for a disconnected non-voter and preserves an accepted vote after disconnect', () => {
     const fixture = setup();
     let state = vote(fixture.state, 'marta', 'A', fixture.context).state;
+    fixture.setNow(1_100);
     fixture.context.players[2]!.connected = false;
     state = vote(state, 'pedro', 'A', fixture.context).state;
     state = vote(state, 'ana', 'B', fixture.context).state;
     expect(state.phase).toBe('ROUND_RESULTS');
     expect(state.lastRound?.votes.marta?.optionId).toBe('A');
-    expect(state.scores.marta).toBe(1);
+    expect(state.lastRound?.correctPlayerIds).toEqual(['marta', 'pedro']);
+    expect(state.scores.marta).toBe(4);
 
     const second = setup();
     second.context.players[2]!.connected = false;
@@ -172,7 +178,7 @@ describe('public shiny voting', () => {
 
     expect(state.phase).toBe('ROUND_RESULTS');
     expect(state.nextTransitionAt).toBe(fixture.context.now + 3_000);
-    expect(state.scores).toEqual({ pedro: 1, ana: 0, marta: 1 });
+    expect(state.scores).toEqual({ pedro: 4, ana: 0, marta: 3 });
     expect(state.lastRound?.correctPlayerIds).toEqual(['pedro', 'marta']);
     const publicState = shinyVoteGame.getPublicState(state, fixture.context);
     expect(publicState.correctOptionId).toBe('A');

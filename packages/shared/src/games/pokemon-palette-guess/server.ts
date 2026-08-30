@@ -1,9 +1,9 @@
 import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
-import { defaultPokemonPaletteGuessConfig, pokemonPaletteGuessConfigSchema, type PokemonPaletteGuessConfig } from './config.js';
+import { defaultPokemonPaletteGuessConfig, pokemonPaletteGuessConfigSchema, type PokemonPaletteGuessConfig, type PokemonPaletteHintKind } from './config.js';
 import { buildPokemonPaletteResults, emptyPokemonPaletteStats, pokemonPaletteScore } from './rules.js';
-import { pokemonPaletteGuessActionSchema, type PokemonPaletteGuessAction, type PokemonPaletteGuessPlayerState, type PokemonPaletteGuessPublicState, type PokemonPaletteGuessState } from './types.js';
+import { pokemonPaletteGuessActionSchema, type PokemonPaletteGuessAction, type PokemonPaletteGuessPlayerState, type PokemonPaletteGuessPublicState, type PokemonPaletteGuessState, type PokemonPaletteHint } from './types.js';
 
 export const POKEMON_PALETTE_COOLDOWN_MS = 1_000;
 export const POKEMON_PALETTE_REVEAL_MS = 4_000;
@@ -16,8 +16,24 @@ const manifest = {
 } as const;
 
 const revealPokemon = (pokemon: Pokemon) => ({ id: pokemon.id, name: pokemon.name, sprite: pokemon.sprite });
+function visiblePalette(pokemon: Pokemon, size: number): { colors: string[]; weights: number[] } {
+  const colors = [...(pokemon.palette ?? [])].slice(0, size);
+  const source = pokemon.paletteWeights?.length === pokemon.palette?.length ? [...pokemon.paletteWeights].slice(0, size) : colors.map(() => 1);
+  const total = source.reduce((sum, weight) => sum + weight, 0);
+  return { colors, weights: source.map((weight) => weight / total) };
+}
 export function pokemonPalettePool(config: PokemonPaletteGuessConfig, context: GameContext): Pokemon[] {
-  return context.pokemon.forGenerations(config.generations).filter((pokemon) => pokemon.id && pokemon.name && pokemon.sprite && (pokemon.palette?.length ?? 0) >= config.paletteSize);
+  return context.pokemon.forGenerations(config.generations).filter((pokemon) => pokemon.id && pokemon.name && pokemon.sprite && (pokemon.palette?.length ?? 0) >= 3);
+}
+export function buildPokemonPaletteHints(pokemon: Pokemon, kinds: readonly PokemonPaletteHintKind[]): PokemonPaletteHint[] {
+  return kinds.flatMap((kind): PokemonPaletteHint[] => {
+    if (kind === 'GENERATION') return [{ kind, value: pokemon.generation }];
+    if (kind === 'TYPE') return [{ kind, values: [...pokemon.types] }];
+    if (kind === 'TYPE_COUNT') return [{ kind, value: pokemon.types.length }];
+    if (kind === 'EVOLUTION' && pokemon.evolutionStage && pokemon.evolutionStageCount) return [{ kind, stage: pokemon.evolutionStage, stages: pokemon.evolutionStageCount }];
+    if (kind === 'CATEGORY' && pokemon.legendaryStatus) return [{ kind, value: pokemon.legendaryStatus }];
+    return [];
+  });
 }
 function beginRound(state: PokemonPaletteGuessState, context: GameContext): PokemonPaletteGuessState {
   const pool = state.poolIds.map((id) => context.pokemon.byId(id)).filter((pokemon): pokemon is Pokemon => Boolean(pokemon)); let candidates = pool.filter((pokemon) => !state.usedPokemonIds.includes(pokemon.id)); if (!candidates.length) candidates = pool;
@@ -27,7 +43,8 @@ function beginRound(state: PokemonPaletteGuessState, context: GameContext): Poke
 function resolveRound(state: PokemonPaletteGuessState, context: GameContext): PokemonPaletteGuessState {
   if (state.phase !== 'ROUND_ACTIVE') return state; const target = context.pokemon.byId(state.targetPokemonId ?? ''); if (!target?.palette) throw new Error('La paleta objetivo ya no está disponible.');
   const playerStats = { ...state.playerStats }; for (const playerId of state.playerIds) if (!state.solves[playerId]) { const stats = playerStats[playerId] ?? emptyPokemonPaletteStats(); playerStats[playerId] = { ...stats, missed: stats.missed + 1 }; }
-  return { ...state, phase: 'ROUND_RESULTS', playerStats, roundEndsAt: null, nextTransitionAt: context.now + POKEMON_PALETTE_REVEAL_MS, lastRound: { pokemon: { ...revealPokemon(target), generation: target.generation }, palette: [...target.palette].slice(0, state.config.paletteSize), solves: { ...state.solves }, attemptCounts: { ...state.attemptCounts } } };
+  const palette = visiblePalette(target, state.config.paletteSize);
+  return { ...state, phase: 'ROUND_RESULTS', playerStats, roundEndsAt: null, nextTransitionAt: context.now + POKEMON_PALETTE_REVEAL_MS, lastRound: { pokemon: { ...revealPokemon(target), generation: target.generation }, palette: palette.colors, paletteWeights: palette.weights, solves: { ...state.solves }, attemptCounts: { ...state.attemptCounts } } };
 }
 const finish = (state: PokemonPaletteGuessState): PokemonPaletteGuessState => ({ ...state, phase: 'GAME_RESULTS', roundEndsAt: null, nextTransitionAt: null });
 
@@ -52,8 +69,8 @@ export const pokemonPaletteGuessGame: MiniGameModule<PokemonPaletteGuessConfig, 
   handleTimeout(state, context) { return advanceTimedRound(state, context, { beginNext: beginRound, resolveActive: resolveRound, finish, isComplete: (current) => current.roundNumber >= current.config.rounds }); },
   handlePresenceChange(state, context) { return resolveWhenRequiredPlayersComplete(state, context, state.playerIds, (id) => Boolean(state.solves[id]), resolveRound); },
   getPublicState(state, context) {
-    const target = context.pokemon.byId(state.targetPokemonId ?? ''); const reveal = state.phase === 'ROUND_RESULTS' || state.phase === 'GAME_RESULTS';
-    return { gameId: 'pokemon-palette-guess', phase: state.phase, roundNumber: state.roundNumber, totalRounds: state.config.rounds, colors: state.phase === 'ROUND_ACTIVE' ? [...(target?.palette ?? [])].slice(0, state.config.paletteSize) : state.lastRound?.palette ?? [], attempts: state.attempts, solvedPlayers: Object.entries(state.solves).map(([playerId, solve]) => ({ playerId, solveOrder: solve.solveOrder })).sort((left, right) => left.solveOrder - right.solveOrder), scores: state.scores, roundStartedAt: state.roundStartedAt, roundEndsAt: state.roundEndsAt, nextTransitionAt: state.nextTransitionAt, lastRound: state.lastRound && reveal ? { pokemon: { name: state.lastRound.pokemon.name, sprite: state.lastRound.pokemon.sprite, generation: state.lastRound.pokemon.generation }, palette: state.lastRound.palette, solves: state.lastRound.solves, attemptCounts: state.lastRound.attemptCounts } : null, results: state.phase === 'GAME_RESULTS' ? buildPokemonPaletteResults(state) : null };
+    const target = context.pokemon.byId(state.targetPokemonId ?? ''); const reveal = state.phase === 'ROUND_RESULTS' || state.phase === 'GAME_RESULTS'; const palette = target ? visiblePalette(target, state.config.paletteSize) : { colors: [], weights: [] };
+    return { gameId: 'pokemon-palette-guess', phase: state.phase, roundNumber: state.roundNumber, totalRounds: state.config.rounds, colors: state.phase === 'ROUND_ACTIVE' ? palette.colors : state.lastRound?.palette ?? [], colorWeights: state.phase === 'ROUND_ACTIVE' ? palette.weights : state.lastRound?.paletteWeights ?? [], hints: state.phase === 'ROUND_ACTIVE' && state.config.hintsEnabled && target ? buildPokemonPaletteHints(target, state.config.hintKinds) : [], attempts: state.attempts, solvedPlayers: Object.entries(state.solves).map(([playerId, solve]) => ({ playerId, solveOrder: solve.solveOrder })).sort((left, right) => left.solveOrder - right.solveOrder), scores: state.scores, roundStartedAt: state.roundStartedAt, roundEndsAt: state.roundEndsAt, nextTransitionAt: state.nextTransitionAt, lastRound: state.lastRound && reveal ? { pokemon: { name: state.lastRound.pokemon.name, sprite: state.lastRound.pokemon.sprite, generation: state.lastRound.pokemon.generation }, palette: state.lastRound.palette, paletteWeights: state.lastRound.paletteWeights, solves: state.lastRound.solves, attemptCounts: state.lastRound.attemptCounts } : null, results: state.phase === 'GAME_RESULTS' ? buildPokemonPaletteResults(state) : null };
   },
   getPlayerState(state, playerId, context): PokemonPaletteGuessPlayerState { const solve = state.solves[playerId]; const participant = state.playerIds.includes(playerId); return { role: participant ? 'PLAYER' : 'SPECTATOR', canGuess: state.phase === 'ROUND_ACTIVE' && participant && isPlayerRequired(context, playerId) && !solve, solved: Boolean(solve), solveOrder: solve?.solveOrder ?? null, cooldownUntil: state.cooldownUntil[playerId] ?? null, roundPoints: solve?.points ?? 0, attemptCount: state.attemptCounts[playerId] ?? 0, lastAttempt: state.lastAttemptResult[playerId] ?? null }; },
   isFinished(state) { return state.phase === 'GAME_RESULTS'; }, getResults(state) { return buildPokemonPaletteResults(state); },

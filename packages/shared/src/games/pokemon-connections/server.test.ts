@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { GameContext, Pokemon, PokemonCatalog } from '../../index.js';
-import { generateConnectionsPuzzle } from './catalog.js';
+import { connectionCategoryCatalog, generateConnectionsPuzzle } from './catalog.js';
 import { defaultPokemonConnectionsConfig, pokemonConnectionsConfigSchema } from './config.js';
 import { completionBonus } from './rules.js';
 import { POKEMON_CONNECTIONS_REVEAL_MS, pokemonConnectionsGame } from './server.js';
@@ -71,6 +71,27 @@ describe('Pokémon Connections puzzle construction and config', () => {
     expect(generated.source).toBe('DYNAMIC');
     expect(generated.groups).toHaveLength(3);
     expect(new Set(generated.groups.flatMap((group) => group.pokemon.map((pokemon) => pokemon.id)))).toHaveLength(9);
+  });
+
+  it('offers a substantially broader curated catalog', () => {
+    expect(connectionCategoryCatalog.length).toBeGreaterThanOrEqual(55);
+    expect(new Set(connectionCategoryCatalog.map((category) => category.id)).size).toBe(connectionCategoryCatalog.length);
+    for (const category of connectionCategoryCatalog) {
+      if (!category.pokemonIds) continue;
+      expect(category.pokemonIds.length).toBeGreaterThanOrEqual(3);
+      expect(new Set(category.pokemonIds).size).toBe(category.pokemonIds.length);
+    }
+  });
+
+  it('mixes dynamic puzzles into the standard board and does not repeat their exact key', () => {
+    const entries = [...classicIds, ...companionIds].map((id, index) => mon(id, index));
+    const context: GameContext = { players: [], pokemon: catalog(entries), now: 1_000, random: () => 0.75 };
+    const first = generateConnectionsPuzzle(context, { generations: [1], groupSize: 4, pokemonCount: 16 });
+    const second = generateConnectionsPuzzle(context, {
+      generations: [1], groupSize: 4, pokemonCount: 16, usedPuzzleKeys: [first.key],
+    });
+    expect(first.source).toBe('DYNAMIC');
+    expect(second.key).not.toBe(first.key);
   });
 
   it('avoids recently used categories when another curated puzzle is available', () => {

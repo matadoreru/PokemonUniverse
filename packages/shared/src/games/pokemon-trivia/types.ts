@@ -20,6 +20,7 @@ export interface PokemonTriviaQuestion {
 }
 
 export interface PokemonTriviaOptionDetails {
+  nationalDexNumber: number;
   generation: number;
   types: string[];
   hp: number;
@@ -54,6 +55,8 @@ export interface PokemonTriviaStats {
   fastestCorrectMs: number;
   correctTimeTotalMs: number;
   pointsFromRounds: number;
+  categoryAnswers: Record<PokemonTriviaQuestionType, number>;
+  categoryCorrect: Record<PokemonTriviaQuestionType, number>;
 }
 
 export interface PokemonTriviaState {
@@ -64,6 +67,7 @@ export interface PokemonTriviaState {
   roundNumber: number;
   question: PokemonTriviaQuestion | null;
   usedQuestionKeys: string[];
+  recentQuestionTypes: PokemonTriviaQuestionType[];
   answers: Record<string, PokemonTriviaAnswer>;
   scores: Record<string, number>;
   playerStats: Record<string, PokemonTriviaStats>;
@@ -78,6 +82,7 @@ export interface PokemonTriviaPublicState {
   phase: GamePhase;
   roundNumber: number;
   totalRounds: number;
+  difficulty: PokemonTriviaConfig['difficulty'];
   prompt: string | null;
   questionType: PokemonTriviaQuestionType | null;
   options: PokemonTriviaOption[];
