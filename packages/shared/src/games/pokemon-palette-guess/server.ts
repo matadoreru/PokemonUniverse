@@ -18,7 +18,8 @@ const manifest = {
 const revealPokemon = (pokemon: Pokemon) => ({ id: pokemon.id, name: pokemon.name, sprite: pokemon.sprite });
 function visiblePalette(pokemon: Pokemon, size: number): { colors: string[]; weights: number[] } {
   const colors = [...(pokemon.palette ?? [])].slice(0, size);
-  const source = pokemon.paletteWeights?.length === pokemon.palette?.length ? [...pokemon.paletteWeights].slice(0, size) : colors.map(() => 1);
+  const persistedWeights = pokemon.paletteWeights;
+  const source = persistedWeights && persistedWeights.length === pokemon.palette?.length ? [...persistedWeights].slice(0, size) : colors.map(() => 1);
   const total = source.reduce((sum, weight) => sum + weight, 0);
   return { colors, weights: source.map((weight) => weight / total) };
 }

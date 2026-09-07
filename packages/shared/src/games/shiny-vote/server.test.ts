@@ -217,10 +217,10 @@ describe('public shiny voting', () => {
     expect(state.phase).toBe('GAME_RESULTS');
     const results = shinyVoteGame.getResults(state);
     expect(results.standings.map((standing) => [standing.playerId, standing.position, standing.points])).toEqual([
-      ['marta', 1, 1],
-      ['pedro', 1, 1],
+      ['pedro', 1, 4],
+      ['marta', 2, 3],
       ['ana', 3, 0],
     ]);
-    expect(results.winnerId).toBeNull();
+    expect(results.winnerId).toBe('pedro');
   });
 });

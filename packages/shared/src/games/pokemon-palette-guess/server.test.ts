@@ -30,13 +30,13 @@ describe('Adivina por la Paleta', () => {
 
   it('publishes only palette clues and keeps target identity private through reconnect', () => {
     const fixture = setup(); const projection = { game: pokemonPaletteGuessGame.getPublicState(fixture.state, fixture.context), player: pokemonPaletteGuessGame.getPlayerState(fixture.state, 'p1', fixture.context) };
-    expect(projection.game.colors).toEqual(palette.slice(0, 5)); expect(JSON.stringify(projection)).not.toMatch(/pikachu|targetPokemonId|\/25\.png/i);
+    expect(projection.game.colors).toEqual(palette.slice(0, 5)); expect(projection.game.colorWeights).toEqual(Array(5).fill(0.2)); expect(JSON.stringify(projection)).not.toMatch(/pikachu|targetPokemonId|\/25\.png/i);
   });
 
   it('publishes configured hints and incorrect attempts without revealing the target', () => {
     const fixture = setup(); fixture.state.config = { ...fixture.state.config, hintsEnabled: true, hintKinds: ['GENERATION', 'TYPE', 'EVOLUTION'] };
     const hints = buildPokemonPaletteHints(pokemon[0]!, fixture.state.config.hintKinds);
-    let state = guess(fixture.state, 'p1', 'raichu', fixture.context).state;
+    const state = guess(fixture.state, 'p1', 'raichu', fixture.context).state;
     const projection = pokemonPaletteGuessGame.getPublicState(state, fixture.context);
     expect(projection.hints).toEqual(hints);
     expect(projection.attempts).toMatchObject([{ playerId: 'p1', guessedPokemon: { name: 'Raichu' } }]);
