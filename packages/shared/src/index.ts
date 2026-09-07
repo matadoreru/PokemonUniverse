@@ -9,7 +9,6 @@ export * from './scoring.js';
 export * from './pokemon/types.js';
 export * from './tcg/types.js';
 export * from './games/contracts.js';
-export * from './games/discovery.js';
 export * from './games/config.js';
 export * from './games/config-readiness.js';
 export * from './games/infrastructure/timing.js';

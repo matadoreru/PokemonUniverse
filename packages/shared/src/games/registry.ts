@@ -1,5 +1,4 @@
-import type { GameCatalogManifest, MiniGameModule } from './contracts.js';
-import { discoveryMetadataFor } from './discovery.js';
+import type { MiniGameManifest, MiniGameModule } from './contracts.js';
 import { pokedexDistanceGame } from './pokedex-distance/server.js';
 import { shinyVoteGame } from './shiny-vote/server.js';
 import { pokemonImpostorGame } from './pokemon-impostor/server.js';
@@ -40,9 +39,9 @@ export class GameRegistry {
   }
   get(id: string): RegisteredGame | undefined { return this.games.get(id); }
   list(): RegisteredGame[] { return [...this.games.values()]; }
-  manifests(): GameCatalogManifest[] {
+  manifests(): MiniGameManifest[] {
     return this.list()
-      .map((game) => ({ ...game.manifest, ...discoveryMetadataFor(game.manifest.id) }))
+      .map((game) => ({ ...game.manifest }))
       .sort((left, right) => Number(Boolean(right.recommended)) - Number(Boolean(left.recommended)));
   }
 }
