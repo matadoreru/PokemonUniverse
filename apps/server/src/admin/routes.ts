@@ -2,6 +2,8 @@ import { ADMIN_PAGE_SIZE, gameRegistry, type AdminActiveRoom, type AdminGameHist
 import { Router } from 'express';
 import { z } from 'zod';
 import { requireAdmin } from '../auth/middleware.js';
+import { createAdminChangelogRouter } from '../changelog/routes.js';
+import type { ChangelogService } from '../changelog/service.js';
 import { prisma } from '../db.js';
 import type { DataSyncService } from '../data-sync/service.js';
 
@@ -14,9 +16,10 @@ function paginated<T>(items: T[], page: number, total: number): PaginatedAdminRe
   return { items, page, pageSize: ADMIN_PAGE_SIZE, total, totalPages: Math.max(1, Math.ceil(total / ADMIN_PAGE_SIZE)) };
 }
 
-export function createAdminRouter(getActiveRooms: () => AdminActiveRoom[], dataSync?: DataSyncService): Router {
+export function createAdminRouter(getActiveRooms: () => AdminActiveRoom[], dataSync: DataSyncService | undefined, changelog: ChangelogService): Router {
   const router = Router();
   router.use(requireAdmin);
+  router.use('/changelog', createAdminChangelogRouter(changelog));
 
   router.get('/summary', async (_req, res, next) => {
     try {

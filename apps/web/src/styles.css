@@ -36,10 +36,10 @@
   --shadow-card: 0 1px 3px rgb(24 33 49 / .12);
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; scrollbar-color: rgb(var(--color-ink) / .28) rgb(var(--color-surface-raised)); scrollbar-width: thin; }
 html { min-width: 320px; overflow-x: clip; background: rgb(var(--color-cream)); }
 body { margin: 0; min-width: 320px; min-height: 100vh; overflow-x: clip; background: rgb(var(--color-cream)); }
-button, input, select, textarea { min-width: 0; font: inherit; }
+button, input, select, textarea { min-width: 0; font: inherit; caret-color: rgb(var(--color-aqua)); }
 button { -webkit-tap-highlight-color: transparent; }
 img, video, canvas { max-width: 100%; }
 fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
@@ -47,6 +47,9 @@ h1, h2, h3 { text-wrap: balance; }
 p { text-wrap: pretty; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid rgb(var(--color-focus)); outline-offset: 3px; }
 ::selection { color: rgb(var(--color-night)); background: rgb(var(--color-aqua)); }
+::-webkit-scrollbar { width: .65rem; height: .65rem; }
+::-webkit-scrollbar-track { background: rgb(var(--color-surface-raised)); }
+::-webkit-scrollbar-thumb { border: 2px solid rgb(var(--color-surface-raised)); border-radius: 999px; background: rgb(var(--color-ink) / .28); }
 
 :root[data-theme='light'] .text-aqua { color: rgb(12 111 141); }
 :root[data-theme='light'] .text-berry { color: rgb(188 39 75); }

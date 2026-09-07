@@ -123,6 +123,33 @@ export interface MiniGameManifest {
   profileStats: ProfileStatsDefinition;
 }
 
+export const GAME_CATEGORIES = ['GUESSING', 'KNOWLEDGE', 'SOCIAL', 'DRAWING', 'AUDIO', 'COMPETITIVE', 'TEAMS'] as const;
+export type GameCategory = typeof GAME_CATEGORIES[number];
+export const GAME_CATEGORY_LABELS: Record<GameCategory, string> = {
+  GUESSING: 'Adivinar',
+  KNOWLEDGE: 'Conocimiento',
+  SOCIAL: 'Social',
+  DRAWING: 'Dibujo',
+  AUDIO: 'Audio',
+  COMPETITIVE: 'Competitivo',
+  TEAMS: 'Equipos',
+};
+
+export interface GameDiscoveryMetadata {
+  categories: readonly GameCategory[];
+  estimatedMinutes: number;
+  howToPlay: readonly string[];
+  /** Curated marker for games introduced in the current product era. */
+  newRelease?: boolean;
+}
+
+export interface GameCatalogManifest extends MiniGameManifest, GameDiscoveryMetadata {}
+
+export interface GameCatalogEntry extends GameCatalogManifest {
+  defaultConfig: unknown;
+  gamesPlayed: number;
+}
+
 export function supportsPlayerCount(manifest: MiniGameManifest, playerCount: number): boolean {
   return playerCount >= manifest.minPlayers && (manifest.maxPlayers === undefined || playerCount <= manifest.maxPlayers);
 }

@@ -1,14 +1,20 @@
 import type { AdminActiveRoom, AdminDataSyncItem, AdminGameHistoryItem, AdminRoomHistoryItem, AdminSummary, AdminUserItem, PaginatedAdminResponse } from '@pokemon-universe/shared';
-import { Activity, CircleAlert, Database, DoorOpen, Gamepad2, RefreshCw, Search, ShieldCheck, Users } from 'lucide-react';
+import { Activity, CircleAlert, Database, DoorOpen, FileClock, Gamepad2, RefreshCw, Search, ShieldCheck, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { AdminChangelogPanel } from '../admin/AdminChangelogPanel';
 import { api } from '../lib/api';
 
-type Tab = 'rooms' | 'games' | 'users' | 'sync';
+type Tab = 'rooms' | 'games' | 'users' | 'changelog' | 'sync';
 type RoomMode = 'active' | 'history';
 const emptyPage = <T,>(): PaginatedAdminResponse<T> => ({ items: [], page: 1, pageSize: 20, total: 0, totalPages: 1 });
+function initialTab(): Tab {
+  if (typeof window === 'undefined') return 'rooms';
+  const requested = new URLSearchParams(window.location.search).get('tab');
+  return requested === 'games' || requested === 'users' || requested === 'changelog' || requested === 'sync' ? requested : 'rooms';
+}
 
 export function AdminPage() {
-  const [tab, setTab] = useState<Tab>('rooms');
+  const [tab, setTab] = useState<Tab>(initialTab);
   const [roomMode, setRoomMode] = useState<RoomMode>('active');
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
@@ -22,12 +28,24 @@ export function AdminPage() {
   const [syncing, setSyncing] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [changelogDirty, setChangelogDirty] = useState(false);
+
+  function changeTab(next: Tab) {
+    if (next === tab) return;
+    if (tab === 'changelog' && changelogDirty && !window.confirm('Hay cambios del changelog sin guardar. ¿Quieres descartarlos?')) return;
+    setTab(next);
+  }
 
   useEffect(() => { setPage(1); setStatus(''); setSearch(''); }, [tab, roomMode]);
 
   useEffect(() => {
     let active = true;
     const timer = setTimeout(() => {
+      if (tab === 'changelog') {
+        setLoading(false);
+        void api<AdminSummary>('/admin/summary').then((data) => { if (active) setSummary(data); }).catch((caught: Error) => { if (active) setError(caught.message); });
+        return;
+      }
       if (tab === 'sync') {
         setLoading(true); setError('');
         void api<{ sources: AdminDataSyncItem[] }>('/admin/data-sync').then((data) => { if (active) setSyncSources(data.sources); }).catch((caught: Error) => { if (active) setError(caught.message); }).finally(() => { if (active) setLoading(false); });
@@ -88,7 +106,7 @@ export function AdminPage() {
 
   return <section className="page-shell">
     <header className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-      <div><span className="label">Acceso restringido</span><h1 className="font-display text-3xl font-bold sm:text-4xl">Actividad del universo</h1><p className="mt-1 font-semibold text-ink/65">Consulta operativa de salas, partidas y cuentas registradas.</p></div>
+      <div><h1 className="font-display text-3xl font-bold sm:text-4xl">Administración de Pokémon Universe</h1><p className="mt-1 font-semibold text-ink/65">Gestiona versiones y consulta la actividad de salas, partidas y cuentas.</p></div>
       {summary && <p className="text-sm font-bold text-ink/55">Actualizado {formatTime(summary.updatedAt)}</p>}
     </header>
 
@@ -100,7 +118,7 @@ export function AdminPage() {
     </dl>
 
     <div className="mb-4 flex gap-1 overflow-x-auto border-b border-ink/10" role="tablist" aria-label="Secciones de administración">
-      {([['rooms', 'Salas', DoorOpen], ['games', 'Partidas', Gamepad2], ['users', 'Usuarios', Users], ['sync', 'Datos', Database]] as const).map(([id, label, Icon]) => <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)} className={`inline-flex min-h-11 min-w-max items-center gap-2 border-b-2 px-4 text-sm font-extrabold transition ${tab === id ? 'border-berry text-ink' : 'border-transparent text-ink/55 hover:text-ink'}`}><Icon size={18} />{label}</button>)}
+      {([['rooms', 'Salas', DoorOpen], ['changelog', 'Changelog', FileClock], ['games', 'Partidas', Gamepad2], ['users', 'Usuarios', Users], ['sync', 'Datos', Database]] as const).map(([id, label, Icon]) => <button key={id} role="tab" aria-selected={tab === id} onClick={() => changeTab(id)} className={`inline-flex min-h-11 min-w-max items-center gap-2 border-b-2 px-4 text-sm font-extrabold transition ${tab === id ? 'border-berry text-ink' : 'border-transparent text-ink/55 hover:text-ink'}`}><Icon size={18} />{label}</button>)}
     </div>
 
     {tab === 'rooms' && <div className="mb-4 inline-flex rounded-xl bg-ink/[.06] p-1" aria-label="Tipo de salas">
@@ -108,7 +126,7 @@ export function AdminPage() {
       <button className={`min-h-11 rounded-lg px-4 text-sm font-extrabold ${roomMode === 'history' ? 'bg-surface shadow-card' : 'text-ink/60'}`} onClick={() => setRoomMode('history')}>Historial</button>
     </div>}
 
-    {tab === 'sync' ? <DataSyncPanel items={syncSources} loading={loading} error={error} syncing={syncing} onSync={triggerSync} /> : <div className="panel overflow-hidden">
+    {tab === 'sync' ? <DataSyncPanel items={syncSources} loading={loading} error={error} syncing={syncing} onSync={triggerSync} /> : tab === 'changelog' ? <AdminChangelogPanel onDirtyChange={setChangelogDirty} /> : <div className="panel overflow-hidden">
       <div className="flex flex-col gap-3 border-b border-ink/10 p-3 sm:flex-row sm:items-center">
         <label className="relative flex-1"><span className="sr-only">Buscar</span><Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/45" size={18} /><input className="field pl-10" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={tab === 'users' ? 'Buscar usuario o email' : 'Buscar sala, anfitrión o jugador'} /></label>
         {!(tab === 'rooms' && roomMode === 'active') && <label><span className="sr-only">Filtrar estado</span><select className="field min-w-48" value={status} onChange={(event) => { setStatus(event.target.value); setPage(1); }}>{statusOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>}

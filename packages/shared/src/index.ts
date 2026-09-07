@@ -1,6 +1,7 @@
 export * from './auth.js';
 export * from './admin.js';
 export * from './avatar.js';
+export * from './changelog.js';
 export * from './custom-category.js';
 export * from './custom-would-you-rather.js';
 export * from './room.js';
@@ -8,6 +9,7 @@ export * from './scoring.js';
 export * from './pokemon/types.js';
 export * from './tcg/types.js';
 export * from './games/contracts.js';
+export * from './games/discovery.js';
 export * from './games/config.js';
 export * from './games/config-readiness.js';
 export * from './games/infrastructure/timing.js';
