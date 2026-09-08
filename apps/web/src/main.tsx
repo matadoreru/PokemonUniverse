@@ -17,6 +17,7 @@ const RoomPage = lazy(() => import('./screens/RoomPage').then((module) => ({ def
 const RoomSessionLayout = lazy(() => import('./room/RoomSessionLayout').then((module) => ({ default: module.RoomSessionLayout })));
 const AdminPage = lazy(() => import('./screens/AdminPage').then((module) => ({ default: module.AdminPage })));
 const ChangelogPage = lazy(() => import('./screens/ChangelogPage').then((module) => ({ default: module.ChangelogPage })));
+const FeedbackPage = lazy(() => import('./screens/FeedbackPage').then((module) => ({ default: module.FeedbackPage })));
 
 const protectedPage = (page: ReactNode) => <RequireAuth>{page}</RequireAuth>;
 const router = createBrowserRouter([{ element: <Layout />, children: [
@@ -24,6 +25,7 @@ const router = createBrowserRouter([{ element: <Layout />, children: [
   { path: '/changelog', element: <ChangelogPage /> },
   { path: '/rotation-preview', element: <RotationPreview /> },
   { path: '/profile', element: protectedPage(<ProfilePage />) },
+  { path: '/feedback', element: protectedPage(<FeedbackPage />) },
   { path: '/admin', element: <RequireAdmin><AdminPage /></RequireAdmin> },
   { element: protectedPage(<RoomSessionLayout />), children: [
     { path: '/play', element: <PlayPage /> }, { path: '/room', element: <RoomPage /> },

@@ -40,12 +40,16 @@ import { CachedTcgCardCatalog } from './tcg/comparable-price.js';
 import { PrismaChangelogRepository } from './changelog/prisma-repository.js';
 import { createChangelogRouter } from './changelog/routes.js';
 import { ChangelogService } from './changelog/service.js';
+import { PrismaFeedbackRepository } from './feedback/prisma-repository.js';
+import { createFeedbackRouter } from './feedback/routes.js';
+import { FeedbackService } from './feedback/service.js';
 
 const app = express();
 const customCategories = new CustomCategoryService(new PrismaCustomCategoryRepository(prisma));
 const userGameConfigs = new UserGameConfigService(new PrismaUserGameConfigRepository(prisma));
 const wouldYouRatherPrompts = new WouldYouRatherPromptService(new PrismaWouldYouRatherPromptRepository(prisma));
 const changelog = new ChangelogService(new PrismaChangelogRepository(prisma));
+const feedback = new FeedbackService(new PrismaFeedbackRepository(prisma));
 const roomRegistry: { current: RoomManager | null } = { current: null };
 const syncSchedule = { hour: env.DATA_SYNC_HOUR, minute: env.DATA_SYNC_MINUTE, timeZone: env.DATA_SYNC_TIMEZONE };
 const dataSync = new DataSyncService(prisma, [new PokemonDataSync(), new TcgDataSync()], () => nextScheduledSync(new Date(), syncSchedule));
@@ -65,7 +69,8 @@ app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 30, skip: (req) =
 app.use('/api/categories', createCustomCategoryRouter(customCategories));
 app.use('/api/would-you-rather-prompts', createWouldYouRatherPromptRouter(wouldYouRatherPrompts));
 app.use('/api/changelog', createChangelogRouter(changelog));
-app.use('/api/admin', createAdminRouter(() => roomRegistry.current?.adminRooms() ?? [], dataSync, changelog));
+app.use('/api/feedback', createFeedbackRouter(feedback));
+app.use('/api/admin', createAdminRouter(() => roomRegistry.current?.adminRooms() ?? [], dataSync, changelog, feedback));
 app.use('/api', apiRouter);
 
 app.use((error: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {

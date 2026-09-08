@@ -4,6 +4,7 @@ export * from './avatar.js';
 export * from './changelog.js';
 export * from './custom-category.js';
 export * from './custom-would-you-rather.js';
+export * from './feedback.js';
 export * from './room.js';
 export * from './scoring.js';
 export * from './pokemon/types.js';

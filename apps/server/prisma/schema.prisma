@@ -45,6 +45,17 @@ enum DataSyncMode {
   PRICE_REFRESH
 }
 
+enum FeedbackType {
+  BUG
+  SUGGESTION
+}
+
+enum FeedbackStatus {
+  NEW
+  REVIEWING
+  RESOLVED
+}
+
 model User {
   id           String             @id @default(cuid())
   username     String             @unique
@@ -64,6 +75,7 @@ model User {
   customCategories CustomCategory[]
   wouldYouRatherPrompts CustomWouldYouRatherPrompt[]
   hostedRooms  RoomHistory[]      @relation("RoomHost")
+  feedback     Feedback[]
 }
 
 model UserGameConfig {
@@ -193,6 +205,26 @@ model Changelog {
   updatedAt DateTime @updatedAt
 
   @@index([published, date])
+}
+
+model Feedback {
+  id                String         @id @default(cuid())
+  gameId            String
+  roomCode          String?
+  type              FeedbackType
+  status            FeedbackStatus @default(NEW)
+  description       String
+  authorUserId      String?
+  authorDisplayName String
+  authorKind        String
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  author            User?          @relation(fields: [authorUserId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([type, status])
+  @@index([gameId, createdAt])
+  @@index([authorUserId])
 }
 
 model Pokemon {
