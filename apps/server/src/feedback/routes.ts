@@ -1,4 +1,4 @@
-import { feedbackStatusSchema, feedbackTypeSchema } from '@pokemon-universe/shared';
+import { feedbackReferenceSchema, feedbackStatusSchema, feedbackTypeSchema } from '@pokemon-universe/shared';
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
@@ -25,11 +25,13 @@ export function createAdminFeedbackRouter(service: FeedbackService): Router {
       const query = z.object({
         page: z.coerce.number().int().min(1).default(1),
         search: z.string().trim().max(80).default(''),
+        reference: feedbackReferenceSchema.optional(),
         status: feedbackStatusSchema.optional(),
         type: feedbackTypeSchema.optional(),
       }).parse(req.query);
       const filters = {
         ...(query.search ? { search: query.search } : {}),
+        ...(query.reference ? { reference: query.reference } : {}),
         ...(query.status ? { status: query.status } : {}),
         ...(query.type ? { type: query.type } : {}),
       };

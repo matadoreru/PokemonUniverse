@@ -56,6 +56,16 @@ enum FeedbackStatus {
   RESOLVED
 }
 
+enum FeedbackReference {
+  GENERAL
+  MINIGAME
+  ROOMS
+  ACCOUNT
+  INTERFACE
+  CHANGELOG
+  OTHER
+}
+
 model User {
   id           String             @id @default(cuid())
   username     String             @unique
@@ -208,18 +218,19 @@ model Changelog {
 }
 
 model Feedback {
-  id                String         @id @default(cuid())
-  gameId            String
+  id                String            @id @default(cuid())
+  reference         FeedbackReference @default(GENERAL)
+  gameId            String?
   roomCode          String?
   type              FeedbackType
-  status            FeedbackStatus @default(NEW)
+  status            FeedbackStatus    @default(NEW)
   description       String
   authorUserId      String?
   authorDisplayName String
   authorKind        String
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
-  author            User?          @relation(fields: [authorUserId], references: [id], onDelete: SetNull)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  author            User?             @relation(fields: [authorUserId], references: [id], onDelete: SetNull)
 
   @@index([status, createdAt])
   @@index([type, status])

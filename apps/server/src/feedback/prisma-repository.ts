@@ -4,6 +4,7 @@ import type { FeedbackFilters, FeedbackRepository, StoredFeedback } from './serv
 
 function whereFor(filters: FeedbackFilters): Prisma.FeedbackWhereInput {
   return {
+    ...(filters.reference ? { reference: filters.reference } : {}),
     ...(filters.status ? { status: filters.status } : {}),
     ...(filters.type ? { type: filters.type } : {}),
     ...(filters.search ? { OR: [

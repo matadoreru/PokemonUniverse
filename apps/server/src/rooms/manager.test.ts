@@ -808,7 +808,11 @@ describe('room multi-game lifecycle', () => {
     (manager as any).action('ana', { type: 'VOTE', optionId: 'B' });
     expect(room.phase).toBe('ROUND_RESULTS');
     expect(room.game!.state.votes.carlos.optionId).toBe('C');
-    expect((manager as any).view(room, 'ana').game.votes.carlos.optionId).toBe('C');
+    const hiddenReveal = (manager as any).view(room, 'ana');
+    expect(hiddenReveal.game.votes).toEqual({});
+    expect(hiddenReveal.game.lastRound.votes).toEqual({});
+    expect(JSON.stringify(hiddenReveal.game)).not.toContain('"optionId":"C"');
+    expect(hiddenReveal.gamePlayerState).toMatchObject({ vote: { optionId: 'B' }, roundResult: { correct: expect.any(Boolean), points: expect.any(Number) } });
     expect(room.members.get('carlos')).toMatchObject({ connected: false, presence: 'TEMPORARILY_DISCONNECTED', role: 'PLAYER' });
   });
 

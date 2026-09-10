@@ -26,8 +26,9 @@ class MemoryFeedbackRepository implements FeedbackRepository {
 
   private filtered(filters: FeedbackFilters) {
     return this.entries.filter((entry) => (!filters.status || entry.status === filters.status)
+      && (!filters.reference || entry.reference === filters.reference)
       && (!filters.type || entry.type === filters.type)
-      && (!filters.search || `${entry.description} ${entry.authorDisplayName} ${entry.gameId} ${entry.roomCode ?? ''}`.toLowerCase().includes(filters.search.toLowerCase())));
+      && (!filters.search || `${entry.description} ${entry.authorDisplayName} ${entry.reference} ${entry.gameId ?? ''} ${entry.roomCode ?? ''}`.toLowerCase().includes(filters.search.toLowerCase())));
   }
 }
 
@@ -35,12 +36,14 @@ const user: AuthUser = { id: 'user-1', displayName: 'Eru', kind: 'USER', role: '
 const guest: AuthUser = { id: 'guest-1', displayName: 'Misty', kind: 'GUEST', avatar: { type: 'DEFAULT' } };
 
 describe('FeedbackService', () => {
-  it('stores registered and guest feedback with the game context', async () => {
+  it('stores general and minigame feedback for registered and guest users', async () => {
     const repository = new MemoryFeedbackRepository(); const service = new FeedbackService(repository);
     const registered = await service.submit({ gameId: 'shiny-vote', roomCode: 'PIKA42', type: 'BUG', description: 'El cursor aparece desplazado.' }, user);
-    const anonymous = await service.submit({ gameId: 'pokemon-bingo', type: 'SUGGESTION', description: 'Me gustaría poder elegir el patrón.' }, guest);
+    const anonymous = await service.submit({ type: 'SUGGESTION', description: 'Me gustaría poder elegir el patrón.' }, guest);
     expect(registered.author).toEqual({ userId: 'user-1', displayName: 'Eru', kind: 'USER' });
     expect(anonymous.author).toEqual({ userId: null, displayName: 'Misty', kind: 'GUEST' });
+    expect(registered.reference).toBe('MINIGAME');
+    expect(anonymous).toMatchObject({ reference: 'GENERAL', gameId: null, gameName: null });
     expect(registered.roomCode).toBe('PIKA42');
   });
 
@@ -53,9 +56,10 @@ describe('FeedbackService', () => {
   it('filters the admin inbox and reports status counts', async () => {
     const repository = new MemoryFeedbackRepository(); const service = new FeedbackService(repository);
     const bug = await service.submit({ gameId: 'shiny-vote', type: 'BUG', description: 'El cursor aparece desplazado.' }, user);
-    await service.submit({ gameId: 'pokemon-bingo', type: 'SUGGESTION', description: 'Añadir más patrones de cartón.' }, guest);
+    await service.submit({ reference: 'ROOMS', type: 'SUGGESTION', description: 'Añadir más opciones a las salas.' }, guest);
     await service.updateStatus(bug.id, 'REVIEWING');
     expect((await service.list({ type: 'SUGGESTION' }, 1)).items).toHaveLength(1);
+    expect((await service.list({ reference: 'ROOMS' }, 1)).items).toHaveLength(1);
     expect(await service.overview()).toEqual({ newBugs: 0, newSuggestions: 1, reviewing: 1, resolved: 0 });
   });
 

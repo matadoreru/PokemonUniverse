@@ -6,6 +6,7 @@ import {
   type AuthUser,
   type FeedbackItem,
   type FeedbackOverview,
+  type FeedbackReference,
   type FeedbackStatus,
   type FeedbackType,
   type PaginatedAdminResponse,
@@ -13,7 +14,8 @@ import {
 
 export interface StoredFeedback {
   id: string;
-  gameId: string;
+  reference: FeedbackReference;
+  gameId: string | null;
   roomCode: string | null;
   type: FeedbackType;
   status: FeedbackStatus;
@@ -26,6 +28,7 @@ export interface StoredFeedback {
 }
 
 export interface FeedbackFilters {
+  reference?: FeedbackReference;
   status?: FeedbackStatus;
   type?: FeedbackType;
   search?: string;
@@ -41,8 +44,9 @@ export interface FeedbackRepository {
 function view(entry: StoredFeedback): FeedbackItem {
   return {
     id: entry.id,
+    reference: entry.reference,
     gameId: entry.gameId,
-    gameName: gameRegistry.get(entry.gameId)?.manifest.name ?? entry.gameId,
+    gameName: entry.gameId ? gameRegistry.get(entry.gameId)?.manifest.name ?? entry.gameId : null,
     roomCode: entry.roomCode,
     type: entry.type,
     status: entry.status,
@@ -62,9 +66,10 @@ export class FeedbackService {
 
   async submit(input: unknown, author: AuthUser): Promise<FeedbackItem> {
     const parsed = createFeedbackSchema.parse(input);
-    if (!gameRegistry.get(parsed.gameId)) throw new UnknownFeedbackGameError();
+    if (parsed.gameId && !gameRegistry.get(parsed.gameId)) throw new UnknownFeedbackGameError();
     return view(await this.repository.create({
-      gameId: parsed.gameId,
+      reference: parsed.reference,
+      gameId: parsed.gameId ?? null,
       roomCode: parsed.roomCode ?? null,
       type: parsed.type,
       description: parsed.description,

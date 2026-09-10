@@ -1,5 +1,6 @@
 import type { RoomView } from '@pokemon-universe/shared';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { Lobby } from './Lobby';
 
@@ -22,11 +23,11 @@ const noOp = async () => undefined;
 
 describe('lobby information hierarchy', () => {
   it('keeps game descriptions visible and separates the lobby into accessible tabs', () => {
-    const markup = renderToStaticMarkup(<Lobby
+    const markup = renderToStaticMarkup(<MemoryRouter><Lobby
       room={room} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
       onSelectGame={noOp} onConfig={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
       onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
-    />);
+    /></MemoryRouter>);
 
     expect(markup).toContain('role="tablist"');
     expect(markup).toContain('aria-selected="true"');
@@ -40,6 +41,9 @@ describe('lobby information hierarchy', () => {
     expect(markup).toContain('placeholder="Buscar entre 2 juegos"');
     expect(markup).toContain('Hablando es mejor');
     expect(markup).toContain('Discord, Zoom');
+    expect(markup).toContain('Tu opinión cuenta');
+    expect(markup).toContain('Reporta un bug o envía feedback');
+    expect(markup).toContain('/feedback?game=pokedex-distance&amp;room=ABC234');
     expect(markup).toContain('>Jugadores<');
     expect(markup).toContain('Iniciar partida');
   });

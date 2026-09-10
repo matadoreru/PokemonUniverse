@@ -134,7 +134,7 @@ describe('public shiny voting', () => {
     expect(spectator.error).toMatch(/participas/);
   });
 
-  it('hides other players option ids until reveal while exposing completion', () => {
+  it('keeps hidden ballot targets private through reveal while exposing completion', () => {
     const fixture = setup(2, 'SAME_POKEMON', 4, [1], false);
     let state = vote(fixture.state, 'pedro', 'C', fixture.context).state;
     let publicState = shinyVoteGame.getPublicState(state, fixture.context);
@@ -147,7 +147,13 @@ describe('public shiny voting', () => {
     state = vote(state, 'marta', 'B', fixture.context).state;
     publicState = shinyVoteGame.getPublicState(state, fixture.context);
     expect(publicState.phase).toBe('ROUND_RESULTS');
-    expect(publicState.votes).toEqual(state.votes);
+    expect(publicState.correctOptionId).toBe('A');
+    expect(publicState.votes).toEqual({});
+    expect(publicState.lastRound?.votes).toEqual({});
+    expect(publicState.lastRound?.correctPlayerIds).toEqual([]);
+    expect(publicState.lastRound?.missedPlayerIds).toEqual([]);
+    expect(JSON.stringify(publicState)).not.toContain('"optionId":"C"');
+    expect(shinyVoteGame.getPlayerState(state, 'pedro', fixture.context)).toMatchObject({ vote: { optionId: 'C' }, roundResult: { correct: false, points: 0 } });
   });
 
   it('does not wait for a disconnected non-voter and preserves an accepted vote after disconnect', () => {
@@ -170,6 +176,15 @@ describe('public shiny voting', () => {
     expect(withoutVote.lastRound?.missedPlayerIds).toContain('marta');
   });
 
+  it('restores the private accepted vote after disconnecting and reconnecting', () => {
+    const fixture = setup(2, 'SAME_POKEMON', 4, [1], false);
+    const state = vote(fixture.state, 'pedro', 'D', fixture.context).state;
+    fixture.context.players[0]!.connected = false;
+    expect(shinyVoteGame.getPublicState(state, fixture.context).votes).toEqual({});
+    fixture.context.players[0]!.connected = true;
+    expect(shinyVoteGame.getPlayerState(state, 'pedro', fixture.context)).toMatchObject({ canVote: false, vote: { optionId: 'D' }, roundResult: null });
+  });
+
   it('ends voting immediately after every participant votes and scores the reveal', () => {
     const fixture = setup();
     let state = vote(fixture.state, 'pedro', 'A', fixture.context).state;
@@ -183,6 +198,8 @@ describe('public shiny voting', () => {
     const publicState = shinyVoteGame.getPublicState(state, fixture.context);
     expect(publicState.correctOptionId).toBe('A');
     expect(publicState.votes).toEqual(state.votes);
+    expect(shinyVoteGame.getPlayerState(state, 'pedro', fixture.context)).toMatchObject({ roundResult: { correct: true, points: 4 } });
+    expect(shinyVoteGame.getPlayerState(state, 'ana', fixture.context)).toMatchObject({ roundResult: { correct: false, points: 0 } });
   });
 
   it('reveals on timeout and automatically starts the next round after three seconds', () => {

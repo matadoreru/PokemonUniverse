@@ -1,4 +1,4 @@
-import { ArrowRight, Gamepad2, Newspaper, RefreshCw, UsersRound, Zap } from 'lucide-react';
+import { ArrowRight, Newspaper, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { ChangelogEntryView } from '../changelog/ChangelogEntryView';
@@ -17,11 +17,6 @@ export function HomePage() {
         <div className="mt-7 flex flex-wrap gap-3">
           <Link className="btn-primary" to={user ? '/play' : '/auth'}>{user ? 'Ir a las salas' : 'Empezar a jugar'} <ArrowRight size={20} /></Link>
           {!user && <Link className="btn-ghost" to="/auth?mode=guest">Entrar como invitado</Link>}
-        </div>
-        <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 border-t border-ink/10 pt-4 text-sm font-bold text-ink/65">
-          <span className="inline-flex items-center gap-2"><Zap size={17} className="text-electric" /> Sin instalaciones</span>
-          <span className="inline-flex items-center gap-2"><Gamepad2 size={17} className="text-aqua" /> Minijuegos</span>
-          <span className="inline-flex items-center gap-2"><UsersRound size={17} className="text-leaf" /> Salas privadas</span>
         </div>
       </div>
       <figure className="flex min-w-0 justify-center lg:justify-end">

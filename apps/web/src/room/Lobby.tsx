@@ -1,6 +1,7 @@
 import { formatPendingReadyNames, hasRoomPermission, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared';
-import { Check, CheckCircle2, Copy, Gamepad2, Headphones, LockKeyhole, LogOut, Play, Search, Settings2, Shuffle, UsersRound, WifiOff } from 'lucide-react';
+import { ArrowRight, Check, CheckCircle2, Copy, Gamepad2, Headphones, LockKeyhole, LogOut, MessageSquareWarning, Play, Search, Settings2, Shuffle, UsersRound, WifiOff } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { GameLoadingFallback } from '../components/LoadingFallback';
 import { clientGameRegistry } from '../games/registry';
 import { GameSelectionConfig } from './GameSelectionConfig';
@@ -139,6 +140,7 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
   const playerRange = selectedManifest.maxPlayers === undefined
     ? `${selectedManifest.minPlayers}+ jugadores`
     : `${selectedManifest.minPlayers}–${selectedManifest.maxPlayers} jugadores`;
+  const feedbackUrl = `/feedback?${new URLSearchParams({ game: room.selectedGameId, room: room.code })}`;
 
   return (
     <section className="page-shell max-w-[90rem]">
@@ -159,13 +161,23 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
 
       {hostMember?.presence === 'TEMPORARILY_DISCONNECTED' && <div className="mb-4 flex items-start gap-3 rounded-xl border border-electric/30 bg-electric/10 px-4 py-3 font-bold" role="status" aria-live="polite"><WifiOff className="mt-0.5 shrink-0 text-electric" size={19} /><span><strong className="block">El host está reconectando.</strong><span className="text-sm text-ink/65">La sala conserva la configuración y esperará antes de transferir el control.</span></span></div>}
 
-      <aside className="voice-callout mb-4 flex items-center gap-3 rounded-2xl border border-aqua/30 bg-aqua/[.08] px-4 py-3 sm:px-5" aria-label="Recomendación para jugar">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-aqua text-night"><Headphones size={23} /></span>
-        <div>
-          <strong className="block font-display text-lg">Hablando es mejor</strong>
-          <p className="text-sm font-bold text-ink/70">Te recomendamos estar en una llamada de voz con tus amigos, por Discord, Zoom o vuestra aplicación favorita.</p>
-        </div>
-      </aside>
+      <div className="mb-4 grid gap-3 md:grid-cols-2">
+        <aside className="voice-callout flex items-center gap-3 rounded-2xl border border-aqua/30 bg-aqua/[.08] px-4 py-3 sm:px-5" aria-label="Recomendación para jugar">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-aqua text-night"><Headphones size={23} /></span>
+          <div>
+            <strong className="block font-display text-lg">Hablando es mejor</strong>
+            <p className="text-sm font-bold text-ink/70">Te recomendamos estar en una llamada de voz con tus amigos, por Discord, Zoom o vuestra aplicación favorita.</p>
+          </div>
+        </aside>
+        <aside className="feedback-callout flex items-center gap-3 rounded-2xl border border-berry/30 bg-berry/[.08] px-4 py-3 sm:px-5" aria-label="Ayuda a mejorar Pokémon Universe">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-berry text-white"><MessageSquareWarning size={22} /></span>
+          <div className="min-w-0 flex-1">
+            <strong className="block font-display text-lg">Tu opinión cuenta</strong>
+            <p className="text-sm font-bold text-ink/70">Reporta un bug o envía feedback sobre esta sala, un minijuego o el proyecto.</p>
+            <Link className="mt-1.5 inline-flex min-h-8 items-center gap-1.5 font-extrabold text-berry underline decoration-berry/30 underline-offset-4 hover:text-ink" to={feedbackUrl}>Enviar feedback <ArrowRight size={16} /></Link>
+          </div>
+        </aside>
+      </div>
 
       <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_21rem] xl:grid-cols-[minmax(0,1fr)_23rem]">
         <main className="min-w-0">

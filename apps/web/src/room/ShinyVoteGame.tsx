@@ -1,114 +1,134 @@
-import { shinyPointsForOrder, type RoomMemberView, type RoomView, type ShinyOption, type ShinyOptionId, type ShinyVotePlayerState, type ShinyVotePublicState } from '@pokemon-universe/shared';
-import { Check, Clock3, Eye, LoaderCircle, Sparkles, Trophy, Users } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
-import { Avatar } from '../components/Avatar';
+import { type RoomMemberView, type RoomView, type ShinyOptionId, type ShinyVoteConfig, type ShinyVotePlayerState, type ShinyVotePublicState } from '@pokemon-universe/shared';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ShinyGameHeader } from '../games/shiny-vote/ShinyGameHeader';
+import { ShinyGameSidebar } from '../games/shiny-vote/ShinyGameSidebar';
+import { ShinyOptionCard } from '../games/shiny-vote/ShinyOptionCard';
+import { ShinyVoteStatus } from '../games/shiny-vote/ShinyVoteStatus';
+import { createShinyVoteAction, shinyOptionFromShortcut, updateShinyDraft } from '../games/shiny-vote/interaction';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 
-const API_ORIGIN = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
-const imageSource = (source: string) => source.startsWith('/api/') ? `${API_ORIGIN}${source}` : source;
-
-function PlayerPill({ member, result, points }: { member: RoomMemberView; result?: 'correct' | 'wrong' | undefined; points?: number }) {
-  return <span className={`inline-flex max-w-full items-center gap-1.5 rounded-full border px-2 py-1 text-xs font-extrabold ${result === 'correct' ? 'border-leaf/40 bg-leaf/15 text-leaf' : result === 'wrong' ? 'border-berry/30 bg-berry/10 text-berry' : 'border-ink/10 bg-surface-raised/90'}`}>
-    <Avatar name={member.displayName} avatar={member.avatar} size="xs" />
-    <span className="truncate">{member.displayName}</span>
-    {result === 'correct' && <span>✓ +{points ?? 1}</span>}{result === 'wrong' && <span>✗</span>}
-  </span>;
-}
-
-function PokemonSprite({ option }: { option: ShinyOption }) {
-  const [loaded, setLoaded] = useState(false);
-  return <div className="relative mx-auto grid h-48 w-48 place-items-center">
-    {!loaded && <LoaderCircle className="absolute animate-spin text-aqua" aria-label="Cargando sprite" size={34} />}
-    <img
-      key={option.sprite}
-      className={`h-full w-full object-contain [image-rendering:pixelated] transition-opacity duration-150 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-      src={imageSource(option.sprite)}
-      alt={`Candidato ${option.id}: ${option.pokemonName}`}
-      onLoad={() => setLoaded(true)}
-      onError={() => setLoaded(true)}
-    />
-  </div>;
-}
-
-function OptionCard({ option, voters, selected, disabled, reveal, correct, correctPoints, onSelect }: {
-  option: ShinyOption;
-  voters: RoomMemberView[];
-  selected: boolean;
-  disabled: boolean;
-  reveal: boolean;
-  correct: boolean;
-  correctPoints: ReadonlyMap<string, number>;
-  onSelect(): void;
-}) {
-  const tone = reveal
-    ? correct ? 'border-leaf bg-leaf/10 shadow-[0_0_0_5px_rgba(98,201,149,.16)]' : 'border-ink/5 bg-surface/60 opacity-55 grayscale'
-    : selected ? 'border-berry bg-berry/10 shadow-[0_0_0_4px_rgba(255,92,130,.12)]' : 'border-ink/10 bg-surface hover:border-aqua';
-  return <button type="button" disabled={disabled} aria-pressed={selected} onClick={onSelect} className={`relative flex min-h-[300px] flex-col overflow-hidden rounded-2xl border p-3 text-left transition ${tone} ${disabled ? 'cursor-default' : 'hover:brightness-105'}`}>
-    <div className="flex w-full items-center justify-between"><span className={`grid h-10 w-10 place-items-center rounded-xl border font-display text-xl font-bold ${correct && reveal ? 'border-leaf bg-leaf text-night' : 'border-electric bg-electric text-night'}`}>{option.id}</span>{selected && !reveal && <span className="chip bg-berry/15 text-berry"><Check size={15} /> Tu elección</span>}{correct && reveal && <span className="chip bg-leaf/20 text-leaf">✨ Shiny correcto</span>}</div>
-    <PokemonSprite key={option.sprite} option={option} />
-    <strong className="w-full truncate text-center font-display text-lg">{option.pokemonName}</strong>
-    <div className="mt-3 flex max-h-28 min-h-9 w-full flex-wrap content-start gap-1.5 overflow-y-auto rounded-xl bg-ink/[.035] p-2">
-      {voters.length > 0 ? voters.map((member) => <PlayerPill key={member.id} member={member} result={reveal ? (correct ? 'correct' : 'wrong') : undefined} points={correctPoints.get(member.id) ?? 1} />) : <span className="m-auto text-sm font-bold text-ink/50">—</span>}
-    </div>
-  </button>;
+function ignoresGameShortcuts(target: EventTarget | null): boolean {
+  if (!(target instanceof Element)) return false;
+  if (target.closest('[data-shiny-option]')) return false;
+  return Boolean(target.closest('input, textarea, select, button, a, [contenteditable="true"]'));
 }
 
 export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
   const game = room.game as ShinyVotePublicState;
+  const config = room.selectedGameConfig as ShinyVoteConfig;
+  const playerState = room.gamePlayerState as ShinyVotePlayerState | null;
   const [draft, setDraft] = useState<ShinyOptionId | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const serverOffset = useServerOffset(room.serverNow);
   const remainingMs = useRemainingMs(game.roundEndsAt, serverOffset);
   const transitionRemainingMs = useRemainingMs(game.nextTransitionAt, serverOffset);
-  const totalMs = (room.selectedGameConfig as { roundSeconds: number }).roundSeconds * 1_000;
-  const remaining = Math.ceil(remainingMs / 1_000);
-  const progress = Math.min(100, remainingMs / totalMs * 100);
+  const totalMs = Math.max(1, config.roundSeconds * 1_000);
+  const remaining = Math.max(0, Math.ceil(remainingMs / 1_000));
+  const progress = game.phase === 'ROUND_ACTIVE' ? Math.min(100, Math.max(0, remainingMs / totalMs * 100)) : 0;
   const active = game.phase === 'ROUND_ACTIVE';
   const reveal = game.phase === 'ROUND_RESULTS';
   const transitionRemaining = Math.max(1, Math.ceil(transitionRemainingMs / 1_000));
   const transitionLabel = game.roundNumber >= game.totalRounds ? 'Resultados finales' : 'Siguiente ronda';
-  const playerState = room.gamePlayerState as ShinyVotePlayerState | null;
-  const ownVote = playerState?.vote ?? game.votes[selfId];
+  const ownVote = playerState?.vote ?? game.votes[selfId] ?? null;
   const participant = game.playerIds.includes(selfId);
-  const canVote = active && participant && !ownVote;
+  const canVote = active && participant && !ownVote && playerState?.canVote === true;
   const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const ranking = [...game.playerIds].sort((a, b) => (game.scores[b] ?? 0) - (game.scores[a] ?? 0) || (members.get(a)?.displayName ?? '').localeCompare(members.get(b)?.displayName ?? ''));
-  const correctPoints = new Map((game.lastRound?.correctPlayerIds ?? []).map((id, index) => [id, shinyPointsForOrder(index + 1)]));
-  const optionGrid = game.options.length === 3 ? 'md:grid-cols-3' : game.options.length === 4 ? 'sm:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3';
+  const selectedOptionId = ownVote?.optionId ?? draft;
+  const selectedOption = game.options.find((option) => option.id === selectedOptionId) ?? null;
+  const optionIds = useMemo(() => game.options.map((option) => option.id), [game.options]);
+  const optionGrid = game.options.length === 3 ? 'grid-cols-2 sm:grid-cols-3' : game.options.length <= 4 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-3';
+  const feedbackUrl = `/feedback?${new URLSearchParams({ game: 'shiny-vote', room: room.code })}`;
 
-  useEffect(() => { setDraft(null); setError(''); }, [game.roundNumber]);
+  useEffect(() => {
+    setDraft(null);
+    setError('');
+  }, [game.roundNumber]);
 
-  async function confirmVote() {
-    if (!draft || !canVote || submitting) return;
-    setSubmitting(true); setError('');
-    try { await onAction({ type: 'VOTE', optionId: draft }); }
-    catch (caught) { setError(caught instanceof Error ? caught.message : 'El servidor rechazó el voto.'); }
-    finally { setSubmitting(false); }
-  }
+  const selectOption = useCallback((optionId: ShinyOptionId) => {
+    setDraft((current) => updateShinyDraft(current, optionId, canVote && !submitting));
+    setError('');
+  }, [canVote, submitting]);
 
-  return <section className="mx-auto max-w-7xl px-4 py-5 md:px-8">
-    <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-      <div><span className="label">Ronda {game.roundNumber} de {game.totalRounds}</span><h1 className="font-display text-3xl font-bold sm:text-4xl">¿Cuál es el shiny verdadero?</h1></div>
-      <span className="chip text-base"><Users size={17} /> {game.votedPlayerIds.length}/{game.playerIds.length} votos</span>
-    </div>
-    {active && <div className="mb-5"><div className="mb-1.5 flex items-center justify-between text-sm font-extrabold"><span className="flex items-center gap-1.5"><Clock3 size={17} /> {game.showVotes ? 'Votación pública' : 'Votación secreta'}</span><span className={remaining <= 5 ? 'timer-pulse text-xl' : ''}>{remaining}s</span></div><div className="h-3 overflow-hidden rounded-full border border-ink/20 bg-night"><div className={`h-full transition-[width] duration-100 ${remaining <= 5 ? 'bg-berry' : 'bg-aqua'}`} style={{ width: `${progress}%` }} /></div></div>}
-    {reveal && <div className="reveal-pop mb-5 rounded-2xl border border-leaf bg-leaf/15 p-4 text-center"><Sparkles className="mr-2 inline text-leaf" /><strong className="font-display text-2xl">SHINY CORRECTO: {game.correctOptionId}</strong><p className="mt-1 font-bold text-ink/70">{transitionLabel} en {transitionRemaining} {transitionRemaining === 1 ? 'segundo' : 'segundos'}…</p></div>}
-    <div className="grid gap-5 xl:grid-cols-[1fr_290px]">
-      <div>
-        <div className={`grid grid-cols-1 gap-4 ${optionGrid}`}>{game.options.map((option) => {
-          const voters = Object.entries(game.votes).filter(([, vote]) => vote.optionId === option.id).map(([playerId]) => members.get(playerId)).filter((member): member is RoomMemberView => Boolean(member));
-          return <OptionCard key={option.id} option={option} voters={voters} selected={(ownVote?.optionId ?? draft) === option.id} disabled={!canVote || submitting} reveal={reveal} correct={game.correctOptionId === option.id} correctPoints={correctPoints} onSelect={() => setDraft(option.id)} />;
-        })}</div>
-        {canVote && <div className="sticky bottom-3 z-10 mx-auto mt-4 flex max-w-lg flex-col items-center gap-2 rounded-2xl border border-ink/10 bg-surface/95 p-3 shadow-card sm:flex-row"><p className="flex-1 text-center font-bold sm:text-left">{draft ? <>Has elegido <strong className="text-berry">{draft}</strong>.</> : 'Selecciona una tarjeta para preparar tu voto.'}</p><button className="btn-primary whitespace-nowrap" disabled={!draft || submitting} onClick={() => void confirmVote()}>{submitting ? 'Confirmando…' : `Confirmar voto${draft ? ` ${draft}` : ''}`}</button></div>}
-        {ownVote && active && <div className="mt-4 rounded-2xl border border-leaf/40 bg-leaf/10 p-3 text-center font-extrabold text-leaf"><Check className="mr-2 inline" size={20} />Tu voto por {ownVote.optionId} está bloqueado en el servidor.</div>}
-        {!participant && active && <div className="mt-4 rounded-2xl bg-aqua/10 p-3 text-center font-bold"><Eye className="mr-2 inline" size={20} />Estás viendo la votación en directo como espectador.</div>}
-        {error && <p className="mt-3 rounded-xl bg-berry/10 p-3 text-center font-bold text-berry">{error}</p>}
-      </div>
-      <aside className="space-y-4">
-        <div className="card !p-4"><h2 className="mb-3 font-display text-xl font-bold">{reveal ? 'Resultados de ronda' : game.showVotes ? 'Pendientes' : 'Jugadores'}</h2>{reveal ? <div className="space-y-2">{game.playerIds.map((id) => { const member = members.get(id); const vote = game.votes[id]; const correct = vote?.optionId === game.correctOptionId; return <div key={id} className="flex items-center gap-2 rounded-xl bg-ink/[.04] px-3 py-2 text-sm"><span className="min-w-0 flex-1 truncate font-extrabold">{member?.displayName ?? id}</span><span className="font-bold text-ink/65">→ {vote?.optionId ?? 'sin voto'}</span><strong className={correct ? 'text-leaf' : 'text-berry'}>{correct ? `✓ +${correctPoints.get(id) ?? 1}` : '✗'}</strong></div>; })}</div> : game.showVotes ? <div className="flex flex-wrap gap-2">{game.pendingPlayerIds.length > 0 ? game.pendingPlayerIds.map((id) => { const member = members.get(id); return member ? <PlayerPill key={id} member={member} /> : null; }) : <p className="font-extrabold text-leaf">✓ Todos han votado</p>}</div> : <div className="space-y-2">{game.playerIds.map((id) => <div key={id} className="flex items-center gap-2 rounded-xl bg-ink/[.04] px-3 py-2 text-sm"><span className="min-w-0 flex-1 truncate font-extrabold">{members.get(id)?.displayName ?? id}</span>{game.votedPlayerIds.includes(id) ? <strong className="text-leaf">✓ Ha votado</strong> : <span className="font-bold text-ink/55">…</span>}</div>)}</div>}</div>
-        <div className="card !p-4"><h2 className="mb-3 flex items-center gap-2 font-display text-xl font-bold"><Trophy size={19} className="text-berry" /> Clasificación</h2><div className="space-y-2">{ranking.map((id, index) => <div key={id} className="flex items-center gap-2 rounded-xl bg-ink/[.04] px-3 py-2"><span className="w-5 font-display font-bold">{index + 1}</span><span className="min-w-0 flex-1 truncate font-extrabold">{members.get(id)?.displayName ?? id}</span><strong className="text-berry">{game.scores[id] ?? 0}</strong></div>)}</div></div>
-      </aside>
+  const confirmVote = useCallback(async () => {
+    const action = createShinyVoteAction(draft, canVote, submitting);
+    if (!action) return;
+    setSubmitting(true);
+    setError('');
+    try {
+      await onAction(action);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : 'El servidor rechazó el voto. Puedes intentarlo de nuevo.');
+    } finally {
+      setSubmitting(false);
+    }
+  }, [canVote, draft, onAction, submitting]);
+
+  useEffect(() => {
+    if (!canVote || submitting) return undefined;
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || ignoresGameShortcuts(event.target)) return;
+      const optionId = shinyOptionFromShortcut(event.key, optionIds);
+      if (optionId) {
+        event.preventDefault();
+        selectOption(optionId);
+        return;
+      }
+      if (event.key === 'Enter' && draft) {
+        event.preventDefault();
+        void confirmVote();
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [canVote, confirmVote, draft, optionIds, selectOption, submitting]);
+
+  return <section className="mx-auto w-full max-w-[90rem] overflow-x-clip px-3 py-3 sm:px-5 sm:py-5 lg:px-7">
+    <ShinyGameHeader
+      roundNumber={game.roundNumber}
+      totalRounds={game.totalRounds}
+      active={active}
+      showVotes={game.showVotes}
+      candidateMode={config.candidateMode}
+      remainingSeconds={active ? remaining : transitionRemaining}
+      progress={active ? progress : 100}
+    />
+    <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_18rem] xl:grid-cols-[minmax(0,1fr)_20rem]">
+      <main className="min-w-0">
+        {game.options.length > 0 ? <div className={`grid gap-2.5 sm:gap-3 ${optionGrid}`} role="group" aria-label="Opciones de Pokémon">{game.options.map((option) => {
+          const voters = Object.entries(game.votes)
+            .filter(([, vote]) => vote.optionId === option.id)
+            .map(([playerId]) => members.get(playerId))
+            .filter((member): member is RoomMemberView => Boolean(member));
+          return <ShinyOptionCard
+            key={option.id}
+            option={option}
+            voters={voters}
+            selected={selectedOptionId === option.id}
+            confirmed={Boolean(ownVote)}
+            disabled={!canVote || submitting}
+            reveal={reveal}
+            correct={game.correctOptionId === option.id}
+            showVoters={game.showVotes}
+            onSelect={() => selectOption(option.id)}
+          />;
+        })}</div> : <div className="grid grid-cols-2 gap-2.5 sm:gap-3" aria-label="Cargando opciones">{Array.from({ length: 4 }, (_, index) => <div key={index} className="shiny-option-card rounded-2xl border border-ink/10 bg-surface p-3"><div className="skeleton h-9 w-9" /><div className="skeleton mx-auto mt-3 h-44 w-44 max-w-full" /><div className="skeleton mx-auto mt-3 h-5 w-24 max-w-full" /></div>)}</div>}
+        <ShinyVoteStatus
+          active={active}
+          reveal={reveal}
+          participant={participant}
+          selectedOption={selectedOption}
+          ownVote={ownVote}
+          correctOptionId={game.correctOptionId}
+          points={playerState?.roundResult?.points ?? 0}
+          submitting={submitting}
+          error={error}
+          transitionLabel={transitionLabel}
+          transitionRemaining={transitionRemaining}
+          onConfirm={() => void confirmVote()}
+        />
+      </main>
+      <ShinyGameSidebar game={game} members={members} selfId={selfId} feedbackUrl={feedbackUrl} />
     </div>
   </section>;
 }

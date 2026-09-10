@@ -38,6 +38,7 @@ export interface ShinyRoundResult {
 export interface ShinyVotePlayerState {
   canVote: boolean;
   vote: ShinyVote | null;
+  roundResult: { correct: boolean; points: number } | null;
 }
 
 export interface ShinyVoteState {

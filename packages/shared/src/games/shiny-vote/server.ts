@@ -211,6 +211,9 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
   getPublicState(state, context) {
     const reveal = state.phase === 'ROUND_RESULTS' || state.phase === 'GAME_RESULTS';
     const results = state.phase === 'GAME_RESULTS' ? buildShinyResults(state) : null;
+    const publicLastRound = reveal && state.lastRound
+      ? state.config.showVotes ? state.lastRound : { ...state.lastRound, votes: {}, correctPlayerIds: [], missedPlayerIds: [] }
+      : null;
     const options: ShinyOption[] = state.options.map((option) => ({
       id: option.id,
       pokemonId: option.pokemonId,
@@ -226,7 +229,7 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
       totalRounds: state.config.rounds,
       playerIds: state.playerIds,
       options,
-      votes: reveal || state.config.showVotes ? state.votes : {},
+      votes: state.config.showVotes ? state.votes : {},
       votedPlayerIds: Object.keys(state.votes),
       showVotes: state.config.showVotes,
       pendingPlayerIds: state.playerIds.filter((playerId) => !state.votes[playerId]),
@@ -235,14 +238,21 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
       roundEndsAt: state.roundEndsAt,
       nextTransitionAt: state.nextTransitionAt,
       correctOptionId: reveal ? state.correctOptionId : null,
-      lastRound: reveal ? state.lastRound : null,
+      lastRound: publicLastRound,
       winnerId: results?.winnerId ?? null,
       results,
     };
   },
 
   getPlayerState(state, playerId) {
-    return { canVote: state.phase === 'ROUND_ACTIVE' && state.playerIds.includes(playerId) && !state.votes[playerId], vote: state.votes[playerId] ?? null };
+    const correctIndex = state.lastRound?.correctPlayerIds.indexOf(playerId) ?? -1;
+    return {
+      canVote: state.phase === 'ROUND_ACTIVE' && state.playerIds.includes(playerId) && !state.votes[playerId],
+      vote: state.votes[playerId] ?? null,
+      roundResult: state.phase === 'ROUND_RESULTS' && state.lastRound
+        ? { correct: correctIndex >= 0, points: correctIndex >= 0 ? shinyPointsForOrder(correctIndex + 1) : 0 }
+        : null,
+    };
   },
   resolveAsset(state, request) {
     if (state.assetToken !== request.assetToken || state.roundNumber !== request.roundNumber) return null;
