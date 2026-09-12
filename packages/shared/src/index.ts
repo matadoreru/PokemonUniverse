@@ -43,3 +43,5 @@ export * from './games/tcg-higher-lower/index.js';
 export * from './games/pokemon-cry-quiz/index.js';
 export * from './games/pokemon-trivia/index.js';
 export * from './games/pokemon-palette-guess/index.js';
+
+export * from './games/infrastructure/lifecycle.js';

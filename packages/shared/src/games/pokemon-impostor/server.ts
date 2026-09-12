@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { connectedRequiredPlayerIds, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
@@ -169,6 +170,7 @@ function normalizedClue(value: string): string {
 }
 
 export const pokemonImpostorGame: MiniGameModule<PokemonImpostorConfig, PokemonImpostorState, PokemonImpostorAction, PokemonImpostorPublicState> = {
+  getLifecycle: (state) => timedGameLifecycle({ ...state, turnIndex: state.currentClueTurnIndex, voteRoundNumber: state.votingRound }),
   manifest,
   configSchema: pokemonImpostorConfigSchema,
   actionSchema: pokemonImpostorActionSchema,

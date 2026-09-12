@@ -1,4 +1,4 @@
-import type { PokemonImpostorPlayerState, PokemonImpostorPublicState, RoomMemberView, RoomView } from '@pokemon-universe/shared';
+import type { PokemonImpostorPlayerState, PokemonImpostorPublicState, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
 import { Brain, Check, Clock3, Eye, MessageSquareText, Send, ShieldCheck, Skull, Users, Vote } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { usePokemonPool } from '../hooks/usePokemonPool';

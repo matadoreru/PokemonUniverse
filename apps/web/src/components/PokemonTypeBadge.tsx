@@ -1,4 +1,4 @@
-import type { PokemonType } from '@pokemon-universe/shared';
+import type { PokemonType } from '@pokemon-universe/shared/public';
 
 export const pokemonTypeLabels: Record<PokemonType, string> = { normal: 'Normal', fire: 'Fuego', water: 'Agua', electric: 'Eléctrico', grass: 'Planta', ice: 'Hielo', fighting: 'Lucha', poison: 'Veneno', ground: 'Tierra', flying: 'Volador', psychic: 'Psíquico', bug: 'Bicho', rock: 'Roca', ghost: 'Fantasma', dragon: 'Dragón', dark: 'Siniestro', steel: 'Acero', fairy: 'Hada' };
 export const pokemonTypeVisuals: Record<PokemonType, { icon: string; color: string }> = {

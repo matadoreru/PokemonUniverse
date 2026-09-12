@@ -62,7 +62,7 @@ authRouter.post('/register', async (req, res, next) => {
     const exists = await prisma.user.findFirst({ where: { OR: [{ email: input.email }, { username: input.username }] }, select: { id: true } });
     if (exists) { res.status(409).json({ error: 'Email or username already in use' }); return; }
     const user = await prisma.user.create({ data: {
-      email: input.email, username: input.username, passwordHash: await bcrypt.hash(input.password, 12), avatarSeed: input.username,
+      email: input.email, username: input.username, passwordHash: await bcrypt.hash(input.password, 12),
       stats: { create: {} },
     } });
     const identity = identityFromUser(user);

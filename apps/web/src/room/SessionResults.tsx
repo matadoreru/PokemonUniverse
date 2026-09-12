@@ -1,4 +1,4 @@
-import type { RoomView } from '@pokemon-universe/shared';
+import type { RoomView } from '@pokemon-universe/shared/public';
 import { Crown, History, RotateCcw } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { ResultsShell } from './ResultsShell';
@@ -11,6 +11,7 @@ export function SessionResults({ room, selfId, onLobby }: { room: RoomView; self
   const gameNames = new Map(room.availableGames.map((game) => [game.id, game.name]));
   return <ResultsShell title={tied ? 'Campeones de la sesión' : 'Campeón de la sesión'} subtitle={`${room.gamesPlayed} partida${room.gamesPlayed === 1 ? '' : 's'} disputada${room.gamesPlayed === 1 ? '' : 's'}`}>
     <div className="mb-7 text-center"><Crown className="mx-auto fill-electric text-ink" size={64} /><p className="mx-auto mt-2 max-w-xl text-pretty font-display text-3xl font-bold">{champions.map((standing) => standing.displayName).join(' y ') || 'Sin ganador'}</p><p className="font-extrabold text-berry">{winningPoints} puntos</p></div>
+    <p className="mb-3 text-sm font-bold text-ink/60">La sesión premia la posición en cada partida. Los puntos propios de cada minijuego se conservan en sus resultados.</p>
     <div className="space-y-2">{ranking.map((member, index) => <div key={member.id} className="flex items-center gap-3 rounded-2xl bg-ink/5 px-4 py-3"><strong className="w-8 font-display text-xl">{index + 1}</strong><Avatar name={member.displayName} avatar={member.avatar} size="sm" /><span className="flex-1 font-extrabold">{member.displayName}</span><span className="font-extrabold text-berry">{member.sessionPoints} pts</span></div>)}</div>
     {room.sessionHistory.length > 0 && <section className="mt-7" aria-labelledby="session-history-title">
       <h2 id="session-history-title" className="mb-3 flex items-center gap-2 font-display text-xl font-bold"><History size={20} className="text-aqua" /> Evolución de puntos</h2>

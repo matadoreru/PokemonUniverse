@@ -9,6 +9,21 @@ describe('room reconnect index', () => {
     store.save(room);
     store.attachPlayer('user', room.code);
     expect(store.roomForPlayer('user')).toBe(room);
-    expect(store.roomForPlayer('user')?.game?.state.selections.user.pokemonId).toBe('pikachu');
+    expect(store.roomForPlayer('user')?.game?.state).toEqual({ selections: { user: { pokemonId: 'pikachu' } } });
   });
+});
+
+
+it('keeps the new association when an old room detaches or deletes its historical roster', () => {
+  const store = new InMemoryRoomStore();
+  const oldRoom = { code: 'OLD', members: new Map([['user', {}]]) } as unknown as LiveRoom;
+  const newRoom = { code: 'NEW', members: new Map([['user', {}]]) } as unknown as LiveRoom;
+  store.save(oldRoom); store.save(newRoom);
+  store.attachPlayer('user', 'NEW');
+  store.detachPlayer('user', 'OLD');
+  expect(store.roomForPlayer('user')).toBe(newRoom);
+  store.delete('OLD');
+  expect(store.roomForPlayer('user')).toBe(newRoom);
+  store.detachPlayer('user', 'NEW');
+  expect(store.roomForPlayer('user')).toBeUndefined();
 });

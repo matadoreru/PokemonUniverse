@@ -1,4 +1,4 @@
-import type { RoomMemberView, ShinyOption } from '@pokemon-universe/shared';
+import type { RoomMemberView, ShinyOption } from '@pokemon-universe/shared/public';
 import { Check, LoaderCircle, X } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar } from '../../components/Avatar';

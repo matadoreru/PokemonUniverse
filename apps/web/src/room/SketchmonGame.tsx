@@ -1,4 +1,4 @@
-import type { Pokemon, RoomMemberView, RoomView, SketchmonPlayerState, SketchmonPublicState } from '@pokemon-universe/shared';
+import type { Pokemon, RoomMemberView, RoomView, SketchmonPlayerState, SketchmonPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, EyeOff, History, Lightbulb, Palette, Search, XCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { PokemonTypeBadge } from '../components/PokemonTypeBadge';

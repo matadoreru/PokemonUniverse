@@ -1,4 +1,4 @@
-import type { PokeddleClueKey, PokeddleFeedbackEntry } from '@pokemon-universe/shared';
+import type { PokeddleClueKey, PokeddleFeedbackEntry } from '@pokemon-universe/shared/public';
 
 export type PokeddleColumnGroup = 'IDENTITY' | 'STATS' | 'PHYSICAL' | 'OTHER';
 export type PokeddleFeedbackSemantic = 'higher' | 'lower' | 'match' | 'partial' | 'none';

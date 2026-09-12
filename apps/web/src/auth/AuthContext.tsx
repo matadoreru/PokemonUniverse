@@ -1,4 +1,4 @@
-import type { AuthUser, AvatarPresetId } from '@pokemon-universe/shared';
+import type { AuthUser, AvatarPresetId } from '@pokemon-universe/shared/public';
 import { createContext, useContext, useEffect, useMemo, useState, type PropsWithChildren } from 'react';
 import { api } from '../lib/api';
 
@@ -17,7 +17,14 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
-  useEffect(() => { void api<{ user: AuthUser | null }>('/auth/me').then((body) => setUser(body.user)).finally(() => setLoading(false)); }, []);
+  useEffect(() => {
+    const controller = new AbortController();
+    void api<{ user: AuthUser | null }>('/auth/me', { signal: controller.signal })
+      .then((body) => { if (!controller.signal.aborted) setUser(body.user); })
+      .catch(() => { if (!controller.signal.aborted) setUser(null); })
+      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
+    return () => controller.abort();
+  }, []);
   const value = useMemo<AuthContextValue>(() => ({
     user, loading,
     async login(email, password) { const body = await api<{ user: AuthUser }>('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }); setUser(body.user); },

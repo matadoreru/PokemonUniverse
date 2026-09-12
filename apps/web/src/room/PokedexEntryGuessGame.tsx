@@ -1,4 +1,4 @@
-import type { PokedexEntryGuessHint, PokedexEntryGuessPlayerState, PokedexEntryGuessPublicState, Pokemon, PokemonLegendaryStatus, PokemonType, RoomView } from '@pokemon-universe/shared';
+import type { PokedexEntryGuessHint, PokedexEntryGuessPlayerState, PokedexEntryGuessPublicState, Pokemon, PokemonLegendaryStatus, PokemonType, RoomView } from '@pokemon-universe/shared/public';
 import { BookOpenText, CheckCircle2, Eye, History, Lightbulb, Search, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar } from '../components/Avatar';

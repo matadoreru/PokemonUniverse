@@ -1,4 +1,4 @@
-import type { PokemonBluffAuctionPublicState, RoomView } from '@pokemon-universe/shared';
+import type { PokemonBluffAuctionPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { Gavel, RotateCcw, StopCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 

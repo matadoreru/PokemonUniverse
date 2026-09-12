@@ -1,4 +1,4 @@
-import { avatarPreset, type AvatarRef, type PresenceStatus } from '@pokemon-universe/shared';
+import { avatarPreset, type AvatarRef, type PresenceStatus } from '@pokemon-universe/shared/public';
 import { useEffect, useState } from 'react';
 import { apiAsset } from '../lib/api';
 

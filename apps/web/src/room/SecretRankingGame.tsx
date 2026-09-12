@@ -1,4 +1,4 @@
-import type { RoomMemberView, RoomView, SecretRankingPlayerState, SecretRankingPokemon, SecretRankingPublicState, SecretRankingRoundResult } from '@pokemon-universe/shared';
+import type { RoomMemberView, RoomView, SecretRankingPlayerState, SecretRankingPokemon, SecretRankingPublicState, SecretRankingRoundResult } from '@pokemon-universe/shared/public';
 import { ArrowDown, ArrowUp, Check, Eye, ListChecks, LockKeyhole, Sparkles, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Avatar } from '../components/Avatar';

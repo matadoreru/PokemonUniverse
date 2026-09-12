@@ -1,3 +1,5 @@
+import { shuffled } from '../infrastructure/random.js';
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { cooldownMessage, cooldownRemainingMs, setPlayerCooldown } from '../infrastructure/timing.js';
@@ -31,14 +33,7 @@ const manifest = {
   },
 } as const;
 
-function shuffled<T>(values: readonly T[], random: () => number): T[] {
-  const result = [...values];
-  for (let index = result.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.min(Math.floor(random() * (index + 1)), index);
-    [result[index], result[swapIndex]] = [result[swapIndex]!, result[index]!];
-  }
-  return result;
-}
+
 
 export function pokeTabooPool(config: PokeTabooConfig, context: GameContext): Pokemon[] {
   return context.pokemon.forGenerations(config.generations, { includeForms: config.includeRegionalForms })
@@ -144,6 +139,7 @@ function resolveRound(state: PokeTabooState, context: GameContext, winnerId: str
 }
 
 export const pokeTabooGame: MiniGameModule<PokeTabooConfig, PokeTabooState, PokeTabooAction, PokeTabooPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest,
   configSchema: pokeTabooConfigSchema,
   actionSchema: pokeTabooActionSchema,

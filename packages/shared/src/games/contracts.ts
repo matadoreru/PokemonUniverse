@@ -167,7 +167,7 @@ export interface GameAssetRequest {
   assetId: string;
 }
 
-export type GameAssetTransform = 'ORIGINAL' | 'SILHOUETTE' | 'NORMALIZED' | 'FOCUSED_NORMALIZED' | 'PIXEL_ART' | 'PALETTE_RECOLOR';
+export type GameAssetTransform = 'ORIGINAL' | 'SILHOUETTE' | 'NORMALIZED' | 'FOCUSED_NORMALIZED' | 'ZOOM_CROP' | 'PIXEL_ART' | 'PALETTE_RECOLOR';
 export interface GameAssetRecolor {
   hueShiftDegrees: number;
   saturationScale: number;
@@ -179,13 +179,18 @@ export interface GameAssetResolution {
   transform: GameAssetTransform;
   /** Used only by FOCUSED_NORMALIZED to deterministically select an alpha-safe focus. */
   focusSeed?: number;
+  /** Server-authorized magnification; only cropped pixels reach the browser. */
+  zoom?: number;
   /** Used only by PALETTE_RECOLOR. It is retained in opaque server state. */
   recolor?: GameAssetRecolor;
 }
 
 export interface MiniGameModule<TConfig, TState, TAction, TPublicState> {
+  getCursorChannel?(state: TState, playerId: string): { playerIds: readonly string[]; targetIds: readonly string[] } | null;
+  getLifecycle(state: TState): import('./infrastructure/lifecycle.js').GameLifecycle;
   readonly manifest: MiniGameManifest;
-  readonly configSchema: z.ZodType<TConfig>;
+  checkAvailability?(config: TConfig, context: GameContext): string | null;
+  readonly configSchema: z.ZodType<TConfig, z.ZodTypeDef, unknown>;
   readonly actionSchema: z.ZodType<TAction>;
   readonly defaultConfig: TConfig;
   createInitialState(config: TConfig, context: GameContext): TState;

@@ -1,4 +1,4 @@
-import { describeBingoCondition, type BingoPublicBoard, type PokemonBingoPlayerState, type PokemonBingoPublicState, type RoomView } from '@pokemon-universe/shared';
+import { describeBingoCondition, type BingoPublicBoard, type PokemonBingoPlayerState, type PokemonBingoPublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { ArrowRight, Clock3, Eye, Plus, Search, Trash2, Trophy } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { usePokemonPool } from '../hooks/usePokemonPool';

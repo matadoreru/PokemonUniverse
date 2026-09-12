@@ -13,6 +13,7 @@ const fieldLabels: Record<string, string> = {
   groupSize: 'por grupo',
   pokemonCount: 'Pokémon',
   mistakesAllowed: 'errores',
+  bidSeconds: 'segundos por puja',
   initialBudget: 'de presupuesto',
 };
 

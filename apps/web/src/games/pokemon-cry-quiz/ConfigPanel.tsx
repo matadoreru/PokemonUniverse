@@ -1,4 +1,4 @@
-import type { PokemonCryQuizConfig } from '@pokemon-universe/shared';
+import type { PokemonCryQuizConfig } from '@pokemon-universe/shared/public';
 import { AudioLines, History, Shuffle } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';

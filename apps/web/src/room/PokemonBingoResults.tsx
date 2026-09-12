@@ -1,4 +1,4 @@
-import type { PokemonBingoPublicState, RoomView } from '@pokemon-universe/shared';
+import type { PokemonBingoPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { RotateCcw, StopCircle, Trophy } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar } from '../components/Avatar';

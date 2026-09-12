@@ -1,4 +1,4 @@
-import type { TypeChainConfig } from '@pokemon-universe/shared';
+import type { TypeChainConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { Clock3, Link2 } from 'lucide-react';
 

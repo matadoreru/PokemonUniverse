@@ -6,6 +6,8 @@ const SOURCES: DataSyncSource[] = ['POKEAPI', 'TCGDEX'];
 export class SyncAlreadyRunningError extends Error { status = 409; }
 
 export class DataSyncService {
+  private stopping = false;
+  private initialTask: Promise<unknown> | null = null;
   private readonly adapters: Map<DataSyncSource, DataSyncAdapter>;
   private readonly active = new Map<DataSyncSource, Promise<SyncResult>>();
   private readonly completedListeners = new Set<(source: DataSyncSource) => void | Promise<void>>();
@@ -23,6 +25,7 @@ export class DataSyncService {
   onCompleted(listener: (source: DataSyncSource) => void | Promise<void>): () => void { this.completedListeners.add(listener); return () => this.completedListeners.delete(listener); }
 
   start(source: DataSyncSource, mode: DataSyncMode): Promise<SyncResult> {
+    if (this.stopping) throw new Error('El servidor se está cerrando');
     if (this.active.has(source)) throw new SyncAlreadyRunningError(`${source} ya se está sincronizando`);
     const task = this.execute(source, mode).finally(() => this.active.delete(source));
     this.active.set(source, task);
@@ -47,11 +50,18 @@ export class DataSyncService {
 
   startInitialTcgInBackground(): void {
     const adapter = this.requireAdapter('TCGDEX');
-    void adapter.recordsAvailable().then(async (count) => {
+    this.initialTask = adapter.recordsAvailable().then(async (count) => {
+      if (this.stopping) return undefined;
       if (count === 0) return this.start('TCGDEX', 'INITIAL');
       await this.db.dataSyncState.upsert({ where: { source: 'TCGDEX' }, create: { source: 'TCGDEX', recordsAvailable: count, datasetVersion: String(count) }, update: { recordsAvailable: count } });
       return undefined;
     }).catch((error) => console.error('[DataSync] TCGdex initial sync failed:', error));
+  }
+
+  async stop(): Promise<void> {
+    this.stopping = true;
+    await this.initialTask;
+    await Promise.allSettled(this.active.values());
   }
 
   async overview(): Promise<SyncOverviewItem[]> {

@@ -1,4 +1,4 @@
-import type { MostLikelyToConfig, MostLikelyToPlayerState, MostLikelyToPublicState, MostLikelyToRoundResult, RoomMemberView, RoomView } from '@pokemon-universe/shared';
+import type { MostLikelyToConfig, MostLikelyToPlayerState, MostLikelyToPublicState, MostLikelyToRoundResult, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Crown, Eye, LockKeyhole, MessageCircleQuestion, Sparkles, Users, Vote } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';

@@ -1,4 +1,4 @@
-import type { ConnectionAnswerGroup, ConnectionPlayerStatus, PokemonConnectionsPlayerState, PokemonConnectionsPublicState, RoomMemberView, RoomView } from '@pokemon-universe/shared';
+import type { ConnectionAnswerGroup, ConnectionPlayerStatus, PokemonConnectionsPlayerState, PokemonConnectionsPublicState, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
 import { ArrowRight, Check, CheckCircle2, Eye, Lightbulb, LockKeyhole, Puzzle, ShieldX, Sparkles, Trophy, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Avatar } from '../components/Avatar';

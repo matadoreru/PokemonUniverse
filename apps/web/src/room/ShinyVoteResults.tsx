@@ -1,4 +1,4 @@
-import type { RoomView, ShinyVotePublicState } from '@pokemon-universe/shared';
+import type { RoomView, ShinyVotePublicState } from '@pokemon-universe/shared/public';
 import { RotateCcw, Sparkles, StopCircle, Trophy } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 

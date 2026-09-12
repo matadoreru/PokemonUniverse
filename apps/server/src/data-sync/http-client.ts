@@ -1,50 +1,55 @@
+import { readResponseBytes } from '../http/response-body.js';
+
 export interface SyncHttpClientOptions {
   attempts?: number;
   baseDelayMs?: number;
   fetcher?: typeof fetch;
+  timeoutMs?: number;
+  maxBytes?: number;
 }
 
-/** Small rate-limit-aware client shared by all external synchronization
- * adapters. Runtime game code never imports this module. */
-export class SyncHttpClient {
-  private readonly attempts: number;
-  private readonly baseDelayMs: number;
-  private readonly fetcher: typeof fetch;
+export function retryAfterMs(value: string | null, now = Date.now()): number | null {
+  if (value === null || !value.trim()) return null;
+  const seconds = Number(value);
+  const delay = Number.isFinite(seconds) ? seconds * 1_000 : Date.parse(value) - now;
+  return Number.isFinite(delay) && delay >= 0 ? Math.min(delay, 60_000) : null;
+}
 
-  constructor(options: SyncHttpClientOptions = {}) {
-    this.attempts = options.attempts ?? 4;
-    this.baseDelayMs = options.baseDelayMs ?? 500;
-    this.fetcher = options.fetcher ?? fetch;
-  }
+class HttpStatusError extends Error {
+  constructor(label: string, readonly status: number) { super(`${label} returned HTTP ${status}`); }
+}
+
+/** Bounded external acquisition. Runtime games never depend on this client. */
+export class SyncHttpClient {
+  constructor(private readonly options: SyncHttpClientOptions = {}) {}
 
   async json<T>(url: string, label: string): Promise<T> {
-    const response = await this.request(url, label, 'application/json');
-    return response.json() as Promise<T>;
+    return JSON.parse(new TextDecoder().decode(await this.request(url, label, 'application/json'))) as T;
   }
 
-  async bytes(url: string, label: string): Promise<Uint8Array> {
-    const response = await this.request(url, label, 'image/*');
-    return new Uint8Array(await response.arrayBuffer());
-  }
+  bytes(url: string, label: string): Promise<Uint8Array> { return this.request(url, label, 'image/*'); }
 
-  private async request(url: string, label: string, accept: string): Promise<Response> {
+  private async request(url: string, label: string, accept: string): Promise<Uint8Array> {
+    const attempts = this.options.attempts ?? 4;
     let lastError: unknown;
-    for (let attempt = 1; attempt <= this.attempts; attempt += 1) {
+    for (let attempt = 1; attempt <= attempts; attempt += 1) {
+      let delay = (this.options.baseDelayMs ?? 500) * (2 ** (attempt - 1)) + Math.floor(Math.random() * 150);
       try {
-        const response = await this.fetcher(url, { headers: { Accept: accept, 'User-Agent': 'PokemonUniverse-DataSync/1.0' } });
-        if (response.ok) return response;
-        lastError = new Error(`${label} returned HTTP ${response.status}`);
-        if (response.status < 500 && response.status !== 429) throw lastError;
-        const retryAfter = Number(response.headers.get('retry-after'));
-        if (attempt < this.attempts) await this.wait(Number.isFinite(retryAfter) ? retryAfter * 1_000 : this.backoff(attempt));
+        const signal = AbortSignal.timeout(this.options.timeoutMs ?? 30_000);
+        const response = await (this.options.fetcher ?? fetch)(url, {
+          headers: { Accept: accept, 'User-Agent': 'PokemonUniverse-DataSync/1.0' },
+          signal,
+        });
+        if (response.ok) return await readResponseBytes(response, this.options.maxBytes ?? 16 * 1024 * 1024, signal);
+        delay = retryAfterMs(response.headers.get('retry-after')) ?? delay;
+        await response.body?.cancel();
+        throw new HttpStatusError(label, response.status);
       } catch (error) {
+        if (error instanceof HttpStatusError && error.status < 500 && error.status !== 429) throw error;
         lastError = error;
-        if (attempt < this.attempts) await this.wait(this.backoff(attempt));
       }
+      if (attempt < attempts) await new Promise((resolve) => setTimeout(resolve, Math.min(delay, 60_000)));
     }
     throw lastError instanceof Error ? lastError : new Error(`Could not load ${label}`);
   }
-
-  private backoff(attempt: number): number { return this.baseDelayMs * (2 ** (attempt - 1)) + Math.floor(Math.random() * 150); }
-  private wait(ms: number): Promise<void> { return new Promise((resolve) => setTimeout(resolve, ms)); }
 }

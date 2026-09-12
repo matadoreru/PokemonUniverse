@@ -1,3 +1,5 @@
+import { shuffled as shuffle } from '../infrastructure/random.js';
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { cooldownMessage, cooldownRemainingMs, setPlayerCooldown } from '../infrastructure/timing.js';
@@ -31,11 +33,7 @@ function pool(state: TypeChainState, context: GameContext): Pokemon[] { return s
 function currentPokemon(state: TypeChainState, context: GameContext): Pokemon | null { return context.pokemon.byId(state.chain.at(-1)?.pokemon.id ?? '') ?? null; }
 function appendEvent(events: TypeChainEvent[], event: TypeChainEvent): TypeChainEvent[] { return [...events, event].slice(-TYPE_CHAIN_MAX_RECENT_EVENTS); }
 
-function shuffle<T>(values: readonly T[], random: () => number): T[] {
-  const result = [...values];
-  for (let index = result.length - 1; index > 0; index -= 1) { const swap = Math.min(Math.floor(random() * (index + 1)), index); [result[index], result[swap]] = [result[swap]!, result[index]!]; }
-  return result;
-}
+
 
 export function typeChainStarterCandidates(allowed: readonly Pokemon[]): Array<{ pokemon: Pokemon; continuationCount: number }> {
   return allowed.flatMap((pokemon) => {
@@ -122,6 +120,7 @@ function invalidAttempt(state: TypeChainState, playerId: string, pokemon: Pokemo
 }
 
 export const typeChainGame: MiniGameModule<TypeChainConfig, TypeChainState, TypeChainAction, TypeChainPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest, configSchema: typeChainConfigSchema, actionSchema: typeChainActionSchema, defaultConfig: defaultTypeChainConfig,
   createInitialState(config, context) {
     const parsed = typeChainConfigSchema.parse(config); if (context.players.length < manifest.minPlayers) throw new Error(`Se necesitan al menos ${manifest.minPlayers} jugadores.`);

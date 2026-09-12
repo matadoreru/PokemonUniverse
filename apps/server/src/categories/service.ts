@@ -1,3 +1,4 @@
+import { normalizeContent } from '../content/normalize.js';
 import type { CustomCategoryView, SubjectiveCategory } from '@pokemon-universe/shared';
 import { createCustomCategorySchema, updateCustomCategorySchema } from '@pokemon-universe/shared';
 
@@ -18,9 +19,7 @@ export interface CustomCategoryRepository {
   delete(userId: string, id: string): Promise<boolean>;
 }
 
-export function normalizeCustomCategory(value: string): string {
-  return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase('es').replace(/[^\p{L}\p{N}]+/gu, ' ').trim().replace(/\s+/g, ' ');
-}
+export const normalizeCustomCategory = normalizeContent;
 
 function view(category: StoredCustomCategory): CustomCategoryView {
   return {

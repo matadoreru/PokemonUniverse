@@ -1,4 +1,4 @@
-import type { RoomMemberView, ShinyVotePublicState } from '@pokemon-universe/shared';
+import type { RoomMemberView, ShinyVotePublicState } from '@pokemon-universe/shared/public';
 import { Check, ChevronDown, CircleDashed, Eye, MessageSquareWarning, Trophy, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Avatar } from '../../components/Avatar';

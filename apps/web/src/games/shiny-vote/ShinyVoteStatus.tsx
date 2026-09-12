@@ -1,4 +1,4 @@
-import type { ShinyOption, ShinyOptionId, ShinyVote } from '@pokemon-universe/shared';
+import type { ShinyOption, ShinyOptionId, ShinyVote } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Eye, Send, Sparkles, TimerOff, XCircle } from 'lucide-react';
 
 function OptionIdentity({ option }: { option: ShinyOption }) {

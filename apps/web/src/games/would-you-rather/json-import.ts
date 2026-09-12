@@ -1,4 +1,4 @@
-import { importCustomWouldYouRatherPromptsSchema, type ImportCustomWouldYouRatherPrompts } from '@pokemon-universe/shared';
+import { importCustomWouldYouRatherPromptsSchema, type ImportCustomWouldYouRatherPrompts } from '@pokemon-universe/shared/public';
 
 export const WOULD_YOU_RATHER_JSON_EXAMPLE = `{
   "version": 1,

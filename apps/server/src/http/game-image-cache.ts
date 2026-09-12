@@ -1,9 +1,11 @@
 import { validFocusPoint, type GameAssetRecolor, type GameAssetResolution, type GameAssetTransform } from '@pokemon-universe/shared';
 import { readFile } from 'node:fs/promises';
 import sharp from 'sharp';
+import { ResourceCache } from './resource-cache.js';
+import { readResponseBytes } from './response-body.js';
 import { localArtworkPath } from '../pokemon/visual-assets.js';
 
-const gameImageCache = new Map<string, Promise<{ body: Buffer; contentType: string }>>();
+const gameImageCache = new ResourceCache<{ body: Buffer; contentType: string }>({ bytes: 32 * 1024 * 1024, entries: 256, concurrency: 8, pending: 64 }, (image) => image.body.byteLength);
 
 function trustedSpriteUrl(source: string): URL {
   const sourceUrl = new URL(source);
@@ -13,7 +15,7 @@ function trustedSpriteUrl(source: string): URL {
   return sourceUrl;
 }
 
-function resolution(asset: string | GameAssetResolution): { source: string; transform: GameAssetTransform; focusSeed?: number; recolor?: GameAssetRecolor } {
+function resolution(asset: string | GameAssetResolution): { source: string; transform: GameAssetTransform; focusSeed?: number; zoom?: number; recolor?: GameAssetRecolor } {
   return typeof asset === 'string' ? { source: asset, transform: 'ORIGINAL' } : asset;
 }
 
@@ -83,9 +85,10 @@ function recolorPixels(data: Buffer, recolor: GameAssetRecolor): void {
 async function sourceBuffer(source: string): Promise<{ body: Buffer; contentType: string }> {
   const localPath = localArtworkPath(source);
   if (localPath) return { body: await readFile(localPath), contentType: 'image/png' };
-  const image = await fetch(trustedSpriteUrl(source));
+  const signal = AbortSignal.timeout(15_000);
+  const image = await fetch(trustedSpriteUrl(source), { signal });
   if (!image.ok) throw new Error(`Sprite source returned ${image.status}`);
-  return { body: Buffer.from(await image.arrayBuffer()), contentType: image.headers.get('content-type') ?? 'image/png' };
+  return { body: Buffer.from(await readResponseBytes(image, 8 * 1024 * 1024, signal)), contentType: image.headers.get('content-type') ?? 'image/png' };
 }
 
 export async function createNormalizedPokemonImage(source: Buffer, focusSeed?: number): Promise<Buffer> {
@@ -141,12 +144,11 @@ export async function createPokemonSpriteImage(source: Buffer, recolor?: GameAss
 }
 
 export function loadGameImage(asset: string | GameAssetResolution): Promise<{ body: Buffer; contentType: string }> {
-  const { source, transform, focusSeed, recolor } = resolution(asset);
+  const { source, transform, focusSeed, zoom, recolor } = resolution(asset);
   const recolorKey = recolor ? `${recolor.hueShiftDegrees}:${recolor.saturationScale}:${recolor.lightnessScale}:${recolor.contrast}` : '';
-  const cacheKey = `${transform}:${focusSeed ?? ''}:${recolorKey}:${source}`;
-  let cached = gameImageCache.get(cacheKey);
-  if (!cached) {
-    cached = sourceBuffer(source).then(async (image) => {
+  const cacheKey = `${transform}:${focusSeed ?? ''}:${zoom ?? ''}:${recolorKey}:${source}`;
+  return gameImageCache.load(cacheKey, () => sourceBuffer(source).then(async (image) => {
+      if (transform === 'ZOOM_CROP') return { body: await createZoomedPokemonCrop(image.body, focusSeed ?? 0, zoom ?? 1), contentType: 'image/png' };
       if (transform === 'SILHOUETTE') return { body: await createPokemonSilhouette(image.body), contentType: 'image/png' };
       if (transform === 'NORMALIZED' || transform === 'FOCUSED_NORMALIZED') return { body: await createNormalizedPokemonImage(image.body, transform === 'FOCUSED_NORMALIZED' ? focusSeed ?? 0 : undefined), contentType: 'image/png' };
       if (transform === 'PIXEL_ART') return { body: await createPokemonSpriteImage(image.body), contentType: 'image/png' };
@@ -155,16 +157,18 @@ export function loadGameImage(asset: string | GameAssetResolution): Promise<{ bo
         return { body: await createPokemonSpriteImage(image.body, recolor), contentType: 'image/png' };
       }
       return image;
-    }).catch((error) => {
-      gameImageCache.delete(cacheKey);
-      throw error;
-    });
-    gameImageCache.set(cacheKey, cached);
-    if (gameImageCache.size > 256) gameImageCache.delete(gameImageCache.keys().next().value!);
-  }
-  return cached;
+    }));
 }
 
 export function preloadGameImage(source: string): void {
   void loadGameImage(source).catch((error) => console.error('Failed to preload game image', error));
+}
+
+/** Crop before encoding so hidden pixels cannot be recovered by changing CSS. */
+export async function createZoomedPokemonCrop(source: Buffer, focusSeed: number, zoom: number): Promise<Buffer> {
+  if (!Number.isFinite(zoom) || zoom < 1 || zoom > 32) throw new Error('Invalid crop magnification');
+  const normalized = await createNormalizedPokemonImage(source, focusSeed);
+  const size = Math.max(1, Math.floor(512 / zoom));
+  const inset = Math.floor((512 - size) / 2);
+  return sharp(normalized).extract({ left: inset, top: inset, width: size, height: size }).resize(512, 512).png().toBuffer();
 }

@@ -1,4 +1,4 @@
-import type { GameSelectionMode, RoomView, SessionMode } from '@pokemon-universe/shared';
+import type { GameSelectionMode, RoomView, SessionMode } from '@pokemon-universe/shared/public';
 
 export type OptimisticLobbyUpdate =
   | { kind: 'config'; gameId: string; config: unknown }
@@ -30,6 +30,9 @@ export class OptimisticRoomProjection {
   private nextId = 1;
 
   setAuthoritative(room: RoomView | null, clearPending = false): RoomView | null {
+    if (room?.roomInstanceId && room.roomInstanceId === this.authoritative?.roomInstanceId
+      && room.revision !== undefined && this.authoritative.revision !== undefined
+      && room.revision < this.authoritative.revision) return this.view();
     this.authoritative = room;
     if (clearPending) this.pending = [];
     return this.view();

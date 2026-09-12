@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
@@ -144,6 +145,7 @@ function finishGame(state: ShinyVoteState): ShinyVoteState {
 }
 
 export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, ShinyVoteAction, ShinyVotePublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest,
   configSchema: shinyVoteConfigSchema,
   actionSchema: shinyVoteActionSchema,

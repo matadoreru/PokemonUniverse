@@ -1,4 +1,4 @@
-import type { PokeTabooPublicState, RoomView } from '@pokemon-universe/shared';
+import type { PokeTabooPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { Mic2, RotateCcw, StopCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 

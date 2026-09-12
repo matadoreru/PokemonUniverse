@@ -1,4 +1,4 @@
-import type { ShinyCandidateMode } from '@pokemon-universe/shared';
+import type { ShinyCandidateMode } from '@pokemon-universe/shared/public';
 import { Clock3, Eye, Layers3, Shuffle } from 'lucide-react';
 
 export function ShinyGameHeader({ roundNumber, totalRounds, active, showVotes, candidateMode, remainingSeconds, progress }: {

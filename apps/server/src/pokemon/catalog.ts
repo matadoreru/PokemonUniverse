@@ -1,6 +1,14 @@
 import { isSupportedRegionalFormId, type Generation, type LearnsetPokemonCatalog, type Move, type MoveCategory, type PokedexEntry, type PokedexEntryPokemonCatalog, type Pokemon, type PokemonEvolutionInfo, type PokemonLegendaryStatus, type PokemonType, type ResolvedLevelUpMove } from '@pokemon-universe/shared';
 import { prisma } from '../db.js';
 
+function freezeCatalogValue<T>(value: T): T {
+  if (value !== null && typeof value === 'object') {
+    for (const child of Object.values(value)) freezeCatalogValue(child);
+    Object.freeze(value);
+  }
+  return value;
+}
+
 interface CatalogLearnsetEntry { pokemonId: string; moveId: string; referenceGeneration: number; level: number }
 
 export class InMemoryPokemonCatalog implements LearnsetPokemonCatalog, PokedexEntryPokemonCatalog {
@@ -18,6 +26,10 @@ export class InMemoryPokemonCatalog implements LearnsetPokemonCatalog, PokedexEn
     evolution: Readonly<Record<string, PokemonEvolutionInfo>> = {},
     pokedexEntries: readonly PokedexEntry[] = [],
   ) {
+    entries = freezeCatalogValue(structuredClone(entries));
+    moves = freezeCatalogValue(structuredClone(moves));
+    evolution = freezeCatalogValue(structuredClone(evolution));
+    pokedexEntries = freezeCatalogValue(structuredClone(pokedexEntries));
     const defaultDexNumbers = new Set<number>();
     this.entries = entries.filter((pokemon) => {
       if (pokemon.isDefault === false) return isSupportedRegionalFormId(pokemon.id);
@@ -25,6 +37,7 @@ export class InMemoryPokemonCatalog implements LearnsetPokemonCatalog, PokedexEn
       defaultDexNumbers.add(pokemon.nationalDexNumber);
       return true;
     });
+    Object.freeze(this.entries);
     this.idIndex = new Map(this.entries.map((pokemon) => [pokemon.id, pokemon]));
     this.dexIndex = new Map(this.entries.filter((pokemon) => pokemon.isDefault !== false).map((pokemon) => [pokemon.nationalDexNumber, pokemon]));
     this.moveIndex = new Map(moves.map((move) => [move.id, move]));
@@ -38,6 +51,8 @@ export class InMemoryPokemonCatalog implements LearnsetPokemonCatalog, PokedexEn
     for (const list of this.learnsetIndex.values()) list.sort((a, b) => a.level - b.level || a.move.name.localeCompare(b.move.name));
     for (const entry of pokedexEntries) this.pokedexEntryIndex.set(entry.pokemonId, [...(this.pokedexEntryIndex.get(entry.pokemonId) ?? []), entry]);
     for (const list of this.pokedexEntryIndex.values()) list.sort((a, b) => b.generation - a.generation || a.version.localeCompare(b.version));
+    for (const list of this.learnsetIndex.values()) freezeCatalogValue(list);
+    for (const list of this.pokedexEntryIndex.values()) freezeCatalogValue(list);
   }
   all(): readonly Pokemon[] { return this.entries; }
   byId(id: string): Pokemon | undefined { return this.idIndex.get(id); }

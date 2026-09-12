@@ -1,3 +1,5 @@
+import { shuffled } from '../infrastructure/random.js';
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { cooldownMessage, cooldownRemainingMs, setPlayerCooldown } from '../infrastructure/timing.js';
@@ -33,14 +35,7 @@ const manifest = {
   },
 } as const;
 
-function shuffled<T>(values: readonly T[], random: () => number): T[] {
-  const result = [...values];
-  for (let index = result.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.min(Math.floor(random() * (index + 1)), index);
-    [result[index], result[swapIndex]] = [result[swapIndex]!, result[index]!];
-  }
-  return result;
-}
+
 
 function drawerOrder(playerIds: readonly string[], laps: number, random: () => number): string[] {
   return Array.from({ length: laps }, () => shuffled(playerIds, random)).flat();
@@ -189,30 +184,39 @@ function resolveRound(state: SketchmonState, context: GameContext, winnerId: str
   return {
     ...state, phase: 'ROUND_RESULTS', scores, playerStats, roundEndsAt: null,
     nextTransitionAt: context.now + SKETCHMON_REVEAL_MS, lastRound,
-    gallery: [...state.gallery, galleryEntry],
+    gallery: [...state.gallery, galleryEntry].slice(-SKETCHMON_GALLERY_LIMIT),
   };
 }
 
+export const SKETCHMON_MAX_POINTS = 16_384;
+export const SKETCHMON_MAX_STROKES = 1_024;
+export const SKETCHMON_UNDO_LIMIT = 64;
+export const SKETCHMON_GALLERY_LIMIT = 12;
+
 function applyDrawingBatch(state: SketchmonState, action: Extract<SketchmonAction, { type: 'DRAW_BATCH' }>): GameActionResult<SketchmonState> {
-  const strokes = cloneDrawing(state.strokes);
-  const undoStack = state.undoStack.map(cloneDrawing);
-  let redoStack = state.redoStack.map(cloneDrawing);
+  let strokes = state.strokes;
+  let undoStack = state.undoStack;
+  let redoStack = state.redoStack;
+  let pointCount = strokes.reduce((total, stroke) => total + stroke.points.length, 0);
   for (const operation of action.operations) {
+    pointCount += operation.kind === 'START' ? operation.stroke.points.length : operation.points.length;
+    if (pointCount > SKETCHMON_MAX_POINTS) return { state, accepted: false, error: 'El dibujo ha alcanzado el límite de puntos. Borra trazos antes de continuar.' };
     if (operation.kind === 'START') {
       if (strokes.some((stroke) => stroke.id === operation.stroke.id)) return { state, accepted: false, error: 'Ese trazo ya existe.' };
-      undoStack.push(cloneDrawing(strokes));
+      if (strokes.length >= SKETCHMON_MAX_STROKES) return { state, accepted: false, error: 'El dibujo ha alcanzado el límite de trazos.' };
+      undoStack = [...undoStack, strokes].slice(-SKETCHMON_UNDO_LIMIT);
       redoStack = [];
-      strokes.push({ ...operation.stroke, points: operation.stroke.points.map((point) => ({ ...point })) });
+      strokes = [...strokes, { ...operation.stroke, points: operation.stroke.points.map((point) => ({ ...point })) }];
     } else {
-      const stroke = strokes.find((candidate) => candidate.id === operation.strokeId);
-      if (!stroke) return { state, accepted: false, error: 'No se puede continuar un trazo inexistente.' };
-      stroke.points.push(...operation.points.map((point) => ({ ...point })));
+      if (!strokes.some((stroke) => stroke.id === operation.strokeId)) return { state, accepted: false, error: 'No se puede continuar un trazo inexistente.' };
+      strokes = strokes.map((stroke) => stroke.id === operation.strokeId ? { ...stroke, points: [...stroke.points, ...operation.points.map((point) => ({ ...point }))] } : stroke);
     }
   }
   return { state: { ...state, strokes, undoStack, redoStack }, accepted: true };
 }
 
 export const sketchmonGame: MiniGameModule<SketchmonConfig, SketchmonState, SketchmonAction, SketchmonPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest,
   configSchema: sketchmonConfigSchema,
   actionSchema: sketchmonActionSchema,
@@ -249,14 +253,14 @@ export const sketchmonGame: MiniGameModule<SketchmonConfig, SketchmonState, Sket
       if (playerId !== state.drawerId) return { state, accepted: false, error: 'Solo quien dibuja puede editar el lienzo.' };
       if (action.type === 'CLEAR_DRAWING') {
         if (!state.strokes.length) return { state, accepted: true };
-        return { state: { ...state, strokes: [], undoStack: [...state.undoStack.map(cloneDrawing), cloneDrawing(state.strokes)], redoStack: [] }, accepted: true };
+        return { state: { ...state, strokes: [], undoStack: [...state.undoStack, state.strokes].slice(-SKETCHMON_UNDO_LIMIT), redoStack: [] }, accepted: true };
       }
       if (action.type === 'UNDO_STROKE') {
         const previous = state.undoStack.at(-1); if (!previous) return { state, accepted: true };
-        return { state: { ...state, strokes: cloneDrawing(previous), undoStack: state.undoStack.slice(0, -1).map(cloneDrawing), redoStack: [...state.redoStack.map(cloneDrawing), cloneDrawing(state.strokes)] }, accepted: true };
+        return { state: { ...state, strokes: previous, undoStack: state.undoStack.slice(0, -1), redoStack: [...state.redoStack, state.strokes].slice(-SKETCHMON_UNDO_LIMIT) }, accepted: true };
       }
       const next = state.redoStack.at(-1); if (!next) return { state, accepted: true };
-      return { state: { ...state, strokes: cloneDrawing(next), undoStack: [...state.undoStack.map(cloneDrawing), cloneDrawing(state.strokes)], redoStack: state.redoStack.slice(0, -1).map(cloneDrawing) }, accepted: true };
+      return { state: { ...state, strokes: next, undoStack: [...state.undoStack, state.strokes].slice(-SKETCHMON_UNDO_LIMIT), redoStack: state.redoStack.slice(0, -1) }, accepted: true };
     }
     if (playerId === state.drawerId) return { state, accepted: false, error: 'Quien dibuja no puede adivinar.' };
     if (cooldownRemainingMs(context.now, state.cooldownUntil[playerId]) > 0) return { state, accepted: false, error: cooldownMessage(context.now, state.cooldownUntil[playerId]) };

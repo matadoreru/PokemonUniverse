@@ -1,4 +1,4 @@
-import type { Pokemon } from '@pokemon-universe/shared';
+import type { Pokemon } from '@pokemon-universe/shared/public';
 
 type SearchablePokemon = Pick<Pokemon, 'id' | 'name' | 'sprite'> & Partial<Pick<Pokemon, 'isDefault'>>;
 

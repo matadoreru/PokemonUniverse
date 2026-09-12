@@ -1,3 +1,5 @@
+import { shuffled } from '../infrastructure/random.js';
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { buildBluffAuctionConditions } from './conditions.js';
@@ -31,14 +33,7 @@ const manifest = {
   },
 };
 
-function shuffled<T>(values: readonly T[], random: () => number): T[] {
-  const copy = [...values];
-  for (let index = copy.length - 1; index > 0; index -= 1) {
-    const target = Math.floor(random() * (index + 1));
-    [copy[index], copy[target]] = [copy[target]!, copy[index]!];
-  }
-  return copy;
-}
+
 
 function canonicalPool(context: GameContext, config: PokemonBluffAuctionConfig): Pokemon[] {
   const byDex = new Map<number, Pokemon>();
@@ -80,7 +75,7 @@ function beginRound(state: PokemonBluffAuctionState, context: GameContext): Poke
     bidOrder: shuffled(state.playerIds, context.random), turnIndex: 0, passedPlayerIds: [],
     currentBid: null, currentBidderId: null, bidHistory: [], bidderId: null, targetBid: null,
     attempts: [], usedPokemonIds: [], correctCount: 0, incorrectCount: 0,
-    roundEndsAt: null, nextTransitionAt: null, lastRound: null,
+    roundEndsAt: state.config.bidSeconds > 0 ? context.now + state.config.bidSeconds * 1_000 : null, nextTransitionAt: null, lastRound: null,
   };
 }
 
@@ -138,7 +133,7 @@ function advanceTurn(state: PokemonBluffAuctionState, context: GameContext): Pok
   let next = state; let checked = 0;
   while (checked < next.bidOrder.length) {
     const index = (next.turnIndex + 1) % next.bidOrder.length;
-    next = { ...next, turnIndex: index };
+    next = { ...next, turnIndex: index, roundEndsAt: state.config.bidSeconds > 0 ? context.now + state.config.bidSeconds * 1_000 : null };
     const playerId = currentTurnPlayerId(next)!;
     if (!next.passedPlayerIds.includes(playerId) && isPlayerRequired(context, playerId)) break;
     if (!next.passedPlayerIds.includes(playerId)) next = {
@@ -152,6 +147,7 @@ function advanceTurn(state: PokemonBluffAuctionState, context: GameContext): Pok
 }
 
 export const pokemonBluffAuctionGame: MiniGameModule<PokemonBluffAuctionConfig, PokemonBluffAuctionState, PokemonBluffAuctionAction, PokemonBluffAuctionPublicState> = {
+  getLifecycle: (state) => timedGameLifecycle({ ...state, turnNumber: state.bidHistory.length }),
   manifest, configSchema: pokemonBluffAuctionConfigSchema, actionSchema: pokemonBluffAuctionActionSchema, defaultConfig: defaultPokemonBluffAuctionConfig,
   createInitialState(config, context) {
     const parsed = pokemonBluffAuctionConfigSchema.parse(config); const pool = canonicalPool(context, parsed);
@@ -171,6 +167,7 @@ export const pokemonBluffAuctionGame: MiniGameModule<PokemonBluffAuctionConfig, 
   },
   start(state, context) { return beginRound(state, context); },
   handleAction(state, playerId, action, context): GameActionResult<PokemonBluffAuctionState> {
+    if ((state.phase === 'POKEMON_SEARCH' || state.phase === 'ROUND_ACTIVE') && state.roundEndsAt !== null && context.now >= state.roundEndsAt) return { state, accepted: false, error: 'El tiempo ha terminado.' };
     if (!state.playerIds.includes(playerId) || !isPlayerRequired(context, playerId)) return { state, accepted: false, error: 'No puedes actuar ahora.' };
     if (action.type === 'RAISE_BID' || action.type === 'PASS_BID') {
       if (state.phase !== 'ROUND_ACTIVE') return { state, accepted: false, error: 'La subasta ya ha terminado.' };
@@ -208,6 +205,13 @@ export const pokemonBluffAuctionGame: MiniGameModule<PokemonBluffAuctionConfig, 
     return { state: next, accepted: true };
   },
   handleTimeout(state, context) {
+    if (state.phase === 'ROUND_ACTIVE' && state.roundEndsAt !== null && context.now >= state.roundEndsAt) {
+      const playerId = currentTurnPlayerId(state);
+      if (!playerId) return state;
+      const next = { ...state, passedPlayerIds: [...state.passedPlayerIds, playerId], bidHistory: [...state.bidHistory, { playerId, type: 'PASS' as const }] };
+      const settled = settleIfOneRemains(next, context);
+      return settled.phase === 'ROUND_ACTIVE' ? advanceTurn(settled, context) : settled;
+    }
     if (state.phase === 'POKEMON_SEARCH' && context.now >= (state.roundEndsAt ?? Infinity)) return finishRound(state, context, false, 'TIMEOUT');
     if (state.phase === 'ROUND_RESULTS' && context.now >= (state.nextTransitionAt ?? Infinity)) return beginRound(state, context);
     return state;

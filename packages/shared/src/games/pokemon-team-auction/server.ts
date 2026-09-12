@@ -1,3 +1,5 @@
+import { shuffled } from '../infrastructure/random.js';
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { defaultPokemonTeamAuctionConfig, pokemonTeamAuctionConfigSchema, type PokemonTeamAuctionConfig } from './config.js';
 import { buildTeamAuctionResults, participantStats } from './rules.js';
@@ -24,14 +26,7 @@ const manifest = {
   },
 };
 
-function shuffled<T>(values: readonly T[], random: () => number): T[] {
-  const copy = [...values];
-  for (let index = copy.length - 1; index > 0; index -= 1) {
-    const target = Math.floor(random() * (index + 1));
-    [copy[index], copy[target]] = [copy[target]!, copy[index]!];
-  }
-  return copy;
-}
+
 
 function rotate<T>(values: readonly T[], offset: number): T[] {
   if (values.length === 0) return [];
@@ -88,7 +83,7 @@ function finishGame(state: PokemonTeamAuctionState): PokemonTeamAuctionState {
     return [playerId, participantStats(current, state.lotHistory.filter((lot) => lot.winnerId === playerId).length, state.lotHistory.filter((lot) => lot.winnerId === null).length)];
   }));
   const results = buildTeamAuctionResults({ ...state, phase: 'GAME_RESULTS', playerStats });
-  return { ...state, phase: 'GAME_RESULTS', currentBid: null, currentBidderId: null, passedPlayerIds: [], playerStats, results };
+  return { ...state, roundEndsAt: null, phase: 'GAME_RESULTS', currentBid: null, currentBidderId: null, passedPlayerIds: [], playerStats, results };
 }
 
 function beginLot(state: PokemonTeamAuctionState, lotIndex: number, context: GameContext): PokemonTeamAuctionState {
@@ -96,6 +91,7 @@ function beginLot(state: PokemonTeamAuctionState, lotIndex: number, context: Gam
   const next: PokemonTeamAuctionState = {
     ...state,
     phase: 'ROUND_ACTIVE',
+    roundEndsAt: null,
     currentLotIndex: lotIndex,
     currentBid: null,
     currentBidderId: null,
@@ -135,12 +131,12 @@ function normalizeTurn(state: PokemonTeamAuctionState, context: GameContext): Po
     if (!currentId) return settleLot(next, context);
     const current = participant(next, currentId);
     const canAct = Boolean(current && current.team.length < 6 && isPlayerRequired(context, currentId) && !next.passedPlayerIds.includes(currentId) && currentId !== next.currentBidderId && current.coins >= requiredBid(next));
-    if (canAct) return next;
+    if (canAct) return { ...next, roundEndsAt: next.roundEndsAt ?? (next.config.bidSeconds > 0 ? context.now + next.config.bidSeconds * 1_000 : null) };
     if (!next.passedPlayerIds.includes(currentId) && currentId !== next.currentBidderId) {
       const pass: TeamAuctionBidEvent = { lotNumber: next.currentLotIndex + 1, playerId: currentId, type: 'PASS' };
       next = { ...next, passedPlayerIds: [...next.passedPlayerIds, currentId], bidHistory: [...next.bidHistory, pass] };
     }
-    next = { ...next, turnIndex: (next.turnIndex + 1) % Math.max(1, next.turnOrder.length) };
+    next = { ...next, roundEndsAt: null, turnIndex: (next.turnIndex + 1) % Math.max(1, next.turnOrder.length) };
     checked += 1;
     const active = next.turnOrder.filter((playerId) => !next.passedPlayerIds.includes(playerId) && playerId !== next.currentBidderId && eligibleForLot(next, playerId, context));
     if (active.length === 0) return settleLot(next, context);
@@ -149,6 +145,7 @@ function normalizeTurn(state: PokemonTeamAuctionState, context: GameContext): Po
 }
 
 export const pokemonTeamAuctionGame: MiniGameModule<PokemonTeamAuctionConfig, PokemonTeamAuctionState, PokemonTeamAuctionAction, PokemonTeamAuctionPublicState> = {
+  getLifecycle: (state) => timedGameLifecycle({ ...state, turnNumber: state.bidHistory.length }),
   manifest,
   configSchema: pokemonTeamAuctionConfigSchema,
   actionSchema: pokemonTeamAuctionActionSchema,
@@ -159,7 +156,7 @@ export const pokemonTeamAuctionGame: MiniGameModule<PokemonTeamAuctionConfig, Po
     const lots = poolFor(context, parsed, playerIds.length * 6);
     const participants = Object.fromEntries(playerIds.map((playerId) => [playerId, { playerId, coins: parsed.initialBudget, team: [] }]));
     return {
-      phase: 'GAME_STARTING', config: parsed, playerIds, lots, currentLotIndex: -1,
+      roundEndsAt: null, phase: 'GAME_STARTING', config: parsed, playerIds, lots, currentLotIndex: -1,
       currentBid: null, currentBidderId: null, turnOrder: [], turnIndex: 0, passedPlayerIds: [], bidHistory: [], lotHistory: [],
       participants, playerStats: Object.fromEntries(playerIds.map((playerId) => [playerId, participantStats(participants[playerId]!, 0, 0)])),
       scores: Object.fromEntries(playerIds.map((playerId) => [playerId, 0])), results: null,
@@ -170,6 +167,7 @@ export const pokemonTeamAuctionGame: MiniGameModule<PokemonTeamAuctionConfig, Po
   },
   handleAction(state, playerId, action, context): GameActionResult<PokemonTeamAuctionState> {
     if (state.phase !== 'ROUND_ACTIVE') return { state, accepted: false, error: 'La subasta ya ha terminado.' };
+    if (state.roundEndsAt !== null && context.now >= state.roundEndsAt) return { state, accepted: false, error: 'El tiempo de puja ha terminado.' };
     if (!state.playerIds.includes(playerId) || !isPlayerRequired(context, playerId)) return { state, accepted: false, error: 'No puedes participar en esta subasta.' };
     if (currentTurnPlayerId(state) !== playerId) return { state, accepted: false, error: 'No es tu turno.' };
     const current = participant(state, playerId);
@@ -179,15 +177,19 @@ export const pokemonTeamAuctionGame: MiniGameModule<PokemonTeamAuctionConfig, Po
       if (action.amount < minimum) return { state, accepted: false, error: `La puja mínima es ${minimum}.` };
       if (action.amount > current.coins) return { state, accepted: false, error: 'No tienes suficientes monedas para esa puja.' };
       const bid: TeamAuctionBidEvent = { lotNumber: state.currentLotIndex + 1, playerId, type: 'BID', amount: action.amount };
-      const next = { ...state, currentBid: action.amount, currentBidderId: playerId, bidHistory: [...state.bidHistory, bid], turnIndex: (state.turnIndex + 1) % Math.max(1, state.turnOrder.length) };
+      const next = { ...state, roundEndsAt: null, currentBid: action.amount, currentBidderId: playerId, bidHistory: [...state.bidHistory, bid], turnIndex: (state.turnIndex + 1) % Math.max(1, state.turnOrder.length) };
       return { state: normalizeTurn(next, context), accepted: true };
     }
     const pass: TeamAuctionBidEvent = { lotNumber: state.currentLotIndex + 1, playerId, type: 'PASS' };
-    const next = { ...state, passedPlayerIds: [...state.passedPlayerIds, playerId], bidHistory: [...state.bidHistory, pass], turnIndex: (state.turnIndex + 1) % Math.max(1, state.turnOrder.length) };
+    const next = { ...state, roundEndsAt: null, passedPlayerIds: [...state.passedPlayerIds, playerId], bidHistory: [...state.bidHistory, pass], turnIndex: (state.turnIndex + 1) % Math.max(1, state.turnOrder.length) };
     return { state: normalizeTurn(next, context), accepted: true };
   },
-  handleTimeout(state) {
-    return state;
+  handleTimeout(state, context) {
+    if (state.phase !== 'ROUND_ACTIVE' || state.roundEndsAt === null || context.now < state.roundEndsAt) return state;
+    const playerId = currentTurnPlayerId(state);
+    if (!playerId) return normalizeTurn(state, context);
+    const pass: TeamAuctionBidEvent = { lotNumber: state.currentLotIndex + 1, playerId, type: 'PASS' };
+    return normalizeTurn({ ...state, roundEndsAt: null, passedPlayerIds: [...state.passedPlayerIds, playerId], bidHistory: [...state.bidHistory, pass], turnIndex: (state.turnIndex + 1) % Math.max(1, state.turnOrder.length) }, context);
   },
   handlePresenceChange(state, context) {
     return state.phase === 'ROUND_ACTIVE' ? normalizeTurn(state, context) : state;
@@ -195,7 +197,7 @@ export const pokemonTeamAuctionGame: MiniGameModule<PokemonTeamAuctionConfig, Po
   getPublicState(state) {
     const current = state.lots[state.currentLotIndex] ?? null;
     return {
-      gameId: 'pokemon-team-auction', phase: state.phase, lotNumber: state.currentLotIndex + 1, totalLots: state.lots.length,
+      roundEndsAt: state.roundEndsAt, gameId: 'pokemon-team-auction', phase: state.phase, lotNumber: state.currentLotIndex + 1, totalLots: state.lots.length,
       currentPokemon: current ? copyPokemon(current) : null, currentBid: state.currentBid, minimumBid: requiredBid(state), currentBidderId: state.currentBidderId,
       currentTurnPlayerId: currentTurnPlayerId(state), turnOrder: [...state.turnOrder], passedPlayerIds: [...state.passedPlayerIds],
       bidHistory: state.bidHistory.map((event) => ({ ...event })), lotHistory: state.lotHistory.map((lot) => ({ ...lot, pokemon: copyPokemon(lot.pokemon) })),

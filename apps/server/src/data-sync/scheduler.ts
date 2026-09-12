@@ -20,11 +20,13 @@ export function nextScheduledSync(now: Date, schedule: SyncSchedule): Date {
 
 export class DataSyncScheduler {
   private timer: NodeJS.Timeout | null = null;
+  private running = false;
   constructor(private readonly service: DataSyncService, readonly schedule: SyncSchedule) {}
   next(now = new Date()): Date { return nextScheduledSync(now, this.schedule); }
-  start(): void { this.arm(); }
-  stop(): void { if (this.timer) clearTimeout(this.timer); this.timer = null; }
+  start(): void { if (this.running) return; this.running = true; this.arm(); }
+  stop(): void { this.running = false; if (this.timer) clearTimeout(this.timer); this.timer = null; }
   private arm(): void {
+    if (!this.running) return;
     const next = this.next(); const delay = Math.min(next.getTime() - Date.now(), 2_147_000_000);
     this.timer = setTimeout(() => {
       if (Date.now() + 1_000 < next.getTime()) { this.arm(); return; }

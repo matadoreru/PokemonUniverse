@@ -1,4 +1,4 @@
-import type { HigherLowerCategory, HigherLowerChoice, HigherLowerPlayerState, HigherLowerPublicState, RoomView } from '@pokemon-universe/shared';
+import type { HigherLowerCategory, HigherLowerChoice, HigherLowerPlayerState, HigherLowerPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { ArrowDown, ArrowUp, Check, Clock3, Equal, Flame, Trophy } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';

@@ -1,4 +1,4 @@
-import type { CustomCategoryView } from '@pokemon-universe/shared';
+import type { CustomCategoryView } from '@pokemon-universe/shared/public';
 import { Check, Pencil, Plus, Power, Save, Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { api } from '../../lib/api';

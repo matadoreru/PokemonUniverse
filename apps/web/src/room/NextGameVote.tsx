@@ -1,4 +1,4 @@
-import { supportsPlayerCount, type GameResults as GameResultsData, type RoomView } from '@pokemon-universe/shared';
+import { supportsPlayerCount, type GameResults as GameResultsData, type RoomView } from '@pokemon-universe/shared/public';
 import { Check, LoaderCircle, StopCircle, Trophy, UsersRound, Vote } from 'lucide-react';
 import { useState } from 'react';
 import { ServerTimer } from '../components/ServerTimer';

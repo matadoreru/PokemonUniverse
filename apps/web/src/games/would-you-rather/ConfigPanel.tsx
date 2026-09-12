@@ -1,4 +1,4 @@
-import type { RoomView, SubjectivePromptSource, WouldYouRatherConfig } from '@pokemon-universe/shared';
+import type { RoomView, SubjectivePromptSource, WouldYouRatherConfig } from '@pokemon-universe/shared/public';
 import { Clock3, Repeat2, Tags } from 'lucide-react';
 import { useAuth } from '../../auth/AuthContext';
 import { CustomWouldYouRatherPromptManager } from './CustomPromptManager';

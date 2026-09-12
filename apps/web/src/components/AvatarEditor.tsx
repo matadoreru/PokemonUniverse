@@ -1,4 +1,4 @@
-import { AVATAR_PRESETS, type AuthUser, type AvatarRef } from '@pokemon-universe/shared';
+import { AVATAR_PRESETS, type AuthUser, type AvatarRef } from '@pokemon-universe/shared/public';
 import { Camera, Check, ImagePlus, RotateCcw, Trash2, X } from 'lucide-react';
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { api } from '../lib/api';

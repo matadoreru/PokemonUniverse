@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import { type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultPokedexDistanceConfig, pokedexDistanceConfigSchema, type PokedexDistanceConfig } from './config.js';
@@ -115,6 +116,7 @@ function resolveRound(state: PokedexDistanceState, context: GameContext): Pokede
 }
 
 export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexDistanceState, PokedexDistanceAction, PokedexDistancePublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest,
   configSchema: pokedexDistanceConfigSchema,
   actionSchema: pokedexDistanceActionSchema,

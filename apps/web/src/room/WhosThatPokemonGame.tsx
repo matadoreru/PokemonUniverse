@@ -1,4 +1,4 @@
-import { whoPokemonScoringLabel, type Pokemon, type PokemonLegendaryStatus, type PokemonType, type RoomView, type WhosThatPokemonHint, type WhosThatPokemonPlayerState, type WhosThatPokemonPublicState } from '@pokemon-universe/shared';
+import { whoPokemonScoringLabel, type Pokemon, type PokemonLegendaryStatus, type PokemonType, type RoomView, type WhosThatPokemonHint, type WhosThatPokemonPlayerState, type WhosThatPokemonPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Eye, History, Lightbulb, Search, XCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';

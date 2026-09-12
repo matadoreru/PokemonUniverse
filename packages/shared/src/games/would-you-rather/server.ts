@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, type WouldYouRatherPromptPair } from '../contracts.js';
 import { defaultWouldYouRatherConfig, wouldYouRatherConfigSchema, type WouldYouRatherConfig } from './config.js';
 import { officialWouldYouRatherPrompts } from './prompts.js';
@@ -95,6 +96,7 @@ function cloneRoundResult(result: WouldYouRatherRoundResult | null): WouldYouRat
 }
 
 export const wouldYouRatherGame: MiniGameModule<WouldYouRatherConfig, WouldYouRatherState, WouldYouRatherAction, WouldYouRatherPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest,
   configSchema: wouldYouRatherConfigSchema,
   actionSchema: wouldYouRatherActionSchema,

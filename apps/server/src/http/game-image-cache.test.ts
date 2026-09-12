@@ -1,6 +1,6 @@
 import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
-import { createNormalizedPokemonImage, createPokemonSilhouette, createPokemonSpriteImage } from './game-image-cache.js';
+import { createZoomedPokemonCrop, createNormalizedPokemonImage, createPokemonSilhouette, createPokemonSpriteImage } from './game-image-cache.js';
 
 describe('secure Pokémon silhouette processing', () => {
   it('normalizes the visible shape, preserves alpha and removes every source colour', async () => {
@@ -82,4 +82,14 @@ describe('Fake shiny palette processing', () => {
     expect(first.equals(repeated)).toBe(true);
     expect(first.equals(other)).toBe(false);
   });
+});
+
+
+it('encodes only the authorized central crop, without the outer pixels', async () => {
+  const source = await sharp({ create: { width: 80, height: 80, channels: 4, background: '#ff0000' } }).png().toBuffer();
+  const normalized = await createNormalizedPokemonImage(source, 12);
+  const expected = await sharp(normalized).extract({ left: 224, top: 224, width: 64, height: 64 }).resize(512, 512).png().toBuffer();
+  expect(await createZoomedPokemonCrop(source, 12, 8)).toEqual(expected);
+  expect(await createZoomedPokemonCrop(source, 12, 8)).not.toEqual(normalized);
+  await expect(createZoomedPokemonCrop(source, 12, Infinity)).rejects.toThrow();
 });

@@ -4,7 +4,7 @@ import {
   type ChangelogCategory,
   type ChangelogChange,
   type ChangelogEntry,
-} from '@pokemon-universe/shared';
+} from '@pokemon-universe/shared/public';
 import { Eye, EyeOff, FilePlus2, Pencil, Plus, Save, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useChangelog } from '../changelog/ChangelogContext';

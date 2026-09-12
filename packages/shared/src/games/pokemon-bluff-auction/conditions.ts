@@ -1,8 +1,7 @@
 import type { Pokemon } from '../../pokemon/types.js';
-import { defaultPokemonBingoConfig } from '../pokemon-bingo/config.js';
-import { buildBingoConditionTemplates } from '../pokemon-bingo/generator.js';
-import { bingoCellKey, bingoWords, describeBingoCondition, pokemonMatchesBingoCell } from '../pokemon-bingo/rules.js';
-import type { BingoCondition, BingoStatKey } from '../pokemon-bingo/types.js';
+import { buildConditionTemplates } from '../../pokemon/conditions/generator.js';
+import { bingoCellKey, bingoWords, describeBingoCondition, pokemonMatchesBingoCell } from '../../pokemon/conditions/rules.js';
+import type { BingoCondition, BingoStatKey } from '../../pokemon/conditions/types.js';
 import type { BluffAuctionCondition, BluffAuctionCuratedCategory, BluffAuctionRule } from './types.js';
 
 const curatedCategoryDexNumbers: Record<BluffAuctionCuratedCategory, ReadonlySet<number>> = {
@@ -52,12 +51,10 @@ function bluffConditionKey(conditions: readonly BluffAuctionRule[]): string {
 }
 
 export function buildBluffAuctionConditions(pool: readonly Pokemon[], generations: readonly number[], random: () => number): Array<BluffAuctionCondition & { candidatePokemonIds: string[] }> {
-  const bingoTemplates = buildBingoConditionTemplates(pool, {
-    ...defaultPokemonBingoConfig,
+  const bingoTemplates = buildConditionTemplates(pool, {
     generations: [...generations],
-    width: 2,
-    height: 2,
-    maxConditionsPerCell: 2,
+    maxConditions: 2,
+    combinationLimit: 80,
     families: {
       generation: true, dexNumber: true, type: true, typeCombination: true, typeCount: true,
       hp: true, attack: true, defense: true, specialAttack: true, specialDefense: true, speed: true,

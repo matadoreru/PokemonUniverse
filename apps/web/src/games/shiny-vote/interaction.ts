@@ -1,4 +1,4 @@
-import type { ShinyOptionId, ShinyVoteAction } from '@pokemon-universe/shared';
+import type { ShinyOptionId, ShinyVoteAction } from '@pokemon-universe/shared/public';
 
 const SHORTCUTS: Readonly<Record<string, ShinyOptionId>> = {
   '1': 'A',

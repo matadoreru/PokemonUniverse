@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import { pointsForPosition } from '../../scoring.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameContext, type GameResults, type MiniGameModule } from '../contracts.js';
@@ -92,6 +93,7 @@ function publicBoard(state: PokemonBingoState, playerId: string, context: GameCo
 }
 
 export const pokemonBingoGame: MiniGameModule<PokemonBingoConfig, PokemonBingoState, PokemonBingoAction, PokemonBingoPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest, configSchema: pokemonBingoConfigSchema, actionSchema: pokemonBingoActionSchema, defaultConfig: defaultPokemonBingoConfig,
   createInitialState(config, context) {
     const parsed = pokemonBingoConfigSchema.parse(config); if (activeBingoFamilies(parsed).length === 0) throw new Error('Selecciona al menos una familia de condiciones.');

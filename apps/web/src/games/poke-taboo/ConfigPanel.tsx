@@ -1,4 +1,4 @@
-import type { PokeTabooConfig } from '@pokemon-universe/shared';
+import type { PokeTabooConfig } from '@pokemon-universe/shared/public';
 import { Clock3, Repeat2, Sparkles } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 

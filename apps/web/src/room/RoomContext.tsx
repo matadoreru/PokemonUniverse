@@ -1,8 +1,9 @@
-import type { GameSelectionMode, RoomView, SessionMode, SetGameSkipVoteRequest } from '@pokemon-universe/shared';
+import type { GameSelectionMode, RoomView, SessionMode, SetGameSkipVoteRequest } from '@pokemon-universe/shared/public';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import { createSocket, type GameSocket } from '../lib/socket';
 import { OptimisticRoomProjection, runOptimisticLobbyMutation, type OptimisticLobbyUpdate } from './optimistic-room';
+import { sendCommand, type CommandEvent, type CommandPayload } from './send-command';
 import { attachWhoIsWhoCursorChannel } from './who-is-who-cursor-channel';
 
 interface RoomContextValue {
@@ -32,7 +33,6 @@ interface RoomContextValue {
 }
 
 const RoomContext = createContext<RoomContextValue | null>(null);
-type Ack<T = Record<string, never>> = ({ ok: true } & T) | { ok: false; error: string };
 
 export function RoomProvider({ children }: PropsWithChildren) {
   const { user } = useAuth();
@@ -58,23 +58,25 @@ export function RoomProvider({ children }: PropsWithChildren) {
     return () => { detachCursorChannel(); socket.disconnect(); socketRef.current = null; projection.setAuthoritative(null, true); };
   }, [user?.id]);
 
-  const emit = useCallback(<T,>(event: string, payload: unknown): Promise<T> => new Promise((resolve, reject) => {
+  const emit = useCallback(async <E extends CommandEvent,>(event: E, payload: CommandPayload<E>) => {
     const socket = socketRef.current;
-    if (!socket) { const message = 'Sin conexión con el servidor'; setError(message); reject(new Error(message)); return; }
+    if (!socket) throw new Error('Sin conexión con el servidor');
     setError(null);
-    (socket.emit as (...args: any[]) => void)(event, payload, (response: Ack<T>) => {
-      if (response.ok) resolve(response as T); else { setError(response.error); reject(new Error(response.error)); }
-    });
-  }), []);
+    try { return await sendCommand(socket, event, payload); }
+    catch (error) {
+      if (socketRef.current === socket) setError(error instanceof Error ? error.message : String(error));
+      throw error;
+    }
+  }, []);
 
-  const optimisticEmit = useCallback(<T,>(event: string, payload: unknown, update: OptimisticLobbyUpdate): Promise<T> => (
-    runOptimisticLobbyMutation(projectionRef.current, setRoom, update, () => emit<T>(event, payload))
+  const optimisticEmit = useCallback(<E extends CommandEvent,>(event: E, payload: CommandPayload<E>, update: OptimisticLobbyUpdate) => (
+    runOptimisticLobbyMutation(projectionRef.current, setRoom, update, () => emit(event, payload))
   ), [emit]);
 
   const value = useMemo<RoomContextValue>(() => ({
     room, connected, error, clearError: () => setError(null),
-    async createRoom() { const response = await emit<{ room: RoomView }>('room:create', {}); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
-    async joinRoom(code) { const response = await emit<{ room: RoomView }>('room:join', { code }); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
+    async createRoom() { const response = await emit('room:create', {}); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
+    async joinRoom(code) { const response = await emit('room:join', { code }); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
     async leaveRoom() { await emit('room:leave', {}); setRoom(projectionRef.current.setAuthoritative(null, true)); },
     async selectGame(gameId) { await emit('room:select-game', { gameId }); },
     async updateConfig(config) {
@@ -95,28 +97,20 @@ export function RoomProvider({ children }: PropsWithChildren) {
     async startGame() { await emit('room:start-game', {}); },
     async continueSession() {
       if (continuationRef.current) return continuationRef.current;
-      const request = emit<void>('room:continue-session', {});
+      const request = emit('room:continue-session', {}).then(() => undefined);
       continuationRef.current = request;
       try { await request; }
       finally { if (continuationRef.current === request) continuationRef.current = null; }
     },
     async returnLobby() { await emit('room:return-lobby', {}); },
     async endSession() { await emit('room:end-session', {}); },
-    async setGameSkipVote(request) {
-      const socket = socketRef.current;
-      if (!socket?.connected) throw new Error('Sin conexión con el servidor');
-      await new Promise<void>((resolve, reject) => {
-        socket.timeout(8_000).emit('game:skip-vote:set', request, (timeoutError: Error | null, response: Ack) => {
-          const message = timeoutError ? 'No se pudo confirmar el voto. Comprueba la conexión y vuelve a intentarlo.' : !response.ok ? response.error : null;
-          if (message) { setError(message); reject(new Error(message)); }
-          else resolve();
-        });
-      });
-    },
+    async setGameSkipVote(request) { await emit('game:skip-vote:set', request); },
     async gameAction(action) {
       const gameInstanceId = room?.gameSkipState?.gameInstanceId;
       if (!gameInstanceId) throw new Error('No hay un minijuego activo.');
-      await emit('game:action', { gameInstanceId, action });
+      const actionEpoch = room?.gameActionEpoch;
+      if (!actionEpoch) throw new Error('Actualiza la conexión para recuperar la ronda.');
+      await emit('game:action', { gameInstanceId, actionEpoch, action });
     },
   }), [connected, emit, error, optimisticEmit, room]);
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;

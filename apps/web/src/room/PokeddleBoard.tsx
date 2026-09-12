@@ -1,4 +1,4 @@
-import type { PokeddleClueKey, PokeddleFeedbackEntry, PokeddlePublicBoard } from '@pokemon-universe/shared';
+import type { PokeddleClueKey, PokeddleFeedbackEntry, PokeddlePublicBoard } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Minus } from 'lucide-react';
 import { memo, useMemo } from 'react';
 import {

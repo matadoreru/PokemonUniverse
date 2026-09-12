@@ -1,4 +1,4 @@
-import { formatPendingReadyNames, hasRoomPermission, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared';
+import { formatPendingReadyNames, hasRoomPermission, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
 import { ArrowRight, Check, CheckCircle2, Copy, Gamepad2, Headphones, LockKeyhole, LogOut, MessageSquareWarning, Play, Search, Settings2, Shuffle, UsersRound, WifiOff } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';

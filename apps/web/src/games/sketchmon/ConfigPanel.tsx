@@ -1,4 +1,4 @@
-import type { SketchmonConfig } from '@pokemon-universe/shared';
+import type { SketchmonConfig } from '@pokemon-universe/shared/public';
 import { Brain, Clock3, Lightbulb, Repeat2, Sparkles } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { GenerationSelector } from '../../components/GenerationSelector';

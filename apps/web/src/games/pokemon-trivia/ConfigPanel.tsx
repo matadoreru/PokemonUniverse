@@ -1,4 +1,4 @@
-import { POKEMON_TRIVIA_QUESTION_TYPES, type PokemonTriviaConfig, type PokemonTriviaQuestionType } from '@pokemon-universe/shared';
+import { POKEMON_TRIVIA_QUESTION_TYPES, type PokemonTriviaConfig, type PokemonTriviaQuestionType } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 

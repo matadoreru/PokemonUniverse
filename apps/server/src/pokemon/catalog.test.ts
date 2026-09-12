@@ -73,3 +73,14 @@ describe('InMemoryPokemonCatalog forms', () => {
     expect(catalog.pokedexEntries('dugtrio-alola')).toEqual([]);
   });
 });
+
+it('owns immutable snapshots instead of returning caller-owned Pokémon objects', () => {
+  const source = structuredClone(entries);
+  const catalog = new InMemoryPokemonCatalog(source);
+  const first = catalog.all()[0]!;
+  const originalName = first.name;
+  source[0]!.name = 'Updated outside the catalog';
+  expect(first.name).toBe(originalName);
+  expect(() => { first.name = 'Engine mutation'; }).toThrow(TypeError);
+  expect(() => { first.types.push('fire'); }).toThrow(TypeError);
+});

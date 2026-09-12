@@ -1,4 +1,4 @@
-import type { PokedexEntryGuessPublicState, RoomView } from '@pokemon-universe/shared';
+import type { PokedexEntryGuessPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { BookOpenText, RotateCcw, StopCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 

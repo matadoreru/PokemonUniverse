@@ -1,4 +1,4 @@
-import type { OneOfUsIsFakeConfig, RoomView } from '@pokemon-universe/shared';
+import type { OneOfUsIsFakeConfig, RoomView } from '@pokemon-universe/shared/public';
 import { Clock3, MessagesSquare, ShieldQuestion, Sparkles, Tags } from 'lucide-react';
 import { useAuth } from '../../auth/AuthContext';
 import { GenerationSelector } from '../../components/GenerationSelector';

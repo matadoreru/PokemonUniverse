@@ -1,4 +1,4 @@
-import type { GuessFromStatsConfig } from '@pokemon-universe/shared';
+import type { GuessFromStatsConfig } from '@pokemon-universe/shared/public';
 import { BarChart3, Lightbulb } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 export { validateGuessFromStatsConfig } from './validation';

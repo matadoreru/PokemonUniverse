@@ -200,3 +200,24 @@ describe('Pokémon Bluff Auction', () => {
     }));
   });
 });
+
+
+it.each([0, 1])('rejects a correct demonstration at deadline + %i without resurrecting the timer', (offset) => {
+  const fixture = setup();
+  const state = reachDemonstration(forceCondition(fixture.state, ['charizard', 'arcanine']), fixture.context, 1);
+  fixture.setNow(state.roundEndsAt! + offset);
+  const result = act(state, state.bidderId!, { type: 'SUBMIT_POKEMON', pokemonId: 'charizard' }, fixture.context);
+  expect(result.accepted).toBe(false);
+  expect(result.state).toBe(state);
+  expect(pokemonBluffAuctionGame.handleTimeout(state, fixture.context).lastRound?.reason).toBe('TIMEOUT');
+});
+
+it('autopasses an expired auction turn without accepting a late bid', () => {
+  const { state, context } = setup({ bidSeconds: 20 });
+  const playerId = pokemonBluffAuctionGame.getPublicState(state, context).currentTurnPlayerId!;
+  context.now = state.roundEndsAt!;
+  expect(pokemonBluffAuctionGame.handleAction(state, playerId, { type: 'RAISE_BID', amount: 1 }, context).accepted).toBe(false);
+  const next = pokemonBluffAuctionGame.handleTimeout(state, context);
+  expect(next.passedPlayerIds).toContain(playerId);
+  expect(pokemonBluffAuctionGame.handleTimeout(next, context)).toBe(next);
+});

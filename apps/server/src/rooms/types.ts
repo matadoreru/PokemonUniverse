@@ -1,4 +1,4 @@
-import type { AuthUser, GameFinishReason, GameSelectionMode, MemberRole, PresenceStatus, RoomRole, SessionGameSummaryView, SessionMode } from '@pokemon-universe/shared';
+import type { AuthUser, GameContext, GameFinishReason, GameSelectionMode, MemberRole, PresenceStatus, RoomRole, SessionGameSummaryView, SessionMode } from '@pokemon-universe/shared';
 import type { RegisteredGame } from '@pokemon-universe/shared';
 
 export interface RoomMember {
@@ -14,14 +14,22 @@ export interface RoomMember {
   disconnectTimer: NodeJS.Timeout | null;
 }
 
+export interface GameCatalogSnapshot {
+  version: string;
+  pokemon: GameContext['pokemon'];
+  pokemonVisuals: NonNullable<GameContext['pokemonVisuals']>;
+  pokemonAudio: GameContext['pokemonAudio'];
+}
+
 export interface GameRuntime {
+  catalog?: GameCatalogSnapshot;
   resultId: string;
   gameId: string;
   /** Stable roster captured at game start; room code never inspects opaque game state. */
   participantIds: readonly string[];
   module: RegisteredGame;
   config: unknown;
-  state: any;
+  state: unknown;
   startedAt: number;
   /** Claimed synchronously before either normal completion or a unanimous skip can advance the room. */
   finishReason: GameFinishReason | null;
@@ -48,6 +56,7 @@ export interface SessionParticipant {
 }
 
 export interface LiveRoom {
+  revision: number;
   historyId: string;
   code: string;
   hostId: string;

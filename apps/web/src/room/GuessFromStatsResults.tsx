@@ -1,4 +1,4 @@
-import type { GuessFromStatsPublicState, RoomView } from '@pokemon-universe/shared';
+import type { GuessFromStatsPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { BarChart3, RotateCcw, StopCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 

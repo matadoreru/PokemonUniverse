@@ -1,4 +1,4 @@
-import type { RoomView, SecretRankingConfig, SubjectivePromptSource } from '@pokemon-universe/shared';
+import type { RoomView, SecretRankingConfig, SubjectivePromptSource } from '@pokemon-universe/shared/public';
 import { Clock3, ListOrdered, Sparkles, Tags } from 'lucide-react';
 import { useAuth } from '../../auth/AuthContext';
 import { GenerationSelector } from '../../components/GenerationSelector';

@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { generateConnectionsPuzzle, shuffledConnectionsBoard } from './catalog.js';
 import { defaultPokemonConnectionsConfig, pokemonConnectionsConfigSchema, type PokemonConnectionsConfig } from './config.js';
@@ -154,6 +155,7 @@ function finishRound(state: PokemonConnectionsState, context: GameContext): Poke
 }
 
 export const pokemonConnectionsGame: MiniGameModule<PokemonConnectionsConfig, PokemonConnectionsState, PokemonConnectionsAction, PokemonConnectionsPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest,
   configSchema: pokemonConnectionsConfigSchema,
   actionSchema: pokemonConnectionsActionSchema,
@@ -175,6 +177,7 @@ export const pokemonConnectionsGame: MiniGameModule<PokemonConnectionsConfig, Po
     return activatePreparedRound(state, context);
   },
   handleAction(state, playerId, action, context): GameActionResult<PokemonConnectionsState> {
+    if ((state.phase === 'ROUND_ACTIVE') && state.roundEndsAt !== null && context.now >= state.roundEndsAt) return { state, accepted: false, error: 'El tiempo ha terminado.' };
     if (action.type === 'ADVANCE_ROUND') {
       if (state.phase !== 'ROUND_RESULTS') return { state, accepted: false, error: 'La solución aún no se está mostrando.' };
       if (!context.hostId || context.hostId !== playerId) return { state, accepted: false, error: 'Solo el Host puede avanzar el puzle.' };

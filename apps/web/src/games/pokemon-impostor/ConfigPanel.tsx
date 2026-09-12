@@ -1,4 +1,4 @@
-import { type PokemonImpostorConfig } from '@pokemon-universe/shared';
+import { type PokemonImpostorConfig } from '@pokemon-universe/shared/public';
 import { Eye } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';

@@ -1,7 +1,11 @@
-import { gameRegistry, type GameResults, type ProfileMetricDefinition } from '@pokemon-universe/shared';
+import { gameRegistry, type AuthUser, type GameResults, type ProfileMetricDefinition } from '@pokemon-universe/shared';
 import { Prisma } from '@prisma/client';
 import { prisma } from '../db.js';
-import type { LiveRoom } from '../rooms/types.js';
+export interface ResultRoomSnapshot {
+  historyId: string;
+  code: string;
+  members: ReadonlyMap<string, { identity: AuthUser }>;
+}
 
 const MAX_TRANSACTION_ATTEMPTS = 3;
 
@@ -19,7 +23,7 @@ export function mergeMetrics(previous: unknown, current: Record<string, number>,
   return merged;
 }
 
-export function isUniqueResultError(error: unknown): boolean {
+export function isUniqueConstraintError(error: unknown): boolean {
   return typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2002';
 }
 
@@ -27,11 +31,12 @@ export function isRetryableTransactionError(error: unknown): boolean {
   return typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2034';
 }
 
-export async function persistGameResults(room: LiveRoom, results: GameResults, resultId: string, startedAt: number, gameId: string, config: unknown): Promise<void> {
+export async function persistGameResults(room: ResultRoomSnapshot, results: GameResults, resultId: string, startedAt: number, gameId: string, config: unknown): Promise<void> {
   const metricDefinitions = gameRegistry.get(gameId)?.manifest.profileStats.metrics;
   if (!metricDefinitions) throw new Error(`No profile statistics registered for ${gameId}`);
   const standings = results.standings.map((standing) => {
-    const member = room.members.get(standing.playerId)!;
+    const member = room.members.get(standing.playerId);
+    if (!member) throw new Error(`Missing result identity: ${standing.playerId}`);
     return { standing, member };
   });
   for (let attempt = 1; attempt <= MAX_TRANSACTION_ATTEMPTS; attempt += 1) {
@@ -70,8 +75,8 @@ export async function persistGameResults(room: LiveRoom, results: GameResults, r
       }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
       return;
     } catch (error) {
-      if (isUniqueResultError(error)) return;
-      if (!isRetryableTransactionError(error) || attempt === MAX_TRANSACTION_ATTEMPTS) throw error;
+      // Retry through the resultId check. An unrelated unique violation is never success.
+      if ((!isUniqueConstraintError(error) && !isRetryableTransactionError(error)) || attempt === MAX_TRANSACTION_ATTEMPTS) throw error;
     }
   }
 }

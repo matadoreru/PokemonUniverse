@@ -1,4 +1,4 @@
-import type { ClientToServerEvents, ServerToClientEvents } from '@pokemon-universe/shared';
+import type { ClientToServerEvents, ServerToClientEvents } from '@pokemon-universe/shared/public';
 import { io, type Socket } from 'socket.io-client';
 import { socketUrl } from './api';
 

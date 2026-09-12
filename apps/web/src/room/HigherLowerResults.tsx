@@ -1,4 +1,4 @@
-import type { HigherLowerPublicState, RoomView } from '@pokemon-universe/shared';
+import type { HigherLowerPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { RotateCcw, StopCircle, Trophy } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 

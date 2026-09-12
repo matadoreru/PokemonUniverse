@@ -1,4 +1,4 @@
-import type { PokemonRedFlagConfig } from '@pokemon-universe/shared';
+import type { PokemonRedFlagConfig } from '@pokemon-universe/shared/public';
 import { Clock3, Flag, Heart, Repeat2, Shuffle, Sparkles } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 

@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import { connectedRequiredPlayerIds, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { cooldownMessage, cooldownRemainingMs, setPlayerCooldown } from '../infrastructure/timing.js';
 import { defaultTypeDuelConfig, typeDuelConfigSchema, type TypeDuelConfig } from './config.js';
@@ -47,6 +48,7 @@ function roundResult(state: TypeDuelState, context: GameContext, reason: TypeDue
 function finish(state: TypeDuelState): TypeDuelState { return { ...state, phase: 'GAME_RESULTS', roundEndsAt: null, nextTransitionAt: null }; }
 function advanceAfterResult(state: TypeDuelState, context: GameContext): TypeDuelState { return state.completedRounds >= state.config.rounds ? finish(state) : selectPlayers(state, context); }
 export const typeDuelGame: MiniGameModule<TypeDuelConfig, TypeDuelState, TypeDuelAction, TypeDuelPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest, configSchema: typeDuelConfigSchema, actionSchema: typeDuelActionSchema, defaultConfig: defaultTypeDuelConfig,
   createInitialState(config, context) {
     const parsed = typeDuelConfigSchema.parse(config); if (context.players.length < 2) throw new Error('Se necesitan dos jugadores.');

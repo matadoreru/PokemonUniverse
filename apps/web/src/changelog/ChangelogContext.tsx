@@ -1,4 +1,4 @@
-import type { ChangelogEntry } from '@pokemon-universe/shared';
+import type { ChangelogEntry } from '@pokemon-universe/shared/public';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { api } from '../lib/api';
 import { LAST_READ_CHANGELOG_KEY, unreadChangelogCount } from './changelog-state';

@@ -1,4 +1,4 @@
-import type { WhoIsWhoCursorPosition } from '@pokemon-universe/shared';
+import type { WhoIsWhoCursorPosition } from '@pokemon-universe/shared/public';
 
 export interface BoardRect { left: number; top: number; width: number; height: number }
 export interface LocalCardRect { left: number; top: number; width: number; height: number }

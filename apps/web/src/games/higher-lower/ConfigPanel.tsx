@@ -4,7 +4,7 @@ import {
   type HigherLowerCategory,
   type HigherLowerConfig,
   type HigherLowerDifficulty,
-} from '@pokemon-universe/shared';
+} from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 

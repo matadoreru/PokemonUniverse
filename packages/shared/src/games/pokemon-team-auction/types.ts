@@ -38,6 +38,7 @@ export interface TeamAuctionParticipant {
 }
 
 export interface PokemonTeamAuctionState {
+  roundEndsAt: number | null;
   phase: GamePhase;
   config: PokemonTeamAuctionConfig;
   playerIds: string[];
@@ -57,6 +58,7 @@ export interface PokemonTeamAuctionState {
 }
 
 export interface PokemonTeamAuctionPublicState {
+  roundEndsAt?: number | null;
   gameId: 'pokemon-team-auction';
   phase: GamePhase;
   lotNumber: number;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildRankedResults, rankCompetition } from './scoring.js';
+import { sessionPointsForResults, buildRankedResults, rankCompetition } from './scoring.js';
 
 describe('shared ranking infrastructure', () => {
   it('uses competition positions and a game-provided tie key', () => {
@@ -22,4 +22,23 @@ describe('shared ranking infrastructure', () => {
     expect(results.winnerId).toBeNull();
     expect(results.standings.every((standing) => standing.won)).toBe(true);
   });
+});
+
+it('normalizes session awards independently of each game score scale', () => {
+  const results = (scale: number) => ({ winnerId: 'a', standings: [
+    { stats: {}, playerId: 'a', position: 1, points: 10 * scale },
+    { stats: {}, playerId: 'b', position: 2, points: 5 * scale },
+    { stats: {}, playerId: 'c', position: 3, points: 0 },
+  ] });
+  expect(sessionPointsForResults(results(1))).toEqual({ a: 6, b: 3, c: 0 });
+  expect(sessionPointsForResults(results(1_000))).toEqual(sessionPointsForResults(results(1)));
+});
+
+it('gives equal session awards to tied standings and none to a zero-score game', () => {
+  expect(sessionPointsForResults({ winnerId: null, standings: [
+    { stats: {}, playerId: 'a', position: 1, points: 5 }, { stats: {}, playerId: 'b', position: 1, points: 5 },
+  ] })).toEqual({ a: 4, b: 4 });
+  expect(sessionPointsForResults({ winnerId: null, standings: [
+    { stats: {}, playerId: 'a', position: 1, points: 0 }, { stats: {}, playerId: 'b', position: 1, points: 0 },
+  ] })).toEqual({ a: 0, b: 0 });
 });

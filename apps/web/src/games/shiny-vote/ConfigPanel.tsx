@@ -1,4 +1,4 @@
-import { type ShinyVoteConfig } from '@pokemon-universe/shared';
+import { type ShinyVoteConfig } from '@pokemon-universe/shared/public';
 import { Layers3, Shuffle } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';

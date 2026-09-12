@@ -51,6 +51,8 @@ export interface SessionStandingView {
 }
 
 export interface SessionGameSummaryView {
+  scoringVersion?: 'POSITION_V1';
+  rawPoints?: Record<string, number>;
   gameNumber: number;
   gameId: string;
   winnerIds: string[];
@@ -89,7 +91,7 @@ export const setGameSkipVoteRequestSchema = z.object({ gameInstanceId: z.string(
 export type SetGameSkipVoteRequest = z.infer<typeof setGameSkipVoteRequestSchema>;
 
 /** Transport envelope prevents late actions from affecting a replacement runtime. */
-export const gameActionRequestSchema = z.object({ gameInstanceId: z.string().uuid(), action: z.unknown() }).strict();
+export const gameActionRequestSchema = z.object({ gameInstanceId: z.string().uuid(), actionEpoch: z.string().min(1).max(512), action: z.unknown() }).strict();
 export type GameActionRequest = z.infer<typeof gameActionRequestSchema>;
 
 export type GameFinishReason = 'COMPLETED' | 'SKIPPED';
@@ -125,6 +127,10 @@ export interface RoomView {
   gamesPlayed: number;
   sessionStandings: SessionStandingView[];
   sessionHistory: SessionGameSummaryView[];
+  roomInstanceId?: string;
+  revision?: number;
+  gameCatalogVersion?: string | null;
+  gameActionEpoch?: string | null;
   game: unknown | null;
   gamePlayerState: unknown | null;
   serverNow: number;

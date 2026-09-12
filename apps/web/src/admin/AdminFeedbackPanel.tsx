@@ -8,7 +8,7 @@ import {
   type FeedbackStatus,
   type FeedbackType,
   type PaginatedAdminResponse,
-} from '@pokemon-universe/shared';
+} from '@pokemon-universe/shared/public';
 import { Bug, CheckCircle2, Clock3, Lightbulb, LoaderCircle, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { api } from '../lib/api';

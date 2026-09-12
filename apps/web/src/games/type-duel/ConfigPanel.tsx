@@ -1,4 +1,4 @@
-import { type TypeDuelConfig } from '@pokemon-universe/shared';
+import { type TypeDuelConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 

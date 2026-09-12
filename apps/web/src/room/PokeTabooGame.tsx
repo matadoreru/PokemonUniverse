@@ -1,4 +1,4 @@
-import type { PokeTabooPlayerState, PokeTabooPublicState, PokeTabooSecretPokemon, Pokemon, RoomMemberView, RoomView } from '@pokemon-universe/shared';
+import type { PokeTabooPlayerState, PokeTabooPublicState, PokeTabooSecretPokemon, Pokemon, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Eye, History, MessageCircle, Mic2, Search, Send, XCircle } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { Avatar } from '../components/Avatar';

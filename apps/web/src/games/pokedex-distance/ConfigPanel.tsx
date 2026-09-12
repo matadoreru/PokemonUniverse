@@ -1,4 +1,4 @@
-import { type PokedexDistanceConfig } from '@pokemon-universe/shared';
+import { type PokedexDistanceConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 

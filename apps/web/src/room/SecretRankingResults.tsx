@@ -1,4 +1,4 @@
-import type { RoomView, SecretRankingPublicState } from '@pokemon-universe/shared';
+import type { RoomView, SecretRankingPublicState } from '@pokemon-universe/shared/public';
 import { ListChecks, RotateCcw, StopCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 

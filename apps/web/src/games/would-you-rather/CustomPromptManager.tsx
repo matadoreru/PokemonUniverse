@@ -1,4 +1,4 @@
-import type { CustomWouldYouRatherPromptView } from '@pokemon-universe/shared';
+import type { CustomWouldYouRatherPromptView } from '@pokemon-universe/shared/public';
 import { Check, FileJson, Pencil, Plus, Power, Save, Trash2, Upload, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { api } from '../../lib/api';

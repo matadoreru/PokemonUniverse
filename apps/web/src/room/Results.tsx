@@ -1,4 +1,4 @@
-import type { PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared';
+import type { PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared/public';
 import { RotateCcw, StopCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { ResultsShell } from './ResultsShell';

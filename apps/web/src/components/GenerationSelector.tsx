@@ -1,4 +1,4 @@
-import { GENERATIONS } from '@pokemon-universe/shared';
+import { GENERATIONS } from '@pokemon-universe/shared/public';
 
 interface GenerationSelectorProps {
   selected: readonly number[];

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { GamePhase, GameResults } from '../contracts.js';
-import type { BingoCondition } from '../pokemon-bingo/types.js';
+import type { BingoCondition } from '../../pokemon/conditions/types.js';
 import type { PokemonBluffAuctionConfig } from './config.js';
 
 export type BluffAuctionCuratedCategory = 'DOG' | 'CAT' | 'STARTER' | 'FOSSIL' | 'PSEUDO_LEGENDARY' | 'ULTRA_BEAST';

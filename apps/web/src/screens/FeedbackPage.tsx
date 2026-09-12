@@ -5,7 +5,7 @@ import {
   type FeedbackReference,
   type FeedbackType,
   type MiniGameManifest,
-} from '@pokemon-universe/shared';
+} from '@pokemon-universe/shared/public';
 import { ArrowLeft, Bug, CheckCircle2, Lightbulb, LoaderCircle, MessageSquarePlus, Send } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';

@@ -7,6 +7,7 @@ const roundOptions = [5, 10, 15, 20] as const;
 
 export const pokemonBluffAuctionConfigSchema = z.object({
   generations: pokemonGenerationsSchema,
+  bidSeconds: z.number().int().min(0).max(120).default(20),
   demonstrationSeconds: z.number().int().refine(
     (value) => demonstrationTimes.includes(value as (typeof demonstrationTimes)[number]),
     'El tiempo debe ser 20, 30, 45 o 60 segundos.',
@@ -21,6 +22,7 @@ export type PokemonBluffAuctionConfig = z.infer<typeof pokemonBluffAuctionConfig
 
 export const defaultPokemonBluffAuctionConfig: PokemonBluffAuctionConfig = {
   generations: [...GENERATIONS],
+  bidSeconds: 20,
   demonstrationSeconds: 30,
   rounds: 10,
 };

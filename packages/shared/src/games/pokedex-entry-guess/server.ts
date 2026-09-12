@@ -1,3 +1,6 @@
+import { recordGuessSolve } from '../infrastructure/guessing-round.js';
+import { shuffled as shuffle } from '../infrastructure/random.js';
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import { isPokedexEntryPokemonCatalog, type PokedexEntry, type PokedexEntryPokemonCatalog, type Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
@@ -35,14 +38,7 @@ function requireEntries(context: GameContext): PokedexEntryPokemonCatalog {
   return context.pokemon;
 }
 
-function shuffle<T>(values: readonly T[], random: () => number): T[] {
-  const result = [...values];
-  for (let index = result.length - 1; index > 0; index -= 1) {
-    const swap = Math.min(Math.floor(random() * (index + 1)), index);
-    [result[index], result[swap]] = [result[swap]!, result[index]!];
-  }
-  return result;
-}
+
 
 interface Candidate { pokemon: Pokemon; entries: readonly PokedexEntry[] }
 
@@ -110,6 +106,7 @@ function publicRoundResult(state: PokedexEntryGuessState): PokedexEntryGuessRoun
 }
 
 export const pokedexEntryGuessGame: MiniGameModule<PokedexEntryGuessConfig, PokedexEntryGuessState, PokedexEntryGuessAction, PokedexEntryGuessPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest, configSchema: pokedexEntryGuessConfigSchema, actionSchema: pokedexEntryGuessActionSchema, defaultConfig: defaultPokedexEntryGuessConfig,
   createInitialState(config, context) {
     const parsed = pokedexEntryGuessConfigSchema.parse(config);
@@ -140,11 +137,7 @@ export const pokedexEntryGuessGame: MiniGameModule<PokedexEntryGuessConfig, Poke
         solves: { ...state.solves, [playerId]: { solveOrder, solvedAt: context.now, elapsedMs, points, attempts: attemptCount } },
         lastAttemptResult: { ...state.lastAttemptResult, [playerId]: { result: 'CORRECT', attemptedAt: context.now } },
         scores: { ...state.scores, [playerId]: (state.scores[playerId] ?? 0) + points },
-        playerStats: { ...state.playerStats, [playerId]: {
-          ...stats, correct: stats.correct + 1, totalAttempts: stats.totalAttempts + 1, firstTry: stats.firstTry + (attemptCount === 1 ? 1 : 0),
-          roundFirsts: stats.roundFirsts + (solveOrder === 1 ? 1 : 0), solveTimeTotalMs: stats.solveTimeTotalMs + elapsedMs,
-          bestTimeMs: stats.bestTimeMs <= 0 ? elapsedMs : Math.min(stats.bestTimeMs, elapsedMs), pointsFromRounds: stats.pointsFromRounds + points,
-        } },
+        playerStats: { ...state.playerStats, [playerId]: recordGuessSolve(stats, attemptCount, solveOrder, elapsedMs, points) },
       };
       next = resolveWhenRequiredPlayersComplete(next, context, next.playerIds, (id) => Boolean(next.solves[id]), resolveRound);
       return { state: next, accepted: true };

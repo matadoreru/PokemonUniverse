@@ -1,4 +1,4 @@
-import type { Pokemon } from '@pokemon-universe/shared';
+import type { Pokemon } from '@pokemon-universe/shared/public';
 import { useEffect, useMemo, useState } from 'react';
 import { api } from '../lib/api';
 
@@ -29,13 +29,14 @@ export function usePokemonPool({ generations, includeForms = false, enabled = tr
   useEffect(() => {
     if (!enabled) { setLoading(false); return undefined; }
     let active = true;
+    const controller = new AbortController();
     setError('');
     setLoading(true);
-    void api<{ pokemon: Pokemon[] }>(query)
+    void api<{ pokemon: Pokemon[] }>(query, { signal: controller.signal })
       .then((body) => { if (active) setPokemon(body.pokemon); })
       .catch((caught: unknown) => { if (active) setError(caught instanceof Error ? caught.message : 'No se pudo cargar el buscador.'); })
       .finally(() => { if (active) setLoading(false); });
-    return () => { active = false; };
+    return () => { active = false; controller.abort(); };
   }, [enabled, query]);
 
   return { pokemon, error, loading };

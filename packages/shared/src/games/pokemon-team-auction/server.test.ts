@@ -103,3 +103,25 @@ describe('Pokémon Team Auction rules', () => {
     expect(tied.winnerId).toBeNull(); expect(tied.standings.filter((entry) => entry.position === 1)).toHaveLength(2);
   });
 });
+
+it('expires a bid turn once, rejects late bids and preserves the deadline on reconnect', () => {
+  const { state, context } = setup({ bidSeconds: 20 });
+  expect(state.roundEndsAt).toBe(21_000);
+  const currentId = pokemonTeamAuctionGame.getPublicState(state, context).currentTurnPlayerId!;
+  context.now = 20_999;
+  expect(pokemonTeamAuctionGame.handleTimeout(state, context)).toBe(state);
+  expect(pokemonTeamAuctionGame.handlePresenceChange!(state, context).roundEndsAt).toBe(21_000);
+  context.now = 21_000;
+  expect(action(state, currentId, { type: 'RAISE_BID', amount: 1 }, context).accepted).toBe(false);
+  const expired = pokemonTeamAuctionGame.handleTimeout(state, context);
+  expect(expired.bidHistory).toContainEqual({ lotNumber: 1, playerId: currentId, type: 'PASS' });
+  expect(expired.roundEndsAt).toBe(41_000);
+  expect(pokemonTeamAuctionGame.handleTimeout(expired, context)).toBe(expired);
+});
+
+it('supports an explicit untimed auction', () => {
+  const { state, context } = setup({ bidSeconds: 0 });
+  context.now += 1_000_000;
+  expect(state.roundEndsAt).toBeNull();
+  expect(pokemonTeamAuctionGame.handleTimeout(state, context)).toBe(state);
+});

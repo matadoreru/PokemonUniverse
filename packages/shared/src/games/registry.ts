@@ -28,11 +28,13 @@ import { pokemonCryQuizGame } from './pokemon-cry-quiz/server.js';
 import { pokemonTriviaGame } from './pokemon-trivia/server.js';
 import { pokemonPaletteGuessGame } from './pokemon-palette-guess/server.js';
 
-export type RegisteredGame = MiniGameModule<any, any, any, any>;
+export type RegisteredGame = MiniGameModule<unknown, unknown, unknown, unknown>;
 
 export class GameRegistry {
   private readonly games = new Map<string, RegisteredGame>();
-  register(game: RegisteredGame): this {
+  register<TConfig, TState, TAction, TPublic>(module: MiniGameModule<TConfig, TState, TAction, TPublic>): this {
+    // Existential boundary: the coordinator keeps each opaque state paired with its module.
+    const game = module as unknown as RegisteredGame;
     if (this.games.has(game.manifest.id)) throw new Error(`Duplicate game id: ${game.manifest.id}`);
     this.games.set(game.manifest.id, game);
     return this;

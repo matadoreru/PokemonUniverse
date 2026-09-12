@@ -10,6 +10,11 @@ class MemoryRepository implements WouldYouRatherPromptRepository {
     const prompt = { id: `w${this.nextId++}`, userId, optionA, optionB, normalizedKey, enabled: true, createdAt: now, updatedAt: now };
     this.prompts.push(prompt); return { ...prompt };
   };
+  createBatch = async (userId: string, prompts: readonly { optionA: string; optionB: string; normalizedKey: string }[]) => {
+    const before = [...this.prompts];
+    try { return await Promise.all(prompts.map((p) => this.create(userId, p.optionA, p.optionB, p.normalizedKey))); }
+    catch (error) { this.prompts = before; throw error; }
+  };
   update = async (userId: string, id: string, data: { optionA?: string; optionB?: string; normalizedKey?: string; enabled?: boolean }) => {
     const index = this.prompts.findIndex((prompt) => prompt.userId === userId && prompt.id === id);
     if (index < 0) return null;
@@ -71,4 +76,22 @@ describe('WouldYouRatherPromptService', () => {
     ] })).rejects.toThrow(/JSON contiene dilemas duplicados/);
     expect(repository.prompts).toHaveLength(2);
   });
+});
+
+
+it('serializes edits of both options and keeps the normalized pair coherent', async () => {
+  const repository = new MemoryRepository(); const service = new WouldYouRatherPromptService(repository);
+  const prompt = await service.create('u1', { optionA: 'Primera opción', optionB: 'Segunda opción' });
+  await Promise.all([service.update('u1', prompt.id, { optionA: 'Tercera opción' }), service.update('u1', prompt.id, { optionB: 'Cuarta opción' })]);
+  const stored = repository.prompts[0]!;
+  expect(stored.normalizedKey).toBe(wouldYouRatherPromptKey(stored.optionA, stored.optionB));
+  expect(service.list('u1')[0]).toMatchObject({ optionA: 'Tercera opción', optionB: 'Cuarta opción' });
+});
+
+it('does not update the cache or notify after a failed atomic batch', async () => {
+  const repository = new MemoryRepository(); const service = new WouldYouRatherPromptService(repository);
+  repository.createBatch = async () => { throw new Error('Transaction failed'); };
+  let notifications = 0; service.onChanged(() => notifications++);
+  await expect(service.import('u1', { version: 1, prompts: [{ optionA: 'Primera opción', optionB: 'Segunda opción' }] })).rejects.toThrow('Transaction failed');
+  expect(service.list('u1')).toEqual([]); expect(notifications).toBe(0);
 });

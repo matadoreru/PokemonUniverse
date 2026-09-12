@@ -1,4 +1,4 @@
-import type { RoomView } from '@pokemon-universe/shared';
+import type { RoomView } from '@pokemon-universe/shared/public';
 import { GameSelectionConfig } from '../room/GameSelectionConfig';
 
 const games = [

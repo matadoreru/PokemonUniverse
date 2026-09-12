@@ -1,4 +1,4 @@
-import { type RoomMemberView, type RoomView, type ShinyOptionId, type ShinyVoteConfig, type ShinyVotePlayerState, type ShinyVotePublicState } from '@pokemon-universe/shared';
+import { type RoomMemberView, type RoomView, type ShinyOptionId, type ShinyVoteConfig, type ShinyVotePlayerState, type ShinyVotePublicState } from '@pokemon-universe/shared/public';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ShinyGameHeader } from '../games/shiny-vote/ShinyGameHeader';
 import { ShinyGameSidebar } from '../games/shiny-vote/ShinyGameSidebar';

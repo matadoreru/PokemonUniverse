@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, type PokemonCryVersion } from '../contracts.js';
 import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
@@ -72,6 +73,7 @@ function resolveRound(state: PokemonCryQuizState, context: GameContext): Pokemon
 const finish = (state: PokemonCryQuizState): PokemonCryQuizState => ({ ...state, phase: 'GAME_RESULTS', roundEndsAt: null, nextTransitionAt: null });
 
 export const pokemonCryQuizGame: MiniGameModule<PokemonCryQuizConfig, PokemonCryQuizState, PokemonCryQuizAction, PokemonCryQuizPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest, configSchema: pokemonCryQuizConfigSchema, actionSchema: pokemonCryQuizActionSchema, defaultConfig: defaultPokemonCryQuizConfig,
   createInitialState(config, context) {
     const parsed = pokemonCryQuizConfigSchema.parse(config); const pool = pokemonCryPool(parsed, context);

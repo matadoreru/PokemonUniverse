@@ -1,4 +1,4 @@
-import type { ProfileDerivedMetricDefinition, ProfileMetricDefinition, UserProfileResponse } from '@pokemon-universe/shared';
+import type { ProfileDerivedMetricDefinition, ProfileMetricDefinition, UserProfileResponse } from '@pokemon-universe/shared/public';
 import { BarChart3, Gamepad2, Trophy } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Navigate } from 'react-router-dom';

@@ -1,4 +1,4 @@
-import type { OneOfUsIsFakeConfig, OneOfUsIsFakePlayerState, OneOfUsIsFakePublicState, RoomMemberView, RoomView } from '@pokemon-universe/shared';
+import type { OneOfUsIsFakeConfig, OneOfUsIsFakePlayerState, OneOfUsIsFakePublicState, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Eye, MessageCircle, ShieldAlert, Sparkles, UserRoundSearch, Vote } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';

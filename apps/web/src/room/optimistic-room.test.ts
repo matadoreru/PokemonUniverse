@@ -114,3 +114,12 @@ describe('optimistic lobby room projection', () => {
     expect(projection.clearPending()).toBe(authoritative);
   });
 });
+
+it('ignores an older acknowledgement snapshot even when asked to clear pending edits', () => {
+  const projection = new OptimisticRoomProjection();
+  projection.setAuthoritative(room({ roomInstanceId: 'instance-a', revision: 3, gamesPlayed: 2 }));
+  projection.setAuthoritative(room({ roomInstanceId: 'instance-a', revision: 2, gamesPlayed: 1 }), true);
+  expect(projection.view()?.gamesPlayed).toBe(2);
+  projection.setAuthoritative(room({ roomInstanceId: 'instance-b', revision: 0, gamesPlayed: 0 }), true);
+  expect(projection.view()?.gamesPlayed).toBe(0);
+});

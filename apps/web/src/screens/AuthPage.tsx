@@ -1,4 +1,4 @@
-import { AVATAR_PRESETS, type AvatarPresetId } from '@pokemon-universe/shared';
+import { AVATAR_PRESETS, type AvatarPresetId } from '@pokemon-universe/shared/public';
 import { ImagePlus, LoaderCircle } from 'lucide-react';
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';

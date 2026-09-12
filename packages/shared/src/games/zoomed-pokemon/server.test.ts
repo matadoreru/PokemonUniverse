@@ -75,7 +75,7 @@ describe('Zoomed Pokémon visual modes and exact targets', () => {
   it('keeps one target, visual and focus seed shared by every player without public identity leakage', () => {
     const fixture = setup({ imageMode: 'ARTWORK' }); const view = zoomedPokemonGame.getPublicState(fixture.state, fixture.context);
     expect(fixture.state.playerIds).toEqual(['p1', 'p2', 'p3']); expect(fixture.state.visual?.pokemonId).toBe('volcarona');
-    expect(JSON.stringify(view)).not.toMatch(/volcarona|targetPokemon|local-artwork/i); expect(view.imageUrl).toMatch(/\/options\/active\/sprite$/); expect(view.focusPoint).toEqual({ x: 0.5, y: 0.5 });
+    expect(JSON.stringify(view)).not.toMatch(/volcarona|targetPokemon|local-artwork/i); expect(view.imageUrl).toMatch(/\/options\/stage-0\/sprite$/); expect(view.focusPoint).toEqual({ x: 0.5, y: 0.5 });
   });
 });
 
@@ -127,7 +127,7 @@ describe('authoritative attempts, order, score and round lifecycle', () => {
   });
   it('times out, reveals complete and initial assets for four seconds, then advances automatically', () => {
     const fixture = setup({ rounds: 2 }); fixture.now(fixture.state.roundEndsAt!); let state = zoomedPokemonGame.handleTimeout(fixture.state, fixture.context); const view = zoomedPokemonGame.getPublicState(state, fixture.context);
-    expect(state.phase).toBe('ROUND_RESULTS'); expect(state.nextTransitionAt).toBe(fixture.context.now + ZOOMED_POKEMON_REVEAL_MS); expect(view.lastRound).toMatchObject({ pokemon: { name: 'volcarona' }, imageUrl: expect.stringContaining('/reveal/'), initialCropUrl: expect.stringContaining('/active/') });
+    expect(state.phase).toBe('ROUND_RESULTS'); expect(state.nextTransitionAt).toBe(fixture.context.now + ZOOMED_POKEMON_REVEAL_MS); expect(view.lastRound).toMatchObject({ pokemon: { name: 'volcarona' }, imageUrl: expect.stringContaining('/reveal/'), initialCropUrl: expect.stringContaining('/stage-0/') });
     expect(zoomedPokemonGame.resolveAsset!(state, { assetToken: state.assetToken, roundNumber: 1, assetId: 'reveal' }, fixture.context)).toMatchObject({ transform: 'NORMALIZED' });
     fixture.now(state.nextTransitionAt!); state = zoomedPokemonGame.handleTimeout(state, fixture.context); expect(state.roundNumber).toBe(2); expect(state.phase).toBe('ROUND_ACTIVE');
   });
@@ -141,5 +141,20 @@ describe('authoritative attempts, order, score and round lifecycle', () => {
   it('aggregates profile statistics including first positions, max zoom and misses', () => {
     const fixture = setup({ rounds: 1 }); fixture.now(2_000); let state = guess(fixture.state, 'p1', 'volcarona', fixture.context).state; fixture.now(state.roundEndsAt!); state = zoomedPokemonGame.handleTimeout(state, fixture.context); fixture.now(state.nextTransitionAt!); state = zoomedPokemonGame.handleTimeout(state, fixture.context);
     const results = zoomedPokemonGame.getResults(state); expect(results.standings.find((item) => item.playerId === 'p1')?.stats).toMatchObject({ correct: 1, firstTry: 1, firstPositions: 1, maxZoomSolves: 1, missed: 0 }); expect(results.standings.find((item) => item.playerId === 'p2')?.stats.missed).toBe(1);
+  });
+});
+
+
+describe('stage asset authorization', () => {
+  it('rejects future crops and legacy full active images, including reconnect projections', () => {
+    const fixture = setup();
+    const request = { assetToken: fixture.state.assetToken, roundNumber: 1, assetId: 'stage-1' };
+    expect(zoomedPokemonGame.resolveAsset!(fixture.state, request, fixture.context)).toBeNull();
+    expect(zoomedPokemonGame.resolveAsset!(fixture.state, { ...request, assetId: 'active' }, fixture.context)).toBeNull();
+    expect(zoomedPokemonGame.resolveAsset!(fixture.state, { ...request, assetId: 'stage-0' }, fixture.context)).toMatchObject({ transform: 'ZOOM_CROP', zoom: ZOOMED_POKEMON_ZOOM_STAGES[0] });
+    fixture.now(zoomStageSchedule(fixture.state.roundStartedAt!, fixture.state.config.roundSeconds)[0]!);
+    const next = zoomedPokemonGame.handleTimeout(fixture.state, fixture.context);
+    expect(zoomedPokemonGame.resolveAsset!(next, request, fixture.context)).toMatchObject({ transform: 'ZOOM_CROP', zoom: ZOOMED_POKEMON_ZOOM_STAGES[1] });
+    expect(zoomedPokemonGame.getPublicState(next, fixture.context).imageUrl).toContain('/stage-1/');
   });
 });

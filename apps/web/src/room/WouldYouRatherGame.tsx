@@ -1,4 +1,4 @@
-import type { RoomMemberView, RoomView, WouldYouRatherOption, WouldYouRatherPlayerState, WouldYouRatherPublicState, WouldYouRatherRoundResult } from '@pokemon-universe/shared';
+import type { RoomMemberView, RoomView, WouldYouRatherOption, WouldYouRatherPlayerState, WouldYouRatherPublicState, WouldYouRatherRoundResult } from '@pokemon-universe/shared/public';
 import { Check, Eye, LockKeyhole, Send, Sparkles, Users } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar } from '../components/Avatar';

@@ -1,3 +1,5 @@
+import { contentDeck } from '../infrastructure/random.js';
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { advanceTimedRound, resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultTcgHigherLowerConfig, tcgHigherLowerConfigSchema, type TcgHigherLowerConfig } from './config.js';
@@ -18,24 +20,7 @@ const manifest = {
   ], derivedMetrics: [{ key: 'accuracy', label: 'Precisión', kind: 'PERCENT', numerator: 'correct', denominator: ['correct', 'incorrect'] }] },
 } as const;
 
-function shuffle<T>(items: readonly T[], random: () => number): T[] {
-  const result = [...items];
-  for (let index = result.length - 1; index > 0; index--) { const other = Math.min(index, Math.floor(random() * (index + 1))); [result[index], result[other]] = [result[other]!, result[index]!]; }
-  return result;
-}
 
-function sequenceFor(pool: readonly TcgComparableCard[], length: number, random: () => number): TcgComparableCard[] {
-  const result: TcgComparableCard[] = [];
-  while (result.length < length) {
-    const batch = shuffle(pool, random);
-    if (result.length && batch[0]?.id === result.at(-1)?.id) {
-      const replacement = batch.findIndex((card) => card.id !== result.at(-1)?.id);
-      [batch[0], batch[replacement]] = [batch[replacement]!, batch[0]!];
-    }
-    for (const card of batch) { if (result.length >= length) break; if (card.id !== result.at(-1)?.id) result.push({ ...card }); }
-  }
-  return result;
-}
 
 function beginRound(state: TcgHigherLowerState, context: GameContext): TcgHigherLowerState {
   return { ...state, phase: 'ROUND_ACTIVE', roundNumber: state.roundNumber + 1, answers: {}, roundStartedAt: context.now,
@@ -60,12 +45,14 @@ function finish(state: TcgHigherLowerState): TcgHigherLowerState { return { ...s
 function cardView(card: TcgComparableCard, price: string | null, showRarity: boolean): TcgCardPublicView { return { id: card.id, name: card.name, localId: card.localId, setId: card.setId, setName: card.setName, rarity: showRarity ? card.rarity : null, imageUrl: card.imageUrl, price }; }
 
 export const tcgHigherLowerGame: MiniGameModule<TcgHigherLowerConfig, TcgHigherLowerState, TcgHigherLowerAction, TcgHigherLowerPublicState> = {
+  getLifecycle: timedGameLifecycle,
+  checkAvailability(config, context) { return (context.tcgCards?.cardsFor(config).length ?? 0) >= 2 ? null : 'No hay al menos dos cartas TCG con imagen y precio comparable para estos filtros.'; },
   manifest, configSchema: tcgHigherLowerConfigSchema, actionSchema: tcgHigherLowerActionSchema, defaultConfig: defaultTcgHigherLowerConfig,
   createInitialState(config, context) {
     const parsed = tcgHigherLowerConfigSchema.parse(config); const pool = context.tcgCards?.cardsFor(parsed) ?? [];
     if (pool.length < 2) throw new Error('No hay al menos dos cartas TCG con imagen y precio comparable para estos filtros. Ajusta las generaciones, sets, rarezas o precios.');
     const empty: TcgHigherLowerStats = { comparisons: 0, correct: 0, incorrect: 0, sameCorrect: 0, answered: 0, bestStreak: 0 };
-    return { phase: 'GAME_STARTING', config: parsed, playerIds: context.players.map(({ id }) => id), sequence: sequenceFor(pool, parsed.rounds + 1, context.random), roundNumber: 0, answers: {}, scores: Object.fromEntries(context.players.map(({ id }) => [id, 0])), streaks: Object.fromEntries(context.players.map(({ id }) => [id, 0])), playerStats: Object.fromEntries(context.players.map(({ id }) => [id, { ...empty }])), roundStartedAt: null, roundEndsAt: null, nextTransitionAt: null, lastRound: null };
+    return { phase: 'GAME_STARTING', config: parsed, playerIds: context.players.map(({ id }) => id), sequence: contentDeck(pool, parsed.rounds + 1, context.random, (card) => card.id).map((card) => ({ ...card })), roundNumber: 0, answers: {}, scores: Object.fromEntries(context.players.map(({ id }) => [id, 0])), streaks: Object.fromEntries(context.players.map(({ id }) => [id, 0])), playerStats: Object.fromEntries(context.players.map(({ id }) => [id, { ...empty }])), roundStartedAt: null, roundEndsAt: null, nextTransitionAt: null, lastRound: null };
   },
   start: beginRound,
   handleAction(state, playerId, action, context): GameActionResult<TcgHigherLowerState> {

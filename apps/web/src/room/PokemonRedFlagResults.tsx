@@ -1,4 +1,4 @@
-import type { PokemonRedFlagPublicState, RoomView } from '@pokemon-universe/shared';
+import type { PokemonRedFlagPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { Crown, RotateCcw, StopCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 

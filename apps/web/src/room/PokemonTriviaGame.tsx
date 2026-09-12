@@ -1,4 +1,4 @@
-import type { PokemonTriviaOption, PokemonTriviaOptionDetails, PokemonTriviaPlayerState, PokemonTriviaPublicState, PokemonTriviaQuestionType, RoomView } from '@pokemon-universe/shared';
+import type { PokemonTriviaOption, PokemonTriviaOptionDetails, PokemonTriviaPlayerState, PokemonTriviaPublicState, PokemonTriviaQuestionType, RoomView } from '@pokemon-universe/shared/public';
 import { Brain, CheckCircle2, Eye, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar } from '../components/Avatar';

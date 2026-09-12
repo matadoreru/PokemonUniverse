@@ -8,6 +8,7 @@ const database = vi.hoisted(() => ({
   userStatsUpdated: vi.fn(),
   gameStatsUpdated: vi.fn(),
   transactionFailures: 0,
+  transactionErrorCode: 'P2034',
   transactionAttempts: 0,
   transactionOptions: [] as unknown[],
 }));
@@ -16,7 +17,7 @@ vi.mock('../db.js', () => ({
   prisma: {
     $transaction: vi.fn(async (callback: (tx: unknown) => Promise<void>, options: unknown) => {
       database.transactionAttempts += 1; database.transactionOptions.push(options);
-      if (database.transactionFailures > 0) { database.transactionFailures -= 1; throw { code: 'P2034' }; }
+      if (database.transactionFailures > 0) { database.transactionFailures -= 1; throw { code: database.transactionErrorCode }; }
       return callback({
         gameHistory: {
           findUnique: vi.fn(({ where }: { where: { resultId: string } }) => database.resultIds.has(where.resultId) ? { id: `history-${where.resultId}`, status: 'COMPLETED' } : null),
@@ -46,6 +47,7 @@ describe('profile statistics aggregation', () => {
   beforeEach(() => {
     database.resultIds.clear();
     database.playerResultsCreated.mockClear(); database.userStatsUpdated.mockClear(); database.gameStatsUpdated.mockClear();
+    database.transactionErrorCode = 'P2034';
     database.transactionFailures = 0; database.transactionAttempts = 0; database.transactionOptions.length = 0;
   });
   it('sums counters and retains the best maximum', () => {
@@ -108,4 +110,12 @@ describe('profile statistics aggregation', () => {
     expect(database.userStatsUpdated).toHaveBeenCalledTimes(1);
     expect(database.gameStatsUpdated).toHaveBeenCalledTimes(1);
   });
+  it('does not report an unrelated unique constraint failure as a completed result', async () => {
+    database.transactionFailures = 3;
+    database.transactionErrorCode = 'P2002';
+    await expect(persistGameResults({ historyId: 'history', code: 'ABC123', members: new Map() }, { winnerId: null, standings: [] }, 'uncommitted-result', Date.now(), 'higher-lower', {})).rejects.toMatchObject({ code: 'P2002' });
+    expect(database.transactionAttempts).toBe(3);
+    expect(database.resultIds.has('uncommitted-result')).toBe(false);
+  });
+
 });

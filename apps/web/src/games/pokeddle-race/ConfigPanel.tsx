@@ -1,4 +1,4 @@
-import { POKEDDLE_CLUE_KEYS, type PokeddleClueKey, type PokeddleRaceConfig } from '@pokemon-universe/shared';
+import { POKEDDLE_CLUE_KEYS, type PokeddleClueKey, type PokeddleRaceConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { validatePokeddleConfig } from './validation';

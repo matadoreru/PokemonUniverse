@@ -1,25 +1,10 @@
 import { z } from 'zod';
-import type { PokemonLegendaryStatus, PokemonType } from '../../pokemon/types.js';
 import type { GamePhase, GameResults } from '../contracts.js';
 import type { PokemonBingoConfig } from './config.js';
 
-export type BingoComparisonOperator = 'GT' | 'LT';
-export type BingoStatKey = 'hp' | 'attack' | 'defense' | 'specialAttack' | 'specialDefense' | 'speed' | 'baseStatTotal';
-export type BingoEvolutionStatus = 'BASE' | 'MIDDLE' | 'FINAL' | 'NONE';
-export type BingoCondition =
-  | { kind: 'GENERATION'; generation: number }
-  | { kind: 'DEX'; operator: BingoComparisonOperator | 'RANGE'; value: number; max?: number }
-  | { kind: 'TYPE'; pokemonType: PokemonType }
-  | { kind: 'TYPE_COMBINATION'; pokemonTypes: [PokemonType, PokemonType] }
-  | { kind: 'TYPE_COUNT'; count: 1 | 2 }
-  | { kind: 'STAT'; stat: BingoStatKey; operator: BingoComparisonOperator; value: number }
-  | { kind: 'PHYSICAL'; metric: 'heightDecimeters' | 'weightHectograms'; operator: BingoComparisonOperator; value: number }
-  | { kind: 'EVOLUTION'; status: BingoEvolutionStatus }
-  | { kind: 'LEGENDARY'; status: PokemonLegendaryStatus }
-  | { kind: 'COLOR'; color: string }
-  | { kind: 'ABILITY'; ability: string };
+import type { BingoCell } from '../../pokemon/conditions/types.js';
+export type { BingoCell, BingoCondition, BingoComparisonOperator, BingoStatKey, BingoEvolutionStatus } from '../../pokemon/conditions/types.js';
 
-export interface BingoCell { id: string; conditions: BingoCondition[] }
 export interface BingoBoardState {
   cells: BingoCell[];
   assignments: Record<string, string>;

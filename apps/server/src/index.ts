@@ -107,7 +107,6 @@ await tcgCards.refresh();
 dataSync.onCompleted(async (source) => { if (source === 'TCGDEX') await tcgCards.refresh(); });
 const catalog = await loadPokemonCatalog();
 const pokemonAudio = await loadPokemonAudioCatalog();
-dataSync.onCompleted(async (source) => { if (source === 'POKEAPI') pokemonAudio.replaceWith(await loadPokemonAudioCatalog()); });
 await customCategories.load();
 await userGameConfigs.load();
 await wouldYouRatherPrompts.load();
@@ -116,6 +115,13 @@ registerTcgCardCatalog(tcgCards);
 const pokemonVisuals = await loadPokemonVisualCatalog(catalog);
 const rooms = new RoomManager(io, catalog, pokemonVisuals, (userId) => customCategories.enabled(userId), createPrismaRoomAuditSink(), userGameConfigs, (userId) => wouldYouRatherPrompts.enabled(userId), tcgCards, pokemonAudio);
 roomRegistry.current = rooms;
+dataSync.onCompleted(async (source) => {
+  if (source !== 'POKEAPI') return;
+  const [nextCatalog, nextAudio] = await Promise.all([loadPokemonCatalog(), loadPokemonAudioCatalog()]);
+  const nextVisuals = await loadPokemonVisualCatalog(nextCatalog);
+  rooms.replaceCatalog(nextCatalog, nextVisuals, nextAudio);
+  registerPokemonRepository(new CatalogPokemonRepository(nextCatalog));
+});
 customCategories.onChanged((userId) => rooms.updateHostCategories(userId));
 wouldYouRatherPrompts.onChanged((userId) => rooms.updateHostWouldYouRatherPrompts(userId));
 onAvatarUpdated((userId, avatar) => rooms.updateIdentityAvatar(userId, avatar));
@@ -138,8 +144,17 @@ if (env.DATA_SYNC_ENABLED) {
 
 httpServer.listen(env.PORT, () => console.info(`API listening on :${env.PORT} with ${catalog.all().length} Pokémon and ${pokemonVisuals.artworkPokemonIds().length} local artworks`));
 
-async function shutdown(): Promise<void> {
-  scheduler.stop(); io.close(); httpServer.close(); await userGameConfigs.flush(); await interruptStaleActivity(); await prisma.$disconnect(); process.exit(0);
+let shutdownTask: Promise<void> | null = null;
+function shutdown(): Promise<void> {
+  shutdownTask ??= (async () => {
+    scheduler.stop();
+    rooms.stop();
+    await new Promise<void>((resolve) => io.close(() => resolve()));
+    await Promise.all([rooms.flush(), userGameConfigs.flush(), dataSync.stop()]);
+    await interruptStaleActivity();
+    await prisma.$disconnect();
+  })().catch((error: unknown) => { console.error('Shutdown failed', error); process.exitCode = 1; });
+  return shutdownTask;
 }
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);

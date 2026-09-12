@@ -1,3 +1,5 @@
+import { shuffled } from '../infrastructure/random.js';
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, type SubjectiveCategory } from '../contracts.js';
 import { defaultOneOfUsIsFakeConfig, oneOfUsIsFakeConfigSchema, type OneOfUsIsFakeConfig } from './config.js';
 import { officialSubjectiveCategories } from './categories.js';
@@ -25,14 +27,7 @@ const manifest = {
   },
 };
 
-function shuffled<T>(values: readonly T[], random: () => number): T[] {
-  const copy = [...values];
-  for (let index = copy.length - 1; index > 0; index -= 1) {
-    const target = Math.floor(random() * (index + 1));
-    [copy[index], copy[target]] = [copy[target]!, copy[index]!];
-  }
-  return copy;
-}
+
 
 function categoryPool(config: OneOfUsIsFakeConfig, context: GameContext): SubjectiveCategory[] {
   const official = config.categorySource === 'CUSTOM' ? [] : officialSubjectiveCategories;
@@ -146,6 +141,7 @@ function resolveVote(state: OneOfUsIsFakeState, context: GameContext): OneOfUsIs
 }
 
 export const oneOfUsIsFakeGame: MiniGameModule<OneOfUsIsFakeConfig, OneOfUsIsFakeState, OneOfUsIsFakeAction, OneOfUsIsFakePublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest, configSchema: oneOfUsIsFakeConfigSchema, actionSchema: oneOfUsIsFakeActionSchema, defaultConfig: defaultOneOfUsIsFakeConfig,
   createInitialState(config, context) {
     const parsed = oneOfUsIsFakeConfigSchema.parse(config);
@@ -165,6 +161,7 @@ export const oneOfUsIsFakeGame: MiniGameModule<OneOfUsIsFakeConfig, OneOfUsIsFak
   },
   start(state, context) { return beginRound(state, context); },
   handleAction(state, playerId, action, context): GameActionResult<OneOfUsIsFakeState> {
+    if ((state.phase === 'ROUND_ACTIVE' || state.phase === 'DISCUSSION' || state.phase === 'REVOTE') && state.roundEndsAt !== null && context.now >= state.roundEndsAt) return { state, accepted: false, error: 'El tiempo ha terminado.' };
     if (!state.playerIds.includes(playerId) || !isPlayerRequired(context, playerId)) return { state, accepted: false, error: 'No puedes actuar en esta ronda.' };
     if (action.type === 'SELECT_POKEMON') {
       if (state.phase !== 'ROUND_ACTIVE') return { state, accepted: false, error: 'La selección ya ha terminado.' };

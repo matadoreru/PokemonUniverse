@@ -1,3 +1,4 @@
+import { normalizeContent } from '../content/normalize.js';
 import { createCustomWouldYouRatherPromptSchema, importCustomWouldYouRatherPromptsSchema, updateCustomWouldYouRatherPromptSchema, type CustomWouldYouRatherPromptView, type WouldYouRatherPromptPair } from '@pokemon-universe/shared';
 
 export interface StoredWouldYouRatherPrompt {
@@ -13,14 +14,13 @@ export interface StoredWouldYouRatherPrompt {
 
 export interface WouldYouRatherPromptRepository {
   findAll(): Promise<StoredWouldYouRatherPrompt[]>;
+  createBatch(userId: string, prompts: readonly { optionA: string; optionB: string; normalizedKey: string }[]): Promise<StoredWouldYouRatherPrompt[]>;
   create(userId: string, optionA: string, optionB: string, normalizedKey: string): Promise<StoredWouldYouRatherPrompt>;
   update(userId: string, id: string, data: { optionA?: string; optionB?: string; normalizedKey?: string; enabled?: boolean }): Promise<StoredWouldYouRatherPrompt | null>;
   delete(userId: string, id: string): Promise<boolean>;
 }
 
-export function normalizeWouldYouRatherOption(value: string): string {
-  return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase('es').replace(/[^\p{L}\p{N}]+/gu, ' ').trim().replace(/\s+/g, ' ');
-}
+export const normalizeWouldYouRatherOption = normalizeContent;
 
 export function wouldYouRatherPromptKey(optionA: string, optionB: string): string {
   return [normalizeWouldYouRatherOption(optionA), normalizeWouldYouRatherOption(optionB)].sort().join('::');
@@ -35,6 +35,7 @@ function view(prompt: StoredWouldYouRatherPrompt): CustomWouldYouRatherPromptVie
 
 export class WouldYouRatherPromptService {
   private readonly byUser = new Map<string, StoredWouldYouRatherPrompt[]>();
+  private readonly mutations = new Map<string, Promise<unknown>>();
   private readonly listeners = new Set<(userId: string) => void>();
 
   constructor(private readonly repository: WouldYouRatherPromptRepository) {}
@@ -56,7 +57,20 @@ export class WouldYouRatherPromptService {
     return (this.byUser.get(userId) ?? []).filter((prompt) => prompt.enabled).map(({ id, optionA, optionB }) => ({ id, optionA, optionB }));
   }
 
-  async create(userId: string, input: unknown): Promise<CustomWouldYouRatherPromptView> {
+  private serialize<T>(userId: string, operation: () => Promise<T>): Promise<T> {
+    const prior = this.mutations.get(userId) ?? Promise.resolve();
+    const next = prior.catch(() => undefined).then(operation);
+    this.mutations.set(userId, next);
+    void next.finally(() => { if (this.mutations.get(userId) === next) this.mutations.delete(userId); }).catch(() => undefined);
+    return next;
+  }
+
+  create(userId: string, input: unknown): Promise<CustomWouldYouRatherPromptView> { return this.serialize(userId, () => this.createNow(userId, input)); }
+  update(userId: string, id: string, input: unknown): Promise<CustomWouldYouRatherPromptView> { return this.serialize(userId, () => this.updateNow(userId, id, input)); }
+  import(userId: string, input: unknown): Promise<CustomWouldYouRatherPromptView[]> { return this.serialize(userId, () => this.importNow(userId, input)); }
+  delete(userId: string, id: string): Promise<void> { return this.serialize(userId, () => this.deleteNow(userId, id)); }
+
+  private async createNow(userId: string, input: unknown): Promise<CustomWouldYouRatherPromptView> {
     const { optionA, optionB } = createCustomWouldYouRatherPromptSchema.parse(input);
     this.assertDifferent(optionA, optionB);
     const normalizedKey = wouldYouRatherPromptKey(optionA, optionB);
@@ -65,7 +79,7 @@ export class WouldYouRatherPromptService {
     this.insertCached(created); this.notify(userId); return view(created);
   }
 
-  async update(userId: string, id: string, input: unknown): Promise<CustomWouldYouRatherPromptView> {
+  private async updateNow(userId: string, id: string, input: unknown): Promise<CustomWouldYouRatherPromptView> {
     const parsed = updateCustomWouldYouRatherPromptSchema.parse(input);
     const current = (this.byUser.get(userId) ?? []).find((prompt) => prompt.id === id);
     if (!current) throw new WouldYouRatherPromptNotFoundError();
@@ -85,21 +99,18 @@ export class WouldYouRatherPromptService {
     this.notify(userId); return view(updated);
   }
 
-  async import(userId: string, input: unknown): Promise<CustomWouldYouRatherPromptView[]> {
+  private async importNow(userId: string, input: unknown): Promise<CustomWouldYouRatherPromptView[]> {
     const { prompts } = importCustomWouldYouRatherPromptsSchema.parse(input);
     const keys = prompts.map((prompt) => wouldYouRatherPromptKey(prompt.optionA, prompt.optionB));
     if (new Set(keys).size !== keys.length) throw new DuplicateWouldYouRatherPromptError('El JSON contiene dilemas duplicados o invertidos.');
     for (const key of keys) this.assertUnique(userId, key);
-    const created: StoredWouldYouRatherPrompt[] = [];
-    for (const [index, prompt] of prompts.entries()) {
-      created.push(await this.repository.create(userId, prompt.optionA, prompt.optionB, keys[index]!));
-    }
+    const created = await this.repository.createBatch(userId, prompts.map((prompt, index) => ({ ...prompt, normalizedKey: keys[index]! })));
     for (const prompt of created) this.insertCached(prompt);
     this.notify(userId);
     return created.map(view);
   }
 
-  async delete(userId: string, id: string): Promise<void> {
+  private async deleteNow(userId: string, id: string): Promise<void> {
     if (!(await this.repository.delete(userId, id))) throw new WouldYouRatherPromptNotFoundError();
     this.byUser.set(userId, (this.byUser.get(userId) ?? []).filter((prompt) => prompt.id !== id));
     this.notify(userId);

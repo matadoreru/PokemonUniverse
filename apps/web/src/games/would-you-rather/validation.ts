@@ -1,4 +1,4 @@
-import type { RoomView, WouldYouRatherConfig } from '@pokemon-universe/shared';
+import type { RoomView, WouldYouRatherConfig } from '@pokemon-universe/shared/public';
 
 export function validateWouldYouRatherConfig(config: unknown, room?: RoomView): string | null {
   const value = config as WouldYouRatherConfig;

@@ -1,4 +1,4 @@
-import type { OneOfUsIsFakeConfig, RoomView } from '@pokemon-universe/shared';
+import type { OneOfUsIsFakeConfig, RoomView } from '@pokemon-universe/shared/public';
 
 export function validateOneOfUsIsFakeConfig(config: unknown, room?: RoomView): string | null {
   const value = config as Partial<OneOfUsIsFakeConfig>;

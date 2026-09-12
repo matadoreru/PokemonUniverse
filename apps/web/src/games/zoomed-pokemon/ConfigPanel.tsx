@@ -1,4 +1,4 @@
-import type { ZoomedPokemonConfig, ZoomedPokemonHintKind, ZoomedPokemonImageMode } from '@pokemon-universe/shared';
+import type { ZoomedPokemonConfig, ZoomedPokemonHintKind, ZoomedPokemonImageMode } from '@pokemon-universe/shared/public';
 import { Image, Images, Lightbulb, Sparkles } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 export { validateZoomedPokemonConfig } from './validation';

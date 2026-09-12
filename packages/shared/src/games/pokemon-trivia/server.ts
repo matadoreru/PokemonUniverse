@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon, PokemonType } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { advanceTimedRound, resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
@@ -136,6 +137,7 @@ function revealRound(state: PokemonTriviaState, context: GameContext): PokemonTr
 const finish = (state: PokemonTriviaState): PokemonTriviaState => ({ ...state, phase: 'GAME_RESULTS', nextTransitionAt: null, roundEndsAt: null });
 
 export const pokemonTriviaGame: MiniGameModule<PokemonTriviaConfig, PokemonTriviaState, PokemonTriviaAction, PokemonTriviaPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest, configSchema: pokemonTriviaConfigSchema, actionSchema: pokemonTriviaActionSchema, defaultConfig: defaultPokemonTriviaConfig,
   createInitialState(config, context) {
     const parsed = pokemonTriviaConfigSchema.parse(config); const pool = context.pokemon.forGenerations(parsed.generations).filter((pokemon) => pokemon.id && pokemon.name && pokemon.sprite);

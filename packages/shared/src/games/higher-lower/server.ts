@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { advanceTimedRound, resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
@@ -50,6 +51,7 @@ function finish(state: HigherLowerState): HigherLowerState { return { ...state, 
 function beginNextRound(state: HigherLowerState, context: GameContext): HigherLowerState { return beginRound({ ...state, previousPokemonId: state.currentPokemonId! }, context); }
 
 export const higherLowerGame: MiniGameModule<HigherLowerConfig, HigherLowerState, HigherLowerAction, HigherLowerPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest, configSchema: higherLowerConfigSchema, actionSchema: higherLowerActionSchema, defaultConfig: defaultHigherLowerConfig,
   createInitialState(config, context) {
     const parsed = higherLowerConfigSchema.parse(config); const pool = context.pokemon.forGenerations(parsed.generations);

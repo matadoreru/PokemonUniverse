@@ -1,4 +1,4 @@
-import type { PokedexDistancePlayerState, PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared';
+import type { PokedexDistancePlayerState, PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared/public';
 import { AlertTriangle, Clock3, Crosshair, Eye, Target, Trophy, UserX } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { usePokemonPool } from '../hooks/usePokemonPool';

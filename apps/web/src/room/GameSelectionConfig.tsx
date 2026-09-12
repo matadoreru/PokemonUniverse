@@ -1,4 +1,4 @@
-import { supportsPlayerCount, type GameSelectionMode, type MiniGameManifest, type RoomView } from '@pokemon-universe/shared';
+import { supportsPlayerCount, type GameSelectionMode, type MiniGameManifest, type RoomView } from '@pokemon-universe/shared/public';
 import { AlertCircle, Check, Repeat2, Search, Settings2, Shuffle, Vote } from 'lucide-react';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { GameLoadingFallback } from '../components/LoadingFallback';

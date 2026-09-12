@@ -1,3 +1,5 @@
+import { shuffled as shuffle } from '../infrastructure/random.js';
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { allEligibleRunoffVotersCompleted, eligibleRunoffVoterIds, leadingRunoffCandidateIds, recordRunoffVoteRound } from '../infrastructure/runoff-voting.js';
@@ -31,14 +33,7 @@ const manifest = {
   },
 };
 
-function shuffle<T>(values: readonly T[], random: () => number): T[] {
-  const result = [...values];
-  for (let index = result.length - 1; index > 0; index -= 1) {
-    const target = Math.floor(random() * (index + 1));
-    [result[index], result[target]] = [result[target]!, result[index]!];
-  }
-  return result;
-}
+
 
 function summary(pokemon: Pokemon) {
   return { id: pokemon.id, name: pokemon.name, sprite: pokemon.sprite };
@@ -130,6 +125,7 @@ function cloneRoundResult(result: PokemonRedFlagRoundResult | null): PokemonRedF
 }
 
 export const pokemonRedFlagGame: MiniGameModule<PokemonRedFlagConfig, PokemonRedFlagState, PokemonRedFlagAction, PokemonRedFlagPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest, configSchema: pokemonRedFlagConfigSchema, actionSchema: pokemonRedFlagActionSchema, defaultConfig: defaultPokemonRedFlagConfig,
   createInitialState(config, context) {
     const parsed = pokemonRedFlagConfigSchema.parse(config);

@@ -1,3 +1,4 @@
+import type { GameRuntime } from './types.js';
 import { getValidTypeChainCandidates, type AuthUser, type LearnsetPokemonCatalog, type PokedexEntryPokemonCatalog, type Pokemon } from '@pokemon-universe/shared';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -52,9 +53,15 @@ function boundSocket(id: string, user: AuthUser) {
   return result;
 }
 
+/** Legacy integration fixtures intentionally inspect and prepare engine states. */
+function inspectState(game: GameRuntime | null | undefined): Record<string, any> {
+  if (!game) throw new Error('Missing test game');
+  return game.state as Record<string, any>;
+}
+
 function io() {
   const emit = vi.fn();
-  return { emit, to: vi.fn(() => ({ emit })) };
+  return { emit, to: vi.fn(() => ({ emit })), in: vi.fn(() => ({ socketsLeave: vi.fn() })) };
 }
 
 function startReady(manager: RoomManager, room: any, playerId: string): void {
@@ -233,14 +240,14 @@ describe('room multi-game lifecycle', () => {
     const originalMembers = [...room.members.values()];
     startReady(manager, room, host.id);
     expect(room.game?.gameId).toBe('pokedex-distance');
-    expect(room.game?.state.targetDexNumber).toEqual(expect.any(Number));
-    expect(room.game?.state.votes).toBeUndefined();
+    expect(inspectState(room.game).targetDexNumber).toEqual(expect.any(Number));
+    expect(inspectState(room.game).votes).toBeUndefined();
     (manager as any).action(host.id, { type: 'SELECT_POKEMON', pokemonId: 'pokemon-1' });
     (manager as any).action(guest.id, { type: 'SELECT_POKEMON', pokemonId: 'pokemon-8' });
     expect(room.phase).toBe('ROUND_RESULTS');
-    const eliminatedId = room.game!.state.lastRound.eliminatedIds[0];
+    const eliminatedId = inspectState(room.game!).lastRound.eliminatedIds[0];
     expect(room.members.get(eliminatedId)).toMatchObject({ connected: true, presence: 'CONNECTED', role: 'SPECTATOR' });
-    room.game!.state.nextTransitionAt = 0;
+    inspectState(room.game!).nextTransitionAt = 0;
     (manager as any).tick(room);
     expect(room.phase).toBe('GAME_RESULTS');
 
@@ -253,12 +260,12 @@ describe('room multi-game lifecycle', () => {
     (manager as any).selectGame(host.id, 'shiny-vote');
     startReady(manager, room, host.id);
     expect(room.game?.gameId).toBe('shiny-vote');
-    expect(room.game?.state.votes).toEqual({});
-    expect(room.game?.state.targetDexNumber).toBeUndefined();
+    expect(inspectState(room.game).votes).toEqual({});
+    expect(inspectState(room.game).targetDexNumber).toBeUndefined();
     (manager as any).action(host.id, { type: 'VOTE', optionId: 'A' });
     (manager as any).action(guest.id, { type: 'VOTE', optionId: 'B' });
     expect(room.phase).toBe('ROUND_RESULTS');
-    room.game!.state.nextTransitionAt = 0;
+    inspectState(room.game!).nextTransitionAt = 0;
     (manager as any).tick(room);
     expect(room.phase).toBe('GAME_RESULTS');
 
@@ -282,7 +289,7 @@ describe('room multi-game lifecycle', () => {
     const manager = new RoomManager(transport as any, catalog, undefined, undefined, undefined, undefined, undefined, tcgCards);
     const host = identity('tcg-host', 'Host'); const created = (manager as any).create(socket('tcg-host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
     (manager as any).selectGame(host.id, 'tcg-higher-lower'); (manager as any).updateConfig(host.id, { generations: [1, 2, 3, 4, 5, 6, 7, 8, 9], setIds: [], rarities: [], minPrice: null, maxPrice: null, showRarity: true, rounds: 5, roundSeconds: 15 }); startReady(manager, room, host.id);
-    const secret = room.game!.state.sequence[1].price as string; const publicView = (manager as any).view(room, host.id);
+    const secret = inspectState(room.game!).sequence[1].price as string; const publicView = (manager as any).view(room, host.id);
     expect(publicView.game.currentCard.price).toBeNull(); expect(JSON.stringify(publicView)).not.toContain(JSON.stringify(secret));
     (manager as any).broadcast(room); expect(JSON.stringify(transport.emit.mock.calls)).not.toContain(JSON.stringify(secret));
     const reconnect = boundSocket('tcg-host-reconnected', host); manager.bind(reconnect as any); const restored = reconnect.emit.mock.calls.find(([event]) => event === 'session:restored')?.[1];
@@ -300,9 +307,9 @@ describe('room multi-game lifecycle', () => {
     manager.bind(hostSocket as any); const createAck = vi.fn(); hostSocket.handlers.get('room:create')?.({ maxPlayers: 8 }, createAck); const room = manager.store.roomForPlayer(host.id)!;
     (manager as any).join(socket('cry-guest-socket'), guest, room.code); (manager as any).selectGame(host.id, 'pokemon-cry-quiz');
     (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 20, rounds: 1, cryVersion: 'LATEST', includeRegionalForms: false }); startReady(manager, room, host.id);
-    const targetId = room.game!.state.targetPokemonId; const view = (manager as any).view(room, host.id); const serialized = JSON.stringify(view);
+    const targetId = inspectState(room.game!).targetPokemonId; const view = (manager as any).view(room, host.id); const serialized = JSON.stringify(view);
     expect(view.game.cryUrl).toMatch(/\/options\/cry\/audio$/); expect(serialized).not.toContain(targetId); expect(serialized).not.toContain('raw.githubusercontent.com/PokeAPI/cries');
-    expect(manager.gameAsset(room.code, room.game!.state.assetToken, 1, 'cry')).toMatch(/raw\.githubusercontent/);
+    expect(manager.gameAsset(room.code, inspectState(room.game!).assetToken, 1, 'cry')).toMatch(/raw\.githubusercontent/);
     const reconnect = boundSocket('cry-host-reconnected', host); manager.bind(reconnect as any); const restored = reconnect.emit.mock.calls.find(([event]) => event === 'session:restored')?.[1];
     expect(restored.game.cryUrl).toMatch(/\/audio$/); expect(JSON.stringify(restored)).not.toContain(targetId);
   });
@@ -313,7 +320,7 @@ describe('room multi-game lifecycle', () => {
     const created = (manager as any).create(socket('trivia-host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
     (manager as any).join(socket('trivia-guest-socket'), guest, room.code); (manager as any).selectGame(host.id, 'pokemon-trivia');
     (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 20, rounds: 1, optionCount: 3, difficulty: 'NORMAL', questionTypes: ['TYPE'] }); startReady(manager, room, host.id);
-    const correctOptionId = room.game!.state.question.correctOptionId; const publicView = (manager as any).view(room, host.id); const serialized = JSON.stringify(publicView);
+    const correctOptionId = inspectState(room.game!).question.correctOptionId; const publicView = (manager as any).view(room, host.id); const serialized = JSON.stringify(publicView);
     expect(publicView.game.options).toHaveLength(3); expect(serialized).not.toContain('correctOptionId'); expect(serialized).not.toContain('fact');
     (manager as any).broadcast(room); expect(JSON.stringify(transport.emit.mock.calls)).not.toContain('correctOptionId');
     const reconnect = boundSocket('trivia-host-reconnected', host); manager.bind(reconnect as any); const restored = reconnect.emit.mock.calls.find(([event]) => event === 'session:restored')?.[1];
@@ -324,7 +331,7 @@ describe('room multi-game lifecycle', () => {
     const transport = io(); const manager = new RoomManager(transport as any, catalog); const host = identity('palette-host', 'Host'); const guest = identity('palette-guest', 'Ana');
     const created = (manager as any).create(socket('palette-host-socket'), host, 8); const room = manager.store.get(created.room.code)!; (manager as any).join(socket('palette-guest-socket'), guest, room.code);
     (manager as any).selectGame(host.id, 'pokemon-palette-guess'); (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 20, rounds: 1, paletteSize: 5, hintsEnabled: false, hintKinds: ['GENERATION', 'TYPE', 'EVOLUTION'] }); startReady(manager, room, host.id);
-    const target = room.game!.state.targetPokemonId; const view = (manager as any).view(room, host.id); expect(view.game.colors).toHaveLength(5); expect(JSON.stringify(view)).not.toContain(target); expect(JSON.stringify(view)).not.toContain('targetPokemonId');
+    const target = inspectState(room.game!).targetPokemonId; const view = (manager as any).view(room, host.id); expect(view.game.colors).toHaveLength(5); expect(JSON.stringify(view)).not.toContain(target); expect(JSON.stringify(view)).not.toContain('targetPokemonId');
     (manager as any).broadcast(room); expect(JSON.stringify(transport.emit.mock.calls)).not.toContain(target);
     const reconnect = boundSocket('palette-host-reconnected', host); manager.bind(reconnect as any); const restored = reconnect.emit.mock.calls.find(([event]) => event === 'session:restored')?.[1]; expect(restored.game.colors).toHaveLength(5); expect(JSON.stringify(restored)).not.toContain(target);
   });
@@ -458,7 +465,7 @@ describe('room multi-game lifecycle', () => {
     startReady(manager, room, nextHost.id);
     (manager as any).action(nextHost.id, { type: 'SELECT_POKEMON', pokemonId: 'pokemon-1' });
     (manager as any).action(oldHost.id, { type: 'SELECT_POKEMON', pokemonId: 'pokemon-2' });
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); (manager as any).returnLobby(nextHost.id);
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); (manager as any).returnLobby(nextHost.id);
     expect(room.members.get(oldHost.id)?.roomRole).toBe('CO_HOST');
     expect(room.members.get(nextHost.id)?.roomRole).toBe('HOST');
   });
@@ -475,7 +482,7 @@ describe('room multi-game lifecycle', () => {
     (manager as any).updateConfig('pedro', { generations: [1], impostorCount: 1, clueSeconds: 10, voteSeconds: 10 });
     startReady(manager, room, 'pedro');
     expect(room.game?.gameId).toBe('pokemon-impostor');
-    const impostorId = Object.entries(room.game!.state.roles).find(([, role]) => role === 'IMPOSTOR')![0];
+    const impostorId = Object.entries(inspectState(room.game!).roles).find(([, role]) => role === 'IMPOSTOR')![0];
     const innocentId = identities.map((entry) => entry.id).find((id) => id !== impostorId)!;
     const impostorView = (manager as any).view(room, impostorId);
     const innocentView = (manager as any).view(room, innocentId);
@@ -483,10 +490,10 @@ describe('room multi-game lifecycle', () => {
     expect(innocentView.gamePlayerState.secretPokemon).not.toBeNull();
     expect(JSON.stringify(impostorView)).not.toContain('Pokémon 1');
 
-    room.game!.state.nextTransitionAt = 0;
+    inspectState(room.game!).nextTransitionAt = 0;
     (manager as any).tick(room);
     while (room.phase === 'CLUE_PHASE') {
-      const currentId = room.game!.state.clueOrder[room.game!.state.currentClueTurnIndex];
+      const currentId = inspectState(room.game!).clueOrder[inspectState(room.game!).currentClueTurnIndex];
       (manager as any).action(currentId, { type: 'SUBMIT_CLUE', text: `Pista ${currentId}` });
     }
     for (const person of identities) {
@@ -494,9 +501,9 @@ describe('room multi-game lifecycle', () => {
       (manager as any).action(person.id, { type: 'VOTE', targetId });
     }
     expect(room.phase).toBe('VOTE_RESULTS');
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room);
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room);
     expect(room.phase).toBe('ELIMINATION');
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room);
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room);
     expect(room.phase).toBe('GAME_RESULTS');
 
     (manager as any).returnLobby('pedro');
@@ -514,19 +521,19 @@ describe('room multi-game lifecycle', () => {
     (manager as any).selectGame(host.id, 'higher-lower');
     (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'REALTIME', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
     startReady(manager, room, host.id); (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' }); (manager as any).action(guest.id, { type: 'ANSWER', choice: 'LOWER' });
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); (manager as any).returnLobby(host.id);
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); (manager as any).returnLobby(host.id);
     (manager as any).selectGame(host.id, 'type-duel'); (manager as any).updateConfig(host.id, { generations: [1], typeSelectSeconds: 5, searchSeconds: 10, rounds: 1 }); startReady(manager, room, host.id);
-    const [first, second] = room.game!.state.participants; (manager as any).action(first, { type: 'SELECT_TYPE', pokemonType: 'fire' }); (manager as any).action(second, { type: 'SELECT_TYPE', pokemonType: 'water' });
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); (manager as any).action(first, { type: 'ATTEMPT_POKEMON', pokemonId: 'pokemon-3' });
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); (manager as any).returnLobby(host.id);
+    const [first, second] = inspectState(room.game!).participants; (manager as any).action(first, { type: 'SELECT_TYPE', pokemonType: 'fire' }); (manager as any).action(second, { type: 'SELECT_TYPE', pokemonType: 'water' });
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); (manager as any).action(first, { type: 'ATTEMPT_POKEMON', pokemonId: 'pokemon-3' });
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); (manager as any).returnLobby(host.id);
     (manager as any).selectGame(host.id, 'learnset-guess');
     (manager as any).updateConfig(host.id, { generations: [1], showLevels: true, showEvolution: true, roundSeconds: 20, rounds: 1 });
-    startReady(manager, room, host.id); const answerId = room.game!.state.correctPokemonId;
+    startReady(manager, room, host.id); const answerId = inspectState(room.game!).correctPokemonId;
     expect(JSON.stringify((manager as any).view(room, guest.id))).not.toContain('correctPokemonId');
     (manager as any).action(host.id, { type: 'GUESS_POKEMON', pokemonId: answerId });
     const guestView = (manager as any).view(room, guest.id); expect(guestView.game.solvedPlayers).toEqual([{ playerId: host.id, solveOrder: 1 }]); expect(JSON.stringify(guestView.game)).not.toContain(answerId);
     (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: answerId });
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); (manager as any).returnLobby(host.id);
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); (manager as any).returnLobby(host.id);
     (manager as any).selectGame(host.id, 'shiny-vote'); (manager as any).selectGame(host.id, 'pokemon-impostor'); (manager as any).selectGame(host.id, 'pokedex-distance');
     expect(room.phase).toBe('LOBBY'); expect(room.members.size).toBe(2); expect(room.selectedGameId).toBe('pokedex-distance');
   });
@@ -539,7 +546,7 @@ describe('room multi-game lifecycle', () => {
     (manager as any).selectGame(host.id, 'pokeddle-race');
     const config = room.gameConfigs.get('pokeddle-race') as Record<string, unknown>; (manager as any).updateConfig(host.id, { ...config, generations: [1], maxRounds: 1 });
     startReady(manager, room, host.id);
-    const hostSecret = room.game!.state.secretPokemonIds.host; const guestSecret = room.game!.state.secretPokemonIds.guest;
+    const hostSecret = inspectState(room.game!).secretPokemonIds.host; const guestSecret = inspectState(room.game!).secretPokemonIds.guest;
     expect(hostSecret).not.toBe(guestSecret);
     const unresolved = (manager as any).view(room, host.id); expect(JSON.stringify(unresolved.game)).not.toContain(hostSecret); expect(JSON.stringify(unresolved.gamePlayerState)).not.toContain(hostSecret);
     (manager as any).disconnect(host.id, 'host-socket');
@@ -548,7 +555,7 @@ describe('room multi-game lifecycle', () => {
     (manager as any).action(host.id, { type: 'GUESS_POKEMON', pokemonId: hostSecret });
     (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: guestSecret });
     expect(room.phase).toBe('ROUND_RESULTS'); expect((manager as any).view(room, guest.id).game.boards.host.revealedPokemon.id).toBe(hostSecret);
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS');
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS');
     (manager as any).returnLobby(host.id); expect(room.phase).toBe('LOBBY'); expect(room.game).toBeNull(); expect([...room.members.keys()]).toEqual(originalMemberIds); expect(room.members.get(host.id)?.socketId).toBe('host-restored');
     (manager as any).selectGame(host.id, 'higher-lower'); expect(room.selectedGameId).toBe('higher-lower'); expect(room.members.size).toBe(2); expect([...room.members.values()].every((member) => member.role === 'PLAYER')).toBe(true);
   });
@@ -559,11 +566,11 @@ describe('room multi-game lifecycle', () => {
     const memberIds = [...room.members.keys()]; (manager as any).selectGame(host.id, 'pokemon-bingo');
     const config = room.gameConfigs.get('pokemon-bingo') as Record<string, unknown>; (manager as any).updateConfig(host.id, { ...config, width: 2, height: 2, generations: [1], durationSeconds: 60 });
     startReady(manager, room, host.id); expect(room.game?.gameId).toBe('pokemon-bingo'); expect(room.phase).toBe('ROUND_ACTIVE');
-    const hostBoard = room.game!.state.boards.host; const guestBoard = room.game!.state.boards.guest;
+    const hostBoard = inspectState(room.game!).boards.host; const guestBoard = inspectState(room.game!).boards.guest;
     expect(hostBoard.cells).toHaveLength(4); expect(guestBoard.cells).toHaveLength(4); expect(hostBoard.cells).not.toEqual(guestBoard.cells);
     for (const cell of hostBoard.cells) (manager as any).action(host.id, { type: 'ASSIGN_POKEMON', cellId: cell.id, pokemonId: hostBoard.solutionPokemonIds[cell.id] });
     expect(room.phase).toBe('ROUND_RESULTS'); const publicView = (manager as any).view(room, guest.id); expect(publicView.game.boards.host).toMatchObject({ completed: 4, total: 4 }); expect(JSON.stringify(publicView.game)).not.toContain('solutionPokemonIds');
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); expect((manager as any).view(room, guest.id).game.boards.guest.cells.every((cell: { possibleSolutions: unknown[] }) => cell.possibleSolutions.length <= 3)).toBe(true);
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); expect((manager as any).view(room, guest.id).game.boards.guest.cells.every((cell: { possibleSolutions: unknown[] }) => cell.possibleSolutions.length <= 3)).toBe(true);
     (manager as any).returnLobby(host.id); expect(room.phase).toBe('LOBBY'); expect(room.game).toBeNull(); expect([...room.members.keys()]).toEqual(memberIds); expect([...room.members.values()].every((member) => member.role === 'PLAYER')).toBe(true);
     (manager as any).selectGame(host.id, 'shiny-vote'); expect(room.selectedGameId).toBe('shiny-vote');
   });
@@ -574,23 +581,23 @@ describe('room multi-game lifecycle', () => {
     (manager as any).join(socket('guest-socket'), guest, room.code); const originalIds = [...room.members.keys()];
     (manager as any).selectGame(host.id, 'whos-that-pokemon');
     (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 10, rounds: 1, hintsEnabled: false, includeRegionalForms: false });
-    startReady(manager, room, host.id); const targetId = room.game!.state.targetPokemonId; const wrongId = pokemon.find((entry) => entry.id !== targetId)!.id;
+    startReady(manager, room, host.id); const targetId = inspectState(room.game!).targetPokemonId; const wrongId = pokemon.find((entry) => entry.id !== targetId)!.id;
     const activeView = (manager as any).view(room, guest.id);
     expect(activeView.game).toMatchObject({ gameId: 'whos-that-pokemon', visibleHints: [], solvedPlayers: [] });
     expect(activeView.game.silhouetteSprite).toMatch(/\/options\/shadow\/sprite$/);
     expect(JSON.stringify(activeView)).not.toContain(targetId);
-    expect(manager.gameAsset(room.code, room.game!.state.assetToken, 1, 'shadow')).toMatchObject({ transform: 'SILHOUETTE' });
-    expect(manager.gameAsset(room.code, room.game!.state.assetToken, 1, 'reveal')).toBeNull();
+    expect(manager.gameAsset(room.code, inspectState(room.game!).assetToken, 1, 'shadow')).toMatchObject({ transform: 'SILHOUETTE' });
+    expect(manager.gameAsset(room.code, inspectState(room.game!).assetToken, 1, 'reveal')).toBeNull();
 
     (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: wrongId });
     expect((manager as any).view(room, host.id).game.attempts[0]).toMatchObject({ playerId: guest.id, guessedPokemon: { id: wrongId } });
-    room.game!.state.cooldownUntil.guest = 0;
+    inspectState(room.game!).cooldownUntil.guest = 0;
     (manager as any).action(host.id, { type: 'GUESS_POKEMON', pokemonId: targetId });
     const stillHidden = (manager as any).view(room, guest.id); expect(stillHidden.game.solvedPlayers).toEqual([{ playerId: host.id, solveOrder: 1 }]); expect(JSON.stringify(stillHidden.game)).not.toContain(targetId);
     (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: targetId }); expect(room.phase).toBe('ROUND_RESULTS');
     expect((manager as any).view(room, guest.id).game.lastRound.pokemon.name).toBe(pokemon.find((entry) => entry.id === targetId)!.name);
-    expect(manager.gameAsset(room.code, room.game!.state.assetToken, 1, 'reveal')).toMatchObject({ transform: 'ORIGINAL' });
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS');
+    expect(manager.gameAsset(room.code, inspectState(room.game!).assetToken, 1, 'reveal')).toMatchObject({ transform: 'ORIGINAL' });
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS');
     (manager as any).returnLobby(host.id); expect(room.phase).toBe('LOBBY'); expect(room.game).toBeNull(); expect([...room.members.keys()]).toEqual(originalIds);
     expect([...room.members.values()].every((member) => member.role === 'PLAYER')).toBe(true);
     (manager as any).selectGame(host.id, 'pokemon-bingo'); expect(room.selectedGameId).toBe('pokemon-bingo');
@@ -603,18 +610,18 @@ describe('room multi-game lifecycle', () => {
     (manager as any).selectGame(host.id, 'pokedex-entry-guess');
     const defaults = room.gameConfigs.get('pokedex-entry-guess') as Record<string, unknown>;
     (manager as any).updateConfig(host.id, { ...defaults, generations: [1], roundSeconds: 25, rounds: 1, hintsEnabled: false });
-    startReady(manager, room, host.id); const targetId = room.game!.state.roundDeck[0].pokemonId; const wrongId = pokemon.find((entry) => entry.id !== targetId)!.id;
+    startReady(manager, room, host.id); const targetId = inspectState(room.game!).roundDeck[0].pokemonId; const wrongId = pokemon.find((entry) => entry.id !== targetId)!.id;
     const active = (manager as any).view(room, guest.id);
     expect(active.game).toMatchObject({ gameId: 'pokedex-entry-guess', hints: [], solvedPlayers: [] });
     expect(active.game.entryText).toContain('???'); expect(JSON.stringify(active)).not.toContain(targetId); expect(JSON.stringify(active)).not.toContain(`/sprites/${targetId}`);
     (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: wrongId });
     expect((manager as any).view(room, host.id).game.attempts[0]).toMatchObject({ playerId: guest.id, guessedPokemon: { id: wrongId } });
-    room.game!.state.cooldownUntil.guest = 0;
+    inspectState(room.game!).cooldownUntil.guest = 0;
     (manager as any).action(host.id, { type: 'GUESS_POKEMON', pokemonId: targetId });
     const hidden = (manager as any).view(room, guest.id); expect(hidden.game.solvedPlayers).toEqual([{ playerId: host.id, solveOrder: 1 }]); expect(JSON.stringify(hidden)).not.toContain(targetId);
     (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: targetId }); expect(room.phase).toBe('ROUND_RESULTS');
     expect((manager as any).view(room, guest.id).game.lastRound.pokemon.name).toBe(pokemon.find((entry) => entry.id === targetId)!.name);
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS');
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS');
     expect(room.members.get(host.id)?.sessionPoints).toBeGreaterThan(room.members.get(guest.id)?.sessionPoints ?? 0);
     (manager as any).returnLobby(host.id); expect(room.phase).toBe('LOBBY'); expect(room.game).toBeNull(); expect([...room.members.keys()]).toEqual(originalIds);
     expect([...room.members.values()].every((member) => member.role === 'PLAYER')).toBe(true);
@@ -630,23 +637,23 @@ describe('room multi-game lifecycle', () => {
     startReady(manager, room, host.id);
 
     expect(room.phase).toBe('TURN_ACTIVE'); expect(room.game?.gameId).toBe('type-chain');
-    expect([...room.game!.state.turnOrder].sort()).toEqual([...originalIds].sort());
-    const firstPlayerId = room.game!.state.currentPlayerId as string;
-    const starter = catalog.byId(room.game!.state.chain.at(-1).pokemon.id)!;
-    const candidates = getValidTypeChainCandidates({ previousPokemon: starter, allowedPokemon: pokemon, usedPokemonIds: new Set(room.game!.state.usedPokemonIds) });
+    expect([...inspectState(room.game!).turnOrder].sort()).toEqual([...originalIds].sort());
+    const firstPlayerId = inspectState(room.game!).currentPlayerId as string;
+    const starter = catalog.byId(inspectState(room.game!).chain.at(-1).pokemon.id)!;
+    const candidates = getValidTypeChainCandidates({ previousPokemon: starter, allowedPokemon: pokemon, usedPokemonIds: new Set(inspectState(room.game!).usedPokemonIds) });
     expect(candidates.length).toBeGreaterThan(0);
 
     (manager as any).action(firstPlayerId, { type: 'SUBMIT_POKEMON', pokemonId: starter.id });
     expect((manager as any).view(room, host.id).game.invalidAttempts.at(-1)).toMatchObject({ playerId: firstPlayerId, reason: 'ALREADY_USED' });
-    room.game!.state.cooldownUntil[firstPlayerId] = 0;
+    inspectState(room.game!).cooldownUntil[firstPlayerId] = 0;
     (manager as any).action(firstPlayerId, { type: 'SUBMIT_POKEMON', pokemonId: candidates[0]!.id });
-    expect(room.game!.state.chain.at(-1).pokemon.id).toBe(candidates[0]!.id);
-    expect(room.game!.state.currentPlayerId).not.toBe(firstPlayerId);
+    expect(inspectState(room.game!).chain.at(-1).pokemon.id).toBe(candidates[0]!.id);
+    expect(inspectState(room.game!).currentPlayerId).not.toBe(firstPlayerId);
     expect(() => (manager as any).action(firstPlayerId, { type: 'SUBMIT_POKEMON', pokemonId: candidates[0]!.id })).toThrow(/No es tu turno/);
 
-    const eliminatedId = room.game!.state.currentPlayerId as string;
-    room.game!.state.roundEndsAt = 0; (manager as any).tick(room);
-    expect(room.phase).toBe('GAME_RESULTS'); expect(room.game!.state.winnerId).toBe(firstPlayerId);
+    const eliminatedId = inspectState(room.game!).currentPlayerId as string;
+    inspectState(room.game!).roundEndsAt = 0; (manager as any).tick(room);
+    expect(room.phase).toBe('GAME_RESULTS'); expect(inspectState(room.game!).winnerId).toBe(firstPlayerId);
     expect(room.members.get(eliminatedId)?.role).toBe('SPECTATOR');
     expect(room.members.get(firstPlayerId)?.sessionPoints).toBeGreaterThan(room.members.get(eliminatedId)?.sessionPoints ?? 0);
 
@@ -661,14 +668,14 @@ describe('room multi-game lifecycle', () => {
     (manager as any).join(socket('guest-socket'), guest, room.code); const originalIds = [...room.members.keys()];
     (manager as any).selectGame(host.id, 'guess-from-stats'); const defaults = room.gameConfigs.get('guess-from-stats') as Record<string, unknown>;
     (manager as any).updateConfig(host.id, { ...defaults, generations: [1], roundSeconds: 30, rounds: 1 }); startReady(manager, room, host.id);
-    const prepared = room.game!.state.roundDeck[0]; const answerId = prepared.acceptedPokemonIds[0] as string; const wrongId = pokemon.find((entry) => !prepared.acceptedPokemonIds.includes(entry.id))!.id;
+    const prepared = inspectState(room.game!).roundDeck[0]; const answerId = prepared.acceptedPokemonIds[0] as string; const wrongId = pokemon.find((entry) => !prepared.acceptedPokemonIds.includes(entry.id))!.id;
     const active = (manager as any).view(room, guest.id); expect(active.game).toMatchObject({ gameId: 'guess-from-stats', visibleStats: expect.any(Array), solvedPlayers: [] });
     expect(JSON.stringify(active)).not.toContain(answerId); expect(JSON.stringify(active)).not.toContain('acceptedPokemonIds'); expect(JSON.stringify(active)).not.toContain('sourcePokemonId');
     (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: wrongId }); expect((manager as any).view(room, host.id).game.attempts[0]).toMatchObject({ playerId: guest.id, guessedPokemon: { id: wrongId } });
-    room.game!.state.cooldownUntil.guest = 0; (manager as any).action(host.id, { type: 'GUESS_POKEMON', pokemonId: answerId });
+    inspectState(room.game!).cooldownUntil.guest = 0; (manager as any).action(host.id, { type: 'GUESS_POKEMON', pokemonId: answerId });
     const hidden = (manager as any).view(room, guest.id); expect(hidden.game.solvedPlayers).toEqual([{ playerId: host.id, solveOrder: 1 }]); expect(JSON.stringify(hidden)).not.toContain(answerId);
     (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: answerId }); expect(room.phase).toBe('ROUND_RESULTS');
-    expect((manager as any).view(room, guest.id).game.lastRound.answers[0].id).toBe(answerId); room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS');
+    expect((manager as any).view(room, guest.id).game.lastRound.answers[0].id).toBe(answerId); inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS');
     expect(room.members.get(host.id)?.sessionPoints).toBeGreaterThan(room.members.get(guest.id)?.sessionPoints ?? 0);
     (manager as any).returnLobby(host.id); expect(room.phase).toBe('LOBBY'); expect(room.game).toBeNull(); expect([...room.members.keys()]).toEqual(originalIds); expect([...room.members.values()].every((member) => member.role === 'PLAYER')).toBe(true);
     (manager as any).selectGame(host.id, 'type-chain'); expect(room.selectedGameId).toBe('type-chain');
@@ -680,15 +687,15 @@ describe('room multi-game lifecycle', () => {
     (manager as any).join(socket('guest-socket'), guest, room.code); const originalIds = [...room.members.keys()];
     (manager as any).selectGame(host.id, 'zoomed-pokemon'); const defaults = room.gameConfigs.get('zoomed-pokemon') as Record<string, unknown>;
     (manager as any).updateConfig(host.id, { ...defaults, generations: [1], imageMode: 'MIXED', roundSeconds: 30, rounds: 1, hintsEnabled: false });
-    startReady(manager, room, host.id); const targetId = room.game!.state.targetPokemonId as string;
+    startReady(manager, room, host.id); const targetId = inspectState(room.game!).targetPokemonId as string;
     const hostView = (manager as any).view(room, host.id); const guestView = (manager as any).view(room, guest.id);
-    expect(hostView.game).toMatchObject({ gameId: 'zoomed-pokemon', imageUrl: expect.stringContaining('/active/sprite'), focusPoint: { x: 0.5, y: 0.5 }, currentZoomStage: 0 });
+    expect(hostView.game).toMatchObject({ gameId: 'zoomed-pokemon', imageUrl: expect.stringContaining('/stage-0/sprite'), focusPoint: { x: 0.5, y: 0.5 }, currentZoomStage: 0 });
     expect(guestView.game.imageUrl).toBe(hostView.game.imageUrl); expect(JSON.stringify(hostView.game)).not.toContain(targetId);
     (manager as any).action(guest.id, { type: 'GUESS_POKEMON', pokemonId: targetId }); const hidden = (manager as any).view(room, host.id);
     expect(hidden.game.solves.guest).toEqual({ solveOrder: 1, zoomStage: 0 }); expect(JSON.stringify(hidden.game)).not.toContain(targetId);
     (manager as any).action(host.id, { type: 'GUESS_POKEMON', pokemonId: targetId }); expect(room.phase).toBe('ROUND_RESULTS');
-    const reveal = (manager as any).view(room, host.id); expect(reveal.game.lastRound).toMatchObject({ pokemon: { name: expect.any(String) }, imageUrl: expect.stringContaining('/reveal/sprite'), initialCropUrl: expect.stringContaining('/active/sprite') });
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); expect(room.members.get(guest.id)!.sessionPoints).toBeGreaterThan(room.members.get(host.id)!.sessionPoints);
+    const reveal = (manager as any).view(room, host.id); expect(reveal.game.lastRound).toMatchObject({ pokemon: { name: expect.any(String) }, imageUrl: expect.stringContaining('/reveal/sprite'), initialCropUrl: expect.stringContaining('/stage-0/sprite') });
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); expect(room.members.get(guest.id)!.sessionPoints).toBeGreaterThan(room.members.get(host.id)!.sessionPoints);
     (manager as any).returnLobby(host.id); expect(room.phase).toBe('LOBBY'); expect(room.game).toBeNull(); expect([...room.members.keys()]).toEqual(originalIds);
     (manager as any).selectGame(host.id, 'shiny-vote'); expect(room.selectedGameId).toBe('shiny-vote');
   });
@@ -701,7 +708,7 @@ describe('room multi-game lifecycle', () => {
     const defaults = room.gameConfigs.get('pokemon-connections') as Record<string, unknown>;
     (manager as any).updateConfig(host.id, { ...defaults, generations: [1], groupSize: 4, pokemonCount: 16, mistakesAllowed: 1, roundSeconds: 120, rounds: 1 });
     startReady(manager, room, host.id); expect(room.phase).toBe('ROUND_ACTIVE'); expect(room.game?.gameId).toBe('pokemon-connections');
-    const answers = room.game!.state.answerGroups as Array<{ id: string; label: string; pokemon: Array<{ id: string }> }>;
+    const answers = inspectState(room.game!).answerGroups as Array<{ id: string; label: string; pokemon: Array<{ id: string }> }>;
     const firstIds = answers[0]!.pokemon.map((entry) => entry.id); const firstLabel = answers[0]!.label;
     const active = (manager as any).view(room, guest.id); expect(active.game.board).toHaveLength(16); expect(JSON.stringify(active)).not.toContain(firstLabel); expect(JSON.stringify(active)).not.toContain('answerGroups');
     (manager as any).action(host.id, { type: 'SUBMIT_GROUP', pokemonIds: firstIds });
@@ -713,11 +720,11 @@ describe('room multi-game lifecycle', () => {
     const restored = restoredSocket.emit.mock.calls.find(([event]) => event === 'session:restored')?.[1];
     expect(restored.gamePlayerState.foundGroups[0].label).toBe(firstLabel);
     for (const group of answers.slice(1)) (manager as any).action(host.id, { type: 'SUBMIT_GROUP', pokemonIds: group.pokemon.map((entry) => entry.id) });
-    expect(room.game!.state.progress.host).toMatchObject({ status: 'SOLVED', completionRank: 1, roundPoints: 7 });
+    expect(inspectState(room.game!).progress.host).toMatchObject({ status: 'SOLVED', completionRank: 1, roundPoints: 7 });
     const wrong = [answers[0]!.pokemon[0]!.id, answers[0]!.pokemon[1]!.id, answers[1]!.pokemon[0]!.id, answers[1]!.pokemon[1]!.id];
     (manager as any).action(guest.id, { type: 'SUBMIT_GROUP', pokemonIds: wrong }); expect(room.phase).toBe('ROUND_RESULTS');
     const reveal = (manager as any).view(room, guest.id); expect(reveal.game.lastRound.groups).toHaveLength(4); expect(reveal.game.lastRound.groups[0].label).toBe(firstLabel);
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); expect(room.members.get(host.id)!.sessionPoints).toBe(7);
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); expect(room.members.get(host.id)!.sessionPoints).toBe(4); expect(room.sessionHistory.at(-1)?.rawPoints?.[host.id]).toBe(7);
     (manager as any).returnLobby(host.id); expect(room.phase).toBe('LOBBY'); expect(room.game).toBeNull(); expect([...room.members.keys()]).toEqual(originalIds);
   });
 
@@ -727,14 +734,14 @@ describe('room multi-game lifecycle', () => {
     (manager as any).join(socket('guest-socket'), guest, room.code); (manager as any).selectGame(host.id, 'pokemon-team-auction');
     const defaults = room.gameConfigs.get('pokemon-team-auction') as Record<string, unknown>;
     (manager as any).updateConfig(host.id, { ...defaults, generations: [1], includeForms: false, initialBudget: 10 }); startReady(manager, room, host.id);
-    expect(room.phase).toBe('ROUND_ACTIVE'); expect(room.game!.state.lots).toHaveLength(12);
-    const first = room.game!.state.turnOrder[room.game!.state.turnIndex]!; (manager as any).action(first, { type: 'RAISE_BID', amount: 1 });
-    const second = room.game!.state.turnOrder[room.game!.state.turnIndex]!; (manager as any).action(second, { type: 'RAISE_BID', amount: 3 });
+    expect(room.phase).toBe('ROUND_ACTIVE'); expect(inspectState(room.game!).lots).toHaveLength(12);
+    const first = inspectState(room.game!).turnOrder[inspectState(room.game!).turnIndex]!; (manager as any).action(first, { type: 'RAISE_BID', amount: 1 });
+    const second = inspectState(room.game!).turnOrder[inspectState(room.game!).turnIndex]!; (manager as any).action(second, { type: 'RAISE_BID', amount: 3 });
     const visible = (manager as any).view(room, guest.id); expect(visible.game.currentBid).toBe(3); expect(visible.game.bidHistory).toEqual(expect.arrayContaining([expect.objectContaining({ type: 'BID', amount: 3 })])); expect(visible.game.participants[first].coins).toBe(10);
-    (manager as any).action(first, { type: 'PASS_BID' }); expect(room.game!.state.lotHistory[0]).toMatchObject({ winnerId: second, bid: 3 }); expect(room.game!.state.participants[second].coins).toBe(7);
+    (manager as any).action(first, { type: 'PASS_BID' }); expect(inspectState(room.game!).lotHistory[0]).toMatchObject({ winnerId: second, bid: 3 }); expect(inspectState(room.game!).participants[second].coins).toBe(7);
     room.sessionMode = { type: 'GAME_COUNT', target: 1 };
     room.gameSelectionMode = { type: 'RANDOM', gameIds: ['pokemon-team-auction', 'higher-lower'] };
-    for (const participant of Object.values(room.game!.state.participants) as Array<{ coins: number }>) participant.coins = 0;
+    for (const participant of Object.values(inspectState(room.game!).participants) as Array<{ coins: number }>) participant.coins = 0;
     (manager as any).applyPresenceChange(room);
     expect(room.phase).toBe('GAME_RESULTS');
     const resultView = (manager as any).view(room, host.id); expect(resultView.game.results.standings.map((standing: { playerId: string }) => standing.playerId).sort()).toEqual([guest.id, host.id]); expect(resultView.game.lotHistory.some((lot: { winnerId: string | null }) => lot.winnerId === null)).toBe(true);
@@ -750,14 +757,14 @@ describe('room multi-game lifecycle', () => {
     (manager as any).join(socket('guest-socket'), guest, room.code); (manager as any).join(socket('third-socket'), third, room.code);
     (manager as any).selectGame(host.id, 'secret-ranking'); const defaults = room.gameConfigs.get('secret-ranking') as Record<string, unknown>;
     (manager as any).updateConfig(host.id, { ...defaults, generations: [1], rounds: 1, promptSource: 'OFFICIAL', includeForms: false }); startReady(manager, room, host.id);
-    expect(room.phase).toBe('ROUND_ACTIVE'); const order = [...room.game!.state.currentPokemonIds];
+    expect(room.phase).toBe('ROUND_ACTIVE'); const order = [...inspectState(room.game!).currentPokemonIds];
     (manager as any).action(host.id, { type: 'SUBMIT_RANKING', pokemonIds: order });
     const guestView = (manager as any).view(room, guest.id); expect(guestView.game.submittedPlayerIds).toEqual(['host']); expect(JSON.stringify(guestView.game)).not.toContain(JSON.stringify(order));
     const hostView = (manager as any).view(room, host.id); expect(hostView.gamePlayerState.ownRanking.map((entry: { id: string }) => entry.id)).toEqual(order);
     (manager as any).action(guest.id, { type: 'SUBMIT_RANKING', pokemonIds: [...order].reverse() });
     (manager as any).action(third.id, { type: 'SUBMIT_RANKING', pokemonIds: order }); expect(room.phase).toBe('ROUND_RESULTS');
     const reveal = (manager as any).view(room, guest.id); expect(reveal.game.lastRound.players.host.ranking).toHaveLength(5); expect(reveal.game.lastRound.consensus).toHaveLength(5);
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); expect((manager as any).view(room, host.id).game.results).toBeTruthy();
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); expect((manager as any).view(room, host.id).game.results).toBeTruthy();
   });
 
   it('plays Most Likely To with private answers and ballots before the synchronized result', () => {
@@ -773,7 +780,7 @@ describe('room multi-game lifecycle', () => {
     (manager as any).action(host.id, { type: 'VOTE_ANSWER', playerId: guest.id }); const privateVote = (manager as any).view(room, third.id); expect(privateVote.game.votedPlayerIds).toEqual(['host']); expect(JSON.stringify(privateVote.game)).not.toContain('"host":"guest"');
     (manager as any).action(guest.id, { type: 'VOTE_ANSWER', playerId: host.id }); (manager as any).action(third.id, { type: 'VOTE_ANSWER', playerId: guest.id });
     expect(room.phase).toBe('ROUND_RESULTS'); const result = (manager as any).view(room, host.id); expect(result.game.lastRound.winnerIds).toEqual(['guest']); expect(result.game.lastRound.pointsAwarded.guest).toBe(3);
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); expect((manager as any).view(room, host.id).game.results.winnerId).toBe('guest');
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); expect((manager as any).view(room, host.id).game.results.winnerId).toBe('guest');
   });
 
   it('plays Would You Rather with socket-specific ballots and a synchronized reveal', () => {
@@ -806,7 +813,7 @@ describe('room multi-game lifecycle', () => {
     (manager as any).action(guest.id, { type: 'SUBMIT_RED_FLAG', text: 'Comparte ubicación con Hypno.' });
     (manager as any).action(third.id, { type: 'SUBMIT_RED_FLAG', text: 'Lleva a su madre a todas las citas.' });
     expect(room.phase).toBe('VOTING'); const voting = (manager as any).view(room, third.id); expect(voting.game.revealedAnswers).toHaveLength(3); expect(JSON.stringify(voting.game.revealedAnswers)).not.toContain('authorId');
-    const slots = room.game!.state.answerSlots; (manager as any).action(host.id, { type: 'VOTE_RED_FLAG', answerId: slots.guest });
+    const slots = inspectState(room.game!).answerSlots; (manager as any).action(host.id, { type: 'VOTE_RED_FLAG', answerId: slots.guest });
     const privateVote = (manager as any).view(room, third.id); expect(privateVote.game.votedPlayerIds).toEqual(['host']); expect(JSON.stringify(privateVote.game)).not.toContain(`"host":"${slots.guest}"`);
     (manager as any).action(guest.id, { type: 'VOTE_RED_FLAG', answerId: slots.host }); (manager as any).action(third.id, { type: 'VOTE_RED_FLAG', answerId: slots.guest });
     expect(room.phase).toBe('ROUND_RESULTS'); const reveal = (manager as any).view(room, host.id); expect(reveal.game.lastRound.winnerIds).toEqual(['guest']); expect(reveal.game.lastRound.answers.find((answer: { authorId: string }) => answer.authorId === 'guest').text).toContain('Hypno');
@@ -831,7 +838,7 @@ describe('room multi-game lifecycle', () => {
     expect(JSON.stringify(hiddenView.game)).not.toContain('"optionId":"C"');
     (manager as any).action('ana', { type: 'VOTE', optionId: 'B' });
     expect(room.phase).toBe('ROUND_RESULTS');
-    expect(room.game!.state.votes.carlos.optionId).toBe('C');
+    expect(inspectState(room.game!).votes.carlos.optionId).toBe('C');
     const hiddenReveal = (manager as any).view(room, 'ana');
     expect(hiddenReveal.game.votes).toEqual({});
     expect(hiddenReveal.game.lastRound.votes).toEqual({});
@@ -879,7 +886,7 @@ describe('room multi-game lifecycle', () => {
     startReady(manager, room, host.id);
     (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' });
     (manager as any).action(guest.id, { type: 'ANSWER', choice: 'LOWER' });
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room);
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room);
     (manager as any).endSession(host.id);
 
     expect(room.sessionHistory).toEqual([expect.objectContaining({
@@ -907,7 +914,7 @@ describe('room multi-game lifecycle', () => {
     startReady(manager, room, host.id);
     (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' });
     (manager as any).action(guest.id, { type: 'ANSWER', choice: 'LOWER' });
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room);
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room);
 
     expect(room.gamesPlayed).toBe(101);
     expect(room.sessionHistory).toHaveLength(100);
@@ -962,7 +969,7 @@ describe('room multi-game lifecycle', () => {
     startReady(manager, room, host.id);
     (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' });
     (manager as any).action(guest.id, { type: 'ANSWER', choice: 'LOWER' });
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room);
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room);
     const firstResultId = room.game!.resultId;
 
     (manager as any).continueSession(host.id);
@@ -983,7 +990,7 @@ describe('room multi-game lifecycle', () => {
     startReady(manager, room, host.id);
     (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' });
     (manager as any).action(guest.id, { type: 'ANSWER', choice: 'LOWER' });
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room);
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room);
     room.gameSelectionMode = { type: 'RANDOM', gameIds: ['higher-lower', 'shiny-vote'] };
 
     (manager as any).continueSession(host.id);
@@ -1029,7 +1036,7 @@ describe('room multi-game lifecycle', () => {
     (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'REALTIME', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
     startReady(manager, room, host.id);
     (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' });
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room);
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room);
     expect(room.phase).toBe('GAME_RESULTS');
 
     (manager as any).endSession(host.id);
@@ -1050,7 +1057,7 @@ describe('room multi-game lifecycle', () => {
     startReady(manager, room, host.id);
     (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' });
     (manager as any).action(guest.id, { type: 'ANSWER', choice: 'LOWER' });
-    room.game!.state.nextTransitionAt = 0; (manager as any).tick(room);
+    inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room);
 
     expect(room.phase).toBe('GAME_RESULTS');
     expect(room.nextGameVote).toBeNull();
@@ -1114,7 +1121,7 @@ describe('room multi-game lifecycle', () => {
     (manager as any).action('host', { type: 'SELECT_POKEMON', pokemonId: 'pokemon-1' });
     (manager as any).action('ana', { type: 'SELECT_POKEMON', pokemonId: 'pokemon-2' });
     expect(room.phase).toBe('ROUND_RESULTS');
-    expect(room.game!.state).toMatchObject({ lastRound: { reason: 'NO_RESPONSE', eliminatedIds: ['carlos'] } });
+    expect(inspectState(room.game!)).toMatchObject({ lastRound: { reason: 'NO_RESPONSE', eliminatedIds: ['carlos'] } });
     expect(room.members.get('carlos')?.role).toBe('SPECTATOR');
     expect(() => (manager as any).action('carlos', { type: 'SELECT_POKEMON', pokemonId: 'pokemon-3' })).toThrow(/Not in a room|cannot act/);
   });
@@ -1124,7 +1131,7 @@ describe('room multi-game lifecycle', () => {
     const people = [identity('host', 'Host'), identity('ana', 'Ana'), identity('pepe', 'Pepe')]; const sockets = people.map((person) => socket(`socket-${person.id}`));
     const created = (manager as any).create(sockets[0], people[0], 8); const room = manager.store.get(created.room.code)!; (manager as any).join(sockets[1], people[1], room.code); (manager as any).join(sockets[2], people[2], room.code);
     (manager as any).selectGame('host', 'who-is-who-pokemon'); (manager as any).updateConfig('host', { generations: [1], boardSize: 6, includeForms: true, turnSeconds: 40, rounds: 2, secretSelection: 'RANDOM' }); startReady(manager, room, 'host');
-    const blueIds = room.game!.state.teams.BLUE.playerIds as string[]; const senderId = blueIds[0]!; const teammateId = blueIds[1]!; const rivalId = (room.game!.state.teams.RED.playerIds as string[])[0]!; transport.to.mockClear(); transport.emit.mockClear();
+    const blueIds = inspectState(room.game!).teams.BLUE.playerIds as string[]; const senderId = blueIds[0]!; const teammateId = blueIds[1]!; const rivalId = (inspectState(room.game!).teams.RED.playerIds as string[])[0]!; transport.to.mockClear(); transport.emit.mockClear();
     (manager as any).updateWhoIsWhoCursor(senderId, room.members.get(senderId)!.socketId, { x: 0.5, y: 0.25 });
     expect(transport.to).toHaveBeenCalledWith(room.members.get(teammateId)!.socketId); expect(transport.to).not.toHaveBeenCalledWith(room.members.get(rivalId)!.socketId); expect(transport.emit).toHaveBeenCalledWith('who-is-who:cursor', expect.objectContaining({ playerId: senderId, x: 0.5, y: 0.25 }));
     expect(() => (manager as any).updateWhoIsWhoCursor(senderId, room.members.get(senderId)!.socketId, { x: Infinity, y: 0 })).toThrow(); expect(() => (manager as any).updateWhoIsWhoCursor(senderId, room.members.get(senderId)!.socketId, { x: -1, y: 2 })).toThrow();
@@ -1143,8 +1150,8 @@ describe('room multi-game lifecycle', () => {
     (manager as any).selectGame('host', 'who-is-who-pokemon');
     (manager as any).updateConfig('host', { generations: [1], boardSize: 6, includeForms: true, turnSeconds: 40, rounds: 2, secretSelection: 'RANDOM' });
     startReady(manager, room, 'host');
-    const blueIds = room.game!.state.teams.BLUE.playerIds as string[]; const redIds = room.game!.state.teams.RED.playerIds as string[];
-    const blueSecret = room.game!.state.teams.BLUE.secretPokemonId; const redSecret = room.game!.state.teams.RED.secretPokemonId; const discardedId = room.game!.state.board[0].id;
+    const blueIds = inspectState(room.game!).teams.BLUE.playerIds as string[]; const redIds = inspectState(room.game!).teams.RED.playerIds as string[];
+    const blueSecret = inspectState(room.game!).teams.BLUE.secretPokemonId; const redSecret = inspectState(room.game!).teams.RED.secretPokemonId; const discardedId = inspectState(room.game!).board[0].id;
     (manager as any).action(blueIds[0]!, { type: 'TOGGLE_DISCARD', pokemonId: discardedId });
     const blueView = (manager as any).view(room, blueIds[0]!); const teammateView = (manager as any).view(room, blueIds[1]!); const redView = (manager as any).view(room, redIds[0]!);
     const watcher = identity('watcher', 'Watcher'); (manager as any).join(socket('socket-watcher'), watcher, room.code); const spectatorView = (manager as any).view(room, watcher.id);
@@ -1162,9 +1169,9 @@ describe('room multi-game lifecycle', () => {
   it('clears ephemeral Who Is Who cursors on disconnect and round change', () => {
     const transport = io(); const manager = new RoomManager(transport as any, catalog); const host = identity('host', 'Host'); const peer = identity('peer', 'Peer'); const rival = identity('rival', 'Rival');
     const created = (manager as any).create(socket('socket-host'), host, 8); const room = manager.store.get(created.room.code)!; (manager as any).join(socket('socket-peer'), peer, room.code); (manager as any).join(socket('socket-rival'), rival, room.code); (manager as any).selectGame(host.id, 'who-is-who-pokemon'); (manager as any).updateConfig(host.id, { generations: [1], boardSize: 6, includeForms: true, turnSeconds: 40, rounds: 2, secretSelection: 'RANDOM' }); startReady(manager, room, host.id);
-    const blue = room.game!.state.teams.BLUE.playerIds as string[]; const sender = blue[0]!; const teammate = blue[1]!; (manager as any).updateWhoIsWhoCursor(sender, room.members.get(sender)!.socketId, { x: 0.2, y: 0.8 }); transport.emit.mockClear();
+    const blue = inspectState(room.game!).teams.BLUE.playerIds as string[]; const sender = blue[0]!; const teammate = blue[1]!; (manager as any).updateWhoIsWhoCursor(sender, room.members.get(sender)!.socketId, { x: 0.2, y: 0.8 }); transport.emit.mockClear();
     (manager as any).disconnect(sender, room.members.get(sender)!.socketId); expect(transport.emit).toHaveBeenCalledWith('who-is-who:cursor-clear', { playerId: sender });
-    room.members.get(sender)!.connected = true; room.members.get(sender)!.presence = 'CONNECTED'; transport.emit.mockClear(); const blueActor = room.game!.state.teams.BLUE.playerIds.find((id: string) => room.members.get(id)?.presence === 'CONNECTED')!; (manager as any).action(blueActor, { type: 'END_TURN' }); const redActor = (room.game!.state.teams.RED.playerIds as string[])[0]!; (manager as any).action(redActor, { type: 'END_TURN' }); expect(transport.emit).toHaveBeenCalledWith('who-is-who:cursors-reset'); expect(teammate).toBeTruthy();
+    room.members.get(sender)!.connected = true; room.members.get(sender)!.presence = 'CONNECTED'; transport.emit.mockClear(); const blueActor = inspectState(room.game!).teams.BLUE.playerIds.find((id: string) => room.members.get(id)?.presence === 'CONNECTED')!; (manager as any).action(blueActor, { type: 'END_TURN' }); const redActor = (inspectState(room.game!).teams.RED.playerIds as string[])[0]!; (manager as any).action(redActor, { type: 'END_TURN' }); expect(transport.emit).toHaveBeenCalledWith('who-is-who:cursors-reset'); expect(teammate).toBeTruthy();
   });
 
   describe('global unanimous game skip', () => {
@@ -1210,10 +1217,10 @@ describe('room multi-game lifecycle', () => {
       scheduled.mockRestore();
       for (const person of people) setVote(person.id, true);
       const replacement = room.game!;
-      const nextState = replacement.state;
+      const nextState = inspectState(replacement);
       staleCallback();
       expect(room.game).toBe(replacement);
-      expect(replacement.state).toBe(nextState);
+      expect(inspectState(replacement)).toBe(nextState);
       expect(room.gamesPlayed).toBe(0);
     });
 
@@ -1226,15 +1233,15 @@ describe('room multi-game lifecycle', () => {
       expect(voteAck).toHaveBeenCalledWith({ ok: true });
       const replacement = room.game!;
       const actionAck = vi.fn();
-      client.handlers.get('game:action')?.({ gameInstanceId: instanceId, action: { type: 'ANSWER', choice: 'HIGHER' } }, actionAck);
+      client.handlers.get('game:action')?.({ gameInstanceId: instanceId, actionEpoch: 'stale', action: { type: 'ANSWER', choice: 'HIGHER' } }, actionAck);
       expect(actionAck).toHaveBeenCalledWith({ ok: false, error: expect.stringMatching(/ya ha cambiado/) });
-      expect(replacement.state.answers).toEqual({});
+      expect(inspectState(replacement).answers).toEqual({});
       const staleVoteAck = vi.fn();
       client.handlers.get('game:skip-vote:set')?.({ gameInstanceId: instanceId, wantsToSkip: false }, staleVoteAck);
       expect(staleVoteAck).toHaveBeenCalledWith({ ok: false, error: expect.stringMatching(/ya ha cambiado/) });
       expect(replacement.skipVoterIds.size).toBe(0);
       const currentActionAck = vi.fn();
-      client.handlers.get('game:action')?.({ gameInstanceId: replacement.resultId, action: { type: 'ANSWER', choice: 'HIGHER' } }, currentActionAck);
+      client.handlers.get('game:action')?.({ gameInstanceId: replacement.resultId, actionEpoch: replacement.module.getLifecycle(inspectState(replacement)).actionEpoch, action: { type: 'ANSWER', choice: 'HIGHER' } }, currentActionAck);
       expect(currentActionAck).toHaveBeenCalledWith({ ok: true });
     });
 
@@ -1245,7 +1252,7 @@ describe('room multi-game lifecycle', () => {
       room.sessionHistory.push(history);
       room.members.get(people[0]!.id)!.sessionPoints = 7;
       room.sessionParticipants.get(people[0]!.id)!.sessionPoints = 7;
-      room.game!.state.scores[people[0]!.id] = 99;
+      inspectState(room.game!).scores[people[0]!.id] = 99;
       for (const person of people) setVote(person.id, true);
       expect(room.gamesPlayed).toBe(1);
       expect(room.sessionHistory).toEqual([history]);
@@ -1260,7 +1267,7 @@ describe('room multi-game lifecycle', () => {
       const completedId = room.game!.resultId;
       (manager as any).action(people[0]!.id, { type: 'ANSWER', choice: 'HIGHER' });
       (manager as any).finalDisconnect(room, people[1]!.id, true);
-      room.game!.state.nextTransitionAt = 0;
+      inspectState(room.game!).nextTransitionAt = 0;
       (manager as any).tick(room);
       (manager as any).continueSession(people[0]!.id);
       expect(room.members.has(people[1]!.id)).toBe(false);
@@ -1416,11 +1423,11 @@ describe('room multi-game lifecycle', () => {
       (manager as any).action(people[0]!.id, { type: 'ANSWER', choice: 'HIGHER' });
       (manager as any).action(people[1]!.id, { type: 'ANSWER', choice: 'LOWER' });
       expect(room.phase).toBe('ROUND_RESULTS');
-      room.game!.state.nextTransitionAt = 0;
+      inspectState(room.game!).nextTransitionAt = 0;
       (manager as any).tick(room);
 
       expect(room.game?.resultId).toBe(instanceId);
-      expect(room.game?.state.roundNumber).toBe(2);
+      expect(inspectState(room.game).roundNumber).toBe(2);
       expect(room.game?.skipVoterIds).toEqual(new Set([people[0]!.id]));
     });
 
@@ -1429,7 +1436,7 @@ describe('room multi-game lifecycle', () => {
       setVote(people[0]!.id, true);
       (manager as any).action(people[0]!.id, { type: 'ANSWER', choice: 'HIGHER' });
       (manager as any).action(people[1]!.id, { type: 'ANSWER', choice: 'LOWER' });
-      room.game!.state.nextTransitionAt = 0;
+      inspectState(room.game!).nextTransitionAt = 0;
       (manager as any).tick(room);
 
       expect(room.game?.finishReason).toBe('COMPLETED');
@@ -1444,7 +1451,7 @@ describe('room multi-game lifecycle', () => {
       setVote(people[0]!.id, true);
       setVote(people[1]!.id, true);
       const replacementId = room.game!.resultId;
-      skippedGame.state = { ...skippedGame.state, phase: 'GAME_RESULTS' };
+      skippedGame.state = { ...inspectState(skippedGame), phase: 'GAME_RESULTS' };
       (manager as any).syncAndBroadcast(room, skippedGame);
 
       expect(skippedGame.finishReason).toBe('SKIPPED');
@@ -1475,4 +1482,93 @@ describe('room multi-game lifecycle', () => {
       expect(room.sessionHistory).toEqual([]);
     });
   });
+});
+
+it('pins catalog resources for an active game and replaces them for the next launch', () => {
+  const fixture = activeSkipFixture();
+  const { manager, room } = fixture;
+  const previous = room.game!.catalog!;
+  const nextCatalog = { ...catalog };
+  const visuals = { artworkFor: () => null, artworkPokemonIds: () => [] };
+  const audio = { cryFor: () => null, pokemonIds: () => [] };
+  manager.replaceCatalog(nextCatalog, visuals, audio);
+  expect((manager as any).context(room).pokemon).toBe(previous.pokemon);
+  expect(room.game!.catalog!.version).toBe(previous.version);
+  (manager as any).launchGame(room);
+  expect(room.game!.catalog!.pokemon).toBe(nextCatalog);
+  expect(room.game!.catalog!.version).not.toBe(previous.version);
+  manager.stop();
+});
+
+it('builds one common public projection per broadcast and keeps private views per player', () => {
+  const { manager, room } = activeSkipFixture();
+  const module = room.game!.module;
+  const publicProjection = vi.spyOn(module, 'getPublicState');
+  const privateProjection = vi.spyOn(module, 'getPlayerState');
+  try {
+    (manager as any).broadcast(room);
+    expect(publicProjection).toHaveBeenCalledTimes(1);
+    expect(privateProjection).toHaveBeenCalledTimes(2);
+  } finally { publicProjection.mockRestore(); privateProjection.mockRestore(); manager.stop(); }
+});
+
+it('rejects a delayed action from a previous round through the socket command boundary', () => {
+  const { manager, room, people } = activeSkipFixture();
+  const client = boundSocket('skip-socket-1', people[0]!);
+  manager.bind(client as any);
+  const game = room.game!;
+  const actionEpoch = game.module.getLifecycle(game.state).actionEpoch;
+  inspectState(game).roundEndsAt = 0;
+  (manager as any).tick(room);
+  inspectState(game).nextTransitionAt = 0;
+  (manager as any).tick(room);
+  expect(game.module.getLifecycle(game.state).actionEpoch).not.toBe(actionEpoch);
+  const previous = structuredClone(game.state);
+  const ack = vi.fn();
+  client.handlers.get('game:action')!({ gameInstanceId: game.resultId, actionEpoch, action: { type: 'ANSWER', choice: 'HIGHER' } }, ack);
+  expect(ack).toHaveBeenCalledWith(expect.objectContaining({ ok: false }));
+  expect(game.state).toEqual(previous);
+  manager.stop();
+});
+
+it('excludes TCG from playable rotation options when its comparable catalog is unavailable', () => {
+  const { manager, room } = activeSkipFixture();
+  expect((manager as any).playableGameIds(room, ['higher-lower', 'tcg-higher-lower'])).toEqual(['higher-lower']);
+  manager.stop();
+});
+
+it('keeps a new disconnect reservation after the old membership is kicked and replaced', () => {
+  vi.useFakeTimers();
+  try {
+    const manager = new RoomManager(io() as any, catalog);
+    const host = identity('timer-host', 'Host');
+    const guest = identity('timer-guest', 'Guest');
+    const created = (manager as any).create(socket('timer-host-socket'), host, 8);
+    const room = manager.store.get(created.room.code)!;
+    (manager as any).join(socket('timer-old'), guest, room.code);
+    (manager as any).disconnect(guest.id, 'timer-old');
+    const previous = room.members.get(guest.id)!;
+    vi.advanceTimersByTime(10_000);
+    (manager as any).kick(host.id, guest.id);
+    expect(previous.disconnectTimer).toBeNull();
+    (manager as any).join(socket('timer-new'), guest, room.code);
+    (manager as any).disconnect(guest.id, 'timer-new');
+    const replacement = room.members.get(guest.id)!;
+    vi.advanceTimersByTime(20_000);
+    expect(room.members.get(guest.id)).toBe(replacement);
+    expect(manager.store.roomForPlayer(guest.id)).toBe(room);
+    vi.advanceTimersByTime(10_000);
+    expect(room.members.has(guest.id)).toBe(false);
+    manager.stop();
+  } finally { vi.useRealTimers(); }
+});
+
+it('advances expired game time before processing an action and immediately publishes the transition', () => {
+  const { manager, room, people } = activeSkipFixture();
+  const game = room.game!;
+  inspectState(game).roundEndsAt = 0;
+  expect(() => (manager as any).action(people[0]!.id, { type: 'ANSWER', choice: 'HIGHER' })).toThrow('El tiempo ha terminado');
+  expect(room.phase).toBe('ROUND_RESULTS');
+  expect(inspectState(game).answers).toEqual({});
+  manager.stop();
 });

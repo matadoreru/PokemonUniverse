@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, type PokemonVisualAsset } from '../contracts.js';
 import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
@@ -34,7 +35,7 @@ const manifest = {
 
 const spriteAsset = (pokemon: Pokemon): PokemonVisualAsset => ({ pokemonId: pokemon.id, source: 'SPRITE', location: pokemon.sprite });
 const revealPokemon = (pokemon: Pokemon) => ({ id: pokemon.id, name: pokemon.name, generation: pokemon.generation });
-const assetPath = (state: ZoomedPokemonState, context: GameContext, assetId: 'active' | 'reveal') => `/api/rooms/${encodeURIComponent(context.roomCode ?? 'opaque')}/games/${state.assetToken}/rounds/${state.roundNumber}/options/${assetId}/sprite`;
+const assetPath = (state: ZoomedPokemonState, context: GameContext, assetId: string) => `/api/rooms/${encodeURIComponent(context.roomCode ?? 'opaque')}/games/${state.assetToken}/rounds/${state.roundNumber}/options/${assetId}/sprite`;
 
 function artworkIds(context: GameContext): Set<string> { return new Set(context.pokemonVisuals?.artworkPokemonIds() ?? []); }
 
@@ -94,6 +95,7 @@ function resolveRound(state: ZoomedPokemonState, context: GameContext): ZoomedPo
 function finish(state: ZoomedPokemonState): ZoomedPokemonState { return { ...state, phase: 'GAME_RESULTS', roundEndsAt: null, nextTransitionAt: null }; }
 
 export const zoomedPokemonGame: MiniGameModule<ZoomedPokemonConfig, ZoomedPokemonState, ZoomedPokemonAction, ZoomedPokemonPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest, configSchema: zoomedPokemonConfigSchema, actionSchema: zoomedPokemonActionSchema, defaultConfig: defaultZoomedPokemonConfig,
   createInitialState(config, context) {
     const parsed = zoomedPokemonConfigSchema.parse(config);
@@ -168,12 +170,12 @@ export const zoomedPokemonGame: MiniGameModule<ZoomedPokemonConfig, ZoomedPokemo
     const target = context.pokemon.byId(state.targetPokemonId ?? '');
     const active = state.phase === 'ROUND_ACTIVE' && state.visual;
     const lastRound = state.lastRound && (state.phase === 'ROUND_RESULTS' || state.phase === 'GAME_RESULTS') ? {
-      pokemon: { name: state.lastRound.pokemon.name, generation: state.lastRound.pokemon.generation }, imageUrl: assetPath(state, context, 'reveal'), initialCropUrl: assetPath(state, context, 'active'),
+      pokemon: { name: state.lastRound.pokemon.name, generation: state.lastRound.pokemon.generation }, imageUrl: assetPath(state, context, 'reveal'), initialCropUrl: assetPath(state, context, 'stage-0'),
       imageSourceType: state.lastRound.imageSourceType, solves: state.lastRound.solves, attemptCounts: state.lastRound.attemptCounts,
     } : null;
     return {
       gameId: 'zoomed-pokemon', phase: state.phase, roundNumber: state.roundNumber, totalRounds: state.config.rounds,
-      imageUrl: active ? assetPath(state, context, 'active') : null, imageSourceType: active ? state.visual!.source : null, focusPoint: { x: 0.5, y: 0.5 }, zoomStages: ZOOMED_POKEMON_ZOOM_STAGES,
+      imageUrl: active ? assetPath(state, context, `stage-${state.currentZoomStage}`) : null, imageSourceType: active ? state.visual!.source : null, focusPoint: { x: 0.5, y: 0.5 }, zoomStages: ZOOMED_POKEMON_ZOOM_STAGES,
       currentZoomStage: state.currentZoomStage, currentZoomBonus: zoomBonusForStage(state.currentZoomStage), visibleHints: active && state.config.hintsEnabled && target ? buildZoomedHints(target, state.config.hintKinds) : [],
       attempts: state.attempts, solves: Object.fromEntries(Object.entries(state.solves).map(([id, solve]) => [id, { solveOrder: solve.solveOrder, zoomStage: solve.zoomStage }])), scores: state.scores,
       roundStartedAt: state.roundStartedAt, roundEndsAt: state.roundEndsAt, nextTransitionAt: state.nextTransitionAt, lastRound,
@@ -189,7 +191,12 @@ export const zoomedPokemonGame: MiniGameModule<ZoomedPokemonConfig, ZoomedPokemo
   },
   resolveAsset(state, request) {
     if (state.assetToken !== request.assetToken || state.roundNumber !== request.roundNumber || !state.visual) return null;
-    if (request.assetId === 'active' && (state.phase === 'ROUND_ACTIVE' || state.phase === 'ROUND_RESULTS')) return { source: state.visual.location, transform: 'FOCUSED_NORMALIZED', focusSeed: state.visual.focusSeed };
+    const match = /^stage-([0-3])$/.exec(request.assetId);
+    if (match && (state.phase === 'ROUND_ACTIVE' || state.phase === 'ROUND_RESULTS' || state.phase === 'GAME_RESULTS')) {
+      const stage = Number(match[1]);
+      if (state.phase === 'ROUND_ACTIVE' && stage > state.currentZoomStage) return null;
+      return { source: state.visual.location, transform: 'ZOOM_CROP', focusSeed: state.visual.focusSeed, zoom: ZOOMED_POKEMON_ZOOM_STAGES[stage]! };
+    }
     if (request.assetId === 'reveal' && (state.phase === 'ROUND_RESULTS' || state.phase === 'GAME_RESULTS')) return { source: state.visual.location, transform: 'NORMALIZED' };
     return null;
   },

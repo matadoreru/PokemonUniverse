@@ -1,4 +1,4 @@
-import type { PokemonPaletteGuessConfig, PokemonPaletteHintKind } from '@pokemon-universe/shared';
+import type { PokemonPaletteGuessConfig, PokemonPaletteHintKind } from '@pokemon-universe/shared/public';
 import { Lightbulb } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';

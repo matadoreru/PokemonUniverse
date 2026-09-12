@@ -1,4 +1,4 @@
-import type { PokemonConnectionsConfig } from '@pokemon-universe/shared';
+import type { PokemonConnectionsConfig } from '@pokemon-universe/shared/public';
 import { Boxes, Clock3, Grid3X3, RotateCw, ShieldAlert } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 

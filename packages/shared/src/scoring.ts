@@ -65,3 +65,13 @@ export function buildRankedResults<TStats extends object, TTie>(
   const leaders = standings.filter((standing) => standing.position === 1);
   return { winnerId: leaders.length === 1 ? leaders[0]!.playerId : null, standings };
 }
+
+/** V1: game-owned standings determine order; raw game units never enter session totals. */
+export const SESSION_SCORING_VERSION = 'POSITION_V1' as const;
+export function sessionPointsForResults(results: GameResults): Record<string, number> {
+  const count = results.standings.length;
+  return Object.fromEntries(results.standings.map((standing) => [
+    standing.playerId,
+    standing.points > 0 ? pointsForPosition(count, standing.position) : 0,
+  ]));
+}

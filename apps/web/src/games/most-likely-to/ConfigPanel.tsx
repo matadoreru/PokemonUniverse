@@ -1,4 +1,4 @@
-import type { MostLikelyToConfig, RoomView, SubjectivePromptSource } from '@pokemon-universe/shared';
+import type { MostLikelyToConfig, RoomView, SubjectivePromptSource } from '@pokemon-universe/shared/public';
 import { Clock3, MessagesSquare, Repeat2, Sparkles, Tags } from 'lucide-react';
 import { useAuth } from '../../auth/AuthContext';
 import { GenerationSelector } from '../../components/GenerationSelector';

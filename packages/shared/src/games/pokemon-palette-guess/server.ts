@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
@@ -50,6 +51,7 @@ function resolveRound(state: PokemonPaletteGuessState, context: GameContext): Po
 const finish = (state: PokemonPaletteGuessState): PokemonPaletteGuessState => ({ ...state, phase: 'GAME_RESULTS', roundEndsAt: null, nextTransitionAt: null });
 
 export const pokemonPaletteGuessGame: MiniGameModule<PokemonPaletteGuessConfig, PokemonPaletteGuessState, PokemonPaletteGuessAction, PokemonPaletteGuessPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest, configSchema: pokemonPaletteGuessConfigSchema, actionSchema: pokemonPaletteGuessActionSchema, defaultConfig: defaultPokemonPaletteGuessConfig,
   createInitialState(config, context) {
     const parsed = pokemonPaletteGuessConfigSchema.parse(config); const pool = pokemonPalettePool(parsed, context); if (!pool.length) throw new Error('No hay suficientes paletas en PostgreSQL para las generaciones y tamaño seleccionados. Ejecuta la sincronización Pokémon.');

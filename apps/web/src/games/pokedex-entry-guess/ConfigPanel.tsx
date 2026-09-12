@@ -1,4 +1,4 @@
-import type { PokedexEntryGuessConfig } from '@pokemon-universe/shared';
+import type { PokedexEntryGuessConfig } from '@pokemon-universe/shared/public';
 import { BookOpenText, Lightbulb } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 

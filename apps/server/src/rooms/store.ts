@@ -1,6 +1,6 @@
 import type { LiveRoom } from './types.js';
 
-/** Process-local adapter. Replace this boundary with Redis + distributed locks for multi-node deployments. */
+/** Single-process owner. Multi-node deployment requires serializable state, ownership and durable timers before changing storage. */
 export class InMemoryRoomStore {
   private readonly rooms = new Map<string, LiveRoom>();
   private readonly playerRooms = new Map<string, string>();
@@ -12,10 +12,12 @@ export class InMemoryRoomStore {
   }
   save(room: LiveRoom): void { this.rooms.set(room.code, room); }
   attachPlayer(playerId: string, roomCode: string): void { this.playerRooms.set(playerId, roomCode); }
-  detachPlayer(playerId: string): void { this.playerRooms.delete(playerId); }
+  detachPlayer(playerId: string, expectedRoomCode: string): void {
+    if (this.playerRooms.get(playerId) === expectedRoomCode) this.playerRooms.delete(playerId);
+  }
   delete(code: string): void {
     const room = this.rooms.get(code);
-    if (room) for (const id of room.members.keys()) this.playerRooms.delete(id);
+    if (room) for (const id of room.members.keys()) this.detachPlayer(id, code);
     this.rooms.delete(code);
   }
 }

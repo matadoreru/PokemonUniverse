@@ -11,7 +11,7 @@ export interface WhoIsWhoState {
   phase: GamePhase; config: WhoIsWhoPokemonConfig; playerIds: string[]; board: WhoIsWhoPokemonCard[];
   teams: Record<WhoIsWhoTeam, WhoIsWhoTeamState>; currentTeam: WhoIsWhoTeam; roundNumber: number; turnNumber: number;
   roundStartedAt: number | null; roundEndsAt: number | null; scores: Record<string, number>; playerStats: Record<string, WhoIsWhoStats>; guesses: WhoIsWhoGuess[];
-  winnerTeam: WhoIsWhoTeam | null; results: GameResults | null;
+  winnerTeam: WhoIsWhoTeam | null;
 }
 export interface WhoIsWhoPublicState {
   gameId: 'who-is-who-pokemon'; phase: GamePhase; board: WhoIsWhoPokemonCard[];

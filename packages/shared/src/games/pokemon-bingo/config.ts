@@ -2,12 +2,8 @@ import { z } from 'zod';
 import { pokemonGenerationsSchema } from '../config.js';
 import { GENERATIONS } from '../../pokemon/types.js';
 
-export const BINGO_FAMILY_KEYS = [
-  'generation', 'dexNumber', 'type', 'typeCombination', 'typeCount',
-  'hp', 'attack', 'defense', 'specialAttack', 'specialDefense', 'speed', 'baseStatTotal',
-  'height', 'weight', 'evolutionStage', 'legendaryStatus', 'color', 'abilities',
-] as const;
-export type BingoFamilyKey = (typeof BINGO_FAMILY_KEYS)[number];
+import { BINGO_FAMILY_KEYS, type BingoFamilyKey } from '../../pokemon/conditions/types.js';
+export { BINGO_FAMILY_KEYS, type BingoFamilyKey } from '../../pokemon/conditions/types.js';
 
 export const bingoFamiliesSchema = z.object(Object.fromEntries(
   BINGO_FAMILY_KEYS.map((key) => [key, z.boolean()]),

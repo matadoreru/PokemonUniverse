@@ -1,4 +1,4 @@
-import type { ChangelogEntry } from '@pokemon-universe/shared';
+import type { ChangelogEntry } from '@pokemon-universe/shared/public';
 
 export const LAST_READ_CHANGELOG_KEY = 'pokemon-universe:last-read-changelog';
 

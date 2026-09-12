@@ -9,6 +9,6 @@ export default defineConfig({
     'vendor-socket': ['socket.io-client'],
     'vendor-icons': ['lucide-react'],
     'vendor-validation': ['zod'],
-    'vendor-shared': ['@pokemon-universe/shared'],
+    'vendor-shared': ['@pokemon-universe/shared/public'],
   } } } },
 });

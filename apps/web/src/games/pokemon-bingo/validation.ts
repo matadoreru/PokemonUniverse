@@ -1,4 +1,4 @@
-import { BINGO_FAMILY_KEYS, type BingoFamilyKey, type PokemonBingoConfig } from '@pokemon-universe/shared';
+import { BINGO_FAMILY_KEYS, type BingoFamilyKey, type PokemonBingoConfig } from '@pokemon-universe/shared/public';
 
 export const bingoFamilyLabels: Record<BingoFamilyKey, string> = { generation: 'Generación', dexNumber: 'Número Pokédex', type: 'Tipo', typeCombination: 'Combinación exacta', typeCount: 'Monotipo / doble tipo', hp: 'HP', attack: 'Ataque', defense: 'Defensa', specialAttack: 'At. Especial', specialDefense: 'Def. Especial', speed: 'Velocidad', baseStatTotal: 'Total stats', height: 'Altura', weight: 'Peso', evolutionStage: 'Estado evolutivo', legendaryStatus: 'Legendario / Mítico', color: 'Color oficial', abilities: 'Habilidades' };
 const singleFamilyCapacity: Partial<Record<BingoFamilyKey, number>> = { generation: 9, dexNumber: 11, type: 18, typeCount: 2, hp: 6, attack: 6, defense: 6, specialAttack: 6, specialDefense: 6, speed: 6, baseStatTotal: 6, height: 6, weight: 6, evolutionStage: 4, legendaryStatus: 3, color: 10 };

@@ -1,6 +1,6 @@
 import { Eraser, PaintBucket, Pencil, Redo2, Trash2, Undo2 } from 'lucide-react';
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
-import { SKETCHMON_COLORS, type SketchmonAction, type SketchmonPoint, type SketchmonStroke, type SketchmonTool } from '@pokemon-universe/shared';
+import { SKETCHMON_COLORS, type SketchmonAction, type SketchmonPoint, type SketchmonStroke, type SketchmonTool } from '@pokemon-universe/shared/public';
 
 type DrawBatchAction = Extract<SketchmonAction, { type: 'DRAW_BATCH' }>;
 type DrawOperation = DrawBatchAction['operations'][number];

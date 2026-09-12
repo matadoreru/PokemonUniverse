@@ -1,4 +1,4 @@
-import type { Pokemon, PokemonLegendaryStatus, PokemonPaletteGuessPlayerState, PokemonPaletteGuessPublicState, PokemonPaletteHint, PokemonType, RoomView } from '@pokemon-universe/shared';
+import type { Pokemon, PokemonLegendaryStatus, PokemonPaletteGuessPlayerState, PokemonPaletteGuessPublicState, PokemonPaletteHint, PokemonType, RoomView } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Eye, History, Lightbulb, Palette, XCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';

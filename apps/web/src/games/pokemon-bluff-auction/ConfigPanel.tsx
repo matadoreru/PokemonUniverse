@@ -1,4 +1,4 @@
-import type { PokemonBluffAuctionConfig } from '@pokemon-universe/shared';
+import type { PokemonBluffAuctionConfig } from '@pokemon-universe/shared/public';
 import { Clock3, Layers3, ShieldCheck } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 
@@ -14,7 +14,7 @@ export function PokemonBluffAuctionConfigPanel({ config, disabled, onChange }: {
       <section aria-labelledby="bluff-rounds"><div className="mb-2 flex items-center gap-2"><Layers3 className="text-aqua" size={19} /><span id="bluff-rounds" className="font-extrabold">Rondas</span></div><div className="grid grid-cols-4 gap-2">{rounds.map((count) => <Option key={count} selected={value.rounds === count} onClick={() => void onChange({ ...value, rounds: count })}>{count}</Option>)}</div><p className="mt-2 text-sm font-bold text-ink/60">Cada ronda renueva condición y orden de puja.</p></section>
     </div>
     <div className="flex items-start gap-3 rounded-xl border border-leaf/20 bg-leaf/[.06] p-4"><ShieldCheck className="mt-0.5 shrink-0 text-leaf" size={21} /><div><strong className="block">Solo especies normales</strong><p className="mt-1 text-sm font-bold leading-relaxed text-ink/65">Este modo excluye regionales, Mega, Gigamax y cualquier variante que comparta número de Pokédex. Las condiciones se verifican con datos autoritativos.</p></div></div>
-  </fieldset>;
+  <label className="block font-extrabold">Tiempo por puja (segundos)<input className="field mt-2" type="number" min={0} max={120} value={value.bidSeconds ?? 20} onChange={(event) => { const bidSeconds = Number(event.target.value); if (Number.isInteger(bidSeconds) && bidSeconds >= 0 && bidSeconds <= 120) void onChange({ ...value, bidSeconds }); }} /><span className="mt-2 block text-sm font-bold text-ink/60">Al agotarse el tiempo, pasas. Usa 0 para jugar sin límite.</span></label></fieldset>;
 }
 
 function Option({ selected, onClick, children }: { selected: boolean; onClick(): void; children: React.ReactNode }) {

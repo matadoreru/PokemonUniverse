@@ -1,3 +1,4 @@
+import { shuffled } from '../infrastructure/random.js';
 import { POKEMON_TYPES, type Pokemon, type PokemonType } from '../../pokemon/types.js';
 import type { GameContext } from '../contracts.js';
 import type { ConnectionAnswerGroup } from './types.js';
@@ -338,14 +339,7 @@ const curatedTemplates: readonly CuratedTemplate[] = [
   },
 ];
 
-function shuffled<T>(values: readonly T[], random: () => number): T[] {
-  const copy = [...values];
-  for (let index = copy.length - 1; index > 0; index -= 1) {
-    const target = Math.floor(random() * (index + 1));
-    [copy[index], copy[target]] = [copy[target]!, copy[index]!];
-  }
-  return copy;
-}
+
 
 function rotate<T>(values: readonly T[], offset: number): T[] {
   if (values.length === 0) return [];

@@ -1,4 +1,4 @@
-import type { PokemonRedFlagPlayerState, PokemonRedFlagPublicState, PokemonRedFlagRoundResult, RoomMemberView, RoomView } from '@pokemon-universe/shared';
+import type { PokemonRedFlagPlayerState, PokemonRedFlagPublicState, PokemonRedFlagRoundResult, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
 import { Check, Crown, Eye, Flag, LockKeyhole, Send, Users, Vote } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Avatar } from '../components/Avatar';

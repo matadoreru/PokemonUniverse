@@ -1,4 +1,4 @@
-import type { LearnsetGuessPlayerState, LearnsetGuessPublicState, LearnsetMoveHint, MoveCategory, PokemonType, RoomView } from '@pokemon-universe/shared';
+import type { LearnsetGuessPlayerState, LearnsetGuessPublicState, LearnsetMoveHint, MoveCategory, PokemonType, RoomView } from '@pokemon-universe/shared/public';
 import { BookOpen, CheckCircle2, Clock3, Eye, History, Lightbulb, Sparkles, XCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { usePokemonPool } from '../hooks/usePokemonPool';

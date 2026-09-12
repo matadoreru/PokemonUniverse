@@ -1,4 +1,4 @@
-import type { RoomView, SecretRankingConfig } from '@pokemon-universe/shared';
+import type { RoomView, SecretRankingConfig } from '@pokemon-universe/shared/public';
 
 export function validateSecretRankingConfig(config: unknown, room?: RoomView): string | null {
   const value = config as SecretRankingConfig;

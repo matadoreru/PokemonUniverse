@@ -2,7 +2,7 @@ import type { GameContext, Pokemon, PokemonCatalog } from '../../index.js';
 import { describe, expect, it } from 'vitest';
 import { defaultSketchmonConfig } from './config.js';
 import { SKETCHMON_DRAWER_POINTS, sketchmonGuesserPoints } from './rules.js';
-import { SKETCHMON_GUESS_COOLDOWN_MS, SKETCHMON_REVEAL_MS, SKETCHMON_SPRITE_PREVIEW_MS, sketchmonGame } from './server.js';
+import { SKETCHMON_MAX_POINTS, SKETCHMON_UNDO_LIMIT, SKETCHMON_GUESS_COOLDOWN_MS, SKETCHMON_REVEAL_MS, SKETCHMON_SPRITE_PREVIEW_MS, sketchmonGame } from './server.js';
 import type { SketchmonPlayerState, SketchmonState } from './types.js';
 
 const entries: Pokemon[] = [
@@ -205,4 +205,38 @@ describe('Sketchmon', () => {
     expect(state.scores).toEqual({ p1: 0, p2: 0, p3: 0 });
     expect(state.playerStats.p1).toMatchObject({ drawingRounds: 1, drawingFailures: 1 });
   });
+});
+
+it('shares untouched drawing history without mutating earlier snapshots', () => {
+  const { state, context } = setup();
+  const first = draw(state, 'p1', context).state;
+  const second = sketchmonGame.handleAction(first, 'p1', { type: 'DRAW_BATCH', operations: [{ kind: 'START', stroke: { ...first.strokes[0]!, id: 'stroke_2' } }] }, context).state;
+  expect(second.strokes[0]).toBe(first.strokes[0]);
+  expect(second.undoStack.at(-1)).toBe(first.strokes);
+  const appended = sketchmonGame.handleAction(second, 'p1', { type: 'DRAW_BATCH', operations: [{ kind: 'APPEND', strokeId: 'stroke_2', points: [{ x: 0.5, y: 0.5 }] }] }, context).state;
+  expect(appended.strokes[0]).toBe(first.strokes[0]);
+  expect(second.strokes[1]!.points).toHaveLength(2);
+  expect(appended.strokes[1]!.points).toHaveLength(3);
+});
+
+it('rejects an entire drawing batch when it exceeds the point budget', () => {
+  const { state, context } = setup();
+  const first = draw(state, 'p1', context).state;
+  first.strokes[0]!.points = Array.from({ length: SKETCHMON_MAX_POINTS - 1 }, () => ({ x: 0.1, y: 0.2 }));
+  const result = sketchmonGame.handleAction(first, 'p1', { type: 'DRAW_BATCH', operations: [
+    { kind: 'APPEND', strokeId: 'stroke_1', points: [{ x: 0.3, y: 0.3 }] },
+    { kind: 'APPEND', strokeId: 'stroke_1', points: [{ x: 0.4, y: 0.4 }] },
+  ] }, context);
+  expect(result.accepted).toBe(false);
+  expect(result.state).toBe(first);
+  expect(first.strokes[0]!.points).toHaveLength(SKETCHMON_MAX_POINTS - 1);
+});
+
+it('caps undo history during long drawing sessions', () => {
+  const fixture = setup();
+  let state = draw(fixture.state, 'p1', fixture.context).state;
+  for (let index = 0; index < SKETCHMON_UNDO_LIMIT + 10; index += 1) {
+    state = sketchmonGame.handleAction(state, 'p1', { type: 'DRAW_BATCH', operations: [{ kind: 'START', stroke: { ...state.strokes[0]!, id: `stroke_${index + 2}` } }] }, fixture.context).state;
+  }
+  expect(state.undoStack).toHaveLength(SKETCHMON_UNDO_LIMIT);
 });

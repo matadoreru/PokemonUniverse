@@ -1,4 +1,4 @@
-import type { PokemonCryQuizPublicState, RoomView } from '@pokemon-universe/shared';
+import type { PokemonCryQuizPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { RotateCcw, StopCircle, Volume2 } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 

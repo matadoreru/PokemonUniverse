@@ -1,4 +1,4 @@
-import type { Pokemon, RoomView, TypeChainInvalidReason, TypeChainPlayerState, TypeChainPublicState } from '@pokemon-universe/shared';
+import type { Pokemon, RoomView, TypeChainInvalidReason, TypeChainPlayerState, TypeChainPublicState } from '@pokemon-universe/shared/public';
 import { Clock3, Eye, History, Skull, Trophy, Users, XCircle } from 'lucide-react';
 import { memo, useState } from 'react';
 import { Avatar } from '../components/Avatar';

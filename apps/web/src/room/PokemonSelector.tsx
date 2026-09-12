@@ -1,4 +1,4 @@
-import type { Pokemon } from '@pokemon-universe/shared';
+import type { Pokemon } from '@pokemon-universe/shared/public';
 import { Search } from 'lucide-react';
 import { useId, useMemo, useRef, useState } from 'react';
 import { normalizePokemonQuery, searchPokemonOptions } from './pokemon-search';

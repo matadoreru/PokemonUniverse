@@ -1,4 +1,4 @@
-import type { GuessFromStatsHint, GuessFromStatsPlayerState, GuessFromStatsPokemonReveal, GuessFromStatsPublicState, GuessFromStatsVisibleStat, Pokemon, PokemonLegendaryStatus, RoomView } from '@pokemon-universe/shared';
+import type { GuessFromStatsHint, GuessFromStatsPlayerState, GuessFromStatsPokemonReveal, GuessFromStatsPublicState, GuessFromStatsVisibleStat, Pokemon, PokemonLegendaryStatus, RoomView } from '@pokemon-universe/shared/public';
 import { BarChart3, CheckCircle2, Eye, History, Lightbulb, Search, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar } from '../components/Avatar';

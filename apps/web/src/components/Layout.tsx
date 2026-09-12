@@ -1,4 +1,4 @@
-import type { AuthUser } from '@pokemon-universe/shared';
+import type { AuthUser } from '@pokemon-universe/shared/public';
 import { LogOut, Newspaper, ShieldCheck } from 'lucide-react';
 import { Suspense } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';

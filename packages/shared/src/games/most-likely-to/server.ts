@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, type SubjectiveCategory } from '../contracts.js';
 import { allEligibleRunoffVotersCompleted, eligibleRunoffVoterIds, leadingRunoffCandidateIds, recordRunoffVoteRound } from '../infrastructure/runoff-voting.js';
@@ -180,6 +181,7 @@ function cloneRoundResult(result: MostLikelyToRoundResult | null): MostLikelyToR
 }
 
 export const mostLikelyToGame: MiniGameModule<MostLikelyToConfig, MostLikelyToState, MostLikelyToAction, MostLikelyToPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest,
   configSchema: mostLikelyToConfigSchema,
   actionSchema: mostLikelyToActionSchema,

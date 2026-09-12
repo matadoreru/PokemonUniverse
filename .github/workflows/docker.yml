@@ -37,6 +37,7 @@ jobs:
           --health-retries 10
     env:
       DATABASE_URL: postgresql://pokemon_test:pokemon_test_password@127.0.0.1:5432/pokemon_universe_test?schema=public
+      TEST_DATABASE_URL: postgresql://pokemon_test:pokemon_test_password@127.0.0.1:5432/pokemon_universe_test?schema=public
       JWT_SECRET: github-actions-only-secret-with-32-characters
       WEB_ORIGIN: http://localhost:5173
     steps:

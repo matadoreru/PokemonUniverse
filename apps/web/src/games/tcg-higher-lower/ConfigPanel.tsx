@@ -1,4 +1,4 @@
-import { type TcgFilterOptions, type TcgHigherLowerConfig } from '@pokemon-universe/shared';
+import { type TcgFilterOptions, type TcgHigherLowerConfig } from '@pokemon-universe/shared/public';
 import { AlertCircle, Check, ChevronDown, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { GenerationSelector } from '../../components/GenerationSelector';

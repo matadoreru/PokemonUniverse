@@ -10,7 +10,7 @@ The repository is split into three boundaries:
 
 All gameplay data is read through server repositories and services backed by
 PostgreSQL. The immutable in-memory Pokémon catalog is only a read cache rebuilt
-from PostgreSQL at startup; it is never populated from an external API.
+from PostgreSQL at startup and after successful PokéAPI synchronizations; it is never populated directly from an external API. Each active game retains its original catalog, audio and visual references and an opaque catalog revision. Refreshes replace all three references together for new games. Pokémon objects and nested metadata are copied and frozen. TCG decks copy their comparable prices when created.
 
 External sources are isolated under `apps/server/src/data-sync/`:
 
@@ -19,8 +19,7 @@ PokéAPI / TCGdex -> DataSyncService -> PostgreSQL -> repositories -> games/web
 ```
 
 On first boot, a missing Pokémon dataset is synchronized before rooms become
-available. TCGdex initializes in the background because no current game depends
-on it. Later runs are incremental: PokéAPI checks for dataset growth and TCGdex
+available. TCGdex initializes in the background; TCG Higher/Lower declares its catalog availability to the coordinator and is excluded from playable rotations until its configured filters provide at least two comparable cards. Later runs are incremental: PokéAPI checks for dataset growth and TCGdex
 refreshes persisted prices daily. Failed runs are recorded without deleting or
 invalidating the last successful dataset. The scheduler defaults to 06:00 in
 `Europe/Madrid` and is configurable through the `DATA_SYNC_*` variables.
@@ -33,7 +32,7 @@ The room state machine uses `LOBBY → game-owned phases → GAME_RESULTS → SE
 
 Session duration and minigame rotation are independent settings. Duration remains infinite, game-count based or point-target based. Rotation is fixed, server-random from a host/co-host-selected pool, or a 15-second vote between three server-sampled compatible entries from that pool. The server rejects pool entries that do not support the current connected-player count and validates the pool again before every launch and vote. The first game in voting mode is selected by the host. Votes are accepted synchronously, immutable, private until resolution, and close early when every connected member has voted; ties use a server-side random choice. The winning minigame is revealed for three seconds before its preserved per-game configuration starts in the existing room.
 
-Before the first launch from `LOBBY`, every connected non-host member must explicitly mark themselves ready. The host remains the only role allowed to start. Any game, configuration, rotation or session-format change clears readiness, while a reconnect inside the grace period preserves it. Readiness is lobby coordination state only: it is cleared at launch and is not required for the automatic fixed, random or voting continuation between games.
+Before the first launch from `LOBBY`, every connected non-host member must explicitly mark themselves ready. The host remains the only role allowed to start. Changing game, configuration, rotation or session format preserves readiness, as does a reconnect inside the grace period. Readiness is lobby coordination state only: it is cleared at launch and is not required for the automatic fixed, random or voting continuation between games.
 
 The shared `GameRegistry` is additive and rejects duplicate ids. Its manifests are included in every public room view, so the lobby selector and client strategy registry use the same authoritative metadata. Selecting another manifest switches to that game's preserved configuration; starting a game instantiates only that module. Optional module facilities such as private asset resolution remain behind the same contract rather than adding game-specific branches to the room coordinator.
 
@@ -122,3 +121,32 @@ Registered hosts own persistent `CustomCategory` rows. A boot-loaded server cach
 ## Security boundaries
 
 Passwords use bcrypt cost 12. Identity is an expiring HS256 token in an HttpOnly SameSite cookie. HTTP and socket events are rate-limited, payloads are size-limited, shared Zod schemas validate input, and every host action checks current ownership. In production, use TLS at Cloudflare/reverse proxy, set `COOKIE_SECURE=true`, use a random secret, restrict the origin and keep PostgreSQL private.
+
+
+## Runtime and command revisions
+
+Each registered engine implements `getLifecycle`: phase, next deadline, action epoch and spectator IDs. The coordinator treats engine state as `unknown`; game-owned cursor authorization is exposed through `getCursorChannel`, while the transport adapter owns routing and rate limits. `game:action` requires both `gameInstanceId` and `actionEpoch`. The epoch changes when the phase, round, turn or revote changes, but not when a demonstration earns additional time. A rejected action may return a transitioned state; the coordinator synchronizes it before replying with the rejection.
+
+The web command sender uses the shared Socket.IO signatures, rejects offline sends, waits at most eight seconds for an acknowledgement and settles on disconnect. It never automatically replays a command after an unknown outcome. The client must receive the authoritative room state before the user decides whether to retry. Server and web must be deployed together for this envelope change.
+
+Room snapshots carry `roomInstanceId` and a monotonic `revision`. Each broadcast builds its common projection once and attaches player-specific state separately. The browser ignores older revisions of the same room instance, including snapshots arriving in delayed acknowledgements. Reconnection still receives a complete snapshot. Drawing deltas are not implemented yet.
+
+## Resource and shutdown budgets
+
+Sketchmon stores shared immutable drawing snapshots: at most 16,384 points, 1,024 strokes, 64 undo steps and 12 gallery entries. A batch that would exceed a drawing limit is rejected atomically. The image cache retains at most 256 entries / 32 MiB, deduplicates pending requests and permits eight concurrent loaders with 64 pending requests in total. Remote images have a 15-second deadline and an 8 MiB download limit; synchronization responses default to 30 seconds and 16 MiB. These are operational safeguards, not a measured capacity guarantee.
+
+Shutdown stops the scheduler and room timers, closes Socket.IO, drains accepted result/audit tasks, preferences and active synchronizations, then marks unfinished activity interrupted and disconnects Prisma. It is idempotent for repeated signals. Failures remain logged; draining is not a durable outbox and cannot recover results lost during a process crash. No hard shutdown deadline is imposed while accepted synchronizations remain active.
+
+Deploy one authoritative server process. Room state includes executable modules, Maps/Sets, promises and timer handles. Redis is not a direct replacement for this store. Global startup recovery and user caches must gain ownership/invalidation before enabling multiple instances.
+
+## Session scoring and bounded choices
+
+`POSITION_V1` keeps raw game scores for profiles and per-game results. Session history stores both `rawPoints` and awarded `points`. Positive-scoring standings receive `pointsForPosition(numberOfStandings, position)`; zero-scoring standings receive zero. Equal positions receive equal awards. Thus raw BST and correct-answer units never mix directly in session totals. Session targets now refer to these normalized awards.
+
+Team Auction and Bluff Auction use a 20-second bid-turn limit by default and automatically pass when time expires. Setting `bidSeconds` to zero explicitly selects an untimed game. Who Is Who allows 30 seconds by default for manual secret selection, fills missing selections randomly on expiry and then begins the first playing turn. `selectionSeconds: 0` allows untimed selection. Older saved configurations acquire these new defaults through schema/config normalization.
+
+## Browser package boundary and verification
+
+Production web code imports `@pokemon-universe/shared/public`; engines remain available through the root/server entry for server code and engine tests. ESLint rejects server/root imports from production web modules. `npm run check:boundaries` walks the runtime import graph of the public entry and rejects server engines or unexpected dependencies; `npm test` runs that check and rebuilds shared before testing consumers.
+
+`npm run benchmark:rooms` compares repeated and shared public projection work for synthetic Sketchmon rooms. It excludes serialization, network and database costs. PostgreSQL isolation regressions run only with an explicit `TEST_DATABASE_URL`; CI supplies its disposable migrated database. They never fall back to a developer's `DATABASE_URL`.

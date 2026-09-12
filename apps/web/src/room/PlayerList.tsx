@@ -1,4 +1,4 @@
-import type { PokedexDistancePublicState, RoomMemberView } from '@pokemon-universe/shared';
+import type { PokedexDistancePublicState, RoomMemberView } from '@pokemon-universe/shared/public';
 import { ArrowRightLeft, CheckCircle2, Circle, Crown, Eye, MoreVertical, Star, UserMinus, UserRoundCog, WifiOff } from 'lucide-react';
 import { memo } from 'react';
 import { Avatar } from '../components/Avatar';

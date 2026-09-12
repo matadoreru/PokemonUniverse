@@ -1,4 +1,4 @@
-import { BINGO_FAMILY_KEYS, type BingoFamilyKey, type PokemonBingoConfig } from '@pokemon-universe/shared';
+import { BINGO_FAMILY_KEYS, type BingoFamilyKey, type PokemonBingoConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { bingoFamilyLabels, validatePokemonBingoConfig } from './validation';

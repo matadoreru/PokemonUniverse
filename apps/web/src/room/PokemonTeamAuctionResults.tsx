@@ -1,4 +1,4 @@
-import { isSessionComplete, type PokemonTeamAuctionPublicState, type RoomView } from '@pokemon-universe/shared';
+import { isSessionComplete, type PokemonTeamAuctionPublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { Coins, RotateCcw, StopCircle, Trophy, XCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 

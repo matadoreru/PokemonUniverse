@@ -1,4 +1,4 @@
-import type { ZoomedPokemonConfig } from '@pokemon-universe/shared';
+import type { ZoomedPokemonConfig } from '@pokemon-universe/shared/public';
 
 export function validateZoomedPokemonConfig(config: unknown): string | null {
   const value = config as Partial<ZoomedPokemonConfig>;

@@ -1,4 +1,4 @@
-import type { GameSkipStateView, SetGameSkipVoteRequest } from '@pokemon-universe/shared';
+import type { GameSkipStateView, SetGameSkipVoteRequest } from '@pokemon-universe/shared/public';
 import { Check, LoaderCircle, SkipForward } from 'lucide-react';
 import { useId, useRef, useState } from 'react';
 

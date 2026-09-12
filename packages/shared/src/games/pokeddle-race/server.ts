@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import { pointsForPosition } from '../../scoring.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { connectedRequiredPlayerIds, isPlayerRequired, type GameContext, type GameResults, type MiniGameModule } from '../contracts.js';
@@ -100,6 +101,7 @@ function publicBoard(state: PokeddleRaceState, playerId: string, context: GameCo
 }
 
 export const pokeddleRaceGame: MiniGameModule<PokeddleRaceConfig, PokeddleRaceState, PokeddleRaceAction, PokeddleRacePublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest, configSchema: pokeddleRaceConfigSchema, actionSchema: pokeddleRaceActionSchema, defaultConfig: defaultPokeddleRaceConfig,
   createInitialState(config, context) {
     const parsed = pokeddleRaceConfigSchema.parse(config);

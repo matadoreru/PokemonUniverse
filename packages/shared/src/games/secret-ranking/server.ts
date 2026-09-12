@@ -1,3 +1,5 @@
+import { shuffled } from '../infrastructure/random.js';
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { allConnectedRequiredCompleted, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, type SubjectiveCategory } from '../contracts.js';
 import { defaultSecretRankingConfig, secretRankingConfigSchema, type SecretRankingConfig } from './config.js';
@@ -31,14 +33,7 @@ const manifest = {
   },
 };
 
-function shuffled<T>(values: readonly T[], random: () => number): T[] {
-  const copy = [...values];
-  for (let index = copy.length - 1; index > 0; index -= 1) {
-    const target = Math.min(Math.floor(random() * (index + 1)), index);
-    [copy[index], copy[target]] = [copy[target]!, copy[index]!];
-  }
-  return copy;
-}
+
 
 function summary(pokemon: Pokemon): SecretRankingPokemon {
   return { id: pokemon.id, name: pokemon.name, sprite: pokemon.sprite };
@@ -169,6 +164,7 @@ function cloneRoundResult(result: SecretRankingRoundResult | null): SecretRankin
 }
 
 export const secretRankingGame: MiniGameModule<SecretRankingConfig, SecretRankingState, SecretRankingAction, SecretRankingPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest,
   configSchema: secretRankingConfigSchema,
   actionSchema: secretRankingActionSchema,

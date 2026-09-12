@@ -1,4 +1,4 @@
-import type { OneOfUsIsFakePublicState, RoomView } from '@pokemon-universe/shared';
+import type { OneOfUsIsFakePublicState, RoomView } from '@pokemon-universe/shared/public';
 import { RotateCcw, ShieldQuestion, StopCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 

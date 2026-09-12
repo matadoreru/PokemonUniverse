@@ -1,4 +1,4 @@
-import type { AdminActiveRoom, AdminDataSyncItem, AdminGameHistoryItem, AdminRoomHistoryItem, AdminSummary, AdminUserItem, PaginatedAdminResponse } from '@pokemon-universe/shared';
+import type { AdminActiveRoom, AdminDataSyncItem, AdminGameHistoryItem, AdminRoomHistoryItem, AdminSummary, AdminUserItem, PaginatedAdminResponse } from '@pokemon-universe/shared/public';
 import { Activity, CircleAlert, Database, DoorOpen, FileClock, Gamepad2, MessageSquareWarning, RefreshCw, Search, ShieldCheck, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { AdminChangelogPanel } from '../admin/AdminChangelogPanel';

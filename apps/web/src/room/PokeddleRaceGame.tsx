@@ -1,4 +1,4 @@
-import type { Pokemon, PokeddlePublicBoard, PokeddleRacePlayerState, PokeddleRacePublicState, PresenceStatus, RoomMemberView, RoomView } from '@pokemon-universe/shared';
+import type { Pokemon, PokeddlePublicBoard, PokeddleRacePlayerState, PokeddleRacePublicState, PresenceStatus, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Circle, Eye, Flag, Search, Trophy, WifiOff } from 'lucide-react';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar } from '../components/Avatar';

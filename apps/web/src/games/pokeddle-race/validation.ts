@@ -1,4 +1,4 @@
-import { POKEDDLE_CLUE_KEYS, type PokeddleRaceConfig } from '@pokemon-universe/shared';
+import { POKEDDLE_CLUE_KEYS, type PokeddleRaceConfig } from '@pokemon-universe/shared/public';
 
 export function validatePokeddleConfig(config: unknown): string | null {
   const value = config as Partial<PokeddleRaceConfig>;

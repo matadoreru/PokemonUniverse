@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
@@ -83,6 +84,7 @@ function publicRoundResult(state: WhosThatPokemonState, context: GameContext): W
 }
 
 export const whosThatPokemonGame: MiniGameModule<WhosThatPokemonConfig, WhosThatPokemonState, WhosThatPokemonAction, WhosThatPokemonPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest, configSchema: whosThatPokemonConfigSchema, actionSchema: whosThatPokemonActionSchema, defaultConfig: defaultWhosThatPokemonConfig,
   createInitialState(config, context) {
     const parsed = whosThatPokemonConfigSchema.parse(config);

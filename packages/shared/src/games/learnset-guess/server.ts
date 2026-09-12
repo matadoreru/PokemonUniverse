@@ -1,3 +1,4 @@
+import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import { GENERATION_LEARNSET_SOURCES, isLearnsetPokemonCatalog, type Generation, type LearnsetPokemonCatalog, type Pokemon, type ResolvedLevelUpMove } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
@@ -124,6 +125,7 @@ function finish(state: LearnsetGuessState): LearnsetGuessState {
 }
 
 export const learnsetGuessGame: MiniGameModule<LearnsetGuessConfig, LearnsetGuessState, LearnsetGuessAction, LearnsetGuessPublicState> = {
+  getLifecycle: timedGameLifecycle,
   manifest, configSchema: learnsetGuessConfigSchema, actionSchema: learnsetGuessActionSchema, defaultConfig: defaultLearnsetGuessConfig,
   createInitialState(config, context) {
     const parsed = learnsetGuessConfigSchema.parse(config); if (context.players.length < manifest.minPlayers) throw new Error(`At least ${manifest.minPlayers} players are required`);

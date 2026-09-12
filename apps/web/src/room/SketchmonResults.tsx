@@ -1,4 +1,4 @@
-import type { RoomView, SketchmonPublicState } from '@pokemon-universe/shared';
+import type { RoomView, SketchmonPublicState } from '@pokemon-universe/shared/public';
 import { Images, Palette, RotateCcw, StopCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { SketchmonCanvasSurface } from './SketchmonCanvas';

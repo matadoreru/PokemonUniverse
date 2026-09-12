@@ -1,4 +1,4 @@
-import type { RoomView } from '@pokemon-universe/shared';
+import type { RoomView } from '@pokemon-universe/shared/public';
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
 import { validateGuessFromStatsConfig } from './guess-from-stats/validation';
 import { validatePokeddleConfig } from './pokeddle-race/validation';

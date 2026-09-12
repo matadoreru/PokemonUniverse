@@ -1,4 +1,4 @@
-import type { Pokemon, PokemonLegendaryStatus, PokemonType, RoomView, ZoomedPokemonHint, ZoomedPokemonPlayerState, ZoomedPokemonPublicState } from '@pokemon-universe/shared';
+import type { Pokemon, PokemonLegendaryStatus, PokemonType, RoomView, ZoomedPokemonHint, ZoomedPokemonPlayerState, ZoomedPokemonPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Eye, History, Lightbulb, Search, XCircle, ZoomOut } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';
@@ -18,8 +18,8 @@ function hintLabel(hint: ZoomedPokemonHint): string {
   if (hint.stages <= 1) return 'No evoluciona'; if (hint.stage === 1) return 'Pokémon base'; if (hint.stage >= hint.stages) return 'Evolución final'; return 'Evolución intermedia';
 }
 
-export function ZoomViewport({ source, sourceType, zoom, alt }: { source: string; sourceType: 'SPRITE' | 'ARTWORK'; zoom: number; alt: string }) {
-  return <div className="zoomed-viewport relative aspect-square w-full overflow-hidden rounded-2xl border border-aqua/25 bg-night" aria-label={alt} data-source-type={sourceType}><div className="absolute inset-0 bg-[radial-gradient(circle,rgba(82,199,232,.16),transparent_70%)]" /><img src={source} alt="" className="zoomed-image absolute inset-0 h-full w-full object-contain [image-rendering:auto]" style={{ transform: `scale(${zoom})`, transformOrigin: '50% 50%' }} /></div>;
+export function ZoomViewport({ source, sourceType, alt }: { source: string; sourceType: 'SPRITE' | 'ARTWORK'; zoom: number; alt: string }) {
+  return <div className="zoomed-viewport relative aspect-square w-full overflow-hidden rounded-2xl border border-aqua/25 bg-night" aria-label={alt} data-source-type={sourceType}><div className="absolute inset-0 bg-[radial-gradient(circle,rgba(82,199,232,.16),transparent_70%)]" /><img src={source} alt="" className="zoomed-image absolute inset-0 h-full w-full object-contain [image-rendering:auto]" /></div>;
 }
 
 function GuessPanel({ pokemon, player, game, serverOffset, participating, loadError, onAction }: { pokemon: Pokemon[]; player: ZoomedPokemonPlayerState; game: ZoomedPokemonPublicState; serverOffset: number; participating: boolean; loadError: string; onAction(action: unknown): Promise<void> }) {

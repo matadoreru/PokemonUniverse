@@ -1,4 +1,4 @@
-import type { PokemonPaletteGuessPublicState, RoomView } from '@pokemon-universe/shared';
+import type { PokemonPaletteGuessPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { Palette, RotateCcw, StopCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 

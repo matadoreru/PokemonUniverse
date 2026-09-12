@@ -1,4 +1,4 @@
-import type { MostLikelyToConfig, RoomView } from '@pokemon-universe/shared';
+import type { MostLikelyToConfig, RoomView } from '@pokemon-universe/shared/public';
 
 export function validateMostLikelyToConfig(config: unknown, room?: RoomView): string | null {
   const value = config as MostLikelyToConfig;

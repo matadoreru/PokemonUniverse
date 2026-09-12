@@ -1,4 +1,4 @@
-import type { RoomView, TypeDuelPublicState } from '@pokemon-universe/shared';
+import type { RoomView, TypeDuelPublicState } from '@pokemon-universe/shared/public';
 import { RotateCcw, StopCircle, Swords } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 

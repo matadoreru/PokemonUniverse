@@ -1,4 +1,4 @@
-import { POKEMON_TYPES, type RoomView, type TypeDuelPlayerState, type TypeDuelPublicState } from '@pokemon-universe/shared';
+import { POKEMON_TYPES, type RoomView, type TypeDuelPlayerState, type TypeDuelPublicState } from '@pokemon-universe/shared/public';
 import { ArrowRight, Check, Clock3, Eye, Hourglass, LockKeyhole, Search, Swords, Target, Trophy, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { usePokemonPool } from '../hooks/usePokemonPool';

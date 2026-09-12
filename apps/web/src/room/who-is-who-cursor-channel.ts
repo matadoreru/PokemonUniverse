@@ -1,4 +1,4 @@
-import type { WhoIsWhoCursorEvent, WhoIsWhoCursorPosition } from '@pokemon-universe/shared';
+import type { WhoIsWhoCursorEvent, WhoIsWhoCursorPosition } from '@pokemon-universe/shared/public';
 import type { GameSocket } from '../lib/socket';
 
 export type TeamCursorMessage = { type: 'MOVE'; cursor: WhoIsWhoCursorEvent } | { type: 'CLEAR'; playerId: string } | { type: 'RESET' };
