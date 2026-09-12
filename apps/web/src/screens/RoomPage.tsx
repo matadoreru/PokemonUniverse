@@ -19,5 +19,5 @@ export function RoomPage() {
   if (room.phase === 'NEXT_GAME_VOTE' || room.phase === 'NEXT_GAME_VOTE_RESULTS') return <NextGameVote room={room} selfId={user.id} onVote={context.voteNextGame} onEnd={() => run(context.endSession())} />;
   if (room.phase === 'GAME_RESULTS') return <Suspense fallback={<GameLoadingFallback />}><gameClient.Results room={room} selfId={user.id} onLobby={() => run(context.continueSession())} onEnd={() => run(context.endSession())} /></Suspense>;
   if (room.phase === 'SESSION_RESULTS') return <SessionResults room={room} selfId={user.id} onLobby={() => run(context.returnLobby())} />;
-  return <Suspense fallback={<GameLoadingFallback />}><gameClient.ActiveGame room={room} selfId={user.id} onAction={context.gameAction} /></Suspense>;
+  return <Suspense fallback={<GameLoadingFallback />}><gameClient.ActiveGame key={room.gameSkipState?.gameInstanceId} room={room} selfId={user.id} onAction={context.gameAction} /></Suspense>;
 }

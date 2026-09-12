@@ -64,6 +64,30 @@ function startReady(manager: RoomManager, room: any, playerId: string): void {
   (manager as any).startGame(playerId);
 }
 
+function activeSkipFixture(playerCount = 2, rounds = 10) {
+  const transport = io();
+  const audit = {
+    roomCreated: vi.fn(() => Promise.resolve()),
+    roomClosed: vi.fn(() => Promise.resolve()),
+    gameStarted: vi.fn(() => Promise.resolve()),
+    gameAbandoned: vi.fn(() => Promise.resolve()),
+  };
+  const manager = new RoomManager(transport as any, catalog, undefined, undefined, audit);
+  const people = Array.from({ length: playerCount }, (_, index) => identity(`skip-p${index + 1}`, index === 0 ? 'Host' : `Player ${index + 1}`));
+  const created = (manager as any).create(socket('skip-socket-1'), people[0], Math.max(8, playerCount));
+  const room = manager.store.get(created.room.code)!;
+  for (let index = 1; index < people.length; index += 1) (manager as any).join(socket(`skip-socket-${index + 1}`), people[index], room.code);
+  (manager as any).selectGame(people[0]!.id, 'higher-lower');
+  const config = room.gameConfigs.get('higher-lower') as Record<string, unknown>;
+  (manager as any).updateConfig(people[0]!.id, { ...config, rounds });
+  startReady(manager, room, people[0]!.id);
+  const instanceId = room.game!.resultId;
+  const setVote = (playerId: string, wantsToSkip: boolean, targetInstanceId = instanceId) => (
+    (manager as any).setGameSkipVote(playerId, { gameInstanceId: targetInstanceId, wantsToSkip })
+  );
+  return { manager, room, people, transport, audit, instanceId, setVote };
+}
+
 describe('room multi-game lifecycle', () => {
   beforeEach(() => persistGameResults.mockClear());
   afterEach(() => vi.useRealTimers());
@@ -143,7 +167,7 @@ describe('room multi-game lifecycle', () => {
   });
 
   it('audits room and game starts while exposing only an admin-safe live projection', () => {
-    const audit = { roomCreated: vi.fn(() => Promise.resolve()), roomClosed: vi.fn(() => Promise.resolve()), gameStarted: vi.fn(() => Promise.resolve()) };
+    const audit = { roomCreated: vi.fn(() => Promise.resolve()), roomClosed: vi.fn(() => Promise.resolve()), gameStarted: vi.fn(() => Promise.resolve()), gameAbandoned: vi.fn(() => Promise.resolve()) };
     const manager = new RoomManager(io() as any, catalog, undefined, undefined, audit);
     const host: AuthUser = { ...identity('host-user', 'Host'), kind: 'USER', email: 'host@example.com', role: 'ADMIN' };
     const guest = identity('guest-user', 'Guest');
@@ -1141,5 +1165,314 @@ describe('room multi-game lifecycle', () => {
     const blue = room.game!.state.teams.BLUE.playerIds as string[]; const sender = blue[0]!; const teammate = blue[1]!; (manager as any).updateWhoIsWhoCursor(sender, room.members.get(sender)!.socketId, { x: 0.2, y: 0.8 }); transport.emit.mockClear();
     (manager as any).disconnect(sender, room.members.get(sender)!.socketId); expect(transport.emit).toHaveBeenCalledWith('who-is-who:cursor-clear', { playerId: sender });
     room.members.get(sender)!.connected = true; room.members.get(sender)!.presence = 'CONNECTED'; transport.emit.mockClear(); const blueActor = room.game!.state.teams.BLUE.playerIds.find((id: string) => room.members.get(id)?.presence === 'CONNECTED')!; (manager as any).action(blueActor, { type: 'END_TURN' }); const redActor = (room.game!.state.teams.RED.playerIds as string[])[0]!; (manager as any).action(redActor, { type: 'END_TURN' }); expect(transport.emit).toHaveBeenCalledWith('who-is-who:cursors-reset'); expect(teammate).toBeTruthy();
+  });
+
+  describe('global unanimous game skip', () => {
+    beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(50_000); });
+    afterEach(() => vi.clearAllTimers());
+
+    it('waits for the host when every other participant has voted', () => {
+      const { room, people, setVote, instanceId } = activeSkipFixture(4);
+      for (const person of people.slice(1)) setVote(person.id, true);
+      expect(room.game?.resultId).toBe(instanceId);
+      expect(room.game?.skipVoterIds.size).toBe(3);
+    });
+
+    it('expires a missing voter using the existing grace timer and skips automatically', () => {
+      const { manager, room, people, setVote, instanceId } = activeSkipFixture(3);
+      setVote(people[0]!.id, true);
+      setVote(people[1]!.id, true);
+      (manager as any).disconnect(people[2]!.id, 'skip-socket-3');
+      vi.advanceTimersByTime(29_999);
+      expect(room.game?.resultId).toBe(instanceId);
+      expect((manager as any).view(room, people[0]!.id).gameSkipState.requiredVotes).toBe(3);
+      vi.advanceTimersByTime(1);
+      expect(room.game?.resultId).not.toBe(instanceId);
+      expect(room.gamesPlayed).toBe(0);
+      expect(manager.store.roomForPlayer(people[2]!.id)).toBeUndefined();
+    });
+
+    it('removes a departed vote and never restores it when the identity rejoins as spectator', () => {
+      const { manager, room, people, setVote } = activeSkipFixture(3);
+      setVote(people[1]!.id, true);
+      (manager as any).finalDisconnect(room, people[1]!.id, true);
+      (manager as any).join(socket('skip-rejoined'), people[1], room.code);
+      expect((manager as any).view(room, people[1]!.id).gameSkipState).toMatchObject({
+        votes: 0, requiredVotes: 2, currentUserVoted: false, canVote: false,
+      });
+      expect(() => setVote(people[1]!.id, true)).toThrow(/No puedes votar/);
+    });
+
+    it('invalidates the old timer callback even when it was already queued', () => {
+      const scheduled = vi.spyOn(global, 'setTimeout');
+      const { room, people, setVote } = activeSkipFixture(2);
+      const staleCallback = scheduled.mock.calls.at(-1)![0] as () => void;
+      scheduled.mockRestore();
+      for (const person of people) setVote(person.id, true);
+      const replacement = room.game!;
+      const nextState = replacement.state;
+      staleCallback();
+      expect(room.game).toBe(replacement);
+      expect(replacement.state).toBe(nextState);
+      expect(room.gamesPlayed).toBe(0);
+    });
+
+    it('rejects stale gameplay and skip messages at the socket boundary', () => {
+      const { manager, room, people, instanceId } = activeSkipFixture(1);
+      const client = boundSocket('skip-bound', people[0]!);
+      manager.bind(client as any);
+      const voteAck = vi.fn();
+      client.handlers.get('game:skip-vote:set')?.({ gameInstanceId: instanceId, wantsToSkip: true }, voteAck);
+      expect(voteAck).toHaveBeenCalledWith({ ok: true });
+      const replacement = room.game!;
+      const actionAck = vi.fn();
+      client.handlers.get('game:action')?.({ gameInstanceId: instanceId, action: { type: 'ANSWER', choice: 'HIGHER' } }, actionAck);
+      expect(actionAck).toHaveBeenCalledWith({ ok: false, error: expect.stringMatching(/ya ha cambiado/) });
+      expect(replacement.state.answers).toEqual({});
+      const staleVoteAck = vi.fn();
+      client.handlers.get('game:skip-vote:set')?.({ gameInstanceId: instanceId, wantsToSkip: false }, staleVoteAck);
+      expect(staleVoteAck).toHaveBeenCalledWith({ ok: false, error: expect.stringMatching(/ya ha cambiado/) });
+      expect(replacement.skipVoterIds.size).toBe(0);
+      const currentActionAck = vi.fn();
+      client.handlers.get('game:action')?.({ gameInstanceId: replacement.resultId, action: { type: 'ANSWER', choice: 'HIGHER' } }, currentActionAck);
+      expect(currentActionAck).toHaveBeenCalledWith({ ok: true });
+    });
+
+    it('discards current partial scores while preserving previous session results', () => {
+      const { room, people, setVote } = activeSkipFixture(2);
+      room.gamesPlayed = 1;
+      const history = { gameNumber: 1, gameId: 'shiny-vote', winnerIds: [people[0]!.id], points: { [people[0]!.id]: 7 } };
+      room.sessionHistory.push(history);
+      room.members.get(people[0]!.id)!.sessionPoints = 7;
+      room.sessionParticipants.get(people[0]!.id)!.sessionPoints = 7;
+      room.game!.state.scores[people[0]!.id] = 99;
+      for (const person of people) setVote(person.id, true);
+      expect(room.gamesPlayed).toBe(1);
+      expect(room.sessionHistory).toEqual([history]);
+      expect(room.members.get(people[0]!.id)?.sessionPoints).toBe(7);
+      expect(room.sessionParticipants.get(people[0]!.id)?.sessionPoints).toBe(7);
+    });
+
+    it('keeps completed-game identities available to delayed persistence after continuation', async () => {
+      const { manager, room, people } = activeSkipFixture(2, 1);
+      let releaseAudit!: () => void;
+      room.game!.auditReady = new Promise<void>((resolve) => { releaseAudit = resolve; });
+      const completedId = room.game!.resultId;
+      (manager as any).action(people[0]!.id, { type: 'ANSWER', choice: 'HIGHER' });
+      (manager as any).finalDisconnect(room, people[1]!.id, true);
+      room.game!.state.nextTransitionAt = 0;
+      (manager as any).tick(room);
+      (manager as any).continueSession(people[0]!.id);
+      expect(room.members.has(people[1]!.id)).toBe(false);
+      releaseAudit();
+      await vi.waitFor(() => expect(persistGameResults).toHaveBeenCalledTimes(1));
+      const persisted = persistGameResults.mock.calls[0] as unknown as [typeof room, unknown, string];
+      expect(persisted[2]).toBe(completedId);
+      expect(persisted[0].members.get(people[1]!.id)?.identity).toEqual(people[1]);
+    });
+
+    it('uses the random fallback when only the current game remains compatible', () => {
+      const { manager, room, people, setVote, instanceId } = activeSkipFixture(3);
+      room.gameSelectionMode = { type: 'RANDOM', gameIds: ['higher-lower', 'who-is-who-pokemon'] };
+      (manager as any).finalDisconnect(room, people[2]!.id, true);
+      (manager as any).finalDisconnect(room, people[1]!.id, true);
+      setVote(people[0]!.id, true);
+      expect(room.game?.gameId).toBe('higher-lower');
+      expect(room.game?.resultId).not.toBe(instanceId);
+    });
+
+    it('never treats an empty eligible roster as unanimous', () => {
+      const { manager, room } = activeSkipFixture(1);
+      room.game!.departedParticipantIds.add(room.hostId);
+      expect((manager as any).resolveUnanimousGameSkip(room, room.game)).toBe(false);
+      expect(room.game?.finishReason).toBeNull();
+    });
+
+    it('adds one idempotent vote and publishes 1/N', () => {
+      const { manager, room, people, setVote } = activeSkipFixture(3);
+      setVote(people[1]!.id, true);
+      setVote(people[1]!.id, true);
+
+      expect((manager as any).view(room, people[1]!.id).gameSkipState).toMatchObject({
+        voterIds: [people[1]!.id], votes: 1, requiredVotes: 3, currentUserVoted: true, canVote: true,
+      });
+    });
+
+    it('removes a vote idempotently and publishes 0/N', () => {
+      const { manager, room, people, setVote } = activeSkipFixture(3);
+      setVote(people[1]!.id, true);
+      setVote(people[1]!.id, false);
+      setVote(people[1]!.id, false);
+
+      expect((manager as any).view(room, people[1]!.id).gameSkipState).toMatchObject({ voterIds: [], votes: 0, requiredVotes: 3, currentUserVoted: false });
+    });
+
+    it('keeps the game active with N-1 votes and counts the host as one ordinary voter', () => {
+      const { room, people, setVote, instanceId } = activeSkipFixture(3);
+      setVote(people[0]!.id, true);
+      setVote(people[1]!.id, true);
+
+      expect(room.game?.resultId).toBe(instanceId);
+      expect(room.game?.finishReason).toBeNull();
+      expect(room.game?.skipVoterIds).toEqual(new Set([people[0]!.id, people[1]!.id]));
+    });
+
+    it('does not grant the host a unilateral skip', () => {
+      const { room, people, setVote, instanceId } = activeSkipFixture(4);
+      setVote(people[0]!.id, true);
+
+      expect(room.game?.resultId).toBe(instanceId);
+      expect(room.game?.skipVoterIds.size).toBe(1);
+    });
+
+    it('skips on unanimity without results, winners, points or completed-game statistics', async () => {
+      const { manager, room, people, audit, setVote, instanceId } = activeSkipFixture(3);
+      const skippedGame = room.game!;
+      for (const person of people) setVote(person.id, true);
+
+      expect(skippedGame.finishReason).toBe('SKIPPED');
+      expect(skippedGame.resultsApplied).toBe(false);
+      expect(room.game?.resultId).not.toBe(instanceId);
+      expect(room.phase).toBe('ROUND_ACTIVE');
+      expect(room.gamesPlayed).toBe(0);
+      expect(room.sessionHistory).toEqual([]);
+      expect(room.sessionParticipants.get(people[0]!.id)?.sessionPoints).toBe(0);
+      expect((manager as any).view(room, people[0]!.id).gameSkipState).toMatchObject({ votes: 0, requiredVotes: 3 });
+      expect(persistGameResults).not.toHaveBeenCalled();
+      await vi.waitFor(() => expect(audit.gameAbandoned).toHaveBeenCalledWith(expect.objectContaining({ resultId: instanceId, reason: 'SKIPPED' })));
+    });
+
+    it('lets a one-player session skip with 1/1', () => {
+      const { room, people, setVote, instanceId } = activeSkipFixture(1);
+      setVote(people[0]!.id, true);
+
+      expect(room.game?.resultId).not.toBe(instanceId);
+      expect(room.gamesPlayed).toBe(0);
+    });
+
+    it('does not apply a delayed duplicate vote to the next game instance', () => {
+      const { room, people, setVote, instanceId } = activeSkipFixture(1);
+      setVote(people[0]!.id, true);
+      expect(() => setVote(people[0]!.id, true, instanceId)).toThrow(/ya ha cambiado/);
+      expect(room.game?.skipVoterIds.size).toBe(0);
+    });
+
+    it('keeps votes and required voters through the reconnect grace period', () => {
+      const { manager, room, people, setVote } = activeSkipFixture(2);
+      setVote(people[0]!.id, true);
+      (manager as any).disconnect(people[0]!.id, 'skip-socket-1');
+
+      expect(room.game?.finishReason).toBeNull();
+      expect((manager as any).view(room, people[1]!.id).gameSkipState).toMatchObject({ votes: 1, requiredVotes: 2 });
+      const restoredSocket = socket('skip-restored');
+      (manager as any).restore(restoredSocket, people[0]);
+      expect(restoredSocket.emit).toHaveBeenCalledWith('session:restored', expect.objectContaining({
+        gameSkipState: expect.objectContaining({ votes: 1, requiredVotes: 2, currentUserVoted: true }),
+      }));
+    });
+
+    it('recalculates required votes after a definitive departure', () => {
+      const { manager, room, people, setVote, instanceId } = activeSkipFixture(4);
+      setVote(people[0]!.id, true);
+      setVote(people[1]!.id, true);
+      (manager as any).finalDisconnect(room, people[3]!.id, true);
+
+      expect(room.game?.resultId).toBe(instanceId);
+      expect((manager as any).view(room, people[0]!.id).gameSkipState).toMatchObject({ votes: 2, requiredVotes: 3 });
+    });
+
+    it('skips automatically when a definitive departure creates unanimity', () => {
+      const { manager, room, people, setVote, instanceId } = activeSkipFixture(4);
+      for (const person of people.slice(0, 3)) setVote(person.id, true);
+      (manager as any).finalDisconnect(room, people[3]!.id, true);
+
+      expect(room.game?.resultId).not.toBe(instanceId);
+      expect(room.gamesPlayed).toBe(0);
+    });
+
+    it('keeps eliminated participants eligible without admitting mid-game spectators', () => {
+      const { manager, room, people, setVote, instanceId } = activeSkipFixture(2);
+      room.members.get(people[1]!.id)!.role = 'SPECTATOR';
+      expect((manager as any).view(room, people[1]!.id).gameSkipState.canVote).toBe(true);
+      setVote(people[1]!.id, true);
+
+      const watcher = identity('skip-watcher', 'Watcher');
+      (manager as any).join(socket('skip-watcher-socket'), watcher, room.code);
+      const watcherView = (manager as any).view(room, watcher.id);
+      expect(watcherView.gameSkipState).toMatchObject({ requiredVotes: 2, currentUserVoted: false, canVote: false });
+      expect(() => (manager as any).setGameSkipVote(watcher.id, { gameInstanceId: instanceId, wantsToSkip: true })).toThrow(/No puedes votar/);
+    });
+
+    it('rejects an external identity and never accepts a client-supplied voter id', () => {
+      const { manager, room, people, instanceId } = activeSkipFixture(2);
+      expect(() => (manager as any).setGameSkipVote('outside', { gameInstanceId: instanceId, wantsToSkip: true })).toThrow(/Not in a room/);
+      expect(() => (manager as any).setGameSkipVote(people[0]!.id, { gameInstanceId: instanceId, wantsToSkip: true, playerId: people[1]!.id })).toThrow(/unrecognized_keys/);
+      expect(room.game?.skipVoterIds).toEqual(new Set());
+    });
+
+    it('preserves votes across internal round transitions', () => {
+      const { manager, room, people, setVote, instanceId } = activeSkipFixture(2, 2);
+      setVote(people[0]!.id, true);
+      (manager as any).action(people[0]!.id, { type: 'ANSWER', choice: 'HIGHER' });
+      (manager as any).action(people[1]!.id, { type: 'ANSWER', choice: 'LOWER' });
+      expect(room.phase).toBe('ROUND_RESULTS');
+      room.game!.state.nextTransitionAt = 0;
+      (manager as any).tick(room);
+
+      expect(room.game?.resultId).toBe(instanceId);
+      expect(room.game?.state.roundNumber).toBe(2);
+      expect(room.game?.skipVoterIds).toEqual(new Set([people[0]!.id]));
+    });
+
+    it('lets normal completion win the critical section before a late final vote', async () => {
+      const { manager, room, people, setVote, instanceId } = activeSkipFixture(2, 1);
+      setVote(people[0]!.id, true);
+      (manager as any).action(people[0]!.id, { type: 'ANSWER', choice: 'HIGHER' });
+      (manager as any).action(people[1]!.id, { type: 'ANSWER', choice: 'LOWER' });
+      room.game!.state.nextTransitionAt = 0;
+      (manager as any).tick(room);
+
+      expect(room.game?.finishReason).toBe('COMPLETED');
+      expect(() => setVote(people[1]!.id, true, instanceId)).toThrow(/No hay un minijuego activo/);
+      expect(room.gamesPlayed).toBe(1);
+      await vi.waitFor(() => expect(persistGameResults).toHaveBeenCalledTimes(1));
+    });
+
+    it('ignores a stale normal finish after the final skip vote claims the instance', () => {
+      const { manager, room, people, setVote } = activeSkipFixture(2, 1);
+      const skippedGame = room.game!;
+      setVote(people[0]!.id, true);
+      setVote(people[1]!.id, true);
+      const replacementId = room.game!.resultId;
+      skippedGame.state = { ...skippedGame.state, phase: 'GAME_RESULTS' };
+      (manager as any).syncAndBroadcast(room, skippedGame);
+
+      expect(skippedGame.finishReason).toBe('SKIPPED');
+      expect(room.game?.resultId).toBe(replacementId);
+      expect(room.gamesPlayed).toBe(0);
+      expect(persistGameResults).not.toHaveBeenCalled();
+    });
+
+    it('uses random progression while excluding the skipped game when an alternative exists', () => {
+      const { room, people, setVote, instanceId } = activeSkipFixture(2);
+      room.gameSelectionMode = { type: 'RANDOM', gameIds: ['higher-lower', 'shiny-vote'] };
+      for (const person of people) setVote(person.id, true);
+
+      expect(room.selectedGameId).toBe('shiny-vote');
+      expect(room.game?.gameId).toBe('shiny-vote');
+      expect(room.game?.resultId).not.toBe(instanceId);
+    });
+
+    it('uses the configured next-game vote flow without exposing normal game results', () => {
+      const { manager, room, people, setVote } = activeSkipFixture(2);
+      room.gameSelectionMode = { type: 'VOTE', gameIds: ['higher-lower', 'shiny-vote', 'pokemon-bingo'] };
+      for (const person of people) setVote(person.id, true);
+
+      expect(room.phase).toBe('NEXT_GAME_VOTE');
+      expect(room.game).toBeNull();
+      expect(room.nextGameVote?.optionGameIds).toHaveLength(3);
+      expect((manager as any).view(room, people[0]!.id).gameSkipState).toBeNull();
+      expect(room.sessionHistory).toEqual([]);
+    });
   });
 });

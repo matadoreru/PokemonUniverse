@@ -17,6 +17,7 @@ export function markTemporarilyDisconnected(member: RoomMember): void {
 }
 
 export function markLeft(member: RoomMember): void {
+  if (member.disconnectTimer) clearTimeout(member.disconnectTimer);
   member.disconnectTimer = null;
   member.connected = false;
   member.presence = 'LEFT';
@@ -30,6 +31,6 @@ export function oldestConnectedMember(room: LiveRoom): RoomMember | undefined {
 }
 
 export function gameRetainsPlayer(room: LiveRoom, playerId: string): boolean {
-  if (!room.game || room.phase === 'GAME_RESULTS' || room.phase === 'SESSION_RESULTS') return false;
+  if (!room.game || room.game.finishReason !== null || room.phase === 'GAME_RESULTS' || room.phase === 'SESSION_RESULTS') return false;
   return room.game.participantIds.includes(playerId);
 }

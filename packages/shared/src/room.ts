@@ -85,6 +85,25 @@ export interface NextGameVoteView {
   nextTransitionAt: number | null;
 }
 
+export const setGameSkipVoteRequestSchema = z.object({ gameInstanceId: z.string().uuid(), wantsToSkip: z.boolean() }).strict();
+export type SetGameSkipVoteRequest = z.infer<typeof setGameSkipVoteRequestSchema>;
+
+/** Transport envelope prevents late actions from affecting a replacement runtime. */
+export const gameActionRequestSchema = z.object({ gameInstanceId: z.string().uuid(), action: z.unknown() }).strict();
+export type GameActionRequest = z.infer<typeof gameActionRequestSchema>;
+
+export type GameFinishReason = 'COMPLETED' | 'SKIPPED';
+
+/** Public, player-specific projection of the vote attached to the active game runtime. */
+export interface GameSkipStateView {
+  gameInstanceId: string;
+  voterIds: string[];
+  votes: number;
+  requiredVotes: number;
+  currentUserVoted: boolean;
+  canVote: boolean;
+}
+
 export interface RoomView {
   code: string;
   phase: RoomPhase;
@@ -101,6 +120,8 @@ export interface RoomView {
   sessionMode: SessionMode;
   gameSelectionMode: GameSelectionMode;
   nextGameVote: NextGameVoteView | null;
+  /** Absent on legacy snapshots; clients wait for a current instance before sending game actions. */
+  gameSkipState?: GameSkipStateView | null;
   gamesPlayed: number;
   sessionStandings: SessionStandingView[];
   sessionHistory: SessionGameSummaryView[];
@@ -147,7 +168,8 @@ export interface ClientToServerEvents {
   'room:continue-session': (_: unknown, ack: SocketAck) => void;
   'room:return-lobby': (_: unknown, ack: SocketAck) => void;
   'room:end-session': (_: unknown, ack: SocketAck) => void;
-  'game:action': (payload: unknown, ack: SocketAck) => void;
+  'game:skip-vote:set': (payload: SetGameSkipVoteRequest, ack: SocketAck) => void;
+  'game:action': (payload: GameActionRequest, ack: SocketAck) => void;
   'who-is-who:cursor': (payload: unknown, ack?: SocketAck) => void;
   'who-is-who:cursor-clear': (_: unknown, ack?: SocketAck) => void;
 }

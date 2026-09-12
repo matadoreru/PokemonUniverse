@@ -5,12 +5,14 @@ export interface RoomAuditSink {
   roomCreated(input: { id: string; code: string; hostUserId: string | null; hostDisplayName: string; maxPlayers: number; createdAt: number }): Promise<void>;
   roomClosed(input: { id: string; reason: string; gameResultId: string | null; endedAt: number }): Promise<void>;
   gameStarted(input: { resultId: string; roomHistoryId: string; roomCode: string; gameId: string; playerCount: number; config: unknown; startedAt: number }): Promise<void>;
+  gameAbandoned(input: { resultId: string; reason: 'SKIPPED'; endedAt: number }): Promise<void>;
 }
 
 export const noOpRoomAuditSink: RoomAuditSink = {
   roomCreated: async () => undefined,
   roomClosed: async () => undefined,
   gameStarted: async () => undefined,
+  gameAbandoned: async () => undefined,
 };
 
 export function createPrismaRoomAuditSink(database: PrismaClient = prisma): RoomAuditSink {
@@ -43,6 +45,12 @@ export function createPrismaRoomAuditSink(database: PrismaClient = prisma): Room
           gameId: input.gameId, playerCount: input.playerCount, config: input.config as Prisma.InputJsonValue,
           status: 'IN_PROGRESS', startedAt: new Date(input.startedAt),
         },
+      });
+    }),
+    gameAbandoned: (input) => enqueue(async () => {
+      await database.gameHistory.updateMany({
+        where: { resultId: input.resultId, status: 'IN_PROGRESS' },
+        data: { status: 'ABANDONED', endedAt: new Date(input.endedAt) },
       });
     }),
   };

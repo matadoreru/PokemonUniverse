@@ -23,7 +23,7 @@ describe('room presence service', () => {
   });
 
   it('uses the stable runtime roster without inspecting private game state', () => {
-    const room = { phase: 'ROUND_ACTIVE', game: { participantIds: ['player'], state: { secret: 'opaque' } } } as unknown as LiveRoom;
+    const room = { phase: 'ROUND_ACTIVE', game: { finishReason: null, participantIds: ['player'], state: { secret: 'opaque' } } } as unknown as LiveRoom;
     expect(gameRetainsPlayer(room, 'player')).toBe(true);
     expect(gameRetainsPlayer(room, 'spectator')).toBe(false);
     room.phase = 'GAME_RESULTS';

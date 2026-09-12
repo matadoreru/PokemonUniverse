@@ -1,5 +1,6 @@
-import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, isSessionComplete, roomCodeSchema, sessionModeSchema, supportsPlayerCount, validateGameConfigReadiness, whoIsWhoCursorPositionSchema, type AdminActiveRoom, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type PokemonAudioCatalog, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck, type SubjectiveCategory, type TcgCardCatalog, type WhoIsWhoTeam, type WouldYouRatherPromptPair } from '@pokemon-universe/shared';
+import { assignableRoomRoleSchema, formatPendingReadyNames, gameRegistry, gameSelectionModeSchema, hasRoomPermission, isSessionComplete, roomCodeSchema, sessionModeSchema, setGameSkipVoteRequestSchema, supportsPlayerCount, validateGameConfigReadiness, whoIsWhoCursorPositionSchema, type AdminActiveRoom, type AssignableRoomRole, type AuthUser, type AvatarRef, type ClientToServerEvents, type GameAssetResolution, type GameFinishReason, type PokemonAudioCatalog, type PokemonCatalog, type PokemonVisualCatalog, type RoomPermission, type RoomRole, type RoomView, type ServerToClientEvents, type SocketAck, type SubjectiveCategory, type TcgCardCatalog, type WhoIsWhoTeam, type WouldYouRatherPromptPair } from '@pokemon-universe/shared';
 import { randomInt, randomUUID } from 'node:crypto';
+import { gameActionRequestSchema } from '@pokemon-universe/shared';
 import { isDeepStrictEqual } from 'node:util';
 import type { Server, Socket } from 'socket.io';
 import { env } from '../config.js';
@@ -8,9 +9,10 @@ import { preloadGameImage } from '../http/game-image-cache.js';
 import { persistGameResults } from '../stats/service.js';
 import { noOpUserGameConfigPreferences, type UserGameConfigPreferences } from '../game-configs/service.js';
 import { InMemoryRoomStore } from './store.js';
+import { eligibleGameSkipVoterIds, gameSkipStateView, hasUnanimousGameSkip, reconcileGameSkipVotes } from './game-skip.js';
 import { gameRetainsPlayer, markLeft, markTemporarilyDisconnected, oldestConnectedMember, restoreMember } from './presence.js';
 import { cancelTimer, earliestDeadline, scheduleDeadline } from './timers.js';
-import type { LiveRoom, RoomMember } from './types.js';
+import type { GameRuntime, LiveRoom, RoomMember } from './types.js';
 
 type GameServer = Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, { identity: AuthUser }>;
 type GameSocket = Socket<ClientToServerEvents, ServerToClientEvents, Record<string, never>, { identity: AuthUser }>;
@@ -64,7 +66,13 @@ export class RoomManager {
     socket.on('room:continue-session', (_payload, ack) => currentSocket(ack, () => this.continueSession(identity.id)));
     socket.on('room:return-lobby', (_payload, ack) => currentSocket(ack, () => this.returnLobby(identity.id)));
     socket.on('room:end-session', (_payload, ack) => currentSocket(ack, () => this.endSession(identity.id)));
-    socket.on('game:action', (payload, ack) => currentSocket(ack, () => this.action(identity.id, payload)));
+    socket.on('game:skip-vote:set', (payload, ack) => currentSocket(ack, () => this.setGameSkipVote(identity.id, payload)));
+    socket.on('game:action', (payload, ack) => currentSocket(ack, () => {
+      const request = gameActionRequestSchema.parse(payload);
+      const room = this.requiredRoom(identity.id);
+      if (room.game?.resultId !== request.gameInstanceId) throw new Error('El minijuego ya ha cambiado.');
+      return this.action(identity.id, request.action);
+    }));
     socket.on('who-is-who:cursor', (payload, ack) => this.cursorEvent(ack, () => this.updateWhoIsWhoCursor(identity.id, socket.id, payload)));
     socket.on('who-is-who:cursor-clear', (_payload, ack) => this.cursorEvent(ack, () => this.clearWhoIsWhoCursor(identity.id, socket.id)));
     socket.on('disconnect', () => this.disconnect(identity.id, socket.id));
@@ -193,13 +201,14 @@ export class RoomManager {
     if (!explicit && member.connected) return;
     this.clearWhoIsWhoCursor(playerId, member.socketId, false);
     markLeft(member);
+    if (room.game?.finishReason === null && room.game.participantIds.includes(playerId)) room.game.departedParticipantIds.add(playerId);
     const retainedByLiveGame = gameRetainsPlayer(room, playerId);
     if (!retainedByLiveGame) room.members.delete(playerId);
     this.store.detachPlayer(playerId);
     if (room.hostId === playerId) this.transferHost(room);
     if (![...room.members.values()].some((candidate) => candidate.presence !== 'LEFT')) {
       room.transitionTimer = cancelTimer(room.transitionTimer); this.store.delete(room.code);
-      void this.audit.roomClosed({ id: room.historyId, reason: explicit ? 'EMPTY_AFTER_LEAVE' : 'EMPTY_AFTER_TIMEOUT', gameResultId: room.game?.resultsApplied === false ? room.game.resultId : null, endedAt: Date.now() })
+      void this.audit.roomClosed({ id: room.historyId, reason: explicit ? 'EMPTY_AFTER_LEAVE' : 'EMPTY_AFTER_TIMEOUT', gameResultId: room.game?.finishReason === null ? room.game.resultId : null, endedAt: Date.now() })
         .catch((error) => console.error('Failed to persist room closure', error));
       return;
     }
@@ -332,7 +341,7 @@ export class RoomManager {
     });
   }
 
-  private assertRotationReady(room: LiveRoom): void {
+  private assertRotationReady(room: LiveRoom, continuing = false): void {
     const mode = room.gameSelectionMode; if (mode.type === 'FIXED') return;
     for (const gameId of mode.gameIds) {
       const module = gameRegistry.get(gameId); if (!module) throw new Error(`Minijuego desconocido: ${gameId}`);
@@ -340,7 +349,7 @@ export class RoomManager {
       if (configReason) throw new Error(`${module.manifest.name}: ${configReason}`);
     }
     const playableCount = this.playableGameIds(room, mode.gameIds).length;
-    const minimum = mode.type === 'VOTE' ? 3 : 2;
+    const minimum = mode.type === 'VOTE' ? 3 : continuing ? 1 : 2;
     if (playableCount < minimum) throw new Error(`La rotación ${mode.type === 'VOTE' ? 'por votación' : 'aleatoria'} necesita al menos ${minimum} minijuegos compatibles con el número actual de jugadores.`);
   }
 
@@ -381,7 +390,10 @@ export class RoomManager {
       resultId, roomHistoryId: room.historyId, roomCode: room.code,
       gameId: module.manifest.id, playerCount: players.length, config, startedAt: context.now,
     });
-    room.game = { resultId, gameId: module.manifest.id, participantIds: players.map((player) => player.id), module, config, state, startedAt: context.now, resultsApplied: false, auditReady };
+    room.game = {
+      resultId, gameId: module.manifest.id, participantIds: players.map((player) => player.id), module, config, state,
+      startedAt: context.now, finishReason: null, skipVoterIds: new Set(), departedParticipantIds: new Set(), resultsApplied: false, auditReady,
+    };
     this.resetWhoIsWhoCursors(room);
     room.phase = state.phase; this.syncAndBroadcast(room);
   }
@@ -389,7 +401,7 @@ export class RoomManager {
   /** Synchronous mutation is the per-room critical section: no await occurs before a selection is committed. */
   private action(playerId: string, payload: unknown): Record<string, never> {
     const room = this.requiredRoom(playerId); const game = room.game;
-    if (!game) throw new Error('No game in progress');
+    if (!game || game.finishReason !== null) throw new Error('No game in progress');
     const member = room.members.get(playerId);
     if (!member || member.presence !== 'CONNECTED' || member.role !== 'PLAYER') throw new Error('You cannot act in the current game');
     const context = this.context(room);
@@ -398,7 +410,49 @@ export class RoomManager {
     game.state = result.state;
     if (!result.accepted) throw new Error(result.error ?? 'Action rejected');
     if (game.gameId === 'who-is-who-pokemon' && (game.state.roundNumber !== previousRound || game.module.isFinished(game.state))) this.resetWhoIsWhoCursors(room);
-    this.syncAndBroadcast(room); return {};
+    this.syncAndBroadcast(room, game); return {};
+  }
+
+  private setGameSkipVote(playerId: string, payload: unknown): Record<string, never> {
+    const request = setGameSkipVoteRequestSchema.parse(payload);
+    const room = this.requiredRoom(playerId); const game = room.game;
+    if (!game || game.finishReason !== null || room.phase === 'GAME_RESULTS') throw new Error('No hay un minijuego activo que se pueda saltar.');
+    if (game.resultId !== request.gameInstanceId) throw new Error('El minijuego ya ha cambiado.');
+    const member = room.members.get(playerId);
+    const eligibleIds = eligibleGameSkipVoterIds(room);
+    if (!member || member.presence !== 'CONNECTED' || !eligibleIds.includes(playerId)) throw new Error('No puedes votar para saltar este minijuego.');
+    if (request.wantsToSkip) game.skipVoterIds.add(playerId);
+    else game.skipVoterIds.delete(playerId);
+    if (!this.resolveUnanimousGameSkip(room, game, eligibleIds)) this.broadcast(room);
+    return {};
+  }
+
+  private resolveUnanimousGameSkip(room: LiveRoom, game: GameRuntime, eligibleIds = reconcileGameSkipVotes(room)): boolean {
+    if (room.game !== game || game.finishReason !== null || !hasUnanimousGameSkip(room, eligibleIds)) return false;
+    return this.skipGame(room, game);
+  }
+
+  private claimGameFinish(room: LiveRoom, game: GameRuntime, reason: GameFinishReason): boolean {
+    if (room.game !== game || game.finishReason !== null) return false;
+    game.finishReason = reason;
+    room.transitionTimer = cancelTimer(room.transitionTimer);
+    return true;
+  }
+
+  private skipGame(room: LiveRoom, game: GameRuntime): boolean {
+    if (!this.claimGameFinish(room, game, 'SKIPPED')) return false;
+    this.resetWhoIsWhoCursors(room);
+    game.skipVoterIds.clear();
+    const endedAt = Date.now();
+    void game.auditReady.catch((error) => console.error('Failed to persist game start', error))
+      .then(() => this.audit.gameAbandoned({ resultId: game.resultId, reason: 'SKIPPED', endedAt }))
+      .catch((error) => console.error('Failed to mark skipped game as abandoned', error));
+    try { this.advanceSessionAfterGame(room); }
+    catch (error) {
+      this.broadcast(room);
+      console.error('Failed to continue after skipped game', error);
+    }
+    return true;
   }
 
   private eligibleNextGameVoterIds(room: LiveRoom): string[] {
@@ -461,10 +515,10 @@ export class RoomManager {
       return;
     }
     if (room.phase === 'LOBBY' || room.phase === 'GAME_RESULTS' || room.phase === 'SESSION_RESULTS') return;
-    if (!room.game) return;
-    const previousRound = room.game.state.roundNumber; room.game.state = room.game.module.handleTimeout(room.game.state, this.context(room));
-    if (room.game.gameId === 'who-is-who-pokemon' && (room.game.state.roundNumber !== previousRound || room.game.module.isFinished(room.game.state))) this.resetWhoIsWhoCursors(room);
-    this.syncAndBroadcast(room);
+    const game = room.game; if (!game || game.finishReason !== null) return;
+    const previousRound = game.state.roundNumber; game.state = game.module.handleTimeout(game.state, this.context(room));
+    if (game.gameId === 'who-is-who-pokemon' && (game.state.roundNumber !== previousRound || game.module.isFinished(game.state))) this.resetWhoIsWhoCursors(room);
+    this.syncAndBroadcast(room, game);
   }
 
   private applyPresenceChange(room: LiveRoom): void {
@@ -479,26 +533,29 @@ export class RoomManager {
       this.broadcast(room); this.schedule(room); return;
     }
     const game = room.game;
+    if (game?.finishReason === null && this.resolveUnanimousGameSkip(room, game)) return;
     if (game?.module.handlePresenceChange) {
       game.state = game.module.handlePresenceChange(game.state, this.context(room));
-      this.syncAndBroadcast(room);
+      this.syncAndBroadcast(room, game);
       return;
     }
     this.broadcast(room);
   }
 
-  private syncAndBroadcast(room: LiveRoom): void {
-    const game = room.game; if (!game) return;
+  private syncAndBroadcast(room: LiveRoom, expectedGame: GameRuntime | null = room.game): void {
+    const game = expectedGame; if (!game || room.game !== game || game.finishReason !== null) return;
     room.phase = game.state.phase;
     const spectators = new Set<string>(game.state.spectatorIds ?? []);
     for (const member of room.members.values()) if (spectators.has(member.identity.id)) member.role = 'SPECTATOR';
-    if (game.module.isFinished(game.state) && !game.resultsApplied) this.finishGame(room);
+    if (game.module.isFinished(game.state) && !game.resultsApplied) this.finishGame(room, game);
     this.broadcast(room); this.schedule(room);
   }
 
-  private finishGame(room: LiveRoom): void {
+  private finishGame(room: LiveRoom, game: GameRuntime): void {
+    if (!this.claimGameFinish(room, game, 'COMPLETED')) return;
     this.resetWhoIsWhoCursors(room);
-    const game = room.game!; game.resultsApplied = true; room.gamesPlayed += 1;
+    game.skipVoterIds.clear();
+    game.resultsApplied = true; room.gamesPlayed += 1;
     const results = game.module.getResults(game.state);
     for (const standing of results.standings) {
       const member = room.members.get(standing.playerId);
@@ -518,8 +575,10 @@ export class RoomManager {
     });
     if (room.sessionHistory.length > MAX_SESSION_HISTORY) room.sessionHistory.splice(0, room.sessionHistory.length - MAX_SESSION_HISTORY);
     room.phase = 'GAME_RESULTS';
+    // The session may advance before the asynchronous start audit completes.
+    const resultRoom = { ...room, members: new Map([...room.members].map(([id, member]) => [id, { ...member }])) };
     void game.auditReady.catch((error) => console.error('Failed to persist game start', error))
-      .then(() => persistGameResults(room, results, game.resultId, game.startedAt, game.gameId, game.config))
+      .then(() => persistGameResults(resultRoom, results, game.resultId, game.startedAt, game.gameId, game.config))
       .catch((error) => console.error('Failed to persist game results', error));
   }
 
@@ -555,6 +614,7 @@ export class RoomManager {
   }
 
   private resetToLobby(room: LiveRoom, resetSession: boolean): void {
+    room.transitionTimer = cancelTimer(room.transitionTimer);
     for (const [id, member] of room.members) {
       if (member.presence === 'LEFT') { room.members.delete(id); this.store.detachPlayer(id); continue; }
       member.role = 'PLAYER'; member.ready = false; if (resetSession) member.sessionPoints = 0;
@@ -576,23 +636,23 @@ export class RoomManager {
   private continueSession(playerId: string): Record<string, never> {
     const room = this.permissionRoom(playerId, 'START_GAME');
     if (room.phase !== 'GAME_RESULTS') throw new Error('La partida todavía no ha terminado.');
+    try { this.advanceSessionAfterGame(room); return {}; }
+    catch (error) { this.broadcast(room); throw error; }
+  }
+
+  private advanceSessionAfterGame(room: LiveRoom): void {
     if (isSessionComplete(room.sessionMode, room.gamesPlayed, [...room.sessionParticipants.values()].map((participant) => participant.sessionPoints))) {
-      room.phase = 'SESSION_RESULTS'; this.broadcast(room); return {};
-    }
-    if (room.gameSelectionMode.type === 'VOTE') {
-      if (!this.beginNextGameVote(room)) this.resetToLobby(room, false);
-      this.broadcast(room); this.schedule(room); return {};
+      room.transitionTimer = cancelTimer(room.transitionTimer); room.game = null; room.nextGameVote = null;
+      room.phase = 'SESSION_RESULTS'; this.broadcast(room); return;
     }
     this.resetToLobby(room, false);
-    try {
-      this.assertRotationReady(room);
-      this.selectRandomGame(room);
-      this.launchGame(room);
-      return {};
-    } catch (error) {
-      this.broadcast(room);
-      throw error;
+    if (room.gameSelectionMode.type === 'VOTE') {
+      this.beginNextGameVote(room);
+      this.broadcast(room); this.schedule(room); return;
     }
+    this.assertRotationReady(room, true);
+    this.selectRandomGame(room);
+    this.launchGame(room);
   }
 
   private endSession(playerId: string): Record<string, never> {
@@ -652,7 +712,7 @@ export class RoomManager {
   adminRooms(): AdminActiveRoom[] {
     return this.store.list().map((room) => {
       const host = room.members.get(room.hostId);
-      const liveGame = room.game?.resultsApplied === false ? room.game : null;
+      const liveGame = room.game?.finishReason === null ? room.game : null;
       const manifest = liveGame ? gameRegistry.get(liveGame.gameId)?.manifest : null;
       const participants = [...room.members.values()].map((member) => ({
         id: member.identity.id, displayName: member.identity.displayName, kind: member.identity.kind,
@@ -694,7 +754,7 @@ export class RoomManager {
       selectedGameId: room.selectedGameId, selectedGameConfig: room.gameConfigs.get(room.selectedGameId), sessionMode: room.sessionMode,
       gameConfigs: Object.fromEntries(room.gameConfigs),
       customizedGameIds: gameRegistry.list().filter((module) => !isDeepStrictEqual(room.gameConfigs.get(module.manifest.id), module.defaultConfig)).map((module) => module.manifest.id),
-      gameSelectionMode: room.gameSelectionMode, nextGameVote,
+      gameSelectionMode: room.gameSelectionMode, nextGameVote, gameSkipState: gameSkipStateView(room, playerId),
       gamesPlayed: room.gamesPlayed,
       sessionStandings: [...room.sessionParticipants.values()].map((participant) => ({
         id: participant.identity.id, displayName: participant.identity.displayName, avatar: participant.identity.avatar, sessionPoints: participant.sessionPoints,

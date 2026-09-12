@@ -1,4 +1,4 @@
-import type { GameSelectionMode, RoomView, SessionMode } from '@pokemon-universe/shared';
+import type { GameSelectionMode, RoomView, SessionMode, SetGameSkipVoteRequest } from '@pokemon-universe/shared';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import { createSocket, type GameSocket } from '../lib/socket';
@@ -27,6 +27,7 @@ interface RoomContextValue {
   continueSession(): Promise<void>;
   returnLobby(): Promise<void>;
   endSession(): Promise<void>;
+  setGameSkipVote(request: SetGameSkipVoteRequest): Promise<void>;
   gameAction(action: unknown): Promise<void>;
 }
 
@@ -101,7 +102,22 @@ export function RoomProvider({ children }: PropsWithChildren) {
     },
     async returnLobby() { await emit('room:return-lobby', {}); },
     async endSession() { await emit('room:end-session', {}); },
-    async gameAction(action) { await emit('game:action', action); },
+    async setGameSkipVote(request) {
+      const socket = socketRef.current;
+      if (!socket?.connected) throw new Error('Sin conexión con el servidor');
+      await new Promise<void>((resolve, reject) => {
+        socket.timeout(8_000).emit('game:skip-vote:set', request, (timeoutError: Error | null, response: Ack) => {
+          const message = timeoutError ? 'No se pudo confirmar el voto. Comprueba la conexión y vuelve a intentarlo.' : !response.ok ? response.error : null;
+          if (message) { setError(message); reject(new Error(message)); }
+          else resolve();
+        });
+      });
+    },
+    async gameAction(action) {
+      const gameInstanceId = room?.gameSkipState?.gameInstanceId;
+      if (!gameInstanceId) throw new Error('No hay un minijuego activo.');
+      await emit('game:action', { gameInstanceId, action });
+    },
   }), [connected, emit, error, optimisticEmit, room]);
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;
 }

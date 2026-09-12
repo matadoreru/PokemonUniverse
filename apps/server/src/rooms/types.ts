@@ -1,4 +1,4 @@
-import type { AuthUser, GameSelectionMode, MemberRole, PresenceStatus, RoomRole, SessionGameSummaryView, SessionMode } from '@pokemon-universe/shared';
+import type { AuthUser, GameFinishReason, GameSelectionMode, MemberRole, PresenceStatus, RoomRole, SessionGameSummaryView, SessionMode } from '@pokemon-universe/shared';
 import type { RegisteredGame } from '@pokemon-universe/shared';
 
 export interface RoomMember {
@@ -23,6 +23,12 @@ export interface GameRuntime {
   config: unknown;
   state: any;
   startedAt: number;
+  /** Claimed synchronously before either normal completion or a unanimous skip can advance the room. */
+  finishReason: GameFinishReason | null;
+  /** Votes belong to this game instance, not to an internal round. */
+  skipVoterIds: Set<string>;
+  /** Participants whose reconnect grace expired or who explicitly left this game instance. */
+  departedParticipantIds: Set<string>;
   resultsApplied: boolean;
   auditReady: Promise<void>;
 }
