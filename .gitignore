@@ -8,3 +8,4 @@ backups
 *.tsbuildinfo
 apps/server/prisma/*.db
 .DS_Store
+.data/

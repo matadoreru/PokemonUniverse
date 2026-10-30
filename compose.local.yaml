@@ -1,0 +1,20 @@
+# Solo desarrollo local y E2E; producción usa compose.yaml.
+services:
+  postgres:
+    image: docker.io/library/postgres:17-alpine
+    environment:
+      POSTGRES_DB: pokemon_universe
+      POSTGRES_USER: pokemon
+      POSTGRES_PASSWORD: pokemon
+    ports:
+      - "5432:5432"
+    volumes:
+      - pokemon_universe_local_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pokemon -d pokemon_universe"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pokemon_universe_local_pg:

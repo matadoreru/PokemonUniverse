@@ -16,6 +16,8 @@
     "db:generate": "npm run db:generate -w @pokemon-universe/server",
     "db:migrate": "npm run db:migrate -w @pokemon-universe/server",
     "db:seed": "npm run db:seed -w @pokemon-universe/server",
+    "db:up": "podman-compose -f compose.local.yaml up -d",
+    "db:down": "podman-compose -f compose.local.yaml down",
     "check:boundaries": "node scripts/check-public-boundary.mjs",
     "benchmark:rooms": "npm run build -w @pokemon-universe/shared && node scripts/benchmark-room-projection.mjs"
   },
