@@ -16,6 +16,7 @@ import { onAvatarUpdated } from './auth/profile-events.js';
 import { AUTH_COOKIE, verifyIdentity } from './auth/tokens.js';
 import { AvatarValidationError } from './avatar/service.js';
 import { env } from './config.js';
+import { rateLimitDisabled } from './http/rate-limit.js';
 import { prisma } from './db.js';
 import { apiRouter, registerGameImageResolver, registerPokemonRepository, registerTcgCardCatalog } from './http/routes.js';
 import { loadPokemonCatalog } from './pokemon/catalog.js';
@@ -60,12 +61,13 @@ app.use(helmet());
 app.use(cors({ origin: env.WEB_ORIGIN, credentials: true }));
 app.use(express.json({ limit: '32kb' }));
 app.use(cookieParser());
+const skipAll = rateLimitDisabled(env);
 app.use(rateLimit({
   windowMs: 60_000, limit: 120, standardHeaders: 'draft-7', legacyHeaders: false,
-  skip: (req) => /^\/api\/rooms\/[^/]+\/games\/[^/]+\/rounds\/\d+\/options\/[^/]+\/(sprite|audio)$/.test(req.path),
+  skip: (req) => skipAll || /^\/api\/rooms\/[^/]+\/games\/[^/]+\/rounds\/\d+\/options\/[^/]+\/(sprite|audio)$/.test(req.path),
 }));
 app.use(optionalAuth);
-app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 30, skip: (req) => req.path.startsWith('/avatars/') }), authRouter);
+app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 30, skip: (req) => skipAll || req.path.startsWith('/avatars/') }), authRouter);
 app.use('/api/categories', createCustomCategoryRouter(customCategories));
 app.use('/api/would-you-rather-prompts', createWouldYouRatherPromptRouter(wouldYouRatherPrompts));
 app.use('/api/changelog', createChangelogRouter(changelog));
