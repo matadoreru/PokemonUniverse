@@ -16,7 +16,6 @@ for (const { w, h } of SIZES) {
     await empezar.click();
     await expect(page).toHaveURL(/\/auth$/);
     await expect(page.getByRole('tab', { name: 'Entrar' })).toBeVisible();
-    await capture(page, 'acceso-entrar');
 
     expect(errors).toEqual([]);
   });
