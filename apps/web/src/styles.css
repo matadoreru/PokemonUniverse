@@ -80,8 +80,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .lobby-game-grid { @apply grid gap-3; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
   .lobby-game-option { @apply flex min-h-44 flex-col items-stretch rounded-xl border border-ink/10 bg-surface-raised p-3.5 text-left transition-colors hover:border-aqua/50 hover:bg-ink/[.055] disabled:cursor-not-allowed; }
   .lobby-game-option-selected { @apply border-aqua bg-aqua/10; }
-  .experimental-badge { @apply inline-flex min-h-6 items-center rounded-full px-2 py-0.5 text-[.68rem] font-black text-white; background: #c92a42; }
-  .recommended-badge { @apply inline-flex min-h-6 items-center rounded-full bg-electric px-2 py-0.5 text-[.68rem] font-black text-night; }
+  .experimental-badge { @apply inline-flex min-h-6 items-center rounded-full px-2 py-0.5 text-xs font-black text-white; background: #c92a42; }
+  .recommended-badge { @apply inline-flex min-h-6 items-center rounded-full bg-electric px-2 py-0.5 text-xs font-black text-night; }
   .status-error { @apply rounded-xl border border-berry/25 bg-berry/10 px-3.5 py-3 text-sm font-extrabold text-berry; }
   .empty-state { @apply rounded-xl border border-dashed border-ink/20 bg-ink/[.025] p-6 text-center text-ink/65; }
   .skeleton { @apply animate-pulse rounded-lg bg-ink/10; }

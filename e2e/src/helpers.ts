@@ -86,3 +86,29 @@ export async function loginAsGuest(page: Page, name: string): Promise<void> {
 export function uniqueName(prefix: string): string {
   return `${prefix} ${Date.now().toString(36).slice(-4)}`;
 }
+
+/**
+ * En `/play`, crea una sala privada y devuelve su código. Espera a que el botón se habilite
+ * (lo está solo cuando el socket ya ha conectado).
+ */
+export async function createRoom(page: Page): Promise<string> {
+  const crear = page.getByRole('button', { name: 'Crear sala privada' });
+  await expect(crear).toBeEnabled();
+  await crear.click();
+  await expect(page).toHaveURL(/\/room$/);
+  const copiar = page.getByRole('button', { name: /Copiar código de sala/ });
+  await expect(copiar).toBeVisible();
+  const label = (await copiar.getAttribute('aria-label')) ?? '';
+  const code = label.match(/([A-Z2-9]{6})$/)?.[1];
+  if (!code) throw new Error(`createRoom: no se encuentra el código en «${label}»`);
+  return code;
+}
+
+/** En `/play`, se une a la sala con ese código y espera a llegar a `/room`. */
+export async function joinRoom(page: Page, code: string): Promise<void> {
+  await page.locator('#room-code').fill(code);
+  const unirse = page.getByRole('button', { name: 'Unirse a la sala' });
+  await expect(unirse).toBeEnabled();
+  await unirse.click();
+  await expect(page).toHaveURL(/\/room$/);
+}

@@ -35,6 +35,9 @@ export async function measureLayout(page: Page, minFontPx = 12): Promise<LayoutR
     const visible = (el: Element) => {
       const r = el.getBoundingClientRect();
       if (r.width < 1 || r.height < 1) return false;
+      // El contenido de un `<details>` cerrado conserva caja en Chromium (`content-visibility:
+      // hidden` en su slot), pero no se pinta: `checkVisibility()` lo detecta.
+      if (!el.checkVisibility()) return false;
       for (let e: Element | null = el; e; e = e.parentElement) {
         const cs = getComputedStyle(e);
         if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) < 0.05) return false;
