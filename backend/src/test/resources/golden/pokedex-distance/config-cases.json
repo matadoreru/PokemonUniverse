@@ -1,0 +1,189 @@
+[
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20
+    },
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20
+    },
+    "valid": true
+  },
+  {
+    "input": {
+      "generations": [
+        9,
+        3,
+        3
+      ],
+      "roundSeconds": 60,
+      "unknownKey": "se ignora"
+    },
+    "normalized": {
+      "generations": [
+        3,
+        9
+      ],
+      "roundSeconds": 60
+    },
+    "valid": true
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 10
+    },
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 10
+    },
+    "valid": true
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 20
+    },
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 20
+    },
+    "valid": true
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 9
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 61
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 10.5
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": "20"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "roundSeconds": 20
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
+      "roundSeconds": 20
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "roundSeconds": 20
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1.5
+      ],
+      "roundSeconds": 20
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": 1,
+      "roundSeconds": 20
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "roundSeconds": 20
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]

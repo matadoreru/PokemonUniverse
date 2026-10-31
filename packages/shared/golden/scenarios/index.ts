@@ -3,6 +3,7 @@
 import type { MiniGameModule } from '../../dist/index.js';
 import type { GoldenScenario } from '../types.js';
 import { higherLowerScenarios } from './higher-lower.js';
+import { pokedexDistanceScenarios } from './pokedex-distance.js';
 
 export interface GoldenEngineEntry {
   module: MiniGameModule<any, any, any, any>;
@@ -13,4 +14,5 @@ export interface GoldenEngineEntry {
 
 export const scenarios: Record<string, GoldenEngineEntry> = {
   'higher-lower': higherLowerScenarios,
+  'pokedex-distance': pokedexDistanceScenarios,
 };
