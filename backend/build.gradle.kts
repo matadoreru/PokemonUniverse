@@ -33,6 +33,8 @@ micronaut {
 dependencies {
   implementation("io.micronaut:micronaut-http-server-netty")
   implementation("io.micronaut:micronaut-management")
+  implementation("io.micronaut.micrometer:micronaut-micrometer-core")
+  implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
   implementation("io.micronaut.serde:micronaut-serde-jackson")
   annotationProcessor("io.micronaut.data:micronaut-data-processor")
   annotationProcessor("io.micronaut.validation:micronaut-validation-processor")
@@ -47,6 +49,7 @@ dependencies {
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql")
   runtimeOnly("ch.qos.logback:logback-classic")
+  runtimeOnly("net.logstash.logback:logstash-logback-encoder:8.1")
   runtimeOnly("org.yaml:snakeyaml")
 
   testImplementation("io.micronaut:micronaut-http-client")

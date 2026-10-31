@@ -11,6 +11,13 @@ micronaut:
       swagger-ui:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
+  metrics:
+    enabled: true
+    export:
+      prometheus:
+        enabled: true
+        step: PT1M
+        descriptions: true
   serde:
     serialization:
       inclusion: NON_NULL
@@ -19,6 +26,11 @@ endpoints:
     enabled: true
     sensitive: false
     details-visible: ANONYMOUS
+    disk-space:
+      enabled: false
+  prometheus:
+    enabled: true
+    sensitive: false
 datasources:
   default:
     driver-class-name: org.postgresql.Driver
