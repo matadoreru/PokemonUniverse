@@ -18,6 +18,9 @@ public class IdentityArgumentBinder implements AnnotatedRequestArgumentBinder<Id
 
   @Override
   public BindingResult<Object> bind(ArgumentConversionContext<Object> context, HttpRequest<?> source) {
+    if (!Optional.class.equals((Class<?>) context.getArgument().getType())) {
+      throw new IllegalArgumentException("@Identity only supports parameters of type Optional<AuthUser>");
+    }
     Optional<AuthUser> user = source.getAttribute(IdentityFilter.ATTRIBUTE, AuthUser.class);
     return () -> Optional.of(user);
   }

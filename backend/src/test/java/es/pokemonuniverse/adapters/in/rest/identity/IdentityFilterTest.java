@@ -68,6 +68,17 @@ class IdentityFilterTest {
   }
 
   @Test
+  void bareAuthUserParameterFailsLoudly() {
+    var user = new AuthUser("u9", "Ana", AuthUser.Kind.USER, null, null, new AvatarRef.Default());
+    var req = HttpRequest.GET("/test-identity/bare").cookie(Cookie.of("pu_session", tokens.sign(user, Instant.now())));
+    var ex = org.junit.jupiter.api.Assertions.assertThrows(
+        io.micronaut.http.client.exceptions.HttpClientResponseException.class,
+        () -> client.toBlocking().exchange(req, String.class));
+    assertTrue(ex.getStatus().getCode() >= 400, ex.getStatus().toString());
+    assertEquals("u9", get("/test-identity", tokens.sign(user, Instant.now())).get("id"));
+  }
+
+  @Test
   void sessionCookieHasExpectedAttributes() {
     var res = client.toBlocking().exchange(HttpRequest.GET("/test-identity/login"), String.class);
     var set = res.getHeaders().get("Set-Cookie");

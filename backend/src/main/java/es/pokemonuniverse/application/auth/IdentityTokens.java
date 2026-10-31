@@ -67,7 +67,7 @@ public class IdentityTokens {
       var id = claims.getSubject();
       var displayName = claims.getClaim("displayName");
       var kindName = claims.getClaim("kind");
-      if (id == null || !(displayName instanceof String name) || !(kindName instanceof String kindText)) {
+      if (id == null || id.isEmpty() || !(displayName instanceof String name) || !(kindName instanceof String kindText)) {
         throw new InvalidTokenException("Missing required claims");
       }
       var kind = switch (kindText) {

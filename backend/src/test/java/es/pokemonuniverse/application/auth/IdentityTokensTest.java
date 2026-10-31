@@ -109,6 +109,37 @@ class IdentityTokensTest {
     assertThrows(InvalidTokenException.class, () -> tokens.verify(fixture() + "x"));
   }
 
+  private static String b64(String json) {
+    return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(json.getBytes(StandardCharsets.UTF_8));
+  }
+
+  @Test
+  void algorithmConfusionIsRejected() throws Exception {
+    var payload = b64("{\"sub\":\"u1\",\"displayName\":\"Ana\",\"kind\":\"USER\",\"exp\":4070908800}");
+    assertThrows(InvalidTokenException.class, () -> tokens.verify(b64("{\"alg\":\"none\"}") + "." + payload + "."));
+    assertThrows(InvalidTokenException.class,
+        () -> tokens.verify(b64("{\"alg\":\"RS256\"}") + "." + payload + "." + b64("sig")));
+    var signingInput = b64("{\"alg\":\"HS512\"}") + "." + payload;
+    var mac = javax.crypto.Mac.getInstance("HmacSHA512");
+    mac.init(new javax.crypto.spec.SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), "HmacSHA512"));
+    var sig = java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(mac.doFinal(signingInput.getBytes(StandardCharsets.UTF_8)));
+    var hs512 = signingInput + "." + sig;
+    assertThrows(InvalidTokenException.class, () -> tokens.verify(hs512));
+  }
+
+  @Test
+  void emptySubjectIsRejected() {
+    assertThrows(InvalidTokenException.class, () -> tokens.verify(signRawUnchecked(base().subject(""))));
+  }
+
+  private static String signRawUnchecked(JWTClaimsSet.Builder claims) {
+    try {
+      return signRaw(claims);
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
   @Test
   void expiredAndMalformedTokensAreRejected() throws Exception {
     var expired = signRaw(base().expirationTime(Date.from(Instant.now().minusSeconds(3600))));

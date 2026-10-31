@@ -23,6 +23,11 @@ class TestIdentityController {
     return map;
   }
 
+  @Get("/bare")
+  String bare(@Identity AuthUser user) {
+    return "should not be reached";
+  }
+
   @Get("/user")
   Optional<AuthUser> user(@Identity Optional<AuthUser> user) {
     return user;
