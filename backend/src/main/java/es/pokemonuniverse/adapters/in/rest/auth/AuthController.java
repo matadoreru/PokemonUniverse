@@ -3,12 +3,16 @@ package es.pokemonuniverse.adapters.in.rest.auth;
 import es.pokemonuniverse.adapters.in.rest.identity.Identity;
 import es.pokemonuniverse.adapters.in.rest.identity.SessionCookies;
 import es.pokemonuniverse.application.auth.AuthService;
+import es.pokemonuniverse.application.auth.GuestAvatarCleanup;
 import es.pokemonuniverse.application.auth.IdentityTokens;
+import es.pokemonuniverse.application.ports.AvatarStorage;
 import es.pokemonuniverse.domain.identity.AuthUser;
+import es.pokemonuniverse.domain.identity.AvatarRef;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.scheduling.TaskExecutors;
@@ -27,12 +31,17 @@ public class AuthController {
   private final IdentityTokens tokens;
   private final SessionCookies cookies;
   private final Validator validator;
+  private final GuestAvatarCleanup guestAvatars;
+  private final AvatarStorage avatars;
 
-  public AuthController(AuthService auth, IdentityTokens tokens, SessionCookies cookies, Validator validator) {
+  public AuthController(AuthService auth, IdentityTokens tokens, SessionCookies cookies, Validator validator,
+      GuestAvatarCleanup guestAvatars, AvatarStorage avatars) {
     this.auth = auth;
     this.tokens = tokens;
     this.cookies = cookies;
     this.validator = validator;
+    this.guestAvatars = guestAvatars;
+    this.avatars = avatars;
   }
 
   @Post("/register")
@@ -48,18 +57,29 @@ public class AuthController {
   }
 
   @Post("/guest")
-  // `current` lo usará la Tarea 6 (limpieza del avatar de invitado).
   public HttpResponse<UserResponse> guest(@Body GuestRequest body, @Identity Optional<AuthUser> current) {
     var request = valid(body.normalized());
-    return session(HttpResponse.created(new UserResponse(auth.guest(request.toCommand()))));
+    var response = session(HttpResponse.created(new UserResponse(auth.guest(request.toCommand()))));
+    guestAvatars.removePriorGuestAvatar(current, null);
+    return response;
   }
 
   @Post("/logout")
-  // `current` lo usará la Tarea 6 (limpieza del avatar de invitado).
   public HttpResponse<Void> logout(@Identity Optional<AuthUser> current) {
     MutableHttpResponse<Void> response = HttpResponse.noContent();
     cookies.clear(response);
+    guestAvatars.removePriorGuestAvatar(current, null);
     return response;
+  }
+
+  @Get("/avatars/{filename}")
+  public HttpResponse<byte[]> avatar(String filename) {
+    if (!AvatarRef.isValidCustomFile(filename)) return HttpResponse.notFound();
+    return avatars.read(filename)
+        .map(bytes -> HttpResponse.ok(bytes)
+            .contentType(MediaType.of("image/webp"))
+            .header("Cache-Control", "public, max-age=31536000, immutable"))
+        .orElseGet(HttpResponse::notFound);
   }
 
   @Get("/me")
