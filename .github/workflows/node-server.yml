@@ -13,6 +13,8 @@ on:
       - 'packages/shared/**'
       - 'Dockerfile'
       - 'scripts/start-server.sh'
+      - 'scripts/export-golden-*.mjs'
+      - 'backend/src/test/resources/golden/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/node-server.yml'
@@ -79,6 +81,11 @@ jobs:
         run: npm test -w @pokemon-universe/server
       - name: Build
         run: npm run build -w @pokemon-universe/server
+      # The golden harness loads the catalog through the server dist built above.
+      - name: Typecheck and check golden fixtures
+        run: |
+          npx tsc -p packages/shared/golden/tsconfig.json
+          npm run check:golden
       - name: Verify production artifacts
         run: |
           test -x ./apps/server/node_modules/.bin/prisma

@@ -102,6 +102,8 @@ jobs:
               - 'packages/shared/**'
               - 'Dockerfile'
               - 'scripts/start-server.sh'
+              - 'scripts/export-golden-*.mjs'
+              - 'backend/src/test/resources/golden/**'
               - 'package.json'
               - 'package-lock.json'
               - 'tsconfig.base.json'
