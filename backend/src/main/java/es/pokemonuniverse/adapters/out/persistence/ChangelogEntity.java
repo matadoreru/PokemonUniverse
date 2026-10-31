@@ -4,11 +4,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.Instant;
+import java.util.List;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
-/**
- * Mapeo mínimo de la tabla "Changelog" de Prisma. Hibernate exige al menos una entidad en el
- * paquete escaneado; las siguientes tareas añaden el resto de columnas y tablas.
- */
+/** Tabla "Changelog" de Prisma. {@code content} es un array JSON sin tipar que se valida al leer. */
 @Entity
 @Table(name = "Changelog")
 public class ChangelogEntity {
@@ -23,10 +24,37 @@ public class ChangelogEntity {
   @Column(name = "title")
   private String title;
 
+  @Column(name = "date")
+  private Instant date;
+
   @Column(name = "published")
   private boolean published;
 
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(name = "content")
+  private List<Object> content;
+
+  @Column(name = "createdAt")
+  private Instant createdAt;
+
+  @Column(name = "updatedAt")
+  private Instant updatedAt;
+
   protected ChangelogEntity() {}
+
+  public static ChangelogEntity create(String id, String version, String title, Instant date,
+      boolean published, List<Object> content, Instant now) {
+    var e = new ChangelogEntity();
+    e.id = id;
+    e.version = version;
+    e.title = title;
+    e.date = date;
+    e.published = published;
+    e.content = content;
+    e.createdAt = now;
+    e.updatedAt = now;
+    return e;
+  }
 
   public String getId() {
     return id;
@@ -40,7 +68,23 @@ public class ChangelogEntity {
     return title;
   }
 
+  public Instant getDate() {
+    return date;
+  }
+
   public boolean isPublished() {
     return published;
+  }
+
+  public List<Object> getContent() {
+    return content;
+  }
+
+  public Instant getCreatedAt() {
+    return createdAt;
+  }
+
+  public Instant getUpdatedAt() {
+    return updatedAt;
   }
 }

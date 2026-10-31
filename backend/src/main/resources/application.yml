@@ -3,6 +3,9 @@ micronaut:
     name: pokemon-universe-backend
   server:
     port: ${PORT:8080}
+  serde:
+    serialization:
+      inclusion: NON_NULL
 endpoints:
   health:
     enabled: true
