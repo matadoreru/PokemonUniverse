@@ -64,3 +64,5 @@ pu:
   rate-limit-disabled: ${RATE_LIMIT_DISABLED:false}
   avatar-storage-dir: ${AVATAR_STORAGE_DIR:.data/avatars}
   commit-sha: ${PU_COMMIT_SHA:}
+  room-max-players: ${ROOM_MAX_PLAYERS:8}
+  reconnect-grace-ms: ${RECONNECT_GRACE_MS:30000}

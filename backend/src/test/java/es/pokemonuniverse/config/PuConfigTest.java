@@ -40,6 +40,24 @@ class PuConfigTest {
   }
 
   @Test
+  void roomSettingsDefaultToNodeValuesAndAreBounded() {
+    String secret = "x".repeat(40);
+    try (var ctx = ApplicationContext.run(props(secret, false), "test")) {
+      var cfg = ctx.getBean(PuConfig.class);
+      org.junit.jupiter.api.Assertions.assertEquals(8, cfg.roomMaxPlayers());
+      org.junit.jupiter.api.Assertions.assertEquals(30_000, cfg.reconnectGraceMs());
+    }
+    var tooShort = new java.util.HashMap<String, Object>(props(secret, false));
+    tooShort.put("pu.reconnect-grace-ms", 4_999);
+    var ex = assertThrows(Exception.class, () -> ApplicationContext.run(tooShort, "test").getBean(PuConfig.class));
+    assertTrue(chain(ex).contains("reconnectGraceMs"), chain(ex));
+    var tooMany = new java.util.HashMap<String, Object>(props(secret, false));
+    tooMany.put("pu.room-max-players", 101);
+    var ex2 = assertThrows(Exception.class, () -> ApplicationContext.run(tooMany, "test").getBean(PuConfig.class));
+    assertTrue(chain(ex2).contains("roomMaxPlayers"), chain(ex2));
+  }
+
+  @Test
   void rateLimitDisabledIsIgnoredInProd() {
     String secret = "x".repeat(40);
     try (var ctx = ApplicationContext.run(props(secret, true), "prod")) {

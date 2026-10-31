@@ -29,6 +29,17 @@ class ClasspathGameRegistryLoaderTest {
   }
 
   @Test
+  void registersThePortedEnginesWithTheirManifests() {
+    assertTrue(registry.isPorted("higher-lower"));
+    assertTrue(registry.isPorted("pokedex-distance"));
+    assertFalse(registry.isPorted("shiny-vote"));
+    assertTrue(registry.engine("shiny-vote").isEmpty());
+    assertEquals(registry.get("higher-lower").orElseThrow(), registry.engine("higher-lower").orElseThrow().manifest());
+    assertThrows(IllegalStateException.class, () -> new GameRegistry(List.of(), java.util.Map.of("higher-lower",
+        registry.engine("higher-lower").orElseThrow())));
+  }
+
+  @Test
   void exportedFileHasRecommendedGames() {
     var list = registry.list();
     var recommended = list.stream().filter(g -> Boolean.TRUE.equals(g.recommended())).toList();

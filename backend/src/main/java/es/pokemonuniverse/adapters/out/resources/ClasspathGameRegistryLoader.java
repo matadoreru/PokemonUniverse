@@ -2,14 +2,22 @@ package es.pokemonuniverse.adapters.out.resources;
 
 import es.pokemonuniverse.domain.game.GameManifest;
 import es.pokemonuniverse.domain.game.GameRegistry;
+import es.pokemonuniverse.domain.game.engine.GameEngine;
+import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerEngine;
+import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceEngine;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.core.type.Argument;
 import io.micronaut.serde.ObjectMapper;
 import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-/** Crea el bean {@link GameRegistry} a partir de {@code games/registry.json} ({@code npm run registry:export}). */
+/**
+ * Crea el bean {@link GameRegistry} a partir de {@code games/registry.json} ({@code npm run registry:export}) y
+ * registra los motores portados a Java, construidos con su manifiesto.
+ */
 @Factory
 public class ClasspathGameRegistryLoader {
 
@@ -26,7 +34,8 @@ public class ClasspathGameRegistryLoader {
       if (in == null) {
         throw new IllegalStateException("Falta el recurso " + RESOURCE + ". Ejecuta npm run registry:export");
       }
-      return load(mapper, in);
+      var manifests = load(mapper, in);
+      return manifests.withEngines(portedEngines(manifests));
     } catch (IOException e) {
       throw new IllegalStateException("No se pudo leer " + RESOURCE, e);
     }
@@ -34,5 +43,17 @@ public class ClasspathGameRegistryLoader {
 
   static GameRegistry load(ObjectMapper mapper, InputStream in) throws IOException {
     return new GameRegistry(mapper.readValue(in, Argument.listOf(GameManifest.class)));
+  }
+
+  /** Motores portados; añadir aquí cada motor nuevo. */
+  static Map<String, GameEngine<?, ?, ?, ?>> portedEngines(GameRegistry manifests) {
+    var engines = new LinkedHashMap<String, GameEngine<?, ?, ?, ?>>();
+    engines.put(HigherLowerEngine.ID, new HigherLowerEngine(manifest(manifests, HigherLowerEngine.ID)));
+    engines.put(PokedexDistanceEngine.ID, new PokedexDistanceEngine(manifest(manifests, PokedexDistanceEngine.ID)));
+    return engines;
+  }
+
+  private static GameManifest manifest(GameRegistry manifests, String id) {
+    return manifests.get(id).orElseThrow(() -> new IllegalStateException("Sin manifiesto para el motor " + id));
   }
 }

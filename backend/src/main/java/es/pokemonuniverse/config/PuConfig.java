@@ -5,6 +5,8 @@ import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.env.Environment;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -19,6 +21,13 @@ public class PuConfig {
   private final boolean rateLimitDisabled;
   private final String avatarStorageDir;
   private final String commitSha;
+  private final int roomMaxPlayers;
+  private final long reconnectGraceMs;
+
+  /** Con los valores por defecto de sala de Node ({@code ROOM_MAX_PLAYERS=8}, {@code RECONNECT_GRACE_MS=30000}). */
+  public PuConfig(Auth auth, String webOrigin, boolean rateLimitDisabled, String avatarStorageDir, String commitSha) {
+    this(auth, webOrigin, rateLimitDisabled, avatarStorageDir, commitSha, 8, 30_000);
+  }
 
   @ConfigurationInject
   public PuConfig(
@@ -26,12 +35,26 @@ public class PuConfig {
       @NotBlank String webOrigin,
       boolean rateLimitDisabled,
       @NotBlank String avatarStorageDir,
-      String commitSha) {
+      String commitSha,
+      @Min(2) @Max(100) int roomMaxPlayers,
+      @Min(5_000) @Max(300_000) long reconnectGraceMs) {
     this.auth = auth;
     this.webOrigin = webOrigin;
     this.rateLimitDisabled = rateLimitDisabled;
     this.avatarStorageDir = avatarStorageDir;
     this.commitSha = commitSha;
+    this.roomMaxPlayers = roomMaxPlayers;
+    this.reconnectGraceMs = reconnectGraceMs;
+  }
+
+  /** {@code ROOM_MAX_PLAYERS}: capacidad por defecto de una sala nueva (2–100). */
+  public int roomMaxPlayers() {
+    return roomMaxPlayers;
+  }
+
+  /** {@code RECONNECT_GRACE_MS}: gracia de reconexión antes de la salida definitiva (5 s–5 min). */
+  public long reconnectGraceMs() {
+    return reconnectGraceMs;
   }
 
   public Auth auth() {
