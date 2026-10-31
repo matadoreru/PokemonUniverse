@@ -3,7 +3,11 @@ package es.pokemonuniverse.adapters.in.rest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import es.pokemonuniverse.application.auth.IdentityTokens;
+import es.pokemonuniverse.domain.identity.AuthUser;
+import es.pokemonuniverse.domain.identity.AvatarRef;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.client.HttpClient;
@@ -11,6 +15,7 @@ import io.micronaut.http.client.annotation.Client;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -21,6 +26,9 @@ class ErrorFormatTest {
   @Inject
   @Client("/")
   HttpClient client;
+
+  @Inject
+  IdentityTokens tokens;
 
   private HttpClientResponseException call(HttpRequest<?> req) {
     return assertThrows(HttpClientResponseException.class, () -> client.toBlocking().exchange(req, String.class));
@@ -77,5 +85,46 @@ class ErrorFormatTest {
     var ex = call(req);
     assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
     assertEquals(true, body(ex).containsKey("error"), body(ex).toString());
+  }
+
+  /** Errores que genera Micronaut (rutas, método, media type, cuerpo ausente) también usan {@code {error}}. */
+  private static void assertOurShape(HttpClientResponseException ex) {
+    var json = body(ex);
+    assertTrue(json.get("error") instanceof String s && !s.isBlank(), json.toString());
+    assertFalse(json.containsKey("_links"), json.toString());
+    assertFalse(json.containsKey("_embedded"), json.toString());
+    assertFalse(json.containsKey("message"), json.toString());
+  }
+
+  @Test
+  void notFoundUsesOurShape() {
+    var ex = call(HttpRequest.GET("/nope"));
+    assertEquals(HttpStatus.NOT_FOUND, ex.getStatus());
+    assertOurShape(ex);
+  }
+
+  @Test
+  void methodNotAllowedUsesOurShape() {
+    var ex = call(HttpRequest.DELETE("/api/games"));
+    assertEquals(HttpStatus.METHOD_NOT_ALLOWED, ex.getStatus());
+    assertOurShape(ex);
+  }
+
+  @Test
+  void unsupportedMediaTypeUsesOurShape() {
+    var ex = call(HttpRequest.POST("/test-errors/validate", "username=ash").contentType("text/plain"));
+    assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ex.getStatus());
+    assertOurShape(ex);
+  }
+
+  @Test
+  void missingBodyUsesOurShape() {
+    var user = new AuthUser("guest-err", "Ash", AuthUser.Kind.GUEST, null, null, new AvatarRef.Default());
+    var req = HttpRequest.POST("/api/feedback", "")
+        .contentType("application/json")
+        .header("Cookie", "pu_session=" + tokens.sign(user, Instant.now()));
+    var ex = call(req);
+    assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
+    assertOurShape(ex);
   }
 }
