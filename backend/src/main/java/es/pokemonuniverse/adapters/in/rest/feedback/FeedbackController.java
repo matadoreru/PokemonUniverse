@@ -39,7 +39,7 @@ public class FeedbackController {
   }
 
   @Operation(summary = "Enviar feedback")
-  @ApiResponse(responseCode = "201", description = "Creado")
+  @ApiResponse(responseCode = "201", description = "Creado", content = @Content(schema = @Schema(implementation = FeedbackResponse.class)))
   @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(responseCode = "401", description = "Sesión requerida", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Post

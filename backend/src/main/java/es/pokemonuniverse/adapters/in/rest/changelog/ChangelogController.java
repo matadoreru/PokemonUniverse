@@ -8,6 +8,8 @@ import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.serde.annotation.Serdeable;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -24,7 +26,7 @@ public class ChangelogController {
   }
 
   @Operation(summary = "Listar el changelog público", operationId = "listChangelog")
-  @ApiResponse(responseCode = "200", description = "OK")
+  @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ChangelogResponse.class)))
   @Get
   public HttpResponse<ChangelogResponse> list() {
     var entries = service.listPublished().stream().map(ChangelogEntryResponse::of).toList();

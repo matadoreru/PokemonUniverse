@@ -60,7 +60,7 @@ public class AuthController {
   }
 
   @Operation(summary = "Registrar usuario")
-  @ApiResponse(responseCode = "201", description = "Creado")
+  @ApiResponse(responseCode = "201", description = "Creado", content = @Content(schema = @Schema(implementation = UserResponse.class)))
   @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(responseCode = "409", description = "Ya existe", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Post("/register")
@@ -70,7 +70,7 @@ public class AuthController {
   }
 
   @Operation(summary = "Iniciar sesión")
-  @ApiResponse(responseCode = "200", description = "OK")
+  @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UserResponse.class)))
   @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(responseCode = "401", description = "Credenciales incorrectas", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Post("/login")
@@ -80,7 +80,7 @@ public class AuthController {
   }
 
   @Operation(summary = "Entrar como invitado")
-  @ApiResponse(responseCode = "201", description = "Creado")
+  @ApiResponse(responseCode = "201", description = "Creado", content = @Content(schema = @Schema(implementation = UserResponse.class)))
   @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Post("/guest")
   public HttpResponse<UserResponse> guest(@Body GuestRequest body, @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
@@ -102,7 +102,7 @@ public class AuthController {
 
   @Operation(summary = "Obtener imagen de avatar")
   @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "image/webp", schema = @Schema(type = "string", format = "binary")))
-  @ApiResponse(responseCode = "404", description = "No existe", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
+  @ApiResponse(responseCode = "404", description = "No encontrado")
   @Get("/avatars/{filename}")
   public HttpResponse<byte[]> avatar(String filename) {
     if (!AvatarRef.isValidCustomFile(filename)) return HttpResponse.notFound();
@@ -114,14 +114,14 @@ public class AuthController {
   }
 
   @Operation(summary = "Usuario de la sesión actual")
-  @ApiResponse(responseCode = "200", description = "OK")
+  @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UserResponse.class)))
   @Get("/me")
   public UserResponse me(@Parameter(hidden = true) @Identity Optional<AuthUser> current) {
     return new UserResponse(current.orElse(null));
   }
 
   @Operation(summary = "Perfil con estadísticas por minijuego")
-  @ApiResponse(responseCode = "200", description = "OK")
+  @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ProfileResponse.class)))
   @ApiResponse(responseCode = "401", description = "Cuenta registrada requerida", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Get("/profile")
   public ProfileResponse profile(@Parameter(hidden = true) @Identity Optional<AuthUser> current) {

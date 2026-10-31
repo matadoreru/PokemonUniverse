@@ -25,7 +25,7 @@ micronaut {
   runtime("netty")
   testRuntime("junit5")
   processing {
-    incremental(true)
+    incremental(false)
     annotations("es.pokemonuniverse.*")
   }
 }

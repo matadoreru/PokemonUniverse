@@ -49,6 +49,9 @@ class OpenApiSpecTest {
       Map<?, ?> register = (Map<?, ?>) ((Map<?, ?>) ((Map<?, ?>) paths.get("/api/auth/register")).get("post")).get("responses");
       assertTrue(register.containsKey("201") && register.containsKey("409") && !register.containsKey("200"));
       Map<?, ?> logout = (Map<?, ?>) ((Map<?, ?>) ((Map<?, ?>) paths.get("/api/auth/logout")).get("post")).get("responses");
+      var schemas = (Map<?, ?>) ((Map<?, ?>) spec.get("components")).get("schemas");
+      assertTrue(schemas.containsKey("UserResponse") && schemas.containsKey("FeedbackController.FeedbackResponse"));
+      assertTrue(text.contains("UserResponse") && register.get("201").toString().contains("UserResponse"));
       assertTrue(logout.containsKey("204") && !logout.containsKey("200"));
     }
   }
