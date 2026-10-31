@@ -92,6 +92,9 @@ services:
       WEB_ORIGIN: "${PU_PUBLIC_ORIGIN:?Define PU_PUBLIC_ORIGIN en .env}"
       COOKIE_SECURE: "${PU_SECURE_COOKIE:-true}"
       AVATAR_STORAGE_DIR: "/data/avatars"
+      # PNG del modo Artwork (local-artwork:<id>). Opcional: si el directorio no existe, el catálogo visual de Java
+      # queda vacío con un aviso (Node los lleva dentro de su imagen); hasta el corte 2D solo afecta a salas Java.
+      POKEMON_ARTWORK_DIR: "${PU_POKEMON_ARTWORK_DIR:-/data/pokemon-artworks}"
       # Salas Java en /ws: apagadas (cierre 4403) hasta el corte 2D, que pone PU_ROOMS_ENABLED=true.
       ROOMS_ENABLED: "${PU_ROOMS_ENABLED:-false}"
     volumes:

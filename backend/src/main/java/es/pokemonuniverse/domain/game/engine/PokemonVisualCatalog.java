@@ -8,7 +8,8 @@ public interface PokemonVisualCatalog {
 
   enum Source { SPRITE, ARTWORK }
 
-  record AlphaBounds(int x, int y, int width, int height) {}
+  /** Caja de los píxeles visibles normalizada a [0, 1] respecto al ancho y alto de la imagen. */
+  record AlphaBounds(double x, double y, double width, double height) {}
 
   /** {@code location}: URL remota de confianza o fuente local opaca que solo entiende el servidor. */
   record Asset(String pokemonId, Source source, String location, @Nullable Integer width, @Nullable Integer height,

@@ -236,6 +236,94 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PokemonController.PokemonResponse"
+  /api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/audio:
+    get:
+      tags:
+      - rooms
+      summary: Grito de una opción de ronda
+      operationId: gameRoundAudio
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: assetToken
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: roundNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: optionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            audio/ogg:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: No encontrado
+        "415":
+          description: El recurso no es audio
+        "503":
+          description: Demasiados recursos en curso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/sprite:
+    get:
+      tags:
+      - rooms
+      summary: Imagen de una opción de ronda
+      operationId: gameRoundSprite
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: assetToken
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: roundNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: optionId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: No encontrado
+        "503":
+          description: Demasiados recursos en curso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
 components:
   schemas:
     ApiError:

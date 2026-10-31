@@ -69,6 +69,8 @@ pu:
   web-origin: ${WEB_ORIGIN:http://localhost:5173}
   rate-limit-disabled: ${RATE_LIMIT_DISABLED:false}
   avatar-storage-dir: ${AVATAR_STORAGE_DIR:.data/avatars}
+  # PNG del modo Artwork (local-artwork:<id>); en dev, el mismo directorio que indexa Node.
+  artwork-dir: ${POKEMON_ARTWORK_DIR:../apps/server/assets/pokemon-artworks}
   commit-sha: ${PU_COMMIT_SHA:}
   room-max-players: ${ROOM_MAX_PLAYERS:8}
   reconnect-grace-ms: ${RECONNECT_GRACE_MS:30000}

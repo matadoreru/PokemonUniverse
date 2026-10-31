@@ -87,4 +87,21 @@ class RateLimitFilterTest {
     var r = call(HttpRequest.GET("/health").header("X-Forwarded-For", "203.0.113.11"));
     assertNull(r.header("RateLimit-Limit"));
   }
+
+  /** Las imágenes y gritos de ronda quedan fuera del límite global y bajo uno propio de 5000/min (constraint 17). */
+  @Test
+  void gameAssetsHaveTheirOwn5000Limit() {
+    var path = "/api/rooms/ABC123/games/t/rounds/1/options/a/sprite";
+    for (int i = 0; i < 5000; i++) {
+      var r = call(HttpRequest.GET(path).header("X-Forwarded-For", "203.0.113.12"));
+      assertNotEquals(HttpStatus.TOO_MANY_REQUESTS, r.status(), "request " + (i + 1));
+      if (i == 0) assertEquals("5000", r.header("RateLimit-Limit"));
+    }
+    var limited = call(HttpRequest.GET(path).header("X-Forwarded-For", "203.0.113.12"));
+    assertEquals(HttpStatus.TOO_MANY_REQUESTS, limited.status());
+    assertEquals("5000", limited.header("RateLimit-Limit"));
+    // El resto de la API de esa IP conserva su presupuesto global intacto.
+    var games = call(HttpRequest.GET("/api/games").header("X-Forwarded-For", "203.0.113.12"));
+    assertEquals("119", games.header("RateLimit-Remaining"));
+  }
 }

@@ -3,6 +3,7 @@ package es.pokemonuniverse.adapters.in.ws;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import es.pokemonuniverse.application.auth.IdentityTokens;
+import es.pokemonuniverse.application.assets.GameAssetService;
 import es.pokemonuniverse.application.rooms.GameCatalogProvider;
 import es.pokemonuniverse.application.rooms.GameResultsPersister;
 import es.pokemonuniverse.application.rooms.HostContentProvider;
@@ -45,9 +46,9 @@ class RoomWebSocketDisabledTest {
     CountingCoordinator(GameRegistry registry, JsonMapper json, RoomEvents events, RoomAuditSink audit,
         GameResultsPersister results, UserGameConfigPreferences userGameConfigs, HostContentProvider hostContent,
         Clock clock, RandomSource random, RoomSchedulers schedulers, RoomSettings settings,
-        GameCatalogProvider catalog) {
+        GameCatalogProvider catalog, GameAssetService assets) {
       super(registry, json, events, audit, results, userGameConfigs, hostContent, clock, random, schedulers, settings,
-          catalog);
+          catalog, assets);
     }
 
     @Override

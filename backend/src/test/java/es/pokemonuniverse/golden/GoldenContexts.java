@@ -51,15 +51,9 @@ public final class GoldenContexts {
     return value == null || value.isNull() ? null : value.getNumberValue().intValue();
   }
 
-  /** Entero exacto: {@code AlphaBounds} es entero en Java aunque {@code visual-assets.ts} lo normaliza a 0..1. */
-  private static int exactInt(JsonNode node, String key) {
-    var value = new BigDecimal(node.get(key).getNumberValue().toString());
-    try {
-      return value.intValueExact();
-    } catch (ArithmeticException e) {
-      throw new IllegalArgumentException("alphaBounds." + key + " no es entero (" + value
-          + "): AlphaBounds de Java no admite fracciones", e);
-    }
+  /** {@code visual-assets.ts} normaliza la caja alfa a 0..1: se lee como {@code double}. */
+  private static double number(JsonNode node, String key) {
+    return node.get(key).getNumberValue().doubleValue();
   }
 
   /** {@code pokemonVisuals}: {@code Record<string, PokemonVisualAsset>}. */
@@ -72,8 +66,8 @@ public final class GoldenContexts {
         var bounds = asset.get("alphaBounds");
         assets.put(entry.getKey(), new Asset(text(asset, "pokemonId"), Source.valueOf(text(asset, "source")),
             text(asset, "location"), integer(asset, "width"), integer(asset, "height"),
-            bounds == null ? null : new AlphaBounds(exactInt(bounds, "x"), exactInt(bounds, "y"),
-                exactInt(bounds, "width"), exactInt(bounds, "height"))));
+            bounds == null ? null : new AlphaBounds(number(bounds, "x"), number(bounds, "y"),
+                number(bounds, "width"), number(bounds, "height"))));
       }
     }
 

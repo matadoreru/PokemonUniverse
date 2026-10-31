@@ -1,5 +1,6 @@
 package es.pokemonuniverse.application.pokemon;
 
+import es.pokemonuniverse.adapters.out.persistence.JpaPokemonAudioCatalog;
 import es.pokemonuniverse.adapters.out.persistence.MoveEntity;
 import es.pokemonuniverse.adapters.out.persistence.MoveRepository;
 import es.pokemonuniverse.adapters.out.persistence.PokedexEntryEntity;
@@ -8,7 +9,9 @@ import es.pokemonuniverse.adapters.out.persistence.PokemonEntity;
 import es.pokemonuniverse.adapters.out.persistence.PokemonLevelUpMoveEntity;
 import es.pokemonuniverse.adapters.out.persistence.PokemonLevelUpMoveRepository;
 import es.pokemonuniverse.adapters.out.persistence.PokemonRepository;
+import es.pokemonuniverse.adapters.out.storage.FilesystemArtworkCatalog;
 import es.pokemonuniverse.application.rooms.GameCatalogProvider;
+import es.pokemonuniverse.application.rooms.GameCatalogs;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.domain.pokemon.LearnsetEntry;
 import es.pokemonuniverse.domain.pokemon.Move;
@@ -16,9 +19,11 @@ import es.pokemonuniverse.domain.pokemon.PokedexEntry;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import es.pokemonuniverse.domain.pokemon.PokemonEvolutionInfo;
 import es.pokemonuniverse.domain.text.Collations;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.data.model.Sort;
 import jakarta.inject.Singleton;
 import java.time.Duration;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -52,14 +58,19 @@ public class PokemonCatalogService implements GameCatalogProvider {
   private final MoveRepository moves;
   private final PokemonLevelUpMoveRepository learnsets;
   private final PokedexEntryRepository pokedexEntries;
+  private final JpaPokemonAudioCatalog audio;
+  private final Path artworkDir;
   private final AtomicReference<Cached> cache = new AtomicReference<>();
 
   public PokemonCatalogService(PokemonRepository repository, MoveRepository moves,
-      PokemonLevelUpMoveRepository learnsets, PokedexEntryRepository pokedexEntries) {
+      PokemonLevelUpMoveRepository learnsets, PokedexEntryRepository pokedexEntries, JpaPokemonAudioCatalog audio,
+      @Property(name = "pu.artwork-dir") String artworkDir) {
     this.repository = repository;
     this.moves = moves;
     this.learnsets = learnsets;
     this.pokedexEntries = pokedexEntries;
+    this.audio = audio;
+    this.artworkDir = Path.of(artworkDir);
   }
 
   public List<Pokemon> search(PokemonSearchQuery query) {
@@ -84,9 +95,15 @@ public class PokemonCatalogService implements GameCatalogProvider {
     return current.catalog();
   }
 
+  /**
+   * Catálogos de partida como {@code index.ts} de Node: el de Pokémon, los artworks locales validados contra sus ids y
+   * los gritos de la base de datos.
+   */
   @Override
-  public InMemoryPokemonCatalog loadPokemonCatalog() {
-    return catalog();
+  public GameCatalogs loadPokemonCatalog() {
+    var pokemon = catalog();
+    var ids = pokemon.all().stream().map(Pokemon::id).collect(Collectors.toUnmodifiableSet());
+    return new GameCatalogs(pokemon, new FilesystemArtworkCatalog(artworkDir, ids), audio.load());
   }
 
   /** Descarta la caché; la siguiente consulta recarga desde la base de datos. */

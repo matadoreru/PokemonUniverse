@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.application.auth.IdentityTokens;
 import es.pokemonuniverse.application.rooms.GameCatalogProvider;
+import es.pokemonuniverse.application.rooms.GameCatalogs;
 import es.pokemonuniverse.domain.pokemon.PokemonCatalog;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import io.micronaut.context.annotation.Primary;
@@ -45,8 +46,8 @@ class RoomWebSocketTest {
   @Requires(property = "spec.name", value = "RoomWebSocketTest")
   static class GoldenCatalogProvider implements GameCatalogProvider {
     @Override
-    public PokemonCatalog loadPokemonCatalog() {
-      return GoldenCatalogs.load("gen1-2");
+    public GameCatalogs loadPokemonCatalog() {
+      return GameCatalogs.of(GoldenCatalogs.load("gen1-2"));
     }
   }
 

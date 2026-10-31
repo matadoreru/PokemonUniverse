@@ -1,6 +1,8 @@
 package es.pokemonuniverse.application.rooms;
 
 import es.pokemonuniverse.adapters.out.resources.ClasspathGameRegistryLoader;
+import es.pokemonuniverse.application.assets.GameAssetService;
+import es.pokemonuniverse.application.assets.LoadedAsset;
 import es.pokemonuniverse.domain.game.GameRegistry;
 import es.pokemonuniverse.domain.game.engine.GameEngine;
 import es.pokemonuniverse.domain.identity.AuthUser;
@@ -39,6 +41,9 @@ final class RoomTestKit {
   final RecordingPersister persister = new RecordingPersister();
   final GameRegistry registry;
   final RoomCoordinator manager;
+  /** Origen sin red: cualquier precarga de imagen recibe un recurso vacío. */
+  static final GameAssetService ASSETS = new GameAssetService(source -> new LoadedAsset(new byte[0], "image/png"),
+      GameAssetService.defaultCache());
 
   RoomTestKit(String... fakeGames) {
     this(50_000, UserGameConfigPreferences.NO_OP, fakeGames);
@@ -53,7 +58,7 @@ final class RoomTestKit {
     this.random = new SeededRandom(42);
     this.registry = registry;
     this.manager = new RoomCoordinator(registry, MAPPER, events, audit, persister, preferences, host, time, random,
-        time, RoomSettings.DEFAULTS, () -> CATALOG);
+        time, RoomSettings.DEFAULTS, () -> GameCatalogs.of(CATALOG), ASSETS);
   }
 
   static GameRegistry registry(String... fakeGames) {

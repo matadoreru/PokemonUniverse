@@ -1,5 +1,6 @@
 package es.pokemonuniverse.application.rooms;
 
+import es.pokemonuniverse.application.assets.GameAssetService;
 import es.pokemonuniverse.application.rooms.RoomAuditSink.GameAbandoned;
 import es.pokemonuniverse.application.rooms.RoomAuditSink.GameStarted;
 import es.pokemonuniverse.application.rooms.RoomAuditSink.RoomClosed;
@@ -23,7 +24,6 @@ import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
 import es.pokemonuniverse.domain.game.engine.WouldYouRatherPromptPair;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
-import es.pokemonuniverse.domain.pokemon.PokemonCatalog;
 import es.pokemonuniverse.domain.room.ErasedEngine;
 import es.pokemonuniverse.domain.room.GameCatalogSnapshot;
 import es.pokemonuniverse.domain.room.GameFinishReason;
@@ -113,6 +113,7 @@ public class RoomCoordinator {
   private final RandomSource random;
   private final RoomSchedulers schedulers;
   private final RoomSettings settings;
+  private final GameAssetService assets;
   private final Map<String, JsonNode> defaultConfigs = new LinkedHashMap<>();
   /** Motores portados con los tipos borrados, uno por juego. */
   private final Map<String, ErasedEngine> engines = new LinkedHashMap<>();
@@ -121,7 +122,7 @@ public class RoomCoordinator {
   public RoomCoordinator(GameRegistry registry, JsonMapper json, RoomEvents events, RoomAuditSink audit,
       GameResultsPersister results, UserGameConfigPreferences userGameConfigs, HostContentProvider hostContent,
       Clock clock, RandomSource random, RoomSchedulers schedulers, RoomSettings settings,
-      GameCatalogProvider catalog) {
+      GameCatalogProvider catalog, GameAssetService assets) {
     this.registry = registry;
     this.json = json;
     this.events = events;
@@ -133,19 +134,23 @@ public class RoomCoordinator {
     this.random = random;
     this.schedulers = schedulers;
     this.settings = settings;
+    this.assets = assets;
     this.cursors = new CursorRelay(events, clock);
     this.views = new RoomViews(registry, defaultConfigs, clock, events, this::toTree);
-    var initialCatalog = catalog.loadPokemonCatalog();
-    this.currentCatalog = new GameCatalogSnapshot(random.uuid(), initialCatalog);
+    this.currentCatalog = snapshot(catalog.loadPokemonCatalog());
     for (var manifest : registry.list()) {
       defaultConfigs.put(manifest.id(), toTree(manifest.defaultConfig()));
       registry.engine(manifest.id()).ifPresent(engine -> engines.put(manifest.id(), new ErasedEngine(engine)));
     }
   }
 
-  /** Las partidas en curso conservan su catálogo; la siguiente usa este. */
-  public void replaceCatalog(PokemonCatalog value) {
-    this.currentCatalog = new GameCatalogSnapshot(random.uuid(), value);
+  /** Las partidas en curso conservan sus catálogos; la siguiente usa estos. */
+  public void replaceCatalog(GameCatalogs value) {
+    this.currentCatalog = snapshot(value);
+  }
+
+  private GameCatalogSnapshot snapshot(GameCatalogs value) {
+    return new GameCatalogSnapshot(random.uuid(), value.pokemon(), value.visuals(), value.audio());
   }
 
   private GameCatalogSnapshot catalogSnapshot() {
@@ -669,7 +674,7 @@ public class RoomCoordinator {
       throw new RoomException("Este juego admite un máximo de " + module.maxPlayers() + " jugadores.");
     }
     var catalog = catalogSnapshot();
-    var context = GameContext.builder(catalog.pokemon(), random::next)
+    var context = contextBuilder(catalog)
         .players(players)
         .now(clock.now())
         .roomCode(room.code)
@@ -1160,7 +1165,7 @@ public class RoomCoordinator {
     var players = room.members.values().stream().map(member -> new GamePlayer(member.identity.id(),
         member.identity.displayName(), member.presence == PresenceStatus.CONNECTED,
         member.role == MemberRole.PLAYER && member.presence != PresenceStatus.LEFT)).toList();
-    return GameContext.builder(catalog.pokemon(), random::next)
+    return contextBuilder(catalog)
         .players(players)
         .now(clock.now())
         .roomCode(room.code)
@@ -1168,6 +1173,14 @@ public class RoomCoordinator {
         .hostCustomCategories(hostCustomCategories(room))
         .hostWouldYouRatherPrompts(hostWouldYouRatherPrompts(room))
         .build();
+  }
+
+  /** Catálogos fijados más la precarga de imágenes ({@code preloadGameImage} de Node). */
+  private GameContext.Builder contextBuilder(GameCatalogSnapshot catalog) {
+    return GameContext.builder(catalog.pokemon(), random::next)
+        .pokemonVisuals(catalog.visuals())
+        .pokemonAudio(catalog.audio())
+        .preloadImage(assets::preload);
   }
 
   private List<SubjectiveCategory> hostCustomCategories(LiveRoom room) {

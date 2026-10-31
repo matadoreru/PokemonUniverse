@@ -68,7 +68,7 @@ class PresenceTest {
   void stableRoster() {
     var room = room(member("player", 1));
     room.phase = RoomPhase.ROUND_ACTIVE;
-    room.game = new GameRuntime(new GameCatalogSnapshot("v", null), "result", "higher-lower", List.of("player"), null,
+    room.game = new GameRuntime(new GameCatalogSnapshot("v", null, null, null), "result", "higher-lower", List.of("player"), null,
         null, null, Map.of("secret", "opaque"), 0, CompletableFuture.completedFuture(null));
     assertTrue(Presence.gameRetainsPlayer(room, "player"));
     assertFalse(Presence.gameRetainsPlayer(room, "spectator"));

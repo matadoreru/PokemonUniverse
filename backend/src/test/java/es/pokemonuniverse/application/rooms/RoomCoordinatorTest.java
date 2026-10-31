@@ -19,6 +19,7 @@ import es.pokemonuniverse.domain.game.engine.GameEngine;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
 import es.pokemonuniverse.domain.json.JsonTree;
+import es.pokemonuniverse.domain.pokemon.InMemoryPokemonAudioCatalog;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.domain.room.GameFinishReason;
 import es.pokemonuniverse.domain.room.GameSelectionMode;
@@ -885,7 +886,7 @@ class RoomCoordinatorTest {
       var random = new SeededRandom(seed);
       var manager = new RoomCoordinator(kit.registry, RoomTestKit.MAPPER, kit.events, kit.audit, kit.persister,
           UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, kit.time, random, kit.time, RoomSettings.DEFAULTS,
-          () -> RoomTestKit.CATALOG);
+          () -> GameCatalogs.of(RoomTestKit.CATALOG), RoomTestKit.ASSETS);
       var room = manager.store.get(manager.create(guest("host", "Host"), "h", null).code());
       manager.join(guest("guest", "Ana"), "g", room.code);
       room.gameSelectionMode = new GameSelectionMode.Vote(List.of("higher-lower", "shiny-vote", "pokemon-bingo"));
@@ -1055,11 +1056,15 @@ class RoomCoordinatorTest {
     var room = fixture.room();
     var previous = room.game.catalog;
     var nextCatalog = new InMemoryPokemonCatalog(RoomTestKit.CATALOG.all());
-    kit.manager.replaceCatalog(nextCatalog);
+    var nextAudio = new InMemoryPokemonAudioCatalog(List.of());
+    kit.manager.replaceCatalog(new GameCatalogs(nextCatalog, null, nextAudio));
     assertSame(previous.pokemon(), kit.manager.context(room).pokemon());
+    assertNull(kit.manager.context(room).pokemonAudio());
     assertEquals(previous.version(), room.game.catalog.version());
     kit.manager.launchGame(room);
     assertSame(nextCatalog, room.game.catalog.pokemon());
+    assertSame(nextAudio, kit.manager.context(room).pokemonAudio());
+    assertNotNull(kit.manager.context(room).preloadImage());
     assertNotEquals(previous.version(), room.game.catalog.version());
     kit.manager.stop();
     assertEquals(0, kit.time.activeTimers());

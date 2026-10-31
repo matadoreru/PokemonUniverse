@@ -1,0 +1,20 @@
+import { describe, expect, it } from 'vitest';
+import { proxyFor } from './vite.config';
+
+describe('proxyFor', () => {
+  it('routes round assets to the Java backend before /api when realtime is java', () => {
+    const proxy = proxyFor('java');
+    const keys = Object.keys(proxy);
+    expect(proxy['^/api/rooms/']).toBe('http://localhost:8080');
+    expect(keys.indexOf('^/api/rooms/')).toBeGreaterThanOrEqual(0);
+    expect(keys.indexOf('^/api/rooms/')).toBeLessThan(keys.indexOf('/api'));
+  });
+
+  it('keeps round assets on Node otherwise', () => {
+    for (const realtime of [undefined, 'node']) {
+      const proxy = proxyFor(realtime);
+      expect(Object.keys(proxy)).not.toContain('^/api/rooms/');
+      expect(proxy['/api']).toBe('http://localhost:3001');
+    }
+  });
+});

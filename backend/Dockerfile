@@ -12,7 +12,7 @@ RUN ./gradlew --no-daemon assemble -x test
 FROM eclipse-temurin:25-jre-alpine
 ARG PU_COMMIT_SHA=""
 ENV PU_COMMIT_SHA=${PU_COMMIT_SHA} \
-    JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75 -XX:+UseSerialGC -Dlogback.configurationFile=logback-prod.xml"
+    JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75 -XX:+UseSerialGC -Djava.awt.headless=true -Dlogback.configurationFile=logback-prod.xml"
 WORKDIR /app
 # El plugin de Micronaut 5 no genera un jar "-all": `assemble` deja en
 # build/docker/main/layers un jar fino cuyo Class-Path apunta a libs/ y
