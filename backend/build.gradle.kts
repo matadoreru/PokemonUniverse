@@ -33,6 +33,7 @@ micronaut {
 dependencies {
   implementation("io.micronaut:micronaut-http-server-netty")
   implementation("io.micronaut:micronaut-management")
+  implementation("io.micronaut:micronaut-websocket")
   implementation("io.micronaut.micrometer:micronaut-micrometer-core")
   implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
   implementation("io.micronaut.serde:micronaut-serde-jackson")

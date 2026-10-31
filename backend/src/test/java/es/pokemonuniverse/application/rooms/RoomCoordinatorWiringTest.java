@@ -3,6 +3,7 @@ package es.pokemonuniverse.application.rooms;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
+import es.pokemonuniverse.adapters.in.ws.WsRoomEvents;
 import es.pokemonuniverse.adapters.out.persistence.GameHistoryRepository;
 import es.pokemonuniverse.adapters.out.persistence.GameHistoryStatus;
 import es.pokemonuniverse.adapters.out.persistence.JpaGameResultsPersister;
@@ -12,6 +13,7 @@ import es.pokemonuniverse.adapters.out.persistence.RoomHistoryStatus;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
 import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
@@ -26,6 +28,7 @@ class RoomCoordinatorWiringTest {
 
   @Singleton
   @Requires(property = "spec.name", value = "RoomCoordinatorWiringTest")
+  @Replaces(WsRoomEvents.class)
   static class NoEvents implements RoomEvents {
     @Override
     public void sendToMember(String memberId, String connectionId, String event, Object payload) {}
