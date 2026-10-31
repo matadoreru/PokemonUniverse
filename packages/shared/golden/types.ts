@@ -27,11 +27,20 @@ export interface GoldenContextData {
   tcgCards?: TcgComparableCard[];
 }
 
+/**
+ * Paleta por id de Pokémon que se superpone a las filas del catálogo antes de construirlo (TS y Java por igual). Las
+ * paletas las calcula el data-sync y el exportador de catálogo las borra, así que los motores que las leen
+ * (`pokemon-palette-guess`) las traen en el escenario. Se copian tal cual, sin la validación del cargador de Node.
+ */
+export type GoldenCatalogPatch = Record<string, { palette: string[]; paletteWeights: number[] }>;
+
 export interface GoldenScenario extends GoldenContextData {
   name: string;
   seed: number;
   /** Id de `backend/src/test/resources/golden/catalog/<id>.json`. */
   catalog: string;
+  /** Solo si el escenario la trae; cada id debe existir en el catálogo. */
+  catalogPatch?: GoldenCatalogPatch;
   /** `players[0]` es el anfitrión (`context.hostId`). */
   players: GamePlayer[];
   /** Entrada cruda: se pasa por `configSchema.parse` igual que hace el coordinador de salas. */
@@ -70,6 +79,7 @@ export interface GoldenFixture extends GoldenContextData {
   scenario: string;
   seed: number;
   catalog: string;
+  catalogPatch?: GoldenCatalogPatch;
   players: GamePlayer[];
   config: unknown;
   startNow?: number;

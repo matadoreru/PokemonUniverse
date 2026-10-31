@@ -7,10 +7,11 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Formato de {@code packages/shared/golden/types.ts}; las partes opacas se quedan como {@link JsonNode}. Los datos de
- * contexto ({@code hostCustomCategories} … {@code tcgCards}) son nulos si el escenario no los trae; los mapas por id de
+ * contexto ({@code hostCustomCategories} … {@code tcgCards}) y {@code catalogPatch} son nulos si el escenario no los trae; los mapas por id de
  * Pokémon se leen como {@link JsonNode} para conservar el orden de la fixture ({@link GoldenContexts}).
  */
 @Serdeable
@@ -19,6 +20,7 @@ public record GoldenFixture(
     String scenario,
     long seed,
     String catalog,
+    @Nullable Map<String, PalettePatch> catalogPatch,
     List<GamePlayer> players,
     JsonNode config,
     @Nullable List<SubjectiveCategory> hostCustomCategories,
@@ -31,6 +33,13 @@ public record GoldenFixture(
     List<Step> steps,
     Expected expected,
     @Nullable Integer stoppedAt) {
+
+  /**
+   * Entrada de {@code catalogPatch} ({@code GoldenCatalogPatch} de {@code types.ts}): paleta que {@link GoldenCatalogs}
+   * superpone a la fila del Pokémon antes de construir el catálogo.
+   */
+  @Serdeable
+  public record PalettePatch(List<String> palette, List<Double> paletteWeights) {}
 
   /**
    * {@code kind}: {@code action} (playerId, action), {@code timeout}, {@code presence} (players) o {@code asset}

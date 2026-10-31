@@ -72,6 +72,12 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
      (`TcgComparableCard[]`). Solo los que trae llegan al `GameContext` (ausente ≠ vacío); `preloadImage` es siempre
      un no-op. `golden/context.ts` y `GoldenContexts.java` montan los mismos catálogos en memoria, en el orden de la
      fixture; `tcgCards.cardsFor` filtra por sets, rarezas y precio decimal, no por generación.
+   - **Parche de catálogo**: `catalogPatch` (`Record<id, { palette: string[]; paletteWeights: number[] }>`) superpone
+     la paleta a esas filas del catálogo antes de construirlo, tal cual y sin la validación del cargador de Node:
+     `applyCatalogPatch` (`golden/catalog-patch.ts`) y `GoldenCatalogs.load(catalog, catalogPatch)` hacen lo mismo y
+     fallan si un id no está en la fixture. Existe porque el exportador de catálogo borra las paletas (las calcula el
+     data-sync) y `pokemon-palette-guess` las necesita; sus escenarios traen paletas literales de 8 colores. Úsalo
+     solo para datos que la base local no tiene.
    - **Paso `asset`**: `{ kind: 'asset', assetToken, roundNumber, assetId, now }` llama a `resolveAsset` sin cambiar el
      estado y graba `{ resolution }` sin snapshot. Un `string` del motor TS se normaliza a
      `{ source, transform: 'ORIGINAL' }` (como `game-image-cache.ts`) y `null` o un motor sin `resolveAsset` graba

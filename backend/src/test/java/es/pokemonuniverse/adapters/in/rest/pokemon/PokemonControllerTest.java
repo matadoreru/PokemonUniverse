@@ -99,6 +99,24 @@ class PokemonControllerTest {
     assertFalse(ivysaur.containsKey("evolutionStage"));
   }
 
+  /** Una paleta persistida válida llega al catálogo de las partidas, pero no a {@code /api/pokemon}. */
+  @Test
+  void keepsAValidPaletteInTheCatalogButNotInTheResponse() {
+    var metadata = Map.<String, Object>of("palette", List.of("#112233", "#445566", "#778899"),
+        "paletteWeights", List.of(3, 2, 1), "paletteVersion", 3,
+        "paletteSpriteUrl", "https://sprites/" + IDS[1] + ".png");
+    repo.update(PokemonEntity.create(IDS[1], 9002, "ivysaur", 1, true, new String[] {}, new String[] {"grass"}, metadata,
+        NOW));
+    service.refresh();
+    var ivysaur = service.catalog().byId(IDS[1]).orElseThrow();
+    assertEquals(List.of("#112233", "#445566", "#778899"), ivysaur.palette());
+    assertEquals(List.of(3.0, 2.0, 1.0), ivysaur.paletteWeights());
+    var body = client.toBlocking().retrieve(HttpRequest.GET("/api/pokemon"), String.class);
+    assertTrue(body.contains("\"" + IDS[1] + "\""), body);
+    assertFalse(body.contains("palette"), body);
+    assertFalse(body.contains("paletteWeights"), body);
+  }
+
   @Test
   void setsCacheHeader() {
     var res = client.toBlocking().exchange(HttpRequest.GET("/api/pokemon"), String.class);

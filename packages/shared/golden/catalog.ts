@@ -4,6 +4,8 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import type { Move, PokedexEntry, Pokemon, PokemonCatalog, PokemonEvolutionInfo } from '../dist/index.js';
 import { InMemoryPokemonCatalog } from '../../../apps/server/dist/src/pokemon/catalog.js';
+import { applyCatalogPatch } from './catalog-patch.js';
+import type { GoldenCatalogPatch } from './types.js';
 
 interface CatalogFixture {
   fixtureId: string;
@@ -16,12 +18,18 @@ interface CatalogFixture {
 
 const cache = new Map<string, PokemonCatalog>();
 
-export function loadGoldenCatalog(fixtureId: string): PokemonCatalog {
-  const cached = cache.get(fixtureId);
-  if (cached) return cached;
+function readFixture(fixtureId: string): CatalogFixture {
   const path = fileURLToPath(new URL(`../../../backend/src/test/resources/golden/catalog/${fixtureId}.json`, import.meta.url));
-  const fixture = JSON.parse(readFileSync(path, 'utf8')) as CatalogFixture;
-  const catalog = new InMemoryPokemonCatalog(fixture.pokemon, fixture.moves, fixture.learnsets, fixture.evolution, fixture.pokedexEntries);
-  cache.set(fixtureId, catalog);
+  return JSON.parse(readFileSync(path, 'utf8')) as CatalogFixture;
+}
+
+/** Sin parche, el catálogo se cachea por fixture; con parche se construye uno nuevo sobre las filas parcheadas. */
+export function loadGoldenCatalog(fixtureId: string, patch?: GoldenCatalogPatch): PokemonCatalog {
+  const cached = patch ? undefined : cache.get(fixtureId);
+  if (cached) return cached;
+  const fixture = readFixture(fixtureId);
+  const pokemon = patch ? applyCatalogPatch(fixture.pokemon, patch) : fixture.pokemon;
+  const catalog = new InMemoryPokemonCatalog(pokemon, fixture.moves, fixture.learnsets, fixture.evolution, fixture.pokedexEntries);
+  if (!patch) cache.set(fixtureId, catalog);
   return catalog;
 }

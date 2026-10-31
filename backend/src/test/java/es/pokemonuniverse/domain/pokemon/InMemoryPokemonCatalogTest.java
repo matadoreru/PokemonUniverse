@@ -17,8 +17,8 @@ class InMemoryPokemonCatalogTest {
   private static final InMemoryPokemonCatalog CATALOG = GoldenCatalogs.load("gen1-2");
 
   private static Pokemon pokemon(String id, int dex, boolean isDefault) {
-    return new Pokemon(id, dex, id, 1, isDefault, "s", null, 1, 1, 1, 1, 1, 1, 6, 1, 1, null, null, "NORMAL", "red",
-        List.of(), Map.of(), List.of("normal"));
+    return new Pokemon(id, dex, id, 1, isDefault, "s", null, null, null, 1, 1, 1, 1, 1, 1, 6, 1, 1, null, null, "NORMAL",
+        "red", List.of(), Map.of(), List.of("normal"));
   }
 
   @Test

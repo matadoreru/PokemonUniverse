@@ -6,12 +6,15 @@ import es.pokemonuniverse.domain.pokemon.Move;
 import es.pokemonuniverse.domain.pokemon.PokedexEntry;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import es.pokemonuniverse.domain.pokemon.PokemonEvolutionInfo;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.type.Argument;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /** Carga {@code golden/catalog/<fixtureId>.json} con el mismo filtrado y orden que producción. */
 public final class GoldenCatalogs {
@@ -19,11 +22,20 @@ public final class GoldenCatalogs {
   private GoldenCatalogs() {}
 
   public static InMemoryPokemonCatalog load(String fixtureId) {
+    return load(fixtureId, null);
+  }
+
+  /**
+   * Con {@code catalogPatch} (como {@code loadGoldenCatalog} de {@code golden/catalog.ts}): superpone la paleta a las
+   * filas parcheadas antes de construir el catálogo; un id que no está en la fixture es un error.
+   */
+  public static InMemoryPokemonCatalog load(String fixtureId, @Nullable Map<String, GoldenFixture.PalettePatch> patch) {
     var root = root(fixtureId);
     var mapper = ObjectMapper.getDefault();
     try {
+      var rows = mapper.readValueFromTree(root.get("pokemon"), Argument.listOf(Pokemon.class));
       return new InMemoryPokemonCatalog(
-          mapper.readValueFromTree(root.get("pokemon"), Argument.listOf(Pokemon.class)),
+          patch == null ? rows : applyPatch(rows, patch),
           mapper.readValueFromTree(root.get("moves"), Argument.listOf(Move.class)),
           mapper.readValueFromTree(root.get("learnsets"), Argument.listOf(LearnsetEntry.class)),
           mapper.readValueFromTree(root.get("evolution"),
@@ -32,6 +44,19 @@ public final class GoldenCatalogs {
     } catch (IOException e) {
       throw new UncheckedIOException("No se pudo interpretar la fixture " + fixtureId, e);
     }
+  }
+
+  /** {@code applyCatalogPatch} de {@code golden/catalog-patch.ts}. */
+  static List<Pokemon> applyPatch(List<Pokemon> rows, Map<String, GoldenFixture.PalettePatch> patch) {
+    var known = rows.stream().map(Pokemon::id).collect(Collectors.toSet());
+    var unknown = patch.keySet().stream().filter(id -> !known.contains(id)).toList();
+    if (!unknown.isEmpty()) {
+      throw new IllegalStateException("catalogPatch con Pokémon fuera del catálogo: " + String.join(", ", unknown));
+    }
+    return rows.stream().map(row -> {
+      var entry = patch.get(row.id());
+      return entry == null ? row : row.withPalette(entry.palette(), entry.paletteWeights());
+    }).toList();
   }
 
   /** Filas tal cual están en la fixture, antes del filtro del catálogo. */

@@ -1,0 +1,320 @@
+[
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": []
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": []
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": [
+        "TYPE",
+        "GENERATION",
+        "TYPE",
+        "CATEGORY",
+        "GENERATION"
+      ]
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": [
+        "TYPE",
+        "GENERATION",
+        "CATEGORY"
+      ]
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 10,
+      "rounds": 1,
+      "paletteSize": 5,
+      "hintsEnabled": false,
+      "hintKinds": []
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 10,
+      "rounds": 1,
+      "paletteSize": 5,
+      "hintsEnabled": false,
+      "hintKinds": []
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 60,
+      "rounds": 20,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": []
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 60,
+      "rounds": 20,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": []
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 10,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": true,
+      "hintKinds": []
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 10,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": true,
+      "hintKinds": []
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 9,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": []
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 61,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": []
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 0,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": []
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 21,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": []
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 4,
+      "hintsEnabled": false,
+      "hintKinds": []
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 9,
+      "hintsEnabled": false,
+      "hintKinds": []
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 6.5,
+      "hintsEnabled": false,
+      "hintKinds": []
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": []
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": []
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": [
+        "SHAPE"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": "TYPE"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": "no",
+      "hintKinds": []
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": [],
+      "unknownKey": "no se admite"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]

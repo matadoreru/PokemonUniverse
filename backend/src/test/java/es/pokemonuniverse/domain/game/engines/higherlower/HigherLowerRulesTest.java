@@ -19,12 +19,12 @@ import org.junit.jupiter.api.Test;
 class HigherLowerRulesTest {
 
   private static Pokemon pokemon(String id, int dex, int attack) {
-    return new Pokemon(id, dex, id, 1, true, "/" + id + ".png", "/" + id + "-shiny.png", 50, attack, 80, 70, 60, 90,
-        450, 10, 100, 1, 1, "NONE", "red", List.of(), Map.of(), List.of("fire"));
+    return new Pokemon(id, dex, id, 1, true, "/" + id + ".png", "/" + id + "-shiny.png", null, null, 50, attack, 80,
+        70, 60, 90, 450, 10, 100, 1, 1, "NONE", "red", List.of(), Map.of(), List.of("fire"));
   }
 
-  private static final Pokemon ALPHA = new Pokemon("alpha", 1, "Alpha", 1, true, "/a.png", "/a-s.png", 51, 102, 83, 74,
-      65, 96, 457, 7, 69, 1, 3, "NONE", "green", List.of(), Map.of(), List.of("grass"));
+  private static final Pokemon ALPHA = new Pokemon("alpha", 1, "Alpha", 1, true, "/a.png", "/a-s.png", null, null,
+      51, 102, 83, 74, 65, 96, 457, 7, 69, 1, 3, "NONE", "green", List.of(), Map.of(), List.of("grass"));
 
   @Test
   void readsEachCategoryField() {

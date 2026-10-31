@@ -43,7 +43,7 @@ function contextData(scenario: GoldenScenario): GoldenContextData {
 }
 
 export function runScenario(module: AnyModule, scenario: GoldenScenario): GoldenFixture {
-  let context: GameContext = buildGoldenContext(scenario, loadGoldenCatalog(scenario.catalog));
+  let context: GameContext = buildGoldenContext(scenario, loadGoldenCatalog(scenario.catalog, scenario.catalogPatch));
   const configNormalized = module.configSchema.parse(scenario.config);
   let state = module.createInitialState(configNormalized, context);
   const initial = snapshot(module, state, context);
@@ -86,6 +86,7 @@ export function runScenario(module: AnyModule, scenario: GoldenScenario): Golden
     scenario: scenario.name,
     seed: scenario.seed,
     catalog: scenario.catalog,
+    ...(scenario.catalogPatch ? { catalogPatch: scenario.catalogPatch } : {}),
     players: scenario.players,
     config: scenario.config,
     // GoldenReplayer los lee de la fixture: sin ellos Java arrancaría en 1000/GOLD01 aunque el escenario diga otra cosa.

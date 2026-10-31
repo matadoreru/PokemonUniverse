@@ -1,0 +1,2617 @@
+{
+  "engineId": "pokemon-palette-guess",
+  "scenario": "hints-and-small-palette",
+  "seed": 702,
+  "catalog": "gen1-2",
+  "catalogPatch": {
+    "bulbasaur": {
+      "palette": [
+        "#78c850",
+        "#4e8234",
+        "#a7db8d",
+        "#2f6b4f",
+        "#d8f0c0",
+        "#c03028",
+        "#f8f8f8",
+        "#203820"
+      ],
+      "paletteWeights": [
+        34,
+        21,
+        13,
+        8,
+        5,
+        3,
+        2,
+        1
+      ]
+    },
+    "charmander": {
+      "palette": [
+        "#f08030",
+        "#f8d030",
+        "#c03028",
+        "#9c531f",
+        "#fac000",
+        "#3070b0",
+        "#f8f8f8",
+        "#402010"
+      ],
+      "paletteWeights": [
+        34,
+        21,
+        13,
+        8,
+        5,
+        3,
+        2,
+        1
+      ]
+    },
+    "squirtle": {
+      "palette": [
+        "#6890f0",
+        "#9db7f5",
+        "#a8783c",
+        "#e0c068",
+        "#445e9c",
+        "#f8f8f8",
+        "#c0a060",
+        "#283850"
+      ],
+      "paletteWeights": [
+        9,
+        8,
+        7,
+        6,
+        5,
+        4,
+        3,
+        2
+      ]
+    },
+    "pikachu": {
+      "palette": [
+        "#f8d030",
+        "#a1871f",
+        "#c03028",
+        "#fae078",
+        "#383838",
+        "#f8f8f8",
+        "#e0a000",
+        "#704010"
+      ],
+      "paletteWeights": [
+        34,
+        21,
+        13,
+        8,
+        5,
+        3,
+        2,
+        1
+      ]
+    },
+    "jigglypuff": {
+      "palette": [
+        "#ee99ac",
+        "#f4bdc9",
+        "#3890b8",
+        "#9b6470",
+        "#f8f8f8",
+        "#283848",
+        "#c06080",
+        "#ffe0e8"
+      ],
+      "paletteWeights": [
+        0.4,
+        0.2,
+        0.1,
+        0.1,
+        0.08,
+        0.06,
+        0.04,
+        0.02
+      ]
+    },
+    "meowth": {
+      "palette": [
+        "#e8d8a0",
+        "#a8a878",
+        "#f8d030",
+        "#6d6d4e",
+        "#c03028",
+        "#f8f8f8",
+        "#8a6a30",
+        "#383020"
+      ],
+      "paletteWeights": [
+        34,
+        21,
+        13,
+        8,
+        5,
+        3,
+        2,
+        1
+      ]
+    },
+    "psyduck": {
+      "palette": [
+        "#f8d030",
+        "#fae078",
+        "#e0a000",
+        "#a1871f",
+        "#f8f8f8",
+        "#383838",
+        "#c0a860",
+        "#704010"
+      ],
+      "paletteWeights": [
+        34,
+        21,
+        13,
+        8,
+        5,
+        3,
+        2,
+        1
+      ]
+    },
+    "geodude": {
+      "palette": [
+        "#b8a038",
+        "#8d7d4b",
+        "#d1c17d",
+        "#6d5e26",
+        "#f8f8f8",
+        "#383020",
+        "#a89048",
+        "#504010"
+      ],
+      "paletteWeights": [
+        34,
+        21,
+        13,
+        8,
+        5,
+        3,
+        2,
+        1
+      ]
+    },
+    "gastly": {
+      "palette": [
+        "#705898",
+        "#493963",
+        "#a292bc",
+        "#383838",
+        "#f8f8f8",
+        "#c03028",
+        "#201030",
+        "#d0c0f0"
+      ],
+      "paletteWeights": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "onix": {
+      "palette": [
+        "#a8a8a8",
+        "#787878",
+        "#d0d0d0",
+        "#585858",
+        "#f8f8f8",
+        "#383838",
+        "#909090",
+        "#b8b8c8"
+      ],
+      "paletteWeights": [
+        34,
+        21,
+        13,
+        8,
+        5,
+        3,
+        2,
+        1
+      ]
+    },
+    "eevee": {
+      "palette": [
+        "#a8783c",
+        "#e0c068",
+        "#f8f0d0",
+        "#704820",
+        "#383020",
+        "#f8f8f8",
+        "#c09050",
+        "#503010"
+      ],
+      "paletteWeights": [
+        34,
+        21,
+        13,
+        8,
+        5,
+        3,
+        2,
+        1
+      ]
+    },
+    "snorlax": {
+      "palette": [
+        "#386878",
+        "#f0e0c0",
+        "#284858",
+        "#a8a090",
+        "#f8f8f8",
+        "#183038",
+        "#d0c8b0",
+        "#506878"
+      ],
+      "paletteWeights": [
+        34,
+        21,
+        13,
+        8,
+        5,
+        3,
+        2,
+        1
+      ]
+    },
+    "dragonite": {
+      "palette": [
+        "#f0a840",
+        "#f8d088",
+        "#58a8a8",
+        "#a87020",
+        "#f8f8f8",
+        "#383020",
+        "#d08830",
+        "#406870"
+      ],
+      "paletteWeights": [
+        34,
+        21,
+        13,
+        8,
+        5,
+        3,
+        2,
+        1
+      ]
+    },
+    "mewtwo": {
+      "palette": [
+        "#c8b8d8",
+        "#9070b0",
+        "#f8f0f8",
+        "#605070",
+        "#383038",
+        "#a890c0",
+        "#e0d0e8",
+        "#704890"
+      ],
+      "paletteWeights": [
+        34,
+        21,
+        13,
+        8,
+        5,
+        3,
+        2,
+        1
+      ]
+    },
+    "mew": {
+      "palette": [
+        "#f8c0d8",
+        "#f090b8",
+        "#fff0f8",
+        "#c06090",
+        "#3890b8",
+        "#f8f8f8",
+        "#e0a0c0",
+        "#803050"
+      ],
+      "paletteWeights": [
+        34,
+        21,
+        13,
+        8,
+        5,
+        3,
+        2,
+        1
+      ]
+    },
+    "magikarp": {
+      "palette": [
+        "#f08030",
+        "#f8f8f8"
+      ],
+      "paletteWeights": [
+        3,
+        1
+      ]
+    },
+    "raichu-alola": {
+      "palette": [
+        "#d08030",
+        "#f8d030",
+        "#a060c0",
+        "#f8f8f8",
+        "#704010",
+        "#383838",
+        "#e0a060",
+        "#5030a0"
+      ],
+      "paletteWeights": [
+        34,
+        21,
+        13,
+        8,
+        5,
+        3,
+        2,
+        1
+      ]
+    }
+  },
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "roundSeconds": 15,
+    "rounds": 4,
+    "paletteSize": 5,
+    "hintsEnabled": true,
+    "hintKinds": [
+      "CATEGORY",
+      "EVOLUTION",
+      "TYPE",
+      "TYPE_COUNT",
+      "GENERATION",
+      "TYPE"
+    ]
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "psyduck"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "psyduck"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 5000
+    },
+    {
+      "kind": "timeout",
+      "now": 9000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "onix"
+      },
+      "now": 10000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "onix"
+      },
+      "now": 11000
+    },
+    {
+      "kind": "timeout",
+      "now": 24000
+    },
+    {
+      "kind": "timeout",
+      "now": 28000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 29000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "geodude"
+      },
+      "now": 30000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "geodude"
+      },
+      "now": 32000
+    },
+    {
+      "kind": "timeout",
+      "now": 43000
+    },
+    {
+      "kind": "timeout",
+      "now": 47000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 48000
+    },
+    {
+      "kind": "timeout",
+      "now": 62000
+    },
+    {
+      "kind": "timeout",
+      "now": 66000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 15,
+      "rounds": 4,
+      "paletteSize": 5,
+      "hintsEnabled": true,
+      "hintKinds": [
+        "CATEGORY",
+        "EVOLUTION",
+        "TYPE",
+        "TYPE_COUNT",
+        "GENERATION"
+      ]
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-palette-guess",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 4,
+        "colors": [],
+        "colorWeights": [],
+        "hints": [],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 16000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-palette-guess",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 4,
+        "colors": [
+          "#f8d030",
+          "#fae078",
+          "#e0a000",
+          "#a1871f",
+          "#f8f8f8"
+        ],
+        "colorWeights": [
+          0.41975308641975306,
+          0.25925925925925924,
+          0.16049382716049382,
+          0.09876543209876543,
+          0.06172839506172839
+        ],
+        "hints": [
+          {
+            "kind": "CATEGORY",
+            "value": "NORMAL"
+          },
+          {
+            "kind": "EVOLUTION",
+            "stage": 1,
+            "stages": 2
+          },
+          {
+            "kind": "TYPE",
+            "values": [
+              "water"
+            ]
+          },
+          {
+            "kind": "TYPE_COUNT",
+            "value": 1
+          },
+          {
+            "kind": "GENERATION",
+            "value": 1
+          }
+        ],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 16000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "colors": [
+              "#f8d030",
+              "#fae078",
+              "#e0a000",
+              "#a1871f",
+              "#f8f8f8"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 2
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "water"
+                ]
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 12,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 12,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 3000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "colors": [
+              "#f8d030",
+              "#fae078",
+              "#e0a000",
+              "#a1871f",
+              "#f8f8f8"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 2
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "water"
+                ]
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 12,
+              "p2": 10,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 12,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 3000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 10,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 4000
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 9000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "colors": [
+              "#f8d030",
+              "#fae078",
+              "#e0a000",
+              "#a1871f",
+              "#f8f8f8"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 12,
+              "p2": 10,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 9000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+                "generation": 1
+              },
+              "palette": [
+                "#f8d030",
+                "#fae078",
+                "#e0a000",
+                "#a1871f",
+                "#f8f8f8"
+              ],
+              "paletteWeights": [
+                0.41975308641975306,
+                0.25925925925925924,
+                0.16049382716049382,
+                0.09876543209876543,
+                0.06172839506172839
+              ],
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 3000,
+                  "elapsedMs": 2000,
+                  "speedPoints": 9,
+                  "placementBonus": 3,
+                  "points": 12,
+                  "attempts": 1
+                },
+                "p2": {
+                  "solveOrder": 2,
+                  "solvedAt": 4000,
+                  "elapsedMs": 3000,
+                  "speedPoints": 8,
+                  "placementBonus": 2,
+                  "points": 10,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p1": 1,
+                "p2": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 12,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 3000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 10,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 4000
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,9000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "colors": [
+              "#a8a8a8",
+              "#787878",
+              "#d0d0d0",
+              "#585858",
+              "#f8f8f8"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 2
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "rock",
+                  "ground"
+                ]
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 12,
+              "p2": 10,
+              "p3": 0
+            },
+            "roundStartedAt": 9000,
+            "roundEndsAt": 24000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Estás observando esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,9000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "colors": [
+              "#a8a8a8",
+              "#787878",
+              "#d0d0d0",
+              "#585858",
+              "#f8f8f8"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 2
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "rock",
+                  "ground"
+                ]
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 12,
+              "p2": 10,
+              "p3": 0
+            },
+            "roundStartedAt": 9000,
+            "roundEndsAt": 24000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,9000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "colors": [
+              "#a8a8a8",
+              "#787878",
+              "#d0d0d0",
+              "#585858",
+              "#f8f8f8"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 2
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "rock",
+                  "ground"
+                ]
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 24,
+              "p2": 10,
+              "p3": 0
+            },
+            "roundStartedAt": 9000,
+            "roundEndsAt": 24000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 12,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 11000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 28000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,9000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "colors": [
+              "#a8a8a8",
+              "#787878",
+              "#d0d0d0",
+              "#585858",
+              "#f8f8f8"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 24,
+              "p2": 10,
+              "p3": 0
+            },
+            "roundStartedAt": 9000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 28000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Onix",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
+                "generation": 1
+              },
+              "palette": [
+                "#a8a8a8",
+                "#787878",
+                "#d0d0d0",
+                "#585858",
+                "#f8f8f8"
+              ],
+              "paletteWeights": [
+                0.41975308641975306,
+                0.25925925925925924,
+                0.16049382716049382,
+                0.09876543209876543,
+                0.06172839506172839
+              ],
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 11000,
+                  "elapsedMs": 2000,
+                  "speedPoints": 9,
+                  "placementBonus": 3,
+                  "points": 12,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p1": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 12,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 11000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 43000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,28000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "colors": [
+              "#b8a038",
+              "#8d7d4b",
+              "#d1c17d",
+              "#6d5e26",
+              "#f8f8f8"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "rock",
+                  "ground"
+                ]
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 24,
+              "p2": 10,
+              "p3": 0
+            },
+            "roundStartedAt": 28000,
+            "roundEndsAt": 43000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 43000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,28000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "colors": [
+              "#b8a038",
+              "#8d7d4b",
+              "#d1c17d",
+              "#6d5e26",
+              "#f8f8f8"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "rock",
+                  "ground"
+                ]
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 24,
+              "p2": 10,
+              "p3": 0
+            },
+            "roundStartedAt": 28000,
+            "roundEndsAt": 43000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 43000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,28000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "colors": [
+              "#b8a038",
+              "#8d7d4b",
+              "#d1c17d",
+              "#6d5e26",
+              "#f8f8f8"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "rock",
+                  "ground"
+                ]
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p3",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 24,
+              "p2": 10,
+              "p3": 12
+            },
+            "roundStartedAt": 28000,
+            "roundEndsAt": 43000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 12,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 30000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 43000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,28000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "colors": [
+              "#b8a038",
+              "#8d7d4b",
+              "#d1c17d",
+              "#6d5e26",
+              "#f8f8f8"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "rock",
+                  "ground"
+                ]
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p3",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 24,
+              "p2": 20,
+              "p3": 12
+            },
+            "roundStartedAt": 28000,
+            "roundEndsAt": 43000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 10,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 32000
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 12,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 30000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 47000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,28000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "colors": [
+              "#b8a038",
+              "#8d7d4b",
+              "#d1c17d",
+              "#6d5e26",
+              "#f8f8f8"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p3",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 24,
+              "p2": 20,
+              "p3": 12
+            },
+            "roundStartedAt": 28000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 47000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Geodude",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png",
+                "generation": 1
+              },
+              "palette": [
+                "#b8a038",
+                "#8d7d4b",
+                "#d1c17d",
+                "#6d5e26",
+                "#f8f8f8"
+              ],
+              "paletteWeights": [
+                0.41975308641975306,
+                0.25925925925925924,
+                0.16049382716049382,
+                0.09876543209876543,
+                0.06172839506172839
+              ],
+              "solves": {
+                "p3": {
+                  "solveOrder": 1,
+                  "solvedAt": 30000,
+                  "elapsedMs": 2000,
+                  "speedPoints": 9,
+                  "placementBonus": 3,
+                  "points": 12,
+                  "attempts": 1
+                },
+                "p2": {
+                  "solveOrder": 2,
+                  "solvedAt": 32000,
+                  "elapsedMs": 4000,
+                  "speedPoints": 8,
+                  "placementBonus": 2,
+                  "points": 10,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p3": 1,
+                "p2": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 10,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 32000
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 12,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 30000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 62000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,47000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "colors": [
+              "#f8d030",
+              "#a1871f",
+              "#c03028",
+              "#fae078",
+              "#383838"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "electric"
+                ]
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 24,
+              "p2": 20,
+              "p3": 12
+            },
+            "roundStartedAt": 47000,
+            "roundEndsAt": 62000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 62000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,47000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "colors": [
+              "#f8d030",
+              "#a1871f",
+              "#c03028",
+              "#fae078",
+              "#383838"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "electric"
+                ]
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 37,
+              "p2": 20,
+              "p3": 12
+            },
+            "roundStartedAt": 47000,
+            "roundEndsAt": 62000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 13,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 48000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 66000,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,47000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "colors": [
+              "#f8d030",
+              "#a1871f",
+              "#c03028",
+              "#fae078",
+              "#383838"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 37,
+              "p2": 20,
+              "p3": 12
+            },
+            "roundStartedAt": 47000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 66000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Pikachu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                "generation": 1
+              },
+              "palette": [
+                "#f8d030",
+                "#a1871f",
+                "#c03028",
+                "#fae078",
+                "#383838"
+              ],
+              "paletteWeights": [
+                0.41975308641975306,
+                0.25925925925925924,
+                0.16049382716049382,
+                0.09876543209876543,
+                0.06172839506172839
+              ],
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 48000,
+                  "elapsedMs": 1000,
+                  "speedPoints": 10,
+                  "placementBonus": 3,
+                  "points": 13,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p1": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 13,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 48000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",4,47000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-palette-guess",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "colors": [
+              "#f8d030",
+              "#a1871f",
+              "#c03028",
+              "#fae078",
+              "#383838"
+            ],
+            "colorWeights": [
+              0.41975308641975306,
+              0.25925925925925924,
+              0.16049382716049382,
+              0.09876543209876543,
+              0.06172839506172839
+            ],
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 37,
+              "p2": 20,
+              "p3": 12
+            },
+            "roundStartedAt": 47000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "pokemon": {
+                "name": "Pikachu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                "generation": 1
+              },
+              "palette": [
+                "#f8d030",
+                "#a1871f",
+                "#c03028",
+                "#fae078",
+                "#383838"
+              ],
+              "paletteWeights": [
+                0.41975308641975306,
+                0.25925925925925924,
+                0.16049382716049382,
+                0.09876543209876543,
+                0.06172839506172839
+              ],
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 48000,
+                  "elapsedMs": 1000,
+                  "speedPoints": 10,
+                  "placementBonus": 3,
+                  "points": 13,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p1": 1
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 37,
+                  "won": true,
+                  "stats": {
+                    "correct": 3,
+                    "missed": 1,
+                    "totalAttempts": 3,
+                    "firstTry": 3,
+                    "roundFirsts": 3,
+                    "solveTimeTotalMs": 5000,
+                    "bestTimeMs": 1000,
+                    "pointsFromRounds": 37
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 20,
+                  "won": false,
+                  "stats": {
+                    "correct": 2,
+                    "missed": 2,
+                    "totalAttempts": 2,
+                    "firstTry": 2,
+                    "roundFirsts": 0,
+                    "solveTimeTotalMs": 7000,
+                    "bestTimeMs": 3000,
+                    "pointsFromRounds": 20
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 12,
+                  "won": false,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 3,
+                    "totalAttempts": 1,
+                    "firstTry": 1,
+                    "roundFirsts": 1,
+                    "solveTimeTotalMs": 2000,
+                    "bestTimeMs": 2000,
+                    "pointsFromRounds": 12
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 13,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 48000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 37,
+          "won": true,
+          "stats": {
+            "correct": 3,
+            "missed": 1,
+            "totalAttempts": 3,
+            "firstTry": 3,
+            "roundFirsts": 3,
+            "solveTimeTotalMs": 5000,
+            "bestTimeMs": 1000,
+            "pointsFromRounds": 37
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 20,
+          "won": false,
+          "stats": {
+            "correct": 2,
+            "missed": 2,
+            "totalAttempts": 2,
+            "firstTry": 2,
+            "roundFirsts": 0,
+            "solveTimeTotalMs": 7000,
+            "bestTimeMs": 3000,
+            "pointsFromRounds": 20
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 12,
+          "won": false,
+          "stats": {
+            "correct": 1,
+            "missed": 3,
+            "totalAttempts": 1,
+            "firstTry": 1,
+            "roundFirsts": 1,
+            "solveTimeTotalMs": 2000,
+            "bestTimeMs": 2000,
+            "pointsFromRounds": 12
+          }
+        }
+      ]
+    }
+  }
+}

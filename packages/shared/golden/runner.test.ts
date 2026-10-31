@@ -4,8 +4,13 @@ import type { GameContext, MiniGameModule } from '../dist/index.js';
 import type { GoldenScenario } from './types.js';
 
 // El catálogo real importa el dist del servidor; estos tests no dependen de él.
-const { stubCatalog } = vi.hoisted(() => ({ stubCatalog: { fixture: 'stub' } }));
-vi.mock('./catalog.js', () => ({ loadGoldenCatalog: (fixtureId: string) => (fixtureId === 'gen1-2' ? stubCatalog : null) }));
+const { stubCatalog, catalogPatches } = vi.hoisted(() => ({ stubCatalog: { fixture: 'stub' }, catalogPatches: [] as unknown[] }));
+vi.mock('./catalog.js', () => ({
+  loadGoldenCatalog: (fixtureId: string, patch?: unknown) => {
+    catalogPatches.push(patch);
+    return fixtureId === 'gen1-2' ? stubCatalog : null;
+  },
+}));
 
 const { renderFixtures, runScenario } = await import('./runner.js');
 const { buildGoldenContext } = await import('./context.js');
@@ -139,6 +144,22 @@ describe('orden de claves', () => {
     const text = files.get('counter/order.json')!;
     expect(text).toContain('"b": 1');
     expect(text.indexOf('"b": 1')).toBeLessThan(text.indexOf('"a": 2'));
+  });
+});
+
+describe('catalogPatch', () => {
+  it('llega a loadGoldenCatalog y a la fixture justo después de catalog', () => {
+    const catalogPatch = { bulbasaur: { palette: ['#000000', '#111111', '#222222'], paletteWeights: [1, 1, 2] } };
+    const fixture = runScenario(counter, { name: 'patched', seed: 1, catalog: 'gen1-2', catalogPatch, players, config: {}, steps: [] });
+    expect(catalogPatches.at(-1)).toEqual(catalogPatch);
+    expect(Object.keys(fixture).slice(0, 6)).toEqual(['engineId', 'scenario', 'seed', 'catalog', 'catalogPatch', 'players']);
+    expect(fixture.catalogPatch).toEqual(catalogPatch);
+  });
+
+  it('no aparece si el escenario no la trae', () => {
+    const fixture = runScenario(counter, { name: 'plain', seed: 1, catalog: 'gen1-2', players, config: {}, steps: [] });
+    expect(catalogPatches.at(-1)).toBeUndefined();
+    expect(fixture).not.toHaveProperty('catalogPatch');
   });
 });
 

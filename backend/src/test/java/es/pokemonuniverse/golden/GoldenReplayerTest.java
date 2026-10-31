@@ -279,7 +279,7 @@ class GoldenReplayerTest {
   }
 
   private static GoldenFixture withStoppedAt(GoldenFixture f, int index) {
-    return new GoldenFixture(f.engineId(), f.scenario(), f.seed(), f.catalog(), f.players(), f.config(),
+    return new GoldenFixture(f.engineId(), f.scenario(), f.seed(), f.catalog(), f.catalogPatch(), f.players(), f.config(),
         f.hostCustomCategories(), f.hostWouldYouRatherPrompts(), f.pokemonVisuals(), f.pokemonAudio(), f.tcgCards(),
         f.startNow(), f.roomCode(), f.steps(), f.expected(), index);
   }

@@ -2,7 +2,6 @@ package es.pokemonuniverse.adapters.in.rest.pokemon;
 
 import es.pokemonuniverse.application.pokemon.PokemonCatalogService;
 import es.pokemonuniverse.application.pokemon.PokemonSearchQuery;
-import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Controller;
@@ -39,7 +38,7 @@ public class PokemonController {
   public HttpResponse<PokemonResponse> list(@QueryValue(defaultValue = "") @Nullable String generations,
       @QueryValue(defaultValue = "") @Nullable String includeForms) {
     var query = new PokemonSearchQuery(parseGenerations(generations), "true".equals(includeForms));
-    return HttpResponse.ok(new PokemonResponse(service.search(query)))
+    return HttpResponse.ok(new PokemonResponse(service.search(query).stream().map(PublicPokemon::from).toList()))
         .header("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");
   }
 
@@ -61,5 +60,5 @@ public class PokemonController {
   }
 
   @Serdeable
-  public record PokemonResponse(List<Pokemon> pokemon) {}
+  public record PokemonResponse(List<PublicPokemon> pokemon) {}
 }

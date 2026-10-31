@@ -48,7 +48,7 @@ class GoldenReplayTest {
     return dynamicTest(engineId + "/" + name, () -> {
       var engine = GoldenEngines.get(engineId).orElseGet(() -> fail("Motor no portado: " + engineId));
       var fixture = MAPPER.readValue(Files.readString(file), GoldenFixture.class);
-      GoldenReplayer.replay(engine, fixture, GoldenCatalogs.load(fixture.catalog()));
+      GoldenReplayer.replay(engine, fixture, GoldenCatalogs.load(fixture.catalog(), fixture.catalogPatch()));
     });
   }
 
