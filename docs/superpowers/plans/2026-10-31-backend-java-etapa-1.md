@@ -43,7 +43,7 @@
 - Modify: `.gitignore` (añadir `backend/build/`, `backend/.gradle/`)
 
 **Interfaces:**
-- Produces: aplicación en `:8080` con `GET /health` → `{"status":"UP"}`; `./gradlew check` ejecuta JUnit 5; `./gradlew run -t` arranca en caliente con el entorno `dev`.
+- Produces: aplicación en `:8080` con `GET /health` → JSON con `"status":"UP"` (más detalles de salud: `details-visible: ANONYMOUS` hace falta para que el readiness de la Tarea 14 muestre la BD); `./gradlew check` ejecuta JUnit 5; `./gradlew run -t` arranca en caliente con el entorno `dev`.
 
 - [ ] **Step 1: Fijar versiones.** Consultar Maven Central para la última `io.micronaut.platform:micronaut-platform` 5.1.x y la última `io.micronaut.application` en plugins.gradle.org; anotar ambas en `gradle/libs.versions.toml` (`micronaut`, `micronautPlugin`). Generar el wrapper con `gradle wrapper --gradle-version <última ≥ 9.1>` desde `backend/`.
 
