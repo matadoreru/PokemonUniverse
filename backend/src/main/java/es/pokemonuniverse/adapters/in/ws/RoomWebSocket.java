@@ -26,8 +26,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Transporte de salas {@code /ws}, el {@code io.on('connection')} + {@code RoomManager.bind} de Node.
  *
- * <p>El event loop solo verifica la cookie y encola: cada conexión ejecuta apertura, mensajes y cierre en orden en un
- * hilo virtual propio ({@link WsSessions.Connection#enqueue}), y el coordinador toma ahí el lock de la sala.
+ * <p>El event loop solo verifica la cookie, parsea el mensaje (≤ 32 KiB), aplica el límite de eventos y encola: cada
+ * conexión ejecuta apertura, comandos y cierre en orden en un hilo virtual propio ({@link WsSessions.Connection#enqueue}),
+ * y el coordinador toma ahí el lock de la sala. Un mensaje rechazado por el límite no llega a la cola.
  * Mensajes de más de {@value #MAX_FRAME_BYTES} bytes ({@code maxHttpBufferSize} de Node) cierran con 1009.
  */
 @ServerWebSocket("/ws")
@@ -39,6 +40,7 @@ public class RoomWebSocket {
   static final String UNKNOWN_EVENT = "Evento desconocido";
   static final String RATE_LIMITED = "Rate limit exceeded";
   static final String UNEXPECTED = "Unexpected error";
+  static final String CURSOR_REJECTED = "Cursor rechazado";
   static final String CURSOR = "who-is-who:cursor";
   static final String CURSOR_CLEAR = "who-is-who:cursor-clear";
 
@@ -73,7 +75,18 @@ public class RoomWebSocket {
   public void onMessage(String text, WebSocketSession session) {
     var connection = sessions.get(session.getId());
     if (connection == null) return;
-    connection.enqueue(() -> handle(connection, text));
+    var message = parse(text);
+    var id = message == null ? null : message.id();
+    // socket.use de Node: todo evento salvo los cursores cuenta, también los mal formados; el rechazado no.
+    if (!(message != null && isCursor(message.event())) && !connection.limiter.tryAcquire()) {
+      if (id != null) connection.reply(AckMessage.error(id, RATE_LIMITED));
+      return;
+    }
+    if (message == null || message.event() == null) {
+      connection.reply(AckMessage.error(id, INVALID_MESSAGE));
+      return;
+    }
+    connection.enqueue(() -> handle(connection, message));
   }
 
   @OnClose
@@ -91,23 +104,13 @@ public class RoomWebSocket {
 
   // --------------------------------------------------------------------------------------------- mensajes
 
-  /** Nunca lanza: todo error de un mensaje se responde con un ack y la conexión sigue abierta (Review Focus 4). */
-  void handle(Connection connection, String text) {
-    var message = parse(text);
-    if (message == null) {
-      connection.reply(AckMessage.error(null, INVALID_MESSAGE));
-      return;
-    }
-    if (message.event() == null) {
-      connection.reply(AckMessage.error(message.id(), INVALID_MESSAGE));
-      return;
-    }
+  /**
+   * Nunca lanza: todo error de un comando, incluido un {@link Error} de un motor, se responde con un ack y la conexión
+   * sigue abierta (Review Focus 4).
+   */
+  void handle(Connection connection, ClientMessage message) {
     var id = message.id();
-    boolean cursor = CURSOR.equals(message.event()) || CURSOR_CLEAR.equals(message.event());
-    if (!cursor && !connection.limiter.tryAcquire()) {
-      if (id != null) connection.reply(AckMessage.error(id, RATE_LIMITED));
-      return;
-    }
+    boolean cursor = isCursor(message.event());
     // guard() de Node: un comando sin callback de ack no se ejecuta. Los cursores sí (su ack es opcional).
     if (id == null && !cursor) return;
     AckMessage ack;
@@ -115,12 +118,22 @@ public class RoomWebSocket {
       coordinator.assertAcceptingCommands();
       ack = AckMessage.ok(id, dispatch(connection, message));
     } catch (RoomException | EngineException | IllegalArgumentException error) {
-      ack = AckMessage.error(id, error.getMessage() != null ? error.getMessage() : UNEXPECTED);
-    } catch (RuntimeException error) {
-      LOG.error("Error inesperado en {} de la conexión {}", message.event(), connection.id(), error);
-      ack = AckMessage.error(id, UNEXPECTED);
+      var fallback = cursor ? CURSOR_REJECTED : UNEXPECTED;
+      ack = AckMessage.error(id, error.getMessage() != null ? error.getMessage() : fallback);
+    } catch (Throwable error) {
+      if (cursor) {
+        LOG.debug("Cursor rechazado en la conexión {}", connection.id(), error);
+        ack = AckMessage.error(id, CURSOR_REJECTED);
+      } else {
+        LOG.error("Error inesperado en {} de la conexión {}", message.event(), connection.id(), error);
+        ack = AckMessage.error(id, UNEXPECTED);
+      }
     }
     if (id != null) connection.reply(ack);
+  }
+
+  private static boolean isCursor(@Nullable String event) {
+    return CURSOR.equals(event) || CURSOR_CLEAR.equals(event);
   }
 
   /**

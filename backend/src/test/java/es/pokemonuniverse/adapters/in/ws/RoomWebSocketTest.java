@@ -1,58 +1,42 @@
 package es.pokemonuniverse.adapters.in.ws;
 
+import static es.pokemonuniverse.adapters.in.ws.WsTestClients.assertError;
+import static es.pokemonuniverse.adapters.in.ws.WsTestClients.assertOk;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.application.auth.IdentityTokens;
 import es.pokemonuniverse.application.rooms.GameCatalogProvider;
-import es.pokemonuniverse.domain.identity.AuthUser;
-import es.pokemonuniverse.domain.identity.AvatarRef;
 import es.pokemonuniverse.domain.pokemon.PokemonCatalog;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;
+import io.micronaut.http.MutableHttpRequest;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.http.cookie.Cookie;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
-import io.micronaut.websocket.CloseReason;
 import io.micronaut.websocket.WebSocketClient;
-import io.micronaut.websocket.annotation.ClientWebSocket;
-import io.micronaut.websocket.annotation.OnClose;
-import io.micronaut.websocket.annotation.OnMessage;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
+import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 /** Transporte {@code /ws}: handshake por cookie, sobre {@code {id,event,payload}}, acks, pushes y límites. */
 @MicronautTest(transactional = false)
 @Property(name = "spec.name", value = "RoomWebSocketTest")
 class RoomWebSocketTest {
 
-  private static final Duration WAIT = Duration.ofSeconds(10);
   private static final ObjectMapper JSON = ObjectMapper.getDefault();
 
   /** El catálogo de la base de datos de Test Resources está vacío: las partidas usan la fixture dorada. */
@@ -66,14 +50,41 @@ class RoomWebSocketTest {
     }
   }
 
+  /** Reloj manual del límite de eventos: el test de límite no depende de la velocidad real. */
+  @Singleton
+  @Replaces(WsClock.class)
+  @Requires(property = "spec.name", value = "RoomWebSocketTest")
+  static class ManualWsClock extends WsClock {
+    final AtomicLong now = new AtomicLong(1_000_000);
+
+    @Override
+    public long now() {
+      return now.get();
+    }
+  }
+
   @Inject @Client("/") WebSocketClient client;
   @Inject IdentityTokens tokens;
+  @Inject ManualWsClock clock;
 
-  private final List<TestSocket> opened = new ArrayList<>();
+  private WsTestClients clients;
+
+  @BeforeEach
+  void openClients() {
+    clients = new WsTestClients(client, tokens);
+  }
 
   @AfterEach
   void closeSockets() {
-    for (var socket : opened) closeQuietly(socket);
+    clients.closeAll();
+  }
+
+  private MutableHttpRequest<?> user(String id, String name) {
+    return clients.user(id, name);
+  }
+
+  private TestSocket connect(MutableHttpRequest<?> request) {
+    return clients.connect(request);
   }
 
   @Test
@@ -126,7 +137,7 @@ class RoomWebSocketTest {
     assertError("Esta conexión ha sido reemplazada por una sesión más reciente.", stale);
     assertFalse(host.closed.isDone());
 
-    closeQuietly(guest);
+    WsTestClients.closeQuietly(guest);
     newerHost.awaitPush("room:state", view -> presenceOf(view, "ws_guest").equals("TEMPORARILY_DISCONNECTED"));
 
     // Dentro de la gracia, el mismo usuario vuelve con una conexión nueva y recupera su sala.
@@ -171,67 +182,28 @@ class RoomWebSocketTest {
     assertError("Rate limit exceeded", socket.command("room:leave", null));
     // Los cursores no cuentan: siguen llegando al coordinador.
     assertError("Not in a room", socket.command("who-is-who:cursor", "{\"x\":0.5,\"y\":0.5}"));
+    clock.now.addAndGet(9_999);
+    assertError("Rate limit exceeded", socket.command("room:leave", null));
+    clock.now.addAndGet(1);
+    assertError("Not in a room", socket.command("room:leave", null));
+    assertFalse(socket.closed.isDone());
+  }
+
+  @Test
+  void countsMalformedFramesTowardsTheLimit() {
+    var socket = connect(user("ws_garbage", "Garbage"));
+    for (int i = 0; i < 50; i++) {
+      socket.send("basura");
+      assertError("Mensaje inválido", socket.awaitIdlessAck());
+    }
+    assertError("Rate limit exceeded", socket.command("room:leave", null));
+    socket.send("basura");
+    assertError("Rate limit exceeded", socket.command("room:leave", null));
+    assertTrue(socket.idlessAcks.isEmpty(), "un mensaje rechazado sin id no recibe respuesta");
     assertFalse(socket.closed.isDone());
   }
 
   // ------------------------------------------------------------------------------------------------ utilidades
-
-  private HttpRequest<?> user(String id, String name) {
-    var identity = new AuthUser(id, name, AuthUser.Kind.GUEST, null, null, new AvatarRef.Default());
-    return HttpRequest.GET("/ws").cookie(Cookie.of("pu_session", tokens.sign(identity, Instant.now())));
-  }
-
-  private TestSocket connect(HttpRequest<?> request) {
-    var socket = first(client.connect(TestSocket.class, (io.micronaut.http.MutableHttpRequest<?>) request));
-    opened.add(socket);
-    return socket;
-  }
-
-  private static void closeQuietly(TestSocket socket) {
-    try {
-      socket.close();
-    } catch (Exception e) {
-      throw new AssertionError(e);
-    }
-  }
-
-  /** Primer elemento de un {@link Publisher} sin depender de Reactor. */
-  private static <T> T first(Publisher<T> publisher) {
-    var result = new CompletableFuture<T>();
-    publisher.subscribe(new Subscriber<T>() {
-      @Override
-      public void onSubscribe(Subscription subscription) {
-        subscription.request(1);
-      }
-
-      @Override
-      public void onNext(T value) {
-        result.complete(value);
-      }
-
-      @Override
-      public void onError(Throwable error) {
-        result.completeExceptionally(error);
-      }
-
-      @Override
-      public void onComplete() {
-        result.completeExceptionally(new AssertionError("Sin conexión"));
-      }
-    });
-    return result.orTimeout(WAIT.toMillis(), TimeUnit.MILLISECONDS).join();
-  }
-
-  private static void assertOk(JsonNode ack) {
-    assertTrue(ack.get("ok").getBooleanValue(), ack.toString());
-    assertNotNull(ack.get("data"), ack.toString());
-  }
-
-  private static void assertError(String message, JsonNode ack) {
-    assertFalse(ack.get("ok").getBooleanValue(), ack.toString());
-    assertEquals(message, ack.get("error").getStringValue());
-    assertTrue(ack.get("data") == null, ack.toString());
-  }
 
   private static String text(JsonNode node, String key) {
     var value = node.get(key);
@@ -259,87 +231,6 @@ class RoomWebSocketTest {
       return JSON.readValueFromTree(node, Map.class);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
-    }
-  }
-
-  /** Cliente de prueba: separa acks (con {@code ok}) de pushes y recuerda el cierre. */
-  @ClientWebSocket("/ws")
-  abstract static class TestSocket implements AutoCloseable {
-
-    final List<JsonNode> received = new java.util.concurrent.CopyOnWriteArrayList<>();
-    final Map<String, CompletableFuture<JsonNode>> acks = new ConcurrentHashMap<>();
-    final BlockingQueue<JsonNode> idlessAcks = new LinkedBlockingQueue<>();
-    final BlockingQueue<JsonNode> pushes = new LinkedBlockingQueue<>();
-    final CompletableFuture<CloseReason> closed = new CompletableFuture<>();
-    private final AtomicInteger ids = new AtomicInteger();
-
-    @OnMessage
-    void onMessage(String text) throws IOException {
-      var message = JSON.readValue(text, JsonNode.class);
-      received.add(message);
-      if (message.get("ok") == null) {
-        pushes.add(message);
-      } else if (message.get("id") == null) {
-        idlessAcks.add(message);
-      } else {
-        acks.computeIfAbsent(message.get("id").getStringValue(), id -> new CompletableFuture<>()).complete(message);
-      }
-    }
-
-    @OnClose
-    void onClose(CloseReason reason) {
-      closed.complete(reason);
-    }
-
-    abstract void send(String message);
-
-    JsonNode command(String event, String payload) {
-      var id = "c" + ids.incrementAndGet();
-      send("{\"id\":\"" + id + "\",\"event\":\"" + event + "\"" + (payload == null ? "" : ",\"payload\":" + payload) + "}");
-      return awaitAck(id);
-    }
-
-    JsonNode awaitAck(String id) {
-      return acks.computeIfAbsent(id, key -> new CompletableFuture<>()).orTimeout(WAIT.toMillis(), TimeUnit.MILLISECONDS)
-          .join();
-    }
-
-    JsonNode awaitIdlessAck() {
-      return poll(idlessAcks);
-    }
-
-    /** Primer push de {@code event} cuyo payload cumple {@code predicate}; descarta los anteriores. */
-    JsonNode awaitPush(String event, Predicate<JsonNode> predicate) {
-      long deadline = System.nanoTime() + WAIT.toNanos();
-      while (System.nanoTime() < deadline) {
-        JsonNode push;
-        try {
-          push = pushes.poll(deadline - System.nanoTime(), TimeUnit.NANOSECONDS);
-        } catch (InterruptedException e) {
-          Thread.currentThread().interrupt();
-          throw new AssertionError(e);
-        }
-        if (push == null) break;
-        if (event.equals(push.get("event").getStringValue()) && predicate.test(push.get("payload"))) {
-          return push.get("payload");
-        }
-      }
-      throw new AssertionError("No llegó " + event + "; recibidos: " + received);
-    }
-
-    CloseReason awaitClose() {
-      return closed.orTimeout(WAIT.toMillis(), TimeUnit.MILLISECONDS).join();
-    }
-
-    private static JsonNode poll(BlockingQueue<JsonNode> queue) {
-      try {
-        var value = queue.poll(WAIT.toMillis(), TimeUnit.MILLISECONDS);
-        if (value == null) throw new AssertionError("No llegó el ack");
-        return value;
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-        throw new AssertionError(e);
-      }
     }
   }
 }

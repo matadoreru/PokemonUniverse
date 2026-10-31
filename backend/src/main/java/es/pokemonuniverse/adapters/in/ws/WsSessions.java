@@ -3,6 +3,7 @@ package es.pokemonuniverse.adapters.in.ws;
 import es.pokemonuniverse.adapters.in.ws.WsEnvelope.AckMessage;
 import es.pokemonuniverse.adapters.in.ws.WsEnvelope.PushMessage;
 import es.pokemonuniverse.domain.identity.AuthUser;
+import io.micronaut.context.annotation.Value;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.JsonMapper;
 import io.micronaut.json.tree.JsonNode;
@@ -15,6 +16,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +25,10 @@ import org.slf4j.LoggerFactory;
  * Conexiones abiertas de {@code /ws}: sesión ↔ identidad ↔ {@code connectionId} (el id de la sesión). Cada conexión
  * procesa sus mensajes en orden sobre hilos virtuales, nunca en el event loop de Netty, y envía con
  * {@code sendAsync} para no bloquear a quien llama (el coordinador lo hace con el lock de la sala tomado).
+ *
+ * <p>Latido: cada {@code pu.ws.heartbeat-seconds} (25 s, el {@code pingInterval} de Socket.IO) envía un ping a cada
+ * sesión abierta; el pong del navegador reinicia el temporizador de inactividad de Netty, que si no cerraría las salas
+ * tranquilas al cumplirse {@code micronaut.server.idle-timeout}. Con 0 no hay latido.
  */
 @Singleton
 public class WsSessions {
@@ -33,7 +40,7 @@ public class WsSessions {
 
     final WebSocketSession session;
     final AuthUser identity;
-    final WsRateLimiter limiter = new WsRateLimiter(System::currentTimeMillis);
+    final WsRateLimiter limiter = new WsRateLimiter(clock::now);
     private CompletableFuture<Void> tail = CompletableFuture.completedFuture(null);
 
     private Connection(WebSocketSession session, AuthUser identity) {
@@ -63,10 +70,35 @@ public class WsSessions {
 
   private final ExecutorService workers = Executors.newVirtualThreadPerTaskExecutor();
   private final Map<String, Connection> connections = new ConcurrentHashMap<>();
-  private final JsonMapper json;
+  private static final byte[] PING = new byte[0];
 
-  public WsSessions(JsonMapper json) {
+  private final JsonMapper json;
+  private final WsClock clock;
+  @Nullable private final ScheduledExecutorService heartbeat;
+
+  public WsSessions(JsonMapper json, WsClock clock, @Value("${pu.ws.heartbeat-seconds:25}") long heartbeatSeconds) {
     this.json = json;
+    this.clock = clock;
+    if (heartbeatSeconds > 0) {
+      heartbeat = Executors.newSingleThreadScheduledExecutor(Thread.ofVirtual().name("ws-heartbeat").factory());
+      heartbeat.scheduleAtFixedRate(this::pingAll, heartbeatSeconds, heartbeatSeconds, TimeUnit.SECONDS);
+    } else {
+      heartbeat = null;
+    }
+  }
+
+  /** Un ping por sesión abierta; un fallo nunca detiene el latido. */
+  void pingAll() {
+    for (var connection : connections.values()) {
+      try {
+        if (!connection.session.isOpen()) continue;
+        connection.session.sendPingAsync(PING).whenComplete((ignored, error) -> {
+          if (error != null) LOG.debug("Ping WebSocket fallido a {}: {}", connection.id(), error.toString());
+        });
+      } catch (Throwable error) {
+        LOG.debug("Ping WebSocket fallido a {}: {}", connection.id(), error.toString());
+      }
+    }
   }
 
   Connection register(WebSocketSession session, AuthUser identity) {
@@ -121,6 +153,7 @@ public class WsSessions {
 
   @PreDestroy
   void shutdown() {
+    if (heartbeat != null) heartbeat.shutdownNow();
     workers.shutdown();
   }
 }

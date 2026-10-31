@@ -3,6 +3,10 @@ micronaut:
     name: pokemon-universe-backend
   server:
     port: ${PORT:8080}
+    # Segunda guarda tras el latido de /ws (pu.ws.heartbeat-seconds): Netty cierra una conexión inactiva al cumplirse.
+    idle-timeout: ${SERVER_IDLE_TIMEOUT:10m}
+    read-idle-timeout: ${SERVER_IDLE_TIMEOUT:10m}
+    write-idle-timeout: ${SERVER_IDLE_TIMEOUT:10m}
   router:
     static-resources:
       swagger:
@@ -69,3 +73,6 @@ pu:
   # Marca INTERRUPTED las salas/partidas abiertas al arrancar. Activar en el cutover 2D cuando Java sea el único
   # dueño de las salas; antes rompería el historial de las salas vivas de Node sobre la misma base de datos.
   interrupt-stale-rooms: ${INTERRUPT_STALE_ROOMS:false}
+  ws:
+    # Ping a cada sesión de /ws (pingInterval de Socket.IO); 0 lo desactiva. El proxy debe tolerar más que esto.
+    heartbeat-seconds: ${WS_HEARTBEAT_SECONDS:25}
