@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -27,7 +28,13 @@ import java.util.Objects;
  */
 public final class GoldenReplayer {
 
-  private static final ObjectMapper MAPPER = ObjectMapper.getDefault();
+  /**
+   * Misma inclusión que producción ({@code micronaut.serde.serialization.inclusion: NON_NULL} de
+   * {@code application.yml}). {@link ObjectMapper#getDefault()} usa NON_EMPTY y quitaría listas y mapas vacíos que el
+   * cable sí envía.
+   */
+  private static final ObjectMapper MAPPER =
+      ObjectMapper.create(Map.of("micronaut.serde.serialization.inclusion", "NON_NULL"));
 
   private GoldenReplayer() {}
 
@@ -192,7 +199,10 @@ public final class GoldenReplayer {
     if (difference.isPresent()) throw new AssertionError(id + ": " + difference.get());
   }
 
-  /** Proyección tal como la vería el cable: el árbol JSON del {@link ObjectMapper} de Serde. */
+  /**
+   * Proyección tal como la vería el cable: el árbol JSON de Serde con la inclusión NON_NULL de producción (nulos
+   * omitidos salvo {@code @JsonInclude} propio; colecciones vacías presentes).
+   */
   public static JsonNode tree(Object value) {
     try {
       return value == null ? JsonNode.nullNode() : MAPPER.writeValueToTree(value);

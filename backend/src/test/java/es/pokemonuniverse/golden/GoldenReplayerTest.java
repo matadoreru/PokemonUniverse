@@ -21,6 +21,7 @@ import io.micronaut.serde.ObjectMapper;
 import io.micronaut.serde.annotation.Serdeable;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class GoldenReplayerTest {
@@ -36,6 +37,10 @@ class GoldenReplayerTest {
 
   @Serdeable
   record PlayerView(int seen) {}
+
+  /** Sin {@code @JsonInclude} de clase: depende solo de la inclusión global del mapper. */
+  @Serdeable
+  record EmptyCollections(List<String> items, Map<String, Integer> scores, @Nullable String missing) {}
 
   /** Contador: {@code inc} acepta, {@code reject} rechaza con "nope", {@code explode} lanza "boom". */
   static final class FakeEngine implements GameEngine<Config, Counter, JsonNode, PublicView> {
@@ -223,6 +228,15 @@ class GoldenReplayerTest {
     var nullPublic = "{\"lifecycle\":" + LIFECYCLE + ",\"publicState\":null,\"playerStates\":{\"p1\":{\"seen\":0}},\"finished\":false}";
     var error = failure(fixture(INC, "{\"accepted\":true,\"snapshot\":" + ok(1) + "}", nullPublic));
     assertTrue(error.getMessage().contains("expected.initial.publicState: esperado null, obtenido {"), error.getMessage());
+  }
+
+  /** Producción usa NON_NULL ({@code application.yml}): colecciones vacías presentes, nulos ausentes. */
+  @Test
+  void treeUsesTheProductionInclusion() {
+    var tree = GoldenReplayer.tree(new EmptyCollections(List.of(), Map.of(), null));
+    assertTrue(tree.get("items") != null && tree.get("items").isArray() && tree.get("items").size() == 0, tree.toString());
+    assertTrue(tree.get("scores") != null && tree.get("scores").isObject() && tree.get("scores").size() == 0, tree.toString());
+    assertTrue(tree.get("missing") == null, tree.toString());
   }
 
   private static GoldenFixture withStoppedAt(GoldenFixture f, int index) {
