@@ -2,6 +2,7 @@ package es.pokemonuniverse.application.pokemon;
 
 import es.pokemonuniverse.adapters.out.persistence.PokemonEntity;
 import es.pokemonuniverse.adapters.out.persistence.PokemonRepository;
+import es.pokemonuniverse.application.rooms.GameCatalogProvider;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.data.model.Sort;
@@ -19,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /** Catálogo público: carga todas las filas, aplica el filtro de formas del catálogo y las cachea una hora. */
 @Singleton
-public class PokemonCatalogService {
+public class PokemonCatalogService implements GameCatalogProvider {
 
   static final Duration TTL = Duration.ofHours(1);
   private static final Sort BASE_ORDER = Sort.of(
@@ -46,6 +47,16 @@ public class PokemonCatalogService {
         .filter(p -> query.includeForms() || p.isDefault())
         .sorted(order)
         .toList();
+  }
+
+  /** Instantánea del catálogo para las partidas (mismo filtro y orden que {@code loadPokemonCatalog} de Node). */
+  public InMemoryPokemonCatalog catalog() {
+    return new InMemoryPokemonCatalog(base());
+  }
+
+  @Override
+  public InMemoryPokemonCatalog loadPokemonCatalog() {
+    return catalog();
   }
 
   /** Descarta la caché; la siguiente búsqueda recarga desde la base de datos. */
