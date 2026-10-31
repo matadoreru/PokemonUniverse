@@ -81,16 +81,18 @@ const differentPokemon: GoldenScenario = {
     vote('p1', 'D', t0 + 1_000),
     vote('p2', 'A', t0 + 2_000),
     timeout(t0 + 5_000),
-    // Ronda 2 (correcta F).
+    // Ronda 2 (correcta F): Bruno vota y la desconexión de Ana, la única pendiente, revela la ronda (y prepara la
+    // siguiente con random()).
     vote('p2', 'F', t0 + 6_000),
     asset(token, 1, 'D', t0 + 6_100),
     asset(token, 2, 'F', t0 + 6_100),
-    timeout(t0 + 15_000),
-    timeout(t0 + 18_000),
-    // Ronda 3 (correcta D): los dos aciertan; el orden de voto da el bonus.
-    vote('p2', 'D', t0 + 19_000),
-    vote('p1', 'D', t0 + 19_500),
-    timeout(t0 + 22_500),
+    { kind: 'presence', players: [{ ...ana, connected: false }, bruno], now: t0 + 7_000 },
+    timeout(t0 + 10_000),
+    // Ronda 3 (10000–20000, correcta D): Ana vuelve; los dos aciertan y el orden de voto da el bonus.
+    { kind: 'presence', players: [ana, bruno], now: t0 + 10_500 },
+    vote('p2', 'D', t0 + 11_000),
+    vote('p1', 'D', t0 + 11_500),
+    timeout(t0 + 14_500),
   ],
 };
 

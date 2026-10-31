@@ -114,12 +114,37 @@
       "now": 1767225606100
     },
     {
-      "kind": "timeout",
-      "now": 1767225615000
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        }
+      ],
+      "now": 1767225607000
     },
     {
       "kind": "timeout",
-      "now": 1767225618000
+      "now": 1767225610000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        }
+      ],
+      "now": 1767225610500
     },
     {
       "kind": "action",
@@ -128,7 +153,7 @@
         "type": "VOTE",
         "optionId": "D"
       },
-      "now": 1767225619000
+      "now": 1767225611000
     },
     {
       "kind": "action",
@@ -137,11 +162,11 @@
         "type": "VOTE",
         "optionId": "D"
       },
-      "now": 1767225619500
+      "now": 1767225611500
     },
     {
       "kind": "timeout",
-      "now": 1767225622500
+      "now": 1767225614500
     }
   ],
   "expected": {
@@ -758,7 +783,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 1767225618000,
+            "nextDeadline": 1767225610000,
             "actionEpoch": "[\"ROUND_RESULTS\",2,1767225605000,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -823,7 +848,7 @@
             },
             "roundStartedAt": 1767225605000,
             "roundEndsAt": null,
-            "nextTransitionAt": 1767225618000,
+            "nextTransitionAt": 1767225610000,
             "correctOptionId": "F",
             "lastRound": {
               "roundNumber": 2,
@@ -863,8 +888,8 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_ACTIVE",
-            "nextDeadline": 1767225628000,
-            "actionEpoch": "[\"ROUND_ACTIVE\",3,1767225618000,null,null,null,null,null]",
+            "nextDeadline": 1767225620000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,1767225610000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -925,8 +950,97 @@
               "p1": 4,
               "p2": 4
             },
-            "roundStartedAt": 1767225618000,
-            "roundEndsAt": 1767225628000,
+            "roundStartedAt": 1767225610000,
+            "roundEndsAt": 1767225620000,
+            "nextTransitionAt": null,
+            "correctOptionId": null,
+            "lastRound": null,
+            "winnerId": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1767225620000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,1767225610000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "shiny-vote",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "pidgey",
+                "pokemonName": "Pidgey",
+                "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/A/sprite"
+              },
+              {
+                "id": "B",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/B/sprite"
+              },
+              {
+                "id": "C",
+                "pokemonId": "pidgeotto",
+                "pokemonName": "Pidgeotto",
+                "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/C/sprite"
+              },
+              {
+                "id": "D",
+                "pokemonId": "mantine",
+                "pokemonName": "Mantine",
+                "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/D/sprite"
+              },
+              {
+                "id": "E",
+                "pokemonId": "igglybuff",
+                "pokemonName": "Igglybuff",
+                "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/E/sprite"
+              },
+              {
+                "id": "F",
+                "pokemonId": "togepi",
+                "pokemonName": "Togepi",
+                "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/F/sprite"
+              }
+            ],
+            "votes": {},
+            "votedPlayerIds": [],
+            "showVotes": false,
+            "pendingPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 4
+            },
+            "roundStartedAt": 1767225610000,
+            "roundEndsAt": 1767225620000,
             "nextTransitionAt": null,
             "correctOptionId": null,
             "lastRound": null,
@@ -953,8 +1067,8 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_ACTIVE",
-            "nextDeadline": 1767225628000,
-            "actionEpoch": "[\"ROUND_ACTIVE\",3,1767225618000,null,null,null,null,null]",
+            "nextDeadline": 1767225620000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,1767225610000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -1016,8 +1130,8 @@
               "p1": 4,
               "p2": 4
             },
-            "roundStartedAt": 1767225618000,
-            "roundEndsAt": 1767225628000,
+            "roundStartedAt": 1767225610000,
+            "roundEndsAt": 1767225620000,
             "nextTransitionAt": null,
             "correctOptionId": null,
             "lastRound": null,
@@ -1034,7 +1148,7 @@
               "canVote": false,
               "vote": {
                 "optionId": "D",
-                "votedAt": 1767225619000
+                "votedAt": 1767225611000
               },
               "roundResult": null
             }
@@ -1047,8 +1161,8 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 1767225622500,
-            "actionEpoch": "[\"ROUND_RESULTS\",3,1767225618000,null,null,null,null,null]",
+            "nextDeadline": 1767225614500,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,1767225610000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -1109,9 +1223,9 @@
               "p1": 7,
               "p2": 8
             },
-            "roundStartedAt": 1767225618000,
+            "roundStartedAt": 1767225610000,
             "roundEndsAt": null,
-            "nextTransitionAt": 1767225622500,
+            "nextTransitionAt": 1767225614500,
             "correctOptionId": "D",
             "lastRound": {
               "roundNumber": 3,
@@ -1128,7 +1242,7 @@
               "canVote": false,
               "vote": {
                 "optionId": "D",
-                "votedAt": 1767225619500
+                "votedAt": 1767225611500
               },
               "roundResult": {
                 "correct": true,
@@ -1139,7 +1253,7 @@
               "canVote": false,
               "vote": {
                 "optionId": "D",
-                "votedAt": 1767225619000
+                "votedAt": 1767225611000
               },
               "roundResult": {
                 "correct": true,
@@ -1155,7 +1269,7 @@
           "lifecycle": {
             "phase": "GAME_RESULTS",
             "nextDeadline": null,
-            "actionEpoch": "[\"GAME_RESULTS\",3,1767225618000,null,null,null,null,null]",
+            "actionEpoch": "[\"GAME_RESULTS\",3,1767225610000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -1216,7 +1330,7 @@
               "p1": 7,
               "p2": 8
             },
-            "roundStartedAt": 1767225618000,
+            "roundStartedAt": 1767225610000,
             "roundEndsAt": null,
             "nextTransitionAt": null,
             "correctOptionId": "D",
@@ -1265,7 +1379,7 @@
               "canVote": false,
               "vote": {
                 "optionId": "D",
-                "votedAt": 1767225619500
+                "votedAt": 1767225611500
               },
               "roundResult": null
             },
@@ -1273,7 +1387,7 @@
               "canVote": false,
               "vote": {
                 "optionId": "D",
-                "votedAt": 1767225619000
+                "votedAt": 1767225611000
               },
               "roundResult": null
             }
