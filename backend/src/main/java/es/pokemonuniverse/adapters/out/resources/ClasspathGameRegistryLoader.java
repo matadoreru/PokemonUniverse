@@ -21,6 +21,7 @@ import es.pokemonuniverse.domain.game.engines.typechain.TypeChainEngine;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelEngine;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonEngine;
 import es.pokemonuniverse.domain.game.engines.wouldyourather.WouldYouRatherEngine;
+import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonEngine;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.core.type.Argument;
 import io.micronaut.serde.ObjectMapper;
@@ -85,6 +86,7 @@ public class ClasspathGameRegistryLoader {
         new PokedexEntryGuessEngine(manifest(manifests, PokedexEntryGuessEngine.ID)));
     engines.put(WhosThatPokemonEngine.ID, new WhosThatPokemonEngine(manifest(manifests, WhosThatPokemonEngine.ID)));
     engines.put(PokemonCryQuizEngine.ID, new PokemonCryQuizEngine(manifest(manifests, PokemonCryQuizEngine.ID)));
+    engines.put(ZoomedPokemonEngine.ID, new ZoomedPokemonEngine(manifest(manifests, ZoomedPokemonEngine.ID)));
     return engines;
   }
 

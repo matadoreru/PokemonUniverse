@@ -20,6 +20,7 @@ import { typeChainScenarios } from './type-chain.js';
 import { typeDuelScenarios } from './type-duel.js';
 import { whosThatPokemonScenarios } from './whos-that-pokemon.js';
 import { wouldYouRatherScenarios } from './would-you-rather.js';
+import { zoomedPokemonScenarios } from './zoomed-pokemon.js';
 
 export interface GoldenEngineEntry {
   module: MiniGameModule<any, any, any, any>;
@@ -47,4 +48,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'pokedex-entry-guess': pokedexEntryGuessScenarios,
   'whos-that-pokemon': whosThatPokemonScenarios,
   'pokemon-cry-quiz': pokemonCryQuizScenarios,
+  'zoomed-pokemon': zoomedPokemonScenarios,
 };

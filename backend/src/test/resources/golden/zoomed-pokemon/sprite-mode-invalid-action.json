@@ -1,0 +1,439 @@
+{
+  "engineId": "zoomed-pokemon",
+  "scenario": "sprite-mode-invalid-action",
+  "seed": 963,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "imageMode": "SPRITE",
+    "roundSeconds": 15,
+    "rounds": 3,
+    "hintsEnabled": false,
+    "hintKinds": [
+      "GENERATION",
+      "TYPE",
+      "EVOLUTION"
+    ],
+    "includeForms": false
+  },
+  "pokemonVisuals": {
+    "bulbasaur": {
+      "pokemonId": "bulbasaur",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
+    },
+    "charmander": {
+      "pokemonId": "charmander",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png"
+    },
+    "squirtle": {
+      "pokemonId": "squirtle",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
+      "width": 475,
+      "height": 475,
+      "alphaBounds": {
+        "x": 0.1,
+        "y": 0.05,
+        "width": 0.8,
+        "height": 0.9
+      }
+    },
+    "pikachu": {
+      "pokemonId": "pikachu",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png"
+    },
+    "vulpix": {
+      "pokemonId": "vulpix",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/37.png"
+    },
+    "psyduck": {
+      "pokemonId": "psyduck",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/54.png"
+    },
+    "machop": {
+      "pokemonId": "machop",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/66.png",
+      "width": 475,
+      "height": 475,
+      "alphaBounds": {
+        "x": 0.1,
+        "y": 0.05,
+        "width": 0.8,
+        "height": 0.9
+      }
+    },
+    "gengar": {
+      "pokemonId": "gengar",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png"
+    },
+    "onix": {
+      "pokemonId": "onix",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/95.png"
+    },
+    "eevee": {
+      "pokemonId": "eevee",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png"
+    },
+    "snorlax": {
+      "pokemonId": "snorlax",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png"
+    },
+    "dragonite": {
+      "pokemonId": "dragonite",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/149.png"
+    },
+    "mew": {
+      "pokemonId": "mew",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png"
+    },
+    "vulpix-alola": {
+      "pokemonId": "vulpix-alola",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10103.png"
+    }
+  },
+  "steps": [
+    {
+      "kind": "asset",
+      "assetToken": "rs-650sbm-1ci64rh-1lgeoyr",
+      "roundNumber": 1,
+      "assetId": "stage-0",
+      "now": 1500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pidgey"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-650sbm-1ci64rh-1lgeoyr",
+      "roundNumber": 1,
+      "assetId": "reveal",
+      "now": 2100
+    },
+    {
+      "kind": "timeout",
+      "now": 6000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "guess_pokemon",
+        "pokemonId": "pidgey"
+      },
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pidgey"
+      },
+      "now": 8000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "imageMode": "SPRITE",
+      "roundSeconds": 15,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hintKinds": [
+        "GENERATION",
+        "TYPE",
+        "EVOLUTION"
+      ],
+      "includeForms": false
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "zoomed-pokemon",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "imageUrl": null,
+        "imageSourceType": null,
+        "focusPoint": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "zoomStages": [
+          5,
+          3.5,
+          2.5,
+          1.7
+        ],
+        "currentZoomStage": 0,
+        "currentZoomBonus": 4,
+        "visibleHints": [],
+        "attempts": [],
+        "solves": {},
+        "scores": {
+          "p1": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 4750,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "zoomed-pokemon",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "imageUrl": "/api/rooms/GOLD01/games/rs-650sbm-1ci64rh-1lgeoyr/rounds/1/options/stage-0/sprite",
+        "imageSourceType": "SPRITE",
+        "focusPoint": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "zoomStages": [
+          5,
+          3.5,
+          2.5,
+          1.7
+        ],
+        "currentZoomStage": 0,
+        "currentZoomBonus": 4,
+        "visibleHints": [],
+        "attempts": [],
+        "solves": {},
+        "scores": {
+          "p1": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 16000,
+        "nextTransitionAt": 4750,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
+          "transform": "ZOOM_CROP",
+          "focusSeed": 443875960,
+          "zoom": 5
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "imageUrl": null,
+            "imageSourceType": null,
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 0,
+            "currentZoomBonus": 4,
+            "visibleHints": [],
+            "attempts": [],
+            "solves": {
+              "p1": {
+                "solveOrder": 1,
+                "zoomStage": 0
+              }
+            },
+            "scores": {
+              "p1": 6
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 6000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Pidgey",
+                "generation": 1
+              },
+              "imageUrl": "/api/rooms/GOLD01/games/rs-650sbm-1ci64rh-1lgeoyr/rounds/1/options/reveal/sprite",
+              "initialCropUrl": "/api/rooms/GOLD01/games/rs-650sbm-1ci64rh-1lgeoyr/rounds/1/options/stage-0/sprite",
+              "imageSourceType": "SPRITE",
+              "solves": {
+                "p1": {
+                  "solvedAt": 2000,
+                  "elapsedMs": 1000,
+                  "solveOrder": 1,
+                  "zoomStage": 0,
+                  "zoom": 5,
+                  "zoomBonus": 4,
+                  "points": 6,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p1": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 6,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 2000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
+          "transform": "NORMALIZED"
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 9750,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,6000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-650sbm-1ci64rh-1lgeoyr/rounds/2/options/stage-0/sprite",
+            "imageSourceType": "SPRITE",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 0,
+            "currentZoomBonus": 4,
+            "visibleHints": [],
+            "attempts": [],
+            "solves": {},
+            "scores": {
+              "p1": 6
+            },
+            "roundStartedAt": 6000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": 9750,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 4
+}

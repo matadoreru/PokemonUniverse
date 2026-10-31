@@ -1,0 +1,2943 @@
+{
+  "engineId": "zoomed-pokemon",
+  "scenario": "mixed-with-visuals",
+  "seed": 958,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "imageMode": "MIXED",
+    "roundSeconds": 20,
+    "rounds": 3,
+    "hintsEnabled": true,
+    "hintKinds": [
+      "CATEGORY",
+      "TYPE",
+      "GENERATION",
+      "TYPE",
+      "EVOLUTION",
+      "TYPE_COUNT"
+    ],
+    "includeForms": false
+  },
+  "pokemonVisuals": {
+    "bulbasaur": {
+      "pokemonId": "bulbasaur",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
+    },
+    "charmander": {
+      "pokemonId": "charmander",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png"
+    },
+    "squirtle": {
+      "pokemonId": "squirtle",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
+      "width": 475,
+      "height": 475,
+      "alphaBounds": {
+        "x": 0.1,
+        "y": 0.05,
+        "width": 0.8,
+        "height": 0.9
+      }
+    },
+    "pikachu": {
+      "pokemonId": "pikachu",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png"
+    },
+    "vulpix": {
+      "pokemonId": "vulpix",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/37.png"
+    },
+    "psyduck": {
+      "pokemonId": "psyduck",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/54.png"
+    },
+    "machop": {
+      "pokemonId": "machop",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/66.png",
+      "width": 475,
+      "height": 475,
+      "alphaBounds": {
+        "x": 0.1,
+        "y": 0.05,
+        "width": 0.8,
+        "height": 0.9
+      }
+    },
+    "gengar": {
+      "pokemonId": "gengar",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png"
+    },
+    "onix": {
+      "pokemonId": "onix",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/95.png"
+    },
+    "eevee": {
+      "pokemonId": "eevee",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png"
+    },
+    "snorlax": {
+      "pokemonId": "snorlax",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png"
+    },
+    "dragonite": {
+      "pokemonId": "dragonite",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/149.png"
+    },
+    "mew": {
+      "pokemonId": "mew",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png"
+    },
+    "vulpix-alola": {
+      "pokemonId": "vulpix-alola",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10103.png"
+    }
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "victreebel"
+      },
+      "now": 1500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "chikorita"
+      },
+      "now": 1600
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "weepinbell"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "victreebel"
+      },
+      "now": 2500
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-1vlc1zm-14j4y38-j0613t",
+      "roundNumber": 1,
+      "assetId": "stage-0",
+      "now": 2600
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-1vlc1zm-14j4y38-j0613t",
+      "roundNumber": 1,
+      "assetId": "stage-1",
+      "now": 2600
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-1vlc1zm-14j4y38-j0613t",
+      "roundNumber": 1,
+      "assetId": "reveal",
+      "now": 2600
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-1vlc1zm-14j4y38-j0613t",
+      "roundNumber": 1,
+      "assetId": "stage-4",
+      "now": 2600
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-otra-partida",
+      "roundNumber": 1,
+      "assetId": "stage-0",
+      "now": 2600
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-1vlc1zm-14j4y38-j0613t",
+      "roundNumber": 0,
+      "assetId": "stage-0",
+      "now": 2600
+    },
+    {
+      "kind": "timeout",
+      "now": 6000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-1vlc1zm-14j4y38-j0613t",
+      "roundNumber": 1,
+      "assetId": "stage-1",
+      "now": 6100
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "victreebel"
+      },
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "victreebel"
+      },
+      "now": 7500
+    },
+    {
+      "kind": "timeout",
+      "now": 11000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "victreebel"
+      },
+      "now": 12000
+    },
+    {
+      "kind": "timeout",
+      "now": 16000
+    },
+    {
+      "kind": "timeout",
+      "now": 16500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "victreebel"
+      },
+      "now": 21000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "victreebel"
+      },
+      "now": 22000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-1vlc1zm-14j4y38-j0613t",
+      "roundNumber": 1,
+      "assetId": "stage-3",
+      "now": 22000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-1vlc1zm-14j4y38-j0613t",
+      "roundNumber": 1,
+      "assetId": "reveal",
+      "now": 22000
+    },
+    {
+      "kind": "timeout",
+      "now": 25000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "machop"
+      },
+      "now": 25500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 26000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-1vlc1zm-14j4y38-j0613t",
+      "roundNumber": 1,
+      "assetId": "stage-0",
+      "now": 26500
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-1vlc1zm-14j4y38-j0613t",
+      "roundNumber": 2,
+      "assetId": "stage-2",
+      "now": 26500
+    },
+    {
+      "kind": "timeout",
+      "now": 30000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 31000
+    },
+    {
+      "kind": "timeout",
+      "now": 50000
+    },
+    {
+      "kind": "timeout",
+      "now": 54000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-1vlc1zm-14j4y38-j0613t",
+      "roundNumber": 3,
+      "assetId": "reveal",
+      "now": 54500
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "imageMode": "MIXED",
+      "roundSeconds": 20,
+      "rounds": 3,
+      "hintsEnabled": true,
+      "hintKinds": [
+        "CATEGORY",
+        "TYPE",
+        "GENERATION",
+        "EVOLUTION",
+        "TYPE_COUNT"
+      ],
+      "includeForms": false
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "zoomed-pokemon",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "imageUrl": null,
+        "imageSourceType": null,
+        "focusPoint": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "zoomStages": [
+          5,
+          3.5,
+          2.5,
+          1.7
+        ],
+        "currentZoomStage": 0,
+        "currentZoomBonus": 4,
+        "visibleHints": [],
+        "attempts": [],
+        "solves": {},
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p3": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 6000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "zoomed-pokemon",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/stage-0/sprite",
+        "imageSourceType": "SPRITE",
+        "focusPoint": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "zoomStages": [
+          5,
+          3.5,
+          2.5,
+          1.7
+        ],
+        "currentZoomStage": 0,
+        "currentZoomBonus": 4,
+        "visibleHints": [
+          {
+            "kind": "CATEGORY",
+            "value": "NORMAL"
+          },
+          {
+            "kind": "TYPE",
+            "values": [
+              "grass",
+              "poison"
+            ]
+          },
+          {
+            "kind": "GENERATION",
+            "value": 1
+          },
+          {
+            "kind": "EVOLUTION",
+            "stage": 3,
+            "stages": 3
+          },
+          {
+            "kind": "TYPE_COUNT",
+            "value": 2
+          }
+        ],
+        "attempts": [],
+        "solves": {},
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 21000,
+        "nextTransitionAt": 6000,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p3": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "Estás observando esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/stage-0/sprite",
+            "imageSourceType": "SPRITE",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 0,
+            "currentZoomBonus": 4,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "grass",
+                  "poison"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 3,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              }
+            ],
+            "attempts": [],
+            "solves": {},
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": 6000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon o forma no pertenece al pool configurado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/stage-0/sprite",
+            "imageSourceType": "SPRITE",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 0,
+            "currentZoomBonus": 4,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "grass",
+                  "poison"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 3,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              }
+            ],
+            "attempts": [],
+            "solves": {},
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": 6000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/stage-0/sprite",
+            "imageSourceType": "SPRITE",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 0,
+            "currentZoomBonus": 4,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "grass",
+                  "poison"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 3,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png"
+                },
+                "attemptedAt": 2000
+              }
+            ],
+            "solves": {},
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": 6000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 3000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 2000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Espera 0.5s antes de volver a intentar.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/stage-0/sprite",
+            "imageSourceType": "SPRITE",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 0,
+            "currentZoomBonus": 4,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "grass",
+                  "poison"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 3,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png"
+                },
+                "attemptedAt": 2000
+              }
+            ],
+            "solves": {},
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": 6000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 3000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 2000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png",
+          "transform": "ZOOM_CROP",
+          "focusSeed": 917250504,
+          "zoom": 5
+        }
+      },
+      {
+        "resolution": null
+      },
+      {
+        "resolution": null
+      },
+      {
+        "resolution": null
+      },
+      {
+        "resolution": null
+      },
+      {
+        "resolution": null
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/stage-1/sprite",
+            "imageSourceType": "SPRITE",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 1,
+            "currentZoomBonus": 3,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "grass",
+                  "poison"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 3,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png"
+                },
+                "attemptedAt": 2000
+              }
+            ],
+            "solves": {},
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": 11000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 3000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 2000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png",
+          "transform": "ZOOM_CROP",
+          "focusSeed": 917250504,
+          "zoom": 3.5
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/stage-1/sprite",
+            "imageSourceType": "SPRITE",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 1,
+            "currentZoomBonus": 3,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "grass",
+                  "poison"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 3,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png"
+                },
+                "attemptedAt": 2000
+              }
+            ],
+            "solves": {
+              "p1": {
+                "solveOrder": 1,
+                "zoomStage": 1
+              }
+            },
+            "scores": {
+              "p1": 9,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": 11000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 3000,
+              "roundPoints": 9,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 7000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ya has acertado esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/stage-1/sprite",
+            "imageSourceType": "SPRITE",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 1,
+            "currentZoomBonus": 3,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "grass",
+                  "poison"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 3,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png"
+                },
+                "attemptedAt": 2000
+              }
+            ],
+            "solves": {
+              "p1": {
+                "solveOrder": 1,
+                "zoomStage": 1
+              }
+            },
+            "scores": {
+              "p1": 9,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": 11000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 3000,
+              "roundPoints": 9,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 7000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/stage-2/sprite",
+            "imageSourceType": "SPRITE",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 2,
+            "currentZoomBonus": 2,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "grass",
+                  "poison"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 3,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png"
+                },
+                "attemptedAt": 2000
+              }
+            ],
+            "solves": {
+              "p1": {
+                "solveOrder": 1,
+                "zoomStage": 1
+              }
+            },
+            "scores": {
+              "p1": 9,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": 16000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 3000,
+              "roundPoints": 9,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 7000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/stage-2/sprite",
+            "imageSourceType": "SPRITE",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 2,
+            "currentZoomBonus": 2,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "grass",
+                  "poison"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 3,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png"
+                },
+                "attemptedAt": 2000
+              }
+            ],
+            "solves": {
+              "p1": {
+                "solveOrder": 1,
+                "zoomStage": 1
+              },
+              "p2": {
+                "solveOrder": 2,
+                "zoomStage": 2
+              }
+            },
+            "scores": {
+              "p1": 9,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": 16000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 3000,
+              "roundPoints": 9,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 7000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 5,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 12000
+              }
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/stage-3/sprite",
+            "imageSourceType": "SPRITE",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 3,
+            "currentZoomBonus": 1,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "grass",
+                  "poison"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 3,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png"
+                },
+                "attemptedAt": 2000
+              }
+            ],
+            "solves": {
+              "p1": {
+                "solveOrder": 1,
+                "zoomStage": 1
+              },
+              "p2": {
+                "solveOrder": 2,
+                "zoomStage": 2
+              }
+            },
+            "scores": {
+              "p1": 9,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 3000,
+              "roundPoints": 9,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 7000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 5,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 12000
+              }
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/stage-3/sprite",
+            "imageSourceType": "SPRITE",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 3,
+            "currentZoomBonus": 1,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "grass",
+                  "poison"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 3,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png"
+                },
+                "attemptedAt": 2000
+              }
+            ],
+            "solves": {
+              "p1": {
+                "solveOrder": 1,
+                "zoomStage": 1
+              },
+              "p2": {
+                "solveOrder": 2,
+                "zoomStage": 2
+              }
+            },
+            "scores": {
+              "p1": 9,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 3000,
+              "roundPoints": 9,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 7000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 5,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 12000
+              }
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 25000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "imageUrl": null,
+            "imageSourceType": null,
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 3,
+            "currentZoomBonus": 1,
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png"
+                },
+                "attemptedAt": 2000
+              }
+            ],
+            "solves": {
+              "p1": {
+                "solveOrder": 1,
+                "zoomStage": 1
+              },
+              "p2": {
+                "solveOrder": 2,
+                "zoomStage": 2
+              }
+            },
+            "scores": {
+              "p1": 9,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 25000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Victreebel",
+                "generation": 1
+              },
+              "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/reveal/sprite",
+              "initialCropUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/stage-0/sprite",
+              "imageSourceType": "SPRITE",
+              "solves": {
+                "p1": {
+                  "solvedAt": 7000,
+                  "elapsedMs": 6000,
+                  "solveOrder": 1,
+                  "zoomStage": 1,
+                  "zoom": 3.5,
+                  "zoomBonus": 3,
+                  "points": 9,
+                  "attempts": 2
+                },
+                "p2": {
+                  "solvedAt": 12000,
+                  "elapsedMs": 11000,
+                  "solveOrder": 2,
+                  "zoomStage": 2,
+                  "zoom": 2.5,
+                  "zoomBonus": 2,
+                  "points": 5,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p1": 2,
+                "p2": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 3000,
+              "roundPoints": 9,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 7000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 5,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 12000
+              }
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No hay una ronda activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 25000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "imageUrl": null,
+            "imageSourceType": null,
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 3,
+            "currentZoomBonus": 1,
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png"
+                },
+                "attemptedAt": 2000
+              }
+            ],
+            "solves": {
+              "p1": {
+                "solveOrder": 1,
+                "zoomStage": 1
+              },
+              "p2": {
+                "solveOrder": 2,
+                "zoomStage": 2
+              }
+            },
+            "scores": {
+              "p1": 9,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 25000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Victreebel",
+                "generation": 1
+              },
+              "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/reveal/sprite",
+              "initialCropUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/1/options/stage-0/sprite",
+              "imageSourceType": "SPRITE",
+              "solves": {
+                "p1": {
+                  "solvedAt": 7000,
+                  "elapsedMs": 6000,
+                  "solveOrder": 1,
+                  "zoomStage": 1,
+                  "zoom": 3.5,
+                  "zoomBonus": 3,
+                  "points": 9,
+                  "attempts": 2
+                },
+                "p2": {
+                  "solvedAt": 12000,
+                  "elapsedMs": 11000,
+                  "solveOrder": 2,
+                  "zoomStage": 2,
+                  "zoom": 2.5,
+                  "zoomBonus": 2,
+                  "points": 5,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p1": 2,
+                "p2": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 3000,
+              "roundPoints": 9,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 7000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 5,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 12000
+              }
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png",
+          "transform": "ZOOM_CROP",
+          "focusSeed": 917250504,
+          "zoom": 1.7
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png",
+          "transform": "NORMALIZED"
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,25000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/2/options/stage-0/sprite",
+            "imageSourceType": "ARTWORK",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 0,
+            "currentZoomBonus": 4,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "fighting"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solves": {},
+            "scores": {
+              "p1": 9,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 25000,
+            "roundEndsAt": 45000,
+            "nextTransitionAt": 30000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,25000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/2/options/stage-0/sprite",
+            "imageSourceType": "ARTWORK",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 0,
+            "currentZoomBonus": 4,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "fighting"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solves": {
+              "p1": {
+                "solveOrder": 1,
+                "zoomStage": 0
+              }
+            },
+            "scores": {
+              "p1": 19,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 25000,
+            "roundEndsAt": 45000,
+            "nextTransitionAt": 30000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 10,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 25500
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,25000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "imageUrl": null,
+            "imageSourceType": null,
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 0,
+            "currentZoomBonus": 4,
+            "visibleHints": [],
+            "attempts": [],
+            "solves": {
+              "p1": {
+                "solveOrder": 1,
+                "zoomStage": 0
+              }
+            },
+            "scores": {
+              "p1": 19,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 25000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 30000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Machop",
+                "generation": 1
+              },
+              "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/2/options/reveal/sprite",
+              "initialCropUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/2/options/stage-0/sprite",
+              "imageSourceType": "ARTWORK",
+              "solves": {
+                "p1": {
+                  "solvedAt": 25500,
+                  "elapsedMs": 500,
+                  "solveOrder": 1,
+                  "zoomStage": 0,
+                  "zoom": 5,
+                  "zoomBonus": 4,
+                  "points": 10,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p1": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 10,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 25500
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "resolution": null
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/66.png",
+          "transform": "ZOOM_CROP",
+          "focusSeed": 277121517,
+          "zoom": 2.5
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 35000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,30000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/3/options/stage-0/sprite",
+            "imageSourceType": "ARTWORK",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 0,
+            "currentZoomBonus": 4,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "water"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solves": {},
+            "scores": {
+              "p1": 19,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 30000,
+            "roundEndsAt": 50000,
+            "nextTransitionAt": 35000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 35000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,30000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/3/options/stage-0/sprite",
+            "imageSourceType": "ARTWORK",
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 0,
+            "currentZoomBonus": 4,
+            "visibleHints": [
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              },
+              {
+                "kind": "TYPE",
+                "values": [
+                  "water"
+                ]
+              },
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solves": {},
+            "scores": {
+              "p1": 19,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 30000,
+            "roundEndsAt": 50000,
+            "nextTransitionAt": 35000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 54000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,30000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "imageUrl": null,
+            "imageSourceType": null,
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 0,
+            "currentZoomBonus": 4,
+            "visibleHints": [],
+            "attempts": [],
+            "solves": {},
+            "scores": {
+              "p1": 19,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 30000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 54000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Squirtle",
+                "generation": 1
+              },
+              "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/3/options/reveal/sprite",
+              "initialCropUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/3/options/stage-0/sprite",
+              "imageSourceType": "ARTWORK",
+              "solves": {},
+              "attemptCounts": {}
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,30000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "zoomed-pokemon",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "imageUrl": null,
+            "imageSourceType": null,
+            "focusPoint": {
+              "x": 0.5,
+              "y": 0.5
+            },
+            "zoomStages": [
+              5,
+              3.5,
+              2.5,
+              1.7
+            ],
+            "currentZoomStage": 0,
+            "currentZoomBonus": 4,
+            "visibleHints": [],
+            "attempts": [],
+            "solves": {},
+            "scores": {
+              "p1": 19,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 30000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "pokemon": {
+                "name": "Squirtle",
+                "generation": 1
+              },
+              "imageUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/3/options/reveal/sprite",
+              "initialCropUrl": "/api/rooms/GOLD01/games/rs-1vlc1zm-14j4y38-j0613t/rounds/3/options/stage-0/sprite",
+              "imageSourceType": "ARTWORK",
+              "solves": {},
+              "attemptCounts": {}
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 19,
+                  "won": true,
+                  "stats": {
+                    "correct": 2,
+                    "missed": 1,
+                    "totalAttempts": 3,
+                    "firstTry": 1,
+                    "firstPositions": 2,
+                    "solveTimeTotalMs": 6500,
+                    "bestTimeMs": 500,
+                    "maxZoomSolves": 1,
+                    "solveStageTotal": 3,
+                    "pointsFromRounds": 19,
+                    "solvesBySprite": 1,
+                    "solvesByArtwork": 1
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 5,
+                  "won": false,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 2,
+                    "totalAttempts": 1,
+                    "firstTry": 1,
+                    "firstPositions": 0,
+                    "solveTimeTotalMs": 11000,
+                    "bestTimeMs": 11000,
+                    "maxZoomSolves": 0,
+                    "solveStageTotal": 3,
+                    "pointsFromRounds": 5,
+                    "solvesBySprite": 1,
+                    "solvesByArtwork": 0
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "correct": 0,
+                    "missed": 3,
+                    "totalAttempts": 0,
+                    "firstTry": 0,
+                    "firstPositions": 0,
+                    "solveTimeTotalMs": 0,
+                    "bestTimeMs": 0,
+                    "maxZoomSolves": 0,
+                    "solveStageTotal": 0,
+                    "pointsFromRounds": 0,
+                    "solvesBySprite": 0,
+                    "solvesByArtwork": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
+          "transform": "NORMALIZED"
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 19,
+          "won": true,
+          "stats": {
+            "correct": 2,
+            "missed": 1,
+            "totalAttempts": 3,
+            "firstTry": 1,
+            "firstPositions": 2,
+            "solveTimeTotalMs": 6500,
+            "bestTimeMs": 500,
+            "maxZoomSolves": 1,
+            "solveStageTotal": 3,
+            "pointsFromRounds": 19,
+            "solvesBySprite": 1,
+            "solvesByArtwork": 1
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 5,
+          "won": false,
+          "stats": {
+            "correct": 1,
+            "missed": 2,
+            "totalAttempts": 1,
+            "firstTry": 1,
+            "firstPositions": 0,
+            "solveTimeTotalMs": 11000,
+            "bestTimeMs": 11000,
+            "maxZoomSolves": 0,
+            "solveStageTotal": 3,
+            "pointsFromRounds": 5,
+            "solvesBySprite": 1,
+            "solvesByArtwork": 0
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "correct": 0,
+            "missed": 3,
+            "totalAttempts": 0,
+            "firstTry": 0,
+            "firstPositions": 0,
+            "solveTimeTotalMs": 0,
+            "bestTimeMs": 0,
+            "maxZoomSolves": 0,
+            "solveStageTotal": 0,
+            "pointsFromRounds": 0,
+            "solvesBySprite": 0,
+            "solvesByArtwork": 0
+          }
+        }
+      ]
+    }
+  }
+}
