@@ -74,7 +74,7 @@ export function migrateStoredGameConfig(game: RegisteredGame, stored: unknown): 
     if (priorCandidates.has(fingerprint)) return fallback;
     priorCandidates.add(fingerprint);
 
-    const paths = result.error.issues.map((issue) => normalizedIssuePath(issue.path));
+    const paths = result.error.issues.map((issue) => normalizedIssuePath(issue.path.filter((segment): segment is string | number => typeof segment !== 'symbol')));
     if (paths.some((path) => path.length === 0)) return fallback;
     for (const path of paths) candidate = replaceAtPath(candidate, path, valueAtPath(fallback, path));
   }

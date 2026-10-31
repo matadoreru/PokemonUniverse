@@ -190,7 +190,7 @@ export interface MiniGameModule<TConfig, TState, TAction, TPublicState> {
   getLifecycle(state: TState): import('./infrastructure/lifecycle.js').GameLifecycle;
   readonly manifest: MiniGameManifest;
   checkAvailability?(config: TConfig, context: GameContext): string | null;
-  readonly configSchema: z.ZodType<TConfig, z.ZodTypeDef, unknown>;
+  readonly configSchema: z.ZodType<TConfig, unknown>;
   readonly actionSchema: z.ZodType<TAction>;
   readonly defaultConfig: TConfig;
   createInitialState(config: TConfig, context: GameContext): TState;

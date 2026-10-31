@@ -28,7 +28,7 @@
     "jose": "^6.0.8",
     "sharp": "^0.35.4",
     "socket.io": "^4.8.1",
-    "zod": "^3.24.2"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
@@ -37,6 +37,6 @@
     "@types/node": "^22.13.4",
     "prisma": "6.12.0",
     "tsx": "^4.19.3",
-    "vitest": "^3.0.6"
+    "vitest": "^5.0.5"
   }
 }
