@@ -9,8 +9,24 @@ de revisión y mide encaje y legibilidad. Las capturas se puntúan con la rúbri
 
 Requisitos: Node 22+, `podman` y `podman-compose`, y red (el seed descarga de PokéAPI).
 
-1. Crea `.env` en la raíz copiando el bloque "Desarrollo local sin Compose" de `.env.example`,
-   **sin** `VITE_API_URL` (todo pasa por el proxy de Vite) y con `DATA_SYNC_ENABLED=false`.
+1. Crea `.env` en la raíz con el bloque "Desarrollo local sin Compose" de `.env.example`, **quitando
+   la línea `VITE_API_URL`** (todo pasa por el proxy de Vite; con ella el navegador va cross-origin y
+   la cookie de sesión no llega al socket) y con `DATA_SYNC_ENABLED=false`. El `.env` queda así:
+
+   ```sh
+   NODE_ENV=development
+   PORT=3001
+   WEB_ORIGIN=http://localhost:5173
+   DATABASE_URL=postgresql://pokemon:pokemon@localhost:5432/pokemon_universe?schema=public
+   JWT_SECRET=replace-with-at-least-32-random-characters
+   COOKIE_SECURE=false
+   RATE_LIMIT_DISABLED=false
+   ROOM_MAX_PLAYERS=8
+   RECONNECT_GRACE_MS=30000
+   DATA_SYNC_ENABLED=false
+   ```
+
+   Sin `VITE_API_URL`. (`RATE_LIMIT_DISABLED` lo pone a `true` la configuración de Playwright.)
 2. Desde la raíz del repositorio:
 
    ```sh

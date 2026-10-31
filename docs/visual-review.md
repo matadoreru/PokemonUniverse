@@ -25,6 +25,8 @@ La rúbrica puntúa cada pantalla **nueva o rediseñada** antes de integrarla. M
 Una pantalla que no llega se integra solo si el cambio no es suyo (por ejemplo, se puntúa una
 pantalla existente como línea base); en ese caso la nota se anota igual y lo pendiente queda como
 tarea de seguimiento.
+Una pantalla nueva o rediseñada nunca es línea base, y un 0 en "Solo componentes del sistema" o en
+"Encaje" en una pantalla que toca el cambio bloquea siempre.
 
 ## Criterios (0–3)
 
@@ -41,8 +43,8 @@ tarea de seguimiento.
 
 ### Cómo leer la tabla
 
-- Cada nivel exige el anterior. Si el "además" del 3 no tiene a qué aplicarse en esa pantalla (por
-  ejemplo, no hay ningún estado nuevo ni ningún diálogo), un 2 cumplido por completo cuenta como 3.
+- Cada nivel exige el anterior. Un 3 exige cumplir el "además": si no tiene a qué aplicarse en esa
+  pantalla (por ejemplo, no hay ningún estado nuevo ni ningún diálogo), la nota se queda en 2.
 - **Colores literales**: cuentan los que se pintan en la pantalla, estén en el componente o dentro
   de una clase de `styles.css` (por ejemplo, un `background: #…` en una clase de `@layer components`).
 - **Animaciones**: cualquier `animation` o `transition` que mueva o cambie tamaño, color o sombra
