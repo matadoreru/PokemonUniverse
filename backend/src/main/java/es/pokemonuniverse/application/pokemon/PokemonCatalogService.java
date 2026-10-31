@@ -2,8 +2,8 @@ package es.pokemonuniverse.application.pokemon;
 
 import es.pokemonuniverse.adapters.out.persistence.PokemonEntity;
 import es.pokemonuniverse.adapters.out.persistence.PokemonRepository;
+import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
-import es.pokemonuniverse.domain.pokemon.RegionalForms;
 import io.micronaut.data.model.Sort;
 import jakarta.inject.Singleton;
 import java.text.Collator;
@@ -11,7 +11,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -64,17 +63,9 @@ public class PokemonCatalogService {
   }
 
   private List<Pokemon> load() {
-    var seenDefaults = new HashSet<Integer>();
-    var result = new ArrayList<Pokemon>();
-    for (var row : repository.findAll(BASE_ORDER)) {
-      if (!row.getIsDefault()) {
-        if (!RegionalForms.isSupported(row.getId())) continue;
-      } else if (!seenDefaults.add(row.getNationalDexNumber())) {
-        continue;
-      }
-      result.add(toPokemon(row));
-    }
-    return List.copyOf(result);
+    var rows = new ArrayList<Pokemon>();
+    for (var row : repository.findAll(BASE_ORDER)) rows.add(toPokemon(row));
+    return new InMemoryPokemonCatalog(rows).all();
   }
 
   private static Pokemon toPokemon(PokemonEntity r) {
