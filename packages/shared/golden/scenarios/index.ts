@@ -9,6 +9,7 @@ import { mostLikelyToScenarios } from './most-likely-to.js';
 import { oneOfUsIsFakeScenarios } from './one-of-us-is-fake.js';
 import { pokeTabooScenarios } from './poke-taboo.js';
 import { pokeddleRaceScenarios } from './pokeddle-race.js';
+import { pokedexEntryGuessScenarios } from './pokedex-entry-guess.js';
 import { pokedexDistanceScenarios } from './pokedex-distance.js';
 import { pokemonRedFlagScenarios } from './pokemon-red-flag.js';
 import { pokemonPaletteGuessScenarios } from './pokemon-palette-guess.js';
@@ -41,4 +42,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'secret-ranking': secretRankingScenarios,
   'one-of-us-is-fake': oneOfUsIsFakeScenarios,
   'learnset-guess': learnsetGuessScenarios,
+  'pokedex-entry-guess': pokedexEntryGuessScenarios,
 };

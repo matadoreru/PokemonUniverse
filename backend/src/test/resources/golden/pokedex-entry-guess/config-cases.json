@@ -1,0 +1,521 @@
+[
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        9
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        9
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 15,
+      "rounds": 1,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 15,
+      "rounds": 1,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 60,
+      "rounds": 20,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 60,
+      "rounds": 20,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 15,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 15,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": false,
+        "type": false,
+        "evolution": false,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": false,
+        "type": false,
+        "evolution": false,
+        "typeCount": false,
+        "category": false
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": true,
+      "hints": {
+        "generation": false,
+        "type": false,
+        "evolution": false,
+        "typeCount": false,
+        "category": true
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": true,
+      "hints": {
+        "generation": false,
+        "type": false,
+        "evolution": false,
+        "typeCount": false,
+        "category": true
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 14,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 61,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "rounds": 0,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "rounds": 21,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 15.5,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": true,
+      "hints": {
+        "generation": false,
+        "type": false,
+        "evolution": false,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      },
+      "unknownKey": "no se admite"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": false,
+        "type": false,
+        "evolution": false,
+        "typeCount": false,
+        "category": false,
+        "height": true
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": false,
+        "type": "yes",
+        "evolution": false,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": 1,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": null
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]

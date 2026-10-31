@@ -1,0 +1,1201 @@
+{
+  "engineId": "pokedex-entry-guess",
+  "scenario": "johto-hints",
+  "seed": 17,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      2
+    ],
+    "roundSeconds": 60,
+    "rounds": 3,
+    "hintsEnabled": true,
+    "hints": {
+      "generation": false,
+      "type": false,
+      "evolution": true,
+      "typeCount": true,
+      "category": true
+    }
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "timeout",
+      "now": 61000
+    },
+    {
+      "kind": "timeout",
+      "now": 65000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "mareep"
+      },
+      "now": 66000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "ampharos"
+      },
+      "now": 67000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "ampharos"
+      },
+      "now": 68000
+    },
+    {
+      "kind": "timeout",
+      "now": 72000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "lugia"
+      },
+      "now": 73000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "ho-oh"
+      },
+      "now": 74000
+    },
+    {
+      "kind": "timeout",
+      "now": 132000
+    },
+    {
+      "kind": "timeout",
+      "now": 136000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        2
+      ],
+      "roundSeconds": 60,
+      "rounds": 3,
+      "hintsEnabled": true,
+      "hints": {
+        "generation": false,
+        "type": false,
+        "evolution": true,
+        "typeCount": true,
+        "category": true
+      }
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokedex-entry-guess",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "referenceGeneration": 2,
+        "entryText": null,
+        "hints": [],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 61000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokedex-entry-guess",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "referenceGeneration": 2,
+        "entryText": "Nada con gran elegancia e ignora a los Remoraid que se aferran a sus aletas buscando restos de comida.",
+        "hints": [
+          {
+            "kind": "EVOLUTION",
+            "stage": 2,
+            "stages": 2
+          },
+          {
+            "kind": "TYPE_COUNT",
+            "value": 2
+          },
+          {
+            "kind": "CATEGORY",
+            "value": "NORMAL"
+          }
+        ],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 61000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "Ese Pokémon no pertenece al pool configurado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 61000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 2,
+            "entryText": "Nada con gran elegancia e ignora a los Remoraid que se aferran a sus aletas buscando restos de comida.",
+            "hints": [
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 2
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 61000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 65000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 2,
+            "entryText": null,
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 65000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Mantine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/226.png",
+                "generation": 2
+              },
+              "entry": {
+                "text": "Nada con gran elegancia e ignora a los Remoraid que se aferran a sus aletas buscando restos de comida.",
+                "generation": 6,
+                "versionLabel": "Pokémon Y"
+              },
+              "solves": {},
+              "attemptCounts": {}
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 125000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,65000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 2,
+            "entryText": "??? desprende tanta luz que es posible verle hasta desde el espacio. Antes, la gente usaba su luz como sistema de comunicación para enviarse señales.",
+            "hints": [
+              {
+                "kind": "EVOLUTION",
+                "stage": 3,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 65000,
+            "roundEndsAt": 125000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 125000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,65000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 2,
+            "entryText": "??? desprende tanta luz que es posible verle hasta desde el espacio. Antes, la gente usaba su luz como sistema de comunicación para enviarse señales.",
+            "hints": [
+              {
+                "kind": "EVOLUTION",
+                "stage": 3,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "mareep",
+                  "name": "Mareep",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+                },
+                "attemptedAt": 66000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 65000,
+            "roundEndsAt": 125000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 67000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 66000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 125000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,65000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 2,
+            "entryText": "??? desprende tanta luz que es posible verle hasta desde el espacio. Antes, la gente usaba su luz como sistema de comunicación para enviarse señales.",
+            "hints": [
+              {
+                "kind": "EVOLUTION",
+                "stage": 3,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "mareep",
+                  "name": "Mareep",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+                },
+                "attemptedAt": 66000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 0
+            },
+            "roundStartedAt": 65000,
+            "roundEndsAt": 125000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 67000,
+              "roundPoints": 4,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 67000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 72000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,65000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 2,
+            "entryText": null,
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "mareep",
+                  "name": "Mareep",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+                },
+                "attemptedAt": 66000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 2
+            },
+            "roundStartedAt": 65000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 72000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png",
+                "generation": 2
+              },
+              "entry": {
+                "text": "Ampharos desprende tanta luz que es posible verle hasta desde el espacio. Antes, la gente usaba su luz como sistema de comunicación para enviarse señales.",
+                "generation": 6,
+                "versionLabel": "Pokémon Rubí Omega"
+              },
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 67000,
+                  "elapsedMs": 2000,
+                  "points": 4,
+                  "attempts": 2
+                },
+                "p2": {
+                  "solveOrder": 2,
+                  "solvedAt": 68000,
+                  "elapsedMs": 3000,
+                  "points": 2,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p1": 2,
+                "p2": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 67000,
+              "roundPoints": 4,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 67000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 2,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 68000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,72000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 2,
+            "entryText": "Cuenta la leyenda que brilla en siete colores. Dicen que deja un arcoíris tras de sí al volar.",
+            "hints": [
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 1
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "LEGENDARY"
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 4,
+              "p2": 2
+            },
+            "roundStartedAt": 72000,
+            "roundEndsAt": 132000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,72000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 2,
+            "entryText": "Cuenta la leyenda que brilla en siete colores. Dicen que deja un arcoíris tras de sí al volar.",
+            "hints": [
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 1
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "LEGENDARY"
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "lugia",
+                  "name": "Lugia",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
+                },
+                "attemptedAt": 73000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 4,
+              "p2": 2
+            },
+            "roundStartedAt": 72000,
+            "roundEndsAt": 132000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 74000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 73000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,72000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 2,
+            "entryText": "Cuenta la leyenda que brilla en siete colores. Dicen que deja un arcoíris tras de sí al volar.",
+            "hints": [
+              {
+                "kind": "EVOLUTION",
+                "stage": 1,
+                "stages": 1
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "LEGENDARY"
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "lugia",
+                  "name": "Lugia",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
+                },
+                "attemptedAt": 73000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 2
+            },
+            "roundStartedAt": 72000,
+            "roundEndsAt": 132000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 74000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 74000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 73000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 136000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,72000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 2,
+            "entryText": null,
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "lugia",
+                  "name": "Lugia",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
+                },
+                "attemptedAt": 73000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 2
+            },
+            "roundStartedAt": 72000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 136000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Ho Oh",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/250.png",
+                "generation": 2
+              },
+              "entry": {
+                "text": "Cuenta la leyenda que brilla en siete colores. Dicen que deja un arcoíris tras de sí al volar.",
+                "generation": 6,
+                "versionLabel": "Pokémon X"
+              },
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 74000,
+                  "elapsedMs": 2000,
+                  "points": 4,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p2": 1,
+                "p1": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 74000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 74000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 73000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,72000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 2,
+            "entryText": null,
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "lugia",
+                  "name": "Lugia",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
+                },
+                "attemptedAt": 73000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 2
+            },
+            "roundStartedAt": 72000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "pokemon": {
+                "name": "Ho Oh",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/250.png",
+                "generation": 2
+              },
+              "entry": {
+                "text": "Cuenta la leyenda que brilla en siete colores. Dicen que deja un arcoíris tras de sí al volar.",
+                "generation": 6,
+                "versionLabel": "Pokémon X"
+              },
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 74000,
+                  "elapsedMs": 2000,
+                  "points": 4,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p2": 1,
+                "p1": 1
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 8,
+                  "won": true,
+                  "stats": {
+                    "correct": 2,
+                    "missed": 1,
+                    "totalAttempts": 3,
+                    "firstTry": 1,
+                    "roundFirsts": 2,
+                    "solveTimeTotalMs": 4000,
+                    "bestTimeMs": 2000,
+                    "pointsFromRounds": 8
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 2,
+                    "totalAttempts": 2,
+                    "firstTry": 1,
+                    "roundFirsts": 0,
+                    "solveTimeTotalMs": 3000,
+                    "bestTimeMs": 3000,
+                    "pointsFromRounds": 2
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 74000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 74000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 73000
+              }
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 8,
+          "won": true,
+          "stats": {
+            "correct": 2,
+            "missed": 1,
+            "totalAttempts": 3,
+            "firstTry": 1,
+            "roundFirsts": 2,
+            "solveTimeTotalMs": 4000,
+            "bestTimeMs": 2000,
+            "pointsFromRounds": 8
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 2,
+          "won": false,
+          "stats": {
+            "correct": 1,
+            "missed": 2,
+            "totalAttempts": 2,
+            "firstTry": 1,
+            "roundFirsts": 0,
+            "solveTimeTotalMs": 3000,
+            "bestTimeMs": 3000,
+            "pointsFromRounds": 2
+          }
+        }
+      ]
+    }
+  }
+}

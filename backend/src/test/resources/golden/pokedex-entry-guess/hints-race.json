@@ -1,0 +1,2431 @@
+{
+  "engineId": "pokedex-entry-guess",
+  "scenario": "hints-race",
+  "seed": 29,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "roundSeconds": 25,
+    "rounds": 3,
+    "hintsEnabled": true,
+    "hints": {
+      "generation": true,
+      "type": true,
+      "evolution": true,
+      "typeCount": true,
+      "category": true
+    }
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "chikorita"
+      },
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "rapidash-galar"
+      },
+      "now": 2600
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "jynx"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "mr-mime"
+      },
+      "now": 3400
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "mr-mime"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "mr-mime"
+      },
+      "now": 5500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "mr-mime"
+      },
+      "now": 6000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "mr-mime"
+      },
+      "now": 26000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "mr-mime"
+      },
+      "now": 26500
+    },
+    {
+      "kind": "timeout",
+      "now": 30000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "ivysaur"
+      },
+      "now": 31000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 32000
+    },
+    {
+      "kind": "timeout",
+      "now": 36000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 37000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "ponyta"
+      },
+      "now": 38000
+    },
+    {
+      "kind": "timeout",
+      "now": 60999
+    },
+    {
+      "kind": "timeout",
+      "now": 61000
+    },
+    {
+      "kind": "timeout",
+      "now": 65000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "rapidash"
+      },
+      "now": 66000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": true,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": true,
+        "category": true
+      }
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokedex-entry-guess",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "referenceGeneration": 1,
+        "entryText": null,
+        "hints": [],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p3": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 26000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokedex-entry-guess",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "referenceGeneration": 1,
+        "entryText": "??? es un experto en pantomima. Con sus gestos y movimientos es capaz de convencer a sus espectadores de que algo existe, cuando en realidad no es así. Pero, cuando el público se lo cree, las ilusiones se hacen realidad.",
+        "hints": [
+          {
+            "kind": "GENERATION",
+            "value": 1
+          },
+          {
+            "kind": "TYPE",
+            "value": "psychic"
+          },
+          {
+            "kind": "EVOLUTION",
+            "stage": 2,
+            "stages": 3
+          },
+          {
+            "kind": "TYPE_COUNT",
+            "value": 2
+          },
+          {
+            "kind": "CATEGORY",
+            "value": "NORMAL"
+          }
+        ],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 26000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p3": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "Estás observando esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": "??? es un experto en pantomima. Con sus gestos y movimientos es capaz de convencer a sus espectadores de que algo existe, cuando en realidad no es así. Pero, cuando el público se lo cree, las ilusiones se hacen realidad.",
+            "hints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "psychic"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 26000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon no pertenece al pool configurado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": "??? es un experto en pantomima. Con sus gestos y movimientos es capaz de convencer a sus espectadores de que algo existe, cuando en realidad no es así. Pero, cuando el público se lo cree, las ilusiones se hacen realidad.",
+            "hints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "psychic"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 26000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon no pertenece al pool configurado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": "??? es un experto en pantomima. Con sus gestos y movimientos es capaz de convencer a sus espectadores de que algo existe, cuando en realidad no es así. Pero, cuando el público se lo cree, las ilusiones se hacen realidad.",
+            "hints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "psychic"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 26000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": "??? es un experto en pantomima. Con sus gestos y movimientos es capaz de convencer a sus espectadores de que algo existe, cuando en realidad no es así. Pero, cuando el público se lo cree, las ilusiones se hacen realidad.",
+            "hints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "psychic"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 26000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 3000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Espera 0.6s antes de volver a intentar.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": "??? es un experto en pantomima. Con sus gestos y movimientos es capaz de convencer a sus espectadores de que algo existe, cuando en realidad no es así. Pero, cuando el público se lo cree, las ilusiones se hacen realidad.",
+            "hints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "psychic"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 26000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 3000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": "??? es un experto en pantomima. Con sus gestos y movimientos es capaz de convencer a sus espectadores de que algo existe, cuando en realidad no es así. Pero, cuando el público se lo cree, las ilusiones se hacen realidad.",
+            "hints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "psychic"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 26000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 3000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 6,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 5000
+              }
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ya has acertado esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": "??? es un experto en pantomima. Con sus gestos y movimientos es capaz de convencer a sus espectadores de que algo existe, cuando en realidad no es así. Pero, cuando el público se lo cree, las ilusiones se hacen realidad.",
+            "hints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "psychic"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 26000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 3000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 6,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 5000
+              }
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": "??? es un experto en pantomima. Con sus gestos y movimientos es capaz de convencer a sus espectadores de que algo existe, cuando en realidad no es así. Pero, cuando el público se lo cree, las ilusiones se hacen realidad.",
+            "hints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "psychic"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p1",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 6,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 26000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": 4000,
+              "roundPoints": 3,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 6000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 6,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 5000
+              }
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": null,
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p1",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 6,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 30000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Mr Mime",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/122.png",
+                "generation": 1
+              },
+              "entry": {
+                "text": "Mr. Mime es un experto en pantomima. Con sus gestos y movimientos es capaz de convencer a sus espectadores de que algo existe, cuando en realidad no es así. Pero, cuando el público se lo cree, las ilusiones se hacen realidad.",
+                "generation": 6,
+                "versionLabel": "Pokémon Zafiro Alfa"
+              },
+              "solves": {
+                "p2": {
+                  "solveOrder": 1,
+                  "solvedAt": 5000,
+                  "elapsedMs": 4000,
+                  "points": 6,
+                  "attempts": 1
+                },
+                "p1": {
+                  "solveOrder": 2,
+                  "solvedAt": 6000,
+                  "elapsedMs": 5000,
+                  "points": 3,
+                  "attempts": 2
+                }
+              },
+              "attemptCounts": {
+                "p1": 2,
+                "p2": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": 4000,
+              "roundPoints": 3,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 6000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 6,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 5000
+              }
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No hay una ronda activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": null,
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p1",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 6,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 30000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Mr Mime",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/122.png",
+                "generation": 1
+              },
+              "entry": {
+                "text": "Mr. Mime es un experto en pantomima. Con sus gestos y movimientos es capaz de convencer a sus espectadores de que algo existe, cuando en realidad no es así. Pero, cuando el público se lo cree, las ilusiones se hacen realidad.",
+                "generation": 6,
+                "versionLabel": "Pokémon Zafiro Alfa"
+              },
+              "solves": {
+                "p2": {
+                  "solveOrder": 1,
+                  "solvedAt": 5000,
+                  "elapsedMs": 4000,
+                  "points": 6,
+                  "attempts": 1
+                },
+                "p1": {
+                  "solveOrder": 2,
+                  "solvedAt": 6000,
+                  "elapsedMs": 5000,
+                  "points": 3,
+                  "attempts": 2
+                }
+              },
+              "attemptCounts": {
+                "p1": 2,
+                "p2": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": 4000,
+              "roundPoints": 3,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 6000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 6,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 5000
+              }
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 55000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,30000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": "Este Pokémon lleva un bulbo en el lomo y, para poder con su peso, tiene unas patas y un tronco gruesos y fuertes. Si empieza a pasar más tiempo al sol, será porque el bulbo está a punto de hacerse una flor grande.",
+            "hints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "grass"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 3,
+              "p2": 6,
+              "p3": 0
+            },
+            "roundStartedAt": 30000,
+            "roundEndsAt": 55000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 55000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,30000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": "Este Pokémon lleva un bulbo en el lomo y, para poder con su peso, tiene unas patas y un tronco gruesos y fuertes. Si empieza a pasar más tiempo al sol, será porque el bulbo está a punto de hacerse una flor grande.",
+            "hints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "grass"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 3
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p3",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 6,
+              "p3": 6
+            },
+            "roundStartedAt": 30000,
+            "roundEndsAt": 55000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 6,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 31000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 36000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,30000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": null,
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p3",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 6,
+              "p3": 6
+            },
+            "roundStartedAt": 30000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 36000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png",
+                "generation": 1
+              },
+              "entry": {
+                "text": "Este Pokémon lleva un bulbo en el lomo y, para poder con su peso, tiene unas patas y un tronco gruesos y fuertes. Si empieza a pasar más tiempo al sol, será porque el bulbo está a punto de hacerse una flor grande.",
+                "generation": 6,
+                "versionLabel": "Pokémon Zafiro Alfa"
+              },
+              "solves": {
+                "p3": {
+                  "solveOrder": 1,
+                  "solvedAt": 31000,
+                  "elapsedMs": 1000,
+                  "points": 6,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p3": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 6,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 31000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 61000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,36000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": "Muy competitivo, este Pokémon perseguirá a todo lo que se mueva rápido e intentará salir airoso.",
+            "hints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "fire"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 2
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 3,
+              "p2": 6,
+              "p3": 6
+            },
+            "roundStartedAt": 36000,
+            "roundEndsAt": 61000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 61000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,36000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": "Muy competitivo, este Pokémon perseguirá a todo lo que se mueva rápido e intentará salir airoso.",
+            "hints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "fire"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 2
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 3,
+              "p2": 6,
+              "p3": 6
+            },
+            "roundStartedAt": 36000,
+            "roundEndsAt": 61000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 61000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,36000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": "Muy competitivo, este Pokémon perseguirá a todo lo que se mueva rápido e intentará salir airoso.",
+            "hints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "fire"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 2
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "ponyta",
+                  "name": "Ponyta",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/77.png"
+                },
+                "attemptedAt": 38000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 3,
+              "p2": 6,
+              "p3": 6
+            },
+            "roundStartedAt": 36000,
+            "roundEndsAt": 61000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 39000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 38000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 61000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,36000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": "Muy competitivo, este Pokémon perseguirá a todo lo que se mueva rápido e intentará salir airoso.",
+            "hints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "fire"
+              },
+              {
+                "kind": "EVOLUTION",
+                "stage": 2,
+                "stages": 2
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 1
+              },
+              {
+                "kind": "CATEGORY",
+                "value": "NORMAL"
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "ponyta",
+                  "name": "Ponyta",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/77.png"
+                },
+                "attemptedAt": 38000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 3,
+              "p2": 6,
+              "p3": 6
+            },
+            "roundStartedAt": 36000,
+            "roundEndsAt": 61000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 39000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 38000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 65000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,36000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": null,
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "ponyta",
+                  "name": "Ponyta",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/77.png"
+                },
+                "attemptedAt": 38000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 3,
+              "p2": 6,
+              "p3": 6
+            },
+            "roundStartedAt": 36000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 65000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Rapidash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
+                "generation": 1
+              },
+              "entry": {
+                "text": "Muy competitivo, este Pokémon perseguirá a todo lo que se mueva rápido e intentará salir airoso.",
+                "generation": 6,
+                "versionLabel": "Pokémon X"
+              },
+              "solves": {},
+              "attemptCounts": {
+                "p1": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 39000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 38000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,36000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": null,
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "ponyta",
+                  "name": "Ponyta",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/77.png"
+                },
+                "attemptedAt": 38000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 3,
+              "p2": 6,
+              "p3": 6
+            },
+            "roundStartedAt": 36000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "pokemon": {
+                "name": "Rapidash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
+                "generation": 1
+              },
+              "entry": {
+                "text": "Muy competitivo, este Pokémon perseguirá a todo lo que se mueva rápido e intentará salir airoso.",
+                "generation": 6,
+                "versionLabel": "Pokémon X"
+              },
+              "solves": {},
+              "attemptCounts": {
+                "p1": 1
+              }
+            },
+            "results": {
+              "winnerId": null,
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 2,
+                    "totalAttempts": 1,
+                    "firstTry": 1,
+                    "roundFirsts": 1,
+                    "solveTimeTotalMs": 4000,
+                    "bestTimeMs": 4000,
+                    "pointsFromRounds": 6
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 2,
+                    "totalAttempts": 1,
+                    "firstTry": 1,
+                    "roundFirsts": 1,
+                    "solveTimeTotalMs": 1000,
+                    "bestTimeMs": 1000,
+                    "pointsFromRounds": 6
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 2,
+                    "totalAttempts": 3,
+                    "firstTry": 0,
+                    "roundFirsts": 0,
+                    "solveTimeTotalMs": 5000,
+                    "bestTimeMs": 5000,
+                    "pointsFromRounds": 3
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 39000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 38000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No hay una ronda activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,36000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "entryText": null,
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "ponyta",
+                  "name": "Ponyta",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/77.png"
+                },
+                "attemptedAt": 38000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 3,
+              "p2": 6,
+              "p3": 6
+            },
+            "roundStartedAt": 36000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "pokemon": {
+                "name": "Rapidash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
+                "generation": 1
+              },
+              "entry": {
+                "text": "Muy competitivo, este Pokémon perseguirá a todo lo que se mueva rápido e intentará salir airoso.",
+                "generation": 6,
+                "versionLabel": "Pokémon X"
+              },
+              "solves": {},
+              "attemptCounts": {
+                "p1": 1
+              }
+            },
+            "results": {
+              "winnerId": null,
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 2,
+                    "totalAttempts": 1,
+                    "firstTry": 1,
+                    "roundFirsts": 1,
+                    "solveTimeTotalMs": 4000,
+                    "bestTimeMs": 4000,
+                    "pointsFromRounds": 6
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 2,
+                    "totalAttempts": 1,
+                    "firstTry": 1,
+                    "roundFirsts": 1,
+                    "solveTimeTotalMs": 1000,
+                    "bestTimeMs": 1000,
+                    "pointsFromRounds": 6
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 2,
+                    "totalAttempts": 3,
+                    "firstTry": 0,
+                    "roundFirsts": 0,
+                    "solveTimeTotalMs": 5000,
+                    "bestTimeMs": 5000,
+                    "pointsFromRounds": 3
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 39000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 38000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": null,
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 6,
+          "won": true,
+          "stats": {
+            "correct": 1,
+            "missed": 2,
+            "totalAttempts": 1,
+            "firstTry": 1,
+            "roundFirsts": 1,
+            "solveTimeTotalMs": 4000,
+            "bestTimeMs": 4000,
+            "pointsFromRounds": 6
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 1,
+          "points": 6,
+          "won": true,
+          "stats": {
+            "correct": 1,
+            "missed": 2,
+            "totalAttempts": 1,
+            "firstTry": 1,
+            "roundFirsts": 1,
+            "solveTimeTotalMs": 1000,
+            "bestTimeMs": 1000,
+            "pointsFromRounds": 6
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 3,
+          "points": 3,
+          "won": false,
+          "stats": {
+            "correct": 1,
+            "missed": 2,
+            "totalAttempts": 3,
+            "firstTry": 0,
+            "roundFirsts": 0,
+            "solveTimeTotalMs": 5000,
+            "bestTimeMs": 5000,
+            "pointsFromRounds": 3
+          }
+        }
+      ]
+    }
+  }
+}

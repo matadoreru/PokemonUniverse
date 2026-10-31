@@ -1,0 +1,1581 @@
+{
+  "engineId": "pokedex-entry-guess",
+  "scenario": "historical-entries",
+  "seed": 12,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    }
+  ],
+  "config": {
+    "generations": [
+      7,
+      1,
+      7
+    ],
+    "roundSeconds": 15,
+    "rounds": 4,
+    "hintsEnabled": false,
+    "hints": {
+      "generation": false,
+      "type": false,
+      "evolution": false,
+      "typeCount": false,
+      "category": false
+    }
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "gengar"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "haunter"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "gengar"
+      },
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "gengar"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "timeout",
+      "now": 8000
+    },
+    {
+      "kind": "timeout",
+      "now": 22999
+    },
+    {
+      "kind": "timeout",
+      "now": 23000
+    },
+    {
+      "kind": "timeout",
+      "now": 27000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        }
+      ],
+      "now": 28000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "hypno"
+      },
+      "now": 29000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "drowzee"
+      },
+      "now": 30000
+    },
+    {
+      "kind": "timeout",
+      "now": 34000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "farfetchd"
+      },
+      "now": 35000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        }
+      ],
+      "now": 36000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "farfetchd"
+      },
+      "now": 37000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "farfetchd-galar"
+      },
+      "now": 37500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "farfetchd"
+      },
+      "now": 38000
+    },
+    {
+      "kind": "timeout",
+      "now": 42000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        7
+      ],
+      "roundSeconds": 15,
+      "rounds": 4,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": false,
+        "type": false,
+        "evolution": false,
+        "typeCount": false,
+        "category": false
+      }
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokedex-entry-guess",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 4,
+        "referenceGeneration": 7,
+        "entryText": null,
+        "hints": [],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p2": 0,
+          "p1": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p2": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 16000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokedex-entry-guess",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 4,
+        "referenceGeneration": 7,
+        "entryText": "Sentir un escalofrío repentino es señal de que hay un ??? cerca. Quien lo perciba puede convertirse en víctima de su maldición.",
+        "hints": [],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p2": 0,
+          "p1": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 16000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p2": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": "Sentir un escalofrío repentino es señal de que hay un ??? cerca. Quien lo perciba puede convertirse en víctima de su maldición.",
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p2": 0,
+              "p1": 4
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 2000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": "Sentir un escalofrío repentino es señal de que hay un ??? cerca. Quien lo perciba puede convertirse en víctima de su maldición.",
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "haunter",
+                  "name": "Haunter",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/93.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p2": 0,
+              "p1": 4
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 3000
+              }
+            },
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 2000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Espera 0.5s antes de volver a intentar.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": "Sentir un escalofrío repentino es señal de que hay un ??? cerca. Quien lo perciba puede convertirse en víctima de su maldición.",
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "haunter",
+                  "name": "Haunter",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/93.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p2": 0,
+              "p1": 4
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 3000
+              }
+            },
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 2000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": null,
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "haunter",
+                  "name": "Haunter",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/93.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p2": 2,
+              "p1": 4
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 8000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png",
+                "generation": 1
+              },
+              "entry": {
+                "text": "Sentir un escalofrío repentino es señal de que hay un Gengar cerca. Quien lo perciba puede convertirse en víctima de su maldición.",
+                "generation": 7,
+                "versionLabel": "Pokémon Let's Go, Eevee!"
+              },
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 2000,
+                  "elapsedMs": 1000,
+                  "points": 4,
+                  "attempts": 1
+                },
+                "p2": {
+                  "solveOrder": 2,
+                  "solvedAt": 4000,
+                  "elapsedMs": 3000,
+                  "points": 2,
+                  "attempts": 2
+                }
+              },
+              "attemptCounts": {
+                "p1": 1,
+                "p2": 2
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": 4000,
+              "roundPoints": 2,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 4000
+              }
+            },
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 2000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 23000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,8000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": "Es muy fuerte, a pesar de su pequeño tamaño. Su dominio de varias artes marciales lo convierte en un rival duro de pelar.",
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p2": 2,
+              "p1": 4
+            },
+            "roundStartedAt": 8000,
+            "roundEndsAt": 23000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 23000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,8000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": "Es muy fuerte, a pesar de su pequeño tamaño. Su dominio de varias artes marciales lo convierte en un rival duro de pelar.",
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p2": 2,
+              "p1": 4
+            },
+            "roundStartedAt": 8000,
+            "roundEndsAt": 23000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,8000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": null,
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p2": 2,
+              "p1": 4
+            },
+            "roundStartedAt": 8000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 27000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Machop",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                "generation": 1
+              },
+              "entry": {
+                "text": "Es muy fuerte, a pesar de su pequeño tamaño. Su dominio de varias artes marciales lo convierte en un rival duro de pelar.",
+                "generation": 7,
+                "versionLabel": "Pokémon Let's Go, Eevee!"
+              },
+              "solves": {},
+              "attemptCounts": {}
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,27000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": "Si se duerme siempre en compañía de un Pokémon de esta especie, puede mostrar sueños que haya ingerido con anterioridad.",
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p2": 2,
+              "p1": 4
+            },
+            "roundStartedAt": 27000,
+            "roundEndsAt": 42000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,27000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": "Si se duerme siempre en compañía de un Pokémon de esta especie, puede mostrar sueños que haya ingerido con anterioridad.",
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p2": 2,
+              "p1": 4
+            },
+            "roundStartedAt": 27000,
+            "roundEndsAt": 42000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,27000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": "Si se duerme siempre en compañía de un Pokémon de esta especie, puede mostrar sueños que haya ingerido con anterioridad.",
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "hypno",
+                  "name": "Hypno",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+                },
+                "attemptedAt": 29000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p2": 2,
+              "p1": 4
+            },
+            "roundStartedAt": 27000,
+            "roundEndsAt": 42000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 30000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 29000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 34000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,27000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": null,
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "hypno",
+                  "name": "Hypno",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+                },
+                "attemptedAt": 29000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p2": 2,
+              "p1": 8
+            },
+            "roundStartedAt": 27000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 34000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Drowzee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/96.png",
+                "generation": 1
+              },
+              "entry": {
+                "text": "Si se duerme siempre en compañía de un Pokémon de esta especie, puede mostrar sueños que haya ingerido con anterioridad.",
+                "generation": 7,
+                "versionLabel": "Pokémon Let's Go, Pikachu!"
+              },
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 30000,
+                  "elapsedMs": 3000,
+                  "points": 4,
+                  "attempts": 2
+                }
+              },
+              "attemptCounts": {
+                "p1": 2
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 30000,
+              "roundPoints": 4,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 30000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,34000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": "Vive cerca de cultivos de puerros. Como estos son cada vez más escasos, se cree que el número de ??? también ha disminuido.",
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p2": 2,
+              "p1": 8
+            },
+            "roundStartedAt": 34000,
+            "roundEndsAt": 49000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Estás observando esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,34000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": "Vive cerca de cultivos de puerros. Como estos son cada vez más escasos, se cree que el número de ??? también ha disminuido.",
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p2": 2,
+              "p1": 8
+            },
+            "roundStartedAt": 34000,
+            "roundEndsAt": 49000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,34000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": "Vive cerca de cultivos de puerros. Como estos son cada vez más escasos, se cree que el número de ??? también ha disminuido.",
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p2": 2,
+              "p1": 8
+            },
+            "roundStartedAt": 34000,
+            "roundEndsAt": 49000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,34000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": "Vive cerca de cultivos de puerros. Como estos son cada vez más escasos, se cree que el número de ??? también ha disminuido.",
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p2": 6,
+              "p1": 8
+            },
+            "roundStartedAt": 34000,
+            "roundEndsAt": 49000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 37000
+              }
+            },
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon no pertenece al pool configurado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,34000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": "Vive cerca de cultivos de puerros. Como estos son cada vez más escasos, se cree que el número de ??? también ha disminuido.",
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p2": 6,
+              "p1": 8
+            },
+            "roundStartedAt": 34000,
+            "roundEndsAt": 49000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 37000
+              }
+            },
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,34000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": null,
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p1",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p2": 6,
+              "p1": 10
+            },
+            "roundStartedAt": 34000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 42000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Farfetchd",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/83.png",
+                "generation": 1
+              },
+              "entry": {
+                "text": "Vive cerca de cultivos de puerros. Como estos son cada vez más escasos, se cree que el número de Farfetch’d también ha disminuido.",
+                "generation": 7,
+                "versionLabel": "Pokémon Let's Go, Eevee!"
+              },
+              "solves": {
+                "p2": {
+                  "solveOrder": 1,
+                  "solvedAt": 37000,
+                  "elapsedMs": 3000,
+                  "points": 4,
+                  "attempts": 1
+                },
+                "p1": {
+                  "solveOrder": 2,
+                  "solvedAt": 38000,
+                  "elapsedMs": 4000,
+                  "points": 2,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p2": 1,
+                "p1": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 37000
+              }
+            },
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 2,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 38000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",4,34000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-entry-guess",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "referenceGeneration": 7,
+            "entryText": null,
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p1",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p2": 6,
+              "p1": 10
+            },
+            "roundStartedAt": 34000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "pokemon": {
+                "name": "Farfetchd",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/83.png",
+                "generation": 1
+              },
+              "entry": {
+                "text": "Vive cerca de cultivos de puerros. Como estos son cada vez más escasos, se cree que el número de Farfetch’d también ha disminuido.",
+                "generation": 7,
+                "versionLabel": "Pokémon Let's Go, Eevee!"
+              },
+              "solves": {
+                "p2": {
+                  "solveOrder": 1,
+                  "solvedAt": 37000,
+                  "elapsedMs": 3000,
+                  "points": 4,
+                  "attempts": 1
+                },
+                "p1": {
+                  "solveOrder": 2,
+                  "solvedAt": 38000,
+                  "elapsedMs": 4000,
+                  "points": 2,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p2": 1,
+                "p1": 1
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 10,
+                  "won": true,
+                  "stats": {
+                    "correct": 3,
+                    "missed": 1,
+                    "totalAttempts": 4,
+                    "firstTry": 2,
+                    "roundFirsts": 2,
+                    "solveTimeTotalMs": 8000,
+                    "bestTimeMs": 1000,
+                    "pointsFromRounds": 10
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 6,
+                  "won": false,
+                  "stats": {
+                    "correct": 2,
+                    "missed": 2,
+                    "totalAttempts": 3,
+                    "firstTry": 1,
+                    "roundFirsts": 1,
+                    "solveTimeTotalMs": 6000,
+                    "bestTimeMs": 3000,
+                    "pointsFromRounds": 6
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 37000
+              }
+            },
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 2,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 38000
+              }
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 10,
+          "won": true,
+          "stats": {
+            "correct": 3,
+            "missed": 1,
+            "totalAttempts": 4,
+            "firstTry": 2,
+            "roundFirsts": 2,
+            "solveTimeTotalMs": 8000,
+            "bestTimeMs": 1000,
+            "pointsFromRounds": 10
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 6,
+          "won": false,
+          "stats": {
+            "correct": 2,
+            "missed": 2,
+            "totalAttempts": 3,
+            "firstTry": 1,
+            "roundFirsts": 1,
+            "solveTimeTotalMs": 6000,
+            "bestTimeMs": 3000,
+            "pointsFromRounds": 6
+          }
+        }
+      ]
+    }
+  }
+}
