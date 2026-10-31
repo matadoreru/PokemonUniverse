@@ -39,6 +39,12 @@ jobs:
           ts-oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           deploy: 'false'
 
+      # The promoted SHA is the image tag PRE runs (main.yml deploys :<sha> and
+      # retags unchanged images from :pre without rebuilding them, so the
+      # PU_COMMIT_SHA baked into an image can lag behind its tag). PU_COMMIT_SHA
+      # is only a fallback when the tag is not a SHA (e.g. a manual `:pre`).
+      # All three services must run the same tag: a half-deployed PRE is never
+      # promoted.
       - name: Read PRE server image
         id: resolve
         shell: bash
@@ -47,15 +53,35 @@ jobs:
           image_metadata=$(ssh -i "$HOME/.ssh/pokemon-universe" -p "$DEPLOY_PORT" \
             -o BatchMode=yes -o StrictHostKeyChecking=yes \
             "$DEPLOY_USER@$DEPLOY_HOST" \
-            "set -eu; cd '$DEPLOY_PATH'; container=\$(docker compose ps -q server); test -n \"\$container\"; docker inspect \"\$container\" --format '{{.Config.Image}}{{println}}{{range .Config.Env}}{{println .}}{{end}}'")
-          image_ref=$(printf '%s\n' "$image_metadata" | sed -n '1p')
-          image_sha=$(printf '%s\n' "$image_metadata" | sed -n 's/^PU_COMMIT_SHA=//p' | head -n 1)
+            "set -eu; cd '$DEPLOY_PATH'; for service in server web backend; do container=\$(docker compose ps -q \$service); test -n \"\$container\" || { echo \"PRE no tiene contenedor para \$service\" >&2; exit 1; }; docker inspect \"\$container\" --format \"image \$service {{.Config.Image}}\"; done; container=\$(docker compose ps -q server); docker inspect \"\$container\" --format '{{range .Config.Env}}{{println .}}{{end}}'")
+          image_ref=$(printf '%s\n' "$image_metadata" | sed -n 's/^image server //p')
+          web_ref=$(printf '%s\n' "$image_metadata" | sed -n 's/^image web //p')
+          backend_ref=$(printf '%s\n' "$image_metadata" | sed -n 's/^image backend //p')
+          image_tag=${image_ref##*:}
+          web_tag=${web_ref##*:}
+          backend_tag=${backend_ref##*:}
+          if [ -z "$image_ref" ] || [ -z "$web_ref" ] || [ -z "$backend_ref" ]; then
+            echo "No se pudo leer la imagen de server, web y backend en PRE" >&2
+            exit 1
+          fi
+          if [ "$image_tag" != "$web_tag" ] || [ "$image_tag" != "$backend_tag" ]; then
+            echo "PRE está a medio desplegar: server=$image_ref, web=$web_ref, backend=$backend_ref; no se promociona" >&2
+            exit 1
+          fi
+          if printf '%s' "$image_tag" | grep -Eq '^[0-9a-f]{40}$'; then
+            image_sha=$image_tag
+            source='tag de la imagen'
+          else
+            image_sha=$(printf '%s\n' "$image_metadata" | sed -n 's/^PU_COMMIT_SHA=//p' | head -n 1)
+            source="PU_COMMIT_SHA (el tag \`$image_tag\` no es un SHA)"
+          fi
           if ! printf '%s' "$image_sha" | grep -Eq '^[0-9a-f]{40}$'; then
             echo "PRE no expone un SHA de commit inmutable (imagen: $image_ref)" >&2
             exit 1
           fi
+          echo "SHA de PRE obtenido de: $source"
           echo "image_sha=$image_sha" >> "$GITHUB_OUTPUT"
-          echo "### Candidato de PRE: \`$image_sha\` (\`$image_ref\`)" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Candidato de PRE: \`$image_sha\` (\`$image_ref\`, origen: $source)" >> "$GITHUB_STEP_SUMMARY"
 
   deploy_production:
     name: Approve and deploy the PRE SHA to production

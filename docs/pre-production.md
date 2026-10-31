@@ -189,10 +189,14 @@ cd /srv/docker/pokemon-universe && docker compose ps
 
 El campo `commit` de `/api/health` debe coincidir en ambos entornos justo después de una promoción.
 
-El tag `pre` sirve para el arranque inicial y para inspección manual. La
-promoción obtiene el SHA inmutable incorporado en la imagen que PRE está
-ejecutando, incluso si un reinicio manual de Compose vuelve a mostrar el alias
-`:pre` en el nombre de la imagen.
+El tag `pre` sirve para el arranque inicial y para inspección manual. El SHA
+que se promociona es el **tag de imagen** que PRE está ejecutando (`:<SHA>`), no
+el `PU_COMMIT_SHA` incorporado en la imagen: `main.yml` reetiqueta sin
+recompilar las imágenes que no cambian, así que ese valor puede ser de un commit
+anterior. Solo si el tag no es un SHA (por ejemplo, un reinicio manual que
+vuelve a mostrar el alias `:pre`) se usa `PU_COMMIT_SHA` como respaldo, y el
+resumen del workflow indica qué origen se usó. Si `server`, `web` y `backend`
+no ejecutan el mismo tag, PRE está a medio desplegar y la promoción falla.
 
 ## 10. Rollback
 

@@ -38,6 +38,9 @@ En cada push a `main`, `.github/workflows/main.yml` detecta qué zonas cambiaron
 (no desde el push anterior; sin ninguno, construye todo), llama solo a los workflows afectados
 con `publish: true` y reetiqueta las imágenes no afectadas de `:pre` a `:<commit-sha>`, de modo que **cada SHA de `main`
 tiene las tres imágenes**. Después despliega ese SHA en PRE (ver [`docs/pre-production.md`](docs/pre-production.md)).
+La promoción a PRO (`promote-production.yml`) toma como SHA el tag de imagen que ejecuta PRE (las tres imágenes deben
+compartirlo); el `PU_COMMIT_SHA` incorporado en una imagen reetiquetada puede ser de un commit anterior y solo se usa
+como respaldo si el tag no es un SHA.
 Las imágenes son `linux/amd64` y `linux/arm64` con caché de Buildx en GitHub Actions (`type=gha`, un `scope` por imagen):
 
 ```text
