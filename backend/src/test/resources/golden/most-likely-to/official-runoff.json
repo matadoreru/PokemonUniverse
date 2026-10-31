@@ -1,0 +1,5201 @@
+{
+  "engineId": "most-likely-to",
+  "scenario": "official-runoff",
+  "seed": 711,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    },
+    {
+      "id": "p4",
+      "displayName": "Dani"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "rounds": 3,
+    "selectionSeconds": 15,
+    "votingSeconds": 15,
+    "promptSource": "OFFICIAL",
+    "includeForms": false
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 1500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p2"
+      },
+      "now": 1800
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "rattata-alola"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "missingno"
+      },
+      "now": 2100
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 2200
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "eevee"
+      },
+      "now": 2300
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "snorlax"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "psyduck"
+      },
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "gengar"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "mew"
+      },
+      "now": 4500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p1"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p9"
+      },
+      "now": 5100
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p2"
+      },
+      "now": 5500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p3"
+      },
+      "now": 5600
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p1"
+      },
+      "now": 6000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p2"
+      },
+      "now": 6500
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p1"
+      },
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p4"
+      },
+      "now": 7500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p1"
+      },
+      "now": 7600
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p2"
+      },
+      "now": 8000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p1"
+      },
+      "now": 8500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p1"
+      },
+      "now": 9000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p2"
+      },
+      "now": 22000
+    },
+    {
+      "kind": "timeout",
+      "now": 21999
+    },
+    {
+      "kind": "timeout",
+      "now": 22000
+    },
+    {
+      "kind": "timeout",
+      "now": 30000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "bulbasaur"
+      },
+      "now": 31000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "charmander"
+      },
+      "now": 45000
+    },
+    {
+      "kind": "timeout",
+      "now": 45000
+    },
+    {
+      "kind": "timeout",
+      "now": 53000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "jigglypuff"
+      },
+      "now": 54000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "meowth"
+      },
+      "now": 54500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "slowpoke"
+      },
+      "now": 55000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        },
+        {
+          "id": "p4",
+          "displayName": "Dani",
+          "connected": false
+        }
+      ],
+      "now": 56000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p2"
+      },
+      "now": 57000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p3"
+      },
+      "now": 57500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p1"
+      },
+      "now": 58000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p2"
+      },
+      "now": 58500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p1"
+      },
+      "now": 59000
+    },
+    {
+      "kind": "timeout",
+      "now": 73000
+    },
+    {
+      "kind": "timeout",
+      "now": 81000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "most-likely-to",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "prompt": "",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3",
+          "p4"
+        ],
+        "selectionCompletedIds": [],
+        "revealedAnswers": [],
+        "votedPlayerIds": [],
+        "voteCandidates": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0,
+          "p4": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSelect": false,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSelect": false,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSelect": false,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p4": {
+          "role": "PLAYER",
+          "canSelect": false,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 16000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "most-likely-to",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3",
+          "p4"
+        ],
+        "selectionCompletedIds": [],
+        "revealedAnswers": [],
+        "votedPlayerIds": [],
+        "voteCandidates": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0,
+          "p4": 0
+        },
+        "roundEndsAt": 16000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSelect": true,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSelect": true,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSelect": true,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p4": {
+          "role": "PLAYER",
+          "canSelect": true,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "No puedes participar en esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La votación no está activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon no pertenece al pool configurado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon no pertenece al pool configurado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "pikachu",
+                "name": "Pikachu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 19000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 19000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La selección ya ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 19000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 19000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No puedes votar tu propia respuesta.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 19000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 19000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Esa respuesta no es candidata en esta votación.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 19000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 19000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 19000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 19000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Tu voto ya está bloqueado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 19000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 19000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 19000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 19000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 19000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 19000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"REVOTE\",1,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "REVOTE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 22000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Esa respuesta no es candidata en esta votación.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"REVOTE\",1,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "REVOTE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 22000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No puedes votar tu propia respuesta.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"REVOTE\",1,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "REVOTE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 22000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"REVOTE\",1,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "REVOTE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 22000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"REVOTE\",1,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "REVOTE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 22000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"REVOTE\",1,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "REVOTE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 22000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo de votación ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"REVOTE\",1,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "REVOTE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 22000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"REVOTE\",1,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "REVOTE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "snorlax",
+                  "name": "Snorlax",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "psyduck",
+                  "name": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                }
+              },
+              {
+                "playerId": "p4",
+                "pokemon": {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 22000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 3,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 30000,
+            "lastRound": {
+              "prompt": "¿Qué Pokémon sería más probable que se riese en el peor momento?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "pokemon": {
+                    "id": "eevee",
+                    "name": "Eevee",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                  },
+                  "votesReceived": 2,
+                  "won": true
+                },
+                {
+                  "playerId": "p2",
+                  "pokemon": {
+                    "id": "snorlax",
+                    "name": "Snorlax",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                  },
+                  "votesReceived": 1,
+                  "won": false
+                },
+                {
+                  "playerId": "p3",
+                  "pokemon": {
+                    "id": "psyduck",
+                    "name": "Psyduck",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                  },
+                  "votesReceived": 0,
+                  "won": false
+                },
+                {
+                  "playerId": "p4",
+                  "pokemon": {
+                    "id": "gengar",
+                    "name": "Gengar",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                  },
+                  "votesReceived": 0,
+                  "won": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3",
+                    "p4"
+                  ],
+                  "votes": {
+                    "p1": "p2",
+                    "p2": "p1",
+                    "p3": "p2",
+                    "p4": "p1"
+                  }
+                },
+                {
+                  "number": 2,
+                  "candidateIds": [
+                    "p1",
+                    "p2"
+                  ],
+                  "votes": {
+                    "p1": "p2",
+                    "p2": "p1",
+                    "p3": "p1"
+                  }
+                }
+              ],
+              "winnerIds": [
+                "p1"
+              ],
+              "pointsAwarded": {
+                "p1": 3,
+                "p2": 0,
+                "p3": 0,
+                "p4": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "gengar",
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 45000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que pulsase un botón prohibido?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 3,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 45000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 45000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que pulsase un botón prohibido?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 3,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 45000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "bulbasaur",
+                "name": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 45000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que pulsase un botón prohibido?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 3,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 45000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "bulbasaur",
+                "name": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 53000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que pulsase un botón prohibido?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 6,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 53000,
+            "lastRound": {
+              "prompt": "¿Qué Pokémon sería más probable que pulsase un botón prohibido?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "pokemon": {
+                    "id": "bulbasaur",
+                    "name": "Bulbasaur",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                  },
+                  "votesReceived": 0,
+                  "won": true
+                }
+              ],
+              "voteRounds": [],
+              "winnerIds": [
+                "p1"
+              ],
+              "pointsAwarded": {
+                "p1": 3,
+                "p2": 0,
+                "p3": 0,
+                "p4": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "bulbasaur",
+                "name": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 68000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que protagonizase una película de acción?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 6,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 68000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 68000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que protagonizase una película de acción?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 6,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 68000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 68000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que protagonizase una película de acción?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 6,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 68000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "meowth",
+                "name": "Meowth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 68000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que protagonizase una película de acción?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 6,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 68000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "meowth",
+                "name": "Meowth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "slowpoke",
+                "name": "Slowpoke",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 71000,
+            "actionEpoch": "[\"VOTING\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que protagonizase una película de acción?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jigglypuff",
+                  "name": "Jigglypuff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "meowth",
+                  "name": "Meowth",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "slowpoke",
+                  "name": "Slowpoke",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 6,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 71000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "meowth",
+                "name": "Meowth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "slowpoke",
+                "name": "Slowpoke",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "SPECTATOR",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 71000,
+            "actionEpoch": "[\"VOTING\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que protagonizase una película de acción?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jigglypuff",
+                  "name": "Jigglypuff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "meowth",
+                  "name": "Meowth",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "slowpoke",
+                  "name": "Slowpoke",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 6,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 71000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "meowth",
+                "name": "Meowth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "slowpoke",
+                "name": "Slowpoke",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "SPECTATOR",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 71000,
+            "actionEpoch": "[\"VOTING\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que protagonizase una película de acción?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jigglypuff",
+                  "name": "Jigglypuff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "meowth",
+                  "name": "Meowth",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "slowpoke",
+                  "name": "Slowpoke",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 6,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 71000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "meowth",
+                "name": "Meowth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "slowpoke",
+                "name": "Slowpoke",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "SPECTATOR",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 73000,
+            "actionEpoch": "[\"REVOTE\",3,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "REVOTE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que protagonizase una película de acción?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jigglypuff",
+                  "name": "Jigglypuff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "meowth",
+                  "name": "Meowth",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "slowpoke",
+                  "name": "Slowpoke",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 6,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 73000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "meowth",
+                "name": "Meowth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "slowpoke",
+                "name": "Slowpoke",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "SPECTATOR",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 73000,
+            "actionEpoch": "[\"REVOTE\",3,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "REVOTE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que protagonizase una película de acción?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jigglypuff",
+                  "name": "Jigglypuff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "meowth",
+                  "name": "Meowth",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "slowpoke",
+                  "name": "Slowpoke",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 6,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 73000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "meowth",
+                "name": "Meowth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "slowpoke",
+                "name": "Slowpoke",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "SPECTATOR",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 73000,
+            "actionEpoch": "[\"REVOTE\",3,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "REVOTE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que protagonizase una película de acción?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jigglypuff",
+                  "name": "Jigglypuff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "meowth",
+                  "name": "Meowth",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "slowpoke",
+                  "name": "Slowpoke",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 6,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 73000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "meowth",
+                "name": "Meowth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "slowpoke",
+                "name": "Slowpoke",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "SPECTATOR",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 81000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que protagonizase una película de acción?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 9,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 81000,
+            "lastRound": {
+              "prompt": "¿Qué Pokémon sería más probable que protagonizase una película de acción?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "pokemon": {
+                    "id": "jigglypuff",
+                    "name": "Jigglypuff",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                  },
+                  "votesReceived": 1,
+                  "won": true
+                },
+                {
+                  "playerId": "p2",
+                  "pokemon": {
+                    "id": "meowth",
+                    "name": "Meowth",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+                  },
+                  "votesReceived": 1,
+                  "won": true
+                },
+                {
+                  "playerId": "p3",
+                  "pokemon": {
+                    "id": "slowpoke",
+                    "name": "Slowpoke",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+                  },
+                  "votesReceived": 0,
+                  "won": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p1": "p2",
+                    "p2": "p3",
+                    "p3": "p1"
+                  }
+                },
+                {
+                  "number": 2,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p1": "p2",
+                    "p2": "p1"
+                  }
+                }
+              ],
+              "winnerIds": [
+                "p1",
+                "p2"
+              ],
+              "pointsAwarded": {
+                "p1": 3,
+                "p2": 3,
+                "p3": 0,
+                "p4": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "meowth",
+                "name": "Meowth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "slowpoke",
+                "name": "Slowpoke",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "SPECTATOR",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que protagonizase una película de acción?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 9,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "prompt": "¿Qué Pokémon sería más probable que protagonizase una película de acción?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "pokemon": {
+                    "id": "jigglypuff",
+                    "name": "Jigglypuff",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                  },
+                  "votesReceived": 1,
+                  "won": true
+                },
+                {
+                  "playerId": "p2",
+                  "pokemon": {
+                    "id": "meowth",
+                    "name": "Meowth",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+                  },
+                  "votesReceived": 1,
+                  "won": true
+                },
+                {
+                  "playerId": "p3",
+                  "pokemon": {
+                    "id": "slowpoke",
+                    "name": "Slowpoke",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+                  },
+                  "votesReceived": 0,
+                  "won": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p1": "p2",
+                    "p2": "p3",
+                    "p3": "p1"
+                  }
+                },
+                {
+                  "number": 2,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p1": "p2",
+                    "p2": "p1"
+                  }
+                }
+              ],
+              "winnerIds": [
+                "p1",
+                "p2"
+              ],
+              "pointsAwarded": {
+                "p1": 3,
+                "p2": 3,
+                "p3": 0,
+                "p4": 0
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 9,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 3,
+                    "roundsMissed": 0,
+                    "votesCast": 4,
+                    "votesReceived": 3,
+                    "roundWins": 3,
+                    "soloWins": 2,
+                    "sharedWins": 1,
+                    "pointsFromRounds": 9
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 2,
+                    "roundsMissed": 1,
+                    "votesCast": 4,
+                    "votesReceived": 2,
+                    "roundWins": 1,
+                    "soloWins": 0,
+                    "sharedWins": 1,
+                    "pointsFromRounds": 3
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 2,
+                    "roundsMissed": 1,
+                    "votesCast": 3,
+                    "votesReceived": 0,
+                    "roundWins": 0,
+                    "soloWins": 0,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 0
+                  }
+                },
+                {
+                  "playerId": "p4",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 1,
+                    "roundsMissed": 2,
+                    "votesCast": 1,
+                    "votesReceived": 0,
+                    "roundWins": 0,
+                    "soloWins": 0,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "meowth",
+                "name": "Meowth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "slowpoke",
+                "name": "Slowpoke",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p4": {
+              "role": "SPECTATOR",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 9,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 3,
+            "roundsMissed": 0,
+            "votesCast": 4,
+            "votesReceived": 3,
+            "roundWins": 3,
+            "soloWins": 2,
+            "sharedWins": 1,
+            "pointsFromRounds": 9
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 3,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 2,
+            "roundsMissed": 1,
+            "votesCast": 4,
+            "votesReceived": 2,
+            "roundWins": 1,
+            "soloWins": 0,
+            "sharedWins": 1,
+            "pointsFromRounds": 3
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 2,
+            "roundsMissed": 1,
+            "votesCast": 3,
+            "votesReceived": 0,
+            "roundWins": 0,
+            "soloWins": 0,
+            "sharedWins": 0,
+            "pointsFromRounds": 0
+          }
+        },
+        {
+          "playerId": "p4",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 1,
+            "roundsMissed": 2,
+            "votesCast": 1,
+            "votesReceived": 0,
+            "roundWins": 0,
+            "soloWins": 0,
+            "sharedWins": 0,
+            "pointsFromRounds": 0
+          }
+        }
+      ]
+    }
+  }
+}

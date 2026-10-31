@@ -1,0 +1,354 @@
+[
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        9
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        9
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 1,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 1,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 10,
+      "selectionSeconds": 120,
+      "votingSeconds": 120,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 10,
+      "selectionSeconds": 120,
+      "votingSeconds": 120,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "CUSTOM",
+      "includeForms": true
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "CUSTOM",
+      "includeForms": true
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "BOTH",
+      "includeForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "BOTH",
+      "includeForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 0,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 11,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 14,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 121,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 14,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 121,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 30.5,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": "no"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "HOST",
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "includeForms": false,
+      "unknownKey": "no se admite"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "selectionSeconds": 15,
+      "votingSeconds": 15,
+      "promptSource": "OFFICIAL"
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]

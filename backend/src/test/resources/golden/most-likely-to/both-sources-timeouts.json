@@ -1,0 +1,2408 @@
+{
+  "engineId": "most-likely-to",
+  "scenario": "both-sources-timeouts",
+  "seed": 723,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "rounds": 4,
+    "selectionSeconds": 15,
+    "votingSeconds": 20,
+    "promptSource": "BOTH",
+    "includeForms": false
+  },
+  "hostCustomCategories": [
+    {
+      "id": "host-1",
+      "text": "¿Qué Pokémon sería más probable que se comiese tu bocadillo?"
+    },
+    {
+      "id": "host-2",
+      "text": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?"
+    }
+  ],
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "onix"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "abra"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "timeout",
+      "now": 16000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p3"
+      },
+      "now": 17000
+    },
+    {
+      "kind": "timeout",
+      "now": 36000
+    },
+    {
+      "kind": "timeout",
+      "now": 44000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "magikarp"
+      },
+      "now": 45000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "ditto"
+      },
+      "now": 46000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "muk"
+      },
+      "now": 47000
+    },
+    {
+      "kind": "timeout",
+      "now": 67000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p2"
+      },
+      "now": 68000
+    },
+    {
+      "kind": "timeout",
+      "now": 87000
+    },
+    {
+      "kind": "timeout",
+      "now": 95000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "zubat"
+      },
+      "now": 96000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "golbat"
+      },
+      "now": 97000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "golem"
+      },
+      "now": 98000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p2"
+      },
+      "now": 99000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p3"
+      },
+      "now": 100000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p2"
+      },
+      "now": 101000
+    },
+    {
+      "kind": "timeout",
+      "now": 109000
+    },
+    {
+      "kind": "timeout",
+      "now": 124000
+    },
+    {
+      "kind": "timeout",
+      "now": 132000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 4,
+      "selectionSeconds": 15,
+      "votingSeconds": 20,
+      "promptSource": "BOTH",
+      "includeForms": false
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "most-likely-to",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 4,
+        "prompt": "",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "selectionCompletedIds": [],
+        "revealedAnswers": [],
+        "votedPlayerIds": [],
+        "voteCandidates": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSelect": false,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSelect": false,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSelect": false,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 16000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "most-likely-to",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 4,
+        "prompt": "¿Qué Pokémon sería más probable que apareciese con un regalo inesperado?",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "selectionCompletedIds": [],
+        "revealedAnswers": [],
+        "votedPlayerIds": [],
+        "voteCandidates": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 16000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSelect": true,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSelect": true,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSelect": true,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que apareciese con un regalo inesperado?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "onix",
+                "name": "Onix",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que apareciese con un regalo inesperado?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "onix",
+                "name": "Onix",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "abra",
+                "name": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 36000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que apareciese con un regalo inesperado?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "onix",
+                  "name": "Onix",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "abra",
+                  "name": "Abra",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 36000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "onix",
+                "name": "Onix",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "abra",
+                "name": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 36000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que apareciese con un regalo inesperado?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "onix",
+                  "name": "Onix",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "abra",
+                  "name": "Abra",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 36000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "onix",
+                "name": "Onix",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": "p3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "abra",
+                "name": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 44000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que apareciese con un regalo inesperado?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 44000,
+            "lastRound": {
+              "prompt": "¿Qué Pokémon sería más probable que apareciese con un regalo inesperado?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "pokemon": {
+                    "id": "onix",
+                    "name": "Onix",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+                  },
+                  "votesReceived": 0,
+                  "won": false
+                },
+                {
+                  "playerId": "p3",
+                  "pokemon": {
+                    "id": "abra",
+                    "name": "Abra",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+                  },
+                  "votesReceived": 1,
+                  "won": true
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p2": "p3"
+                  }
+                }
+              ],
+              "winnerIds": [
+                "p3"
+              ],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 0,
+                "p3": 3
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "onix",
+                "name": "Onix",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": "p3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "abra",
+                "name": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 59000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que organizase el mejor viaje?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 3
+            },
+            "roundEndsAt": 59000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 59000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que organizase el mejor viaje?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 3
+            },
+            "roundEndsAt": 59000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "magikarp",
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 59000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que organizase el mejor viaje?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 3
+            },
+            "roundEndsAt": 59000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "magikarp",
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 67000,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que organizase el mejor viaje?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "magikarp",
+                  "name": "Magikarp",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "muk",
+                  "name": "Muk",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 3
+            },
+            "roundEndsAt": 67000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "magikarp",
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "muk",
+                "name": "Muk",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 87000,
+            "actionEpoch": "[\"REVOTE\",2,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "REVOTE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que organizase el mejor viaje?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "magikarp",
+                  "name": "Magikarp",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "muk",
+                  "name": "Muk",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 3
+            },
+            "roundEndsAt": 87000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "magikarp",
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "muk",
+                "name": "Muk",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 87000,
+            "actionEpoch": "[\"REVOTE\",2,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "REVOTE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que organizase el mejor viaje?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "magikarp",
+                  "name": "Magikarp",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "muk",
+                  "name": "Muk",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 3
+            },
+            "roundEndsAt": 87000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "magikarp",
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "muk",
+                "name": "Muk",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 95000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que organizase el mejor viaje?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 95000,
+            "lastRound": {
+              "prompt": "¿Qué Pokémon sería más probable que organizase el mejor viaje?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "pokemon": {
+                    "id": "magikarp",
+                    "name": "Magikarp",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+                  },
+                  "votesReceived": 0,
+                  "won": false
+                },
+                {
+                  "playerId": "p2",
+                  "pokemon": {
+                    "id": "ditto",
+                    "name": "Ditto",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                  },
+                  "votesReceived": 1,
+                  "won": true
+                },
+                {
+                  "playerId": "p3",
+                  "pokemon": {
+                    "id": "muk",
+                    "name": "Muk",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                  },
+                  "votesReceived": 0,
+                  "won": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {}
+                },
+                {
+                  "number": 2,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p1": "p2"
+                  }
+                }
+              ],
+              "winnerIds": [
+                "p2"
+              ],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 3,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "magikarp",
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "muk",
+                "name": "Muk",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 110000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": 110000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 110000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": 110000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "zubat",
+                "name": "Zubat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 110000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": 110000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "zubat",
+                "name": "Zubat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "golbat",
+                "name": "Golbat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/42.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 118000,
+            "actionEpoch": "[\"VOTING\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "zubat",
+                  "name": "Zubat",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "golbat",
+                  "name": "Golbat",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/42.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": 118000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "zubat",
+                "name": "Zubat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "golbat",
+                "name": "Golbat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/42.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "golem",
+                "name": "Golem",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 118000,
+            "actionEpoch": "[\"VOTING\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "zubat",
+                  "name": "Zubat",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "golbat",
+                  "name": "Golbat",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/42.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": 118000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "zubat",
+                "name": "Zubat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "golbat",
+                "name": "Golbat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/42.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "golem",
+                "name": "Golem",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 118000,
+            "actionEpoch": "[\"VOTING\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "zubat",
+                  "name": "Zubat",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "golbat",
+                  "name": "Golbat",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/42.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": 118000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "zubat",
+                "name": "Zubat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "golbat",
+                "name": "Golbat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/42.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "golem",
+                "name": "Golem",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 109000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 109000,
+            "lastRound": {
+              "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "pokemon": {
+                    "id": "zubat",
+                    "name": "Zubat",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+                  },
+                  "votesReceived": 0,
+                  "won": false
+                },
+                {
+                  "playerId": "p2",
+                  "pokemon": {
+                    "id": "golbat",
+                    "name": "Golbat",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/42.png"
+                  },
+                  "votesReceived": 2,
+                  "won": true
+                },
+                {
+                  "playerId": "p3",
+                  "pokemon": {
+                    "id": "golem",
+                    "name": "Golem",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                  },
+                  "votesReceived": 1,
+                  "won": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p1": "p2",
+                    "p2": "p3",
+                    "p3": "p2"
+                  }
+                }
+              ],
+              "winnerIds": [
+                "p2"
+              ],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 3,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "zubat",
+                "name": "Zubat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "golbat",
+                "name": "Golbat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/42.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "golem",
+                "name": "Golem",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 124000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que dominase el mundo?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 3
+            },
+            "roundEndsAt": 124000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 132000,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que dominase el mundo?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 132000,
+            "lastRound": {
+              "prompt": "¿Qué Pokémon sería más probable que dominase el mundo?",
+              "answers": [],
+              "voteRounds": [],
+              "winnerIds": [],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 0,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",4,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "prompt": "¿Qué Pokémon sería más probable que dominase el mundo?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "prompt": "¿Qué Pokémon sería más probable que dominase el mundo?",
+              "answers": [],
+              "voteRounds": [],
+              "winnerIds": [],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 0,
+                "p3": 0
+              }
+            },
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 4,
+                    "answersSubmitted": 2,
+                    "roundsMissed": 2,
+                    "votesCast": 2,
+                    "votesReceived": 3,
+                    "roundWins": 2,
+                    "soloWins": 2,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 6
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 4,
+                    "answersSubmitted": 3,
+                    "roundsMissed": 1,
+                    "votesCast": 1,
+                    "votesReceived": 2,
+                    "roundWins": 1,
+                    "soloWins": 1,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 3
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 4,
+                    "answersSubmitted": 3,
+                    "roundsMissed": 1,
+                    "votesCast": 2,
+                    "votesReceived": 0,
+                    "roundWins": 0,
+                    "soloWins": 0,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p2",
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 6,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 4,
+            "answersSubmitted": 2,
+            "roundsMissed": 2,
+            "votesCast": 2,
+            "votesReceived": 3,
+            "roundWins": 2,
+            "soloWins": 2,
+            "sharedWins": 0,
+            "pointsFromRounds": 6
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 2,
+          "points": 3,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 4,
+            "answersSubmitted": 3,
+            "roundsMissed": 1,
+            "votesCast": 1,
+            "votesReceived": 2,
+            "roundWins": 1,
+            "soloWins": 1,
+            "sharedWins": 0,
+            "pointsFromRounds": 3
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 4,
+            "answersSubmitted": 3,
+            "roundsMissed": 1,
+            "votesCast": 2,
+            "votesReceived": 0,
+            "roundWins": 0,
+            "soloWins": 0,
+            "sharedWins": 0,
+            "pointsFromRounds": 0
+          }
+        }
+      ]
+    }
+  }
+}

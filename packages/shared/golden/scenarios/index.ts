@@ -4,6 +4,7 @@ import type { MiniGameModule } from '../../dist/index.js';
 import type { GoldenScenario } from '../types.js';
 import { guessFromStatsScenarios } from './guess-from-stats.js';
 import { higherLowerScenarios } from './higher-lower.js';
+import { mostLikelyToScenarios } from './most-likely-to.js';
 import { pokeTabooScenarios } from './poke-taboo.js';
 import { pokeddleRaceScenarios } from './pokeddle-race.js';
 import { pokedexDistanceScenarios } from './pokedex-distance.js';
@@ -33,4 +34,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'pokemon-red-flag': pokemonRedFlagScenarios,
   'poke-taboo': pokeTabooScenarios,
   'would-you-rather': wouldYouRatherScenarios,
+  'most-likely-to': mostLikelyToScenarios,
 };

@@ -1,0 +1,1964 @@
+{
+  "engineId": "most-likely-to",
+  "scenario": "custom-categories-presence",
+  "seed": 713,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      2,
+      1,
+      2
+    ],
+    "rounds": 3,
+    "selectionSeconds": 120,
+    "votingSeconds": 15,
+    "promptSource": "CUSTOM",
+    "includeForms": true
+  },
+  "hostCustomCategories": [
+    {
+      "id": "host-1",
+      "text": "¿Qué Pokémon sería más probable que se comiese tu bocadillo?"
+    },
+    {
+      "id": "host-2",
+      "text": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?"
+    }
+  ],
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "raichu-alola"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "chikorita"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 3500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p2"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 6000
+    },
+    {
+      "kind": "timeout",
+      "now": 14000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 15000
+    },
+    {
+      "kind": "timeout",
+      "now": 134000
+    },
+    {
+      "kind": "timeout",
+      "now": 142000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "togepi"
+      },
+      "now": 143000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "lapras"
+      },
+      "now": 144000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "ditto"
+      },
+      "now": 145000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p1"
+      },
+      "now": 146000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p3"
+      },
+      "now": 147000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_ANSWER",
+        "playerId": "p1"
+      },
+      "now": 148000
+    },
+    {
+      "kind": "timeout",
+      "now": 156000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "rounds": 3,
+      "selectionSeconds": 120,
+      "votingSeconds": 15,
+      "promptSource": "CUSTOM",
+      "includeForms": true
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "most-likely-to",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "prompt": "",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "selectionCompletedIds": [],
+        "revealedAnswers": [],
+        "votedPlayerIds": [],
+        "voteCandidates": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSelect": false,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSelect": false,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSelect": false,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 121000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "most-likely-to",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "selectionCompletedIds": [],
+        "revealedAnswers": [],
+        "votedPlayerIds": [],
+        "voteCandidates": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 121000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSelect": true,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSelect": true,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSelect": true,
+          "ownChoice": null,
+          "canVote": false,
+          "ownVotePlayerId": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "chikorita",
+                "name": "Chikorita",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "chikorita",
+                "name": "Chikorita",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 19000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "raichu-alola",
+                  "name": "Raichu de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 19000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "chikorita",
+                "name": "Chikorita",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 19000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "raichu-alola",
+                  "name": "Raichu de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 19000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "chikorita",
+                "name": "Chikorita",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 14000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 14000,
+            "lastRound": {
+              "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "pokemon": {
+                    "id": "raichu-alola",
+                    "name": "Raichu de Alola",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                  },
+                  "votesReceived": 0,
+                  "won": false
+                },
+                {
+                  "playerId": "p2",
+                  "pokemon": {
+                    "id": "chikorita",
+                    "name": "Chikorita",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                  },
+                  "votesReceived": 1,
+                  "won": true
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p2"
+                  ],
+                  "votes": {
+                    "p1": "p2"
+                  }
+                }
+              ],
+              "winnerIds": [
+                "p2"
+              ],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 3,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 134000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se comiese tu bocadillo?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 134000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 134000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se comiese tu bocadillo?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 134000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 142000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que se comiese tu bocadillo?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 142000,
+            "lastRound": {
+              "prompt": "¿Qué Pokémon sería más probable que se comiese tu bocadillo?",
+              "answers": [],
+              "voteRounds": [],
+              "winnerIds": [],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 0,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 262000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 262000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 262000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 262000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 262000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 262000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": {
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": true,
+              "ownChoice": null,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 160000,
+            "actionEpoch": "[\"VOTING\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "togepi",
+                  "name": "Togepi",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "lapras",
+                  "name": "Lapras",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 160000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 160000,
+            "actionEpoch": "[\"VOTING\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "togepi",
+                  "name": "Togepi",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "lapras",
+                  "name": "Lapras",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p3"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 160000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 160000,
+            "actionEpoch": "[\"VOTING\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "VOTING",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "togepi",
+                  "name": "Togepi",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "lapras",
+                  "name": "Lapras",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p3",
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 160000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+              },
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 156000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 3,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 156000,
+            "lastRound": {
+              "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "pokemon": {
+                    "id": "togepi",
+                    "name": "Togepi",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                  },
+                  "votesReceived": 2,
+                  "won": true
+                },
+                {
+                  "playerId": "p2",
+                  "pokemon": {
+                    "id": "lapras",
+                    "name": "Lapras",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                  },
+                  "votesReceived": 0,
+                  "won": false
+                },
+                {
+                  "playerId": "p3",
+                  "pokemon": {
+                    "id": "ditto",
+                    "name": "Ditto",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                  },
+                  "votesReceived": 1,
+                  "won": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p3": "p1",
+                    "p1": "p3",
+                    "p2": "p1"
+                  }
+                }
+              ],
+              "winnerIds": [
+                "p1"
+              ],
+              "pointsAwarded": {
+                "p1": 3,
+                "p2": 0,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "most-likely-to",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 3,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "prompt": "¿Qué Pokémon sería más probable que perdiese las llaves de casa?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "pokemon": {
+                    "id": "togepi",
+                    "name": "Togepi",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                  },
+                  "votesReceived": 2,
+                  "won": true
+                },
+                {
+                  "playerId": "p2",
+                  "pokemon": {
+                    "id": "lapras",
+                    "name": "Lapras",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                  },
+                  "votesReceived": 0,
+                  "won": false
+                },
+                {
+                  "playerId": "p3",
+                  "pokemon": {
+                    "id": "ditto",
+                    "name": "Ditto",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                  },
+                  "votesReceived": 1,
+                  "won": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p3": "p1",
+                    "p1": "p3",
+                    "p2": "p1"
+                  }
+                }
+              ],
+              "winnerIds": [
+                "p1"
+              ],
+              "pointsAwarded": {
+                "p1": 3,
+                "p2": 0,
+                "p3": 0
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 3,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 2,
+                    "roundsMissed": 1,
+                    "votesCast": 2,
+                    "votesReceived": 2,
+                    "roundWins": 1,
+                    "soloWins": 1,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 3
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 2,
+                    "roundsMissed": 1,
+                    "votesCast": 1,
+                    "votesReceived": 1,
+                    "roundWins": 1,
+                    "soloWins": 1,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 3
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 1,
+                    "roundsMissed": 2,
+                    "votesCast": 1,
+                    "votesReceived": 1,
+                    "roundWins": 0,
+                    "soloWins": 0,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSelect": false,
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 3,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 2,
+            "roundsMissed": 1,
+            "votesCast": 2,
+            "votesReceived": 2,
+            "roundWins": 1,
+            "soloWins": 1,
+            "sharedWins": 0,
+            "pointsFromRounds": 3
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 3,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 2,
+            "roundsMissed": 1,
+            "votesCast": 1,
+            "votesReceived": 1,
+            "roundWins": 1,
+            "soloWins": 1,
+            "sharedWins": 0,
+            "pointsFromRounds": 3
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 1,
+            "roundsMissed": 2,
+            "votesCast": 1,
+            "votesReceived": 1,
+            "roundWins": 0,
+            "soloWins": 0,
+            "sharedWins": 0,
+            "pointsFromRounds": 0
+          }
+        }
+      ]
+    }
+  }
+}
