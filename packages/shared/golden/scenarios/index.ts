@@ -4,6 +4,7 @@ import type { MiniGameModule } from '../../dist/index.js';
 import type { GoldenScenario } from '../types.js';
 import { guessFromStatsScenarios } from './guess-from-stats.js';
 import { higherLowerScenarios } from './higher-lower.js';
+import { pokeddleRaceScenarios } from './pokeddle-race.js';
 import { pokedexDistanceScenarios } from './pokedex-distance.js';
 import { pokemonPaletteGuessScenarios } from './pokemon-palette-guess.js';
 import { pokemonTriviaScenarios } from './pokemon-trivia.js';
@@ -25,4 +26,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'pokemon-palette-guess': pokemonPaletteGuessScenarios,
   'type-duel': typeDuelScenarios,
   'type-chain': typeChainScenarios,
+  'pokeddle-race': pokeddleRaceScenarios,
 };

@@ -5,6 +5,7 @@ import es.pokemonuniverse.domain.game.GameRegistry;
 import es.pokemonuniverse.domain.game.engine.GameEngine;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsEngine;
 import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerEngine;
+import es.pokemonuniverse.domain.game.engines.pokeddlerace.PokeddleRaceEngine;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceEngine;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessEngine;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaEngine;
@@ -61,6 +62,7 @@ public class ClasspathGameRegistryLoader {
     engines.put(PokemonTriviaEngine.ID, new PokemonTriviaEngine(manifest(manifests, PokemonTriviaEngine.ID)));
     engines.put(TypeDuelEngine.ID, new TypeDuelEngine(manifest(manifests, TypeDuelEngine.ID)));
     engines.put(TypeChainEngine.ID, new TypeChainEngine(manifest(manifests, TypeChainEngine.ID)));
+    engines.put(PokeddleRaceEngine.ID, new PokeddleRaceEngine(manifest(manifests, PokeddleRaceEngine.ID)));
     return engines;
   }
 

@@ -1,0 +1,2416 @@
+{
+  "engineId": "pokeddle-race",
+  "scenario": "few-clues-two-players",
+  "seed": 614,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "roundSeconds": 60,
+    "maxRounds": 30,
+    "clues": {
+      "generation": false,
+      "dexNumber": false,
+      "types": true,
+      "typeCount": true,
+      "hp": false,
+      "attack": false,
+      "defense": false,
+      "specialAttack": false,
+      "specialDefense": false,
+      "speed": false,
+      "baseStatTotal": true,
+      "height": false,
+      "weight": false,
+      "evolutionStage": false,
+      "legendaryStatus": true,
+      "color": true,
+      "abilities": true
+    }
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "dragonair"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "seel"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "timeout",
+      "now": 6000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "lapras"
+      },
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "dragonite"
+      },
+      "now": 8000
+    },
+    {
+      "kind": "timeout",
+      "now": 11000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "dragonite"
+      },
+      "now": 12000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "dewgong"
+      },
+      "now": 13000
+    },
+    {
+      "kind": "timeout",
+      "now": 16000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 60,
+      "maxRounds": 30,
+      "clues": {
+        "generation": false,
+        "dexNumber": false,
+        "types": true,
+        "typeCount": true,
+        "hp": false,
+        "attack": false,
+        "defense": false,
+        "specialAttack": false,
+        "specialDefense": false,
+        "speed": false,
+        "baseStatTotal": true,
+        "height": false,
+        "weight": false,
+        "evolutionStage": false,
+        "legendaryStatus": true,
+        "color": true,
+        "abilities": true
+      }
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokeddle-race",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "maxRounds": 30,
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "answeredPlayerIds": [],
+        "activePlayerIds": [
+          "p1",
+          "p2"
+        ],
+        "boards": {
+          "p1": {
+            "playerId": "p1",
+            "rows": [],
+            "solved": false,
+            "solvedRound": null,
+            "solvedAt": null,
+            "validGuesses": 0,
+            "missedRounds": 0,
+            "revealedPokemon": null
+          },
+          "p2": {
+            "playerId": "p2",
+            "rows": [],
+            "solved": false,
+            "solvedRound": null,
+            "solvedAt": null,
+            "validGuesses": 0,
+            "missedRounds": 0,
+            "revealedPokemon": null
+          }
+        },
+        "enabledClues": [
+          "types",
+          "typeCount",
+          "baseStatTotal",
+          "legendaryStatus",
+          "color",
+          "abilities"
+        ],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "hasGuessedThisRound": false,
+          "solved": false
+        },
+        "p2": {
+          "canGuess": false,
+          "hasGuessedThisRound": false,
+          "solved": false
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 61000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokeddle-race",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "maxRounds": 30,
+        "roundStartedAt": 1000,
+        "roundEndsAt": 61000,
+        "nextTransitionAt": null,
+        "answeredPlayerIds": [],
+        "activePlayerIds": [
+          "p1",
+          "p2"
+        ],
+        "boards": {
+          "p1": {
+            "playerId": "p1",
+            "rows": [],
+            "solved": false,
+            "solvedRound": null,
+            "solvedAt": null,
+            "validGuesses": 0,
+            "missedRounds": 0,
+            "revealedPokemon": null
+          },
+          "p2": {
+            "playerId": "p2",
+            "rows": [],
+            "solved": false,
+            "solvedRound": null,
+            "solvedAt": null,
+            "validGuesses": 0,
+            "missedRounds": 0,
+            "revealedPokemon": null
+          }
+        },
+        "enabledClues": [
+          "types",
+          "typeCount",
+          "baseStatTotal",
+          "legendaryStatus",
+          "color",
+          "abilities"
+        ],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "hasGuessedThisRound": false,
+          "solved": false
+        },
+        "p2": {
+          "canGuess": true,
+          "hasGuessedThisRound": false,
+          "solved": false
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 61000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "maxRounds": 30,
+            "roundStartedAt": 1000,
+            "roundEndsAt": 61000,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [
+              "p1"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 0,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 0,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "types",
+              "typeCount",
+              "baseStatTotal",
+              "legendaryStatus",
+              "color",
+              "abilities"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p2": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "maxRounds": 30,
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 6000,
+            "answeredPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dragonair",
+                      "name": "Dragonair",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "dragon"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 420,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "blue",
+                        "result": "NONE"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Mudar",
+                          "Escama Especial"
+                        ],
+                        "result": "NONE",
+                        "matches": 0
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "seel",
+                      "name": "Seel",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 325,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "white",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Sebo",
+                          "Hidratación",
+                          "Gélido"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 3
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "types",
+              "typeCount",
+              "baseStatTotal",
+              "legendaryStatus",
+              "color",
+              "abilities"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p2": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 66000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,6000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "maxRounds": 30,
+            "roundStartedAt": 6000,
+            "roundEndsAt": 66000,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [],
+            "activePlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dragonair",
+                      "name": "Dragonair",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "dragon"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 420,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "blue",
+                        "result": "NONE"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Mudar",
+                          "Escama Especial"
+                        ],
+                        "result": "NONE",
+                        "matches": 0
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "seel",
+                      "name": "Seel",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 325,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "white",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Sebo",
+                          "Hidratación",
+                          "Gélido"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 3
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "types",
+              "typeCount",
+              "baseStatTotal",
+              "legendaryStatus",
+              "color",
+              "abilities"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            },
+            "p2": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 66000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,6000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "maxRounds": 30,
+            "roundStartedAt": 6000,
+            "roundEndsAt": 66000,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [
+              "p2"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dragonair",
+                      "name": "Dragonair",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "dragon"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 420,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "blue",
+                        "result": "NONE"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Mudar",
+                          "Escama Especial"
+                        ],
+                        "result": "NONE",
+                        "matches": 0
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "seel",
+                      "name": "Seel",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 325,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "white",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Sebo",
+                          "Hidratación",
+                          "Gélido"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 3
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "types",
+              "typeCount",
+              "baseStatTotal",
+              "legendaryStatus",
+              "color",
+              "abilities"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            },
+            "p2": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,6000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "maxRounds": 30,
+            "roundStartedAt": 6000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 11000,
+            "answeredPlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "activePlayerIds": [
+              "p2"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dragonair",
+                      "name": "Dragonair",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "dragon"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 420,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "blue",
+                        "result": "NONE"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Mudar",
+                          "Escama Especial"
+                        ],
+                        "result": "NONE",
+                        "matches": 0
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dragonite",
+                      "name": "Dragonite",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "dragon",
+                          "flying"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 600,
+                        "result": "MATCH"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "brown",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Fuerza Mental",
+                          "Multiescamas"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 2
+                      }
+                    },
+                    "correct": true,
+                    "submittedAt": 8000
+                  }
+                ],
+                "solved": true,
+                "solvedRound": 2,
+                "solvedAt": 8000,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": {
+                  "id": "dragonite",
+                  "name": "Dragonite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                }
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "seel",
+                      "name": "Seel",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 325,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "white",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Sebo",
+                          "Hidratación",
+                          "Gélido"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 3
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "lapras",
+                      "name": "Lapras",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water",
+                          "ice"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 535,
+                        "result": "LOWER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "blue",
+                        "result": "NONE"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Absorbe Agua",
+                          "Caparazón",
+                          "Hidratación"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 1
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 7000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "types",
+              "typeCount",
+              "baseStatTotal",
+              "legendaryStatus",
+              "color",
+              "abilities"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": true
+            },
+            "p2": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 71000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,11000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "maxRounds": 30,
+            "roundStartedAt": 11000,
+            "roundEndsAt": 71000,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [],
+            "activePlayerIds": [
+              "p2"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dragonair",
+                      "name": "Dragonair",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "dragon"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 420,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "blue",
+                        "result": "NONE"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Mudar",
+                          "Escama Especial"
+                        ],
+                        "result": "NONE",
+                        "matches": 0
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dragonite",
+                      "name": "Dragonite",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "dragon",
+                          "flying"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 600,
+                        "result": "MATCH"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "brown",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Fuerza Mental",
+                          "Multiescamas"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 2
+                      }
+                    },
+                    "correct": true,
+                    "submittedAt": 8000
+                  }
+                ],
+                "solved": true,
+                "solvedRound": 2,
+                "solvedAt": 8000,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": {
+                  "id": "dragonite",
+                  "name": "Dragonite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                }
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "seel",
+                      "name": "Seel",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 325,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "white",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Sebo",
+                          "Hidratación",
+                          "Gélido"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 3
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "lapras",
+                      "name": "Lapras",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water",
+                          "ice"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 535,
+                        "result": "LOWER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "blue",
+                        "result": "NONE"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Absorbe Agua",
+                          "Caparazón",
+                          "Hidratación"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 1
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 7000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "types",
+              "typeCount",
+              "baseStatTotal",
+              "legendaryStatus",
+              "color",
+              "abilities"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": false,
+              "solved": true
+            },
+            "p2": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ya has encontrado tu Pokémon.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 71000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,11000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "maxRounds": 30,
+            "roundStartedAt": 11000,
+            "roundEndsAt": 71000,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [],
+            "activePlayerIds": [
+              "p2"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dragonair",
+                      "name": "Dragonair",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "dragon"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 420,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "blue",
+                        "result": "NONE"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Mudar",
+                          "Escama Especial"
+                        ],
+                        "result": "NONE",
+                        "matches": 0
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dragonite",
+                      "name": "Dragonite",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "dragon",
+                          "flying"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 600,
+                        "result": "MATCH"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "brown",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Fuerza Mental",
+                          "Multiescamas"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 2
+                      }
+                    },
+                    "correct": true,
+                    "submittedAt": 8000
+                  }
+                ],
+                "solved": true,
+                "solvedRound": 2,
+                "solvedAt": 8000,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": {
+                  "id": "dragonite",
+                  "name": "Dragonite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                }
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "seel",
+                      "name": "Seel",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 325,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "white",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Sebo",
+                          "Hidratación",
+                          "Gélido"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 3
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "lapras",
+                      "name": "Lapras",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water",
+                          "ice"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 535,
+                        "result": "LOWER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "blue",
+                        "result": "NONE"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Absorbe Agua",
+                          "Caparazón",
+                          "Hidratación"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 1
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 7000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "types",
+              "typeCount",
+              "baseStatTotal",
+              "legendaryStatus",
+              "color",
+              "abilities"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": false,
+              "solved": true
+            },
+            "p2": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,11000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "maxRounds": 30,
+            "roundStartedAt": 11000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 16000,
+            "answeredPlayerIds": [
+              "p2"
+            ],
+            "activePlayerIds": [],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dragonair",
+                      "name": "Dragonair",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "dragon"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 420,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "blue",
+                        "result": "NONE"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Mudar",
+                          "Escama Especial"
+                        ],
+                        "result": "NONE",
+                        "matches": 0
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dragonite",
+                      "name": "Dragonite",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "dragon",
+                          "flying"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 600,
+                        "result": "MATCH"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "brown",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Fuerza Mental",
+                          "Multiescamas"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 2
+                      }
+                    },
+                    "correct": true,
+                    "submittedAt": 8000
+                  }
+                ],
+                "solved": true,
+                "solvedRound": 2,
+                "solvedAt": 8000,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": {
+                  "id": "dragonite",
+                  "name": "Dragonite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                }
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "seel",
+                      "name": "Seel",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 325,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "white",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Sebo",
+                          "Hidratación",
+                          "Gélido"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 3
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "lapras",
+                      "name": "Lapras",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water",
+                          "ice"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 535,
+                        "result": "LOWER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "blue",
+                        "result": "NONE"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Absorbe Agua",
+                          "Caparazón",
+                          "Hidratación"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 1
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 7000
+                  },
+                  {
+                    "round": 3,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dewgong",
+                      "name": "Dewgong",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/87.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water",
+                          "ice"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 475,
+                        "result": "MATCH"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "white",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Sebo",
+                          "Hidratación",
+                          "Gélido"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 3
+                      }
+                    },
+                    "correct": true,
+                    "submittedAt": 13000
+                  }
+                ],
+                "solved": true,
+                "solvedRound": 3,
+                "solvedAt": 13000,
+                "validGuesses": 3,
+                "missedRounds": 0,
+                "revealedPokemon": {
+                  "id": "dewgong",
+                  "name": "Dewgong",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/87.png"
+                }
+              }
+            },
+            "enabledClues": [
+              "types",
+              "typeCount",
+              "baseStatTotal",
+              "legendaryStatus",
+              "color",
+              "abilities"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": false,
+              "solved": true
+            },
+            "p2": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": true
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,11000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "maxRounds": 30,
+            "roundStartedAt": 11000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [
+              "p2"
+            ],
+            "activePlayerIds": [],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dragonair",
+                      "name": "Dragonair",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "dragon"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 420,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "blue",
+                        "result": "NONE"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Mudar",
+                          "Escama Especial"
+                        ],
+                        "result": "NONE",
+                        "matches": 0
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dragonite",
+                      "name": "Dragonite",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "dragon",
+                          "flying"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 600,
+                        "result": "MATCH"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "brown",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Fuerza Mental",
+                          "Multiescamas"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 2
+                      }
+                    },
+                    "correct": true,
+                    "submittedAt": 8000
+                  }
+                ],
+                "solved": true,
+                "solvedRound": 2,
+                "solvedAt": 8000,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": {
+                  "id": "dragonite",
+                  "name": "Dragonite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                }
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "seel",
+                      "name": "Seel",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 325,
+                        "result": "HIGHER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "white",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Sebo",
+                          "Hidratación",
+                          "Gélido"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 3
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "lapras",
+                      "name": "Lapras",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water",
+                          "ice"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 535,
+                        "result": "LOWER"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "blue",
+                        "result": "NONE"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Absorbe Agua",
+                          "Caparazón",
+                          "Hidratación"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 1
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 7000
+                  },
+                  {
+                    "round": 3,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "dewgong",
+                      "name": "Dewgong",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/87.png"
+                    },
+                    "feedback": {
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "water",
+                          "ice"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "baseStatTotal": {
+                        "kind": "NUMERIC",
+                        "value": 475,
+                        "result": "MATCH"
+                      },
+                      "legendaryStatus": {
+                        "kind": "CATEGORY",
+                        "value": "NORMAL",
+                        "result": "MATCH"
+                      },
+                      "color": {
+                        "kind": "CATEGORY",
+                        "value": "white",
+                        "result": "MATCH"
+                      },
+                      "abilities": {
+                        "kind": "ABILITIES",
+                        "value": [
+                          "Sebo",
+                          "Hidratación",
+                          "Gélido"
+                        ],
+                        "result": "PARTIAL",
+                        "matches": 3
+                      }
+                    },
+                    "correct": true,
+                    "submittedAt": 13000
+                  }
+                ],
+                "solved": true,
+                "solvedRound": 3,
+                "solvedAt": 13000,
+                "validGuesses": 3,
+                "missedRounds": 0,
+                "revealedPokemon": {
+                  "id": "dewgong",
+                  "name": "Dewgong",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/87.png"
+                }
+              }
+            },
+            "enabledClues": [
+              "types",
+              "typeCount",
+              "baseStatTotal",
+              "legendaryStatus",
+              "color",
+              "abilities"
+            ],
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 4,
+                  "won": true,
+                  "stats": {
+                    "resolved": 1,
+                    "unresolved": 0,
+                    "totalGuesses": 2,
+                    "guessesToSolveTotal": 2,
+                    "resolutionRoundsTotal": 2,
+                    "bestResolutionRounds": 2,
+                    "bestTimeMs": 7000,
+                    "missedRounds": 0,
+                    "roundsParticipated": 2
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "resolved": 1,
+                    "unresolved": 0,
+                    "totalGuesses": 3,
+                    "guessesToSolveTotal": 3,
+                    "resolutionRoundsTotal": 3,
+                    "bestResolutionRounds": 3,
+                    "bestTimeMs": 12000,
+                    "missedRounds": 0,
+                    "roundsParticipated": 3
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": false,
+              "solved": true
+            },
+            "p2": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": true
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 4,
+          "won": true,
+          "stats": {
+            "resolved": 1,
+            "unresolved": 0,
+            "totalGuesses": 2,
+            "guessesToSolveTotal": 2,
+            "resolutionRoundsTotal": 2,
+            "bestResolutionRounds": 2,
+            "bestTimeMs": 7000,
+            "missedRounds": 0,
+            "roundsParticipated": 2
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 2,
+          "won": false,
+          "stats": {
+            "resolved": 1,
+            "unresolved": 0,
+            "totalGuesses": 3,
+            "guessesToSolveTotal": 3,
+            "resolutionRoundsTotal": 3,
+            "bestResolutionRounds": 3,
+            "bestTimeMs": 12000,
+            "missedRounds": 0,
+            "roundsParticipated": 3
+          }
+        }
+      ]
+    }
+  }
+}

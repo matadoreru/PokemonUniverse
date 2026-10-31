@@ -1,0 +1,330 @@
+{
+  "engineId": "pokeddle-race",
+  "scenario": "invalid-action-stops",
+  "seed": 615,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "roundSeconds": 20,
+    "maxRounds": 10,
+    "clues": {
+      "generation": true,
+      "dexNumber": true,
+      "types": true,
+      "typeCount": true,
+      "hp": true,
+      "attack": true,
+      "defense": true,
+      "specialAttack": true,
+      "specialDefense": true,
+      "speed": true,
+      "baseStatTotal": false,
+      "height": true,
+      "weight": true,
+      "evolutionStage": true,
+      "legendaryStatus": false,
+      "color": false,
+      "abilities": false
+    }
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pikachu",
+        "extra": true
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 4000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokeddle-race",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "maxRounds": 10,
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "answeredPlayerIds": [],
+        "activePlayerIds": [
+          "p1",
+          "p2"
+        ],
+        "boards": {
+          "p1": {
+            "playerId": "p1",
+            "rows": [],
+            "solved": false,
+            "solvedRound": null,
+            "solvedAt": null,
+            "validGuesses": 0,
+            "missedRounds": 0,
+            "revealedPokemon": null
+          },
+          "p2": {
+            "playerId": "p2",
+            "rows": [],
+            "solved": false,
+            "solvedRound": null,
+            "solvedAt": null,
+            "validGuesses": 0,
+            "missedRounds": 0,
+            "revealedPokemon": null
+          }
+        },
+        "enabledClues": [
+          "generation",
+          "dexNumber",
+          "types",
+          "typeCount",
+          "hp",
+          "attack",
+          "defense",
+          "specialAttack",
+          "specialDefense",
+          "speed",
+          "height",
+          "weight",
+          "evolutionStage"
+        ],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "hasGuessedThisRound": false,
+          "solved": false
+        },
+        "p2": {
+          "canGuess": false,
+          "hasGuessedThisRound": false,
+          "solved": false
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokeddle-race",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "maxRounds": 10,
+        "roundStartedAt": 1000,
+        "roundEndsAt": 21000,
+        "nextTransitionAt": null,
+        "answeredPlayerIds": [],
+        "activePlayerIds": [
+          "p1",
+          "p2"
+        ],
+        "boards": {
+          "p1": {
+            "playerId": "p1",
+            "rows": [],
+            "solved": false,
+            "solvedRound": null,
+            "solvedAt": null,
+            "validGuesses": 0,
+            "missedRounds": 0,
+            "revealedPokemon": null
+          },
+          "p2": {
+            "playerId": "p2",
+            "rows": [],
+            "solved": false,
+            "solvedRound": null,
+            "solvedAt": null,
+            "validGuesses": 0,
+            "missedRounds": 0,
+            "revealedPokemon": null
+          }
+        },
+        "enabledClues": [
+          "generation",
+          "dexNumber",
+          "types",
+          "typeCount",
+          "hp",
+          "attack",
+          "defense",
+          "specialAttack",
+          "specialDefense",
+          "speed",
+          "height",
+          "weight",
+          "evolutionStage"
+        ],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "hasGuessedThisRound": false,
+          "solved": false
+        },
+        "p2": {
+          "canGuess": true,
+          "hasGuessedThisRound": false,
+          "solved": false
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "maxRounds": 10,
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [
+              "p1"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 0,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 0,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "generation",
+              "dexNumber",
+              "types",
+              "typeCount",
+              "hp",
+              "attack",
+              "defense",
+              "specialAttack",
+              "specialDefense",
+              "speed",
+              "height",
+              "weight",
+              "evolutionStage"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p2": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 1
+}

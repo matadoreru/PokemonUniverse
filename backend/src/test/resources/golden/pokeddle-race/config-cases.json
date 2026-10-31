@@ -1,0 +1,737 @@
+[
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        9
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        9
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 10,
+      "maxRounds": 1,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 10,
+      "maxRounds": 1,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 60,
+      "maxRounds": 30,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 60,
+      "maxRounds": 30,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": false,
+        "dexNumber": false,
+        "types": false,
+        "typeCount": false,
+        "hp": false,
+        "attack": false,
+        "defense": false,
+        "specialAttack": false,
+        "specialDefense": false,
+        "speed": false,
+        "baseStatTotal": false,
+        "height": false,
+        "weight": false,
+        "evolutionStage": false,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": false,
+        "dexNumber": false,
+        "types": false,
+        "typeCount": false,
+        "hp": false,
+        "attack": false,
+        "defense": false,
+        "specialAttack": false,
+        "specialDefense": false,
+        "speed": false,
+        "baseStatTotal": false,
+        "height": false,
+        "weight": false,
+        "evolutionStage": false,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": true,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": true,
+        "color": true,
+        "abilities": true,
+        "bogus": true
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": true,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": true,
+        "color": true,
+        "abilities": true
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 9,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 61,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 0,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 31,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20.5,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": true,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": true,
+        "abilities": true
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": true,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": true,
+        "color": "yes",
+        "abilities": true
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": null
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      },
+      "unknownKey": "no se admite"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]

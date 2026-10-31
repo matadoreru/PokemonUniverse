@@ -1,0 +1,4545 @@
+{
+  "engineId": "pokeddle-race",
+  "scenario": "default-clues-max-rounds",
+  "seed": 612,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2,
+      1
+    ],
+    "roundSeconds": 10,
+    "maxRounds": 3,
+    "clues": {
+      "generation": true,
+      "dexNumber": true,
+      "types": true,
+      "typeCount": true,
+      "hp": true,
+      "attack": true,
+      "defense": true,
+      "specialAttack": true,
+      "specialDefense": true,
+      "speed": true,
+      "baseStatTotal": false,
+      "height": true,
+      "weight": true,
+      "evolutionStage": true,
+      "legendaryStatus": false,
+      "color": false,
+      "abilities": false
+    }
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "magnemite"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "oddish"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "timeout",
+      "now": 11000
+    },
+    {
+      "kind": "timeout",
+      "now": 14000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "porygon"
+      },
+      "now": 15000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "vileplume"
+      },
+      "now": 16000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "scyther"
+      },
+      "now": 17000
+    },
+    {
+      "kind": "timeout",
+      "now": 20000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "bellossom"
+      },
+      "now": 21000
+    },
+    {
+      "kind": "timeout",
+      "now": 30000
+    },
+    {
+      "kind": "timeout",
+      "now": 33000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 10,
+      "maxRounds": 3,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokeddle-race",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "maxRounds": 3,
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "answeredPlayerIds": [],
+        "activePlayerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "boards": {
+          "p1": {
+            "playerId": "p1",
+            "rows": [],
+            "solved": false,
+            "solvedRound": null,
+            "solvedAt": null,
+            "validGuesses": 0,
+            "missedRounds": 0,
+            "revealedPokemon": null
+          },
+          "p2": {
+            "playerId": "p2",
+            "rows": [],
+            "solved": false,
+            "solvedRound": null,
+            "solvedAt": null,
+            "validGuesses": 0,
+            "missedRounds": 0,
+            "revealedPokemon": null
+          },
+          "p3": {
+            "playerId": "p3",
+            "rows": [],
+            "solved": false,
+            "solvedRound": null,
+            "solvedAt": null,
+            "validGuesses": 0,
+            "missedRounds": 0,
+            "revealedPokemon": null
+          }
+        },
+        "enabledClues": [
+          "generation",
+          "dexNumber",
+          "types",
+          "typeCount",
+          "hp",
+          "attack",
+          "defense",
+          "specialAttack",
+          "specialDefense",
+          "speed",
+          "height",
+          "weight",
+          "evolutionStage"
+        ],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "hasGuessedThisRound": false,
+          "solved": false
+        },
+        "p2": {
+          "canGuess": false,
+          "hasGuessedThisRound": false,
+          "solved": false
+        },
+        "p3": {
+          "canGuess": false,
+          "hasGuessedThisRound": false,
+          "solved": false
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 11000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokeddle-race",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "maxRounds": 3,
+        "roundStartedAt": 1000,
+        "roundEndsAt": 11000,
+        "nextTransitionAt": null,
+        "answeredPlayerIds": [],
+        "activePlayerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "boards": {
+          "p1": {
+            "playerId": "p1",
+            "rows": [],
+            "solved": false,
+            "solvedRound": null,
+            "solvedAt": null,
+            "validGuesses": 0,
+            "missedRounds": 0,
+            "revealedPokemon": null
+          },
+          "p2": {
+            "playerId": "p2",
+            "rows": [],
+            "solved": false,
+            "solvedRound": null,
+            "solvedAt": null,
+            "validGuesses": 0,
+            "missedRounds": 0,
+            "revealedPokemon": null
+          },
+          "p3": {
+            "playerId": "p3",
+            "rows": [],
+            "solved": false,
+            "solvedRound": null,
+            "solvedAt": null,
+            "validGuesses": 0,
+            "missedRounds": 0,
+            "revealedPokemon": null
+          }
+        },
+        "enabledClues": [
+          "generation",
+          "dexNumber",
+          "types",
+          "typeCount",
+          "hp",
+          "attack",
+          "defense",
+          "specialAttack",
+          "specialDefense",
+          "speed",
+          "height",
+          "weight",
+          "evolutionStage"
+        ],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "hasGuessedThisRound": false,
+          "solved": false
+        },
+        "p2": {
+          "canGuess": true,
+          "hasGuessedThisRound": false,
+          "solved": false
+        },
+        "p3": {
+          "canGuess": true,
+          "hasGuessedThisRound": false,
+          "solved": false
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "maxRounds": 3,
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [
+              "p1"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 0,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 0,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p3": {
+                "playerId": "p3",
+                "rows": [],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 0,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "generation",
+              "dexNumber",
+              "types",
+              "typeCount",
+              "hp",
+              "attack",
+              "defense",
+              "specialAttack",
+              "specialDefense",
+              "speed",
+              "height",
+              "weight",
+              "evolutionStage"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p2": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            },
+            "p3": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "maxRounds": 3,
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 0,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 0,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p3": {
+                "playerId": "p3",
+                "rows": [],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 0,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "generation",
+              "dexNumber",
+              "types",
+              "typeCount",
+              "hp",
+              "attack",
+              "defense",
+              "specialAttack",
+              "specialDefense",
+              "speed",
+              "height",
+              "weight",
+              "evolutionStage"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p2": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p3": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 14000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "maxRounds": 3,
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 14000,
+            "answeredPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "magnemite",
+                      "name": "Magnemite",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 81,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "electric",
+                          "steel"
+                        ],
+                        "result": "NONE"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "LOWER"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 25,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 35,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "MATCH"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 95,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 3,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 60,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "oddish",
+                      "name": "Oddish",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 43,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass",
+                          "poison"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "HIGHER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 65,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 30,
+                        "result": "HIGHER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 5,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 54,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "HIGHER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p3": {
+                "playerId": "p3",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "NO_GUESS",
+                    "guessedPokemon": null,
+                    "feedback": null,
+                    "correct": false,
+                    "submittedAt": null
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 0,
+                "missedRounds": 1,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "generation",
+              "dexNumber",
+              "types",
+              "typeCount",
+              "hp",
+              "attack",
+              "defense",
+              "specialAttack",
+              "specialDefense",
+              "speed",
+              "height",
+              "weight",
+              "evolutionStage"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p2": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p3": {
+              "canGuess": false,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,14000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "maxRounds": 3,
+            "roundStartedAt": 14000,
+            "roundEndsAt": 24000,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "magnemite",
+                      "name": "Magnemite",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 81,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "electric",
+                          "steel"
+                        ],
+                        "result": "NONE"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "LOWER"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 25,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 35,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "MATCH"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 95,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 3,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 60,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "oddish",
+                      "name": "Oddish",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 43,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass",
+                          "poison"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "HIGHER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 65,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 30,
+                        "result": "HIGHER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 5,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 54,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "HIGHER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p3": {
+                "playerId": "p3",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "NO_GUESS",
+                    "guessedPokemon": null,
+                    "feedback": null,
+                    "correct": false,
+                    "submittedAt": null
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 0,
+                "missedRounds": 1,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "generation",
+              "dexNumber",
+              "types",
+              "typeCount",
+              "hp",
+              "attack",
+              "defense",
+              "specialAttack",
+              "specialDefense",
+              "speed",
+              "height",
+              "weight",
+              "evolutionStage"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            },
+            "p2": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            },
+            "p3": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,14000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "maxRounds": 3,
+            "roundStartedAt": 14000,
+            "roundEndsAt": 24000,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [
+              "p1"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "magnemite",
+                      "name": "Magnemite",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 81,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "electric",
+                          "steel"
+                        ],
+                        "result": "NONE"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "LOWER"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 25,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 35,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "MATCH"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 95,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 3,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 60,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "oddish",
+                      "name": "Oddish",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 43,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass",
+                          "poison"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "HIGHER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 65,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 30,
+                        "result": "HIGHER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 5,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 54,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "HIGHER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p3": {
+                "playerId": "p3",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "NO_GUESS",
+                    "guessedPokemon": null,
+                    "feedback": null,
+                    "correct": false,
+                    "submittedAt": null
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 0,
+                "missedRounds": 1,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "generation",
+              "dexNumber",
+              "types",
+              "typeCount",
+              "hp",
+              "attack",
+              "defense",
+              "specialAttack",
+              "specialDefense",
+              "speed",
+              "height",
+              "weight",
+              "evolutionStage"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p2": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            },
+            "p3": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,14000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "maxRounds": 3,
+            "roundStartedAt": 14000,
+            "roundEndsAt": 24000,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "magnemite",
+                      "name": "Magnemite",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 81,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "electric",
+                          "steel"
+                        ],
+                        "result": "NONE"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "LOWER"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 25,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 35,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "MATCH"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 95,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 3,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 60,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "oddish",
+                      "name": "Oddish",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 43,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass",
+                          "poison"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "HIGHER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 65,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 30,
+                        "result": "HIGHER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 5,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 54,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "HIGHER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p3": {
+                "playerId": "p3",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "NO_GUESS",
+                    "guessedPokemon": null,
+                    "feedback": null,
+                    "correct": false,
+                    "submittedAt": null
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 0,
+                "missedRounds": 1,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "generation",
+              "dexNumber",
+              "types",
+              "typeCount",
+              "hp",
+              "attack",
+              "defense",
+              "specialAttack",
+              "specialDefense",
+              "speed",
+              "height",
+              "weight",
+              "evolutionStage"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p2": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p3": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 20000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,14000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "maxRounds": 3,
+            "roundStartedAt": 14000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 20000,
+            "answeredPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "magnemite",
+                      "name": "Magnemite",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 81,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "electric",
+                          "steel"
+                        ],
+                        "result": "NONE"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "LOWER"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 25,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 35,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "MATCH"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 95,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 3,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 60,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "porygon",
+                      "name": "Porygon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 137,
+                        "result": "MATCH"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "normal"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 65,
+                        "result": "MATCH"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 60,
+                        "result": "MATCH"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "MATCH"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 85,
+                        "result": "MATCH"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "MATCH"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 40,
+                        "result": "MATCH"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 8,
+                        "result": "MATCH"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 365,
+                        "result": "MATCH"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": true,
+                    "submittedAt": 15000
+                  }
+                ],
+                "solved": true,
+                "solvedRound": 2,
+                "solvedAt": 15000,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": {
+                  "id": "porygon",
+                  "name": "Porygon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
+                }
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "oddish",
+                      "name": "Oddish",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 43,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass",
+                          "poison"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "HIGHER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 65,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 30,
+                        "result": "HIGHER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 5,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 54,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "HIGHER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "vileplume",
+                      "name": "Vileplume",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "LOWER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass",
+                          "poison"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "LOWER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "LOWER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 85,
+                        "result": "LOWER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 110,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 90,
+                        "result": "LOWER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 12,
+                        "result": "LOWER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 186,
+                        "result": "LOWER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 3,
+                          "stages": 3
+                        },
+                        "result": "LOWER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 16000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p3": {
+                "playerId": "p3",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "NO_GUESS",
+                    "guessedPokemon": null,
+                    "feedback": null,
+                    "correct": false,
+                    "submittedAt": null
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "scyther",
+                      "name": "Scyther",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 123,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "bug",
+                          "flying"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 110,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "LOWER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 105,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 15,
+                        "result": "MATCH"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 560,
+                        "result": "LOWER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 2
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 17000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 1,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "generation",
+              "dexNumber",
+              "types",
+              "typeCount",
+              "hp",
+              "attack",
+              "defense",
+              "specialAttack",
+              "specialDefense",
+              "speed",
+              "height",
+              "weight",
+              "evolutionStage"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": true
+            },
+            "p2": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p3": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "maxRounds": 3,
+            "roundStartedAt": 20000,
+            "roundEndsAt": 30000,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [],
+            "activePlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "magnemite",
+                      "name": "Magnemite",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 81,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "electric",
+                          "steel"
+                        ],
+                        "result": "NONE"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "LOWER"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 25,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 35,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "MATCH"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 95,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 3,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 60,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "porygon",
+                      "name": "Porygon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 137,
+                        "result": "MATCH"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "normal"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 65,
+                        "result": "MATCH"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 60,
+                        "result": "MATCH"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "MATCH"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 85,
+                        "result": "MATCH"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "MATCH"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 40,
+                        "result": "MATCH"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 8,
+                        "result": "MATCH"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 365,
+                        "result": "MATCH"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": true,
+                    "submittedAt": 15000
+                  }
+                ],
+                "solved": true,
+                "solvedRound": 2,
+                "solvedAt": 15000,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": {
+                  "id": "porygon",
+                  "name": "Porygon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
+                }
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "oddish",
+                      "name": "Oddish",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 43,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass",
+                          "poison"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "HIGHER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 65,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 30,
+                        "result": "HIGHER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 5,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 54,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "HIGHER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "vileplume",
+                      "name": "Vileplume",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "LOWER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass",
+                          "poison"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "LOWER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "LOWER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 85,
+                        "result": "LOWER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 110,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 90,
+                        "result": "LOWER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 12,
+                        "result": "LOWER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 186,
+                        "result": "LOWER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 3,
+                          "stages": 3
+                        },
+                        "result": "LOWER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 16000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p3": {
+                "playerId": "p3",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "NO_GUESS",
+                    "guessedPokemon": null,
+                    "feedback": null,
+                    "correct": false,
+                    "submittedAt": null
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "scyther",
+                      "name": "Scyther",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 123,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "bug",
+                          "flying"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 110,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "LOWER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 105,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 15,
+                        "result": "MATCH"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 560,
+                        "result": "LOWER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 2
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 17000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 1,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "generation",
+              "dexNumber",
+              "types",
+              "typeCount",
+              "hp",
+              "attack",
+              "defense",
+              "specialAttack",
+              "specialDefense",
+              "speed",
+              "height",
+              "weight",
+              "evolutionStage"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": false,
+              "solved": true
+            },
+            "p2": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            },
+            "p3": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "maxRounds": 3,
+            "roundStartedAt": 20000,
+            "roundEndsAt": 30000,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [
+              "p2"
+            ],
+            "activePlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "magnemite",
+                      "name": "Magnemite",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 81,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "electric",
+                          "steel"
+                        ],
+                        "result": "NONE"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "LOWER"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 25,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 35,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "MATCH"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 95,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 3,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 60,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "porygon",
+                      "name": "Porygon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 137,
+                        "result": "MATCH"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "normal"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 65,
+                        "result": "MATCH"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 60,
+                        "result": "MATCH"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "MATCH"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 85,
+                        "result": "MATCH"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "MATCH"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 40,
+                        "result": "MATCH"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 8,
+                        "result": "MATCH"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 365,
+                        "result": "MATCH"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": true,
+                    "submittedAt": 15000
+                  }
+                ],
+                "solved": true,
+                "solvedRound": 2,
+                "solvedAt": 15000,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": {
+                  "id": "porygon",
+                  "name": "Porygon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
+                }
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "oddish",
+                      "name": "Oddish",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 43,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass",
+                          "poison"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "HIGHER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 65,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 30,
+                        "result": "HIGHER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 5,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 54,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "HIGHER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "vileplume",
+                      "name": "Vileplume",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "LOWER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass",
+                          "poison"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "LOWER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "LOWER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 85,
+                        "result": "LOWER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 110,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 90,
+                        "result": "LOWER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 12,
+                        "result": "LOWER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 186,
+                        "result": "LOWER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 3,
+                          "stages": 3
+                        },
+                        "result": "LOWER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 16000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p3": {
+                "playerId": "p3",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "NO_GUESS",
+                    "guessedPokemon": null,
+                    "feedback": null,
+                    "correct": false,
+                    "submittedAt": null
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "scyther",
+                      "name": "Scyther",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 123,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "bug",
+                          "flying"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 110,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "LOWER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 105,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 15,
+                        "result": "MATCH"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 560,
+                        "result": "LOWER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 2
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 17000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 1,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "generation",
+              "dexNumber",
+              "types",
+              "typeCount",
+              "hp",
+              "attack",
+              "defense",
+              "specialAttack",
+              "specialDefense",
+              "speed",
+              "height",
+              "weight",
+              "evolutionStage"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": false,
+              "solved": true
+            },
+            "p2": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p3": {
+              "canGuess": true,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 33000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "maxRounds": 3,
+            "roundStartedAt": 20000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 33000,
+            "answeredPlayerIds": [
+              "p2"
+            ],
+            "activePlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "magnemite",
+                      "name": "Magnemite",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 81,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "electric",
+                          "steel"
+                        ],
+                        "result": "NONE"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "LOWER"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 25,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 35,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "MATCH"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 95,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 3,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 60,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "porygon",
+                      "name": "Porygon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 137,
+                        "result": "MATCH"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "normal"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 65,
+                        "result": "MATCH"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 60,
+                        "result": "MATCH"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "MATCH"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 85,
+                        "result": "MATCH"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "MATCH"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 40,
+                        "result": "MATCH"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 8,
+                        "result": "MATCH"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 365,
+                        "result": "MATCH"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": true,
+                    "submittedAt": 15000
+                  }
+                ],
+                "solved": true,
+                "solvedRound": 2,
+                "solvedAt": 15000,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": {
+                  "id": "porygon",
+                  "name": "Porygon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
+                }
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "oddish",
+                      "name": "Oddish",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 43,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass",
+                          "poison"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "HIGHER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 65,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 30,
+                        "result": "HIGHER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 5,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 54,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "HIGHER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "vileplume",
+                      "name": "Vileplume",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "LOWER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass",
+                          "poison"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "LOWER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "LOWER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 85,
+                        "result": "LOWER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 110,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 90,
+                        "result": "LOWER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 12,
+                        "result": "LOWER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 186,
+                        "result": "LOWER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 3,
+                          "stages": 3
+                        },
+                        "result": "LOWER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 16000
+                  },
+                  {
+                    "round": 3,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "bellossom",
+                      "name": "Bellossom",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/182.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "LOWER"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 182,
+                        "result": "LOWER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "LOWER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "LOWER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 95,
+                        "result": "LOWER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 90,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 100,
+                        "result": "LOWER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 4,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 58,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 3,
+                          "stages": 3
+                        },
+                        "result": "LOWER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 21000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 3,
+                "missedRounds": 0,
+                "revealedPokemon": null
+              },
+              "p3": {
+                "playerId": "p3",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "NO_GUESS",
+                    "guessedPokemon": null,
+                    "feedback": null,
+                    "correct": false,
+                    "submittedAt": null
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "scyther",
+                      "name": "Scyther",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 123,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "bug",
+                          "flying"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 110,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "LOWER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 105,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 15,
+                        "result": "MATCH"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 560,
+                        "result": "LOWER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 2
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 17000
+                  },
+                  {
+                    "round": 3,
+                    "status": "NO_GUESS",
+                    "guessedPokemon": null,
+                    "feedback": null,
+                    "correct": false,
+                    "submittedAt": null
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 2,
+                "revealedPokemon": null
+              }
+            },
+            "enabledClues": [
+              "generation",
+              "dexNumber",
+              "types",
+              "typeCount",
+              "hp",
+              "attack",
+              "defense",
+              "specialAttack",
+              "specialDefense",
+              "speed",
+              "height",
+              "weight",
+              "evolutionStage"
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": false,
+              "solved": true
+            },
+            "p2": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p3": {
+              "canGuess": false,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokeddle-race",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "maxRounds": 3,
+            "roundStartedAt": 20000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "answeredPlayerIds": [
+              "p2"
+            ],
+            "activePlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "magnemite",
+                      "name": "Magnemite",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 81,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "electric",
+                          "steel"
+                        ],
+                        "result": "NONE"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "LOWER"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 25,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 35,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "MATCH"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 95,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 3,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 60,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 2000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "porygon",
+                      "name": "Porygon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 137,
+                        "result": "MATCH"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "normal"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 65,
+                        "result": "MATCH"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 60,
+                        "result": "MATCH"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "MATCH"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 85,
+                        "result": "MATCH"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "MATCH"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 40,
+                        "result": "MATCH"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 8,
+                        "result": "MATCH"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 365,
+                        "result": "MATCH"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": true,
+                    "submittedAt": 15000
+                  }
+                ],
+                "solved": true,
+                "solvedRound": 2,
+                "solvedAt": 15000,
+                "validGuesses": 2,
+                "missedRounds": 0,
+                "revealedPokemon": {
+                  "id": "porygon",
+                  "name": "Porygon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
+                }
+              },
+              "p2": {
+                "playerId": "p2",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "oddish",
+                      "name": "Oddish",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 43,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass",
+                          "poison"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "HIGHER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "HIGHER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 65,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 30,
+                        "result": "HIGHER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 5,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 54,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 3
+                        },
+                        "result": "HIGHER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 3000
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "vileplume",
+                      "name": "Vileplume",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "MATCH"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 45,
+                        "result": "LOWER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass",
+                          "poison"
+                        ],
+                        "result": "EXACT"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "LOWER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "LOWER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 85,
+                        "result": "LOWER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 110,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 90,
+                        "result": "LOWER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 12,
+                        "result": "LOWER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 186,
+                        "result": "LOWER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 3,
+                          "stages": 3
+                        },
+                        "result": "LOWER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 16000
+                  },
+                  {
+                    "round": 3,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "bellossom",
+                      "name": "Bellossom",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/182.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "LOWER"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 182,
+                        "result": "LOWER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "grass"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 75,
+                        "result": "LOWER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "LOWER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 95,
+                        "result": "LOWER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 90,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 100,
+                        "result": "LOWER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 50,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 4,
+                        "result": "HIGHER"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 58,
+                        "result": "HIGHER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 3,
+                          "stages": 3
+                        },
+                        "result": "LOWER"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 21000
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 3,
+                "missedRounds": 0,
+                "revealedPokemon": {
+                  "id": "gloom",
+                  "name": "Gloom",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+                }
+              },
+              "p3": {
+                "playerId": "p3",
+                "rows": [
+                  {
+                    "round": 1,
+                    "status": "NO_GUESS",
+                    "guessedPokemon": null,
+                    "feedback": null,
+                    "correct": false,
+                    "submittedAt": null
+                  },
+                  {
+                    "round": 2,
+                    "status": "GUESS",
+                    "guessedPokemon": {
+                      "id": "scyther",
+                      "name": "Scyther",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                    },
+                    "feedback": {
+                      "generation": {
+                        "kind": "NUMERIC",
+                        "value": 1,
+                        "result": "HIGHER"
+                      },
+                      "dexNumber": {
+                        "kind": "NUMERIC",
+                        "value": 123,
+                        "result": "HIGHER"
+                      },
+                      "types": {
+                        "kind": "TYPES",
+                        "value": [
+                          "bug",
+                          "flying"
+                        ],
+                        "result": "PARTIAL"
+                      },
+                      "typeCount": {
+                        "kind": "NUMERIC",
+                        "value": 2,
+                        "result": "MATCH"
+                      },
+                      "hp": {
+                        "kind": "NUMERIC",
+                        "value": 70,
+                        "result": "HIGHER"
+                      },
+                      "attack": {
+                        "kind": "NUMERIC",
+                        "value": 110,
+                        "result": "HIGHER"
+                      },
+                      "defense": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "LOWER"
+                      },
+                      "specialAttack": {
+                        "kind": "NUMERIC",
+                        "value": 55,
+                        "result": "LOWER"
+                      },
+                      "specialDefense": {
+                        "kind": "NUMERIC",
+                        "value": 80,
+                        "result": "HIGHER"
+                      },
+                      "speed": {
+                        "kind": "NUMERIC",
+                        "value": 105,
+                        "result": "LOWER"
+                      },
+                      "height": {
+                        "kind": "NUMERIC",
+                        "value": 15,
+                        "result": "MATCH"
+                      },
+                      "weight": {
+                        "kind": "NUMERIC",
+                        "value": 560,
+                        "result": "LOWER"
+                      },
+                      "evolutionStage": {
+                        "kind": "EVOLUTION",
+                        "value": {
+                          "stage": 1,
+                          "stages": 2
+                        },
+                        "result": "MATCH"
+                      }
+                    },
+                    "correct": false,
+                    "submittedAt": 17000
+                  },
+                  {
+                    "round": 3,
+                    "status": "NO_GUESS",
+                    "guessedPokemon": null,
+                    "feedback": null,
+                    "correct": false,
+                    "submittedAt": null
+                  }
+                ],
+                "solved": false,
+                "solvedRound": null,
+                "solvedAt": null,
+                "validGuesses": 1,
+                "missedRounds": 2,
+                "revealedPokemon": {
+                  "id": "heracross",
+                  "name": "Heracross",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png"
+                }
+              }
+            },
+            "enabledClues": [
+              "generation",
+              "dexNumber",
+              "types",
+              "typeCount",
+              "hp",
+              "attack",
+              "defense",
+              "specialAttack",
+              "specialDefense",
+              "speed",
+              "height",
+              "weight",
+              "evolutionStage"
+            ],
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "resolved": 1,
+                    "unresolved": 0,
+                    "totalGuesses": 2,
+                    "guessesToSolveTotal": 2,
+                    "resolutionRoundsTotal": 2,
+                    "bestResolutionRounds": 2,
+                    "bestTimeMs": 14000,
+                    "missedRounds": 0,
+                    "roundsParticipated": 2
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "resolved": 0,
+                    "unresolved": 1,
+                    "totalGuesses": 3,
+                    "guessesToSolveTotal": 0,
+                    "resolutionRoundsTotal": 0,
+                    "bestResolutionRounds": 0,
+                    "bestTimeMs": 0,
+                    "missedRounds": 0,
+                    "roundsParticipated": 3
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "resolved": 0,
+                    "unresolved": 1,
+                    "totalGuesses": 1,
+                    "guessesToSolveTotal": 0,
+                    "resolutionRoundsTotal": 0,
+                    "bestResolutionRounds": 0,
+                    "bestTimeMs": 0,
+                    "missedRounds": 2,
+                    "roundsParticipated": 3
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "hasGuessedThisRound": false,
+              "solved": true
+            },
+            "p2": {
+              "canGuess": false,
+              "hasGuessedThisRound": true,
+              "solved": false
+            },
+            "p3": {
+              "canGuess": false,
+              "hasGuessedThisRound": false,
+              "solved": false
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 6,
+          "won": true,
+          "stats": {
+            "resolved": 1,
+            "unresolved": 0,
+            "totalGuesses": 2,
+            "guessesToSolveTotal": 2,
+            "resolutionRoundsTotal": 2,
+            "bestResolutionRounds": 2,
+            "bestTimeMs": 14000,
+            "missedRounds": 0,
+            "roundsParticipated": 2
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "resolved": 0,
+            "unresolved": 1,
+            "totalGuesses": 3,
+            "guessesToSolveTotal": 0,
+            "resolutionRoundsTotal": 0,
+            "bestResolutionRounds": 0,
+            "bestTimeMs": 0,
+            "missedRounds": 0,
+            "roundsParticipated": 3
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "resolved": 0,
+            "unresolved": 1,
+            "totalGuesses": 1,
+            "guessesToSolveTotal": 0,
+            "resolutionRoundsTotal": 0,
+            "bestResolutionRounds": 0,
+            "bestTimeMs": 0,
+            "missedRounds": 2,
+            "roundsParticipated": 3
+          }
+        }
+      ]
+    }
+  }
+}
