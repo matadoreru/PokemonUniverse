@@ -27,6 +27,8 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
@@ -204,11 +206,74 @@ class RoomWebSocketTest {
     assertFalse(socket.closed.isDone());
   }
 
+  /**
+   * Cursores de {@code who-is-who-pokemon}: el canal del motor ({@code getCursorChannel}) solo existe en
+   * {@code TURN_ACTIVE} y para el propio equipo. Con tres jugadores BLUE tiene dos miembros y juega primero.
+   */
+  @Test
+  void relaysWhoIsWhoCursorsToTeammatesAndResetsThemWhenTheTurnEnds() {
+    var host = connect(user("ws_wiw_host", "Host"));
+    var second = connect(user("ws_wiw_second", "Second"));
+    var third = connect(user("ws_wiw_third", "Third"));
+    var code = host.command("room:create", "{}").get("data").get("room").get("code").getStringValue();
+    assertOk(second.command("room:join", "{\"code\":\"" + code + "\"}"));
+    assertOk(third.command("room:join", "{\"code\":\"" + code + "\"}"));
+    assertOk(second.command("room:set-ready", "{\"ready\":true}"));
+    assertOk(third.command("room:set-ready", "{\"ready\":true}"));
+    assertOk(host.command("room:select-game", "{\"gameId\":\"who-is-who-pokemon\"}"));
+    assertOk(host.command("room:start-game", null));
+
+    // Cada cliente consume hasta su vista TURN_ACTIVE: así descarta también el cursors-reset del arranque, y la vista
+    // del remitente trae la época con la que luego termina el turno (los cursores no la cambian).
+    var sockets = Map.of("ws_wiw_host", host, "ws_wiw_second", second, "ws_wiw_third", third);
+    var views = new HashMap<String, JsonNode>();
+    sockets.forEach((id, socket) ->
+        views.put(id, socket.awaitPush("room:state", state -> "TURN_ACTIVE".equals(gamePhase(state)))));
+    var view = views.get("ws_wiw_host");
+    var blue = view.get("game").get("teams").get("BLUE").get("playerIds");
+    var red = view.get("game").get("teams").get("RED").get("playerIds");
+    assertEquals(2, blue.size());
+    var sender = sockets.get(blue.get(0).getStringValue());
+    var teammate = sockets.get(blue.get(1).getStringValue());
+    var rival = sockets.get(red.get(0).getStringValue());
+    var senderId = blue.get(0).getStringValue();
+    var boardPokemonId = view.get("game").get("board").get(0).get("id").getStringValue();
+
+    var cursor = "{\"x\":0.25,\"y\":0.75,\"pokemonId\":\"" + boardPokemonId + "\",\"cardX\":0.5,\"cardY\":0.5}";
+    assertOk(sender.command("who-is-who:cursor", cursor));
+    var relayed = teammate.awaitPush("who-is-who:cursor", payload -> senderId.equals(text(payload, "playerId")));
+    assertEquals(boardPokemonId, text(relayed, "pokemonId"));
+    assertEquals(0.25, relayed.get("x").getDoubleValue());
+    assertEquals(0.5, relayed.get("cardY").getDoubleValue());
+    assertTrue(relayed.get("updatedAt").isNumber(), relayed.toString());
+
+    assertError("Ese Pokémon no está en el tablero.", sender.command("who-is-who:cursor",
+        "{\"x\":0.5,\"y\":0.5,\"pokemonId\":\"no-esta-en-el-tablero\",\"cardX\":0.5,\"cardY\":0.5}"));
+
+    assertOk(sender.command("who-is-who:cursor-clear", null));
+    teammate.awaitPush("who-is-who:cursor-clear", payload -> senderId.equals(text(payload, "playerId")));
+
+    // END_TURN cambia currentTeam y turnNumber: la época de acción cambia y el coordinador reinicia los cursores.
+    var senderView = views.get(senderId);
+    var endTurn = "{\"gameInstanceId\":\"" + senderView.get("gameSkipState").get("gameInstanceId").getStringValue()
+        + "\",\"actionEpoch\":" + quote(senderView.get("gameActionEpoch").getStringValue())
+        + ",\"action\":{\"type\":\"END_TURN\"}}";
+    assertOk(sender.command("game:action", endTurn));
+    for (var socket : List.of(sender, teammate, rival)) socket.awaitPush("who-is-who:cursors-reset", payload -> true);
+    assertTrue(rival.received.stream().noneMatch(message -> message.get("event") != null
+        && "who-is-who:cursor".equals(message.get("event").getStringValue())), "el equipo rival no ve los cursores");
+  }
+
   // ------------------------------------------------------------------------------------------------ utilidades
 
   private static String text(JsonNode node, String key) {
     var value = node.get(key);
     return value == null || !value.isString() ? "" : value.getStringValue();
+  }
+
+  private static String gamePhase(JsonNode view) {
+    var game = view.get("game");
+    return game == null || game.isNull() ? "" : text(game, "phase");
   }
 
   private static String presenceOf(JsonNode view, String playerId) {
