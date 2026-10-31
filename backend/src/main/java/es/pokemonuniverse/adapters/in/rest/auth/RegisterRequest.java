@@ -5,6 +5,7 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.Locale;
@@ -19,7 +20,7 @@ public record RegisterRequest(
         @Size(max = 254, message = "El email no puede superar los 254 caracteres")
         @Email(message = "El email no es válido")
         @Nullable String email,
-    @NotBlank(message = "La contraseña es obligatoria")
+    @NotNull(message = "La contraseña es obligatoria")
         @Size(min = 10, max = 128, message = "La contraseña debe tener entre 10 y 128 caracteres")
         @Nullable String password) {
 

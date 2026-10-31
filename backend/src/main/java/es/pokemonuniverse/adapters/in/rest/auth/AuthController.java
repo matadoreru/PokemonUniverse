@@ -48,12 +48,14 @@ public class AuthController {
   }
 
   @Post("/guest")
+  // `current` lo usará la Tarea 6 (limpieza del avatar de invitado).
   public HttpResponse<UserResponse> guest(@Body GuestRequest body, @Identity Optional<AuthUser> current) {
     var request = valid(body.normalized());
     return session(HttpResponse.created(new UserResponse(auth.guest(request.toCommand()))));
   }
 
   @Post("/logout")
+  // `current` lo usará la Tarea 6 (limpieza del avatar de invitado).
   public HttpResponse<Void> logout(@Identity Optional<AuthUser> current) {
     MutableHttpResponse<Void> response = HttpResponse.noContent();
     cookies.clear(response);

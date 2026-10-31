@@ -10,8 +10,10 @@ import es.pokemonuniverse.domain.identity.AvatarRef;
 import io.micronaut.data.exceptions.DataAccessException;
 import io.micronaut.http.HttpStatus;
 import jakarta.inject.Singleton;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -23,11 +25,13 @@ public class AuthService {
   private final UserRepository users;
   private final UserStatsRepository stats;
   private final PasswordHasher hasher;
+  private final EntityManager entityManager;
 
-  public AuthService(UserRepository users, UserStatsRepository stats, PasswordHasher hasher) {
+  public AuthService(UserRepository users, UserStatsRepository stats, PasswordHasher hasher, EntityManager entityManager) {
     this.users = users;
     this.stats = stats;
     this.hasher = hasher;
+    this.entityManager = entityManager;
   }
 
   @Transactional
@@ -36,14 +40,28 @@ public class AuthService {
       throw new ApiException(HttpStatus.CONFLICT, CONFLICT);
     }
     var user = UserEntity.create(UUID.randomUUID().toString(), cmd.username(), cmd.email(), hasher.hash(cmd.password()), Instant.now());
+    insert(user);
+    return UserIdentityMapper.identityFromUser(user);
+  }
+
+  /** Inserta usuario y estadísticas y los vuelca ya, para traducir aquí una carrera con la restricción única. */
+  void insert(UserEntity user) {
     try {
       users.save(user);
       stats.save(new UserStatsEntity(user.getId()));
+      entityManager.flush();
     } catch (DataAccessException | PersistenceException e) {
-      // Carrera entre dos registros: la restricción única de la base de datos gana.
-      throw new ApiException(HttpStatus.CONFLICT, CONFLICT);
+      if (isUniqueViolation(e)) throw new ApiException(HttpStatus.CONFLICT, CONFLICT);
+      throw e;
     }
-    return UserIdentityMapper.identityFromUser(user);
+  }
+
+  private static boolean isUniqueViolation(Throwable error) {
+    for (Throwable t = error; t != null; t = t.getCause()) {
+      if (t instanceof SQLException sql && "23505".equals(sql.getSQLState())) return true;
+      if (t.getCause() == t) break;
+    }
+    return false;
   }
 
   public AuthUser login(LoginCommand cmd) {

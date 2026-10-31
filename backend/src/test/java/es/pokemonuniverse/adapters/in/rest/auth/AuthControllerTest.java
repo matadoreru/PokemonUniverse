@@ -1,10 +1,13 @@
 package es.pokemonuniverse.adapters.in.rest.auth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import es.pokemonuniverse.adapters.out.persistence.UserRepository;
+import es.pokemonuniverse.adapters.out.persistence.UserStatsRepository;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
@@ -23,6 +26,8 @@ import org.junit.jupiter.api.Test;
 class AuthControllerTest {
 
   @Inject @Client("/") HttpClient client;
+  @Inject UserRepository users;
+  @Inject UserStatsRepository stats;
 
   private static String unique() {
     return UUID.randomUUID().toString().replace("-", "").substring(0, 12);
@@ -57,6 +62,8 @@ class AuthControllerTest {
     assertEquals("ana_" + u, user.get("displayName"));
     assertEquals("USER", user.get("kind"));
     assertEquals("USER", user.get("role"));
+    assertTrue(stats.existsById((String) user.get("id")));
+    assertTrue(users.findByEmail("ana" + u + "@mail.com").isPresent());
     assertEquals("DEFAULT", ((Map<String, Object>) user.get("avatar")).get("type"));
     String setCookie = res.getHeaders().getAll("Set-Cookie").stream()
         .filter(c -> c.startsWith("pu_session=")).findFirst().orElseThrow();
@@ -138,6 +145,8 @@ class AuthControllerTest {
     assertEquals(HttpStatus.CREATED, res.getStatus());
     var user = user(res);
     assertTrue(((String) user.get("id")).startsWith("guest_"));
+    assertFalse(users.existsById((String) user.get("id")));
+    assertFalse(stats.existsById((String) user.get("id")));
     assertEquals("GUEST", user.get("kind"));
     assertEquals(Map.of("type", "PRESET", "value", "trainer-berry"), user.get("avatar"));
     assertTrue(res.getHeaders().getAll("Set-Cookie").stream().anyMatch(c -> c.startsWith("pu_session=")));
@@ -177,5 +186,15 @@ class AuthControllerTest {
     var setCookie = res.getHeaders().getAll("Set-Cookie").stream()
         .filter(c -> c.startsWith("pu_session=")).findFirst().orElseThrow();
     assertTrue(setCookie.contains("Max-Age=0"), setCookie);
+  }
+
+  @Test
+  void longPasswordRegistersAndLogsIn() {
+    var u = unique();
+    var password = "p".repeat(100);
+    var res = post("/api/auth/register", Map.of("username", "ana_" + u, "email", "ana" + u + "@mail.com", "password", password));
+    assertEquals(HttpStatus.CREATED, res.getStatus());
+    var login = post("/api/auth/login", Map.of("email", "ana" + u + "@mail.com", "password", password));
+    assertEquals(HttpStatus.OK, login.getStatus());
   }
 }
