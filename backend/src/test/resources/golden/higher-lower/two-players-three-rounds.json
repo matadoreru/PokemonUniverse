@@ -1,0 +1,1392 @@
+{
+  "catalog": "gen1-2",
+  "config": {
+    "answerVisibility": "REVEAL",
+    "categories": [
+      "DEX_NUMBER",
+      "HP",
+      "ATTACK",
+      "DEFENSE",
+      "SPECIAL_ATTACK",
+      "SPECIAL_DEFENSE",
+      "SPEED",
+      "BASE_STAT_TOTAL"
+    ],
+    "difficulty": "NORMAL",
+    "generations": [
+      1,
+      2
+    ],
+    "roundSeconds": 20,
+    "rounds": 3,
+    "showPreviousValue": true
+  },
+  "engineId": "higher-lower",
+  "expected": {
+    "afterStart": {
+      "finished": false,
+      "lifecycle": {
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "nextDeadline": 21000,
+        "phase": "ROUND_ACTIVE",
+        "spectatorIds": []
+      },
+      "playerStates": {
+        "p1": {
+          "answer": null,
+          "canAnswer": true
+        },
+        "p2": {
+          "answer": null,
+          "canAnswer": true
+        }
+      },
+      "publicState": {
+        "answeredIds": [],
+        "answers": {},
+        "category": "SPECIAL_ATTACK",
+        "currentPokemon": {
+          "id": "psyduck",
+          "name": "Psyduck",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+          "value": null
+        },
+        "gameId": "higher-lower",
+        "lastRound": null,
+        "nextTransitionAt": null,
+        "phase": "ROUND_ACTIVE",
+        "playerIds": [
+          "p1",
+          "p2"
+        ],
+        "previousPokemon": {
+          "id": "magikarp",
+          "name": "Magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "value": 15
+        },
+        "results": null,
+        "roundEndsAt": 21000,
+        "roundNumber": 1,
+        "roundStartedAt": 1000,
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "streaks": {
+          "p1": 0,
+          "p2": 0
+        },
+        "totalRounds": 3
+      }
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "finished": false,
+          "lifecycle": {
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "nextDeadline": 21000,
+            "phase": "ROUND_ACTIVE",
+            "spectatorIds": []
+          },
+          "playerStates": {
+            "p1": {
+              "answer": {
+                "answeredAt": 3000,
+                "choice": "HIGHER"
+              },
+              "canAnswer": false
+            },
+            "p2": {
+              "answer": null,
+              "canAnswer": true
+            }
+          },
+          "publicState": {
+            "answeredIds": [
+              "p1"
+            ],
+            "answers": {},
+            "category": "SPECIAL_ATTACK",
+            "currentPokemon": {
+              "id": "psyduck",
+              "name": "Psyduck",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "value": null
+            },
+            "gameId": "higher-lower",
+            "lastRound": null,
+            "nextTransitionAt": null,
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "previousPokemon": {
+              "id": "magikarp",
+              "name": "Magikarp",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "value": 15
+            },
+            "results": null,
+            "roundEndsAt": 21000,
+            "roundNumber": 1,
+            "roundStartedAt": 1000,
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0
+            },
+            "totalRounds": 3
+          }
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Tu respuesta ya está bloqueada.",
+        "snapshot": {
+          "finished": false,
+          "lifecycle": {
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "nextDeadline": 21000,
+            "phase": "ROUND_ACTIVE",
+            "spectatorIds": []
+          },
+          "playerStates": {
+            "p1": {
+              "answer": {
+                "answeredAt": 3000,
+                "choice": "HIGHER"
+              },
+              "canAnswer": false
+            },
+            "p2": {
+              "answer": null,
+              "canAnswer": true
+            }
+          },
+          "publicState": {
+            "answeredIds": [
+              "p1"
+            ],
+            "answers": {},
+            "category": "SPECIAL_ATTACK",
+            "currentPokemon": {
+              "id": "psyduck",
+              "name": "Psyduck",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "value": null
+            },
+            "gameId": "higher-lower",
+            "lastRound": null,
+            "nextTransitionAt": null,
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "previousPokemon": {
+              "id": "magikarp",
+              "name": "Magikarp",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "value": 15
+            },
+            "results": null,
+            "roundEndsAt": 21000,
+            "roundNumber": 1,
+            "roundStartedAt": 1000,
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0
+            },
+            "totalRounds": 3
+          }
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No participas.",
+        "snapshot": {
+          "finished": false,
+          "lifecycle": {
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "nextDeadline": 21000,
+            "phase": "ROUND_ACTIVE",
+            "spectatorIds": []
+          },
+          "playerStates": {
+            "p1": {
+              "answer": {
+                "answeredAt": 3000,
+                "choice": "HIGHER"
+              },
+              "canAnswer": false
+            },
+            "p2": {
+              "answer": null,
+              "canAnswer": true
+            }
+          },
+          "publicState": {
+            "answeredIds": [
+              "p1"
+            ],
+            "answers": {},
+            "category": "SPECIAL_ATTACK",
+            "currentPokemon": {
+              "id": "psyduck",
+              "name": "Psyduck",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "value": null
+            },
+            "gameId": "higher-lower",
+            "lastRound": null,
+            "nextTransitionAt": null,
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "previousPokemon": {
+              "id": "magikarp",
+              "name": "Magikarp",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "value": 15
+            },
+            "results": null,
+            "roundEndsAt": 21000,
+            "roundNumber": 1,
+            "roundStartedAt": 1000,
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0
+            },
+            "totalRounds": 3
+          }
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "finished": false,
+          "lifecycle": {
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "nextDeadline": 8000,
+            "phase": "ROUND_RESULTS",
+            "spectatorIds": []
+          },
+          "playerStates": {
+            "p1": {
+              "answer": {
+                "answeredAt": 3000,
+                "choice": "HIGHER"
+              },
+              "canAnswer": false
+            },
+            "p2": {
+              "answer": {
+                "answeredAt": 5000,
+                "choice": "LOWER"
+              },
+              "canAnswer": false
+            }
+          },
+          "publicState": {
+            "answeredIds": [
+              "p1",
+              "p2"
+            ],
+            "answers": {
+              "p1": {
+                "answeredAt": 3000,
+                "choice": "HIGHER"
+              },
+              "p2": {
+                "answeredAt": 5000,
+                "choice": "LOWER"
+              }
+            },
+            "category": "SPECIAL_ATTACK",
+            "currentPokemon": {
+              "id": "psyduck",
+              "name": "Psyduck",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "value": 65
+            },
+            "gameId": "higher-lower",
+            "lastRound": {
+              "correctAnswer": "HIGHER",
+              "currentValue": 65,
+              "outcomes": {
+                "p1": {
+                  "awardedPoints": 1,
+                  "basePoints": 1,
+                  "choice": "HIGHER",
+                  "correct": true,
+                  "streak": 1,
+                  "streakBonus": 0
+                },
+                "p2": {
+                  "awardedPoints": 0,
+                  "basePoints": 0,
+                  "choice": "LOWER",
+                  "correct": false,
+                  "streak": 0,
+                  "streakBonus": 0
+                }
+              },
+              "previousValue": 15
+            },
+            "nextTransitionAt": 8000,
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "previousPokemon": {
+              "id": "magikarp",
+              "name": "Magikarp",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "value": 15
+            },
+            "results": null,
+            "roundEndsAt": null,
+            "roundNumber": 1,
+            "roundStartedAt": 1000,
+            "scores": {
+              "p1": 1,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 1,
+              "p2": 0
+            },
+            "totalRounds": 3
+          }
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La ronda no está activa.",
+        "snapshot": {
+          "finished": false,
+          "lifecycle": {
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "nextDeadline": 8000,
+            "phase": "ROUND_RESULTS",
+            "spectatorIds": []
+          },
+          "playerStates": {
+            "p1": {
+              "answer": {
+                "answeredAt": 3000,
+                "choice": "HIGHER"
+              },
+              "canAnswer": false
+            },
+            "p2": {
+              "answer": {
+                "answeredAt": 5000,
+                "choice": "LOWER"
+              },
+              "canAnswer": false
+            }
+          },
+          "publicState": {
+            "answeredIds": [
+              "p1",
+              "p2"
+            ],
+            "answers": {
+              "p1": {
+                "answeredAt": 3000,
+                "choice": "HIGHER"
+              },
+              "p2": {
+                "answeredAt": 5000,
+                "choice": "LOWER"
+              }
+            },
+            "category": "SPECIAL_ATTACK",
+            "currentPokemon": {
+              "id": "psyduck",
+              "name": "Psyduck",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "value": 65
+            },
+            "gameId": "higher-lower",
+            "lastRound": {
+              "correctAnswer": "HIGHER",
+              "currentValue": 65,
+              "outcomes": {
+                "p1": {
+                  "awardedPoints": 1,
+                  "basePoints": 1,
+                  "choice": "HIGHER",
+                  "correct": true,
+                  "streak": 1,
+                  "streakBonus": 0
+                },
+                "p2": {
+                  "awardedPoints": 0,
+                  "basePoints": 0,
+                  "choice": "LOWER",
+                  "correct": false,
+                  "streak": 0,
+                  "streakBonus": 0
+                }
+              },
+              "previousValue": 15
+            },
+            "nextTransitionAt": 8000,
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "previousPokemon": {
+              "id": "magikarp",
+              "name": "Magikarp",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "value": 15
+            },
+            "results": null,
+            "roundEndsAt": null,
+            "roundNumber": 1,
+            "roundStartedAt": 1000,
+            "scores": {
+              "p1": 1,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 1,
+              "p2": 0
+            },
+            "totalRounds": 3
+          }
+        }
+      },
+      {
+        "snapshot": {
+          "finished": false,
+          "lifecycle": {
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "nextDeadline": 8000,
+            "phase": "ROUND_RESULTS",
+            "spectatorIds": []
+          },
+          "playerStates": {
+            "p1": {
+              "answer": {
+                "answeredAt": 3000,
+                "choice": "HIGHER"
+              },
+              "canAnswer": false
+            },
+            "p2": {
+              "answer": {
+                "answeredAt": 5000,
+                "choice": "LOWER"
+              },
+              "canAnswer": false
+            }
+          },
+          "publicState": {
+            "answeredIds": [
+              "p1",
+              "p2"
+            ],
+            "answers": {
+              "p1": {
+                "answeredAt": 3000,
+                "choice": "HIGHER"
+              },
+              "p2": {
+                "answeredAt": 5000,
+                "choice": "LOWER"
+              }
+            },
+            "category": "SPECIAL_ATTACK",
+            "currentPokemon": {
+              "id": "psyduck",
+              "name": "Psyduck",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "value": 65
+            },
+            "gameId": "higher-lower",
+            "lastRound": {
+              "correctAnswer": "HIGHER",
+              "currentValue": 65,
+              "outcomes": {
+                "p1": {
+                  "awardedPoints": 1,
+                  "basePoints": 1,
+                  "choice": "HIGHER",
+                  "correct": true,
+                  "streak": 1,
+                  "streakBonus": 0
+                },
+                "p2": {
+                  "awardedPoints": 0,
+                  "basePoints": 0,
+                  "choice": "LOWER",
+                  "correct": false,
+                  "streak": 0,
+                  "streakBonus": 0
+                }
+              },
+              "previousValue": 15
+            },
+            "nextTransitionAt": 8000,
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "previousPokemon": {
+              "id": "magikarp",
+              "name": "Magikarp",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "value": 15
+            },
+            "results": null,
+            "roundEndsAt": null,
+            "roundNumber": 1,
+            "roundStartedAt": 1000,
+            "scores": {
+              "p1": 1,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 1,
+              "p2": 0
+            },
+            "totalRounds": 3
+          }
+        }
+      },
+      {
+        "snapshot": {
+          "finished": false,
+          "lifecycle": {
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,8000,null,null,null,null,null]",
+            "nextDeadline": 28000,
+            "phase": "ROUND_ACTIVE",
+            "spectatorIds": []
+          },
+          "playerStates": {
+            "p1": {
+              "answer": null,
+              "canAnswer": true
+            },
+            "p2": {
+              "answer": null,
+              "canAnswer": true
+            }
+          },
+          "publicState": {
+            "answeredIds": [],
+            "answers": {},
+            "category": "SPECIAL_ATTACK",
+            "currentPokemon": {
+              "id": "girafarig",
+              "name": "Girafarig",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "value": null
+            },
+            "gameId": "higher-lower",
+            "lastRound": null,
+            "nextTransitionAt": null,
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "previousPokemon": {
+              "id": "psyduck",
+              "name": "Psyduck",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "value": 65
+            },
+            "results": null,
+            "roundEndsAt": 28000,
+            "roundNumber": 2,
+            "roundStartedAt": 8000,
+            "scores": {
+              "p1": 1,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 1,
+              "p2": 0
+            },
+            "totalRounds": 3
+          }
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "finished": false,
+          "lifecycle": {
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,8000,null,null,null,null,null]",
+            "nextDeadline": 28000,
+            "phase": "ROUND_ACTIVE",
+            "spectatorIds": []
+          },
+          "playerStates": {
+            "p1": {
+              "answer": {
+                "answeredAt": 10000,
+                "choice": "SAME"
+              },
+              "canAnswer": false
+            },
+            "p2": {
+              "answer": null,
+              "canAnswer": true
+            }
+          },
+          "publicState": {
+            "answeredIds": [
+              "p1"
+            ],
+            "answers": {},
+            "category": "SPECIAL_ATTACK",
+            "currentPokemon": {
+              "id": "girafarig",
+              "name": "Girafarig",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "value": null
+            },
+            "gameId": "higher-lower",
+            "lastRound": null,
+            "nextTransitionAt": null,
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "previousPokemon": {
+              "id": "psyduck",
+              "name": "Psyduck",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "value": 65
+            },
+            "results": null,
+            "roundEndsAt": 28000,
+            "roundNumber": 2,
+            "roundStartedAt": 8000,
+            "scores": {
+              "p1": 1,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 1,
+              "p2": 0
+            },
+            "totalRounds": 3
+          }
+        }
+      },
+      {
+        "snapshot": {
+          "finished": false,
+          "lifecycle": {
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,8000,null,null,null,null,null]",
+            "nextDeadline": 28000,
+            "phase": "ROUND_ACTIVE",
+            "spectatorIds": []
+          },
+          "playerStates": {
+            "p1": {
+              "answer": {
+                "answeredAt": 10000,
+                "choice": "SAME"
+              },
+              "canAnswer": false
+            },
+            "p2": {
+              "answer": null,
+              "canAnswer": true
+            }
+          },
+          "publicState": {
+            "answeredIds": [
+              "p1"
+            ],
+            "answers": {},
+            "category": "SPECIAL_ATTACK",
+            "currentPokemon": {
+              "id": "girafarig",
+              "name": "Girafarig",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "value": null
+            },
+            "gameId": "higher-lower",
+            "lastRound": null,
+            "nextTransitionAt": null,
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "previousPokemon": {
+              "id": "psyduck",
+              "name": "Psyduck",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "value": 65
+            },
+            "results": null,
+            "roundEndsAt": 28000,
+            "roundNumber": 2,
+            "roundStartedAt": 8000,
+            "scores": {
+              "p1": 1,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 1,
+              "p2": 0
+            },
+            "totalRounds": 3
+          }
+        }
+      },
+      {
+        "snapshot": {
+          "finished": false,
+          "lifecycle": {
+            "actionEpoch": "[\"ROUND_RESULTS\",2,8000,null,null,null,null,null]",
+            "nextDeadline": 31000,
+            "phase": "ROUND_RESULTS",
+            "spectatorIds": []
+          },
+          "playerStates": {
+            "p1": {
+              "answer": {
+                "answeredAt": 10000,
+                "choice": "SAME"
+              },
+              "canAnswer": false
+            },
+            "p2": {
+              "answer": null,
+              "canAnswer": false
+            }
+          },
+          "publicState": {
+            "answeredIds": [
+              "p1"
+            ],
+            "answers": {
+              "p1": {
+                "answeredAt": 10000,
+                "choice": "SAME"
+              }
+            },
+            "category": "SPECIAL_ATTACK",
+            "currentPokemon": {
+              "id": "girafarig",
+              "name": "Girafarig",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "value": 90
+            },
+            "gameId": "higher-lower",
+            "lastRound": {
+              "correctAnswer": "HIGHER",
+              "currentValue": 90,
+              "outcomes": {
+                "p1": {
+                  "awardedPoints": 0,
+                  "basePoints": 0,
+                  "choice": "SAME",
+                  "correct": false,
+                  "streak": 0,
+                  "streakBonus": 0
+                },
+                "p2": {
+                  "awardedPoints": 0,
+                  "basePoints": 0,
+                  "choice": null,
+                  "correct": false,
+                  "streak": 0,
+                  "streakBonus": 0
+                }
+              },
+              "previousValue": 65
+            },
+            "nextTransitionAt": 31000,
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "previousPokemon": {
+              "id": "psyduck",
+              "name": "Psyduck",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "value": 65
+            },
+            "results": null,
+            "roundEndsAt": null,
+            "roundNumber": 2,
+            "roundStartedAt": 8000,
+            "scores": {
+              "p1": 1,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0
+            },
+            "totalRounds": 3
+          }
+        }
+      },
+      {
+        "snapshot": {
+          "finished": false,
+          "lifecycle": {
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,31000,null,null,null,null,null]",
+            "nextDeadline": 51000,
+            "phase": "ROUND_ACTIVE",
+            "spectatorIds": []
+          },
+          "playerStates": {
+            "p1": {
+              "answer": null,
+              "canAnswer": true
+            },
+            "p2": {
+              "answer": null,
+              "canAnswer": true
+            }
+          },
+          "publicState": {
+            "answeredIds": [],
+            "answers": {},
+            "category": "SPECIAL_ATTACK",
+            "currentPokemon": {
+              "id": "psyduck",
+              "name": "Psyduck",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "value": null
+            },
+            "gameId": "higher-lower",
+            "lastRound": null,
+            "nextTransitionAt": null,
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "previousPokemon": {
+              "id": "girafarig",
+              "name": "Girafarig",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "value": 90
+            },
+            "results": null,
+            "roundEndsAt": 51000,
+            "roundNumber": 3,
+            "roundStartedAt": 31000,
+            "scores": {
+              "p1": 1,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0
+            },
+            "totalRounds": 3
+          }
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "finished": false,
+          "lifecycle": {
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,31000,null,null,null,null,null]",
+            "nextDeadline": 51000,
+            "phase": "ROUND_ACTIVE",
+            "spectatorIds": []
+          },
+          "playerStates": {
+            "p1": {
+              "answer": null,
+              "canAnswer": true
+            },
+            "p2": {
+              "answer": null,
+              "canAnswer": true
+            }
+          },
+          "publicState": {
+            "answeredIds": [],
+            "answers": {},
+            "category": "SPECIAL_ATTACK",
+            "currentPokemon": {
+              "id": "psyduck",
+              "name": "Psyduck",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "value": null
+            },
+            "gameId": "higher-lower",
+            "lastRound": null,
+            "nextTransitionAt": null,
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "previousPokemon": {
+              "id": "girafarig",
+              "name": "Girafarig",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "value": 90
+            },
+            "results": null,
+            "roundEndsAt": 51000,
+            "roundNumber": 3,
+            "roundStartedAt": 31000,
+            "scores": {
+              "p1": 1,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0
+            },
+            "totalRounds": 3
+          }
+        }
+      },
+      {
+        "snapshot": {
+          "finished": false,
+          "lifecycle": {
+            "actionEpoch": "[\"ROUND_RESULTS\",3,31000,null,null,null,null,null]",
+            "nextDeadline": 54000,
+            "phase": "ROUND_RESULTS",
+            "spectatorIds": []
+          },
+          "playerStates": {
+            "p1": {
+              "answer": null,
+              "canAnswer": false
+            },
+            "p2": {
+              "answer": null,
+              "canAnswer": false
+            }
+          },
+          "publicState": {
+            "answeredIds": [],
+            "answers": {},
+            "category": "SPECIAL_ATTACK",
+            "currentPokemon": {
+              "id": "psyduck",
+              "name": "Psyduck",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "value": 65
+            },
+            "gameId": "higher-lower",
+            "lastRound": {
+              "correctAnswer": "LOWER",
+              "currentValue": 65,
+              "outcomes": {
+                "p1": {
+                  "awardedPoints": 0,
+                  "basePoints": 0,
+                  "choice": null,
+                  "correct": false,
+                  "streak": 0,
+                  "streakBonus": 0
+                },
+                "p2": {
+                  "awardedPoints": 0,
+                  "basePoints": 0,
+                  "choice": null,
+                  "correct": false,
+                  "streak": 0,
+                  "streakBonus": 0
+                }
+              },
+              "previousValue": 90
+            },
+            "nextTransitionAt": 54000,
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "previousPokemon": {
+              "id": "girafarig",
+              "name": "Girafarig",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "value": 90
+            },
+            "results": null,
+            "roundEndsAt": null,
+            "roundNumber": 3,
+            "roundStartedAt": 31000,
+            "scores": {
+              "p1": 1,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0
+            },
+            "totalRounds": 3
+          }
+        }
+      },
+      {
+        "snapshot": {
+          "finished": true,
+          "lifecycle": {
+            "actionEpoch": "[\"GAME_RESULTS\",3,31000,null,null,null,null,null]",
+            "nextDeadline": null,
+            "phase": "GAME_RESULTS",
+            "spectatorIds": []
+          },
+          "playerStates": {
+            "p1": {
+              "answer": null,
+              "canAnswer": false
+            },
+            "p2": {
+              "answer": null,
+              "canAnswer": false
+            }
+          },
+          "publicState": {
+            "answeredIds": [],
+            "answers": {},
+            "category": "SPECIAL_ATTACK",
+            "currentPokemon": {
+              "id": "psyduck",
+              "name": "Psyduck",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "value": 65
+            },
+            "gameId": "higher-lower",
+            "lastRound": {
+              "correctAnswer": "LOWER",
+              "currentValue": 65,
+              "outcomes": {
+                "p1": {
+                  "awardedPoints": 0,
+                  "basePoints": 0,
+                  "choice": null,
+                  "correct": false,
+                  "streak": 0,
+                  "streakBonus": 0
+                },
+                "p2": {
+                  "awardedPoints": 0,
+                  "basePoints": 0,
+                  "choice": null,
+                  "correct": false,
+                  "streak": 0,
+                  "streakBonus": 0
+                }
+              },
+              "previousValue": 90
+            },
+            "nextTransitionAt": null,
+            "phase": "GAME_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "previousPokemon": {
+              "id": "girafarig",
+              "name": "Girafarig",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "value": 90
+            },
+            "results": {
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "points": 1,
+                  "position": 1,
+                  "stats": {
+                    "accuracy": 33,
+                    "answered": 2,
+                    "bestStreak": 1,
+                    "correct": 1,
+                    "incorrect": 2,
+                    "sameCorrect": 0
+                  },
+                  "won": true
+                },
+                {
+                  "playerId": "p2",
+                  "points": 0,
+                  "position": 2,
+                  "stats": {
+                    "accuracy": 0,
+                    "answered": 1,
+                    "bestStreak": 0,
+                    "correct": 0,
+                    "incorrect": 3,
+                    "sameCorrect": 0
+                  },
+                  "won": false
+                }
+              ],
+              "winnerId": "p1"
+            },
+            "roundEndsAt": null,
+            "roundNumber": 3,
+            "roundStartedAt": 31000,
+            "scores": {
+              "p1": 1,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0
+            },
+            "totalRounds": 3
+          }
+        }
+      }
+    ],
+    "configNormalized": {
+      "answerVisibility": "REVEAL",
+      "categories": [
+        "DEX_NUMBER",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BASE_STAT_TOTAL"
+      ],
+      "difficulty": "NORMAL",
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "showPreviousValue": true
+    },
+    "initial": {
+      "finished": false,
+      "lifecycle": {
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "nextDeadline": null,
+        "phase": "GAME_STARTING",
+        "spectatorIds": []
+      },
+      "playerStates": {
+        "p1": {
+          "answer": null,
+          "canAnswer": false
+        },
+        "p2": {
+          "answer": null,
+          "canAnswer": false
+        }
+      },
+      "publicState": {
+        "answeredIds": [],
+        "answers": {},
+        "category": "DEX_NUMBER",
+        "currentPokemon": {
+          "id": "magikarp",
+          "name": "Magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "value": null
+        },
+        "gameId": "higher-lower",
+        "lastRound": null,
+        "nextTransitionAt": null,
+        "phase": "GAME_STARTING",
+        "playerIds": [
+          "p1",
+          "p2"
+        ],
+        "previousPokemon": {
+          "id": "magikarp",
+          "name": "Magikarp",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "value": 129
+        },
+        "results": null,
+        "roundEndsAt": null,
+        "roundNumber": 0,
+        "roundStartedAt": null,
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "streaks": {
+          "p1": 0,
+          "p2": 0
+        },
+        "totalRounds": 3
+      }
+    },
+    "results": {
+      "standings": [
+        {
+          "playerId": "p1",
+          "points": 1,
+          "position": 1,
+          "stats": {
+            "accuracy": 33,
+            "answered": 2,
+            "bestStreak": 1,
+            "correct": 1,
+            "incorrect": 2,
+            "sameCorrect": 0
+          },
+          "won": true
+        },
+        {
+          "playerId": "p2",
+          "points": 0,
+          "position": 2,
+          "stats": {
+            "accuracy": 0,
+            "answered": 1,
+            "bestStreak": 0,
+            "correct": 0,
+            "incorrect": 3,
+            "sameCorrect": 0
+          },
+          "won": false
+        }
+      ],
+      "winnerId": "p1"
+    }
+  },
+  "players": [
+    {
+      "displayName": "Ana",
+      "id": "p1"
+    },
+    {
+      "displayName": "Bruno",
+      "id": "p2"
+    }
+  ],
+  "scenario": "two-players-three-rounds",
+  "seed": 11,
+  "steps": [
+    {
+      "action": {
+        "choice": "HIGHER",
+        "type": "ANSWER"
+      },
+      "kind": "action",
+      "now": 3000,
+      "playerId": "p1"
+    },
+    {
+      "action": {
+        "choice": "LOWER",
+        "type": "ANSWER"
+      },
+      "kind": "action",
+      "now": 3500,
+      "playerId": "p1"
+    },
+    {
+      "action": {
+        "choice": "HIGHER",
+        "type": "ANSWER"
+      },
+      "kind": "action",
+      "now": 4000,
+      "playerId": "p9"
+    },
+    {
+      "action": {
+        "choice": "LOWER",
+        "type": "ANSWER"
+      },
+      "kind": "action",
+      "now": 5000,
+      "playerId": "p2"
+    },
+    {
+      "action": {
+        "choice": "SAME",
+        "type": "ANSWER"
+      },
+      "kind": "action",
+      "now": 6000,
+      "playerId": "p1"
+    },
+    {
+      "kind": "timeout",
+      "now": 7999
+    },
+    {
+      "kind": "timeout",
+      "now": 8000
+    },
+    {
+      "action": {
+        "choice": "SAME",
+        "type": "ANSWER"
+      },
+      "kind": "action",
+      "now": 10000,
+      "playerId": "p1"
+    },
+    {
+      "kind": "timeout",
+      "now": 27999
+    },
+    {
+      "kind": "timeout",
+      "now": 28000
+    },
+    {
+      "kind": "timeout",
+      "now": 31000
+    },
+    {
+      "action": {
+        "choice": "HIGHER",
+        "type": "ANSWER"
+      },
+      "kind": "action",
+      "now": 51000,
+      "playerId": "p2"
+    },
+    {
+      "kind": "timeout",
+      "now": 51000
+    },
+    {
+      "kind": "timeout",
+      "now": 54000
+    }
+  ]
+}
