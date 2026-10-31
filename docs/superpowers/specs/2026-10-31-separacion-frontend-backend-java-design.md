@@ -450,6 +450,19 @@ para no tocar `.env` de PRE/PRO:
 
 ---
 
+## Etapa 2: subproyectos (añadido 2026-10-31)
+
+La etapa 2 se ejecuta como cuatro subproyectos con plan propio; cada uno deja software que funciona y se verifica:
+
+| Subproyecto | Contenido | Verificación |
+|---|---|---|
+| **2A Núcleo de salas** (`docs/superpowers/plans/2026-10-31-etapa-2a-nucleo-salas.md`) | arnés dorado (exportador TS + replayer Java con PRNG determinista `mulberry32`), SPI `GameEngine`, coordinador de salas (port de `rooms/manager.ts`), transporte `@ServerWebSocket("/ws")` con sobre `{id,event,payload}`, motores piloto `higher-lower` y `pokedex-distance`, adaptador WebSocket en el frontend bajo `VITE_REALTIME` (`node` por defecto), nginx `/ws` | fixtures doradas en verde, escenarios del coordinador, E2E `sala.spec` contra Java con la bandera |
+| 2B Motores | los 26 motores restantes por lotes con fixtures doradas, proxy de imágenes y audio de ronda, canal de cursores | fixtures doradas por motor; E2E por juego |
+| 2C Datos y administración | data-sync PokéAPI/TCGdex y refresco del catálogo, catálogo TCG y `/api/tcg/*`, API admin, categorías/WYR/avatares con escritura y notificación a lobbies, caché de configuraciones por usuario, `/api/health` | tests de integración con Testcontainers; paridad de respuestas con Node |
+| 2D Cutover | `VITE_REALTIME=java` por defecto, nginx todo a Java, retirada de Node y de `prisma migrate deploy`, `apps/web` → `frontend/` con `shared/public` dentro, Flyway único dueño, CI sin `node-server.yml`, documentación | E2E completos solo contra Java; despliegue a PRE |
+
+Las salas no admiten un cutover parcial (una sala puede lanzar cualquiera de los 28 juegos), así que hasta 2D las salas Java son solo de desarrollo y E2E; producción sigue en Node.
+
 ## Decisiones aprobadas (2026-10-31)
 
 1. **Alcance del backend Java**: **A**, todo en Java en dos etapas por estrangulamiento.
