@@ -40,6 +40,7 @@ dependencies {
   implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
   implementation("io.micronaut.sql:micronaut-jdbc-hikari")
   implementation("com.nimbusds:nimbus-jose-jwt:10.10")
+  implementation("at.favre.lib:bcrypt:0.10.2")
   implementation("io.micronaut.flyway:micronaut-flyway")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql")
