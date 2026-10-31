@@ -17,6 +17,7 @@ import { pokemonTriviaScenarios } from './pokemon-trivia.js';
 import { secretRankingScenarios } from './secret-ranking.js';
 import { typeChainScenarios } from './type-chain.js';
 import { typeDuelScenarios } from './type-duel.js';
+import { whosThatPokemonScenarios } from './whos-that-pokemon.js';
 import { wouldYouRatherScenarios } from './would-you-rather.js';
 
 export interface GoldenEngineEntry {
@@ -43,4 +44,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'one-of-us-is-fake': oneOfUsIsFakeScenarios,
   'learnset-guess': learnsetGuessScenarios,
   'pokedex-entry-guess': pokedexEntryGuessScenarios,
+  'whos-that-pokemon': whosThatPokemonScenarios,
 };

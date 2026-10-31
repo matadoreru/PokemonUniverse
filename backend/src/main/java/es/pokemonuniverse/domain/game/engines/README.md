@@ -38,7 +38,12 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
   serializa como `{"2":…,"10":…}`. Nunca un `LinkedHashMap<String, …>`: el orden de inserción no coincidiría.
 - **Asset token** (constraint 15): `context.now.toString(36)` y tres `Math.floor(random() * 0x1_0000_0000).toString(36)`
   unidos con `-` se traducen como `Long.toString(now, 36)` y `Long.toString((long) Math.floor(r * 4294967296.0), 36)`,
-  con las tres extracciones de `random()` en ese orden.
+  con las tres extracciones de `random()` en ese orden: `AssetTokens.randomToken(context)`. Comprueba la variante de
+  cada motor (`shiny-vote` usa solo `context.now.toString(36)`, sin `random()`).
+- **Rutas de recursos**: `/api/rooms/${encodeURIComponent(roomCode)}/games/<token>/rounds/<n>/options/<id>/<sprite|audio>`
+  se construye con `AssetTokens.roundAssetPath`, que codifica con `JsUrl.encodeURIComponent`. `URLEncoder` no vale:
+  codifica el espacio como `+` y no deja intactos `! ' ( ) * ~`. El respaldo de `roomCode` (`?? 'opaque'`, o el sprite
+  directo de `shiny-vote`) lo decide cada motor como su TS.
 - **Proyecciones**: cada record público o de jugador, incluidos los anidados, lleva `@Serdeable` y
   `@JsonInclude(ALWAYS)`. Un `null` de TS debe salir como `null`. Un `?:` de TS se marca `NON_ABSENT`/`NON_NULL` campo
   a campo.
@@ -88,7 +93,9 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
      estado y graba `{ resolution }` sin snapshot. Un `string` del motor TS se normaliza a
      `{ source, transform: 'ORIGINAL' }` (como `game-image-cache.ts`) y `null` o un motor sin `resolveAsset` graba
      `resolution: null`, que en Java es `Optional.empty()`. Copia el token y la ronda de la proyección grabada y cubre
-     también un token o una ronda distintos.
+     también un token o una ronda distintos. `AssetResolution` serializa `source, transform, focusSeed, zoom, recolor`
+     sin los nulos (inclusión `NON_NULL`), así que los literales TS `{ source, transform }`,
+     `{ source, transform, focusSeed, zoom }` y `{ source, transform, recolor }` coinciden con la comparación ordenada.
 2. Ejecuta `npm run build -w @pokemon-universe/shared && npm run golden:export` y commitea los escenarios y las fixtures.
    Revisa una fixture a ojo.
 3. Ejecuta `cd backend && ./gradlew test --tests '*GoldenReplayTest*'`. Debe fallar con `Motor no portado: <id>`.

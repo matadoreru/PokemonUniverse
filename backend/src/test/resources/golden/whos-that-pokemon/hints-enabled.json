@@ -1,0 +1,1229 @@
+{
+  "engineId": "whos-that-pokemon",
+  "scenario": "hints-enabled",
+  "seed": 903,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      2,
+      1
+    ],
+    "roundSeconds": 10,
+    "rounds": 3,
+    "hintsEnabled": true,
+    "includeRegionalForms": true
+  },
+  "pokemonVisuals": {
+    "geodude-alola": {
+      "pokemonId": "geodude-alola",
+      "source": "ARTWORK",
+      "location": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10109.png"
+    }
+  },
+  "steps": [
+    {
+      "kind": "timeout",
+      "now": 3500
+    },
+    {
+      "kind": "timeout",
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "geodude"
+      },
+      "now": 4500
+    },
+    {
+      "kind": "timeout",
+      "now": 9000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-p7p1mi-1jb9vvk-1vu6ydp",
+      "roundNumber": 1,
+      "assetId": "shadow",
+      "now": 9100
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "geodude-alola"
+      },
+      "now": 9500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "geodude-alola"
+      },
+      "now": 10000
+    },
+    {
+      "kind": "timeout",
+      "now": 14000
+    },
+    {
+      "kind": "timeout",
+      "now": 17000
+    },
+    {
+      "kind": "timeout",
+      "now": 24000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-p7p1mi-1jb9vvk-1vu6ydp",
+      "roundNumber": 2,
+      "assetId": "reveal",
+      "now": 24500
+    },
+    {
+      "kind": "timeout",
+      "now": 28000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        }
+      ],
+      "now": 29000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "typhlosion-hisui"
+      },
+      "now": 30000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-p7p1mi-1jb9vvk-1vu6ydp",
+      "roundNumber": 3,
+      "assetId": "reveal",
+      "now": 30500
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-p7p1mi-1jb9vvk-1vu6ydp",
+      "roundNumber": 3,
+      "assetId": "cry",
+      "now": 30500
+    },
+    {
+      "kind": "timeout",
+      "now": 34000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-p7p1mi-1jb9vvk-1vu6ydp",
+      "roundNumber": 3,
+      "assetId": "shadow",
+      "now": 34500
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 10,
+      "rounds": 3,
+      "hintsEnabled": true,
+      "includeRegionalForms": true
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "whos-that-pokemon",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "silhouetteSprite": null,
+        "visibleHints": [],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 3500,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "whos-that-pokemon",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "silhouetteSprite": "/api/rooms/GOLD01/games/rs-p7p1mi-1jb9vvk-1vu6ydp/rounds/1/options/shadow/sprite",
+        "visibleHints": [],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 11000,
+        "nextTransitionAt": 3500,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/GOLD01/games/rs-p7p1mi-1jb9vvk-1vu6ydp/rounds/1/options/shadow/sprite",
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "nextTransitionAt": 6000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/GOLD01/games/rs-p7p1mi-1jb9vvk-1vu6ydp/rounds/1/options/shadow/sprite",
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "nextTransitionAt": 6000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/GOLD01/games/rs-p7p1mi-1jb9vvk-1vu6ydp/rounds/1/options/shadow/sprite",
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "geodude",
+                  "name": "Geodude",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+                },
+                "attemptedAt": 4500
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "nextTransitionAt": 6000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 5500,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 4500
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/GOLD01/games/rs-p7p1mi-1jb9vvk-1vu6ydp/rounds/1/options/shadow/sprite",
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "rock"
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "geodude",
+                  "name": "Geodude",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+                },
+                "attemptedAt": 4500
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 5500,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 4500
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10109.png",
+          "transform": "SILHOUETTE"
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/GOLD01/games/rs-p7p1mi-1jb9vvk-1vu6ydp/rounds/1/options/shadow/sprite",
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              },
+              {
+                "kind": "TYPE",
+                "value": "rock"
+              },
+              {
+                "kind": "TYPE_COUNT",
+                "value": 2
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "geodude",
+                  "name": "Geodude",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+                },
+                "attemptedAt": 4500
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 5
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 5500,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 4500
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 5,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 9500
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 14000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": null,
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "geodude",
+                  "name": "Geodude",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+                },
+                "attemptedAt": 4500
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p1",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 5
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 14000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Geodude de Alola",
+                "generation": 1,
+                "sprite": "/api/rooms/GOLD01/games/rs-p7p1mi-1jb9vvk-1vu6ydp/rounds/1/options/reveal/sprite"
+              },
+              "solves": {
+                "p2": {
+                  "solveOrder": 1,
+                  "solvedAt": 9500,
+                  "elapsedMs": 8500,
+                  "speedPoints": 2,
+                  "placementBonus": 3,
+                  "points": 5,
+                  "attempts": 1
+                },
+                "p1": {
+                  "solveOrder": 2,
+                  "solvedAt": 10000,
+                  "elapsedMs": 9000,
+                  "speedPoints": 1,
+                  "placementBonus": 2,
+                  "points": 3,
+                  "attempts": 2
+                }
+              },
+              "attemptCounts": {
+                "p1": 2,
+                "p2": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": 5500,
+              "roundPoints": 3,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 10000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 5,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 9500
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,14000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/GOLD01/games/rs-p7p1mi-1jb9vvk-1vu6ydp/rounds/2/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 3,
+              "p2": 5
+            },
+            "roundStartedAt": 14000,
+            "roundEndsAt": 24000,
+            "nextTransitionAt": 16500,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 19000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,14000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/GOLD01/games/rs-p7p1mi-1jb9vvk-1vu6ydp/rounds/2/options/shadow/sprite",
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "value": 1
+              }
+            ],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 3,
+              "p2": 5
+            },
+            "roundStartedAt": 14000,
+            "roundEndsAt": 24000,
+            "nextTransitionAt": 19000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 28000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,14000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "silhouetteSprite": null,
+            "visibleHints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 3,
+              "p2": 5
+            },
+            "roundStartedAt": 14000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 28000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Tauros de Paldea (Combat Breed)",
+                "generation": 1,
+                "sprite": "/api/rooms/GOLD01/games/rs-p7p1mi-1jb9vvk-1vu6ydp/rounds/2/options/reveal/sprite"
+              },
+              "solves": {},
+              "attemptCounts": {}
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10250.png",
+          "transform": "ORIGINAL"
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 30500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,28000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/GOLD01/games/rs-p7p1mi-1jb9vvk-1vu6ydp/rounds/3/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 3,
+              "p2": 5
+            },
+            "roundStartedAt": 28000,
+            "roundEndsAt": 38000,
+            "nextTransitionAt": 30500,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 30500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,28000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/GOLD01/games/rs-p7p1mi-1jb9vvk-1vu6ydp/rounds/3/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 3,
+              "p2": 5
+            },
+            "roundStartedAt": 28000,
+            "roundEndsAt": 38000,
+            "nextTransitionAt": 30500,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 34000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,28000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "silhouetteSprite": null,
+            "visibleHints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 14,
+              "p2": 5
+            },
+            "roundStartedAt": 28000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 34000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Typhlosion de Hisui",
+                "generation": 2,
+                "sprite": "/api/rooms/GOLD01/games/rs-p7p1mi-1jb9vvk-1vu6ydp/rounds/3/options/reveal/sprite"
+              },
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 30000,
+                  "elapsedMs": 2000,
+                  "speedPoints": 8,
+                  "placementBonus": 3,
+                  "points": 11,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p1": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 11,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 30000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10233.png",
+          "transform": "ORIGINAL"
+        }
+      },
+      {
+        "resolution": null
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,28000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "silhouetteSprite": null,
+            "visibleHints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 14,
+              "p2": 5
+            },
+            "roundStartedAt": 28000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "pokemon": {
+                "name": "Typhlosion de Hisui",
+                "generation": 2,
+                "sprite": "/api/rooms/GOLD01/games/rs-p7p1mi-1jb9vvk-1vu6ydp/rounds/3/options/reveal/sprite"
+              },
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 30000,
+                  "elapsedMs": 2000,
+                  "speedPoints": 8,
+                  "placementBonus": 3,
+                  "points": 11,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p1": 1
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 14,
+                  "won": true,
+                  "stats": {
+                    "correct": 2,
+                    "missed": 1,
+                    "totalAttempts": 3,
+                    "firstTry": 1,
+                    "roundFirsts": 1,
+                    "solveTimeTotalMs": 11000,
+                    "bestTimeMs": 2000,
+                    "pointsFromRounds": 14
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 5,
+                  "won": false,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 2,
+                    "totalAttempts": 1,
+                    "firstTry": 1,
+                    "roundFirsts": 1,
+                    "solveTimeTotalMs": 8500,
+                    "bestTimeMs": 8500,
+                    "pointsFromRounds": 5
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 11,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 30000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10233.png",
+          "transform": "SILHOUETTE"
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 14,
+          "won": true,
+          "stats": {
+            "correct": 2,
+            "missed": 1,
+            "totalAttempts": 3,
+            "firstTry": 1,
+            "roundFirsts": 1,
+            "solveTimeTotalMs": 11000,
+            "bestTimeMs": 2000,
+            "pointsFromRounds": 14
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 5,
+          "won": false,
+          "stats": {
+            "correct": 1,
+            "missed": 2,
+            "totalAttempts": 1,
+            "firstTry": 1,
+            "roundFirsts": 1,
+            "solveTimeTotalMs": 8500,
+            "bestTimeMs": 8500,
+            "pointsFromRounds": 5
+          }
+        }
+      ]
+    }
+  }
+}

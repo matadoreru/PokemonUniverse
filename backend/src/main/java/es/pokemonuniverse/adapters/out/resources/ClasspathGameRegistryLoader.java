@@ -18,6 +18,7 @@ import es.pokemonuniverse.domain.game.engines.poketaboo.PokeTabooEngine;
 import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingEngine;
 import es.pokemonuniverse.domain.game.engines.typechain.TypeChainEngine;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelEngine;
+import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonEngine;
 import es.pokemonuniverse.domain.game.engines.wouldyourather.WouldYouRatherEngine;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.core.type.Argument;
@@ -81,6 +82,7 @@ public class ClasspathGameRegistryLoader {
     engines.put(LearnsetGuessEngine.ID, new LearnsetGuessEngine(manifest(manifests, LearnsetGuessEngine.ID)));
     engines.put(PokedexEntryGuessEngine.ID,
         new PokedexEntryGuessEngine(manifest(manifests, PokedexEntryGuessEngine.ID)));
+    engines.put(WhosThatPokemonEngine.ID, new WhosThatPokemonEngine(manifest(manifests, WhosThatPokemonEngine.ID)));
     return engines;
   }
 
