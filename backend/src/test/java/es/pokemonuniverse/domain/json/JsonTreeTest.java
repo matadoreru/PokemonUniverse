@@ -44,6 +44,7 @@ class JsonTreeTest {
     assertTrue(JsonTree.equal(a, b));
     var missing = obj("z", JsonNode.createStringNode("s"), "x", JsonNode.createArrayNode(List.of(num(1), obj())));
     assertFalse(JsonTree.equal(a, missing));
+    assertFalse(JsonTree.equal(obj("a", JsonNode.nullNode()), obj("b", JsonNode.nullNode())));
     assertFalse(JsonTree.equal(JsonNode.createArrayNode(List.of(num(1), num(2))), JsonNode.createArrayNode(List.of(num(2), num(1)))));
     assertFalse(JsonTree.equal(JsonNode.createStringNode("1"), num(1)));
     assertFalse(JsonTree.equal(JsonNode.createBooleanNode(true), JsonNode.createBooleanNode(false)));
