@@ -1,6 +1,7 @@
 import type { AuthUser, AvatarPresetId } from '@pokemon-universe/shared/public';
 import { createContext, useContext, useEffect, useMemo, useState, type PropsWithChildren } from 'react';
 import { api } from '../lib/api';
+import type { MeResponse, LoginResponse, RegisterResponse, GuestResponse } from '../lib/api-contract';
 
 interface AuthContextValue {
   user: AuthUser | null;
@@ -19,7 +20,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const controller = new AbortController();
-    void api<{ user: AuthUser | null }>('/auth/me', { signal: controller.signal })
+    void api<MeResponse>('/auth/me', { signal: controller.signal })
       .then((body) => { if (!controller.signal.aborted) setUser(body.user); })
       .catch(() => { if (!controller.signal.aborted) setUser(null); })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
@@ -27,12 +28,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
   const value = useMemo<AuthContextValue>(() => ({
     user, loading,
-    async login(email, password) { const body = await api<{ user: AuthUser }>('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }); setUser(body.user); },
-    async register(username, email, password) { const body = await api<{ user: AuthUser }>('/auth/register', { method: 'POST', body: JSON.stringify({ username, email, password }) }); setUser(body.user); },
+    async login(email, password) { const body = await api<LoginResponse>('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }); setUser(body.user); },
+    async register(username, email, password) { const body = await api<RegisterResponse>('/auth/register', { method: 'POST', body: JSON.stringify({ username, email, password }) }); setUser(body.user); },
     async guest(displayName, avatar) {
       const body = avatar instanceof Blob
-        ? await api<{ user: AuthUser }>(`/auth/guest/custom-avatar?displayName=${encodeURIComponent(displayName)}`, { method: 'POST', headers: { 'Content-Type': avatar.type }, body: avatar })
-        : await api<{ user: AuthUser }>('/auth/guest', { method: 'POST', body: JSON.stringify({ displayName, ...(avatar ? { avatarPresetId: avatar } : {}) }) });
+        ? await api<GuestResponse>(`/auth/guest/custom-avatar?displayName=${encodeURIComponent(displayName)}`, { method: 'POST', headers: { 'Content-Type': avatar.type }, body: avatar })
+        : await api<GuestResponse>('/auth/guest', { method: 'POST', body: JSON.stringify({ displayName, ...(avatar ? { avatarPresetId: avatar } : {}) }) });
       setUser(body.user);
     },
     updateUser(nextUser) { setUser(nextUser); },

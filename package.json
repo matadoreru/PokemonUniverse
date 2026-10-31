@@ -13,7 +13,7 @@
     "dev:backend": "cd backend && MICRONAUT_ENVIRONMENTS=dev PORT=8080 ./gradlew run -t --quiet",
     "build": "npm run build -w @pokemon-universe/shared && npm run build -w @pokemon-universe/server && npm run build -w @pokemon-universe/web",
     "typecheck": "npm run build -w @pokemon-universe/shared && npm run typecheck -w @pokemon-universe/server && npm run typecheck -w @pokemon-universe/web && npm run typecheck -w @pokemon-universe/e2e",
-    "test": "npm run check:boundaries && npm run build -w @pokemon-universe/shared && npm run check:registry && npm run test --workspaces --if-present",
+    "test": "npm run check:boundaries && npm run build -w @pokemon-universe/shared && npm run check:registry && npm run check:api-types && npm run test --workspaces --if-present",
     "test:e2e": "npm run e2e -w @pokemon-universe/e2e",
     "test:e2e:ui": "npm run e2e:ui -w @pokemon-universe/e2e",
     "lint": "npm run lint --workspaces --if-present",
@@ -25,7 +25,8 @@
     "check:boundaries": "node scripts/check-public-boundary.mjs",
     "registry:export": "node scripts/export-game-registry.mjs",
     "check:registry": "node scripts/export-game-registry.mjs --check",
-    "benchmark:rooms": "npm run build -w @pokemon-universe/shared && node scripts/benchmark-room-projection.mjs"
+    "benchmark:rooms": "npm run build -w @pokemon-universe/shared && node scripts/benchmark-room-projection.mjs",
+    "check:api-types": "node scripts/check-api-types.mjs"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",

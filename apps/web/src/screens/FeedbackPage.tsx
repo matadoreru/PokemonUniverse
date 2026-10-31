@@ -10,6 +10,7 @@ import { ArrowLeft, Bug, CheckCircle2, Lightbulb, LoaderCircle, MessageSquarePlu
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../lib/api';
+import type { FeedbackCreateResponse } from '../lib/api-contract';
 
 interface GameOption extends MiniGameManifest { defaultConfig: unknown }
 
@@ -56,7 +57,7 @@ export function FeedbackPage() {
   async function submit(event: FormEvent) {
     event.preventDefault(); setSending(true); setError('');
     try {
-      const response = await api<{ feedback: FeedbackItem }>('/feedback', {
+      const response = await api<FeedbackCreateResponse>('/feedback', {
         method: 'POST',
         body: JSON.stringify({
           reference,

@@ -1,6 +1,7 @@
 import type { ChangelogEntry } from '@pokemon-universe/shared/public';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { api } from '../lib/api';
+import type { ChangelogResponse } from '../lib/api-contract';
 import { LAST_READ_CHANGELOG_KEY, unreadChangelogCount } from './changelog-state';
 
 interface ChangelogContextValue {
@@ -28,7 +29,7 @@ export function ChangelogProvider({ children }: { children: ReactNode }) {
 
   const refresh = useCallback(async () => {
     setLoading(true); setError('');
-    try { setEntries((await api<{ entries: ChangelogEntry[] }>('/changelog')).entries); }
+    try { setEntries((await api<ChangelogResponse>('/changelog')).entries); }
     catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudieron cargar las novedades.'); }
     finally { setLoading(false); }
   }, []);

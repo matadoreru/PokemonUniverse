@@ -9,7 +9,8 @@
     "typecheck": "tsc -b --pretty false",
     "test": "vitest run",
     "lint": "eslint src --max-warnings=0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "api:types": "openapi-typescript ../../backend/openapi/pokemon-universe.yml -o src/lib/api-types.ts"
   },
   "dependencies": {
     "@pokemon-universe/shared": "*",
@@ -27,6 +28,7 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "autoprefixer": "^10.4.20",
+    "openapi-typescript": "7.13.0",
     "postcss": "^8.5.3",
     "vitest": "^5.0.5"
   }
