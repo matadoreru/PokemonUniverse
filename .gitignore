@@ -14,3 +14,5 @@ playwright-report/
 blob-report/
 .superpowers/
 .idea/
+backend/build/
+backend/.gradle/
