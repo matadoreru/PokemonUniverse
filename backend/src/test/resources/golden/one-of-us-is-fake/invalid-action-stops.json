@@ -1,0 +1,278 @@
+{
+  "engineId": "one-of-us-is-fake",
+  "scenario": "invalid-action-stops",
+  "seed": 769,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "selectionSeconds": 15,
+    "discussionSeconds": 30,
+    "rounds": 3,
+    "fakeKnows": true,
+    "categorySource": "OFFICIAL",
+    "includeRegionalForms": false
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": ""
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "eevee"
+      },
+      "now": 4000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "one-of-us-is-fake",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "selectionCompletedIds": [],
+        "revealedChoices": [],
+        "votedPlayerIds": [],
+        "voteCandidates": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "myCategory": "",
+          "ownChoice": null,
+          "canSelect": false,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "myCategory": "",
+          "ownChoice": null,
+          "canSelect": false,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "myCategory": "",
+          "ownChoice": null,
+          "canSelect": false,
+          "canVote": false,
+          "ownVotePlayerId": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 16000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "one-of-us-is-fake",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "selectionCompletedIds": [],
+        "revealedChoices": [],
+        "votedPlayerIds": [],
+        "voteCandidates": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 16000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "myCategory": "Pokémon que parecen de otro planeta",
+          "ownChoice": null,
+          "canSelect": true,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "myCategory": "Pokémon que usarías como almohada",
+          "ownChoice": null,
+          "canSelect": true,
+          "canVote": false,
+          "ownVotePlayerId": null,
+          "isFake": true
+        },
+        "p3": {
+          "role": "PLAYER",
+          "myCategory": "Pokémon que parecen de otro planeta",
+          "ownChoice": null,
+          "canSelect": true,
+          "canVote": false,
+          "ownVotePlayerId": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen de otro planeta",
+              "ownChoice": {
+                "id": "pikachu",
+                "name": "Pikachu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que usarías como almohada",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen de otro planeta",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 1
+}

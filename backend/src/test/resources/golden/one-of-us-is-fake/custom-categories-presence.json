@@ -1,0 +1,3934 @@
+{
+  "engineId": "one-of-us-is-fake",
+  "scenario": "custom-categories-presence",
+  "seed": 761,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      2,
+      1,
+      2
+    ],
+    "selectionSeconds": 120,
+    "discussionSeconds": 30,
+    "rounds": 3,
+    "fakeKnows": false,
+    "categorySource": "CUSTOM",
+    "includeRegionalForms": true
+  },
+  "hostCustomCategories": [
+    {
+      "id": "host-1",
+      "text": "Pokémon que se comerían tu bocadillo"
+    },
+    {
+      "id": "host-2",
+      "text": "Pokémon que perderían las llaves de casa"
+    }
+  ],
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "raichu-alola"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "chikorita"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 3500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "togepi"
+      },
+      "now": 4100
+    },
+    {
+      "kind": "timeout",
+      "now": 4650
+    },
+    {
+      "kind": "timeout",
+      "now": 5300
+    },
+    {
+      "kind": "timeout",
+      "now": 5950
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p2"
+      },
+      "now": 6000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 6500
+    },
+    {
+      "kind": "timeout",
+      "now": 12500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 13000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "lapras"
+      },
+      "now": 14000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "ditto"
+      },
+      "now": 15000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "eevee"
+      },
+      "now": 16000
+    },
+    {
+      "kind": "timeout",
+      "now": 16650
+    },
+    {
+      "kind": "timeout",
+      "now": 17300
+    },
+    {
+      "kind": "timeout",
+      "now": 17950
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 18000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p3"
+      },
+      "now": 18500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p2"
+      },
+      "now": 19000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p2"
+      },
+      "now": 49000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p3"
+      },
+      "now": 19500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p2"
+      },
+      "now": 20000
+    },
+    {
+      "kind": "timeout",
+      "now": 26000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 26500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "mareep"
+      },
+      "now": 27000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "wooper"
+      },
+      "now": 27500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "sentret"
+      },
+      "now": 28000
+    },
+    {
+      "kind": "timeout",
+      "now": 28650
+    },
+    {
+      "kind": "timeout",
+      "now": 29300
+    },
+    {
+      "kind": "timeout",
+      "now": 29950
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p2"
+      },
+      "now": 30000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p1"
+      },
+      "now": 30500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p1"
+      },
+      "now": 31000
+    },
+    {
+      "kind": "timeout",
+      "now": 37000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "selectionSeconds": 120,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": false,
+      "categorySource": "CUSTOM",
+      "includeRegionalForms": true
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "one-of-us-is-fake",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "selectionCompletedIds": [],
+        "revealedChoices": [],
+        "votedPlayerIds": [],
+        "voteCandidates": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "myCategory": "",
+          "ownChoice": null,
+          "canSelect": false,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "myCategory": "",
+          "ownChoice": null,
+          "canSelect": false,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "myCategory": "",
+          "ownChoice": null,
+          "canSelect": false,
+          "canVote": false,
+          "ownVotePlayerId": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 121000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "one-of-us-is-fake",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "selectionCompletedIds": [],
+        "revealedChoices": [],
+        "votedPlayerIds": [],
+        "voteCandidates": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 121000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "myCategory": "Pokémon que se comerían tu bocadillo",
+          "ownChoice": null,
+          "canSelect": true,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "myCategory": "Pokémon que perderían las llaves de casa",
+          "ownChoice": null,
+          "canSelect": true,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "myCategory": "Pokémon que se comerían tu bocadillo",
+          "ownChoice": null,
+          "canSelect": true,
+          "canVote": false,
+          "ownVotePlayerId": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "chikorita",
+                "name": "Chikorita",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "chikorita",
+                "name": "Chikorita",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 4650,
+            "actionEpoch": "[\"CHOICE_REVEAL\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 4650,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "chikorita",
+                "name": "Chikorita",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "SPECTATOR"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No puedes actuar en esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 4650,
+            "actionEpoch": "[\"CHOICE_REVEAL\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 4650,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "chikorita",
+                "name": "Chikorita",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "SPECTATOR"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 5300,
+            "actionEpoch": "[\"CHOICE_REVEAL\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "raichu-alola",
+                  "name": "Raichu de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 5300,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "chikorita",
+                "name": "Chikorita",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "SPECTATOR"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 5950,
+            "actionEpoch": "[\"CHOICE_REVEAL\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "raichu-alola",
+                  "name": "Raichu de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 5950,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "chikorita",
+                "name": "Chikorita",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "SPECTATOR"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 35950,
+            "actionEpoch": "[\"DISCUSSION\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "raichu-alola",
+                  "name": "Raichu de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 35950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "chikorita",
+                "name": "Chikorita",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "SPECTATOR"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 35950,
+            "actionEpoch": "[\"DISCUSSION\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "raichu-alola",
+                  "name": "Raichu de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 35950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "chikorita",
+                "name": "Chikorita",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "SPECTATOR"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 12500,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "raichu-alola",
+                  "name": "Raichu de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 0,
+              "p3": 2
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 12500,
+            "lastRound": {
+              "fakePlayerId": "p2",
+              "selectedPlayerId": "p2",
+              "winner": "NORMALS",
+              "mainCategory": "Pokémon que se comerían tu bocadillo",
+              "fakeCategory": "Pokémon que perderían las llaves de casa",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "category": "Pokémon que se comerían tu bocadillo",
+                  "pokemon": {
+                    "id": "raichu-alola",
+                    "name": "Raichu de Alola",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                  },
+                  "isFake": false
+                },
+                {
+                  "playerId": "p2",
+                  "category": "Pokémon que perderían las llaves de casa",
+                  "pokemon": {
+                    "id": "chikorita",
+                    "name": "Chikorita",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                  },
+                  "isFake": true
+                },
+                {
+                  "playerId": "p3",
+                  "category": "Pokémon que se comerían tu bocadillo",
+                  "pokemon": null,
+                  "isFake": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p1": "p2"
+                  }
+                }
+              ],
+              "pointsAwarded": {
+                "p1": 2,
+                "p2": 0,
+                "p3": 2
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "raichu-alola",
+                "name": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "SPECTATOR"
+            },
+            "p3": {
+              "role": "SPECTATOR"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 0,
+              "p3": 2
+            },
+            "roundEndsAt": 132500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "SPECTATOR"
+            },
+            "p3": {
+              "role": "SPECTATOR"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 0,
+              "p3": 2
+            },
+            "roundEndsAt": 132500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 0,
+              "p3": 2
+            },
+            "roundEndsAt": 132500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 0,
+              "p3": 2
+            },
+            "roundEndsAt": 132500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 16650,
+            "actionEpoch": "[\"CHOICE_REVEAL\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 0,
+              "p3": 2
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 16650,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 17300,
+            "actionEpoch": "[\"CHOICE_REVEAL\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "lapras",
+                  "name": "Lapras",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 0,
+              "p3": 2
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 17300,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 17950,
+            "actionEpoch": "[\"CHOICE_REVEAL\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "lapras",
+                  "name": "Lapras",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 0,
+              "p3": 2
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 17950,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 47950,
+            "actionEpoch": "[\"DISCUSSION\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "lapras",
+                  "name": "Lapras",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 0,
+              "p3": 2
+            },
+            "roundEndsAt": 47950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 47950,
+            "actionEpoch": "[\"DISCUSSION\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "lapras",
+                  "name": "Lapras",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 0,
+              "p3": 2
+            },
+            "roundEndsAt": 47950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 47950,
+            "actionEpoch": "[\"DISCUSSION\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "lapras",
+                  "name": "Lapras",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 0,
+              "p3": 2
+            },
+            "roundEndsAt": 47950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": "p3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"REVOTE\",2,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "REVOTE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "lapras",
+                  "name": "Lapras",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 2,
+              "p2": 0,
+              "p3": 2
+            },
+            "roundEndsAt": 49000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"REVOTE\",2,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "REVOTE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "lapras",
+                  "name": "Lapras",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 2,
+              "p2": 0,
+              "p3": 2
+            },
+            "roundEndsAt": 49000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"REVOTE\",2,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "REVOTE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "lapras",
+                  "name": "Lapras",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p2"
+            ],
+            "voteCandidates": [
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 2,
+              "p2": 0,
+              "p3": 2
+            },
+            "roundEndsAt": 49000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": "p3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "lapras",
+                  "name": "Lapras",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "eevee",
+                  "name": "Eevee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 26000,
+            "lastRound": {
+              "fakePlayerId": "p2",
+              "selectedPlayerId": "p3",
+              "winner": "FAKE",
+              "mainCategory": "Pokémon que perderían las llaves de casa",
+              "fakeCategory": "Pokémon que se comerían tu bocadillo",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "category": "Pokémon que perderían las llaves de casa",
+                  "pokemon": {
+                    "id": "lapras",
+                    "name": "Lapras",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                  },
+                  "isFake": false
+                },
+                {
+                  "playerId": "p2",
+                  "category": "Pokémon que se comerían tu bocadillo",
+                  "pokemon": {
+                    "id": "ditto",
+                    "name": "Ditto",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                  },
+                  "isFake": true
+                },
+                {
+                  "playerId": "p3",
+                  "category": "Pokémon que perderían las llaves de casa",
+                  "pokemon": {
+                    "id": "eevee",
+                    "name": "Eevee",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+                  },
+                  "isFake": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p2": "p3",
+                    "p3": "p2"
+                  }
+                },
+                {
+                  "number": 2,
+                  "candidateIds": [
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p2": "p3",
+                    "p3": "p2"
+                  }
+                }
+              ],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 4,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "eevee",
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 146000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundEndsAt": 146000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 146000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundEndsAt": 146000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 146000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundEndsAt": 146000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "mareep",
+                "name": "Mareep",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 146000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundEndsAt": 146000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "mareep",
+                "name": "Mareep",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "wooper",
+                "name": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 28650,
+            "actionEpoch": "[\"CHOICE_REVEAL\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 28650,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "mareep",
+                "name": "Mareep",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "wooper",
+                "name": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 29300,
+            "actionEpoch": "[\"CHOICE_REVEAL\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "mareep",
+                  "name": "Mareep",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 29300,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "mareep",
+                "name": "Mareep",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "wooper",
+                "name": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 29950,
+            "actionEpoch": "[\"CHOICE_REVEAL\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "mareep",
+                  "name": "Mareep",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "wooper",
+                  "name": "Wooper",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 29950,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "mareep",
+                "name": "Mareep",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "wooper",
+                "name": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 59950,
+            "actionEpoch": "[\"DISCUSSION\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "mareep",
+                  "name": "Mareep",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "wooper",
+                  "name": "Wooper",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundEndsAt": 59950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "mareep",
+                "name": "Mareep",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "wooper",
+                "name": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 59950,
+            "actionEpoch": "[\"DISCUSSION\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "mareep",
+                  "name": "Mareep",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "wooper",
+                  "name": "Wooper",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundEndsAt": 59950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "mareep",
+                "name": "Mareep",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "wooper",
+                "name": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 59950,
+            "actionEpoch": "[\"DISCUSSION\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "mareep",
+                  "name": "Mareep",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "wooper",
+                  "name": "Wooper",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundEndsAt": 59950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "mareep",
+                "name": "Mareep",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "wooper",
+                "name": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": "p1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "mareep",
+                  "name": "Mareep",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "wooper",
+                  "name": "Wooper",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 6
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 37000,
+            "lastRound": {
+              "fakePlayerId": "p3",
+              "selectedPlayerId": "p1",
+              "winner": "FAKE",
+              "mainCategory": "Pokémon que se comerían tu bocadillo",
+              "fakeCategory": "Pokémon que perderían las llaves de casa",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "category": "Pokémon que se comerían tu bocadillo",
+                  "pokemon": {
+                    "id": "mareep",
+                    "name": "Mareep",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+                  },
+                  "isFake": false
+                },
+                {
+                  "playerId": "p2",
+                  "category": "Pokémon que se comerían tu bocadillo",
+                  "pokemon": {
+                    "id": "wooper",
+                    "name": "Wooper",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+                  },
+                  "isFake": false
+                },
+                {
+                  "playerId": "p3",
+                  "category": "Pokémon que perderían las llaves de casa",
+                  "pokemon": {
+                    "id": "sentret",
+                    "name": "Sentret",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                  },
+                  "isFake": true
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p1": "p2",
+                    "p2": "p1",
+                    "p3": "p1"
+                  }
+                }
+              ],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 0,
+                "p3": 4
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "mareep",
+                "name": "Mareep",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "wooper",
+                "name": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "mareep",
+                  "name": "Mareep",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "wooper",
+                  "name": "Wooper",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 6
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": {
+              "winnerId": "p3",
+              "standings": [
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "victoriesAsFake": 1,
+                    "victoriesAsNormal": 1,
+                    "timesFake": 1,
+                    "fakeDiscovered": 0,
+                    "fakeUndiscovered": 1,
+                    "correctVotes": 2,
+                    "incorrectVotes": 1,
+                    "normalWronglySelected": 1
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 4,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "victoriesAsFake": 1,
+                    "victoriesAsNormal": 0,
+                    "timesFake": 2,
+                    "fakeDiscovered": 1,
+                    "fakeUndiscovered": 1,
+                    "correctVotes": 0,
+                    "incorrectVotes": 3,
+                    "normalWronglySelected": 0
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "victoriesAsFake": 0,
+                    "victoriesAsNormal": 1,
+                    "timesFake": 0,
+                    "fakeDiscovered": 0,
+                    "fakeUndiscovered": 0,
+                    "correctVotes": 1,
+                    "incorrectVotes": 1,
+                    "normalWronglySelected": 1
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "mareep",
+                "name": "Mareep",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": {
+                "id": "wooper",
+                "name": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que perderían las llaves de casa",
+              "ownChoice": {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p3",
+      "standings": [
+        {
+          "playerId": "p3",
+          "position": 1,
+          "points": 6,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 3,
+            "victoriesAsFake": 1,
+            "victoriesAsNormal": 1,
+            "timesFake": 1,
+            "fakeDiscovered": 0,
+            "fakeUndiscovered": 1,
+            "correctVotes": 2,
+            "incorrectVotes": 1,
+            "normalWronglySelected": 1
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 4,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "victoriesAsFake": 1,
+            "victoriesAsNormal": 0,
+            "timesFake": 2,
+            "fakeDiscovered": 1,
+            "fakeUndiscovered": 1,
+            "correctVotes": 0,
+            "incorrectVotes": 3,
+            "normalWronglySelected": 0
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 3,
+          "points": 2,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "victoriesAsFake": 0,
+            "victoriesAsNormal": 1,
+            "timesFake": 0,
+            "fakeDiscovered": 0,
+            "fakeUndiscovered": 0,
+            "correctVotes": 1,
+            "incorrectVotes": 1,
+            "normalWronglySelected": 1
+          }
+        }
+      ]
+    }
+  }
+}

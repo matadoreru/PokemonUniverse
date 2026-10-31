@@ -5,6 +5,7 @@ import type { GoldenScenario } from '../types.js';
 import { guessFromStatsScenarios } from './guess-from-stats.js';
 import { higherLowerScenarios } from './higher-lower.js';
 import { mostLikelyToScenarios } from './most-likely-to.js';
+import { oneOfUsIsFakeScenarios } from './one-of-us-is-fake.js';
 import { pokeTabooScenarios } from './poke-taboo.js';
 import { pokeddleRaceScenarios } from './pokeddle-race.js';
 import { pokedexDistanceScenarios } from './pokedex-distance.js';
@@ -37,4 +38,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'would-you-rather': wouldYouRatherScenarios,
   'most-likely-to': mostLikelyToScenarios,
   'secret-ranking': secretRankingScenarios,
+  'one-of-us-is-fake': oneOfUsIsFakeScenarios,
 };

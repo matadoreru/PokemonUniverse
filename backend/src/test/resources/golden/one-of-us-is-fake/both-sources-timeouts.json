@@ -1,0 +1,2759 @@
+{
+  "engineId": "one-of-us-is-fake",
+  "scenario": "both-sources-timeouts",
+  "seed": 765,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "selectionSeconds": 15,
+    "discussionSeconds": 30,
+    "rounds": 3,
+    "fakeKnows": true,
+    "categorySource": "BOTH",
+    "includeRegionalForms": false
+  },
+  "hostCustomCategories": [
+    {
+      "id": "host-1",
+      "text": "Pokémon que se comerían tu bocadillo"
+    },
+    {
+      "id": "host-2",
+      "text": "Pokémon que perderían las llaves de casa"
+    }
+  ],
+  "steps": [
+    {
+      "kind": "timeout",
+      "now": 16000
+    },
+    {
+      "kind": "timeout",
+      "now": 16650
+    },
+    {
+      "kind": "timeout",
+      "now": 17300
+    },
+    {
+      "kind": "timeout",
+      "now": 17950
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p2"
+      },
+      "now": 18000
+    },
+    {
+      "kind": "timeout",
+      "now": 47950
+    },
+    {
+      "kind": "timeout",
+      "now": 53950
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "magikarp"
+      },
+      "now": 54000
+    },
+    {
+      "kind": "timeout",
+      "now": 68950
+    },
+    {
+      "kind": "timeout",
+      "now": 69600
+    },
+    {
+      "kind": "timeout",
+      "now": 70250
+    },
+    {
+      "kind": "timeout",
+      "now": 70900
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p3"
+      },
+      "now": 71000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p3"
+      },
+      "now": 71500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p1"
+      },
+      "now": 72000
+    },
+    {
+      "kind": "timeout",
+      "now": 78000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "mew"
+      },
+      "now": 79000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "mewtwo"
+      },
+      "now": 79500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "ditto"
+      },
+      "now": 80000
+    },
+    {
+      "kind": "timeout",
+      "now": 80650
+    },
+    {
+      "kind": "timeout",
+      "now": 81300
+    },
+    {
+      "kind": "timeout",
+      "now": 81950
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p2"
+      },
+      "now": 82000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p3"
+      },
+      "now": 82500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_PLAYER",
+        "playerId": "p2"
+      },
+      "now": 83000
+    },
+    {
+      "kind": "timeout",
+      "now": 89000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "BOTH",
+      "includeRegionalForms": false
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "one-of-us-is-fake",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "selectionCompletedIds": [],
+        "revealedChoices": [],
+        "votedPlayerIds": [],
+        "voteCandidates": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "myCategory": "",
+          "ownChoice": null,
+          "canSelect": false,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "myCategory": "",
+          "ownChoice": null,
+          "canSelect": false,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "myCategory": "",
+          "ownChoice": null,
+          "canSelect": false,
+          "canVote": false,
+          "ownVotePlayerId": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 16000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "one-of-us-is-fake",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "selectionCompletedIds": [],
+        "revealedChoices": [],
+        "votedPlayerIds": [],
+        "voteCandidates": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 16000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "myCategory": "Pokémon que podrían protagonizar una película",
+          "ownChoice": null,
+          "canSelect": true,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "myCategory": "Pokémon que podrían protagonizar una película",
+          "ownChoice": null,
+          "canSelect": true,
+          "canVote": false,
+          "ownVotePlayerId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "myCategory": "Pokémon que se comerían tu bocadillo",
+          "ownChoice": null,
+          "canSelect": true,
+          "canVote": false,
+          "ownVotePlayerId": null,
+          "isFake": true
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 16650,
+            "actionEpoch": "[\"CHOICE_REVEAL\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 16650,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que podrían protagonizar una película",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que podrían protagonizar una película",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 17300,
+            "actionEpoch": "[\"CHOICE_REVEAL\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 17300,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que podrían protagonizar una película",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que podrían protagonizar una película",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 17950,
+            "actionEpoch": "[\"CHOICE_REVEAL\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 17950,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que podrían protagonizar una película",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que podrían protagonizar una película",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 47950,
+            "actionEpoch": "[\"DISCUSSION\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 47950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que podrían protagonizar una película",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que podrían protagonizar una película",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null,
+              "isFake": true
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 47950,
+            "actionEpoch": "[\"DISCUSSION\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedChoices": [],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 47950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que podrían protagonizar una película",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que podrían protagonizar una película",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null,
+              "isFake": true
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 53950,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 53950,
+            "lastRound": {
+              "fakePlayerId": "p3",
+              "selectedPlayerId": "p2",
+              "winner": "FAKE",
+              "mainCategory": "Pokémon que podrían protagonizar una película",
+              "fakeCategory": "Pokémon que se comerían tu bocadillo",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "category": "Pokémon que podrían protagonizar una película",
+                  "pokemon": null,
+                  "isFake": false
+                },
+                {
+                  "playerId": "p2",
+                  "category": "Pokémon que podrían protagonizar una película",
+                  "pokemon": null,
+                  "isFake": false
+                },
+                {
+                  "playerId": "p3",
+                  "category": "Pokémon que se comerían tu bocadillo",
+                  "pokemon": null,
+                  "isFake": true
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p1": "p2"
+                  }
+                }
+              ],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 0,
+                "p3": 4
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que podrían protagonizar una película",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que podrían protagonizar una película",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que se comerían tu bocadillo",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 68950,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundEndsAt": 68950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen bastante tontos",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 68950,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundEndsAt": 68950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": {
+                "id": "magikarp",
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen bastante tontos",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 69600,
+            "actionEpoch": "[\"CHOICE_REVEAL\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 69600,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": {
+                "id": "magikarp",
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen bastante tontos",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 70250,
+            "actionEpoch": "[\"CHOICE_REVEAL\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 70250,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": {
+                "id": "magikarp",
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen bastante tontos",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 70900,
+            "actionEpoch": "[\"CHOICE_REVEAL\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "magikarp",
+                  "name": "Magikarp",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 70900,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": {
+                "id": "magikarp",
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen bastante tontos",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 100900,
+            "actionEpoch": "[\"DISCUSSION\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "magikarp",
+                  "name": "Magikarp",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundEndsAt": 100900,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": {
+                "id": "magikarp",
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen bastante tontos",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 100900,
+            "actionEpoch": "[\"DISCUSSION\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "magikarp",
+                  "name": "Magikarp",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundEndsAt": 100900,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": {
+                "id": "magikarp",
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": "p3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen bastante tontos",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 100900,
+            "actionEpoch": "[\"DISCUSSION\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "magikarp",
+                  "name": "Magikarp",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundEndsAt": 100900,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": {
+                "id": "magikarp",
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": "p3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen bastante tontos",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": "p3",
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 78000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "magikarp",
+                  "name": "Magikarp",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 78000,
+            "lastRound": {
+              "fakePlayerId": "p2",
+              "selectedPlayerId": "p3",
+              "winner": "FAKE",
+              "mainCategory": "Pokémon que parecen comida",
+              "fakeCategory": "Pokémon que parecen bastante tontos",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "category": "Pokémon que parecen comida",
+                  "pokemon": {
+                    "id": "magikarp",
+                    "name": "Magikarp",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+                  },
+                  "isFake": false
+                },
+                {
+                  "playerId": "p2",
+                  "category": "Pokémon que parecen bastante tontos",
+                  "pokemon": null,
+                  "isFake": true
+                },
+                {
+                  "playerId": "p3",
+                  "category": "Pokémon que parecen comida",
+                  "pokemon": null,
+                  "isFake": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p1": "p3",
+                    "p2": "p3",
+                    "p3": "p1"
+                  }
+                }
+              ],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 4,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": {
+                "id": "magikarp",
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen bastante tontos",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen comida",
+              "ownChoice": null,
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 93000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4
+            },
+            "roundEndsAt": 93000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen jefes finales",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 93000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4
+            },
+            "roundEndsAt": 93000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen jefes finales",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 93000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4
+            },
+            "roundEndsAt": 93000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen jefes finales",
+              "ownChoice": {
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+              },
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": null,
+              "canSelect": true,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 80650,
+            "actionEpoch": "[\"CHOICE_REVEAL\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 80650,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen jefes finales",
+              "ownChoice": {
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 81300,
+            "actionEpoch": "[\"CHOICE_REVEAL\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "mew",
+                  "name": "Mew",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 81300,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen jefes finales",
+              "ownChoice": {
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CHOICE_REVEAL",
+            "nextDeadline": 81950,
+            "actionEpoch": "[\"CHOICE_REVEAL\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "CHOICE_REVEAL",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "mew",
+                  "name": "Mew",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "mewtwo",
+                  "name": "Mewtwo",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 81950,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen jefes finales",
+              "ownChoice": {
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 111950,
+            "actionEpoch": "[\"DISCUSSION\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "mew",
+                  "name": "Mew",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "mewtwo",
+                  "name": "Mewtwo",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4
+            },
+            "roundEndsAt": 111950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen jefes finales",
+              "ownChoice": {
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 111950,
+            "actionEpoch": "[\"DISCUSSION\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "mew",
+                  "name": "Mew",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "mewtwo",
+                  "name": "Mewtwo",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4
+            },
+            "roundEndsAt": 111950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen jefes finales",
+              "ownChoice": {
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "DISCUSSION",
+            "nextDeadline": 111950,
+            "actionEpoch": "[\"DISCUSSION\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "DISCUSSION",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "mew",
+                  "name": "Mew",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "mewtwo",
+                  "name": "Mewtwo",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4
+            },
+            "roundEndsAt": 111950,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": "p2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen jefes finales",
+              "ownChoice": {
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": "p3",
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": true,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 89000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "mew",
+                  "name": "Mew",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "mewtwo",
+                  "name": "Mewtwo",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 6
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 89000,
+            "lastRound": {
+              "fakePlayerId": "p2",
+              "selectedPlayerId": "p2",
+              "winner": "NORMALS",
+              "mainCategory": "Pokémon que parecen peligrosos",
+              "fakeCategory": "Pokémon que parecen jefes finales",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "category": "Pokémon que parecen peligrosos",
+                  "pokemon": {
+                    "id": "mew",
+                    "name": "Mew",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+                  },
+                  "isFake": false
+                },
+                {
+                  "playerId": "p2",
+                  "category": "Pokémon que parecen jefes finales",
+                  "pokemon": {
+                    "id": "mewtwo",
+                    "name": "Mewtwo",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+                  },
+                  "isFake": true
+                },
+                {
+                  "playerId": "p3",
+                  "category": "Pokémon que parecen peligrosos",
+                  "pokemon": {
+                    "id": "ditto",
+                    "name": "Ditto",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                  },
+                  "isFake": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "p1",
+                    "p2",
+                    "p3"
+                  ],
+                  "votes": {
+                    "p1": "p2",
+                    "p2": "p3",
+                    "p3": "p2"
+                  }
+                }
+              ],
+              "pointsAwarded": {
+                "p1": 2,
+                "p2": 0,
+                "p3": 2
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen jefes finales",
+              "ownChoice": {
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "one-of-us-is-fake",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "selectionCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedChoices": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "mew",
+                  "name": "Mew",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+                }
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "mewtwo",
+                  "name": "Mewtwo",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+                }
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "ditto",
+                  "name": "Ditto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+                }
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidates": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 4,
+              "p3": 6
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": {
+              "winnerId": "p3",
+              "standings": [
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "victoriesAsFake": 1,
+                    "victoriesAsNormal": 1,
+                    "timesFake": 1,
+                    "fakeDiscovered": 0,
+                    "fakeUndiscovered": 1,
+                    "correctVotes": 1,
+                    "incorrectVotes": 1,
+                    "normalWronglySelected": 1
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 4,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "victoriesAsFake": 1,
+                    "victoriesAsNormal": 0,
+                    "timesFake": 2,
+                    "fakeDiscovered": 1,
+                    "fakeUndiscovered": 1,
+                    "correctVotes": 0,
+                    "incorrectVotes": 2,
+                    "normalWronglySelected": 1
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "victoriesAsFake": 0,
+                    "victoriesAsNormal": 1,
+                    "timesFake": 0,
+                    "fakeDiscovered": 0,
+                    "fakeUndiscovered": 0,
+                    "correctVotes": 1,
+                    "incorrectVotes": 2,
+                    "normalWronglySelected": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen jefes finales",
+              "ownChoice": {
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null,
+              "isFake": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "myCategory": "Pokémon que parecen peligrosos",
+              "ownChoice": {
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+              },
+              "canSelect": false,
+              "canVote": false,
+              "ownVotePlayerId": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p3",
+      "standings": [
+        {
+          "playerId": "p3",
+          "position": 1,
+          "points": 6,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 3,
+            "victoriesAsFake": 1,
+            "victoriesAsNormal": 1,
+            "timesFake": 1,
+            "fakeDiscovered": 0,
+            "fakeUndiscovered": 1,
+            "correctVotes": 1,
+            "incorrectVotes": 1,
+            "normalWronglySelected": 1
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 4,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "victoriesAsFake": 1,
+            "victoriesAsNormal": 0,
+            "timesFake": 2,
+            "fakeDiscovered": 1,
+            "fakeUndiscovered": 1,
+            "correctVotes": 0,
+            "incorrectVotes": 2,
+            "normalWronglySelected": 1
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 3,
+          "points": 2,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "victoriesAsFake": 0,
+            "victoriesAsNormal": 1,
+            "timesFake": 0,
+            "fakeDiscovered": 0,
+            "fakeUndiscovered": 0,
+            "correctVotes": 1,
+            "incorrectVotes": 2,
+            "normalWronglySelected": 0
+          }
+        }
+      ]
+    }
+  }
+}

@@ -6,6 +6,7 @@ import es.pokemonuniverse.domain.game.engine.GameEngine;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsEngine;
 import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerEngine;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToEngine;
+import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeEngine;
 import es.pokemonuniverse.domain.game.engines.pokeddlerace.PokeddleRaceEngine;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceEngine;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessEngine;
@@ -74,6 +75,7 @@ public class ClasspathGameRegistryLoader {
     engines.put(WouldYouRatherEngine.ID, new WouldYouRatherEngine(manifest(manifests, WouldYouRatherEngine.ID)));
     engines.put(MostLikelyToEngine.ID, new MostLikelyToEngine(manifest(manifests, MostLikelyToEngine.ID)));
     engines.put(SecretRankingEngine.ID, new SecretRankingEngine(manifest(manifests, SecretRankingEngine.ID)));
+    engines.put(OneOfUsIsFakeEngine.ID, new OneOfUsIsFakeEngine(manifest(manifests, OneOfUsIsFakeEngine.ID)));
     return engines;
   }
 

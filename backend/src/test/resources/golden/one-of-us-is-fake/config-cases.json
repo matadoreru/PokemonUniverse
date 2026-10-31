@@ -1,0 +1,396 @@
+[
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        9
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        9
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 1,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 1,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 120,
+      "discussionSeconds": 600,
+      "rounds": 30,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 120,
+      "discussionSeconds": 600,
+      "rounds": 30,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": false,
+      "categorySource": "CUSTOM",
+      "includeRegionalForms": true
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": false,
+      "categorySource": "CUSTOM",
+      "includeRegionalForms": true
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "BOTH",
+      "includeRegionalForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "BOTH",
+      "includeRegionalForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 14,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 121,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 29,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 601,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 0,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 31,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 2.5,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": "sí",
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": 1
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "HOST",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": false,
+      "unknownKey": "no se admite"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "selectionSeconds": 15,
+      "discussionSeconds": 30,
+      "rounds": 3,
+      "fakeKnows": true,
+      "categorySource": "OFFICIAL"
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]
