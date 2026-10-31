@@ -28,6 +28,11 @@ class TestErrorsController {
     return "ok";
   }
 
+  @Get("/checked")
+  String checked() throws java.io.IOException {
+    throw new java.io.IOException("disk");
+  }
+
   @Get("/boom")
   String boom() {
     throw new IllegalStateException("kaboom");

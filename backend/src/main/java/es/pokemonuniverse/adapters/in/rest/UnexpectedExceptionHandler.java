@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 /** Último recurso: 500 con mensaje genérico en prod y el real en el resto de entornos. */
 @Produces
 @Singleton
-public class UnexpectedExceptionHandler implements ExceptionHandler<RuntimeException, HttpResponse<ApiError>> {
+public class UnexpectedExceptionHandler implements ExceptionHandler<Exception, HttpResponse<ApiError>> {
 
   private static final Logger LOG = LoggerFactory.getLogger(UnexpectedExceptionHandler.class);
 
@@ -23,7 +23,7 @@ public class UnexpectedExceptionHandler implements ExceptionHandler<RuntimeExcep
   }
 
   @Override
-  public HttpResponse<ApiError> handle(HttpRequest request, RuntimeException exception) {
+  public HttpResponse<ApiError> handle(HttpRequest request, Exception exception) {
     LOG.error("Unhandled error on {} {}", request.getMethod(), request.getPath(), exception);
     String message = prod || exception.getMessage() == null ? "Internal server error" : exception.getMessage();
     return HttpResponse.serverError(ApiError.of(message));

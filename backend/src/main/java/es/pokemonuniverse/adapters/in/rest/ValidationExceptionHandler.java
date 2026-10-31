@@ -7,9 +7,7 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.server.exceptions.ExceptionHandler;
 import io.micronaut.validation.exceptions.ConstraintExceptionHandler;
 import jakarta.inject.Singleton;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import java.util.Comparator;
 import java.util.List;
 
 @Produces
@@ -22,7 +20,6 @@ public class ValidationExceptionHandler
   public HttpResponse<ApiError> handle(HttpRequest request, ConstraintViolationException exception) {
     List<ApiError.Issue> issues =
         exception.getConstraintViolations().stream()
-            .sorted(Comparator.comparing((ConstraintViolation<?> v) -> v.getPropertyPath().toString()))
             .map(v -> new ApiError.Issue(fieldName(v.getPropertyPath().toString()), v.getMessage()))
             .toList();
     String message = issues.isEmpty() ? "Invalid request" : issues.get(0).message();

@@ -62,4 +62,20 @@ class ErrorFormatTest {
   void routingErrorsKeepTheirStatus() {
     assertEquals(HttpStatus.NOT_FOUND, call(HttpRequest.GET("/no-such-route")).getStatus());
   }
+
+  @Test
+  void checkedExceptionUsesOurShape() {
+    var ex = call(HttpRequest.GET("/test-errors/checked"));
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());
+    assertEquals("disk", body(ex).get("error"));
+  }
+
+  @Test
+  void malformedJsonUsesOurShape() {
+    var req = HttpRequest.POST("/test-errors/validate", "{\"username\":")
+        .contentType("application/json");
+    var ex = call(req);
+    assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
+    assertEquals(true, body(ex).containsKey("error"), body(ex).toString());
+  }
 }
