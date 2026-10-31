@@ -1,0 +1,204 @@
+[
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "turnSeconds": 15
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "turnSeconds": 15
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": 15
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": 15
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        9
+      ],
+      "turnSeconds": 15
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        9
+      ],
+      "turnSeconds": 15
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": 10
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": 10
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": 45
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": 45
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": 20
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": 20
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": 9
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": 46
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": 15.5
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": "15"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "turnSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
+      "turnSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "turnSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1.5
+      ],
+      "turnSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": 1,
+      "turnSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": 15,
+      "unknownKey": "no se admite"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "turnSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]

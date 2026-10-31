@@ -1,0 +1,1649 @@
+{
+  "engineId": "type-chain",
+  "scenario": "presence-and-timeout-finish",
+  "seed": 603,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      2,
+      1,
+      2
+    ],
+    "turnSeconds": 10
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "umbreon"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "sneasel"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "jynx"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 6000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "smoochum"
+      },
+      "now": 7000
+    },
+    {
+      "kind": "timeout",
+      "now": 15000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "turnSeconds": 10
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",null,null,0,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "type-chain",
+        "phase": "GAME_STARTING",
+        "turnOrder": [
+          "p2",
+          "p1",
+          "p3"
+        ],
+        "activePlayerIds": [
+          "p2",
+          "p1",
+          "p3"
+        ],
+        "eliminatedPlayerIds": [],
+        "currentPlayerId": null,
+        "nextPlayerId": null,
+        "turnNumber": 0,
+        "chainNumber": 0,
+        "chain": [],
+        "usedPokemonIds": [],
+        "longestChain": 0,
+        "turnStartedAt": null,
+        "roundEndsAt": null,
+        "invalidAttempts": [],
+        "eliminations": [],
+        "events": [],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canSubmit": false,
+          "isCurrentPlayer": false,
+          "eliminated": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canSubmit": false,
+          "isCurrentPlayer": false,
+          "eliminated": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        },
+        "p3": {
+          "canSubmit": false,
+          "isCurrentPlayer": false,
+          "eliminated": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "TURN_ACTIVE",
+        "nextDeadline": 11000,
+        "actionEpoch": "[\"TURN_ACTIVE\",null,null,1,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "type-chain",
+        "phase": "TURN_ACTIVE",
+        "turnOrder": [
+          "p2",
+          "p1",
+          "p3"
+        ],
+        "activePlayerIds": [
+          "p2",
+          "p1",
+          "p3"
+        ],
+        "eliminatedPlayerIds": [],
+        "currentPlayerId": "p2",
+        "nextPlayerId": "p1",
+        "turnNumber": 1,
+        "chainNumber": 1,
+        "chain": [
+          {
+            "pokemon": {
+              "id": "muk-alola",
+              "name": "Muk de Alola",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+              "types": [
+                "poison",
+                "dark"
+              ]
+            },
+            "playedBy": null,
+            "sharedType": null,
+            "turnNumber": 0
+          }
+        ],
+        "usedPokemonIds": [
+          "muk-alola"
+        ],
+        "longestChain": 1,
+        "turnStartedAt": 1000,
+        "roundEndsAt": 11000,
+        "invalidAttempts": [],
+        "eliminations": [],
+        "events": [],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canSubmit": false,
+          "isCurrentPlayer": false,
+          "eliminated": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canSubmit": true,
+          "isCurrentPlayer": true,
+          "eliminated": false,
+          "cooldownUntil": 0,
+          "lastAttempt": null
+        },
+        "p3": {
+          "canSubmit": false,
+          "isCurrentPlayer": false,
+          "eliminated": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 12000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,2,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p1",
+            "nextPlayerId": "p3",
+            "turnNumber": 2,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "muk-alola",
+                  "name": "Muk de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "types": [
+                    "poison",
+                    "dark"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "dark",
+                "turnNumber": 1
+              }
+            ],
+            "usedPokemonIds": [
+              "muk-alola",
+              "umbreon"
+            ],
+            "longestChain": 2,
+            "turnStartedAt": 2000,
+            "roundEndsAt": 12000,
+            "invalidAttempts": [],
+            "eliminations": [],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "muk-alola",
+                  "name": "Muk de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "types": [
+                    "poison",
+                    "dark"
+                  ]
+                },
+                "to": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "sharedType": "dark",
+                "at": 2000
+              }
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 13000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,3,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p3",
+            "nextPlayerId": "p2",
+            "turnNumber": 3,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "muk-alola",
+                  "name": "Muk de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "types": [
+                    "poison",
+                    "dark"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "dark",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "dark",
+                "turnNumber": 2
+              }
+            ],
+            "usedPokemonIds": [
+              "muk-alola",
+              "umbreon",
+              "sneasel"
+            ],
+            "longestChain": 3,
+            "turnStartedAt": 3000,
+            "roundEndsAt": 13000,
+            "invalidAttempts": [],
+            "eliminations": [],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "muk-alola",
+                  "name": "Muk de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "types": [
+                    "poison",
+                    "dark"
+                  ]
+                },
+                "to": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "sharedType": "dark",
+                "at": 2000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "to": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "sharedType": "dark",
+                "at": 3000
+              }
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 14000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,4,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "eliminatedPlayerIds": [
+              "p3"
+            ],
+            "currentPlayerId": "p2",
+            "nextPlayerId": "p1",
+            "turnNumber": 4,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "muk-alola",
+                  "name": "Muk de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "types": [
+                    "poison",
+                    "dark"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "dark",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "dark",
+                "turnNumber": 2
+              }
+            ],
+            "usedPokemonIds": [
+              "muk-alola",
+              "umbreon",
+              "sneasel"
+            ],
+            "longestChain": 3,
+            "turnStartedAt": 4000,
+            "roundEndsAt": 14000,
+            "invalidAttempts": [],
+            "eliminations": [
+              {
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "turnNumber": 3,
+                "eliminatedAt": 4000,
+                "eliminationOrder": 1
+              }
+            ],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "muk-alola",
+                  "name": "Muk de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "types": [
+                    "poison",
+                    "dark"
+                  ]
+                },
+                "to": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "sharedType": "dark",
+                "at": 2000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "to": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "sharedType": "dark",
+                "at": 3000
+              },
+              {
+                "kind": "ELIMINATION",
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "at": 4000
+              }
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": true,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 15000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,5,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "eliminatedPlayerIds": [
+              "p3"
+            ],
+            "currentPlayerId": "p1",
+            "nextPlayerId": "p2",
+            "turnNumber": 5,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "muk-alola",
+                  "name": "Muk de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "types": [
+                    "poison",
+                    "dark"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "dark",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "dark",
+                "turnNumber": 2
+              },
+              {
+                "pokemon": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
+                  "types": [
+                    "ice",
+                    "psychic"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "ice",
+                "turnNumber": 4
+              }
+            ],
+            "usedPokemonIds": [
+              "muk-alola",
+              "umbreon",
+              "sneasel",
+              "jynx"
+            ],
+            "longestChain": 4,
+            "turnStartedAt": 5000,
+            "roundEndsAt": 15000,
+            "invalidAttempts": [],
+            "eliminations": [
+              {
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "turnNumber": 3,
+                "eliminatedAt": 4000,
+                "eliminationOrder": 1
+              }
+            ],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "muk-alola",
+                  "name": "Muk de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "types": [
+                    "poison",
+                    "dark"
+                  ]
+                },
+                "to": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "sharedType": "dark",
+                "at": 2000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "to": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "sharedType": "dark",
+                "at": 3000
+              },
+              {
+                "kind": "ELIMINATION",
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "at": 4000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "to": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
+                  "types": [
+                    "ice",
+                    "psychic"
+                  ]
+                },
+                "sharedType": "ice",
+                "at": 5000
+              }
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": true,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 15000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,5,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "eliminatedPlayerIds": [
+              "p3"
+            ],
+            "currentPlayerId": "p1",
+            "nextPlayerId": "p2",
+            "turnNumber": 5,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "muk-alola",
+                  "name": "Muk de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "types": [
+                    "poison",
+                    "dark"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "dark",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "dark",
+                "turnNumber": 2
+              },
+              {
+                "pokemon": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
+                  "types": [
+                    "ice",
+                    "psychic"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "ice",
+                "turnNumber": 4
+              }
+            ],
+            "usedPokemonIds": [
+              "muk-alola",
+              "umbreon",
+              "sneasel",
+              "jynx"
+            ],
+            "longestChain": 4,
+            "turnStartedAt": 5000,
+            "roundEndsAt": 15000,
+            "invalidAttempts": [],
+            "eliminations": [
+              {
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "turnNumber": 3,
+                "eliminatedAt": 4000,
+                "eliminationOrder": 1
+              }
+            ],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "muk-alola",
+                  "name": "Muk de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "types": [
+                    "poison",
+                    "dark"
+                  ]
+                },
+                "to": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "sharedType": "dark",
+                "at": 2000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "to": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "sharedType": "dark",
+                "at": 3000
+              },
+              {
+                "kind": "ELIMINATION",
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "at": 4000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "to": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
+                  "types": [
+                    "ice",
+                    "psychic"
+                  ]
+                },
+                "sharedType": "ice",
+                "at": 5000
+              }
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": true,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No es tu turno.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 15000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,5,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "eliminatedPlayerIds": [
+              "p3"
+            ],
+            "currentPlayerId": "p1",
+            "nextPlayerId": "p2",
+            "turnNumber": 5,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "muk-alola",
+                  "name": "Muk de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "types": [
+                    "poison",
+                    "dark"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "dark",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "dark",
+                "turnNumber": 2
+              },
+              {
+                "pokemon": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
+                  "types": [
+                    "ice",
+                    "psychic"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "ice",
+                "turnNumber": 4
+              }
+            ],
+            "usedPokemonIds": [
+              "muk-alola",
+              "umbreon",
+              "sneasel",
+              "jynx"
+            ],
+            "longestChain": 4,
+            "turnStartedAt": 5000,
+            "roundEndsAt": 15000,
+            "invalidAttempts": [],
+            "eliminations": [
+              {
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "turnNumber": 3,
+                "eliminatedAt": 4000,
+                "eliminationOrder": 1
+              }
+            ],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "muk-alola",
+                  "name": "Muk de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "types": [
+                    "poison",
+                    "dark"
+                  ]
+                },
+                "to": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "sharedType": "dark",
+                "at": 2000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "to": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "sharedType": "dark",
+                "at": 3000
+              },
+              {
+                "kind": "ELIMINATION",
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "at": 4000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "to": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
+                  "types": [
+                    "ice",
+                    "psychic"
+                  ]
+                },
+                "sharedType": "ice",
+                "at": 5000
+              }
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": true,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",null,null,5,null,null,null,null]",
+            "spectatorIds": [
+              "p3",
+              "p1"
+            ]
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "GAME_RESULTS",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p2"
+            ],
+            "eliminatedPlayerIds": [
+              "p3",
+              "p1"
+            ],
+            "currentPlayerId": null,
+            "nextPlayerId": null,
+            "turnNumber": 5,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "muk-alola",
+                  "name": "Muk de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "types": [
+                    "poison",
+                    "dark"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "dark",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "dark",
+                "turnNumber": 2
+              },
+              {
+                "pokemon": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
+                  "types": [
+                    "ice",
+                    "psychic"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "ice",
+                "turnNumber": 4
+              }
+            ],
+            "usedPokemonIds": [
+              "muk-alola",
+              "umbreon",
+              "sneasel",
+              "jynx"
+            ],
+            "longestChain": 4,
+            "turnStartedAt": null,
+            "roundEndsAt": null,
+            "invalidAttempts": [],
+            "eliminations": [
+              {
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "turnNumber": 3,
+                "eliminatedAt": 4000,
+                "eliminationOrder": 1
+              },
+              {
+                "playerId": "p1",
+                "reason": "TIMEOUT",
+                "turnNumber": 5,
+                "eliminatedAt": 15000,
+                "eliminationOrder": 2
+              }
+            ],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "muk-alola",
+                  "name": "Muk de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "types": [
+                    "poison",
+                    "dark"
+                  ]
+                },
+                "to": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "sharedType": "dark",
+                "at": 2000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                  "types": [
+                    "dark"
+                  ]
+                },
+                "to": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "sharedType": "dark",
+                "at": 3000
+              },
+              {
+                "kind": "ELIMINATION",
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "at": 4000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "types": [
+                    "dark",
+                    "ice"
+                  ]
+                },
+                "to": {
+                  "id": "jynx",
+                  "name": "Jynx",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
+                  "types": [
+                    "ice",
+                    "psychic"
+                  ]
+                },
+                "sharedType": "ice",
+                "at": 5000
+              },
+              {
+                "kind": "ELIMINATION",
+                "playerId": "p1",
+                "reason": "TIMEOUT",
+                "at": 15000
+              }
+            ],
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "validSubmissions": 2,
+                    "invalidAttempts": 0,
+                    "turnsSurvived": 2,
+                    "timeoutEliminations": 0,
+                    "longestChain": 4
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "validSubmissions": 1,
+                    "invalidAttempts": 0,
+                    "turnsSurvived": 1,
+                    "timeoutEliminations": 1,
+                    "longestChain": 4
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "validSubmissions": 0,
+                    "invalidAttempts": 0,
+                    "turnsSurvived": 0,
+                    "timeoutEliminations": 0,
+                    "longestChain": 4
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": true,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": true,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p2",
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 6,
+          "won": true,
+          "stats": {
+            "validSubmissions": 2,
+            "invalidAttempts": 0,
+            "turnsSurvived": 2,
+            "timeoutEliminations": 0,
+            "longestChain": 4
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 2,
+          "points": 3,
+          "won": false,
+          "stats": {
+            "validSubmissions": 1,
+            "invalidAttempts": 0,
+            "turnsSurvived": 1,
+            "timeoutEliminations": 1,
+            "longestChain": 4
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 2,
+          "won": false,
+          "stats": {
+            "validSubmissions": 0,
+            "invalidAttempts": 0,
+            "turnsSurvived": 0,
+            "timeoutEliminations": 0,
+            "longestChain": 4
+          }
+        }
+      ]
+    }
+  }
+}

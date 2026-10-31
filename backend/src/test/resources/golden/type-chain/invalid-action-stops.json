@@ -1,0 +1,272 @@
+{
+  "engineId": "type-chain",
+  "scenario": "invalid-action-stops",
+  "seed": 604,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "turnSeconds": 15
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "pikachu",
+        "extra": true
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 4000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": 15
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",null,null,0,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "type-chain",
+        "phase": "GAME_STARTING",
+        "turnOrder": [
+          "p2",
+          "p1"
+        ],
+        "activePlayerIds": [
+          "p2",
+          "p1"
+        ],
+        "eliminatedPlayerIds": [],
+        "currentPlayerId": null,
+        "nextPlayerId": null,
+        "turnNumber": 0,
+        "chainNumber": 0,
+        "chain": [],
+        "usedPokemonIds": [],
+        "longestChain": 0,
+        "turnStartedAt": null,
+        "roundEndsAt": null,
+        "invalidAttempts": [],
+        "eliminations": [],
+        "events": [],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canSubmit": false,
+          "isCurrentPlayer": false,
+          "eliminated": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canSubmit": false,
+          "isCurrentPlayer": false,
+          "eliminated": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "TURN_ACTIVE",
+        "nextDeadline": 16000,
+        "actionEpoch": "[\"TURN_ACTIVE\",null,null,1,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "type-chain",
+        "phase": "TURN_ACTIVE",
+        "turnOrder": [
+          "p2",
+          "p1"
+        ],
+        "activePlayerIds": [
+          "p2",
+          "p1"
+        ],
+        "eliminatedPlayerIds": [],
+        "currentPlayerId": "p2",
+        "nextPlayerId": "p1",
+        "turnNumber": 1,
+        "chainNumber": 1,
+        "chain": [
+          {
+            "pokemon": {
+              "id": "mankey",
+              "name": "Mankey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png",
+              "types": [
+                "fighting"
+              ]
+            },
+            "playedBy": null,
+            "sharedType": null,
+            "turnNumber": 0
+          }
+        ],
+        "usedPokemonIds": [
+          "mankey"
+        ],
+        "longestChain": 1,
+        "turnStartedAt": 1000,
+        "roundEndsAt": 16000,
+        "invalidAttempts": [],
+        "eliminations": [],
+        "events": [],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canSubmit": false,
+          "isCurrentPlayer": false,
+          "eliminated": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canSubmit": true,
+          "isCurrentPlayer": true,
+          "eliminated": false,
+          "cooldownUntil": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,1,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p2",
+              "p1"
+            ],
+            "activePlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p2",
+            "nextPlayerId": "p1",
+            "turnNumber": 1,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "mankey",
+                  "name": "Mankey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png",
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              }
+            ],
+            "usedPokemonIds": [
+              "mankey"
+            ],
+            "longestChain": 1,
+            "turnStartedAt": 1000,
+            "roundEndsAt": 16000,
+            "invalidAttempts": [
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "reason": "NO_SHARED_TYPE",
+                "attemptedAt": 2000
+              }
+            ],
+            "eliminations": [],
+            "events": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 3000,
+              "lastAttempt": {
+                "reason": "NO_SHARED_TYPE",
+                "pokemonName": "Pikachu",
+                "attemptedAt": 2000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 1
+}

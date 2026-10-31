@@ -8,6 +8,7 @@ import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerEngine;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceEngine;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessEngine;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaEngine;
+import es.pokemonuniverse.domain.game.engines.typechain.TypeChainEngine;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelEngine;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.core.type.Argument;
@@ -59,6 +60,7 @@ public class ClasspathGameRegistryLoader {
         new PokemonPaletteGuessEngine(manifest(manifests, PokemonPaletteGuessEngine.ID)));
     engines.put(PokemonTriviaEngine.ID, new PokemonTriviaEngine(manifest(manifests, PokemonTriviaEngine.ID)));
     engines.put(TypeDuelEngine.ID, new TypeDuelEngine(manifest(manifests, TypeDuelEngine.ID)));
+    engines.put(TypeChainEngine.ID, new TypeChainEngine(manifest(manifests, TypeChainEngine.ID)));
     return engines;
   }
 

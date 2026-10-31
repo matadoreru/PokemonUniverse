@@ -1,0 +1,3895 @@
+{
+  "engineId": "type-chain",
+  "scenario": "three-players-survivor",
+  "seed": 601,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "turnSeconds": 20
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "missingno"
+      },
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "chikorita"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "bulbasaur"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "jolteon"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 6000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "magnemite"
+      },
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "magneton"
+      },
+      "now": 8000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "voltorb"
+      },
+      "now": 9000
+    },
+    {
+      "kind": "timeout",
+      "now": 28999
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "raichu"
+      },
+      "now": 29000
+    },
+    {
+      "kind": "timeout",
+      "now": 29000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 30000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "electrode"
+      },
+      "now": 31000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 32000
+    },
+    {
+      "kind": "timeout",
+      "now": 40000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "turnSeconds": 20
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",null,null,0,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "type-chain",
+        "phase": "GAME_STARTING",
+        "turnOrder": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "activePlayerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "eliminatedPlayerIds": [],
+        "currentPlayerId": null,
+        "nextPlayerId": null,
+        "turnNumber": 0,
+        "chainNumber": 0,
+        "chain": [],
+        "usedPokemonIds": [],
+        "longestChain": 0,
+        "turnStartedAt": null,
+        "roundEndsAt": null,
+        "invalidAttempts": [],
+        "eliminations": [],
+        "events": [],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canSubmit": false,
+          "isCurrentPlayer": false,
+          "eliminated": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canSubmit": false,
+          "isCurrentPlayer": false,
+          "eliminated": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        },
+        "p3": {
+          "canSubmit": false,
+          "isCurrentPlayer": false,
+          "eliminated": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "TURN_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"TURN_ACTIVE\",null,null,1,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "type-chain",
+        "phase": "TURN_ACTIVE",
+        "turnOrder": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "activePlayerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "eliminatedPlayerIds": [],
+        "currentPlayerId": "p1",
+        "nextPlayerId": "p2",
+        "turnNumber": 1,
+        "chainNumber": 1,
+        "chain": [
+          {
+            "pokemon": {
+              "id": "jolteon",
+              "name": "Jolteon",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+              "types": [
+                "electric"
+              ]
+            },
+            "playedBy": null,
+            "sharedType": null,
+            "turnNumber": 0
+          }
+        ],
+        "usedPokemonIds": [
+          "jolteon"
+        ],
+        "longestChain": 1,
+        "turnStartedAt": 1000,
+        "roundEndsAt": 21000,
+        "invalidAttempts": [],
+        "eliminations": [],
+        "events": [],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canSubmit": true,
+          "isCurrentPlayer": true,
+          "eliminated": false,
+          "cooldownUntil": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canSubmit": false,
+          "isCurrentPlayer": false,
+          "eliminated": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        },
+        "p3": {
+          "canSubmit": false,
+          "isCurrentPlayer": false,
+          "eliminated": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "No es tu turno.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,1,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p1",
+            "nextPlayerId": "p2",
+            "turnNumber": 1,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon"
+            ],
+            "longestChain": 1,
+            "turnStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "invalidAttempts": [],
+            "eliminations": [],
+            "events": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Pokémon desconocido.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,1,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p1",
+            "nextPlayerId": "p2",
+            "turnNumber": 1,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon"
+            ],
+            "longestChain": 1,
+            "turnStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "invalidAttempts": [],
+            "eliminations": [],
+            "events": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,1,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p1",
+            "nextPlayerId": "p2",
+            "turnNumber": 1,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon"
+            ],
+            "longestChain": 1,
+            "turnStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              }
+            ],
+            "eliminations": [],
+            "events": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 4000,
+              "lastAttempt": {
+                "reason": "OUT_OF_POOL",
+                "pokemonName": "Chikorita",
+                "attemptedAt": 3000
+              }
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Espera 0.5s antes de volver a intentar.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,1,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p1",
+            "nextPlayerId": "p2",
+            "turnNumber": 1,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon"
+            ],
+            "longestChain": 1,
+            "turnStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              }
+            ],
+            "eliminations": [],
+            "events": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 4000,
+              "lastAttempt": {
+                "reason": "OUT_OF_POOL",
+                "pokemonName": "Chikorita",
+                "attemptedAt": 3000
+              }
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,1,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p1",
+            "nextPlayerId": "p2",
+            "turnNumber": 1,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon"
+            ],
+            "longestChain": 1,
+            "turnStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "reason": "NO_SHARED_TYPE",
+                "attemptedAt": 4000
+              }
+            ],
+            "eliminations": [],
+            "events": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 5000,
+              "lastAttempt": {
+                "reason": "NO_SHARED_TYPE",
+                "pokemonName": "Bulbasaur",
+                "attemptedAt": 4000
+              }
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,1,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p1",
+            "nextPlayerId": "p2",
+            "turnNumber": 1,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon"
+            ],
+            "longestChain": 1,
+            "turnStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "reason": "NO_SHARED_TYPE",
+                "attemptedAt": 4000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "reason": "ALREADY_USED",
+                "attemptedAt": 5000
+              }
+            ],
+            "eliminations": [],
+            "events": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 6000,
+              "lastAttempt": {
+                "reason": "ALREADY_USED",
+                "pokemonName": "Jolteon",
+                "attemptedAt": 5000
+              }
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,2,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p2",
+            "nextPlayerId": "p3",
+            "turnNumber": 2,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "electric",
+                "turnNumber": 1
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon",
+              "pikachu"
+            ],
+            "longestChain": 2,
+            "turnStartedAt": 6000,
+            "roundEndsAt": 26000,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "reason": "NO_SHARED_TYPE",
+                "attemptedAt": 4000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "reason": "ALREADY_USED",
+                "attemptedAt": 5000
+              }
+            ],
+            "eliminations": [],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 6000
+              }
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "reason": "ALREADY_USED",
+                "pokemonName": "Jolteon",
+                "attemptedAt": 5000
+              }
+            },
+            "p2": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,3,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p3",
+            "nextPlayerId": "p1",
+            "turnNumber": 3,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "electric",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "electric",
+                "turnNumber": 2
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon",
+              "pikachu",
+              "magnemite"
+            ],
+            "longestChain": 3,
+            "turnStartedAt": 7000,
+            "roundEndsAt": 27000,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "reason": "NO_SHARED_TYPE",
+                "attemptedAt": 4000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "reason": "ALREADY_USED",
+                "attemptedAt": 5000
+              }
+            ],
+            "eliminations": [],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 6000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 7000
+              }
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "reason": "ALREADY_USED",
+                "pokemonName": "Jolteon",
+                "attemptedAt": 5000
+              }
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,3,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p3",
+            "nextPlayerId": "p1",
+            "turnNumber": 3,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "electric",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "electric",
+                "turnNumber": 2
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon",
+              "pikachu",
+              "magnemite"
+            ],
+            "longestChain": 3,
+            "turnStartedAt": 7000,
+            "roundEndsAt": 27000,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "reason": "NO_SHARED_TYPE",
+                "attemptedAt": 4000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "reason": "ALREADY_USED",
+                "attemptedAt": 5000
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "magneton",
+                  "name": "Magneton",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "attemptedAt": 8000
+              }
+            ],
+            "eliminations": [],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 6000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 7000
+              }
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "reason": "ALREADY_USED",
+                "pokemonName": "Jolteon",
+                "attemptedAt": 5000
+              }
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 9000,
+              "lastAttempt": {
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "pokemonName": "Magneton",
+                "attemptedAt": 8000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 29000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,4,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p1",
+            "nextPlayerId": "p2",
+            "turnNumber": 4,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "electric",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "electric",
+                "turnNumber": 2
+              },
+              {
+                "pokemon": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p3",
+                "sharedType": "electric",
+                "turnNumber": 3
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon",
+              "pikachu",
+              "magnemite",
+              "voltorb"
+            ],
+            "longestChain": 4,
+            "turnStartedAt": 9000,
+            "roundEndsAt": 29000,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "reason": "NO_SHARED_TYPE",
+                "attemptedAt": 4000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "reason": "ALREADY_USED",
+                "attemptedAt": 5000
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "magneton",
+                  "name": "Magneton",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "attemptedAt": 8000
+              }
+            ],
+            "eliminations": [],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 6000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 7000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p3",
+                "from": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "to": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 9000
+              }
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "pokemonName": "Magneton",
+                "attemptedAt": 8000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 29000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,4,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p1",
+            "nextPlayerId": "p2",
+            "turnNumber": 4,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "electric",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "electric",
+                "turnNumber": 2
+              },
+              {
+                "pokemon": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p3",
+                "sharedType": "electric",
+                "turnNumber": 3
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon",
+              "pikachu",
+              "magnemite",
+              "voltorb"
+            ],
+            "longestChain": 4,
+            "turnStartedAt": 9000,
+            "roundEndsAt": 29000,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "reason": "NO_SHARED_TYPE",
+                "attemptedAt": 4000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "reason": "ALREADY_USED",
+                "attemptedAt": 5000
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "magneton",
+                  "name": "Magneton",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "attemptedAt": 8000
+              }
+            ],
+            "eliminations": [],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 6000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 7000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p3",
+                "from": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "to": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 9000
+              }
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "pokemonName": "Magneton",
+                "attemptedAt": 8000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El turno ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 29000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,4,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [],
+            "currentPlayerId": "p1",
+            "nextPlayerId": "p2",
+            "turnNumber": 4,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "electric",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "electric",
+                "turnNumber": 2
+              },
+              {
+                "pokemon": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p3",
+                "sharedType": "electric",
+                "turnNumber": 3
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon",
+              "pikachu",
+              "magnemite",
+              "voltorb"
+            ],
+            "longestChain": 4,
+            "turnStartedAt": 9000,
+            "roundEndsAt": 29000,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "reason": "NO_SHARED_TYPE",
+                "attemptedAt": 4000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "reason": "ALREADY_USED",
+                "attemptedAt": 5000
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "magneton",
+                  "name": "Magneton",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "attemptedAt": 8000
+              }
+            ],
+            "eliminations": [],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 6000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 7000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p3",
+                "from": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "to": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 9000
+              }
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "pokemonName": "Magneton",
+                "attemptedAt": 8000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,5,null,null,null,null]",
+            "spectatorIds": [
+              "p1"
+            ]
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [
+              "p1"
+            ],
+            "currentPlayerId": "p2",
+            "nextPlayerId": "p3",
+            "turnNumber": 5,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "electric",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "electric",
+                "turnNumber": 2
+              },
+              {
+                "pokemon": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p3",
+                "sharedType": "electric",
+                "turnNumber": 3
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon",
+              "pikachu",
+              "magnemite",
+              "voltorb"
+            ],
+            "longestChain": 4,
+            "turnStartedAt": 29000,
+            "roundEndsAt": 49000,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "reason": "NO_SHARED_TYPE",
+                "attemptedAt": 4000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "reason": "ALREADY_USED",
+                "attemptedAt": 5000
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "magneton",
+                  "name": "Magneton",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "attemptedAt": 8000
+              }
+            ],
+            "eliminations": [
+              {
+                "playerId": "p1",
+                "reason": "TIMEOUT",
+                "turnNumber": 4,
+                "eliminatedAt": 29000,
+                "eliminationOrder": 1
+              }
+            ],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 6000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 7000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p3",
+                "from": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "to": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 9000
+              },
+              {
+                "kind": "ELIMINATION",
+                "playerId": "p1",
+                "reason": "TIMEOUT",
+                "at": 29000
+              }
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": true,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "pokemonName": "Magneton",
+                "attemptedAt": 8000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,5,null,null,null,null]",
+            "spectatorIds": [
+              "p1"
+            ]
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "TURN_ACTIVE",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "eliminatedPlayerIds": [
+              "p1"
+            ],
+            "currentPlayerId": "p2",
+            "nextPlayerId": "p3",
+            "turnNumber": 5,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "electric",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "electric",
+                "turnNumber": 2
+              },
+              {
+                "pokemon": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p3",
+                "sharedType": "electric",
+                "turnNumber": 3
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon",
+              "pikachu",
+              "magnemite",
+              "voltorb"
+            ],
+            "longestChain": 4,
+            "turnStartedAt": 29000,
+            "roundEndsAt": 49000,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "reason": "NO_SHARED_TYPE",
+                "attemptedAt": 4000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "reason": "ALREADY_USED",
+                "attemptedAt": 5000
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "magneton",
+                  "name": "Magneton",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "attemptedAt": 8000
+              }
+            ],
+            "eliminations": [
+              {
+                "playerId": "p1",
+                "reason": "TIMEOUT",
+                "turnNumber": 4,
+                "eliminatedAt": 29000,
+                "eliminationOrder": 1
+              }
+            ],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 6000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 7000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p3",
+                "from": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "to": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 9000
+              },
+              {
+                "kind": "ELIMINATION",
+                "playerId": "p1",
+                "reason": "TIMEOUT",
+                "at": 29000
+              }
+            ],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": true,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": true,
+              "isCurrentPlayer": true,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "pokemonName": "Magneton",
+                "attemptedAt": 8000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",null,null,5,null,null,null,null]",
+            "spectatorIds": [
+              "p1",
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "GAME_RESULTS",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p2"
+            ],
+            "eliminatedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentPlayerId": null,
+            "nextPlayerId": null,
+            "turnNumber": 5,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "electric",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "electric",
+                "turnNumber": 2
+              },
+              {
+                "pokemon": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p3",
+                "sharedType": "electric",
+                "turnNumber": 3
+              },
+              {
+                "pokemon": {
+                  "id": "electrode",
+                  "name": "Electrode",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/101.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "electric",
+                "turnNumber": 5
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon",
+              "pikachu",
+              "magnemite",
+              "voltorb",
+              "electrode"
+            ],
+            "longestChain": 5,
+            "turnStartedAt": null,
+            "roundEndsAt": null,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "reason": "NO_SHARED_TYPE",
+                "attemptedAt": 4000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "reason": "ALREADY_USED",
+                "attemptedAt": 5000
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "magneton",
+                  "name": "Magneton",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "attemptedAt": 8000
+              }
+            ],
+            "eliminations": [
+              {
+                "playerId": "p1",
+                "reason": "TIMEOUT",
+                "turnNumber": 4,
+                "eliminatedAt": 29000,
+                "eliminationOrder": 1
+              },
+              {
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "turnNumber": 5,
+                "eliminatedAt": 31000,
+                "eliminationOrder": 2
+              }
+            ],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 6000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 7000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p3",
+                "from": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "to": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 9000
+              },
+              {
+                "kind": "ELIMINATION",
+                "playerId": "p1",
+                "reason": "TIMEOUT",
+                "at": 29000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "electrode",
+                  "name": "Electrode",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/101.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 31000
+              },
+              {
+                "kind": "ELIMINATION",
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "at": 31000
+              }
+            ],
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "validSubmissions": 2,
+                    "invalidAttempts": 0,
+                    "turnsSurvived": 2,
+                    "timeoutEliminations": 0,
+                    "longestChain": 5
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "validSubmissions": 1,
+                    "invalidAttempts": 1,
+                    "turnsSurvived": 1,
+                    "timeoutEliminations": 0,
+                    "longestChain": 5
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "validSubmissions": 1,
+                    "invalidAttempts": 3,
+                    "turnsSurvived": 1,
+                    "timeoutEliminations": 1,
+                    "longestChain": 5
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": true,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": true,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "pokemonName": "Magneton",
+                "attemptedAt": 8000
+              }
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No hay un turno activo.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",null,null,5,null,null,null,null]",
+            "spectatorIds": [
+              "p1",
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "GAME_RESULTS",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p2"
+            ],
+            "eliminatedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentPlayerId": null,
+            "nextPlayerId": null,
+            "turnNumber": 5,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "electric",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "electric",
+                "turnNumber": 2
+              },
+              {
+                "pokemon": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p3",
+                "sharedType": "electric",
+                "turnNumber": 3
+              },
+              {
+                "pokemon": {
+                  "id": "electrode",
+                  "name": "Electrode",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/101.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "electric",
+                "turnNumber": 5
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon",
+              "pikachu",
+              "magnemite",
+              "voltorb",
+              "electrode"
+            ],
+            "longestChain": 5,
+            "turnStartedAt": null,
+            "roundEndsAt": null,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "reason": "NO_SHARED_TYPE",
+                "attemptedAt": 4000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "reason": "ALREADY_USED",
+                "attemptedAt": 5000
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "magneton",
+                  "name": "Magneton",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "attemptedAt": 8000
+              }
+            ],
+            "eliminations": [
+              {
+                "playerId": "p1",
+                "reason": "TIMEOUT",
+                "turnNumber": 4,
+                "eliminatedAt": 29000,
+                "eliminationOrder": 1
+              },
+              {
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "turnNumber": 5,
+                "eliminatedAt": 31000,
+                "eliminationOrder": 2
+              }
+            ],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 6000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 7000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p3",
+                "from": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "to": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 9000
+              },
+              {
+                "kind": "ELIMINATION",
+                "playerId": "p1",
+                "reason": "TIMEOUT",
+                "at": 29000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "electrode",
+                  "name": "Electrode",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/101.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 31000
+              },
+              {
+                "kind": "ELIMINATION",
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "at": 31000
+              }
+            ],
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "validSubmissions": 2,
+                    "invalidAttempts": 0,
+                    "turnsSurvived": 2,
+                    "timeoutEliminations": 0,
+                    "longestChain": 5
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "validSubmissions": 1,
+                    "invalidAttempts": 1,
+                    "turnsSurvived": 1,
+                    "timeoutEliminations": 0,
+                    "longestChain": 5
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "validSubmissions": 1,
+                    "invalidAttempts": 3,
+                    "turnsSurvived": 1,
+                    "timeoutEliminations": 1,
+                    "longestChain": 5
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": true,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": true,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "pokemonName": "Magneton",
+                "attemptedAt": 8000
+              }
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",null,null,5,null,null,null,null]",
+            "spectatorIds": [
+              "p1",
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "type-chain",
+            "phase": "GAME_RESULTS",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "activePlayerIds": [
+              "p2"
+            ],
+            "eliminatedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentPlayerId": null,
+            "nextPlayerId": null,
+            "turnNumber": 5,
+            "chainNumber": 1,
+            "chain": [
+              {
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": null,
+                "sharedType": null,
+                "turnNumber": 0
+              },
+              {
+                "pokemon": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p1",
+                "sharedType": "electric",
+                "turnNumber": 1
+              },
+              {
+                "pokemon": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "electric",
+                "turnNumber": 2
+              },
+              {
+                "pokemon": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p3",
+                "sharedType": "electric",
+                "turnNumber": 3
+              },
+              {
+                "pokemon": {
+                  "id": "electrode",
+                  "name": "Electrode",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/101.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "playedBy": "p2",
+                "sharedType": "electric",
+                "turnNumber": 5
+              }
+            ],
+            "usedPokemonIds": [
+              "jolteon",
+              "pikachu",
+              "magnemite",
+              "voltorb",
+              "electrode"
+            ],
+            "longestChain": 5,
+            "turnStartedAt": null,
+            "roundEndsAt": null,
+            "invalidAttempts": [
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png",
+                  "types": [
+                    "grass"
+                  ]
+                },
+                "reason": "OUT_OF_POOL",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "reason": "NO_SHARED_TYPE",
+                "attemptedAt": 4000
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "reason": "ALREADY_USED",
+                "attemptedAt": 5000
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "magneton",
+                  "name": "Magneton",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "attemptedAt": 8000
+              }
+            ],
+            "eliminations": [
+              {
+                "playerId": "p1",
+                "reason": "TIMEOUT",
+                "turnNumber": 4,
+                "eliminatedAt": 29000,
+                "eliminationOrder": 1
+              },
+              {
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "turnNumber": 5,
+                "eliminatedAt": 31000,
+                "eliminationOrder": 2
+              }
+            ],
+            "events": [
+              {
+                "kind": "SUCCESS",
+                "playerId": "p1",
+                "from": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 6000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 7000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p3",
+                "from": {
+                  "id": "magnemite",
+                  "name": "Magnemite",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                  "types": [
+                    "electric",
+                    "steel"
+                  ]
+                },
+                "to": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 9000
+              },
+              {
+                "kind": "ELIMINATION",
+                "playerId": "p1",
+                "reason": "TIMEOUT",
+                "at": 29000
+              },
+              {
+                "kind": "SUCCESS",
+                "playerId": "p2",
+                "from": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "to": {
+                  "id": "electrode",
+                  "name": "Electrode",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/101.png",
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "sharedType": "electric",
+                "at": 31000
+              },
+              {
+                "kind": "ELIMINATION",
+                "playerId": "p3",
+                "reason": "DISCONNECTED",
+                "at": 31000
+              }
+            ],
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "validSubmissions": 2,
+                    "invalidAttempts": 0,
+                    "turnsSurvived": 2,
+                    "timeoutEliminations": 0,
+                    "longestChain": 5
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "validSubmissions": 1,
+                    "invalidAttempts": 1,
+                    "turnsSurvived": 1,
+                    "timeoutEliminations": 0,
+                    "longestChain": 5
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "validSubmissions": 1,
+                    "invalidAttempts": 3,
+                    "turnsSurvived": 1,
+                    "timeoutEliminations": 1,
+                    "longestChain": 5
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": true,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": true,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "reason": "MULTIPLE_SHARED_TYPES",
+                "pokemonName": "Magneton",
+                "attemptedAt": 8000
+              }
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p2",
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 6,
+          "won": true,
+          "stats": {
+            "validSubmissions": 2,
+            "invalidAttempts": 0,
+            "turnsSurvived": 2,
+            "timeoutEliminations": 0,
+            "longestChain": 5
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 2,
+          "points": 3,
+          "won": false,
+          "stats": {
+            "validSubmissions": 1,
+            "invalidAttempts": 1,
+            "turnsSurvived": 1,
+            "timeoutEliminations": 0,
+            "longestChain": 5
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 3,
+          "points": 2,
+          "won": false,
+          "stats": {
+            "validSubmissions": 1,
+            "invalidAttempts": 3,
+            "turnsSurvived": 1,
+            "timeoutEliminations": 1,
+            "longestChain": 5
+          }
+        }
+      ]
+    }
+  }
+}
