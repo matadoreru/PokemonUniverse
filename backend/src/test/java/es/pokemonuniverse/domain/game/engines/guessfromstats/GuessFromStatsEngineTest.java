@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
+import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.json.JsonTree;
@@ -84,5 +85,22 @@ class GuessFromStatsEngineTest {
     // Sin preloadImage (opcional en el contexto) la baraja se prepara igual.
     var withoutPreload = context(2);
     engine.createInitialState(engine.defaultConfig(), withoutPreload);
+  }
+
+  /** Estados que el flujo público no produce: la baraja no tiene la ronda en curso. */
+  @Test
+  void returnsTheServerLiteralsWhenTheRoundIsMissingFromTheDeck() {
+    var context = context(2);
+    var missing = GuessFromStatsTypes.GuessFromStatsState.builder().phase(GamePhase.ROUND_ACTIVE)
+        .config(engine.defaultConfig()).playerIds(List.of("p1", "p2")).poolIds(List.of("pikachu")).roundNumber(1)
+        .roundStartedAt(1000L).roundEndsAt(31_000L).build();
+    var result = engine.handleAction(missing, "p1", new GuessFromStatsTypes.GuessFromStatsAction("pikachu"), context);
+    assertEquals("La respuesta no está disponible.", result.error());
+    var error = assertThrows(EngineException.class, () -> engine.handleTimeout(missing, context.withNow(31_000)));
+    assertEquals("La ronda ya no está disponible.", error.getMessage());
+    var finished = missing.toBuilder().phase(GamePhase.ROUND_RESULTS).roundNumber(0).roundEndsAt(null)
+        .nextTransitionAt(5_000L).build();
+    error = assertThrows(EngineException.class, () -> engine.handleTimeout(finished, context.withNow(5_000)));
+    assertEquals("No se pudo preparar la siguiente ronda de estadísticas.", error.getMessage());
   }
 }
