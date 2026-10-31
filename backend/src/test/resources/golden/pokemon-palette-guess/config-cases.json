@@ -28,6 +28,29 @@
   {
     "input": {
       "generations": [
+        9
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": []
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        9
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": []
+    }
+  },
+  {
+    "input": {
+      "generations": [
         1
       ],
       "roundSeconds": 20,
@@ -221,6 +244,19 @@
   {
     "input": {
       "generations": [],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": []
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
       "roundSeconds": 20,
       "rounds": 3,
       "paletteSize": 8,

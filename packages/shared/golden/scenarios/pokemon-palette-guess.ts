@@ -158,6 +158,7 @@ export const pokemonPaletteGuessScenarios: GoldenEngineEntry = {
   configCases: [
     // Válidos: normalización de generaciones y de hintKinds (dedup en orden), límites y lista de pistas vacía.
     { ...baseConfig, generations: [2, 1, 2] },
+    { ...baseConfig, generations: [9] },
     { ...baseConfig, hintKinds: ['TYPE', 'GENERATION', 'TYPE', 'CATEGORY', 'GENERATION'] },
     { ...baseConfig, roundSeconds: 10, rounds: 1, paletteSize: 5 },
     { ...baseConfig, roundSeconds: 60, rounds: 20, paletteSize: 8 },
@@ -171,6 +172,7 @@ export const pokemonPaletteGuessScenarios: GoldenEngineEntry = {
     { ...baseConfig, paletteSize: 9 },
     { ...baseConfig, paletteSize: 6.5 },
     { ...baseConfig, generations: [] },
+    { ...baseConfig, generations: [0] },
     { ...baseConfig, generations: [10] },
     { ...baseConfig, hintKinds: ['SHAPE'] },
     { ...baseConfig, hintKinds: 'TYPE' },

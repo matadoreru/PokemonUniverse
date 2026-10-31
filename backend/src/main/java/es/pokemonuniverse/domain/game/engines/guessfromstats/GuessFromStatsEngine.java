@@ -47,8 +47,6 @@ public final class GuessFromStatsEngine
   public static final long COOLDOWN_MS = 1_000;
   public static final long REVEAL_MS = 4_000;
   public static final int MAX_RECENT_ATTEMPTS = 48;
-  /** {@code manifest.minPlayers}. */
-  private static final int MIN_PLAYERS = 2;
 
   private final GameManifest manifest;
 
@@ -210,8 +208,8 @@ public final class GuessFromStatsEngine
 
   @Override
   public GuessFromStatsState createInitialState(GuessFromStatsConfig config, GameContext context) {
-    if (context.players().size() < MIN_PLAYERS) {
-      throw new EngineException("Se necesitan al menos " + MIN_PLAYERS + " jugadores.");
+    if (context.players().size() < manifest.minPlayers()) {
+      throw new EngineException("Se necesitan al menos " + manifest.minPlayers() + " jugadores.");
     }
     var playerIds = context.players().stream().map(GamePlayer::id).toList();
     var pool = pool(config, context);

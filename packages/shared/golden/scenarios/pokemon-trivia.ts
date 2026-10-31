@@ -145,6 +145,7 @@ export const pokemonTriviaScenarios: GoldenEngineEntry = {
   configCases: [
     // Válidos: normalización de generaciones, límites y tipos repetidos (no se deduplican).
     { ...baseConfig, generations: [2, 1, 1] },
+    { ...baseConfig, generations: [9] },
     { ...baseConfig, roundSeconds: 10, rounds: 1, optionCount: 3 },
     { ...baseConfig, roundSeconds: 60, rounds: 30, optionCount: 4 },
     { ...baseConfig, roundSeconds: 10.0, difficulty: 'HARD' },
@@ -165,6 +166,8 @@ export const pokemonTriviaScenarios: GoldenEngineEntry = {
     { ...baseConfig, questionTypes: ['COLOR'] },
     { ...baseConfig, generations: [1], questionTypes: ['GENERATION'] },
     { ...baseConfig, generations: [] },
+    { ...baseConfig, generations: [0] },
+    { ...baseConfig, generations: [10] },
     { ...baseConfig, unknownKey: 'no se admite' },
     { ...baseConfig, rounds: '4' },
     { ...baseConfig, difficulty: undefined },

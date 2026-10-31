@@ -54,6 +54,55 @@
   {
     "input": {
       "generations": [
+        9
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        9
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    }
+  },
+  {
+    "input": {
+      "generations": [
         1,
         2
       ],
@@ -605,6 +654,58 @@
   {
     "input": {
       "generations": [],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
       "roundSeconds": 20,
       "rounds": 4,
       "optionCount": 4,

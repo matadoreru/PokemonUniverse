@@ -134,7 +134,7 @@ public class PokemonCatalogService implements GameCatalogProvider {
     var metadata = r.getMetadata();
     var shiny = metadata != null && metadata.get("shinySprite") instanceof String s ? s : null;
     Map<String, Object> names = r.getNames();
-    var palette = PersistedPalette.from(metadata, r.getSprite());
+    var palette = CatalogPalette.from(metadata);
     return new Pokemon(r.getId(), r.getNationalDexNumber(), r.getName(), r.getGeneration(), r.getIsDefault(),
         r.getSprite(), shiny, palette == null ? null : palette.palette(),
         palette == null ? null : palette.paletteWeights(), r.getHp(), r.getAttack(), r.getDefense(),

@@ -155,6 +155,7 @@ export const guessFromStatsScenarios: GoldenEngineEntry = {
   configCases: [
     // Válidos: normalización de generaciones, límites, dos estadísticas, pistas vacías con hintsEnabled false.
     { ...baseConfig, generations: [2, 1, 2] },
+    { ...baseConfig, generations: [9] },
     { ...baseConfig, roundSeconds: 15, rounds: 1 },
     { ...baseConfig, roundSeconds: 60, rounds: 20 },
     { ...baseConfig, roundSeconds: 15.0 },
@@ -168,6 +169,7 @@ export const guessFromStatsScenarios: GoldenEngineEntry = {
     { ...baseConfig, rounds: 21 },
     { ...baseConfig, roundSeconds: 15.5 },
     { ...baseConfig, generations: [] },
+    { ...baseConfig, generations: [0] },
     { ...baseConfig, generations: [10] },
     { ...baseConfig, stats: { ...allStats, hp: false, attack: false, defense: false, specialAttack: false, specialDefense: false } },
     { ...baseConfig, hintsEnabled: true, hints: noHints },

@@ -60,6 +60,61 @@
   {
     "input": {
       "generations": [
+        9
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "stats": {
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "bst": false
+      },
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "types": true,
+        "typeCount": false,
+        "evolution": true,
+        "height": false,
+        "weight": false,
+        "category": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        9
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "stats": {
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "bst": false
+      },
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "types": true,
+        "typeCount": false,
+        "evolution": true,
+        "height": false,
+        "weight": false,
+        "category": false
+      }
+    }
+  },
+  {
+    "input": {
+      "generations": [
         1
       ],
       "roundSeconds": 15,
@@ -535,6 +590,35 @@
   {
     "input": {
       "generations": [],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "stats": {
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "bst": false
+      },
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "types": true,
+        "typeCount": false,
+        "evolution": true,
+        "height": false,
+        "weight": false,
+        "category": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
       "roundSeconds": 20,
       "rounds": 3,
       "stats": {
