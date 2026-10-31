@@ -17,6 +17,7 @@ import { pokemonPaletteGuessScenarios } from './pokemon-palette-guess.js';
 import { pokemonTriviaScenarios } from './pokemon-trivia.js';
 import { secretRankingScenarios } from './secret-ranking.js';
 import { shinyVoteScenarios } from './shiny-vote.js';
+import { tcgHigherLowerScenarios } from './tcg-higher-lower.js';
 import { typeChainScenarios } from './type-chain.js';
 import { typeDuelScenarios } from './type-duel.js';
 import { whosThatPokemonScenarios } from './whos-that-pokemon.js';
@@ -51,4 +52,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'pokemon-cry-quiz': pokemonCryQuizScenarios,
   'zoomed-pokemon': zoomedPokemonScenarios,
   'shiny-vote': shinyVoteScenarios,
+  'tcg-higher-lower': tcgHigherLowerScenarios,
 };

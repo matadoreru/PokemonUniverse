@@ -1,0 +1,1020 @@
+[
+  {
+    "input": {
+      "generations": [
+        3,
+        1,
+        3,
+        2
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [
+        "sv2",
+        "sv1",
+        "sv2"
+      ],
+      "rarities": [
+        "Rare",
+        "Common",
+        "Rare"
+      ],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15,
+      "unknownKey": "se ignora"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [
+        "sv2",
+        "sv1"
+      ],
+      "rarities": [
+        "Rare",
+        "Common"
+      ],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 5
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 5
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": false,
+      "rounds": 50,
+      "roundSeconds": 60
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": false,
+      "rounds": 50,
+      "roundSeconds": 60
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 10,
+      "roundSeconds": 15
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 10,
+      "roundSeconds": 15
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": "007.50",
+      "maxPrice": "7.5",
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": "007.50",
+      "maxPrice": "7.5",
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": "0",
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": "0",
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": "999.990",
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": "999.990",
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": "9.99",
+      "maxPrice": "10",
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": "9.99",
+      "maxPrice": "10",
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": "999",
+      "maxPrice": "1000",
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": "999",
+      "maxPrice": "1000",
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": "10",
+      "maxPrice": "9.99",
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": "1000",
+      "maxPrice": "999.99",
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": "1.",
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": ".5",
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": "-1",
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": "1,5",
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": " 1",
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": "1e3",
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": "",
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": 5,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 4,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 51,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 4
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 61
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 10.5
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [
+        ""
+      ],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [
+        ""
+      ],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": "sv1",
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [
+        1
+      ],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": "yes",
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": "5",
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 5,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]

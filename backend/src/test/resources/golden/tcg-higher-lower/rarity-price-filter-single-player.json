@@ -1,0 +1,1249 @@
+{
+  "engineId": "tcg-higher-lower",
+  "scenario": "rarity-price-filter-single-player",
+  "seed": 303,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "setIds": [],
+    "rarities": [
+      "Rare",
+      "Rare"
+    ],
+    "minPrice": "03.50",
+    "maxPrice": "50",
+    "showRarity": true,
+    "rounds": 6,
+    "roundSeconds": 10
+  },
+  "startNow": 50000,
+  "tcgCards": [
+    {
+      "id": "sv1-001",
+      "name": "Sprigatito",
+      "localId": "001",
+      "setId": "sv1",
+      "setName": "Escarlata y Púrpura",
+      "rarity": "Common",
+      "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/001/high.webp",
+      "price": "0.25",
+      "currency": "EUR",
+      "provider": "cardmarket",
+      "variant": "normal"
+    },
+    {
+      "id": "sv1-025",
+      "name": "Pikachu",
+      "localId": "025",
+      "setId": "sv1",
+      "setName": "Escarlata y Púrpura",
+      "rarity": "Rare",
+      "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/025/high.webp",
+      "price": "3.5",
+      "currency": "EUR",
+      "provider": "cardmarket",
+      "variant": "normal"
+    },
+    {
+      "id": "sv1-004",
+      "name": "Fuecoco",
+      "localId": "004",
+      "setId": "sv1",
+      "setName": "Escarlata y Púrpura",
+      "rarity": "Common",
+      "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/004/high.webp",
+      "price": "0.25",
+      "currency": "EUR",
+      "provider": "cardmarket",
+      "variant": "normal"
+    },
+    {
+      "id": "sv2-012",
+      "name": "Charizard ex",
+      "localId": "012",
+      "setId": "sv2",
+      "setName": "Evoluciones en Paldea",
+      "rarity": "Rare",
+      "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/012/high.webp",
+      "price": "12.75",
+      "currency": "EUR",
+      "provider": "cardmarket",
+      "variant": "normal"
+    },
+    {
+      "id": "sv2-030",
+      "name": "Tinkatink",
+      "localId": "030",
+      "setId": "sv2",
+      "setName": "Evoluciones en Paldea",
+      "rarity": "Common",
+      "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/030/high.webp",
+      "price": "1.1",
+      "currency": "EUR",
+      "provider": "cardmarket",
+      "variant": "normal"
+    },
+    {
+      "id": "sv2-055",
+      "name": "Gardevoir",
+      "localId": "055",
+      "setId": "sv2",
+      "setName": "Evoluciones en Paldea",
+      "rarity": "Rare",
+      "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/055/high.webp",
+      "price": "3.5",
+      "currency": "EUR",
+      "provider": "cardmarket",
+      "variant": "normal"
+    },
+    {
+      "id": "sv2-199",
+      "name": "Iono",
+      "localId": "199",
+      "setId": "sv2",
+      "setName": "Evoluciones en Paldea",
+      "rarity": null,
+      "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/199/high.webp",
+      "price": "120",
+      "currency": "EUR",
+      "provider": "cardmarket",
+      "variant": "normal"
+    },
+    {
+      "id": "sv1-081",
+      "name": "Miraidon ex",
+      "localId": "081",
+      "setId": "sv1",
+      "setName": "Escarlata y Púrpura",
+      "rarity": "Rare",
+      "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/081/high.webp",
+      "price": "45.1",
+      "currency": "EUR",
+      "provider": "cardmarket",
+      "variant": "normal"
+    },
+    {
+      "id": "sv2-203",
+      "name": "Magikarp",
+      "localId": "203",
+      "setId": "sv2",
+      "setName": "Evoluciones en Paldea",
+      "rarity": "Common",
+      "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/203/high.webp",
+      "price": "999.99",
+      "currency": "EUR",
+      "provider": "cardmarket",
+      "variant": "normal"
+    },
+    {
+      "id": "sv1-244",
+      "name": "Koraidon ex",
+      "localId": "244",
+      "setId": "sv1",
+      "setName": "Escarlata y Púrpura",
+      "rarity": "Rare",
+      "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/244/high.webp",
+      "price": "1500",
+      "currency": "EUR",
+      "provider": "cardmarket",
+      "variant": "normal"
+    }
+  ],
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER"
+      },
+      "now": 51000
+    },
+    {
+      "kind": "timeout",
+      "now": 54000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "SAME"
+      },
+      "now": 55000
+    },
+    {
+      "kind": "timeout",
+      "now": 58000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "HIGHER"
+      },
+      "now": 59000
+    },
+    {
+      "kind": "timeout",
+      "now": 62000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER"
+      },
+      "now": 63000
+    },
+    {
+      "kind": "timeout",
+      "now": 66000
+    },
+    {
+      "kind": "timeout",
+      "now": 76000
+    },
+    {
+      "kind": "timeout",
+      "now": 79000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER"
+      },
+      "now": 80000
+    },
+    {
+      "kind": "timeout",
+      "now": 83000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [
+        "Rare"
+      ],
+      "minPrice": "03.50",
+      "maxPrice": "50",
+      "showRarity": true,
+      "rounds": 6,
+      "roundSeconds": 10
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "tcg-higher-lower",
+        "phase": "GAME_STARTING",
+        "playerIds": [
+          "p1"
+        ],
+        "roundNumber": 0,
+        "totalRounds": 6,
+        "currency": "EUR",
+        "previousCard": {
+          "id": "sv2-012",
+          "name": "Charizard ex",
+          "localId": "012",
+          "setId": "sv2",
+          "setName": "Evoluciones en Paldea",
+          "rarity": "Rare",
+          "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/012/high.webp",
+          "price": "12.75"
+        },
+        "currentCard": {
+          "id": "sv1-025",
+          "name": "Pikachu",
+          "localId": "025",
+          "setId": "sv1",
+          "setName": "Escarlata y Púrpura",
+          "rarity": "Rare",
+          "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/025/high.webp",
+          "price": null
+        },
+        "answeredIds": [],
+        "scores": {
+          "p1": 0
+        },
+        "streaks": {
+          "p1": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canAnswer": false,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 60000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,50000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "tcg-higher-lower",
+        "phase": "ROUND_ACTIVE",
+        "playerIds": [
+          "p1"
+        ],
+        "roundNumber": 1,
+        "totalRounds": 6,
+        "currency": "EUR",
+        "previousCard": {
+          "id": "sv2-012",
+          "name": "Charizard ex",
+          "localId": "012",
+          "setId": "sv2",
+          "setName": "Evoluciones en Paldea",
+          "rarity": "Rare",
+          "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/012/high.webp",
+          "price": "12.75"
+        },
+        "currentCard": {
+          "id": "sv1-025",
+          "name": "Pikachu",
+          "localId": "025",
+          "setId": "sv1",
+          "setName": "Escarlata y Púrpura",
+          "rarity": "Rare",
+          "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/025/high.webp",
+          "price": null
+        },
+        "answeredIds": [],
+        "scores": {
+          "p1": 0
+        },
+        "streaks": {
+          "p1": 0
+        },
+        "roundStartedAt": 50000,
+        "roundEndsAt": 60000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canAnswer": true,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 54000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,50000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "tcg-higher-lower",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 1,
+            "totalRounds": 6,
+            "currency": "EUR",
+            "previousCard": {
+              "id": "sv2-012",
+              "name": "Charizard ex",
+              "localId": "012",
+              "setId": "sv2",
+              "setName": "Evoluciones en Paldea",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/012/high.webp",
+              "price": "12.75"
+            },
+            "currentCard": {
+              "id": "sv1-025",
+              "name": "Pikachu",
+              "localId": "025",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/025/high.webp",
+              "price": "3.5"
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 1
+            },
+            "streaks": {
+              "p1": 1
+            },
+            "roundStartedAt": 50000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 54000,
+            "lastRound": {
+              "previousPrice": "12.75",
+              "currentPrice": "3.5",
+              "correctAnswer": "LOWER",
+              "outcomes": {
+                "p1": {
+                  "choice": "LOWER",
+                  "correct": true,
+                  "awardedPoints": 1,
+                  "streak": 1
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 51000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 64000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,54000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "tcg-higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 2,
+            "totalRounds": 6,
+            "currency": "EUR",
+            "previousCard": {
+              "id": "sv1-025",
+              "name": "Pikachu",
+              "localId": "025",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/025/high.webp",
+              "price": "3.5"
+            },
+            "currentCard": {
+              "id": "sv2-055",
+              "name": "Gardevoir",
+              "localId": "055",
+              "setId": "sv2",
+              "setName": "Evoluciones en Paldea",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/055/high.webp",
+              "price": null
+            },
+            "answeredIds": [],
+            "scores": {
+              "p1": 1
+            },
+            "streaks": {
+              "p1": 1
+            },
+            "roundStartedAt": 54000,
+            "roundEndsAt": 64000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 58000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,54000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "tcg-higher-lower",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 2,
+            "totalRounds": 6,
+            "currency": "EUR",
+            "previousCard": {
+              "id": "sv1-025",
+              "name": "Pikachu",
+              "localId": "025",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/025/high.webp",
+              "price": "3.5"
+            },
+            "currentCard": {
+              "id": "sv2-055",
+              "name": "Gardevoir",
+              "localId": "055",
+              "setId": "sv2",
+              "setName": "Evoluciones en Paldea",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/055/high.webp",
+              "price": "3.5"
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 3
+            },
+            "streaks": {
+              "p1": 2
+            },
+            "roundStartedAt": 54000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 58000,
+            "lastRound": {
+              "previousPrice": "3.5",
+              "currentPrice": "3.5",
+              "correctAnswer": "SAME",
+              "outcomes": {
+                "p1": {
+                  "choice": "SAME",
+                  "correct": true,
+                  "awardedPoints": 2,
+                  "streak": 2
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "SAME",
+                "answeredAt": 55000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 68000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,58000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "tcg-higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 3,
+            "totalRounds": 6,
+            "currency": "EUR",
+            "previousCard": {
+              "id": "sv2-055",
+              "name": "Gardevoir",
+              "localId": "055",
+              "setId": "sv2",
+              "setName": "Evoluciones en Paldea",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/055/high.webp",
+              "price": "3.5"
+            },
+            "currentCard": {
+              "id": "sv1-081",
+              "name": "Miraidon ex",
+              "localId": "081",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/081/high.webp",
+              "price": null
+            },
+            "answeredIds": [],
+            "scores": {
+              "p1": 3
+            },
+            "streaks": {
+              "p1": 2
+            },
+            "roundStartedAt": 58000,
+            "roundEndsAt": 68000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 62000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,58000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "tcg-higher-lower",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 3,
+            "totalRounds": 6,
+            "currency": "EUR",
+            "previousCard": {
+              "id": "sv2-055",
+              "name": "Gardevoir",
+              "localId": "055",
+              "setId": "sv2",
+              "setName": "Evoluciones en Paldea",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/055/high.webp",
+              "price": "3.5"
+            },
+            "currentCard": {
+              "id": "sv1-081",
+              "name": "Miraidon ex",
+              "localId": "081",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/081/high.webp",
+              "price": "45.1"
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 4
+            },
+            "streaks": {
+              "p1": 3
+            },
+            "roundStartedAt": 58000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 62000,
+            "lastRound": {
+              "previousPrice": "3.5",
+              "currentPrice": "45.1",
+              "correctAnswer": "HIGHER",
+              "outcomes": {
+                "p1": {
+                  "choice": "HIGHER",
+                  "correct": true,
+                  "awardedPoints": 1,
+                  "streak": 3
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "HIGHER",
+                "answeredAt": 59000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 72000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,62000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "tcg-higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 4,
+            "totalRounds": 6,
+            "currency": "EUR",
+            "previousCard": {
+              "id": "sv1-081",
+              "name": "Miraidon ex",
+              "localId": "081",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/081/high.webp",
+              "price": "45.1"
+            },
+            "currentCard": {
+              "id": "sv1-025",
+              "name": "Pikachu",
+              "localId": "025",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/025/high.webp",
+              "price": null
+            },
+            "answeredIds": [],
+            "scores": {
+              "p1": 4
+            },
+            "streaks": {
+              "p1": 3
+            },
+            "roundStartedAt": 62000,
+            "roundEndsAt": 72000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 66000,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,62000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "tcg-higher-lower",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 4,
+            "totalRounds": 6,
+            "currency": "EUR",
+            "previousCard": {
+              "id": "sv1-081",
+              "name": "Miraidon ex",
+              "localId": "081",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/081/high.webp",
+              "price": "45.1"
+            },
+            "currentCard": {
+              "id": "sv1-025",
+              "name": "Pikachu",
+              "localId": "025",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/025/high.webp",
+              "price": "3.5"
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 5
+            },
+            "streaks": {
+              "p1": 4
+            },
+            "roundStartedAt": 62000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 66000,
+            "lastRound": {
+              "previousPrice": "45.1",
+              "currentPrice": "3.5",
+              "correctAnswer": "LOWER",
+              "outcomes": {
+                "p1": {
+                  "choice": "LOWER",
+                  "correct": true,
+                  "awardedPoints": 1,
+                  "streak": 4
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 63000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 76000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",5,66000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "tcg-higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 5,
+            "totalRounds": 6,
+            "currency": "EUR",
+            "previousCard": {
+              "id": "sv1-025",
+              "name": "Pikachu",
+              "localId": "025",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/025/high.webp",
+              "price": "3.5"
+            },
+            "currentCard": {
+              "id": "sv1-081",
+              "name": "Miraidon ex",
+              "localId": "081",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/081/high.webp",
+              "price": null
+            },
+            "answeredIds": [],
+            "scores": {
+              "p1": 5
+            },
+            "streaks": {
+              "p1": 4
+            },
+            "roundStartedAt": 66000,
+            "roundEndsAt": 76000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 79000,
+            "actionEpoch": "[\"ROUND_RESULTS\",5,66000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "tcg-higher-lower",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 5,
+            "totalRounds": 6,
+            "currency": "EUR",
+            "previousCard": {
+              "id": "sv1-025",
+              "name": "Pikachu",
+              "localId": "025",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/025/high.webp",
+              "price": "3.5"
+            },
+            "currentCard": {
+              "id": "sv1-081",
+              "name": "Miraidon ex",
+              "localId": "081",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/081/high.webp",
+              "price": "45.1"
+            },
+            "answeredIds": [],
+            "scores": {
+              "p1": 5
+            },
+            "streaks": {
+              "p1": 0
+            },
+            "roundStartedAt": 66000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 79000,
+            "lastRound": {
+              "previousPrice": "3.5",
+              "currentPrice": "45.1",
+              "correctAnswer": "HIGHER",
+              "outcomes": {
+                "p1": {
+                  "choice": null,
+                  "correct": false,
+                  "awardedPoints": 0,
+                  "streak": 0
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 89000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",6,79000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "tcg-higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 6,
+            "totalRounds": 6,
+            "currency": "EUR",
+            "previousCard": {
+              "id": "sv1-081",
+              "name": "Miraidon ex",
+              "localId": "081",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/081/high.webp",
+              "price": "45.1"
+            },
+            "currentCard": {
+              "id": "sv2-012",
+              "name": "Charizard ex",
+              "localId": "012",
+              "setId": "sv2",
+              "setName": "Evoluciones en Paldea",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/012/high.webp",
+              "price": null
+            },
+            "answeredIds": [],
+            "scores": {
+              "p1": 5
+            },
+            "streaks": {
+              "p1": 0
+            },
+            "roundStartedAt": 79000,
+            "roundEndsAt": 89000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 83000,
+            "actionEpoch": "[\"ROUND_RESULTS\",6,79000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "tcg-higher-lower",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 6,
+            "totalRounds": 6,
+            "currency": "EUR",
+            "previousCard": {
+              "id": "sv1-081",
+              "name": "Miraidon ex",
+              "localId": "081",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/081/high.webp",
+              "price": "45.1"
+            },
+            "currentCard": {
+              "id": "sv2-012",
+              "name": "Charizard ex",
+              "localId": "012",
+              "setId": "sv2",
+              "setName": "Evoluciones en Paldea",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/012/high.webp",
+              "price": "12.75"
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 6
+            },
+            "streaks": {
+              "p1": 1
+            },
+            "roundStartedAt": 79000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 83000,
+            "lastRound": {
+              "previousPrice": "45.1",
+              "currentPrice": "12.75",
+              "correctAnswer": "LOWER",
+              "outcomes": {
+                "p1": {
+                  "choice": "LOWER",
+                  "correct": true,
+                  "awardedPoints": 1,
+                  "streak": 1
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 80000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",6,79000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "tcg-higher-lower",
+            "phase": "GAME_RESULTS",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 6,
+            "totalRounds": 6,
+            "currency": "EUR",
+            "previousCard": {
+              "id": "sv1-081",
+              "name": "Miraidon ex",
+              "localId": "081",
+              "setId": "sv1",
+              "setName": "Escarlata y Púrpura",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv1/081/high.webp",
+              "price": "45.1"
+            },
+            "currentCard": {
+              "id": "sv2-012",
+              "name": "Charizard ex",
+              "localId": "012",
+              "setId": "sv2",
+              "setName": "Evoluciones en Paldea",
+              "rarity": "Rare",
+              "imageUrl": "https://assets.tcgdex.net/es/sv/sv2/012/high.webp",
+              "price": "12.75"
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 6
+            },
+            "streaks": {
+              "p1": 1
+            },
+            "roundStartedAt": 79000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "previousPrice": "45.1",
+              "currentPrice": "12.75",
+              "correctAnswer": "LOWER",
+              "outcomes": {
+                "p1": {
+                  "choice": "LOWER",
+                  "correct": true,
+                  "awardedPoints": 1,
+                  "streak": 1
+                }
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "comparisons": 6,
+                    "correct": 5,
+                    "incorrect": 1,
+                    "sameCorrect": 1,
+                    "answered": 5,
+                    "bestStreak": 4,
+                    "accuracy": 83
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 80000
+              }
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 6,
+          "won": true,
+          "stats": {
+            "comparisons": 6,
+            "correct": 5,
+            "incorrect": 1,
+            "sameCorrect": 1,
+            "answered": 5,
+            "bestStreak": 4,
+            "accuracy": 83
+          }
+        }
+      ]
+    }
+  }
+}
