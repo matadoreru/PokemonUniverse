@@ -78,4 +78,12 @@ public class UserGameStatsEntity {
   public Map<String, Object> getMetrics() {
     return metrics;
   }
+
+  /** Suma una partida ({@code increment} de Prisma) y sustituye las métricas ya fusionadas. */
+  public void addGame(boolean won, int gamePoints, Map<String, Object> mergedMetrics) {
+    gamesPlayed += 1;
+    gamesWon += won ? 1 : 0;
+    points += gamePoints;
+    metrics = mergedMetrics;
+  }
 }

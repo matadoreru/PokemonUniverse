@@ -44,4 +44,11 @@ public class UserStatsEntity {
   public int getTotalPoints() {
     return totalPoints;
   }
+
+  /** Suma una partida ({@code increment} de Prisma). */
+  public void addGame(boolean won, int points) {
+    gamesPlayed += 1;
+    gamesWon += won ? 1 : 0;
+    totalPoints += points;
+  }
 }
