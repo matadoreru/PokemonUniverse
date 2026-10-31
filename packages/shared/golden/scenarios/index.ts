@@ -12,6 +12,7 @@ import { pokemonPaletteGuessScenarios } from './pokemon-palette-guess.js';
 import { pokemonTriviaScenarios } from './pokemon-trivia.js';
 import { typeChainScenarios } from './type-chain.js';
 import { typeDuelScenarios } from './type-duel.js';
+import { wouldYouRatherScenarios } from './would-you-rather.js';
 
 export interface GoldenEngineEntry {
   module: MiniGameModule<any, any, any, any>;
@@ -31,4 +32,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'pokeddle-race': pokeddleRaceScenarios,
   'pokemon-red-flag': pokemonRedFlagScenarios,
   'poke-taboo': pokeTabooScenarios,
+  'would-you-rather': wouldYouRatherScenarios,
 };

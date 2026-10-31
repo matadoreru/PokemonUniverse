@@ -13,6 +13,7 @@ import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaEngine;
 import es.pokemonuniverse.domain.game.engines.poketaboo.PokeTabooEngine;
 import es.pokemonuniverse.domain.game.engines.typechain.TypeChainEngine;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelEngine;
+import es.pokemonuniverse.domain.game.engines.wouldyourather.WouldYouRatherEngine;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.core.type.Argument;
 import io.micronaut.serde.ObjectMapper;
@@ -68,6 +69,7 @@ public class ClasspathGameRegistryLoader {
     engines.put(PokemonRedFlagEngine.ID,
         new PokemonRedFlagEngine(manifest(manifests, PokemonRedFlagEngine.ID)));
     engines.put(PokeTabooEngine.ID, new PokeTabooEngine(manifest(manifests, PokeTabooEngine.ID)));
+    engines.put(WouldYouRatherEngine.ID, new WouldYouRatherEngine(manifest(manifests, WouldYouRatherEngine.ID)));
     return engines;
   }
 

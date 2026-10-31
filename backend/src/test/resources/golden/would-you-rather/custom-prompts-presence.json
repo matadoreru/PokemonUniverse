@@ -1,0 +1,1485 @@
+{
+  "engineId": "would-you-rather",
+  "scenario": "custom-prompts-presence",
+  "seed": 703,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "rounds": 3,
+    "roundSeconds": 120,
+    "promptSource": "CUSTOM"
+  },
+  "hostWouldYouRatherPrompts": [
+    {
+      "id": "host-1",
+      "optionA": "Que Pikachu te despierte con Impactrueno",
+      "optionB": "Que Jigglypuff te duerma en el examen"
+    },
+    {
+      "id": "host-2",
+      "optionA": "Bañarte con un Tentacruel",
+      "optionB": "Cenar con un Grimer"
+    }
+  ],
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "B"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "A"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 3500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "A"
+      },
+      "now": 4500
+    },
+    {
+      "kind": "timeout",
+      "now": 12000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "A"
+      },
+      "now": 13000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 14000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "B"
+      },
+      "now": 15000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "B"
+      },
+      "now": 16000
+    },
+    {
+      "kind": "timeout",
+      "now": 24000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "A"
+      },
+      "now": 25000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "B"
+      },
+      "now": 26000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 27000
+    },
+    {
+      "kind": "timeout",
+      "now": 35000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "rounds": 3,
+      "roundSeconds": 120,
+      "promptSource": "CUSTOM"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "would-you-rather",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "prompt": {
+          "optionA": "",
+          "optionB": ""
+        },
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "submittedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownBallot": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownBallot": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownBallot": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 121000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "would-you-rather",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "prompt": {
+          "optionA": "Bañarte con un Tentacruel",
+          "optionB": "Cenar con un Grimer"
+        },
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "submittedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 121000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownBallot": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownBallot": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownBallot": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Bañarte con un Tentacruel",
+              "optionB": "Cenar con un Grimer"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Bañarte con un Tentacruel",
+              "optionB": "Cenar con un Grimer"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Bañarte con un Tentacruel",
+              "optionB": "Cenar con un Grimer"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 12000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Bañarte con un Tentacruel",
+              "optionB": "Cenar con un Grimer"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 12000,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Bañarte con un Tentacruel",
+                "optionB": "Cenar con un Grimer"
+              },
+              "totals": {
+                "A": 0,
+                "B": 2
+              },
+              "majority": "B",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "preference": "B",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                },
+                {
+                  "playerId": "p2",
+                  "preference": "B",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                }
+              ],
+              "missingPlayerIds": [
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No puedes participar en esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 12000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Bañarte con un Tentacruel",
+              "optionB": "Cenar con un Grimer"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 12000,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Bañarte con un Tentacruel",
+                "optionB": "Cenar con un Grimer"
+              },
+              "totals": {
+                "A": 0,
+                "B": 2
+              },
+              "majority": "B",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "preference": "B",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                },
+                {
+                  "playerId": "p2",
+                  "preference": "B",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                }
+              ],
+              "missingPlayerIds": [
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Que Pikachu te despierte con Impactrueno",
+              "optionB": "Que Jigglypuff te duerma en el examen"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 0
+            },
+            "roundEndsAt": 132000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Que Pikachu te despierte con Impactrueno",
+              "optionB": "Que Jigglypuff te duerma en el examen"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 0
+            },
+            "roundEndsAt": 132000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Que Pikachu te despierte con Impactrueno",
+              "optionB": "Que Jigglypuff te duerma en el examen"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 0
+            },
+            "roundEndsAt": 132000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Que Pikachu te despierte con Impactrueno",
+              "optionB": "Que Jigglypuff te duerma en el examen"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 0
+            },
+            "roundEndsAt": 132000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Que Pikachu te despierte con Impactrueno",
+              "optionB": "Que Jigglypuff te duerma en el examen"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "scores": {
+              "p1": 6,
+              "p2": 1,
+              "p3": 1
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 24000,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Que Pikachu te despierte con Impactrueno",
+                "optionB": "Que Jigglypuff te duerma en el examen"
+              },
+              "totals": {
+                "A": 2,
+                "B": 1
+              },
+              "majority": "A",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "preference": "A",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                },
+                {
+                  "playerId": "p3",
+                  "preference": "A",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                },
+                {
+                  "playerId": "p2",
+                  "preference": "B",
+                  "prediction": "B",
+                  "majorityPoint": 0,
+                  "predictionPoints": 0,
+                  "totalPoints": 0
+                }
+              ],
+              "missingPlayerIds": []
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 144000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Bañarte con un Tentacruel",
+              "optionB": "Cenar con un Grimer"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 6,
+              "p2": 1,
+              "p3": 1
+            },
+            "roundEndsAt": 144000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 144000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Bañarte con un Tentacruel",
+              "optionB": "Cenar con un Grimer"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 6,
+              "p2": 1,
+              "p3": 1
+            },
+            "roundEndsAt": 144000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 144000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Bañarte con un Tentacruel",
+              "optionB": "Cenar con un Grimer"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "scores": {
+              "p1": 6,
+              "p2": 1,
+              "p3": 1
+            },
+            "roundEndsAt": 144000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 35000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Bañarte con un Tentacruel",
+              "optionB": "Cenar con un Grimer"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "scores": {
+              "p1": 7,
+              "p2": 1,
+              "p3": 4
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 35000,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Bañarte con un Tentacruel",
+                "optionB": "Cenar con un Grimer"
+              },
+              "totals": {
+                "A": 0,
+                "B": 2
+              },
+              "majority": "B",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "preference": "B",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                },
+                {
+                  "playerId": "p3",
+                  "preference": "B",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                }
+              ],
+              "missingPlayerIds": [
+                "p2"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Bañarte con un Tentacruel",
+              "optionB": "Cenar con un Grimer"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "scores": {
+              "p1": 7,
+              "p2": 1,
+              "p3": 4
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Bañarte con un Tentacruel",
+                "optionB": "Cenar con un Grimer"
+              },
+              "totals": {
+                "A": 0,
+                "B": 2
+              },
+              "majority": "B",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "preference": "B",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                },
+                {
+                  "playerId": "p3",
+                  "preference": "B",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                }
+              ],
+              "missingPlayerIds": [
+                "p2"
+              ]
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 7,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "ballotsSubmitted": 3,
+                    "roundsMissed": 0,
+                    "majorityChoices": 3,
+                    "correctPredictions": 2,
+                    "perfectRounds": 2,
+                    "pointsFromRounds": 7
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 4,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "ballotsSubmitted": 2,
+                    "roundsMissed": 1,
+                    "majorityChoices": 2,
+                    "correctPredictions": 1,
+                    "perfectRounds": 1,
+                    "pointsFromRounds": 4
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 3,
+                  "points": 1,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "ballotsSubmitted": 2,
+                    "roundsMissed": 1,
+                    "majorityChoices": 1,
+                    "correctPredictions": 0,
+                    "perfectRounds": 0,
+                    "pointsFromRounds": 1
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 7,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 3,
+            "ballotsSubmitted": 3,
+            "roundsMissed": 0,
+            "majorityChoices": 3,
+            "correctPredictions": 2,
+            "perfectRounds": 2,
+            "pointsFromRounds": 7
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 2,
+          "points": 4,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "ballotsSubmitted": 2,
+            "roundsMissed": 1,
+            "majorityChoices": 2,
+            "correctPredictions": 1,
+            "perfectRounds": 1,
+            "pointsFromRounds": 4
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 3,
+          "points": 1,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "ballotsSubmitted": 2,
+            "roundsMissed": 1,
+            "majorityChoices": 1,
+            "correctPredictions": 0,
+            "perfectRounds": 0,
+            "pointsFromRounds": 1
+          }
+        }
+      ]
+    }
+  }
+}

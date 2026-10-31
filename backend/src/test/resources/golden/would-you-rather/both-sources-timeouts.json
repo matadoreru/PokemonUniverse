@@ -1,0 +1,1250 @@
+{
+  "engineId": "would-you-rather",
+  "scenario": "both-sources-timeouts",
+  "seed": 708,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "rounds": 4,
+    "roundSeconds": 20,
+    "promptSource": "BOTH"
+  },
+  "hostWouldYouRatherPrompts": [
+    {
+      "id": "host-1",
+      "optionA": "Que Pikachu te despierte con Impactrueno",
+      "optionB": "Que Jigglypuff te duerma en el examen"
+    },
+    {
+      "id": "host-2",
+      "optionA": "Bañarte con un Tentacruel",
+      "optionB": "Cenar con un Grimer"
+    }
+  ],
+  "steps": [
+    {
+      "kind": "timeout",
+      "now": 21000
+    },
+    {
+      "kind": "timeout",
+      "now": 29000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "A"
+      },
+      "now": 30000
+    },
+    {
+      "kind": "timeout",
+      "now": 49000
+    },
+    {
+      "kind": "timeout",
+      "now": 57000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "A"
+      },
+      "now": 58000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "B"
+      },
+      "now": 59000
+    },
+    {
+      "kind": "timeout",
+      "now": 77000
+    },
+    {
+      "kind": "timeout",
+      "now": 85000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "A"
+      },
+      "now": 86000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "B"
+      },
+      "now": 87000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "A"
+      },
+      "now": 88000
+    },
+    {
+      "kind": "timeout",
+      "now": 96000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "rounds": 4,
+      "roundSeconds": 20,
+      "promptSource": "BOTH"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "would-you-rather",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 4,
+        "prompt": {
+          "optionA": "",
+          "optionB": ""
+        },
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "submittedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownBallot": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownBallot": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownBallot": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "would-you-rather",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 4,
+        "prompt": {
+          "optionA": "Que Gengar cuente tu historial de búsqueda en una cena familiar",
+          "optionB": "Que Mr. Mime lo represente entero con mímica"
+        },
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "submittedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 21000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownBallot": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownBallot": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownBallot": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 29000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "prompt": {
+              "optionA": "Que Gengar cuente tu historial de búsqueda en una cena familiar",
+              "optionB": "Que Mr. Mime lo represente entero con mímica"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 29000,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Que Gengar cuente tu historial de búsqueda en una cena familiar",
+                "optionB": "Que Mr. Mime lo represente entero con mímica"
+              },
+              "totals": {
+                "A": 0,
+                "B": 0
+              },
+              "majority": null,
+              "players": [],
+              "missingPlayerIds": [
+                "p1",
+                "p2",
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "prompt": {
+              "optionA": "Que Pikachu te despierte con Impactrueno",
+              "optionB": "Que Jigglypuff te duerma en el examen"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 49000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "prompt": {
+              "optionA": "Que Pikachu te despierte con Impactrueno",
+              "optionB": "Que Jigglypuff te duerma en el examen"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p2"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 49000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 57000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "prompt": {
+              "optionA": "Que Pikachu te despierte con Impactrueno",
+              "optionB": "Que Jigglypuff te duerma en el examen"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p2"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 57000,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Que Pikachu te despierte con Impactrueno",
+                "optionB": "Que Jigglypuff te duerma en el examen"
+              },
+              "totals": {
+                "A": 1,
+                "B": 0
+              },
+              "majority": "A",
+              "players": [
+                {
+                  "playerId": "p2",
+                  "preference": "A",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                }
+              ],
+              "missingPlayerIds": [
+                "p1",
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 77000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": {
+              "optionA": "Que Meowth haga tu declaración de la renta",
+              "optionB": "Que Psyduck gestione tu hipoteca"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 77000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 77000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": {
+              "optionA": "Que Meowth haga tu declaración de la renta",
+              "optionB": "Que Psyduck gestione tu hipoteca"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 77000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 77000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": {
+              "optionA": "Que Meowth haga tu declaración de la renta",
+              "optionB": "Que Psyduck gestione tu hipoteca"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 77000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 85000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": {
+              "optionA": "Que Meowth haga tu declaración de la renta",
+              "optionB": "Que Psyduck gestione tu hipoteca"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 85000,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Que Meowth haga tu declaración de la renta",
+                "optionB": "Que Psyduck gestione tu hipoteca"
+              },
+              "totals": {
+                "A": 0,
+                "B": 2
+              },
+              "majority": "B",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "preference": "B",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                },
+                {
+                  "playerId": "p3",
+                  "preference": "B",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                }
+              ],
+              "missingPlayerIds": [
+                "p2"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 105000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "prompt": {
+              "optionA": "Cuidar una guardería llena de Toxel",
+              "optionB": "Organizar una excursión escolar con Impidimp"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 1,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": 105000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 105000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "prompt": {
+              "optionA": "Cuidar una guardería llena de Toxel",
+              "optionB": "Organizar una excursión escolar con Impidimp"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": 105000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 105000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "prompt": {
+              "optionA": "Cuidar una guardería llena de Toxel",
+              "optionB": "Organizar una excursión escolar con Impidimp"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": 105000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 96000,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "prompt": {
+              "optionA": "Cuidar una guardería llena de Toxel",
+              "optionB": "Organizar una excursión escolar con Impidimp"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 5
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 96000,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Cuidar una guardería llena de Toxel",
+                "optionB": "Organizar una excursión escolar con Impidimp"
+              },
+              "totals": {
+                "A": 2,
+                "B": 1
+              },
+              "majority": "A",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "preference": "A",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                },
+                {
+                  "playerId": "p2",
+                  "preference": "A",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                },
+                {
+                  "playerId": "p3",
+                  "preference": "B",
+                  "prediction": "A",
+                  "majorityPoint": 0,
+                  "predictionPoints": 2,
+                  "totalPoints": 2
+                }
+              ],
+              "missingPlayerIds": []
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",4,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "prompt": {
+              "optionA": "Cuidar una guardería llena de Toxel",
+              "optionB": "Organizar una excursión escolar con Impidimp"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 5
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Cuidar una guardería llena de Toxel",
+                "optionB": "Organizar una excursión escolar con Impidimp"
+              },
+              "totals": {
+                "A": 2,
+                "B": 1
+              },
+              "majority": "A",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "preference": "A",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                },
+                {
+                  "playerId": "p2",
+                  "preference": "A",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                },
+                {
+                  "playerId": "p3",
+                  "preference": "B",
+                  "prediction": "A",
+                  "majorityPoint": 0,
+                  "predictionPoints": 2,
+                  "totalPoints": 2
+                }
+              ],
+              "missingPlayerIds": []
+            },
+            "results": {
+              "winnerId": "p3",
+              "standings": [
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 5,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 4,
+                    "ballotsSubmitted": 2,
+                    "roundsMissed": 2,
+                    "majorityChoices": 1,
+                    "correctPredictions": 2,
+                    "perfectRounds": 1,
+                    "pointsFromRounds": 5
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 4,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 4,
+                    "ballotsSubmitted": 2,
+                    "roundsMissed": 2,
+                    "majorityChoices": 2,
+                    "correctPredictions": 1,
+                    "perfectRounds": 1,
+                    "pointsFromRounds": 4
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 4,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 4,
+                    "ballotsSubmitted": 2,
+                    "roundsMissed": 2,
+                    "majorityChoices": 2,
+                    "correctPredictions": 1,
+                    "perfectRounds": 1,
+                    "pointsFromRounds": 4
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p3",
+      "standings": [
+        {
+          "playerId": "p3",
+          "position": 1,
+          "points": 5,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 4,
+            "ballotsSubmitted": 2,
+            "roundsMissed": 2,
+            "majorityChoices": 1,
+            "correctPredictions": 2,
+            "perfectRounds": 1,
+            "pointsFromRounds": 5
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 2,
+          "points": 4,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 4,
+            "ballotsSubmitted": 2,
+            "roundsMissed": 2,
+            "majorityChoices": 2,
+            "correctPredictions": 1,
+            "perfectRounds": 1,
+            "pointsFromRounds": 4
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 4,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 4,
+            "ballotsSubmitted": 2,
+            "roundsMissed": 2,
+            "majorityChoices": 2,
+            "correctPredictions": 1,
+            "perfectRounds": 1,
+            "pointsFromRounds": 4
+          }
+        }
+      ]
+    }
+  }
+}

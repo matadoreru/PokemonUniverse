@@ -1,0 +1,2126 @@
+{
+  "engineId": "would-you-rather",
+  "scenario": "official-majority",
+  "seed": 701,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    },
+    {
+      "id": "p4",
+      "displayName": "Dani"
+    }
+  ],
+  "config": {
+    "rounds": 3,
+    "roundSeconds": 15,
+    "promptSource": "OFFICIAL"
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "A"
+      },
+      "now": 1500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "A"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "B"
+      },
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "B"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "A"
+      },
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "A"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "A"
+      },
+      "now": 4500
+    },
+    {
+      "kind": "timeout",
+      "now": 11999
+    },
+    {
+      "kind": "timeout",
+      "now": 12000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "B"
+      },
+      "now": 13000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "B"
+      },
+      "now": 14000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "A"
+      },
+      "now": 15000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "A"
+      },
+      "now": 27000
+    },
+    {
+      "kind": "timeout",
+      "now": 27000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "A"
+      },
+      "now": 28000
+    },
+    {
+      "kind": "timeout",
+      "now": 35000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "B"
+      },
+      "now": 36000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "B",
+        "prediction": "A"
+      },
+      "now": 37000
+    },
+    {
+      "kind": "timeout",
+      "now": 50000
+    },
+    {
+      "kind": "timeout",
+      "now": 58000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "rounds": 3,
+      "roundSeconds": 15,
+      "promptSource": "OFFICIAL"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "would-you-rather",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "prompt": {
+          "optionA": "",
+          "optionB": ""
+        },
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3",
+          "p4"
+        ],
+        "submittedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0,
+          "p4": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownBallot": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownBallot": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownBallot": null
+        },
+        "p4": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownBallot": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 16000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "would-you-rather",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "prompt": {
+          "optionA": "Tener la suerte de Togepi pero estornudar fuego",
+          "optionB": "Tener la fuerza de Machamp pero cuatro veces más agujetas"
+        },
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3",
+          "p4"
+        ],
+        "submittedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0,
+          "p4": 0
+        },
+        "roundEndsAt": 16000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownBallot": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownBallot": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownBallot": null
+        },
+        "p4": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownBallot": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "No puedes participar en esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Tener la suerte de Togepi pero estornudar fuego",
+              "optionB": "Tener la fuerza de Machamp pero cuatro veces más agujetas"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Tener la suerte de Togepi pero estornudar fuego",
+              "optionB": "Tener la fuerza de Machamp pero cuatro veces más agujetas"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Tu papeleta ya está bloqueada.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Tener la suerte de Togepi pero estornudar fuego",
+              "optionB": "Tener la fuerza de Machamp pero cuatro veces más agujetas"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Tener la suerte de Togepi pero estornudar fuego",
+              "optionB": "Tener la fuerza de Machamp pero cuatro veces más agujetas"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Tener la suerte de Togepi pero estornudar fuego",
+              "optionB": "Tener la fuerza de Machamp pero cuatro veces más agujetas"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 12000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Tener la suerte de Togepi pero estornudar fuego",
+              "optionB": "Tener la fuerza de Machamp pero cuatro veces más agujetas"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 2,
+              "p4": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 12000,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Tener la suerte de Togepi pero estornudar fuego",
+                "optionB": "Tener la fuerza de Machamp pero cuatro veces más agujetas"
+              },
+              "totals": {
+                "A": 3,
+                "B": 1
+              },
+              "majority": "A",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "preference": "A",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                },
+                {
+                  "playerId": "p2",
+                  "preference": "A",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                },
+                {
+                  "playerId": "p3",
+                  "preference": "B",
+                  "prediction": "A",
+                  "majorityPoint": 0,
+                  "predictionPoints": 2,
+                  "totalPoints": 2
+                },
+                {
+                  "playerId": "p4",
+                  "preference": "A",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                }
+              ],
+              "missingPlayerIds": []
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La votación ya ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 12000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Tener la suerte de Togepi pero estornudar fuego",
+              "optionB": "Tener la fuerza de Machamp pero cuatro veces más agujetas"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 2,
+              "p4": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 12000,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Tener la suerte de Togepi pero estornudar fuego",
+                "optionB": "Tener la fuerza de Machamp pero cuatro veces más agujetas"
+              },
+              "totals": {
+                "A": 3,
+                "B": 1
+              },
+              "majority": "A",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "preference": "A",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                },
+                {
+                  "playerId": "p2",
+                  "preference": "A",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                },
+                {
+                  "playerId": "p3",
+                  "preference": "B",
+                  "prediction": "A",
+                  "majorityPoint": 0,
+                  "predictionPoints": 2,
+                  "totalPoints": 2
+                },
+                {
+                  "playerId": "p4",
+                  "preference": "A",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                }
+              ],
+              "missingPlayerIds": []
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 12000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Tener la suerte de Togepi pero estornudar fuego",
+              "optionB": "Tener la fuerza de Machamp pero cuatro veces más agujetas"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 2,
+              "p4": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 12000,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Tener la suerte de Togepi pero estornudar fuego",
+                "optionB": "Tener la fuerza de Machamp pero cuatro veces más agujetas"
+              },
+              "totals": {
+                "A": 3,
+                "B": 1
+              },
+              "majority": "A",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "preference": "A",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                },
+                {
+                  "playerId": "p2",
+                  "preference": "A",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                },
+                {
+                  "playerId": "p3",
+                  "preference": "B",
+                  "prediction": "A",
+                  "majorityPoint": 0,
+                  "predictionPoints": 2,
+                  "totalPoints": 2
+                },
+                {
+                  "playerId": "p4",
+                  "preference": "A",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                }
+              ],
+              "missingPlayerIds": []
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Explorar una cueva con Umbreon",
+              "optionB": "Explorar un bosque con Decidueye"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 2,
+              "p4": 3
+            },
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Explorar una cueva con Umbreon",
+              "optionB": "Explorar un bosque con Decidueye"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 2,
+              "p4": 3
+            },
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Explorar una cueva con Umbreon",
+              "optionB": "Explorar un bosque con Decidueye"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 2,
+              "p4": 3
+            },
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Explorar una cueva con Umbreon",
+              "optionB": "Explorar un bosque con Decidueye"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 2,
+              "p4": 3
+            },
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Explorar una cueva con Umbreon",
+              "optionB": "Explorar un bosque con Decidueye"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 2,
+              "p4": 3
+            },
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 35000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Explorar una cueva con Umbreon",
+              "optionB": "Explorar un bosque con Decidueye"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 1,
+              "p3": 5,
+              "p4": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 35000,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Explorar una cueva con Umbreon",
+                "optionB": "Explorar un bosque con Decidueye"
+              },
+              "totals": {
+                "A": 2,
+                "B": 1
+              },
+              "majority": "A",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "preference": "A",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                },
+                {
+                  "playerId": "p2",
+                  "preference": "B",
+                  "prediction": "B",
+                  "majorityPoint": 0,
+                  "predictionPoints": 0,
+                  "totalPoints": 0
+                },
+                {
+                  "playerId": "p3",
+                  "preference": "A",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                }
+              ],
+              "missingPlayerIds": [
+                "p4"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La votación ya ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 35000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Explorar una cueva con Umbreon",
+              "optionB": "Explorar un bosque con Decidueye"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 1,
+              "p3": 5,
+              "p4": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 35000,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Explorar una cueva con Umbreon",
+                "optionB": "Explorar un bosque con Decidueye"
+              },
+              "totals": {
+                "A": 2,
+                "B": 1
+              },
+              "majority": "A",
+              "players": [
+                {
+                  "playerId": "p1",
+                  "preference": "A",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                },
+                {
+                  "playerId": "p2",
+                  "preference": "B",
+                  "prediction": "B",
+                  "majorityPoint": 0,
+                  "predictionPoints": 0,
+                  "totalPoints": 0
+                },
+                {
+                  "playerId": "p3",
+                  "preference": "A",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                }
+              ],
+              "missingPlayerIds": [
+                "p4"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "A"
+              }
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 50000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Participar en un concurso de cocina con Scovillain",
+              "optionB": "Participar en un karaoke con Meloetta"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 4,
+              "p2": 1,
+              "p3": 5,
+              "p4": 3
+            },
+            "roundEndsAt": 50000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 50000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Participar en un concurso de cocina con Scovillain",
+              "optionB": "Participar en un karaoke con Meloetta"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p2"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 1,
+              "p3": 5,
+              "p4": 3
+            },
+            "roundEndsAt": 50000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 50000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Participar en un concurso de cocina con Scovillain",
+              "optionB": "Participar en un karaoke con Meloetta"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 1,
+              "p3": 5,
+              "p4": 3
+            },
+            "roundEndsAt": 50000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 58000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Participar en un concurso de cocina con Scovillain",
+              "optionB": "Participar en un karaoke con Meloetta"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 6,
+              "p4": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 58000,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Participar en un concurso de cocina con Scovillain",
+                "optionB": "Participar en un karaoke con Meloetta"
+              },
+              "totals": {
+                "A": 0,
+                "B": 2
+              },
+              "majority": "B",
+              "players": [
+                {
+                  "playerId": "p2",
+                  "preference": "B",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                },
+                {
+                  "playerId": "p3",
+                  "preference": "B",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                }
+              ],
+              "missingPlayerIds": [
+                "p1",
+                "p4"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": {
+              "optionA": "Participar en un concurso de cocina con Scovillain",
+              "optionB": "Participar en un karaoke con Meloetta"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 6,
+              "p4": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "prompt": {
+                "optionA": "Participar en un concurso de cocina con Scovillain",
+                "optionB": "Participar en un karaoke con Meloetta"
+              },
+              "totals": {
+                "A": 0,
+                "B": 2
+              },
+              "majority": "B",
+              "players": [
+                {
+                  "playerId": "p2",
+                  "preference": "B",
+                  "prediction": "B",
+                  "majorityPoint": 1,
+                  "predictionPoints": 2,
+                  "totalPoints": 3
+                },
+                {
+                  "playerId": "p3",
+                  "preference": "B",
+                  "prediction": "A",
+                  "majorityPoint": 1,
+                  "predictionPoints": 0,
+                  "totalPoints": 1
+                }
+              ],
+              "missingPlayerIds": [
+                "p1",
+                "p4"
+              ]
+            },
+            "results": {
+              "winnerId": "p3",
+              "standings": [
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "ballotsSubmitted": 3,
+                    "roundsMissed": 0,
+                    "majorityChoices": 2,
+                    "correctPredictions": 2,
+                    "perfectRounds": 1,
+                    "pointsFromRounds": 6
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 4,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "ballotsSubmitted": 2,
+                    "roundsMissed": 1,
+                    "majorityChoices": 2,
+                    "correctPredictions": 1,
+                    "perfectRounds": 1,
+                    "pointsFromRounds": 4
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 4,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "ballotsSubmitted": 3,
+                    "roundsMissed": 0,
+                    "majorityChoices": 2,
+                    "correctPredictions": 1,
+                    "perfectRounds": 1,
+                    "pointsFromRounds": 4
+                  }
+                },
+                {
+                  "playerId": "p4",
+                  "position": 4,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "ballotsSubmitted": 1,
+                    "roundsMissed": 2,
+                    "majorityChoices": 1,
+                    "correctPredictions": 1,
+                    "perfectRounds": 1,
+                    "pointsFromRounds": 3
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "B"
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "B",
+                "prediction": "A"
+              }
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p3",
+      "standings": [
+        {
+          "playerId": "p3",
+          "position": 1,
+          "points": 6,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 3,
+            "ballotsSubmitted": 3,
+            "roundsMissed": 0,
+            "majorityChoices": 2,
+            "correctPredictions": 2,
+            "perfectRounds": 1,
+            "pointsFromRounds": 6
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 2,
+          "points": 4,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "ballotsSubmitted": 2,
+            "roundsMissed": 1,
+            "majorityChoices": 2,
+            "correctPredictions": 1,
+            "perfectRounds": 1,
+            "pointsFromRounds": 4
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 4,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "ballotsSubmitted": 3,
+            "roundsMissed": 0,
+            "majorityChoices": 2,
+            "correctPredictions": 1,
+            "perfectRounds": 1,
+            "pointsFromRounds": 4
+          }
+        },
+        {
+          "playerId": "p4",
+          "position": 4,
+          "points": 3,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "ballotsSubmitted": 1,
+            "roundsMissed": 2,
+            "majorityChoices": 1,
+            "correctPredictions": 1,
+            "perfectRounds": 1,
+            "pointsFromRounds": 3
+          }
+        }
+      ]
+    }
+  }
+}

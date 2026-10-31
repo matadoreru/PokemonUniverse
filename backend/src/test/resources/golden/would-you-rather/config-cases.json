@@ -1,0 +1,168 @@
+[
+  {
+    "input": {
+      "rounds": 3,
+      "roundSeconds": 15,
+      "promptSource": "OFFICIAL"
+    },
+    "valid": true,
+    "normalized": {
+      "rounds": 3,
+      "roundSeconds": 15,
+      "promptSource": "OFFICIAL"
+    }
+  },
+  {
+    "input": {
+      "rounds": 1,
+      "roundSeconds": 15,
+      "promptSource": "OFFICIAL"
+    },
+    "valid": true,
+    "normalized": {
+      "rounds": 1,
+      "roundSeconds": 15,
+      "promptSource": "OFFICIAL"
+    }
+  },
+  {
+    "input": {
+      "rounds": 10,
+      "roundSeconds": 120,
+      "promptSource": "OFFICIAL"
+    },
+    "valid": true,
+    "normalized": {
+      "rounds": 10,
+      "roundSeconds": 120,
+      "promptSource": "OFFICIAL"
+    }
+  },
+  {
+    "input": {
+      "rounds": 3,
+      "roundSeconds": 15,
+      "promptSource": "OFFICIAL"
+    },
+    "valid": true,
+    "normalized": {
+      "rounds": 3,
+      "roundSeconds": 15,
+      "promptSource": "OFFICIAL"
+    }
+  },
+  {
+    "input": {
+      "rounds": 3,
+      "roundSeconds": 15,
+      "promptSource": "CUSTOM"
+    },
+    "valid": true,
+    "normalized": {
+      "rounds": 3,
+      "roundSeconds": 15,
+      "promptSource": "CUSTOM"
+    }
+  },
+  {
+    "input": {
+      "rounds": 3,
+      "roundSeconds": 15,
+      "promptSource": "BOTH"
+    },
+    "valid": true,
+    "normalized": {
+      "rounds": 3,
+      "roundSeconds": 15,
+      "promptSource": "BOTH"
+    }
+  },
+  {
+    "input": {
+      "rounds": 0,
+      "roundSeconds": 15,
+      "promptSource": "OFFICIAL"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "rounds": 11,
+      "roundSeconds": 15,
+      "promptSource": "OFFICIAL"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "rounds": 3,
+      "roundSeconds": 14,
+      "promptSource": "OFFICIAL"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "rounds": 3,
+      "roundSeconds": 121,
+      "promptSource": "OFFICIAL"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "rounds": 3,
+      "roundSeconds": 30.5,
+      "promptSource": "OFFICIAL"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "rounds": "3",
+      "roundSeconds": 15,
+      "promptSource": "OFFICIAL"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "rounds": 3,
+      "roundSeconds": 15,
+      "promptSource": "official"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "rounds": 3,
+      "roundSeconds": 15,
+      "promptSource": "HOST"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "rounds": 3,
+      "roundSeconds": 15,
+      "promptSource": "OFFICIAL",
+      "unknownKey": "no se admite"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "rounds": 3,
+      "roundSeconds": 15
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]

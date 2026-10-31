@@ -1,0 +1,243 @@
+{
+  "engineId": "would-you-rather",
+  "scenario": "official-ignores-host",
+  "seed": 709,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "rounds": 1,
+    "roundSeconds": 15,
+    "promptSource": "OFFICIAL"
+  },
+  "hostWouldYouRatherPrompts": [
+    {
+      "id": "host-1",
+      "optionA": "Que Pikachu te despierte con Impactrueno",
+      "optionB": "Que Jigglypuff te duerma en el examen"
+    },
+    {
+      "id": "host-2",
+      "optionA": "Bañarte con un Tentacruel",
+      "optionB": "Cenar con un Grimer"
+    }
+  ],
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "B"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "C",
+        "prediction": "A"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_BALLOT",
+        "preference": "A",
+        "prediction": "A"
+      },
+      "now": 4000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "rounds": 1,
+      "roundSeconds": 15,
+      "promptSource": "OFFICIAL"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "would-you-rather",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 1,
+        "prompt": {
+          "optionA": "",
+          "optionB": ""
+        },
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "submittedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownBallot": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownBallot": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownBallot": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 16000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "would-you-rather",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 1,
+        "prompt": {
+          "optionA": "Llegar a todas partes montado en un Rapidash enfadado",
+          "optionB": "Llegar siempre tarde sobre un Slowpoke encantador"
+        },
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "submittedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 16000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownBallot": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownBallot": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownBallot": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "would-you-rather",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 1,
+            "prompt": {
+              "optionA": "Llegar a todas partes montado en un Rapidash enfadado",
+              "optionB": "Llegar siempre tarde sobre un Slowpoke encantador"
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownBallot": {
+                "preference": "A",
+                "prediction": "B"
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownBallot": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 1
+}
