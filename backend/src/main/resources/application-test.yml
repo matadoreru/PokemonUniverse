@@ -1,8 +1,10 @@
 # Ajustes específicos del entorno test: Test Resources inyecta url, usuario y contraseña.
 # Flyway aplica V1__baseline.sql sobre la BD vacía de Testcontainers.
+# Es el único entorno con la migración automática de Micronaut (fuera de test la hace PrismaSchemaGuard).
 flyway:
   datasources:
     default:
+      enabled: true
       baseline-on-migrate: false
 pu:
   auth:

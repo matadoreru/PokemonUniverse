@@ -35,10 +35,12 @@ datasources:
   default:
     driver-class-name: org.postgresql.Driver
     dialect: POSTGRES
+# La migración automática de Micronaut solo se activa en test (application-test.yml); en el resto de entornos la
+# ejecuta PrismaSchemaGuard después de comprobar que Prisma ya creó el esquema. Los ajustes se mantienen iguales.
 flyway:
   datasources:
     default:
-      enabled: true
+      enabled: false
       baseline-on-migrate: true
       baseline-version: 1
       validate-on-migrate: true
