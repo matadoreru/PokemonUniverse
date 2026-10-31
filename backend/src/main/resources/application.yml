@@ -8,3 +8,27 @@ endpoints:
     enabled: true
     sensitive: false
     details-visible: ANONYMOUS
+datasources:
+  default:
+    driver-class-name: org.postgresql.Driver
+    dialect: POSTGRES
+flyway:
+  datasources:
+    default:
+      enabled: true
+      baseline-on-migrate: true
+      baseline-version: 1
+      validate-on-migrate: true
+jpa:
+  default:
+    entity-scan:
+      packages: es.pokemonuniverse.adapters.out.persistence
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+        globally_quoted_identifiers_skip_column_definitions: true
+        physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        jdbc:
+          time_zone: UTC
+        hbm2ddl:
+          auto: none

@@ -1,2 +1,6 @@
-# Ajustes específicos del entorno test
-{}
+# Ajustes específicos del entorno test: Test Resources inyecta url, usuario y contraseña.
+# Flyway aplica V1__baseline.sql sobre la BD vacía de Testcontainers.
+flyway:
+  datasources:
+    default:
+      baseline-on-migrate: false

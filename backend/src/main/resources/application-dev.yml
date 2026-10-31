@@ -1,2 +1,8 @@
-# Ajustes específicos del entorno dev
-{}
+# Ajustes específicos del entorno dev: BD local de compose.local.yaml
+datasources:
+  default:
+    url: jdbc:postgresql://localhost:5432/pokemon_universe
+    username: pokemon
+    password: pokemon
+test-resources:
+  enabled: false

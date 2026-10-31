@@ -34,8 +34,15 @@ dependencies {
   implementation("io.micronaut:micronaut-http-server-netty")
   implementation("io.micronaut:micronaut-management")
   implementation("io.micronaut.serde:micronaut-serde-jackson")
+  annotationProcessor("io.micronaut.data:micronaut-data-processor")
+  implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
+  implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+  implementation("io.micronaut.flyway:micronaut-flyway")
+  runtimeOnly("org.flywaydb:flyway-database-postgresql")
+  runtimeOnly("org.postgresql:postgresql")
   runtimeOnly("ch.qos.logback:logback-classic")
   runtimeOnly("org.yaml:snakeyaml")
 
   testImplementation("io.micronaut:micronaut-http-client")
+  testResourcesService("org.postgresql:postgresql")
 }

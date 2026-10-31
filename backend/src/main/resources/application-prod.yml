@@ -1,2 +1,7 @@
-# Ajustes específicos del entorno prod
-{}
+# Ajustes específicos del entorno prod: la conexión viene del entorno.
+# (En application.yml no se declaran para que Test Resources pueda inyectarlos en test.)
+datasources:
+  default:
+    url: ${JDBC_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
