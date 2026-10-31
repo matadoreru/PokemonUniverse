@@ -417,6 +417,13 @@ class RoomCoordinatorTest {
     kit.manager.flush();
     assertEquals(1, kit.persister.calls.size());
     assertEquals(room.game.resultId, kit.persister.calls.getFirst().resultId());
+    var persisted = kit.persister.calls.getFirst().results();
+    var live = room.game.engine.getResults(room.game.state);
+    assertEquals(live, persisted);
+    for (int index = 0; index < live.standings().size(); index++) {
+      assertTrue(live.standings().get(index).stats() != persisted.standings().get(index).stats(),
+          "copia profunda como structuredClone");
+    }
     kit.manager.returnLobby("host");
 
     kit.manager.selectGame("host", "pokedex-distance");
@@ -903,11 +910,15 @@ class RoomCoordinatorTest {
     assertTrue(JsonTree.equal(shinyDefault, room.gameConfigs.get("shiny-vote")));
     assertMessage(RoomCoordinator.NOT_PORTED, () -> kit.manager.updateGameConfig("host", "shiny-vote", shinyDefault));
     assertMessage("Minijuego desconocido.", () -> kit.manager.updateGameConfig("host", "missing", shinyDefault));
-    assertMessage("Shiny Quiz: " + RoomCoordinator.NOT_PORTED, () -> kit.manager.updateGameSelection("host",
+    assertMessage(RoomCoordinator.NOT_PORTED, () -> kit.manager.updateGameSelection("host",
         json("{\"type\":\"RANDOM\",\"gameIds\":[\"higher-lower\",\"shiny-vote\"]}")));
     kit.manager.selectGame("host", "shiny-vote");
     kit.manager.setReady("guest", true);
     assertMessage(RoomCoordinator.NOT_PORTED, () -> kit.manager.startGame("host"));
+    kit.manager.selectGame("host", "higher-lower");
+    room.gameSelectionMode = new GameSelectionMode.Random(List.of("higher-lower", "shiny-vote"));
+    assertMessage(RoomCoordinator.NOT_PORTED, () -> kit.manager.startGame("host"));
+    room.gameSelectionMode = new GameSelectionMode.Fixed();
     assertEquals(RoomPhase.LOBBY, room.phase);
     assertEquals(List.of("higher-lower"), kit.manager.playableGameIds(room, List.of("higher-lower", "tcg-higher-lower")));
     assertEquals(Set.of(), Set.copyOf(kit.manager.view(room, "host").customizedGameIds()));

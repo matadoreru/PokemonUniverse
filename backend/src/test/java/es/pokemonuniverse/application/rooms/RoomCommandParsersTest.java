@@ -21,6 +21,8 @@ class RoomCommandParsersTest {
   @Test
   void roomCodeTrimsAndUppercases() {
     assertEquals("AB2C3D", RoomCommandParsers.roomCode(JsonNode.createStringNode(" ab2c3d ")));
+    assertEquals("ABCDEF", RoomCommandParsers.roomCode(JsonNode.createStringNode("\u00a0abcdef\u00a0")));
+    assertEquals("ABCDEF", RoomCommandParsers.roomCode(JsonNode.createStringNode("\ufeff\u3000abcdef\u2028\n")));
     assertEquals("""
         [
           {

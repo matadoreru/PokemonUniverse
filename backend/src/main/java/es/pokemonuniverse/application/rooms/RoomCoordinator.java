@@ -17,11 +17,12 @@ import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
+import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.GameStanding;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
 import es.pokemonuniverse.domain.game.engine.WouldYouRatherPromptPair;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
-import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.domain.pokemon.PokemonCatalog;
 import es.pokemonuniverse.domain.room.ErasedEngine;
 import es.pokemonuniverse.domain.room.GameCatalogSnapshot;
@@ -58,7 +59,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -100,6 +100,7 @@ public class RoomCoordinator {
   private final PendingTasks pending = new PendingTasks();
   final RoomStore store = new RoomStore();
   private final CursorRelay cursors;
+  private final RoomViews views;
 
   private final GameRegistry registry;
   private final JsonMapper json;
@@ -133,6 +134,7 @@ public class RoomCoordinator {
     this.schedulers = schedulers;
     this.settings = settings;
     this.cursors = new CursorRelay(events, clock);
+    this.views = new RoomViews(registry, defaultConfigs, clock, events, this::toTree);
     this.pokemon = catalog.loadPokemonCatalog();
     this.catalogVersion = random.uuid();
     for (var manifest : registry.list()) {
@@ -464,7 +466,7 @@ public class RoomCoordinator {
           if (!ManifestView.supportsPlayerCount(game, playerCount)) {
             throw new RoomException(game.name() + " no admite " + playerCount + " jugadores conectados.");
           }
-          if (!registry.isPorted(gameId)) throw new RoomException(game.name() + ": " + NOT_PORTED);
+          if (!registry.isPorted(gameId)) throw new RoomException(NOT_PORTED);
         }
       }
       room.gameSelectionMode = parsed;
@@ -616,6 +618,7 @@ public class RoomCoordinator {
     var gameIds = GameSelectionMode.gameIdsOf(mode);
     for (var gameId : gameIds) {
       var module = registry.get(gameId).orElseThrow(() -> new RoomException("Minijuego desconocido: " + gameId));
+      if (!registry.isPorted(gameId)) throw new RoomException(NOT_PORTED);
       var configReason = gameConfigReadinessReason(room, gameId);
       if (configReason.isPresent()) throw new RoomException(module.name() + ": " + configReason.get());
     }
@@ -990,8 +993,9 @@ public class RoomCoordinator {
     var identities = new LinkedHashMap<String, AuthUser>();
     for (var entry : room.members.entrySet()) identities.put(entry.getKey(), entry.getValue().identity);
     var resultRoom = new GameResultsPersister.ResultRoomSnapshot(room.historyId, room.code, identities);
+    var resultSnapshot = copyResults(gameResults);
     pending.track(game.auditReady.exceptionally(error -> logged("Failed to persist game start", error))
-        .thenCompose(ignored -> results.persist(resultRoom, gameResults, game.resultId, game.startedAt, game.gameId,
+        .thenCompose(ignored -> results.persist(resultRoom, resultSnapshot, game.resultId, game.startedAt, game.gameId,
             game.configTree))
         .exceptionally(error -> logged("Failed to persist game results", error)));
   }
@@ -1212,82 +1216,17 @@ public class RoomCoordinator {
     return rooms;
   }
 
-  private RoomView publicView(LiveRoom room, GameContext context) {
-    var connectedVoterIds = eligibleNextGameVoterIds(room);
-    var acceptedVoterIds = room.nextGameVote == null ? List.<String>of() : List.copyOf(room.nextGameVote.votes.keySet());
-    var eligibleVoterIds = new LinkedHashSet<String>(connectedVoterIds);
-    eligibleVoterIds.addAll(acceptedVoterIds);
-    var vote = room.nextGameVote;
-    var nextGameVote = vote == null ? null : new RoomView.NextGameVoteView(
-        vote.optionGameIds.stream().map(gameId -> ManifestView.of(registry.get(gameId).orElseThrow())).toList(),
-        List.copyOf(eligibleVoterIds), acceptedVoterIds, null, vote.endsAt, vote.resolvedGameId,
-        vote.tallies == null ? null : new LinkedHashMap<>(vote.tallies), vote.nextTransitionAt);
-    var game = room.game;
-    return RoomView.builder()
-        .roomInstanceId(room.historyId)
-        .revision(room.revision)
-        .gameCatalogVersion(game != null ? game.catalog.version() : null)
-        .code(room.code)
-        .phase(room.phase)
-        .hostId(room.hostId)
-        .maxPlayers(room.maxPlayers)
-        .members(room.members.values().stream().map(member -> new RoomView.MemberView(member.identity.id(),
-            member.identity.displayName(), member.identity.avatar(), member.connected, member.presence,
-            member.roomRole, member.role, member.identity.id().equals(room.hostId), member.ready,
-            member.sessionPoints)).toList())
-        .availableGames(registry.manifests().stream().map(ManifestView::of).toList())
-        .selectedGameId(room.selectedGameId)
-        .selectedGameConfig(room.gameConfigs.get(room.selectedGameId))
-        .sessionMode(room.sessionMode)
-        .gameConfigs(new LinkedHashMap<>(room.gameConfigs))
-        .customizedGameIds(registry.list().stream().map(GameManifest::id)
-            .filter(id -> !configEquals(room.gameConfigs.get(id), defaultConfigs.get(id))).toList())
-        .gameSelectionMode(room.gameSelectionMode)
-        .nextGameVote(nextGameVote)
-        .gameSkipState(null)
-        .gamesPlayed(room.gamesPlayed)
-        .sessionStandings(room.sessionParticipants.values().stream().map(participant ->
-            new RoomView.SessionStandingView(participant.identity.id(), participant.identity.displayName(),
-                participant.identity.avatar(), participant.sessionPoints)).toList())
-        .sessionHistory(List.copyOf(room.sessionHistory))
-        .gameActionEpoch(game != null ? game.engine.getLifecycle(game.state).actionEpoch() : null)
-        .game(game != null ? toTree(game.engine.getPublicState(game.state, context)) : null)
-        .gamePlayerState(null)
-        .serverNow(clock.now())
-        .hostCustomCategoryCount(hostCustomCategories(room).size())
-        .hostWouldYouRatherPromptCount(hostWouldYouRatherPrompts(room).size())
-        .build();
-  }
-
-  /** {@code isDeepStrictEqual}; ausente en un lado solo es igual si falta en ambos. */
-  private static boolean configEquals(@Nullable JsonNode left, @Nullable JsonNode right) {
-    if (left == null || right == null) return left == right;
-    return JsonTree.equal(left, right);
-  }
-
+  /** {@code view(room, playerId)}: proyección pública más la privada de {@code playerId}. */
   RoomView view(LiveRoom room, String playerId) {
     var context = context(room);
-    return view(room, playerId, publicView(room, context), context);
-  }
-
-  private RoomView view(LiveRoom room, String playerId, RoomView shared, GameContext context) {
-    var vote = room.nextGameVote;
-    return shared.forMember(GameSkip.stateView(room, playerId),
-        shared.nextGameVote() == null ? null : shared.nextGameVote().withOwnVote(vote == null ? null : vote.votes.get(playerId)),
-        room.game != null ? toTree(room.game.engine.getPlayerState(room.game.state, playerId, context)) : null);
+    return views.view(room, playerId, views.publicView(room, context, hostCustomCategories(room).size(),
+        hostWouldYouRatherPrompts(room).size()), context);
   }
 
   void broadcast(LiveRoom room) {
     room.revision += 1;
     room.updatedAt = clock.now();
-    var context = context(room);
-    var shared = publicView(room, context);
-    for (var member : room.members.values()) {
-      if (member.connectionId != null) {
-        events.sendToMember(member.identity.id(), member.connectionId, "room:state",
-            view(room, member.identity.id(), shared, context));
-      }
-    }
+    views.broadcast(room, context(room), hostCustomCategories(room).size(), hostWouldYouRatherPrompts(room).size());
   }
 
   private LiveRoom requiredRoom(String playerId) {
@@ -1313,6 +1252,13 @@ public class RoomCoordinator {
 
   private String roomCode() {
     return RoomCodes.generate(random::nextInt);
+  }
+
+  /** {@code structuredClone(results)}: la persistencia asíncrona nunca comparte mapas mutables con el motor. */
+  private static GameResults copyResults(GameResults source) {
+    return new GameResults(source.winnerId(), source.standings().stream().map(standing -> new GameStanding(
+        standing.playerId(), standing.position(), standing.points(), standing.won(),
+        new LinkedHashMap<String, Number>(standing.stats()))).toList());
   }
 
   private Optional<ErasedEngine> engine(@Nullable String gameId) {

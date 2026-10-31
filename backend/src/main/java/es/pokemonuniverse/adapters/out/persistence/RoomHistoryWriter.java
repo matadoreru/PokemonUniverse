@@ -24,6 +24,9 @@ public class RoomHistoryWriter {
   /** Clasificación con la identidad del miembro al terminar la partida. */
   public record StandingRow(GameStanding standing, AuthUser identity) {}
 
+  /** Primera sentencia de la transacción de resultados; solo afecta a esa transacción. */
+  static final String SERIALIZABLE = "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE";
+
   private final EntityManager entityManager;
 
   public RoomHistoryWriter(EntityManager entityManager) {
@@ -134,14 +137,7 @@ public class RoomHistoryWriter {
   }
 
   private void serializable() {
-    entityManager.createNativeQuery("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE").executeUpdate();
-  }
-
-  /** Nivel de aislamiento efectivo dentro de la transacción de {@link #persistResults}; para pruebas. */
-  @Transactional
-  public String persistIsolationLevel() {
-    serializable();
-    return String.valueOf(entityManager.createNativeQuery("SHOW transaction_isolation").getSingleResult());
+    entityManager.createNativeQuery(SERIALIZABLE).executeUpdate();
   }
 
   private @Nullable GameHistoryEntity findGame(String resultId) {

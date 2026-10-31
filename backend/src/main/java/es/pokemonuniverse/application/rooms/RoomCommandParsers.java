@@ -42,7 +42,7 @@ public final class RoomCommandParsers {
       issues.invalidType("string", raw, List.of());
       throw issues.toException();
     }
-    var code = raw.getStringValue().strip().toUpperCase(Locale.ROOT);
+    var code = jsTrim(raw.getStringValue()).toUpperCase(Locale.ROOT);
     if (!ROOM_CODE.matcher(code).matches()) {
       issues.invalidFormat("regex", "/^[A-Z2-9]{6}$/", List.of(), "Invalid string: must match pattern /^[A-Z2-9]{6}$/");
       throw issues.toException();
@@ -120,6 +120,20 @@ public final class RoomCommandParsers {
     strict(raw, Set.of("gameInstanceId", "actionEpoch", "action"), issues);
     if (!issues.isEmpty()) throw issues.toException();
     return new GameActionRequest(id, epoch.getStringValue(), action);
+  }
+
+  /** {@code String.prototype.trim}: espacios Unicode (incluidos U+00A0 y U+FEFF) y terminadores de línea. */
+  static String jsTrim(String value) {
+    int start = 0;
+    int end = value.length();
+    while (start < end && isJsWhitespace(value.charAt(start))) start++;
+    while (end > start && isJsWhitespace(value.charAt(end - 1))) end--;
+    return value.substring(start, end);
+  }
+
+  private static boolean isJsWhitespace(char c) {
+    return c == '\t' || c == '\n' || c == '\u000B' || c == '\f' || c == '\r' || c == '\uFEFF' || c == '\u2028'
+        || c == '\u2029' || Character.getType(c) == Character.SPACE_SEPARATOR;
   }
 
   private static String discriminator(@Nullable JsonNode raw, List<String> options, ZodIssues issues) {

@@ -34,6 +34,8 @@ class JpaGameResultsPersisterTest {
   @Inject UserGameStatsRepository userGameStats;
   @Inject GameHistoryRepository games;
   @Inject PlayerGameResultRepository playerResults;
+  @Inject javax.sql.DataSource dataSource;
+  @Inject io.micronaut.jdbc.DataSourceResolver dataSourceResolver;
 
   private AuthUser registeredUser() {
     var tag = UUID.randomUUID().toString().substring(0, 8);
@@ -148,7 +150,18 @@ class JpaGameResultsPersisterTest {
 
   @Test
   void runsSerializableAndRetriesConcurrentFirstGamesOfTheSameUser() throws Exception {
-    assertEquals("serializable", writer.persistIsolationLevel());
+    try (var connection = dataSourceResolver.resolve(dataSource).getConnection()) {
+      connection.setAutoCommit(false);
+      try (var statement = connection.createStatement()) {
+        statement.execute(RoomHistoryWriter.SERIALIZABLE);
+        try (var rs = statement.executeQuery("SHOW transaction_isolation")) {
+          rs.next();
+          assertEquals("serializable", rs.getString(1));
+        }
+      } finally {
+        connection.rollback();
+      }
+    }
     var user = registeredUser();
     var room = room(user);
     createRoomHistory(room);

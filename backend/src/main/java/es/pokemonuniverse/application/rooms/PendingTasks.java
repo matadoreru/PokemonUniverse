@@ -20,24 +20,28 @@ public final class PendingTasks {
 
   /** Espera hasta que no quede trabajo (incluido el que se añada mientras tanto). */
   public void flush() {
-    while (!pending.isEmpty()) {
+    while (true) {
+      var snapshot = pending.toArray(CompletableFuture[]::new);
+      if (snapshot.length == 0) return;
       try {
-        CompletableFuture.allOf(pending.toArray(CompletableFuture[]::new)).exceptionally(error -> null).join();
+        CompletableFuture.allOf(snapshot).exceptionally(error -> null).join();
       } catch (RuntimeException ignored) {
         // allSettled: los fallos ya los registra quien creó la tarea.
       }
+      settle(snapshot);
     }
   }
 
   /** Como {@link #flush()}, pero se rinde tras {@code timeout}; devuelve si quedó vacío. */
   public boolean flush(Duration timeout) {
     long deadline = System.nanoTime() + timeout.toNanos();
-    while (!pending.isEmpty()) {
+    while (true) {
+      var snapshot = pending.toArray(CompletableFuture[]::new);
+      if (snapshot.length == 0) return true;
       long remaining = deadline - System.nanoTime();
       if (remaining <= 0) return false;
       try {
-        CompletableFuture.allOf(pending.toArray(CompletableFuture[]::new)).exceptionally(error -> null)
-            .get(remaining, TimeUnit.NANOSECONDS);
+        CompletableFuture.allOf(snapshot).exceptionally(error -> null).get(remaining, TimeUnit.NANOSECONDS);
       } catch (TimeoutException e) {
         return false;
       } catch (InterruptedException e) {
@@ -46,8 +50,16 @@ public final class PendingTasks {
       } catch (Exception ignored) {
         // allSettled
       }
+      settle(snapshot);
     }
-    return true;
+  }
+
+  /**
+   * Retira ya las tareas esperadas: el {@code whenComplete} que las quita puede ejecutarse después de que
+   * {@code allOf} termine, y sin esto el bucle volvería a girar sobre tareas ya completadas.
+   */
+  private void settle(CompletableFuture<?>[] snapshot) {
+    for (var task : snapshot) if (task.isDone()) pending.remove(task);
   }
 
   public int size() {
