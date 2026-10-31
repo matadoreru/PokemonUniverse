@@ -1,5 +1,7 @@
 name: Frontend
 
+# The pull_request paths below are mirrored in main.yml (job `changes`, filter `frontend`):
+# keep both lists in sync.
 on:
   pull_request:
     branches:
@@ -16,6 +18,11 @@ on:
       - 'infra/nginx.conf'
       - 'backend/openapi/**'
       - '.github/workflows/frontend.yml'
+      - 'tsconfig.base.json'
+      - 'eslint.config.mjs'
+      - '.dockerignore'
+      - '.github/workflows/main.yml'
+      - '.github/actions/**'
   workflow_call:
     inputs:
       publish:

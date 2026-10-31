@@ -2,6 +2,7 @@ name: Main
 
 # Every push to main builds only what changed, gives every image the commit SHA
 # (unchanged images are retagged from :pre) and deploys that SHA to PRE.
+# The experimental native backend image is built alongside and never delays PRE.
 # v* tags rebuild everything and add the tag name; they never deploy.
 on:
   push:
@@ -21,24 +22,63 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Change detection compares against the head SHA of the last *successful* Main
+  # run on main, not against the previous push: after a failed or superseded run,
+  # every area changed since the last green run is rebuilt, so retag never copies
+  # a stale :pre onto a newer SHA. With no green run yet (first run ever), a base
+  # that is not an ancestor of this commit, workflow_dispatch or a tag push, all
+  # three flags are forced to true.
   changes:
     name: Detect changed areas
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     outputs:
-      # workflow_dispatch and tag pushes force every build.
-      frontend: ${{ github.event_name != 'push' || startsWith(github.ref, 'refs/tags/') || steps.filter.outputs.frontend == 'true' }}
-      node: ${{ github.event_name != 'push' || startsWith(github.ref, 'refs/tags/') || steps.filter.outputs.node == 'true' }}
-      backend: ${{ github.event_name != 'push' || startsWith(github.ref, 'refs/tags/') || steps.filter.outputs.backend == 'true' }}
+      frontend: ${{ steps.base.outputs.force == 'true' || steps.filter.outputs.frontend == 'true' }}
+      node: ${{ steps.base.outputs.force == 'true' || steps.filter.outputs.node == 'true' }}
+      backend: ${{ steps.base.outputs.force == 'true' || steps.filter.outputs.backend == 'true' }}
     steps:
       - uses: actions/checkout@v7
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
+        with:
+          fetch-depth: 0
+
+      - name: Find the last green Main run on main
+        id: base
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          force() {
+            echo "$1 → se construyen las tres imágenes" | tee -a "$GITHUB_STEP_SUMMARY"
+            echo 'force=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          }
+          if [ "$EVENT_NAME" != 'push' ] || [ "$GITHUB_REF" != 'refs/heads/main' ]; then
+            force "Evento $EVENT_NAME en $GITHUB_REF"
+          fi
+          base=$(gh run list --workflow main.yml --branch main --status success --limit 1 --json headSha --jq '.[0].headSha // empty')
+          if [ -z "$base" ]; then
+            force 'No hay ninguna ejecución verde de Main en main'
+          fi
+          if ! git merge-base --is-ancestor "$base" "$GITHUB_SHA"; then
+            force "El último Main verde ($base) no es ancestro de $GITHUB_SHA"
+          fi
+          echo "Cambios detectados desde el último Main verde: \`$base\`" >> "$GITHUB_STEP_SUMMARY"
+          echo 'force=false' >> "$GITHUB_OUTPUT"
+          echo "sha=$base" >> "$GITHUB_OUTPUT"
 
       # Keep these lists in sync with the pull_request paths of each workflow.
       - name: Filter changed paths
         id: filter
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
+        if: steps.base.outputs.force == 'false'
         uses: dorny/paths-filter@v4
         with:
+          base: ${{ steps.base.outputs.sha }}
+          ref: ${{ github.sha }}
           filters: |
             frontend:
               - 'apps/web/**'
@@ -51,7 +91,12 @@ jobs:
               - 'Dockerfile'
               - 'infra/nginx.conf'
               - 'backend/openapi/**'
+              - 'tsconfig.base.json'
+              - 'eslint.config.mjs'
+              - '.dockerignore'
               - '.github/workflows/frontend.yml'
+              - '.github/workflows/main.yml'
+              - '.github/actions/**'
             node:
               - 'apps/server/**'
               - 'packages/shared/**'
@@ -59,10 +104,17 @@ jobs:
               - 'scripts/start-server.sh'
               - 'package.json'
               - 'package-lock.json'
+              - 'tsconfig.base.json'
+              - 'eslint.config.mjs'
+              - '.dockerignore'
               - '.github/workflows/node-server.yml'
+              - '.github/workflows/main.yml'
+              - '.github/actions/**'
             backend:
               - 'backend/**'
               - '.github/workflows/backend.yml'
+              - '.github/workflows/main.yml'
+              - '.github/actions/**'
 
   frontend:
     name: Frontend
@@ -100,6 +152,43 @@ jobs:
       publish: true
     secrets: inherit
 
+  # Experimental (stage 1): the native binary still crashes at runtime. Not a
+  # dependency of retag or deploy-pre, so it never blocks or delays PRE.
+  backend-native:
+    name: Publish backend native image (experimental)
+    needs: [changes, backend]
+    if: ${{ !cancelled() && needs.changes.outputs.backend == 'true' && needs.backend.result == 'success' }}
+    continue-on-error: true
+    timeout-minutes: 25
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push native image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile.native
+          platforms: linux/amd64
+          push: true
+          build-args: |
+            PU_COMMIT_SHA=${{ github.sha }}
+          tags: ghcr.io/${{ github.repository_owner }}/pokemon-universe-backend:${{ github.sha }}-native
+          cache-from: type=gha,scope=backend-native
+          cache-to: type=gha,mode=max,scope=backend-native
+          provenance: mode=max
+          sbom: true
+
   # Skipped builds count as "skipped", not "failure": retag runs unless a build
   # that did run failed (or the run was cancelled).
   retag:
@@ -130,7 +219,7 @@ jobs:
           retag() {
             local image="$REGISTRY/$1"
             if ! docker buildx imagetools inspect "$image:pre" > /dev/null 2>&1; then
-              echo "::error::$image:pre no existe todavía. Lanza Main manualmente (workflow_dispatch) sobre main una vez: fuerza todas las builds y publica :pre."
+              echo "::error::$image:pre no existe todavía. Lanza Main manualmente (workflow_dispatch) sobre main: fuerza todas las builds y publica :pre."
               exit 1
             fi
             docker buildx imagetools create --tag "$image:$GITHUB_SHA" "$image:pre"

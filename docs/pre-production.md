@@ -18,7 +18,7 @@ PRE y PRO no comparten PostgreSQL, avatares, JWT, contraseñas, red Compose ni h
 
 Esto evita que el primer workflow intente conectarse a un PRE que aún no existe.
 
-> **Primera ejecución tras separar los workflows.** `main.yml` solo reconstruye las imágenes cuyas rutas cambiaron y reetiqueta las demás desde `:pre`. La primera vez no existe `pokemon-universe-backend:pre`, así que el job `retag` falla con un mensaje explícito. Lanza **Main** manualmente con `workflow_dispatch` una vez sobre `main`: fuerza las tres builds y publica `:pre` para todas.
+> **Detección de cambios.** La detección de cambios compara con el último Main verde, no con el push anterior: `main.yml` reconstruye toda zona que haya cambiado desde la última ejecución correcta de **Main** en `main` y reetiqueta las demás desde `:pre`. Si un run falla o se cancela, el siguiente push vuelve a construir lo que quedó pendiente. Sin ningún Main verde todavía (la primera ejecución tras introducir estos workflows) se construyen las tres imágenes, así que `pokemon-universe-backend:pre` se crea sin intervención. Lanzar **Main** a mano con `workflow_dispatch` (fuerza las tres builds) queda solo como alternativa si el job `retag` avisa de que falta algún `:pre`.
 
 ## 1. Preparar DNS y Cloudflare Tunnel
 
@@ -158,11 +158,11 @@ En **Settings → Branches → Add branch protection rule** para `main`:
 
 ## 8. Primer despliegue y uso diario
 
-Con la infraestructura ya fusionada inicialmente con `PRE_DEPLOY_ENABLED=false`, termina de preparar los directorios y GitHub Environments, cambia la variable a `true` y vuelve a ejecutar **Main** (`main.yml`) manualmente sobre `main` con `workflow_dispatch` (fuerza las tres builds y crea `:pre` para el backend).
+Con la infraestructura ya fusionada inicialmente con `PRE_DEPLOY_ENABLED=false`, termina de preparar los directorios y GitHub Environments, cambia la variable a `true` y vuelve a ejecutar **Main** (`main.yml`) manualmente sobre `main` con `workflow_dispatch` (fuerza las tres builds).
 
 A partir de entonces, cada push a `main` ejecuta **Main** (`main.yml`), que:
 
-1. detecta qué zonas cambiaron (frontend, servidor Node, backend Java);
+1. detecta qué zonas cambiaron (frontend, servidor Node, backend Java) desde el último Main verde;
 2. ejecuta solo los workflows afectados (`frontend.yml`, `node-server.yml`, `backend.yml`): migraciones sobre PostgreSQL de prueba, typecheck, lint, tests, build y `./gradlew check`; la auditoría de npm se publica en el resumen sin bloquear;
 3. publica las imágenes reconstruidas como `:<SHA>` y `:pre` y reetiqueta las no afectadas de `:pre` a `:<SHA>`, de modo que las tres imágenes existen para cada SHA;
 4. se conecta por SSH y despliega `:<SHA>` en PRE (solo en `main`; los tags `v*` añaden el tag de versión a las tres imágenes y no despliegan).

@@ -23,11 +23,12 @@ Sube el proyecto a GitHub con rama principal `main`. La integración continua es
 
 | Workflow | Se dispara en PR cuando cambia | Valida | Imagen |
 | --- | --- | --- | --- |
-| `.github/workflows/frontend.yml` | `apps/web/`, `packages/shared/`, `e2e/`, `package*.json`, `Dockerfile`, `infra/nginx.conf`, `backend/openapi/` | lint, typecheck y tests en paralelo (incluye `check:boundaries` y `check:registry`), build Vite | `pokemon-universe-web` (target `web`) |
-| `.github/workflows/node-server.yml` (transitorio) | `apps/server/`, `packages/shared/`, `Dockerfile`, `scripts/start-server.sh`, `package*.json` | migraciones sobre PostgreSQL de prueba, typecheck, lint, tests, build; `npm audit` no bloqueante en el resumen | `pokemon-universe-server` (target `server`) |
-| `.github/workflows/backend.yml` | `backend/` | `./gradlew check` (tests con Testcontainers y `verifyOpenApi`) | `pokemon-universe-backend` (JVM) y `:<sha>-native` experimental, no bloqueante |
+| `.github/workflows/frontend.yml` | `apps/web/`, `packages/shared/`, `e2e/`, `package*.json`, `tsconfig.base.json`, `eslint.config.mjs`, `Dockerfile`, `.dockerignore`, `infra/nginx.conf`, `backend/openapi/` | lint, typecheck y tests en paralelo (incluye `check:boundaries` y `check:registry`), build Vite | `pokemon-universe-web` (target `web`) |
+| `.github/workflows/node-server.yml` (transitorio) | `apps/server/`, `packages/shared/`, `Dockerfile`, `.dockerignore`, `scripts/start-server.sh`, `package*.json`, `tsconfig.base.json`, `eslint.config.mjs` | migraciones sobre PostgreSQL de prueba, typecheck, lint, tests, build; `npm audit` no bloqueante en el resumen | `pokemon-universe-server` (target `server`) |
+| `.github/workflows/backend.yml` | `backend/` | `./gradlew check` (tests con Testcontainers y `verifyOpenApi`) | `pokemon-universe-backend` (JVM); `main.yml` añade `:<sha>-native` experimental, no bloqueante |
 
-En cada push a `main`, `.github/workflows/main.yml` detecta qué zonas cambiaron, llama solo a los workflows afectados
+En cada push a `main`, `.github/workflows/main.yml` detecta qué zonas cambiaron desde el último Main verde en `main`
+(no desde el push anterior; sin ninguno, construye todo), llama solo a los workflows afectados
 con `publish: true` y reetiqueta las imágenes no afectadas de `:pre` a `:<commit-sha>`, de modo que **cada SHA de `main`
 tiene las tres imágenes**. Después despliega ese SHA en PRE (ver [`docs/pre-production.md`](docs/pre-production.md)).
 Las imágenes son `linux/amd64` y `linux/arm64` con caché de Buildx en GitHub Actions (`type=gha`, un `scope` por imagen):
@@ -43,8 +44,9 @@ ghcr.io/matadoreru/pokemon-universe-backend:<commit-sha>-native   # experimental
 ```
 
 Un tag git `v*` (por ejemplo `v0.9.0`) reconstruye las tres imágenes y les añade ese tag; no despliega. Lanzar `main.yml`
-a mano (`workflow_dispatch`) fuerza las tres builds: hazlo una vez tras introducir estos workflows, porque el retag
-necesita que `pokemon-universe-backend:pre` exista.
+a mano (`workflow_dispatch`) fuerza las tres builds; solo hace falta si el job `retag` avisa de que falta un `:pre`
+(la primera ejecución ya lo construye todo porque aún no hay ningún Main verde). Los cambios en `main.yml` o en
+`.github/actions/` reconstruyen las tres imágenes.
 
 ### Tiempos antes/después
 
@@ -55,7 +57,7 @@ ejecución real de `main.yml`.
 | --- | --- | --- |
 | Validación Node | validate 2:43 (npm ci 47 s, typecheck 24 s, lint 11 s, test 30 s, build 25 s) | frontend ≈ 2:00 (install 45 s, lint/typecheck/test en paralelo ≈ 30 s, build 25 s); node-server ≈ 2:30 |
 | Imágenes | publish 4:13 (web + server multi-arch bajo QEMU, siempre) | web ≈ 1:00; server ≈ 2:30; backend JVM ≈ 2:00 tras check ≈ 2:30 (Gradle cacheado, Testcontainers ≈ 40 s); solo las que cambian |
-| Nativo backend | — | ≈ 10–15 min, solo en `main` y no bloqueante (alarga la espera de `deploy-pre` cuando cambia `backend/`) |
+| Nativo backend | — | ≈ 10–15 min, job aparte en `main.yml`, no bloqueante y fuera de la cadena de `deploy-pre` |
 | Retag de imágenes no afectadas | — | ≈ 0:20 |
 | Despliegue PRE | 1:11 | ≈ 1:10 |
 | **Total por push** | **≈ 8:15 siempre** | solo frontend ≈ 3:00 + deploy 1:10; solo docs ≈ 0:30 + deploy 1:10 |

@@ -2,6 +2,8 @@ name: Node server
 
 # Transitional until stage 2 moves the remaining HTTP/Socket.IO surface to backend/.
 
+# The pull_request paths below are mirrored in main.yml (job `changes`, filter `node`):
+# keep both lists in sync.
 on:
   pull_request:
     branches:
@@ -14,6 +16,11 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/node-server.yml'
+      - 'tsconfig.base.json'
+      - 'eslint.config.mjs'
+      - '.dockerignore'
+      - '.github/workflows/main.yml'
+      - '.github/actions/**'
   workflow_call:
     inputs:
       publish:
