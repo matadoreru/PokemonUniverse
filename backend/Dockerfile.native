@@ -1,0 +1,30 @@
+# Imagen nativa experimental (etapa 1): se publica con sufijo -native para medir
+# arranque y memoria; Compose sigue desplegando la imagen JVM (Dockerfile).
+FROM ghcr.io/graalvm/native-image-community:25 AS build
+WORKDIR /src
+COPY gradlew settings.gradle.kts build.gradle.kts gradle.properties ./
+COPY gradle ./gradle
+RUN ./gradlew --no-daemon --version
+COPY src ./src
+COPY openapi ./openapi
+RUN ./gradlew --no-daemon nativeCompile -x test
+
+# native-image-community:25 está basada en Oracle Linux 10: el runtime usa la
+# misma generación (UBI 10) para que la libz copiada encuentre su glibc.
+FROM registry.access.redhat.com/ubi10/ubi-micro
+ARG PU_COMMIT_SHA=""
+ENV PU_COMMIT_SHA=${PU_COMMIT_SHA}
+WORKDIR /app
+# El plugin nombra el binario como el proyecto (rootProject.name).
+COPY --from=build /src/build/native/nativeCompile/pokemon-universe-backend /app/backend
+# El binario enlaza libz.so.1 y UBI-micro no la incluye: se toma la de la
+# imagen de compilación.
+COPY --from=build /usr/lib64/libz.so.1 /usr/lib64/libz.so.1
+# Mismo uid/gid que el usuario `node` del servidor Node (avatares 0600 en el
+# volumen compartido); ver Dockerfile.
+USER 1000:1000
+EXPOSE 8080
+# Sin HEALTHCHECK: UBI-micro no trae wget ni curl. En la etapa 2 el binario
+# tendrá un modo --healthcheck que consulte /health/readiness y salga con 0/1.
+# Un binario nativo acepta -D en tiempo de ejecución (no hay JAVA_TOOL_OPTIONS).
+ENTRYPOINT ["/app/backend", "-Dlogback.configurationFile=logback-prod.xml"]

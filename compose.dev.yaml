@@ -10,3 +10,10 @@ services:
       context: .
       target: web
     image: pokemon-universe-web:dev
+
+  backend:
+    build:
+      context: ./backend
+      args:
+        PU_COMMIT_SHA: dev
+    image: pokemon-universe-backend:dev
