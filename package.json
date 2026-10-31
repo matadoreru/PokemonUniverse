@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "postinstall": "npm run db:generate",
-    "dev": "concurrently -n server,web -c yellow,cyan \"npm run dev -w @pokemon-universe/server\" \"npm run dev -w @pokemon-universe/web\"",
+    "dev": "concurrently -n server,backend,web -c yellow,green,cyan \"npm run dev -w @pokemon-universe/server\" \"npm run dev:backend\" \"npm run dev -w @pokemon-universe/web\"",
+    "dev:backend": "cd backend && MICRONAUT_ENVIRONMENTS=dev PORT=8080 ./gradlew run -t --quiet",
     "build": "npm run build -w @pokemon-universe/shared && npm run build -w @pokemon-universe/server && npm run build -w @pokemon-universe/web",
     "typecheck": "npm run build -w @pokemon-universe/shared && npm run typecheck -w @pokemon-universe/server && npm run typecheck -w @pokemon-universe/web && npm run typecheck -w @pokemon-universe/e2e",
     "test": "npm run check:boundaries && npm run build -w @pokemon-universe/shared && npm run check:registry && npm run test --workspaces --if-present",

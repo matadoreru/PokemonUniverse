@@ -3,7 +3,7 @@
 // - Solo Chromium. En Fedora: `npx playwright install chromium` (sin `--with-deps`,
 //   que asume apt).
 // - Corre contra la BD local de desarrollo: carga el `.env` de la raíz y arranca
-//   servidor (`:3001`) y web (`:5173`) si no están ya levantados.
+//   servidor (`:3001`), backend Java (`:8080`) y web (`:5173`) si no están ya levantados.
 // - Todo pasa por el proxy de Vite, así que `baseURL` es la web y no se define
 //   `VITE_API_URL`.
 // - Las capturas de revisión van a `e2e/screenshots/`.
@@ -49,6 +49,16 @@ export default defineConfig({
       timeout: 180_000,
       // ROOM_MAX_PLAYERS fijo: sala.spec.ts espera el contador "2 / 8" y no debe depender del .env.
       env: { DATA_SYNC_ENABLED: 'false', RATE_LIMIT_DISABLED: 'true', COOKIE_SECURE: 'false', ROOM_MAX_PLAYERS: '8' },
+    },
+    {
+      // Backend Java: auth, perfil, novedades, feedback, juegos y Pokémon (ver vite.config.ts).
+      // PORT fijo porque el .env exporta PORT=3001 para Node; JWT_SECRET llega del .env cargado.
+      command: 'npm run dev:backend',
+      url: 'http://localhost:8080/health',
+      cwd: '..',
+      reuseExistingServer: !process.env.CI,
+      timeout: 240_000,
+      env: { PORT: '8080', MICRONAUT_ENVIRONMENTS: 'dev', RATE_LIMIT_DISABLED: 'true', COOKIE_SECURE: 'false' },
     },
     {
       command: 'npm run dev -w @pokemon-universe/web',

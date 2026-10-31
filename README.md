@@ -52,13 +52,18 @@ Las salas admiten hasta 8 jugadores por defecto. Si alguien se desconecta, conse
 - **`packages/shared`**: contratos Zod, tipos, puntuación y los motores deterministas de cada minijuego.
 - **`apps/server`**: Express, Socket.IO y Prisma sobre PostgreSQL. Es la autoridad de la partida: temporizadores, secretos y ganadores se deciden aquí.
 - **`apps/web`**: React 19, Vite y Tailwind. Solo muestra lo que el servidor le envía a cada jugador.
+- **`backend`**: backend Java 25 con Micronaut, Gradle y PostgreSQL (ver abajo).
 - **`e2e`**: pruebas end-to-end con Playwright.
+
+### Backend Java (etapa 1)
+
+El backend Java convive con Node detrás del mismo origen y ambos firman y aceptan la misma cookie `pu_session` con `JWT_SECRET`. En esta etapa Java atiende `POST /api/auth/{register,login,guest,logout}`, `GET /api/auth/{me,profile}`, `GET /api/auth/avatars/*`, `GET /api/changelog`, `POST /api/feedback`, `GET /api/games` y `GET /api/pokemon`. Todo lo demás (salas, Socket.IO, administración, TCG, categorías, subida de avatares, `/api/health`…) sigue en Node. En desarrollo el reparto lo hace el proxy de Vite (`apps/web/vite.config.ts`); en contenedores, nginx.
 
 Los detalles de diseño están en [docs/architecture.md](docs/architecture.md).
 
 ## Puesta en marcha
 
-Requisitos: Node 22 o superior, y podman (o Docker) para PostgreSQL.
+Requisitos: Node 22 o superior, Java 25 (Gradle llega con `./gradlew`) y podman (o Docker) para PostgreSQL.
 
 ```bash
 npm install                                   # dependencias y cliente Prisma
@@ -68,16 +73,26 @@ npm run build -w @pokemon-universe/shared
 set -a; . ./.env; set +a                      # el servidor no carga .env por sí solo
 npm run db:deploy -w @pokemon-universe/server # aplica las migraciones
 npm run db:seed                               # descarga los Pokémon de PokéAPI (unos minutos)
-npm run dev                                   # servidor en :3001 y web en http://localhost:5173
+npm run dev                                   # Node en :3001, Java en :8080 y web en http://localhost:5173
 ```
 
 En el `.env` local quita la línea `VITE_API_URL`: la web usa el proxy de Vite. Pon también `DATA_SYNC_ENABLED=false` si no quieres sincronizar datos externos al arrancar.
+
+El backend Java (`npm run dev:backend`, recarga en caliente con `./gradlew run -t`) toma del entorno `JWT_SECRET`, `COOKIE_SECURE`, `WEB_ORIGIN` y `RATE_LIMIT_DISABLED`; la conexión a la BD local está fijada en `backend/src/main/resources/application-dev.yml` y el puerto se fuerza a 8080 aunque el `.env` traiga `PORT=3001`.
+
+Todo en contenedores con un solo comando:
+
+```bash
+docker compose -f compose.yaml -f compose.dev.yaml up -d --build --wait
+```
 
 ## Comandos
 
 | Comando | Qué hace |
 |---|---|
-| `npm run dev` | Servidor y web en modo desarrollo. |
+| `npm run dev` | Servidor Node, backend Java y web en modo desarrollo. |
+| `npm run dev:backend` | Solo el backend Java en :8080, con recarga en caliente. |
+| `cd backend && ./gradlew check` | Pruebas, verificación de la especificación OpenAPI y demás comprobaciones del backend Java. |
 | `npm run build` | Compila shared, server y web. |
 | `npm test` | Pruebas unitarias con Vitest. |
 | `npm run test:e2e` | Pruebas end-to-end con Playwright. Ver [e2e/README.md](e2e/README.md). |

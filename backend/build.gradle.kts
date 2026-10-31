@@ -105,3 +105,7 @@ tasks.register<VerifyOpenApi>("verifyOpenApi") {
 }
 
 tasks.named("check") { dependsOn("verifyOpenApi") }
+
+// Reenvía -Dpu.exportFixture al JVM de los tests (ExportJavaSessionFixture solo corre con "true").
+val exportFixture = providers.systemProperty("pu.exportFixture").orElse("false")
+tasks.named<Test>("test") { systemProperty("pu.exportFixture", exportFixture.get()) }
