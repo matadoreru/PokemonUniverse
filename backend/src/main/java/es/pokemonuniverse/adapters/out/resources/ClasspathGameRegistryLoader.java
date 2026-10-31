@@ -17,6 +17,7 @@ import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagEngin
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaEngine;
 import es.pokemonuniverse.domain.game.engines.poketaboo.PokeTabooEngine;
 import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingEngine;
+import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteEngine;
 import es.pokemonuniverse.domain.game.engines.typechain.TypeChainEngine;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelEngine;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonEngine;
@@ -87,6 +88,7 @@ public class ClasspathGameRegistryLoader {
     engines.put(WhosThatPokemonEngine.ID, new WhosThatPokemonEngine(manifest(manifests, WhosThatPokemonEngine.ID)));
     engines.put(PokemonCryQuizEngine.ID, new PokemonCryQuizEngine(manifest(manifests, PokemonCryQuizEngine.ID)));
     engines.put(ZoomedPokemonEngine.ID, new ZoomedPokemonEngine(manifest(manifests, ZoomedPokemonEngine.ID)));
+    engines.put(ShinyVoteEngine.ID, new ShinyVoteEngine(manifest(manifests, ShinyVoteEngine.ID)));
     return engines;
   }
 
