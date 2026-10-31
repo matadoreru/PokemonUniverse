@@ -10,10 +10,13 @@ import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.serde.annotation.Serdeable;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@Tag(name = "pokemon")
 @Controller("/api/pokemon")
 @ExecuteOn(TaskExecutors.BLOCKING)
 public class PokemonController {
@@ -26,6 +29,7 @@ public class PokemonController {
     this.service = service;
   }
 
+  @Operation(summary = "Catálogo Pokémon")
   @Get
   public HttpResponse<PokemonResponse> list(@QueryValue(defaultValue = "") String generations,
       @QueryValue(defaultValue = "") String includeForms) {

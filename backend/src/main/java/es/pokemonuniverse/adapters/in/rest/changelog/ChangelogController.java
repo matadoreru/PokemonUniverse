@@ -7,8 +7,11 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.serde.annotation.Serdeable;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
+@Tag(name = "changelog")
 @Controller("/api/changelog")
 @ExecuteOn(TaskExecutors.BLOCKING)
 public class ChangelogController {
@@ -19,6 +22,7 @@ public class ChangelogController {
     this.service = service;
   }
 
+  @Operation(summary = "Listar el changelog público")
   @Get
   public HttpResponse<ChangelogResponse> list() {
     var entries = service.listPublished().stream().map(ChangelogEntryResponse::of).toList();

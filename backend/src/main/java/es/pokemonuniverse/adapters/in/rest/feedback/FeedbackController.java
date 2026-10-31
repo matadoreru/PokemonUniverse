@@ -13,11 +13,14 @@ import io.micronaut.http.annotation.Post;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.serde.annotation.Serdeable;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import java.util.Optional;
 
 /** El límite de 10 peticiones / 15 min por IP lo aplica el filtro de la tarea 12 sobre esta ruta. */
+@Tag(name = "feedback")
 @Controller("/api/feedback")
 @ExecuteOn(TaskExecutors.BLOCKING)
 public class FeedbackController {
@@ -30,6 +33,7 @@ public class FeedbackController {
     this.validator = validator;
   }
 
+  @Operation(summary = "Enviar feedback")
   @Post
   public HttpResponse<FeedbackResponse> submit(@Body CreateFeedbackRequest body, @Identity Optional<AuthUser> current) {
     var author = current.orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Authentication required"));

@@ -7,8 +7,11 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.serde.annotation.Serdeable;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
+@Tag(name = "games")
 @Controller("/api/games")
 @ExecuteOn(TaskExecutors.BLOCKING)
 public class GamesController {
@@ -19,6 +22,7 @@ public class GamesController {
     this.registry = registry;
   }
 
+  @Operation(summary = "Listar minijuegos")
   @Get
   public GamesResponse list() {
     return new GamesResponse(registry.list());

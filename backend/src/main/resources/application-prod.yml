@@ -8,3 +8,10 @@ datasources:
 pu:
   auth:
     secret: ${JWT_SECRET}
+micronaut:
+  router:
+    static-resources:
+      swagger:
+        enabled: false
+      swagger-ui:
+        enabled: false

@@ -1,0 +1,879 @@
+openapi: 3.0.1
+info:
+  title: Pokémon Universe API
+  version: "0.1"
+paths:
+  /api/auth/avatars/{filename}:
+    get:
+      tags:
+      - auth
+      summary: Obtener imagen de avatar
+      operationId: avatar
+      parameters:
+      - name: filename
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: avatar 200 response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+  /api/auth/guest:
+    post:
+      tags:
+      - auth
+      summary: Entrar como invitado
+      operationId: guest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: "#/components/schemas/GuestRequest"
+              - type: object
+                properties:
+                  current:
+                    nullable: true
+                    allOf:
+                    - $ref: "#/components/schemas/AuthUser"
+        required: true
+      responses:
+        "200":
+          description: guest 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /api/auth/login:
+    post:
+      tags:
+      - auth
+      summary: Iniciar sesión
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: "#/components/schemas/LoginRequest"
+              - type: object
+                properties:
+                  current:
+                    nullable: true
+                    allOf:
+                    - $ref: "#/components/schemas/AuthUser"
+        required: true
+      responses:
+        "200":
+          description: login 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /api/auth/logout:
+    post:
+      tags:
+      - auth
+      summary: Cerrar sesión
+      operationId: logout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current:
+                  nullable: true
+                  allOf:
+                  - $ref: "#/components/schemas/AuthUser"
+        required: true
+      responses:
+        "200":
+          description: logout 200 response
+  /api/auth/me:
+    get:
+      tags:
+      - auth
+      summary: Usuario de la sesión actual
+      operationId: me
+      parameters:
+      - name: current
+        in: query
+        explode: false
+        schema:
+          nullable: true
+          allOf:
+          - $ref: "#/components/schemas/AuthUser"
+      responses:
+        "200":
+          description: me 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /api/auth/profile:
+    get:
+      tags:
+      - auth
+      summary: Perfil con estadísticas por minijuego
+      operationId: profile
+      parameters:
+      - name: current
+        in: query
+        explode: false
+        schema:
+          nullable: true
+          allOf:
+          - $ref: "#/components/schemas/AuthUser"
+      responses:
+        "200":
+          description: profile 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileResponse"
+  /api/auth/register:
+    post:
+      tags:
+      - auth
+      summary: Registrar usuario
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: "#/components/schemas/RegisterRequest"
+              - type: object
+                properties:
+                  current:
+                    nullable: true
+                    allOf:
+                    - $ref: "#/components/schemas/AuthUser"
+        required: true
+      responses:
+        "200":
+          description: register 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /api/changelog:
+    get:
+      tags:
+      - changelog
+      summary: Listar el changelog público
+      operationId: list
+      responses:
+        "200":
+          description: list 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChangelogController.ChangelogResponse"
+  /api/feedback:
+    post:
+      tags:
+      - feedback
+      summary: Enviar feedback
+      operationId: submit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: "#/components/schemas/CreateFeedbackRequest"
+              - type: object
+                properties:
+                  current:
+                    nullable: true
+                    allOf:
+                    - $ref: "#/components/schemas/AuthUser"
+        required: true
+      responses:
+        "200":
+          description: submit 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedbackController.FeedbackResponse"
+  /api/games:
+    get:
+      tags:
+      - games
+      summary: Listar minijuegos
+      operationId: list_1
+      responses:
+        "200":
+          description: list_1 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GamesController.GamesResponse"
+  /api/pokemon:
+    get:
+      tags:
+      - pokemon
+      summary: Catálogo Pokémon
+      operationId: list_2
+      parameters:
+      - name: generations
+        in: query
+        required: true
+        explode: false
+        schema:
+          type: string
+      - name: includeForms
+        in: query
+        required: true
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: list_2 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PokemonController.PokemonResponse"
+components:
+  schemas:
+    AuthUser:
+      required:
+      - avatar
+      - displayName
+      - id
+      - kind
+      type: object
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        kind:
+          $ref: "#/components/schemas/AuthUser.Kind"
+        email:
+          type: string
+          nullable: true
+        role:
+          nullable: true
+          allOf:
+          - $ref: "#/components/schemas/UserRole"
+        avatar:
+          $ref: "#/components/schemas/AvatarRef"
+      description: Identidad autenticada (usuario registrado o invitado); es la misma
+        que viaja en la cookie de sesión.
+    AuthUser.Kind:
+      type: string
+      enum:
+      - USER
+      - GUEST
+    AvatarRef:
+      type: object
+      description: Avatar de un jugador; el JSON tiene exactamente las formas que
+        acepta el servidor Node.
+      discriminator:
+        propertyName: type
+        mapping:
+          PRESET: "#/components/schemas/AvatarRef.Preset"
+          CUSTOM: "#/components/schemas/AvatarRef.Custom"
+          DEFAULT: "#/components/schemas/AvatarRef.Default"
+      oneOf:
+      - $ref: "#/components/schemas/AvatarRef.Default"
+      - $ref: "#/components/schemas/AvatarRef.Preset"
+      - $ref: "#/components/schemas/AvatarRef.Custom"
+    AvatarRef.Custom:
+      required:
+      - value
+      - version
+      type: object
+      properties:
+        value:
+          type: string
+        version:
+          type: integer
+          format: int64
+        type:
+          type: string
+    AvatarRef.Default:
+      type: object
+    AvatarRef.Preset:
+      required:
+      - value
+      type: object
+      properties:
+        value:
+          type: string
+        type:
+          type: string
+    ChangelogChange:
+      required:
+      - text
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+        text:
+          type: string
+      description: Un cambio de una entrada del changelog (changelogChangeSchema en
+        shared).
+    ChangelogController.ChangelogResponse:
+      required:
+      - entries
+      type: object
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChangelogEntryResponse"
+    ChangelogEntryResponse:
+      required:
+      - content
+      - createdAt
+      - date
+      - id
+      - published
+      - title
+      - updatedAt
+      - version
+      type: object
+      properties:
+        id:
+          type: string
+        version:
+          type: string
+        title:
+          type: string
+        date:
+          type: string
+        published:
+          type: boolean
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChangelogChange"
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+    CreateFeedbackRequest:
+      required:
+      - description
+      - type
+      type: object
+      properties:
+        reference:
+          nullable: true
+          allOf:
+          - $ref: "#/components/schemas/FeedbackReference"
+        gameId:
+          maxLength: 64
+          minLength: 1
+          type: string
+          nullable: true
+          x-size-message: Selecciona un minijuego.
+        roomCode:
+          pattern: "^[A-Z2-9]{6}$"
+          type: string
+          nullable: true
+          x-pattern-message: El código de sala no es válido.
+        type:
+          $ref: "#/components/schemas/FeedbackType"
+        description:
+          maxLength: 2000
+          minLength: 10
+          type: string
+          x-not-null-message: Describe el feedback con al menos 10 caracteres.
+      description: "Cuerpo estricto: una clave desconocida falla la deserializació\
+        n (como `.strict()` de Zod)."
+    FeedbackController.FeedbackResponse:
+      required:
+      - feedback
+      type: object
+      properties:
+        feedback:
+          $ref: "#/components/schemas/FeedbackItemResponse"
+    FeedbackItemResponse:
+      required:
+      - author
+      - createdAt
+      - description
+      - gameId
+      - gameName
+      - id
+      - reference
+      - roomCode
+      - status
+      - type
+      - updatedAt
+      type: object
+      properties:
+        id:
+          type: string
+        reference:
+          type: string
+        gameId:
+          type: string
+          nullable: true
+        gameName:
+          type: string
+          nullable: true
+        roomCode:
+          type: string
+          nullable: true
+        type:
+          type: string
+        status:
+          type: string
+        description:
+          type: string
+        author:
+          $ref: "#/components/schemas/FeedbackItemResponse.Author"
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      description: "Vista pública de un feedback; los nulos se emiten explícitos,\
+        \ como hace Node."
+    FeedbackItemResponse.Author:
+      required:
+      - displayName
+      - kind
+      - userId
+      type: object
+      properties:
+        userId:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+        kind:
+          type: string
+    FeedbackReference:
+      type: string
+      enum:
+      - GENERAL
+      - MINIGAME
+      - ROOMS
+      - ACCOUNT
+      - INTERFACE
+      - CHANGELOG
+      - OTHER
+    FeedbackType:
+      type: string
+      enum:
+      - BUG
+      - SUGGESTION
+    GameManifest:
+      required:
+      - defaultConfig
+      - description
+      - icon
+      - id
+      - minPlayers
+      - name
+      - profileStats
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+        description:
+          type: string
+        experimental:
+          type: boolean
+          nullable: true
+        recommended:
+          type: boolean
+          nullable: true
+        minPlayers:
+          type: integer
+          format: int32
+        maxPlayers:
+          type: integer
+          format: int32
+          nullable: true
+        profileStats:
+          $ref: "#/components/schemas/GameManifest.ProfileStatsDefinition"
+        defaultConfig:
+          type: object
+          additionalProperties:
+            type: object
+      description: "Manifiesto de un minijuego mas su configuracion por defecto, tal\
+        \ como lo exporta el registro TypeScript."
+    GameManifest.DerivedMetricDefinition:
+      required:
+      - denominator
+      - key
+      - kind
+      - label
+      - numerator
+      type: object
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        kind:
+          type: string
+        numerator:
+          type: string
+        denominator:
+          type: array
+          items:
+            type: string
+        format:
+          type: string
+          nullable: true
+    GameManifest.MetricDefinition:
+      required:
+      - aggregation
+      - key
+      - label
+      type: object
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        aggregation:
+          type: string
+        format:
+          type: string
+          nullable: true
+    GameManifest.ProfileStatsDefinition:
+      required:
+      - metrics
+      type: object
+      properties:
+        metrics:
+          type: array
+          items:
+            $ref: "#/components/schemas/GameManifest.MetricDefinition"
+        derivedMetrics:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/GameManifest.DerivedMetricDefinition"
+    GamesController.GamesResponse:
+      required:
+      - games
+      type: object
+      properties:
+        games:
+          type: array
+          items:
+            $ref: "#/components/schemas/GameManifest"
+    GuestRequest:
+      required:
+      - displayName
+      type: object
+      properties:
+        displayName:
+          maxLength: 24
+          minLength: 2
+          pattern: "^[\\p{L}\\p{N}_ -]+$"
+          type: string
+          x-pattern-message: El nombre contiene caracteres no permitidos
+          x-size-message: El nombre debe tener entre 2 y 24 caracteres
+        avatarPresetId:
+          pattern: ^(trainer-berry|trainer-aqua|trainer-electric|trainer-violet)$
+          type: string
+          nullable: true
+          x-pattern-message: El avatar no es válido
+    LoginRequest:
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          maxLength: 254
+          minLength: 1
+          type: string
+          format: email
+          x-pattern-message: El email no es válido
+          x-size-message: El email no puede superar los 254 caracteres
+        password:
+          maxLength: 128
+          minLength: 1
+          type: string
+          x-size-message: La contraseña debe tener entre 1 y 128 caracteres
+          x-not-null-message: La contraseña es obligatoria
+    Pokemon:
+      required:
+      - abilities
+      - attack
+      - baseStatTotal
+      - color
+      - defense
+      - evolutionStage
+      - evolutionStageCount
+      - generation
+      - heightDecimeters
+      - hp
+      - id
+      - isDefault
+      - legendaryStatus
+      - name
+      - names
+      - nationalDexNumber
+      - shinySprite
+      - specialAttack
+      - specialDefense
+      - speed
+      - sprite
+      - types
+      - weightHectograms
+      type: object
+      properties:
+        id:
+          type: string
+        nationalDexNumber:
+          type: integer
+          format: int32
+        name:
+          type: string
+        generation:
+          type: integer
+          format: int32
+        isDefault:
+          type: boolean
+        sprite:
+          type: string
+        shinySprite:
+          type: string
+        hp:
+          type: integer
+          format: int32
+        attack:
+          type: integer
+          format: int32
+        defense:
+          type: integer
+          format: int32
+        specialAttack:
+          type: integer
+          format: int32
+        specialDefense:
+          type: integer
+          format: int32
+        speed:
+          type: integer
+          format: int32
+        baseStatTotal:
+          type: integer
+          format: int32
+        heightDecimeters:
+          type: integer
+          format: int32
+        weightHectograms:
+          type: integer
+          format: int32
+        evolutionStage:
+          type: integer
+          format: int32
+        evolutionStageCount:
+          type: integer
+          format: int32
+        legendaryStatus:
+          type: string
+        color:
+          type: string
+        abilities:
+          type: array
+          items:
+            type: string
+        names:
+          type: object
+          additionalProperties:
+            type: object
+        types:
+          type: array
+          items:
+            type: string
+      description: Pokémon público del catálogo; sin `palette`/`paletteWeights`. Los
+        null se omiten del JSON.
+    PokemonController.PokemonResponse:
+      required:
+      - pokemon
+      type: object
+      properties:
+        pokemon:
+          type: array
+          items:
+            $ref: "#/components/schemas/Pokemon"
+    ProfileResponse:
+      required:
+      - profile
+      type: object
+      properties:
+        profile:
+          $ref: "#/components/schemas/ProfileResponse.Profile"
+      description: "Respuesta `{\"profile\": ...}` de `GET /api/auth/profile` (UserProfileResponse\
+        \ en shared)."
+    ProfileResponse.GameStats:
+      required:
+      - gameId
+      - gamesPlayed
+      - gamesWon
+      - metrics
+      - points
+      type: object
+      properties:
+        gameId:
+          type: string
+        gamesPlayed:
+          type: integer
+          format: int32
+        gamesWon:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        metrics:
+          type: object
+          additionalProperties:
+            type: number
+    ProfileResponse.GlobalStats:
+      required:
+      - gamesPlayed
+      - gamesWon
+      - totalPoints
+      type: object
+      properties:
+        gamesPlayed:
+          type: integer
+          format: int32
+        gamesWon:
+          type: integer
+          format: int32
+        totalPoints:
+          type: integer
+          format: int32
+    ProfileResponse.Profile:
+      required:
+      - games
+      - globalStats
+      - user
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/ProfileResponse.ProfileUser"
+        globalStats:
+          $ref: "#/components/schemas/ProfileResponse.GlobalStats"
+        games:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProfileResponse.ProfileGame"
+    ProfileResponse.ProfileGame:
+      required:
+      - description
+      - icon
+      - id
+      - minPlayers
+      - name
+      - profileStats
+      - stats
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+        description:
+          type: string
+        experimental:
+          type: boolean
+          nullable: true
+        recommended:
+          type: boolean
+          nullable: true
+        minPlayers:
+          type: integer
+          format: int32
+        maxPlayers:
+          type: integer
+          format: int32
+          nullable: true
+        profileStats:
+          $ref: "#/components/schemas/GameManifest.ProfileStatsDefinition"
+        stats:
+          $ref: "#/components/schemas/ProfileResponse.GameStats"
+      description: "Manifiesto sin `defaultConfig`, con las estadisticas del usuario\
+        \ en ese minijuego."
+    ProfileResponse.ProfileUser:
+      required:
+      - avatar
+      - createdAt
+      - email
+      - id
+      - username
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        avatar:
+          $ref: "#/components/schemas/AvatarRef"
+        createdAt:
+          type: string
+    RegisterRequest:
+      required:
+      - email
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          maxLength: 24
+          minLength: 3
+          pattern: "^[a-zA-Z0-9_]+$"
+          type: string
+          x-pattern-message: "El nombre de usuario solo admite letras, números y guion\
+            \ bajo"
+          x-size-message: El nombre de usuario debe tener entre 3 y 24 caracteres
+        email:
+          maxLength: 254
+          minLength: 1
+          type: string
+          format: email
+          x-pattern-message: El email no es válido
+          x-size-message: El email no puede superar los 254 caracteres
+        password:
+          maxLength: 128
+          minLength: 10
+          type: string
+          x-size-message: La contraseña debe tener entre 10 y 128 caracteres
+          x-not-null-message: La contraseña es obligatoria
+    UserResponse:
+      required:
+      - user
+      type: object
+      properties:
+        user:
+          nullable: true
+          allOf:
+          - $ref: "#/components/schemas/AuthUser"
+      description: "Respuesta `{\"user\": ...}`; la clave se escribe siempre, tambié\
+        n como `null`."
+    UserRole:
+      type: string
+      enum:
+      - USER
+      - ADMIN
