@@ -7,10 +7,11 @@
 // - Todo pasa por el proxy de Vite, así que `baseURL` es la web y no se define
 //   `VITE_API_URL`.
 // - Las capturas de revisión van a `e2e/screenshots/`.
+import { fileURLToPath } from 'node:url';
 import { defineConfig, devices } from '@playwright/test';
 
 try {
-  process.loadEnvFile(new URL('../.env', import.meta.url).pathname);
+  process.loadEnvFile(fileURLToPath(new URL('../.env', import.meta.url)));
 } catch {
   /* sin .env: se espera env en el shell */
 }
@@ -46,7 +47,8 @@ export default defineConfig({
       cwd: '..',
       reuseExistingServer: !process.env.CI,
       timeout: 180_000,
-      env: { DATA_SYNC_ENABLED: 'false', RATE_LIMIT_DISABLED: 'true', COOKIE_SECURE: 'false' },
+      // ROOM_MAX_PLAYERS fijo: sala.spec.ts espera el contador "2 / 8" y no debe depender del .env.
+      env: { DATA_SYNC_ENABLED: 'false', RATE_LIMIT_DISABLED: 'true', COOKIE_SECURE: 'false', ROOM_MAX_PLAYERS: '8' },
     },
     {
       command: 'npm run dev -w @pokemon-universe/web',

@@ -87,3 +87,32 @@ la app).
 
 - Ninguna por ahora. En la línea base se corrigieron en vez de excluirse: la etiqueta "Tu foto" de
   `AuthPage` y las insignias `.experimental-badge` y `.recommended-badge`, que pasaron a `text-xs`.
+
+## Seguimientos
+
+Pendientes de la línea base (ninguna pantalla llega a 19; no son cambios de esta rama).
+
+Notas actuales (a Jerarquía, b Legibilidad, c Componentes, d Tokens/temas, e Encaje, f Interacción, g Movimiento, h Estados):
+
+- Portada: 3, 2, 2, 1, 3, 2, 2, 2 = 17/24
+- Acceso: 3, 2, 1, 2, 3, 1, 1, 2 = 15/24
+- Entrar en partida: 2, 2, 1, 1, 2, 1, 0, 2 = 11/24
+- Lobby: 1, 1, 2, 0, 3, 2, 2, 1 = 12/24
+- Juego: 2, 1, 1, 0, 1, 1, 0, 1 = 7/24
+
+Cambios pendientes, por pantalla y criterio:
+
+- Portada (d, h): captura en tema claro; el estado vacío sin acción propia que enseñe a jugar.
+- Portada, entrar en partida, lobby y juego (d): capturas en tema claro.
+- Juego (e): capturas a 390 y 1920 (bucle `SIZES` en `sala.spec.ts`).
+- Acceso y entrar en partida (g): `motion-reduce:animate-none` en los `animate-spin` de `AuthPage` y `PlayPage`.
+- Entrar en partida (g): puntos del carrusel con transform en vez de `transition-[width]`.
+- Juego (g): `timer-pulse` solo con transform (hoy anima `color`) y barra del temporizador con `scaleX` o reducida.
+- Lobby (d): `.experimental-badge` usa el literal `#c92a42`; pasarlo a un token (p. ej. `bg-berry`).
+- Juego (d): quitar el literal `#ef476f` de `timer-pulse` y el `rgba(77,210,140,.35)` del brillo de acierto.
+- Acceso (f, c): pestañas de 40 px (`min-h-10`); subir a 44 px con flechas, `aria-controls` y tabpanel (reutilizar `.lobby-tab`).
+- Entrar en partida (f): puntos (`h-2.5`) y flechas (`!min-h-10`) del carrusel a 44 px; `aria-describedby="room-code-help"` apunta a un id inexistente (quitarlo o crear `#room-code-help`); `aria-busy` al entrar.
+- Juego (f, h): indicador y `aria-busy` al enviar la selección; estado vacío del buscador que explique la ronda; `.empty-state` para «No hay coincidencias»; `title` en nombres truncados.
+- Lobby (a, b, c, h): «Empezar partida» visible sin scroll a 1280×720; antetítulo coherente con el estado; `tabular-nums` en puntos y contador (también en el juego); error con `.status-error` en vez del toast propio; acción para limpiar la búsqueda vacía.
+- Acceso (b): traducir el error del servidor de login («Invalid email or password»); el de sala inexistente («Room not found») también llega en inglés.
+- Entrar en partida (e): evitar el hueco de la tarjeta izquierda a 1280/1920.
