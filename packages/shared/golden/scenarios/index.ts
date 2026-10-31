@@ -4,6 +4,7 @@ import type { MiniGameModule } from '../../dist/index.js';
 import type { GoldenScenario } from '../types.js';
 import { guessFromStatsScenarios } from './guess-from-stats.js';
 import { higherLowerScenarios } from './higher-lower.js';
+import { learnsetGuessScenarios } from './learnset-guess.js';
 import { mostLikelyToScenarios } from './most-likely-to.js';
 import { oneOfUsIsFakeScenarios } from './one-of-us-is-fake.js';
 import { pokeTabooScenarios } from './poke-taboo.js';
@@ -39,4 +40,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'most-likely-to': mostLikelyToScenarios,
   'secret-ranking': secretRankingScenarios,
   'one-of-us-is-fake': oneOfUsIsFakeScenarios,
+  'learnset-guess': learnsetGuessScenarios,
 };

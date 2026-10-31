@@ -1,0 +1,341 @@
+[
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        9
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        9
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        9
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        9
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 15,
+      "rounds": 1
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 15,
+      "rounds": 1
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 120,
+      "rounds": 20
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 120,
+      "rounds": 20
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 15,
+      "rounds": 3
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 15,
+      "rounds": 3
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "showLevels": false,
+      "showEvolution": false,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "showLevels": false,
+      "showEvolution": false,
+      "roundSeconds": 30,
+      "rounds": 3
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 14,
+      "rounds": 3
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 121,
+      "rounds": 3
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 0
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 21
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 2.5
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1.5
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": 1,
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "showLevels": "true",
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": 1,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3,
+      "unknownKey": "no se admite"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "valid": false
+  },
+  {
+    "input": "generations",
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]

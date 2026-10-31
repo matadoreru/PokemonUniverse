@@ -1,0 +1,276 @@
+{
+  "engineId": "learnset-guess",
+  "scenario": "invalid-action-stops",
+  "seed": 806,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "showLevels": true,
+    "showEvolution": true,
+    "roundSeconds": 30,
+    "rounds": 3
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "raichu"
+      },
+      "now": 4000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "learnset-guess",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "referenceGeneration": 1,
+        "referenceSource": "Pokémon Yellow",
+        "visibleGroups": [],
+        "evolutionHint": null,
+        "attempts": [],
+        "solvedPlayers": [],
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p2": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 31000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "learnset-guess",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "referenceGeneration": 1,
+        "referenceSource": "Pokémon Yellow",
+        "visibleGroups": [
+          {
+            "level": 1,
+            "moves": [
+              {
+                "moveId": "growl",
+                "name": "Gruñido",
+                "level": 1,
+                "type": "normal",
+                "category": "status"
+              },
+              {
+                "moveId": "thunder-shock",
+                "name": "Impactrueno",
+                "level": 1,
+                "type": "electric",
+                "category": "special"
+              },
+              {
+                "moveId": "thunder-wave",
+                "name": "Onda Trueno",
+                "level": 1,
+                "type": "electric",
+                "category": "status"
+              }
+            ],
+            "stage": 0
+          }
+        ],
+        "evolutionHint": "Evolución final · etapa 3 de 3",
+        "attempts": [],
+        "solvedPlayers": [],
+        "roundStartedAt": 1000,
+        "roundEndsAt": 31000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p2": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "growl",
+                    "name": "Gruñido",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "thunder-shock",
+                    "name": "Impactrueno",
+                    "level": 1,
+                    "type": "electric",
+                    "category": "special"
+                  },
+                  {
+                    "moveId": "thunder-wave",
+                    "name": "Onda Trueno",
+                    "level": 1,
+                    "type": "electric",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución final · etapa 3 de 3",
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "pikachu",
+                "pokemonName": "Pikachu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                "attemptedAt": 2000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 3000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 1
+}

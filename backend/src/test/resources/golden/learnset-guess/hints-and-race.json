@@ -1,0 +1,2971 @@
+{
+  "engineId": "learnset-guess",
+  "scenario": "hints-and-race",
+  "seed": 805,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "showLevels": true,
+    "showEvolution": true,
+    "roundSeconds": 30,
+    "rounds": 3
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "chikorita"
+      },
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "rapidash-galar"
+      },
+      "now": 2600
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "bulbasaur"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "bulbasaur"
+      },
+      "now": 3400
+    },
+    {
+      "kind": "timeout",
+      "now": 7999
+    },
+    {
+      "kind": "timeout",
+      "now": 8000
+    },
+    {
+      "kind": "timeout",
+      "now": 22500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pinsir"
+      },
+      "now": 23000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pinsir"
+      },
+      "now": 23500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "scyther"
+      },
+      "now": 24000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pinsir"
+      },
+      "now": 31000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pinsir"
+      },
+      "now": 31500
+    },
+    {
+      "kind": "timeout",
+      "now": 35000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "tauros"
+      },
+      "now": 36000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "tauros"
+      },
+      "now": 37000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 38000
+    },
+    {
+      "kind": "timeout",
+      "now": 42000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 43000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "venomoth"
+      },
+      "now": 44000
+    },
+    {
+      "kind": "timeout",
+      "now": 49000
+    },
+    {
+      "kind": "timeout",
+      "now": 72000
+    },
+    {
+      "kind": "timeout",
+      "now": 76000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "venonat"
+      },
+      "now": 77000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "learnset-guess",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "referenceGeneration": 1,
+        "referenceSource": "Pokémon Yellow",
+        "visibleGroups": [],
+        "evolutionHint": null,
+        "attempts": [],
+        "solvedPlayers": [],
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p2": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p3": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 8000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "learnset-guess",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "referenceGeneration": 1,
+        "referenceSource": "Pokémon Yellow",
+        "visibleGroups": [
+          {
+            "level": 1,
+            "moves": [
+              {
+                "moveId": "vice-grip",
+                "name": "Agarre",
+                "level": 1,
+                "type": "normal",
+                "category": "physical"
+              }
+            ],
+            "stage": 0
+          }
+        ],
+        "evolutionHint": "No evoluciona",
+        "attempts": [],
+        "solvedPlayers": [],
+        "roundStartedAt": 1000,
+        "roundEndsAt": 31000,
+        "nextTransitionAt": 8000,
+        "lastRound": null,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p2": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p3": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "No estás conectado como participante.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "vice-grip",
+                    "name": "Agarre",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "No evoluciona",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 8000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Pokémon no disponible en esta partida.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "vice-grip",
+                    "name": "Agarre",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "No evoluciona",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 8000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Pokémon no disponible en esta partida.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "vice-grip",
+                    "name": "Agarre",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "No evoluciona",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 8000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "vice-grip",
+                    "name": "Agarre",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "No evoluciona",
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "bulbasaur",
+                "pokemonName": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 8000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Espera 0.6s antes de volver a intentar.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "vice-grip",
+                    "name": "Agarre",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "No evoluciona",
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "bulbasaur",
+                "pokemonName": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 8000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "vice-grip",
+                    "name": "Agarre",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "No evoluciona",
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "bulbasaur",
+                "pokemonName": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 8000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 15000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "vice-grip",
+                    "name": "Agarre",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 21,
+                "moves": [
+                  {
+                    "moveId": "bind",
+                    "name": "Atadura",
+                    "level": 21,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 1
+              }
+            ],
+            "evolutionHint": "No evoluciona",
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "bulbasaur",
+                "pokemonName": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 15000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 29000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "vice-grip",
+                    "name": "Agarre",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 21,
+                "moves": [
+                  {
+                    "moveId": "bind",
+                    "name": "Atadura",
+                    "level": 21,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 1
+              },
+              {
+                "level": 25,
+                "moves": [
+                  {
+                    "moveId": "seismic-toss",
+                    "name": "Sísmico",
+                    "level": 25,
+                    "type": "fighting",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 2
+              },
+              {
+                "level": 30,
+                "moves": [
+                  {
+                    "moveId": "guillotine",
+                    "name": "Guillotina",
+                    "level": 30,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 3
+              }
+            ],
+            "evolutionHint": "No evoluciona",
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "bulbasaur",
+                "pokemonName": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 29000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 29000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "vice-grip",
+                    "name": "Agarre",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 21,
+                "moves": [
+                  {
+                    "moveId": "bind",
+                    "name": "Atadura",
+                    "level": 21,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 1
+              },
+              {
+                "level": 25,
+                "moves": [
+                  {
+                    "moveId": "seismic-toss",
+                    "name": "Sísmico",
+                    "level": 25,
+                    "type": "fighting",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 2
+              },
+              {
+                "level": 30,
+                "moves": [
+                  {
+                    "moveId": "guillotine",
+                    "name": "Guillotina",
+                    "level": 30,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 3
+              }
+            ],
+            "evolutionHint": "No evoluciona",
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "bulbasaur",
+                "pokemonName": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 29000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 2,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 2
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ya has acertado esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 29000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "vice-grip",
+                    "name": "Agarre",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 21,
+                "moves": [
+                  {
+                    "moveId": "bind",
+                    "name": "Atadura",
+                    "level": 21,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 1
+              },
+              {
+                "level": 25,
+                "moves": [
+                  {
+                    "moveId": "seismic-toss",
+                    "name": "Sísmico",
+                    "level": 25,
+                    "type": "fighting",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 2
+              },
+              {
+                "level": 30,
+                "moves": [
+                  {
+                    "moveId": "guillotine",
+                    "name": "Guillotina",
+                    "level": 30,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 3
+              }
+            ],
+            "evolutionHint": "No evoluciona",
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "bulbasaur",
+                "pokemonName": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 29000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 2,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 2
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 29000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "vice-grip",
+                    "name": "Agarre",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 21,
+                "moves": [
+                  {
+                    "moveId": "bind",
+                    "name": "Atadura",
+                    "level": 21,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 1
+              },
+              {
+                "level": 25,
+                "moves": [
+                  {
+                    "moveId": "seismic-toss",
+                    "name": "Sísmico",
+                    "level": 25,
+                    "type": "fighting",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 2
+              },
+              {
+                "level": 30,
+                "moves": [
+                  {
+                    "moveId": "guillotine",
+                    "name": "Guillotina",
+                    "level": 30,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 3
+              }
+            ],
+            "evolutionHint": "No evoluciona",
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "bulbasaur",
+                "pokemonName": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "scyther",
+                "pokemonName": "Scyther",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png",
+                "attemptedAt": 24000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 29000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 2,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 25000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 2
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 35000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "bulbasaur",
+                "pokemonName": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "scyther",
+                "pokemonName": "Scyther",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png",
+                "attemptedAt": 24000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 35000,
+            "lastRound": {
+              "pokemon": {
+                "id": "pinsir",
+                "name": "Pinsir",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+                "nationalDexNumber": 127,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "vice-grip",
+                  "name": "Agarre",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "bind",
+                  "name": "Atadura",
+                  "level": 21,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "seismic-toss",
+                  "name": "Sísmico",
+                  "level": 25,
+                  "type": "fighting",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "guillotine",
+                  "name": "Guillotina",
+                  "level": 30,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "vice-grip",
+                  "name": "Agarre",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "bind",
+                  "name": "Atadura",
+                  "level": 21,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "seismic-toss",
+                  "name": "Sísmico",
+                  "level": 25,
+                  "type": "fighting",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "guillotine",
+                  "name": "Guillotina",
+                  "level": 30,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "focus-energy",
+                  "name": "Foco Energía",
+                  "level": 36,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "harden",
+                  "name": "Fortaleza",
+                  "level": 43,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "slash",
+                  "name": "Cuchillada",
+                  "level": 49,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "swords-dance",
+                  "name": "Danza Espada",
+                  "level": 54,
+                  "type": "normal",
+                  "category": "status"
+                }
+              ],
+              "solves": {
+                "p2": {
+                  "solveOrder": 1,
+                  "solvedAt": 23000,
+                  "revealStage": 3,
+                  "points": 2
+                }
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 2,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 25000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 2
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No active round",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 35000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "bulbasaur",
+                "pokemonName": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "scyther",
+                "pokemonName": "Scyther",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png",
+                "attemptedAt": 24000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 35000,
+            "lastRound": {
+              "pokemon": {
+                "id": "pinsir",
+                "name": "Pinsir",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+                "nationalDexNumber": 127,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "vice-grip",
+                  "name": "Agarre",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "bind",
+                  "name": "Atadura",
+                  "level": 21,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "seismic-toss",
+                  "name": "Sísmico",
+                  "level": 25,
+                  "type": "fighting",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "guillotine",
+                  "name": "Guillotina",
+                  "level": 30,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "vice-grip",
+                  "name": "Agarre",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "bind",
+                  "name": "Atadura",
+                  "level": 21,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "seismic-toss",
+                  "name": "Sísmico",
+                  "level": 25,
+                  "type": "fighting",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "guillotine",
+                  "name": "Guillotina",
+                  "level": 30,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "focus-energy",
+                  "name": "Foco Energía",
+                  "level": 36,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "harden",
+                  "name": "Fortaleza",
+                  "level": 43,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "slash",
+                  "name": "Cuchillada",
+                  "level": 49,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "swords-dance",
+                  "name": "Danza Espada",
+                  "level": 54,
+                  "type": "normal",
+                  "category": "status"
+                }
+              ],
+              "solves": {
+                "p2": {
+                  "solveOrder": 1,
+                  "solvedAt": 23000,
+                  "revealStage": 3,
+                  "points": 2
+                }
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 2,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 25000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 2
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,35000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "tackle",
+                    "name": "Placaje",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "No evoluciona",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 35000,
+            "roundEndsAt": 65000,
+            "nextTransitionAt": 42000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 2,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,35000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "tackle",
+                    "name": "Placaje",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "No evoluciona",
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 35000,
+            "roundEndsAt": 65000,
+            "nextTransitionAt": 42000,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 2,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,35000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "tackle",
+                    "name": "Placaje",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "No evoluciona",
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "roundStartedAt": 35000,
+            "roundEndsAt": 65000,
+            "nextTransitionAt": 42000,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 7,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,35000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "roundStartedAt": 35000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 42000,
+            "lastRound": {
+              "pokemon": {
+                "id": "tauros",
+                "name": "Tauros",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png",
+                "nationalDexNumber": 128,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "tackle",
+                  "name": "Placaje",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "tackle",
+                  "name": "Placaje",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "stomp",
+                  "name": "Pisotón",
+                  "level": 21,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "tail-whip",
+                  "name": "Agitacola",
+                  "level": 28,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "leer",
+                  "name": "Malicioso",
+                  "level": 35,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "rage",
+                  "name": "Furia",
+                  "level": 44,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "take-down",
+                  "name": "Derribo",
+                  "level": 51,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 36000,
+                  "revealStage": 0,
+                  "points": 5
+                },
+                "p2": {
+                  "solveOrder": 2,
+                  "solvedAt": 37000,
+                  "revealStage": 0,
+                  "points": 5
+                }
+              }
+            },
+            "scores": {
+              "p1": 5,
+              "p2": 7,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,42000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "disable",
+                    "name": "Anulación",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "tackle",
+                    "name": "Placaje",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 11,
+                "moves": [
+                  {
+                    "moveId": "supersonic",
+                    "name": "Supersónico",
+                    "level": 11,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Pokémon base · etapa 1 de 2",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 42000,
+            "roundEndsAt": 72000,
+            "nextTransitionAt": 49000,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 7,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,42000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "disable",
+                    "name": "Anulación",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "tackle",
+                    "name": "Placaje",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 11,
+                "moves": [
+                  {
+                    "moveId": "supersonic",
+                    "name": "Supersónico",
+                    "level": 11,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Pokémon base · etapa 1 de 2",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 42000,
+            "roundEndsAt": 72000,
+            "nextTransitionAt": 49000,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 7,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,42000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "disable",
+                    "name": "Anulación",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "tackle",
+                    "name": "Placaje",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 11,
+                "moves": [
+                  {
+                    "moveId": "supersonic",
+                    "name": "Supersónico",
+                    "level": 11,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Pokémon base · etapa 1 de 2",
+            "attempts": [
+              {
+                "playerId": "p3",
+                "pokemonId": "venomoth",
+                "pokemonName": "Venomoth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/49.png",
+                "attemptedAt": 44000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 42000,
+            "roundEndsAt": 72000,
+            "nextTransitionAt": 49000,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 7,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 45000,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 56000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,42000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "disable",
+                    "name": "Anulación",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "tackle",
+                    "name": "Placaje",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 11,
+                "moves": [
+                  {
+                    "moveId": "supersonic",
+                    "name": "Supersónico",
+                    "level": 11,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 19,
+                "moves": [
+                  {
+                    "moveId": "confusion",
+                    "name": "Confusión",
+                    "level": 19,
+                    "type": "psychic",
+                    "category": "special"
+                  }
+                ],
+                "stage": 1
+              }
+            ],
+            "evolutionHint": "Pokémon base · etapa 1 de 2",
+            "attempts": [
+              {
+                "playerId": "p3",
+                "pokemonId": "venomoth",
+                "pokemonName": "Venomoth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/49.png",
+                "attemptedAt": 44000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 42000,
+            "roundEndsAt": 72000,
+            "nextTransitionAt": 56000,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 7,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 45000,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 76000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,42000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p3",
+                "pokemonId": "venomoth",
+                "pokemonName": "Venomoth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/49.png",
+                "attemptedAt": 44000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 42000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 76000,
+            "lastRound": {
+              "pokemon": {
+                "id": "venonat",
+                "name": "Venonat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/48.png",
+                "nationalDexNumber": 48,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "disable",
+                  "name": "Anulación",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "tackle",
+                  "name": "Placaje",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "supersonic",
+                  "name": "Supersónico",
+                  "level": 11,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "confusion",
+                  "name": "Confusión",
+                  "level": 19,
+                  "type": "psychic",
+                  "category": "special"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "disable",
+                  "name": "Anulación",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "tackle",
+                  "name": "Placaje",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "supersonic",
+                  "name": "Supersónico",
+                  "level": 11,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "confusion",
+                  "name": "Confusión",
+                  "level": 19,
+                  "type": "psychic",
+                  "category": "special"
+                },
+                {
+                  "moveId": "poison-powder",
+                  "name": "Polvo Veneno",
+                  "level": 22,
+                  "type": "poison",
+                  "category": "status"
+                },
+                {
+                  "moveId": "leech-life",
+                  "name": "Chupavidas",
+                  "level": 27,
+                  "type": "bug",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "stun-spore",
+                  "name": "Paralizador",
+                  "level": 30,
+                  "type": "grass",
+                  "category": "status"
+                },
+                {
+                  "moveId": "psybeam",
+                  "name": "Psicorrayo",
+                  "level": 35,
+                  "type": "psychic",
+                  "category": "special"
+                },
+                {
+                  "moveId": "sleep-powder",
+                  "name": "Somnífero",
+                  "level": 38,
+                  "type": "grass",
+                  "category": "status"
+                },
+                {
+                  "moveId": "psychic",
+                  "name": "Psíquico",
+                  "level": 43,
+                  "type": "psychic",
+                  "category": "special"
+                }
+              ],
+              "solves": {}
+            },
+            "scores": {
+              "p1": 5,
+              "p2": 7,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 45000,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,42000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p3",
+                "pokemonId": "venomoth",
+                "pokemonName": "Venomoth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/49.png",
+                "attemptedAt": 44000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 42000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 7,
+              "p3": 0
+            },
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 7,
+                  "won": true,
+                  "stats": {
+                    "correct": 2,
+                    "missed": 1,
+                    "initialSolves": 1,
+                    "incorrectGuesses": 0,
+                    "pointsFromSolves": 7,
+                    "bestRoundPoints": 5
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 5,
+                  "won": false,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 2,
+                    "initialSolves": 1,
+                    "incorrectGuesses": 2,
+                    "pointsFromSolves": 5,
+                    "bestRoundPoints": 5
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "correct": 0,
+                    "missed": 3,
+                    "initialSolves": 0,
+                    "incorrectGuesses": 1,
+                    "pointsFromSolves": 0,
+                    "bestRoundPoints": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 45000,
+              "roundPoints": 0
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No active round",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,42000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p3",
+                "pokemonId": "venomoth",
+                "pokemonName": "Venomoth",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/49.png",
+                "attemptedAt": 44000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 42000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 7,
+              "p3": 0
+            },
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 7,
+                  "won": true,
+                  "stats": {
+                    "correct": 2,
+                    "missed": 1,
+                    "initialSolves": 1,
+                    "incorrectGuesses": 0,
+                    "pointsFromSolves": 7,
+                    "bestRoundPoints": 5
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 5,
+                  "won": false,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 2,
+                    "initialSolves": 1,
+                    "incorrectGuesses": 2,
+                    "pointsFromSolves": 5,
+                    "bestRoundPoints": 5
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "correct": 0,
+                    "missed": 3,
+                    "initialSolves": 0,
+                    "incorrectGuesses": 1,
+                    "pointsFromSolves": 0,
+                    "bestRoundPoints": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 45000,
+              "roundPoints": 0
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p2",
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 7,
+          "won": true,
+          "stats": {
+            "correct": 2,
+            "missed": 1,
+            "initialSolves": 1,
+            "incorrectGuesses": 0,
+            "pointsFromSolves": 7,
+            "bestRoundPoints": 5
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 2,
+          "points": 5,
+          "won": false,
+          "stats": {
+            "correct": 1,
+            "missed": 2,
+            "initialSolves": 1,
+            "incorrectGuesses": 2,
+            "pointsFromSolves": 5,
+            "bestRoundPoints": 5
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "correct": 0,
+            "missed": 3,
+            "initialSolves": 0,
+            "incorrectGuesses": 1,
+            "pointsFromSolves": 0,
+            "bestRoundPoints": 0
+          }
+        }
+      ]
+    }
+  }
+}

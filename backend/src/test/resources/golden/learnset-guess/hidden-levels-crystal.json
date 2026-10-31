@@ -1,0 +1,2864 @@
+{
+  "engineId": "learnset-guess",
+  "scenario": "hidden-levels-crystal",
+  "seed": 811,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      2,
+      1,
+      2
+    ],
+    "showLevels": false,
+    "showEvolution": false,
+    "roundSeconds": 15,
+    "rounds": 4
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "poliwag"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "poliwrath"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "timeout",
+      "now": 8000
+    },
+    {
+      "kind": "timeout",
+      "now": 15000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "poliwhirl"
+      },
+      "now": 15500
+    },
+    {
+      "kind": "timeout",
+      "now": 16000
+    },
+    {
+      "kind": "timeout",
+      "now": 20000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "elekid"
+      },
+      "now": 21000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        }
+      ],
+      "now": 22000
+    },
+    {
+      "kind": "timeout",
+      "now": 26000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "victreebel"
+      },
+      "now": 27000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        }
+      ],
+      "now": 28000
+    },
+    {
+      "kind": "timeout",
+      "now": 30000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "victreebel"
+      },
+      "now": 31000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "weepinbell"
+      },
+      "now": 32000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "victreebel"
+      },
+      "now": 32500
+    },
+    {
+      "kind": "timeout",
+      "now": 41000
+    },
+    {
+      "kind": "timeout",
+      "now": 45000
+    },
+    {
+      "kind": "timeout",
+      "now": 52000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "suicune"
+      },
+      "now": 53000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "suicune"
+      },
+      "now": 54000
+    },
+    {
+      "kind": "timeout",
+      "now": 58000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "showLevels": false,
+      "showEvolution": false,
+      "roundSeconds": 15,
+      "rounds": 4
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "learnset-guess",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 4,
+        "referenceGeneration": 2,
+        "referenceSource": "Pokémon Crystal",
+        "visibleGroups": [],
+        "evolutionHint": null,
+        "attempts": [],
+        "solvedPlayers": [],
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p2": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 8000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "learnset-guess",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 4,
+        "referenceGeneration": 2,
+        "referenceSource": "Pokémon Crystal",
+        "visibleGroups": [
+          {
+            "level": null,
+            "moves": [
+              {
+                "moveId": "bubble",
+                "name": "Burbuja",
+                "level": null,
+                "type": "water",
+                "category": "special"
+              },
+              {
+                "moveId": "hypnosis",
+                "name": "Hipnosis",
+                "level": null,
+                "type": "psychic",
+                "category": "status"
+              },
+              {
+                "moveId": "water-gun",
+                "name": "Pistola Agua",
+                "level": null,
+                "type": "water",
+                "category": "special"
+              }
+            ],
+            "stage": 0
+          },
+          {
+            "level": null,
+            "moves": [
+              {
+                "moveId": "hypnosis",
+                "name": "Hipnosis",
+                "level": null,
+                "type": "psychic",
+                "category": "status"
+              }
+            ],
+            "stage": 0
+          },
+          {
+            "level": null,
+            "moves": [
+              {
+                "moveId": "water-gun",
+                "name": "Pistola Agua",
+                "level": null,
+                "type": "water",
+                "category": "special"
+              }
+            ],
+            "stage": 0
+          }
+        ],
+        "evolutionHint": null,
+        "attempts": [],
+        "solvedPlayers": [],
+        "roundStartedAt": 1000,
+        "roundEndsAt": 16000,
+        "nextTransitionAt": 8000,
+        "lastRound": null,
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p2": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "bubble",
+                    "name": "Burbuja",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  },
+                  {
+                    "moveId": "hypnosis",
+                    "name": "Hipnosis",
+                    "level": null,
+                    "type": "psychic",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "water-gun",
+                    "name": "Pistola Agua",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "hypnosis",
+                    "name": "Hipnosis",
+                    "level": null,
+                    "type": "psychic",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "water-gun",
+                    "name": "Pistola Agua",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "poliwag",
+                "pokemonName": "Poliwag",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/60.png",
+                "attemptedAt": 2000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 16000,
+            "nextTransitionAt": 8000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 3000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "bubble",
+                    "name": "Burbuja",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  },
+                  {
+                    "moveId": "hypnosis",
+                    "name": "Hipnosis",
+                    "level": null,
+                    "type": "psychic",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "water-gun",
+                    "name": "Pistola Agua",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "hypnosis",
+                    "name": "Hipnosis",
+                    "level": null,
+                    "type": "psychic",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "water-gun",
+                    "name": "Pistola Agua",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "poliwag",
+                "pokemonName": "Poliwag",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/60.png",
+                "attemptedAt": 2000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "poliwrath",
+                "pokemonName": "Poliwrath",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/62.png",
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 16000,
+            "nextTransitionAt": 8000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 15000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "bubble",
+                    "name": "Burbuja",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  },
+                  {
+                    "moveId": "hypnosis",
+                    "name": "Hipnosis",
+                    "level": null,
+                    "type": "psychic",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "water-gun",
+                    "name": "Pistola Agua",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "hypnosis",
+                    "name": "Hipnosis",
+                    "level": null,
+                    "type": "psychic",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "water-gun",
+                    "name": "Pistola Agua",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "double-slap",
+                    "name": "Doble Bofetón",
+                    "level": null,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 1
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "poliwag",
+                "pokemonName": "Poliwag",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/60.png",
+                "attemptedAt": 2000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "poliwrath",
+                "pokemonName": "Poliwrath",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/62.png",
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 16000,
+            "nextTransitionAt": 15000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "bubble",
+                    "name": "Burbuja",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  },
+                  {
+                    "moveId": "hypnosis",
+                    "name": "Hipnosis",
+                    "level": null,
+                    "type": "psychic",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "water-gun",
+                    "name": "Pistola Agua",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "hypnosis",
+                    "name": "Hipnosis",
+                    "level": null,
+                    "type": "psychic",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "water-gun",
+                    "name": "Pistola Agua",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "double-slap",
+                    "name": "Doble Bofetón",
+                    "level": null,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 1
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "rain-dance",
+                    "name": "Danza Lluvia",
+                    "level": null,
+                    "type": "water",
+                    "category": "status"
+                  }
+                ],
+                "stage": 2
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "poliwag",
+                "pokemonName": "Poliwag",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/60.png",
+                "attemptedAt": 2000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "poliwrath",
+                "pokemonName": "Poliwrath",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/62.png",
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "bubble",
+                    "name": "Burbuja",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  },
+                  {
+                    "moveId": "hypnosis",
+                    "name": "Hipnosis",
+                    "level": null,
+                    "type": "psychic",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "water-gun",
+                    "name": "Pistola Agua",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "hypnosis",
+                    "name": "Hipnosis",
+                    "level": null,
+                    "type": "psychic",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "water-gun",
+                    "name": "Pistola Agua",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "double-slap",
+                    "name": "Doble Bofetón",
+                    "level": null,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 1
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "rain-dance",
+                    "name": "Danza Lluvia",
+                    "level": null,
+                    "type": "water",
+                    "category": "status"
+                  }
+                ],
+                "stage": 2
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "poliwag",
+                "pokemonName": "Poliwag",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/60.png",
+                "attemptedAt": 2000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "poliwrath",
+                "pokemonName": "Poliwrath",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/62.png",
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 3
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 3
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 20000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "poliwag",
+                "pokemonName": "Poliwag",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/60.png",
+                "attemptedAt": 2000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "poliwrath",
+                "pokemonName": "Poliwrath",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/62.png",
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 20000,
+            "lastRound": {
+              "pokemon": {
+                "id": "poliwhirl",
+                "name": "Poliwhirl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/61.png",
+                "nationalDexNumber": 61,
+                "generation": 1
+              },
+              "referenceGeneration": 2,
+              "referenceSource": "Pokémon Crystal",
+              "revealedMoves": [
+                {
+                  "moveId": "bubble",
+                  "name": "Burbuja",
+                  "level": null,
+                  "type": "water",
+                  "category": "special"
+                },
+                {
+                  "moveId": "hypnosis",
+                  "name": "Hipnosis",
+                  "level": null,
+                  "type": "psychic",
+                  "category": "status"
+                },
+                {
+                  "moveId": "water-gun",
+                  "name": "Pistola Agua",
+                  "level": null,
+                  "type": "water",
+                  "category": "special"
+                },
+                {
+                  "moveId": "hypnosis",
+                  "name": "Hipnosis",
+                  "level": null,
+                  "type": "psychic",
+                  "category": "status"
+                },
+                {
+                  "moveId": "water-gun",
+                  "name": "Pistola Agua",
+                  "level": null,
+                  "type": "water",
+                  "category": "special"
+                },
+                {
+                  "moveId": "double-slap",
+                  "name": "Doble Bofetón",
+                  "level": null,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "rain-dance",
+                  "name": "Danza Lluvia",
+                  "level": null,
+                  "type": "water",
+                  "category": "status"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "bubble",
+                  "name": "Burbuja",
+                  "level": null,
+                  "type": "water",
+                  "category": "special"
+                },
+                {
+                  "moveId": "hypnosis",
+                  "name": "Hipnosis",
+                  "level": null,
+                  "type": "psychic",
+                  "category": "status"
+                },
+                {
+                  "moveId": "water-gun",
+                  "name": "Pistola Agua",
+                  "level": null,
+                  "type": "water",
+                  "category": "special"
+                },
+                {
+                  "moveId": "hypnosis",
+                  "name": "Hipnosis",
+                  "level": null,
+                  "type": "psychic",
+                  "category": "status"
+                },
+                {
+                  "moveId": "water-gun",
+                  "name": "Pistola Agua",
+                  "level": null,
+                  "type": "water",
+                  "category": "special"
+                },
+                {
+                  "moveId": "double-slap",
+                  "name": "Doble Bofetón",
+                  "level": null,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "rain-dance",
+                  "name": "Danza Lluvia",
+                  "level": null,
+                  "type": "water",
+                  "category": "status"
+                },
+                {
+                  "moveId": "body-slam",
+                  "name": "Golpe Cuerpo",
+                  "level": null,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "belly-drum",
+                  "name": "Tambor",
+                  "level": null,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "hydro-pump",
+                  "name": "Hidrobomba",
+                  "level": null,
+                  "type": "water",
+                  "category": "special"
+                }
+              ],
+              "solves": {
+                "p2": {
+                  "solveOrder": 1,
+                  "solvedAt": 15500,
+                  "revealStage": 2,
+                  "points": 3
+                }
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 3
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 3
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "leer",
+                    "name": "Malicioso",
+                    "level": null,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "quick-attack",
+                    "name": "Ataque Rápido",
+                    "level": null,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "thunder-punch",
+                    "name": "Puño Trueno",
+                    "level": null,
+                    "type": "electric",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 20000,
+            "roundEndsAt": 35000,
+            "nextTransitionAt": 27000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 3
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "leer",
+                    "name": "Malicioso",
+                    "level": null,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "quick-attack",
+                    "name": "Ataque Rápido",
+                    "level": null,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "thunder-punch",
+                    "name": "Puño Trueno",
+                    "level": null,
+                    "type": "electric",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 20000,
+            "roundEndsAt": 35000,
+            "nextTransitionAt": 27000,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 8
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 20000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 26000,
+            "lastRound": {
+              "pokemon": {
+                "id": "elekid",
+                "name": "Elekid",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
+                "nationalDexNumber": 239,
+                "generation": 2
+              },
+              "referenceGeneration": 2,
+              "referenceSource": "Pokémon Crystal",
+              "revealedMoves": [
+                {
+                  "moveId": "leer",
+                  "name": "Malicioso",
+                  "level": null,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "quick-attack",
+                  "name": "Ataque Rápido",
+                  "level": null,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "thunder-punch",
+                  "name": "Puño Trueno",
+                  "level": null,
+                  "type": "electric",
+                  "category": "physical"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "leer",
+                  "name": "Malicioso",
+                  "level": null,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "quick-attack",
+                  "name": "Ataque Rápido",
+                  "level": null,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "thunder-punch",
+                  "name": "Puño Trueno",
+                  "level": null,
+                  "type": "electric",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "light-screen",
+                  "name": "Pantalla de Luz",
+                  "level": null,
+                  "type": "psychic",
+                  "category": "status"
+                },
+                {
+                  "moveId": "swift",
+                  "name": "Meteoros",
+                  "level": null,
+                  "type": "normal",
+                  "category": "special"
+                },
+                {
+                  "moveId": "screech",
+                  "name": "Chirrido",
+                  "level": null,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "thunderbolt",
+                  "name": "Rayo",
+                  "level": null,
+                  "type": "electric",
+                  "category": "special"
+                },
+                {
+                  "moveId": "thunder",
+                  "name": "Trueno",
+                  "level": null,
+                  "type": "electric",
+                  "category": "special"
+                }
+              ],
+              "solves": {
+                "p2": {
+                  "solveOrder": 1,
+                  "solvedAt": 21000,
+                  "revealStage": 0,
+                  "points": 5
+                }
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 8
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 41000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,26000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "razor-leaf",
+                    "name": "Hoja Afilada",
+                    "level": null,
+                    "type": "grass",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "sleep-powder",
+                    "name": "Somnífero",
+                    "level": null,
+                    "type": "grass",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "sweet-scent",
+                    "name": "Dulce Aroma",
+                    "level": null,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "vine-whip",
+                    "name": "Látigo Cepa",
+                    "level": null,
+                    "type": "grass",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 26000,
+            "roundEndsAt": 41000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 8
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No estás conectado como participante.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 41000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,26000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "razor-leaf",
+                    "name": "Hoja Afilada",
+                    "level": null,
+                    "type": "grass",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "sleep-powder",
+                    "name": "Somnífero",
+                    "level": null,
+                    "type": "grass",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "sweet-scent",
+                    "name": "Dulce Aroma",
+                    "level": null,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "vine-whip",
+                    "name": "Látigo Cepa",
+                    "level": null,
+                    "type": "grass",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 26000,
+            "roundEndsAt": 41000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 8
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 41000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,26000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "razor-leaf",
+                    "name": "Hoja Afilada",
+                    "level": null,
+                    "type": "grass",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "sleep-powder",
+                    "name": "Somnífero",
+                    "level": null,
+                    "type": "grass",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "sweet-scent",
+                    "name": "Dulce Aroma",
+                    "level": null,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "vine-whip",
+                    "name": "Látigo Cepa",
+                    "level": null,
+                    "type": "grass",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 26000,
+            "roundEndsAt": 41000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 8
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 41000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,26000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "razor-leaf",
+                    "name": "Hoja Afilada",
+                    "level": null,
+                    "type": "grass",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "sleep-powder",
+                    "name": "Somnífero",
+                    "level": null,
+                    "type": "grass",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "sweet-scent",
+                    "name": "Dulce Aroma",
+                    "level": null,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "vine-whip",
+                    "name": "Látigo Cepa",
+                    "level": null,
+                    "type": "grass",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 26000,
+            "roundEndsAt": 41000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 8
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 41000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,26000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "razor-leaf",
+                    "name": "Hoja Afilada",
+                    "level": null,
+                    "type": "grass",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "sleep-powder",
+                    "name": "Somnífero",
+                    "level": null,
+                    "type": "grass",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "sweet-scent",
+                    "name": "Dulce Aroma",
+                    "level": null,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "vine-whip",
+                    "name": "Látigo Cepa",
+                    "level": null,
+                    "type": "grass",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 26000,
+            "roundEndsAt": 41000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 8
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 41000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,26000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "razor-leaf",
+                    "name": "Hoja Afilada",
+                    "level": null,
+                    "type": "grass",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "sleep-powder",
+                    "name": "Somnífero",
+                    "level": null,
+                    "type": "grass",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "sweet-scent",
+                    "name": "Dulce Aroma",
+                    "level": null,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "vine-whip",
+                    "name": "Látigo Cepa",
+                    "level": null,
+                    "type": "grass",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "weepinbell",
+                "pokemonName": "Weepinbell",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                "attemptedAt": 32000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 26000,
+            "roundEndsAt": 41000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 8
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 33000,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Espera 0.5s antes de volver a intentar.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 41000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,26000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "razor-leaf",
+                    "name": "Hoja Afilada",
+                    "level": null,
+                    "type": "grass",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "sleep-powder",
+                    "name": "Somnífero",
+                    "level": null,
+                    "type": "grass",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "sweet-scent",
+                    "name": "Dulce Aroma",
+                    "level": null,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "vine-whip",
+                    "name": "Látigo Cepa",
+                    "level": null,
+                    "type": "grass",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "weepinbell",
+                "pokemonName": "Weepinbell",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                "attemptedAt": 32000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 26000,
+            "roundEndsAt": 41000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 8
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 33000,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 45000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,26000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "weepinbell",
+                "pokemonName": "Weepinbell",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                "attemptedAt": 32000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 26000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 45000,
+            "lastRound": {
+              "pokemon": {
+                "id": "victreebel",
+                "name": "Victreebel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png",
+                "nationalDexNumber": 71,
+                "generation": 1
+              },
+              "referenceGeneration": 2,
+              "referenceSource": "Pokémon Crystal",
+              "revealedMoves": [
+                {
+                  "moveId": "razor-leaf",
+                  "name": "Hoja Afilada",
+                  "level": null,
+                  "type": "grass",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "sleep-powder",
+                  "name": "Somnífero",
+                  "level": null,
+                  "type": "grass",
+                  "category": "status"
+                },
+                {
+                  "moveId": "sweet-scent",
+                  "name": "Dulce Aroma",
+                  "level": null,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "vine-whip",
+                  "name": "Látigo Cepa",
+                  "level": null,
+                  "type": "grass",
+                  "category": "physical"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "razor-leaf",
+                  "name": "Hoja Afilada",
+                  "level": null,
+                  "type": "grass",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "sleep-powder",
+                  "name": "Somnífero",
+                  "level": null,
+                  "type": "grass",
+                  "category": "status"
+                },
+                {
+                  "moveId": "sweet-scent",
+                  "name": "Dulce Aroma",
+                  "level": null,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "vine-whip",
+                  "name": "Látigo Cepa",
+                  "level": null,
+                  "type": "grass",
+                  "category": "physical"
+                }
+              ],
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 31000,
+                  "revealStage": 0,
+                  "points": 5
+                }
+              }
+            },
+            "scores": {
+              "p1": 5,
+              "p2": 8
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 33000,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 52000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,45000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "bite",
+                    "name": "Mordisco",
+                    "level": null,
+                    "type": "dark",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "leer",
+                    "name": "Malicioso",
+                    "level": null,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "bubble-beam",
+                    "name": "Rayo Burbuja",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 45000,
+            "roundEndsAt": 60000,
+            "nextTransitionAt": 52000,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 8
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 59000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,45000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "bite",
+                    "name": "Mordisco",
+                    "level": null,
+                    "type": "dark",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "leer",
+                    "name": "Malicioso",
+                    "level": null,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "bubble-beam",
+                    "name": "Rayo Burbuja",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "rain-dance",
+                    "name": "Danza Lluvia",
+                    "level": null,
+                    "type": "water",
+                    "category": "status"
+                  }
+                ],
+                "stage": 1
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 45000,
+            "roundEndsAt": 60000,
+            "nextTransitionAt": 59000,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 8
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 59000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,45000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "bite",
+                    "name": "Mordisco",
+                    "level": null,
+                    "type": "dark",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "leer",
+                    "name": "Malicioso",
+                    "level": null,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "bubble-beam",
+                    "name": "Rayo Burbuja",
+                    "level": null,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": null,
+                "moves": [
+                  {
+                    "moveId": "rain-dance",
+                    "name": "Danza Lluvia",
+                    "level": null,
+                    "type": "water",
+                    "category": "status"
+                  }
+                ],
+                "stage": 1
+              }
+            ],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 45000,
+            "roundEndsAt": 60000,
+            "nextTransitionAt": 59000,
+            "lastRound": null,
+            "scores": {
+              "p1": 9,
+              "p2": 8
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 58000,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,45000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "roundStartedAt": 45000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 58000,
+            "lastRound": {
+              "pokemon": {
+                "id": "suicune",
+                "name": "Suicune",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/245.png",
+                "nationalDexNumber": 245,
+                "generation": 2
+              },
+              "referenceGeneration": 2,
+              "referenceSource": "Pokémon Crystal",
+              "revealedMoves": [
+                {
+                  "moveId": "bite",
+                  "name": "Mordisco",
+                  "level": null,
+                  "type": "dark",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "leer",
+                  "name": "Malicioso",
+                  "level": null,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "bubble-beam",
+                  "name": "Rayo Burbuja",
+                  "level": null,
+                  "type": "water",
+                  "category": "special"
+                },
+                {
+                  "moveId": "rain-dance",
+                  "name": "Danza Lluvia",
+                  "level": null,
+                  "type": "water",
+                  "category": "status"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "bite",
+                  "name": "Mordisco",
+                  "level": null,
+                  "type": "dark",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "leer",
+                  "name": "Malicioso",
+                  "level": null,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "bubble-beam",
+                  "name": "Rayo Burbuja",
+                  "level": null,
+                  "type": "water",
+                  "category": "special"
+                },
+                {
+                  "moveId": "rain-dance",
+                  "name": "Danza Lluvia",
+                  "level": null,
+                  "type": "water",
+                  "category": "status"
+                },
+                {
+                  "moveId": "gust",
+                  "name": "Tornado",
+                  "level": null,
+                  "type": "flying",
+                  "category": "special"
+                },
+                {
+                  "moveId": "aurora-beam",
+                  "name": "Rayo Aurora",
+                  "level": null,
+                  "type": "ice",
+                  "category": "special"
+                },
+                {
+                  "moveId": "mist",
+                  "name": "Neblina",
+                  "level": null,
+                  "type": "ice",
+                  "category": "status"
+                },
+                {
+                  "moveId": "mirror-coat",
+                  "name": "Manto Espejo",
+                  "level": null,
+                  "type": "psychic",
+                  "category": "special"
+                },
+                {
+                  "moveId": "hydro-pump",
+                  "name": "Hidrobomba",
+                  "level": null,
+                  "type": "water",
+                  "category": "special"
+                }
+              ],
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 53000,
+                  "revealStage": 1,
+                  "points": 4
+                },
+                "p2": {
+                  "solveOrder": 2,
+                  "solvedAt": 54000,
+                  "revealStage": 1,
+                  "points": 4
+                }
+              }
+            },
+            "scores": {
+              "p1": 9,
+              "p2": 12
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 4
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",4,45000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "referenceGeneration": 2,
+            "referenceSource": "Pokémon Crystal",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "roundStartedAt": 45000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "scores": {
+              "p1": 9,
+              "p2": 12
+            },
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 12,
+                  "won": true,
+                  "stats": {
+                    "correct": 3,
+                    "missed": 1,
+                    "initialSolves": 1,
+                    "incorrectGuesses": 1,
+                    "pointsFromSolves": 12,
+                    "bestRoundPoints": 5
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 9,
+                  "won": false,
+                  "stats": {
+                    "correct": 2,
+                    "missed": 2,
+                    "initialSolves": 1,
+                    "incorrectGuesses": 2,
+                    "pointsFromSolves": 9,
+                    "bestRoundPoints": 5
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 4
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p2",
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 12,
+          "won": true,
+          "stats": {
+            "correct": 3,
+            "missed": 1,
+            "initialSolves": 1,
+            "incorrectGuesses": 1,
+            "pointsFromSolves": 12,
+            "bestRoundPoints": 5
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 2,
+          "points": 9,
+          "won": false,
+          "stats": {
+            "correct": 2,
+            "missed": 2,
+            "initialSolves": 1,
+            "incorrectGuesses": 2,
+            "pointsFromSolves": 9,
+            "bestRoundPoints": 5
+          }
+        }
+      ]
+    }
+  }
+}
