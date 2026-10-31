@@ -1,0 +1,2980 @@
+{
+  "engineId": "who-is-who-pokemon",
+  "scenario": "player-choice-selection-timeout",
+  "seed": 602,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      2,
+      1
+    ],
+    "boardSize": 8,
+    "includeForms": true,
+    "turnSeconds": 10,
+    "rounds": 3,
+    "selectionSeconds": 20,
+    "secretSelection": "PLAYER_CHOICE"
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "TOGGLE_DISCARD",
+        "pokemonId": "gloom"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "END_TURN"
+      },
+      "now": 2200
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_SECRET",
+        "pokemonId": "raticate-alola"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_SECRET",
+        "pokemonId": "gloom"
+      },
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_SECRET",
+        "pokemonId": "pikachu"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_SECRET",
+        "pokemonId": "ampharos"
+      },
+      "now": 21000
+    },
+    {
+      "kind": "timeout",
+      "now": 21000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "moltres"
+      },
+      "now": 22000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "gloom"
+      },
+      "now": 23000
+    },
+    {
+      "kind": "timeout",
+      "now": 33000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "END_TURN"
+      },
+      "now": 34000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        },
+        {
+          "id": "p5",
+          "displayName": "Elena"
+        }
+      ],
+      "now": 35000
+    },
+    {
+      "kind": "action",
+      "playerId": "p5",
+      "action": {
+        "type": "END_TURN"
+      },
+      "now": 35500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "END_TURN"
+      },
+      "now": 36000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "raticate-alola"
+      },
+      "now": 37000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "boardSize": 8,
+      "includeForms": true,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 20,
+      "secretSelection": "PLAYER_CHOICE"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",1,null,1,null,null,null,\"BLUE\"]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "who-is-who-pokemon",
+        "phase": "GAME_STARTING",
+        "board": [
+          {
+            "id": "gloom",
+            "nationalDexNumber": 44,
+            "name": "Gloom",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+          },
+          {
+            "id": "snubbull",
+            "nationalDexNumber": 209,
+            "name": "Snubbull",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+          },
+          {
+            "id": "tentacruel",
+            "nationalDexNumber": 73,
+            "name": "Tentacruel",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+          },
+          {
+            "id": "raticate-alola",
+            "nationalDexNumber": 20,
+            "name": "Raticate de Alola",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+          },
+          {
+            "id": "ampharos",
+            "nationalDexNumber": 181,
+            "name": "Ampharos",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+          },
+          {
+            "id": "moltres",
+            "nationalDexNumber": 146,
+            "name": "Moltres",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+          },
+          {
+            "id": "flaaffy",
+            "nationalDexNumber": 180,
+            "name": "Flaaffy",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+          },
+          {
+            "id": "graveler",
+            "nationalDexNumber": 75,
+            "name": "Graveler",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+          }
+        ],
+        "teams": {
+          "BLUE": {
+            "playerIds": [
+              "p3",
+              "p2"
+            ],
+            "secretReady": false
+          },
+          "RED": {
+            "playerIds": [
+              "p1"
+            ],
+            "secretReady": false
+          }
+        },
+        "currentTeam": "BLUE",
+        "roundNumber": 1,
+        "turnNumber": 1,
+        "totalRounds": 3,
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "guesses": [],
+        "winnerTeam": null,
+        "revealedSecrets": {
+          "BLUE": null,
+          "RED": null
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "team": "RED",
+          "ownSecret": null,
+          "discardedPokemonIds": [],
+          "canChooseSecret": true,
+          "canManageBoard": false,
+          "canAct": false,
+          "canGuess": false,
+          "guessUsed": false,
+          "lastGuess": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "team": "BLUE",
+          "ownSecret": null,
+          "discardedPokemonIds": [],
+          "canChooseSecret": true,
+          "canManageBoard": false,
+          "canAct": false,
+          "canGuess": false,
+          "guessUsed": false,
+          "lastGuess": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "team": "BLUE",
+          "ownSecret": null,
+          "discardedPokemonIds": [],
+          "canChooseSecret": true,
+          "canManageBoard": false,
+          "canAct": false,
+          "canGuess": false,
+          "guessUsed": false,
+          "lastGuess": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "TURN_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"TURN_ACTIVE\",1,null,1,null,null,null,\"BLUE\"]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "who-is-who-pokemon",
+        "phase": "TURN_ACTIVE",
+        "board": [
+          {
+            "id": "gloom",
+            "nationalDexNumber": 44,
+            "name": "Gloom",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+          },
+          {
+            "id": "snubbull",
+            "nationalDexNumber": 209,
+            "name": "Snubbull",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+          },
+          {
+            "id": "tentacruel",
+            "nationalDexNumber": 73,
+            "name": "Tentacruel",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+          },
+          {
+            "id": "raticate-alola",
+            "nationalDexNumber": 20,
+            "name": "Raticate de Alola",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+          },
+          {
+            "id": "ampharos",
+            "nationalDexNumber": 181,
+            "name": "Ampharos",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+          },
+          {
+            "id": "moltres",
+            "nationalDexNumber": 146,
+            "name": "Moltres",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+          },
+          {
+            "id": "flaaffy",
+            "nationalDexNumber": 180,
+            "name": "Flaaffy",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+          },
+          {
+            "id": "graveler",
+            "nationalDexNumber": 75,
+            "name": "Graveler",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+          }
+        ],
+        "teams": {
+          "BLUE": {
+            "playerIds": [
+              "p3",
+              "p2"
+            ],
+            "secretReady": false
+          },
+          "RED": {
+            "playerIds": [
+              "p1"
+            ],
+            "secretReady": false
+          }
+        },
+        "currentTeam": "BLUE",
+        "roundNumber": 1,
+        "turnNumber": 1,
+        "totalRounds": 3,
+        "roundStartedAt": null,
+        "roundEndsAt": 21000,
+        "guesses": [],
+        "winnerTeam": null,
+        "revealedSecrets": {
+          "BLUE": null,
+          "RED": null
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "team": "RED",
+          "ownSecret": null,
+          "discardedPokemonIds": [],
+          "canChooseSecret": true,
+          "canManageBoard": false,
+          "canAct": false,
+          "canGuess": false,
+          "guessUsed": false,
+          "lastGuess": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "team": "BLUE",
+          "ownSecret": null,
+          "discardedPokemonIds": [],
+          "canChooseSecret": true,
+          "canManageBoard": false,
+          "canAct": false,
+          "canGuess": false,
+          "guessUsed": false,
+          "lastGuess": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "team": "BLUE",
+          "ownSecret": null,
+          "discardedPokemonIds": [],
+          "canChooseSecret": true,
+          "canManageBoard": false,
+          "canAct": false,
+          "canGuess": false,
+          "guessUsed": false,
+          "lastGuess": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "Esperando a que ambos equipos elijan su Pokémon secreto.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,null,1,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": false
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": false
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 1,
+            "turnNumber": 1,
+            "totalRounds": 3,
+            "roundStartedAt": null,
+            "roundEndsAt": 21000,
+            "guesses": [],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": true,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": true,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": true,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Esperando a que ambos equipos elijan su Pokémon secreto.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,null,1,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": false
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": false
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 1,
+            "turnNumber": 1,
+            "totalRounds": 3,
+            "roundStartedAt": null,
+            "roundEndsAt": 21000,
+            "guesses": [],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": true,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": true,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": true,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,null,1,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": false
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 1,
+            "turnNumber": 1,
+            "totalRounds": 3,
+            "roundStartedAt": null,
+            "roundEndsAt": 21000,
+            "guesses": [],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": true,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Tu equipo ya ha elegido su Pokémon secreto.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,null,1,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": false
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 1,
+            "turnNumber": 1,
+            "totalRounds": 3,
+            "roundStartedAt": null,
+            "roundEndsAt": 21000,
+            "guesses": [],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": true,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon no está en el tablero.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,null,1,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": false
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 1,
+            "turnNumber": 1,
+            "totalRounds": 3,
+            "roundStartedAt": null,
+            "roundEndsAt": 21000,
+            "guesses": [],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": true,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo de selección ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,null,1,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": false
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 1,
+            "turnNumber": 1,
+            "totalRounds": 3,
+            "roundStartedAt": null,
+            "roundEndsAt": 21000,
+            "guesses": [],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": true,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,21000,1,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 1,
+            "turnNumber": 1,
+            "totalRounds": 3,
+            "roundStartedAt": 21000,
+            "roundEndsAt": 31000,
+            "guesses": [],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 32000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,22000,2,null,null,null,\"RED\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "RED",
+            "roundNumber": 1,
+            "turnNumber": 2,
+            "totalRounds": 3,
+            "roundStartedAt": 22000,
+            "roundEndsAt": 32000,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              }
+            ],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 33000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,23000,3,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 2,
+            "turnNumber": 3,
+            "totalRounds": 3,
+            "roundStartedAt": 23000,
+            "roundEndsAt": 33000,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              },
+              {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "gloom",
+                "correct": false,
+                "attemptedAt": 23000,
+                "turnNumber": 2
+              }
+            ],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "gloom",
+                "correct": false,
+                "attemptedAt": 23000,
+                "turnNumber": 2
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 43000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,33000,4,null,null,null,\"RED\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "RED",
+            "roundNumber": 2,
+            "turnNumber": 4,
+            "totalRounds": 3,
+            "roundStartedAt": 33000,
+            "roundEndsAt": 43000,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              },
+              {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "gloom",
+                "correct": false,
+                "attemptedAt": 23000,
+                "turnNumber": 2
+              }
+            ],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "gloom",
+                "correct": false,
+                "attemptedAt": 23000,
+                "turnNumber": 2
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 44000,
+            "actionEpoch": "[\"TURN_ACTIVE\",3,34000,5,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 3,
+            "turnNumber": 5,
+            "totalRounds": 3,
+            "roundStartedAt": 34000,
+            "roundEndsAt": 44000,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              },
+              {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "gloom",
+                "correct": false,
+                "attemptedAt": 23000,
+                "turnNumber": 2
+              }
+            ],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "gloom",
+                "correct": false,
+                "attemptedAt": 23000,
+                "turnNumber": 2
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 44000,
+            "actionEpoch": "[\"TURN_ACTIVE\",3,34000,5,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 3,
+            "turnNumber": 5,
+            "totalRounds": 3,
+            "roundStartedAt": 34000,
+            "roundEndsAt": 44000,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              },
+              {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "gloom",
+                "correct": false,
+                "attemptedAt": 23000,
+                "turnNumber": 2
+              }
+            ],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "gloom",
+                "correct": false,
+                "attemptedAt": 23000,
+                "turnNumber": 2
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              }
+            },
+            "p5": {
+              "role": "SPECTATOR",
+              "team": null,
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No puedes actuar en esta partida.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 44000,
+            "actionEpoch": "[\"TURN_ACTIVE\",3,34000,5,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 3,
+            "turnNumber": 5,
+            "totalRounds": 3,
+            "roundStartedAt": 34000,
+            "roundEndsAt": 44000,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              },
+              {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "gloom",
+                "correct": false,
+                "attemptedAt": 23000,
+                "turnNumber": 2
+              }
+            ],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "gloom",
+                "correct": false,
+                "attemptedAt": 23000,
+                "turnNumber": 2
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              }
+            },
+            "p5": {
+              "role": "SPECTATOR",
+              "team": null,
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 46000,
+            "actionEpoch": "[\"TURN_ACTIVE\",3,36000,6,null,null,null,\"RED\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "RED",
+            "roundNumber": 3,
+            "turnNumber": 6,
+            "totalRounds": 3,
+            "roundStartedAt": 36000,
+            "roundEndsAt": 46000,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              },
+              {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "gloom",
+                "correct": false,
+                "attemptedAt": 23000,
+                "turnNumber": 2
+              }
+            ],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "gloom",
+                "correct": false,
+                "attemptedAt": 23000,
+                "turnNumber": 2
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              }
+            },
+            "p5": {
+              "role": "SPECTATOR",
+              "team": null,
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,36000,6,null,null,null,\"RED\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "GAME_RESULTS",
+            "board": [
+              {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              {
+                "id": "snubbull",
+                "nationalDexNumber": 209,
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "tentacruel",
+                "nationalDexNumber": 73,
+                "name": "Tentacruel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png"
+              },
+              {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              {
+                "id": "ampharos",
+                "nationalDexNumber": 181,
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "moltres",
+                "nationalDexNumber": 146,
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "flaaffy",
+                "nationalDexNumber": 180,
+                "name": "Flaaffy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+              },
+              {
+                "id": "graveler",
+                "nationalDexNumber": 75,
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p3",
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "RED",
+            "roundNumber": 3,
+            "turnNumber": 6,
+            "totalRounds": 3,
+            "roundStartedAt": 36000,
+            "roundEndsAt": null,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              },
+              {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "gloom",
+                "correct": false,
+                "attemptedAt": 23000,
+                "turnNumber": 2
+              },
+              {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "raticate-alola",
+                "correct": true,
+                "attemptedAt": 37000,
+                "turnNumber": 6
+              }
+            ],
+            "winnerTeam": "RED",
+            "revealedSecrets": {
+              "BLUE": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "RED": {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 10,
+                  "won": true,
+                  "stats": {
+                    "wins": 1,
+                    "turnsPlayed": 2,
+                    "correctGuesses": 1,
+                    "incorrectGuesses": 1
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "wins": 0,
+                    "turnsPlayed": 0,
+                    "correctGuesses": 0,
+                    "incorrectGuesses": 0
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "wins": 0,
+                    "turnsPlayed": 1,
+                    "correctGuesses": 0,
+                    "incorrectGuesses": 1
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "gloom",
+                "nationalDexNumber": 44,
+                "name": "Gloom",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": true,
+              "lastGuess": {
+                "team": "RED",
+                "playerId": "p1",
+                "pokemonId": "raticate-alola",
+                "correct": true,
+                "attemptedAt": 37000,
+                "turnNumber": 6
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "raticate-alola",
+                "nationalDexNumber": 20,
+                "name": "Raticate de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10092.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p3",
+                "pokemonId": "moltres",
+                "correct": false,
+                "attemptedAt": 22000,
+                "turnNumber": 1
+              }
+            },
+            "p5": {
+              "role": "SPECTATOR",
+              "team": null,
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 10,
+          "won": true,
+          "stats": {
+            "wins": 1,
+            "turnsPlayed": 2,
+            "correctGuesses": 1,
+            "incorrectGuesses": 1
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "wins": 0,
+            "turnsPlayed": 0,
+            "correctGuesses": 0,
+            "incorrectGuesses": 0
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 2,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "wins": 0,
+            "turnsPlayed": 1,
+            "correctGuesses": 0,
+            "incorrectGuesses": 1
+          }
+        }
+      ]
+    }
+  }
+}

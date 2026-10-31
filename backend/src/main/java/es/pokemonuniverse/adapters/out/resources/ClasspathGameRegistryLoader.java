@@ -21,6 +21,7 @@ import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteEngine;
 import es.pokemonuniverse.domain.game.engines.tcghigherlower.TcgHigherLowerEngine;
 import es.pokemonuniverse.domain.game.engines.typechain.TypeChainEngine;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelEngine;
+import es.pokemonuniverse.domain.game.engines.whoiswhopokemon.WhoIsWhoPokemonEngine;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonEngine;
 import es.pokemonuniverse.domain.game.engines.wouldyourather.WouldYouRatherEngine;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonEngine;
@@ -91,6 +92,7 @@ public class ClasspathGameRegistryLoader {
     engines.put(ZoomedPokemonEngine.ID, new ZoomedPokemonEngine(manifest(manifests, ZoomedPokemonEngine.ID)));
     engines.put(ShinyVoteEngine.ID, new ShinyVoteEngine(manifest(manifests, ShinyVoteEngine.ID)));
     engines.put(TcgHigherLowerEngine.ID, new TcgHigherLowerEngine(manifest(manifests, TcgHigherLowerEngine.ID)));
+    engines.put(WhoIsWhoPokemonEngine.ID, new WhoIsWhoPokemonEngine(manifest(manifests, WhoIsWhoPokemonEngine.ID)));
     return engines;
   }
 

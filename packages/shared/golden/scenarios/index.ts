@@ -20,6 +20,7 @@ import { shinyVoteScenarios } from './shiny-vote.js';
 import { tcgHigherLowerScenarios } from './tcg-higher-lower.js';
 import { typeChainScenarios } from './type-chain.js';
 import { typeDuelScenarios } from './type-duel.js';
+import { whoIsWhoPokemonScenarios } from './who-is-who-pokemon.js';
 import { whosThatPokemonScenarios } from './whos-that-pokemon.js';
 import { wouldYouRatherScenarios } from './would-you-rather.js';
 import { zoomedPokemonScenarios } from './zoomed-pokemon.js';
@@ -53,4 +54,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'zoomed-pokemon': zoomedPokemonScenarios,
   'shiny-vote': shinyVoteScenarios,
   'tcg-higher-lower': tcgHigherLowerScenarios,
+  'who-is-who-pokemon': whoIsWhoPokemonScenarios,
 };

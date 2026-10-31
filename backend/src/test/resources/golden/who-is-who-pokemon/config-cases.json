@@ -1,0 +1,428 @@
+[
+  {
+    "input": {
+      "generations": [
+        3,
+        1,
+        3,
+        2
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 50,
+      "includeForms": false,
+      "turnSeconds": 120,
+      "rounds": 25,
+      "selectionSeconds": 120,
+      "secretSelection": "PLAYER_CHOICE"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "boardSize": 50,
+      "includeForms": false,
+      "turnSeconds": 120,
+      "rounds": 25,
+      "selectionSeconds": 120,
+      "secretSelection": "PLAYER_CHOICE"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": true,
+      "turnSeconds": 10,
+      "rounds": 1,
+      "selectionSeconds": 0,
+      "secretSelection": "RANDOM"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": true,
+      "turnSeconds": 10,
+      "rounds": 1,
+      "selectionSeconds": 0,
+      "secretSelection": "RANDOM"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "secretSelection": "RANDOM"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 10,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 10,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        9
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        9
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 4,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 51,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 9,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 121,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 0,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 26,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 10.5,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": -1,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 121,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": null,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "random"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "CHOICE"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": "true",
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": "5",
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM",
+      "unknownKey": "el esquema es estricto"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 3,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]

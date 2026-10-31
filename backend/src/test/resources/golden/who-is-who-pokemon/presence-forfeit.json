@@ -1,0 +1,1966 @@
+{
+  "engineId": "who-is-who-pokemon",
+  "scenario": "presence-forfeit",
+  "seed": 703,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      2
+    ],
+    "boardSize": 6,
+    "includeForms": false,
+    "turnSeconds": 15,
+    "rounds": 5,
+    "selectionSeconds": 0,
+    "secretSelection": "PLAYER_CHOICE"
+  },
+  "steps": [
+    {
+      "kind": "timeout",
+      "now": 5000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_SECRET",
+        "pokemonId": "entei"
+      },
+      "now": 6000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_SECRET",
+        "pokemonId": "crobat"
+      },
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "END_TURN"
+      },
+      "now": 8000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "END_TURN"
+      },
+      "now": 9000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "espeon"
+      },
+      "now": 10000
+    },
+    {
+      "kind": "timeout",
+      "now": 25000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        }
+      ],
+      "now": 26000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "TOGGLE_DISCARD",
+        "pokemonId": "pineco"
+      },
+      "now": 26500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "END_TURN"
+      },
+      "now": 27000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "active": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        }
+      ],
+      "now": 28000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        }
+      ],
+      "now": 29000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        2
+      ],
+      "boardSize": 6,
+      "includeForms": false,
+      "turnSeconds": 15,
+      "rounds": 5,
+      "selectionSeconds": 0,
+      "secretSelection": "PLAYER_CHOICE"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",1,null,1,null,null,null,\"BLUE\"]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "who-is-who-pokemon",
+        "phase": "GAME_STARTING",
+        "board": [
+          {
+            "id": "pineco",
+            "nationalDexNumber": 204,
+            "name": "Pineco",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+          },
+          {
+            "id": "espeon",
+            "nationalDexNumber": 196,
+            "name": "Espeon",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+          },
+          {
+            "id": "entei",
+            "nationalDexNumber": 244,
+            "name": "Entei",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+          },
+          {
+            "id": "raikou",
+            "nationalDexNumber": 243,
+            "name": "Raikou",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+          },
+          {
+            "id": "crobat",
+            "nationalDexNumber": 169,
+            "name": "Crobat",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+          },
+          {
+            "id": "dunsparce",
+            "nationalDexNumber": 206,
+            "name": "Dunsparce",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png"
+          }
+        ],
+        "teams": {
+          "BLUE": {
+            "playerIds": [
+              "p2"
+            ],
+            "secretReady": false
+          },
+          "RED": {
+            "playerIds": [
+              "p1"
+            ],
+            "secretReady": false
+          }
+        },
+        "currentTeam": "BLUE",
+        "roundNumber": 1,
+        "turnNumber": 1,
+        "totalRounds": 5,
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "guesses": [],
+        "winnerTeam": null,
+        "revealedSecrets": {
+          "BLUE": null,
+          "RED": null
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "team": "RED",
+          "ownSecret": null,
+          "discardedPokemonIds": [],
+          "canChooseSecret": true,
+          "canManageBoard": false,
+          "canAct": false,
+          "canGuess": false,
+          "guessUsed": false,
+          "lastGuess": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "team": "BLUE",
+          "ownSecret": null,
+          "discardedPokemonIds": [],
+          "canChooseSecret": true,
+          "canManageBoard": false,
+          "canAct": false,
+          "canGuess": false,
+          "guessUsed": false,
+          "lastGuess": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "TURN_ACTIVE",
+        "nextDeadline": null,
+        "actionEpoch": "[\"TURN_ACTIVE\",1,null,1,null,null,null,\"BLUE\"]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "who-is-who-pokemon",
+        "phase": "TURN_ACTIVE",
+        "board": [
+          {
+            "id": "pineco",
+            "nationalDexNumber": 204,
+            "name": "Pineco",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+          },
+          {
+            "id": "espeon",
+            "nationalDexNumber": 196,
+            "name": "Espeon",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+          },
+          {
+            "id": "entei",
+            "nationalDexNumber": 244,
+            "name": "Entei",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+          },
+          {
+            "id": "raikou",
+            "nationalDexNumber": 243,
+            "name": "Raikou",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+          },
+          {
+            "id": "crobat",
+            "nationalDexNumber": 169,
+            "name": "Crobat",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+          },
+          {
+            "id": "dunsparce",
+            "nationalDexNumber": 206,
+            "name": "Dunsparce",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png"
+          }
+        ],
+        "teams": {
+          "BLUE": {
+            "playerIds": [
+              "p2"
+            ],
+            "secretReady": false
+          },
+          "RED": {
+            "playerIds": [
+              "p1"
+            ],
+            "secretReady": false
+          }
+        },
+        "currentTeam": "BLUE",
+        "roundNumber": 1,
+        "turnNumber": 1,
+        "totalRounds": 5,
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "guesses": [],
+        "winnerTeam": null,
+        "revealedSecrets": {
+          "BLUE": null,
+          "RED": null
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "team": "RED",
+          "ownSecret": null,
+          "discardedPokemonIds": [],
+          "canChooseSecret": true,
+          "canManageBoard": false,
+          "canAct": false,
+          "canGuess": false,
+          "guessUsed": false,
+          "lastGuess": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "team": "BLUE",
+          "ownSecret": null,
+          "discardedPokemonIds": [],
+          "canChooseSecret": true,
+          "canManageBoard": false,
+          "canAct": false,
+          "canGuess": false,
+          "guessUsed": false,
+          "lastGuess": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": null,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,null,1,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "pineco",
+                "nationalDexNumber": 204,
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "espeon",
+                "nationalDexNumber": 196,
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+              },
+              {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              {
+                "id": "raikou",
+                "nationalDexNumber": 243,
+                "name": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              },
+              {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              {
+                "id": "dunsparce",
+                "nationalDexNumber": 206,
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p2"
+                ],
+                "secretReady": false
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": false
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 1,
+            "turnNumber": 1,
+            "totalRounds": 5,
+            "roundStartedAt": null,
+            "roundEndsAt": null,
+            "guesses": [],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": true,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": true,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": null,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,null,1,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "pineco",
+                "nationalDexNumber": 204,
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "espeon",
+                "nationalDexNumber": 196,
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+              },
+              {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              {
+                "id": "raikou",
+                "nationalDexNumber": 243,
+                "name": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              },
+              {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              {
+                "id": "dunsparce",
+                "nationalDexNumber": 206,
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p2"
+                ],
+                "secretReady": false
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 1,
+            "turnNumber": 1,
+            "totalRounds": 5,
+            "roundStartedAt": null,
+            "roundEndsAt": null,
+            "guesses": [],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": null,
+              "discardedPokemonIds": [],
+              "canChooseSecret": true,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,7000,1,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "pineco",
+                "nationalDexNumber": 204,
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "espeon",
+                "nationalDexNumber": 196,
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+              },
+              {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              {
+                "id": "raikou",
+                "nationalDexNumber": 243,
+                "name": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              },
+              {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              {
+                "id": "dunsparce",
+                "nationalDexNumber": 206,
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 1,
+            "turnNumber": 1,
+            "totalRounds": 5,
+            "roundStartedAt": 7000,
+            "roundEndsAt": 22000,
+            "guesses": [],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 23000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,8000,2,null,null,null,\"RED\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "pineco",
+                "nationalDexNumber": 204,
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "espeon",
+                "nationalDexNumber": 196,
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+              },
+              {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              {
+                "id": "raikou",
+                "nationalDexNumber": 243,
+                "name": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              },
+              {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              {
+                "id": "dunsparce",
+                "nationalDexNumber": 206,
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "RED",
+            "roundNumber": 1,
+            "turnNumber": 2,
+            "totalRounds": 5,
+            "roundStartedAt": 8000,
+            "roundEndsAt": 23000,
+            "guesses": [],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,9000,3,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "pineco",
+                "nationalDexNumber": 204,
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "espeon",
+                "nationalDexNumber": 196,
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+              },
+              {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              {
+                "id": "raikou",
+                "nationalDexNumber": 243,
+                "name": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              },
+              {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              {
+                "id": "dunsparce",
+                "nationalDexNumber": 206,
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 2,
+            "turnNumber": 3,
+            "totalRounds": 5,
+            "roundStartedAt": 9000,
+            "roundEndsAt": 24000,
+            "guesses": [],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 25000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,10000,4,null,null,null,\"RED\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "pineco",
+                "nationalDexNumber": 204,
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "espeon",
+                "nationalDexNumber": 196,
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+              },
+              {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              {
+                "id": "raikou",
+                "nationalDexNumber": 243,
+                "name": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              },
+              {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              {
+                "id": "dunsparce",
+                "nationalDexNumber": 206,
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "RED",
+            "roundNumber": 2,
+            "turnNumber": 4,
+            "totalRounds": 5,
+            "roundStartedAt": 10000,
+            "roundEndsAt": 25000,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p2",
+                "pokemonId": "espeon",
+                "correct": false,
+                "attemptedAt": 10000,
+                "turnNumber": 3
+              }
+            ],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p2",
+                "pokemonId": "espeon",
+                "correct": false,
+                "attemptedAt": 10000,
+                "turnNumber": 3
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 40000,
+            "actionEpoch": "[\"TURN_ACTIVE\",3,25000,5,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "pineco",
+                "nationalDexNumber": 204,
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "espeon",
+                "nationalDexNumber": 196,
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+              },
+              {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              {
+                "id": "raikou",
+                "nationalDexNumber": 243,
+                "name": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              },
+              {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              {
+                "id": "dunsparce",
+                "nationalDexNumber": 206,
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 3,
+            "turnNumber": 5,
+            "totalRounds": 5,
+            "roundStartedAt": 25000,
+            "roundEndsAt": 40000,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p2",
+                "pokemonId": "espeon",
+                "correct": false,
+                "attemptedAt": 10000,
+                "turnNumber": 3
+              }
+            ],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p2",
+                "pokemonId": "espeon",
+                "correct": false,
+                "attemptedAt": 10000,
+                "turnNumber": 3
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 40000,
+            "actionEpoch": "[\"TURN_ACTIVE\",3,25000,5,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "pineco",
+                "nationalDexNumber": 204,
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "espeon",
+                "nationalDexNumber": 196,
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+              },
+              {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              {
+                "id": "raikou",
+                "nationalDexNumber": 243,
+                "name": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              },
+              {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              {
+                "id": "dunsparce",
+                "nationalDexNumber": 206,
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 3,
+            "turnNumber": 5,
+            "totalRounds": 5,
+            "roundStartedAt": 25000,
+            "roundEndsAt": 40000,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p2",
+                "pokemonId": "espeon",
+                "correct": false,
+                "attemptedAt": 10000,
+                "turnNumber": 3
+              }
+            ],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p2",
+                "pokemonId": "espeon",
+                "correct": false,
+                "attemptedAt": 10000,
+                "turnNumber": 3
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No puedes actuar en esta partida.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 40000,
+            "actionEpoch": "[\"TURN_ACTIVE\",3,25000,5,null,null,null,\"BLUE\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "pineco",
+                "nationalDexNumber": 204,
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "espeon",
+                "nationalDexNumber": 196,
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+              },
+              {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              {
+                "id": "raikou",
+                "nationalDexNumber": 243,
+                "name": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              },
+              {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              {
+                "id": "dunsparce",
+                "nationalDexNumber": 206,
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "BLUE",
+            "roundNumber": 3,
+            "turnNumber": 5,
+            "totalRounds": 5,
+            "roundStartedAt": 25000,
+            "roundEndsAt": 40000,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p2",
+                "pokemonId": "espeon",
+                "correct": false,
+                "attemptedAt": 10000,
+                "turnNumber": 3
+              }
+            ],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p2",
+                "pokemonId": "espeon",
+                "correct": false,
+                "attemptedAt": 10000,
+                "turnNumber": 3
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"TURN_ACTIVE\",3,27000,6,null,null,null,\"RED\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "pineco",
+                "nationalDexNumber": 204,
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "espeon",
+                "nationalDexNumber": 196,
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+              },
+              {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              {
+                "id": "raikou",
+                "nationalDexNumber": 243,
+                "name": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              },
+              {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              {
+                "id": "dunsparce",
+                "nationalDexNumber": 206,
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "RED",
+            "roundNumber": 3,
+            "turnNumber": 6,
+            "totalRounds": 5,
+            "roundStartedAt": 27000,
+            "roundEndsAt": 42000,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p2",
+                "pokemonId": "espeon",
+                "correct": false,
+                "attemptedAt": 10000,
+                "turnNumber": 3
+              }
+            ],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p2",
+                "pokemonId": "espeon",
+                "correct": false,
+                "attemptedAt": 10000,
+                "turnNumber": 3
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,27000,6,null,null,null,\"RED\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "GAME_RESULTS",
+            "board": [
+              {
+                "id": "pineco",
+                "nationalDexNumber": 204,
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "espeon",
+                "nationalDexNumber": 196,
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+              },
+              {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              {
+                "id": "raikou",
+                "nationalDexNumber": 243,
+                "name": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              },
+              {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              {
+                "id": "dunsparce",
+                "nationalDexNumber": 206,
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "RED",
+            "roundNumber": 3,
+            "turnNumber": 6,
+            "totalRounds": 5,
+            "roundStartedAt": 27000,
+            "roundEndsAt": null,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p2",
+                "pokemonId": "espeon",
+                "correct": false,
+                "attemptedAt": 10000,
+                "turnNumber": 3
+              }
+            ],
+            "winnerTeam": "BLUE",
+            "revealedSecrets": {
+              "BLUE": {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              "RED": {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              }
+            },
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 10,
+                  "won": true,
+                  "stats": {
+                    "wins": 1,
+                    "turnsPlayed": 1,
+                    "correctGuesses": 0,
+                    "incorrectGuesses": 1
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "wins": 0,
+                    "turnsPlayed": 0,
+                    "correctGuesses": 0,
+                    "incorrectGuesses": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p2",
+                "pokemonId": "espeon",
+                "correct": false,
+                "attemptedAt": 10000,
+                "turnNumber": 3
+              }
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,27000,6,null,null,null,\"RED\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "GAME_RESULTS",
+            "board": [
+              {
+                "id": "pineco",
+                "nationalDexNumber": 204,
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "espeon",
+                "nationalDexNumber": 196,
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+              },
+              {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              {
+                "id": "raikou",
+                "nationalDexNumber": 243,
+                "name": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              },
+              {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              {
+                "id": "dunsparce",
+                "nationalDexNumber": 206,
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p2"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "RED",
+            "roundNumber": 3,
+            "turnNumber": 6,
+            "totalRounds": 5,
+            "roundStartedAt": 27000,
+            "roundEndsAt": null,
+            "guesses": [
+              {
+                "team": "BLUE",
+                "playerId": "p2",
+                "pokemonId": "espeon",
+                "correct": false,
+                "attemptedAt": 10000,
+                "turnNumber": 3
+              }
+            ],
+            "winnerTeam": "BLUE",
+            "revealedSecrets": {
+              "BLUE": {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              "RED": {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              }
+            },
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 10,
+                  "won": true,
+                  "stats": {
+                    "wins": 1,
+                    "turnsPlayed": 1,
+                    "correctGuesses": 0,
+                    "incorrectGuesses": 1
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "wins": 0,
+                    "turnsPlayed": 0,
+                    "correctGuesses": 0,
+                    "incorrectGuesses": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "entei",
+                "nationalDexNumber": 244,
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "crobat",
+                "nationalDexNumber": 169,
+                "name": "Crobat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": false,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": {
+                "team": "BLUE",
+                "playerId": "p2",
+                "pokemonId": "espeon",
+                "correct": false,
+                "attemptedAt": 10000,
+                "turnNumber": 3
+              }
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p2",
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 10,
+          "won": true,
+          "stats": {
+            "wins": 1,
+            "turnsPlayed": 1,
+            "correctGuesses": 0,
+            "incorrectGuesses": 1
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 2,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "wins": 0,
+            "turnsPlayed": 0,
+            "correctGuesses": 0,
+            "incorrectGuesses": 0
+          }
+        }
+      ]
+    }
+  }
+}

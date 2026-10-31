@@ -1,0 +1,400 @@
+{
+  "engineId": "who-is-who-pokemon",
+  "scenario": "invalid-action-stops",
+  "seed": 804,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "boardSize": 5,
+    "includeForms": false,
+    "turnSeconds": 10,
+    "rounds": 1,
+    "selectionSeconds": 30,
+    "secretSelection": "RANDOM"
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "END_TURN"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "END_TURN",
+        "pokemonId": "pikachu"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "END_TURN"
+      },
+      "now": 4000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "boardSize": 5,
+      "includeForms": false,
+      "turnSeconds": 10,
+      "rounds": 1,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",1,null,1,null,null,null,\"BLUE\"]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "who-is-who-pokemon",
+        "phase": "GAME_STARTING",
+        "board": [
+          {
+            "id": "kabutops",
+            "nationalDexNumber": 141,
+            "name": "Kabutops",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/141.png"
+          },
+          {
+            "id": "golem",
+            "nationalDexNumber": 76,
+            "name": "Golem",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+          },
+          {
+            "id": "vulpix",
+            "nationalDexNumber": 37,
+            "name": "Vulpix",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
+          },
+          {
+            "id": "hitmonlee",
+            "nationalDexNumber": 106,
+            "name": "Hitmonlee",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+          },
+          {
+            "id": "tauros",
+            "nationalDexNumber": 128,
+            "name": "Tauros",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
+          }
+        ],
+        "teams": {
+          "BLUE": {
+            "playerIds": [
+              "p1"
+            ],
+            "secretReady": true
+          },
+          "RED": {
+            "playerIds": [
+              "p2"
+            ],
+            "secretReady": true
+          }
+        },
+        "currentTeam": "BLUE",
+        "roundNumber": 1,
+        "turnNumber": 1,
+        "totalRounds": 1,
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "guesses": [],
+        "winnerTeam": null,
+        "revealedSecrets": {
+          "BLUE": null,
+          "RED": null
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "team": "BLUE",
+          "ownSecret": {
+            "id": "golem",
+            "nationalDexNumber": 76,
+            "name": "Golem",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+          },
+          "discardedPokemonIds": [],
+          "canChooseSecret": false,
+          "canManageBoard": false,
+          "canAct": false,
+          "canGuess": false,
+          "guessUsed": false,
+          "lastGuess": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "team": "RED",
+          "ownSecret": {
+            "id": "tauros",
+            "nationalDexNumber": 128,
+            "name": "Tauros",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
+          },
+          "discardedPokemonIds": [],
+          "canChooseSecret": false,
+          "canManageBoard": false,
+          "canAct": false,
+          "canGuess": false,
+          "guessUsed": false,
+          "lastGuess": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "TURN_ACTIVE",
+        "nextDeadline": 11000,
+        "actionEpoch": "[\"TURN_ACTIVE\",1,1000,1,null,null,null,\"BLUE\"]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "who-is-who-pokemon",
+        "phase": "TURN_ACTIVE",
+        "board": [
+          {
+            "id": "kabutops",
+            "nationalDexNumber": 141,
+            "name": "Kabutops",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/141.png"
+          },
+          {
+            "id": "golem",
+            "nationalDexNumber": 76,
+            "name": "Golem",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+          },
+          {
+            "id": "vulpix",
+            "nationalDexNumber": 37,
+            "name": "Vulpix",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
+          },
+          {
+            "id": "hitmonlee",
+            "nationalDexNumber": 106,
+            "name": "Hitmonlee",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+          },
+          {
+            "id": "tauros",
+            "nationalDexNumber": 128,
+            "name": "Tauros",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
+          }
+        ],
+        "teams": {
+          "BLUE": {
+            "playerIds": [
+              "p1"
+            ],
+            "secretReady": true
+          },
+          "RED": {
+            "playerIds": [
+              "p2"
+            ],
+            "secretReady": true
+          }
+        },
+        "currentTeam": "BLUE",
+        "roundNumber": 1,
+        "turnNumber": 1,
+        "totalRounds": 1,
+        "roundStartedAt": 1000,
+        "roundEndsAt": 11000,
+        "guesses": [],
+        "winnerTeam": null,
+        "revealedSecrets": {
+          "BLUE": null,
+          "RED": null
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "team": "BLUE",
+          "ownSecret": {
+            "id": "golem",
+            "nationalDexNumber": 76,
+            "name": "Golem",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+          },
+          "discardedPokemonIds": [],
+          "canChooseSecret": false,
+          "canManageBoard": true,
+          "canAct": true,
+          "canGuess": true,
+          "guessUsed": false,
+          "lastGuess": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "team": "RED",
+          "ownSecret": {
+            "id": "tauros",
+            "nationalDexNumber": 128,
+            "name": "Tauros",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
+          },
+          "discardedPokemonIds": [],
+          "canChooseSecret": false,
+          "canManageBoard": true,
+          "canAct": false,
+          "canGuess": false,
+          "guessUsed": false,
+          "lastGuess": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 12000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,2000,2,null,null,null,\"RED\"]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-is-who-pokemon",
+            "phase": "TURN_ACTIVE",
+            "board": [
+              {
+                "id": "kabutops",
+                "nationalDexNumber": 141,
+                "name": "Kabutops",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/141.png"
+              },
+              {
+                "id": "golem",
+                "nationalDexNumber": 76,
+                "name": "Golem",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+              },
+              {
+                "id": "vulpix",
+                "nationalDexNumber": 37,
+                "name": "Vulpix",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
+              },
+              {
+                "id": "hitmonlee",
+                "nationalDexNumber": 106,
+                "name": "Hitmonlee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+              },
+              {
+                "id": "tauros",
+                "nationalDexNumber": 128,
+                "name": "Tauros",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
+              }
+            ],
+            "teams": {
+              "BLUE": {
+                "playerIds": [
+                  "p1"
+                ],
+                "secretReady": true
+              },
+              "RED": {
+                "playerIds": [
+                  "p2"
+                ],
+                "secretReady": true
+              }
+            },
+            "currentTeam": "RED",
+            "roundNumber": 1,
+            "turnNumber": 2,
+            "totalRounds": 1,
+            "roundStartedAt": 2000,
+            "roundEndsAt": 12000,
+            "guesses": [],
+            "winnerTeam": null,
+            "revealedSecrets": {
+              "BLUE": null,
+              "RED": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "team": "BLUE",
+              "ownSecret": {
+                "id": "golem",
+                "nationalDexNumber": 76,
+                "name": "Golem",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": false,
+              "canGuess": false,
+              "guessUsed": false,
+              "lastGuess": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "team": "RED",
+              "ownSecret": {
+                "id": "tauros",
+                "nationalDexNumber": 128,
+                "name": "Tauros",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
+              },
+              "discardedPokemonIds": [],
+              "canChooseSecret": false,
+              "canManageBoard": true,
+              "canAct": true,
+              "canGuess": true,
+              "guessUsed": false,
+              "lastGuess": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 1
+}
