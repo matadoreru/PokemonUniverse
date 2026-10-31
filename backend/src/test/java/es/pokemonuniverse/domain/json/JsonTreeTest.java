@@ -71,4 +71,35 @@ class JsonTreeTest {
         "t", JsonNode.createBooleanNode(true));
     assertEquals("{\"s\":\"a\\\"b\\\\c\\n\\u0001é\",\"n\":1,\"d\":1.5,\"z\":null,\"t\":true}", JsonTree.toCanonicalString(node));
   }
+
+  private static JsonNode str(String v) {
+    return JsonNode.createStringNode(v);
+  }
+
+  @Test
+  void firstDifferenceIsEmptyWhenEqual() {
+    assertTrue(JsonTree.firstDifference("x", obj("a", num(1)), obj("a", num(1.0))).isEmpty());
+  }
+
+  @Test
+  void firstDifferenceNamesNestedPath() {
+    var expected = obj("scores", obj("p1", num(1), "p2", num(2)), "list", JsonNode.createArrayNode(List.of(num(1), str("a"))));
+    var actual = obj("scores", obj("p1", num(1), "p2", num(3)), "list", JsonNode.createArrayNode(List.of(num(1), str("a"))));
+    assertEquals("afterSteps[3].scores.p2: esperado 2, obtenido 3",
+        JsonTree.firstDifference("afterSteps[3]", expected, actual).orElseThrow());
+    var arrays = JsonTree.firstDifference("", obj("list", JsonNode.createArrayNode(List.of(num(1), str("a")))),
+        obj("list", JsonNode.createArrayNode(List.of(num(1), str("b"))))).orElseThrow();
+    assertEquals("list[1]: esperado \"a\", obtenido \"b\"", arrays);
+  }
+
+  @Test
+  void firstDifferenceDistinguishesAbsentFromNull() {
+    assertEquals("k: esperado 1, obtenido <ausente>",
+        JsonTree.firstDifference("", obj("k", num(1)), obj()).orElseThrow());
+    assertEquals("k: esperado <ausente>, obtenido null",
+        JsonTree.firstDifference("", obj(), obj("k", JsonNode.nullNode())).orElseThrow());
+    assertEquals("l[1]: esperado <ausente>, obtenido 2",
+        JsonTree.firstDifference("", obj("l", JsonNode.createArrayNode(List.of(num(1)))),
+            obj("l", JsonNode.createArrayNode(List.of(num(1), num(2))))).orElseThrow());
+  }
 }

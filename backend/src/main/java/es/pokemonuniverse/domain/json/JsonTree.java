@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -73,6 +74,51 @@ public final class JsonTree {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Primera diferencia entre dos árboles según {@link #equal}, como {@code ruta: esperado X, obtenido Y}; vacío si son
+   * iguales. {@code basePath} prefija la ruta ({@code a.b[2].c}); una clave o posición que falta se muestra como
+   * {@code <ausente>}, distinta de un {@code null} presente.
+   */
+  public static Optional<String> firstDifference(String basePath, JsonNode expected, JsonNode actual) {
+    return Optional.ofNullable(diff(basePath, expected, actual));
+  }
+
+  private static String diff(String path, JsonNode expected, JsonNode actual) {
+    if (equal(expected, actual)) return null;
+    if (expected != null && actual != null && expected.isObject() && actual.isObject()) {
+      for (Map.Entry<String, JsonNode> entry : expected.entries()) {
+        var childPath = path.isEmpty() ? entry.getKey() : path + "." + entry.getKey();
+        var other = actual.get(entry.getKey());
+        var found = other == null ? report(childPath, entry.getValue(), null) : diff(childPath, entry.getValue(), other);
+        if (found != null) return found;
+      }
+      for (Map.Entry<String, JsonNode> entry : actual.entries()) {
+        if (expected.get(entry.getKey()) == null) {
+          return report(path.isEmpty() ? entry.getKey() : path + "." + entry.getKey(), null, entry.getValue());
+        }
+      }
+    }
+    if (expected != null && actual != null && expected.isArray() && actual.isArray()) {
+      int common = Math.min(expected.size(), actual.size());
+      for (int i = 0; i < common; i++) {
+        var found = diff(path + "[" + i + "]", expected.get(i), actual.get(i));
+        if (found != null) return found;
+      }
+      return report(path + "[" + common + "]", common < expected.size() ? expected.get(common) : null,
+          common < actual.size() ? actual.get(common) : null);
+    }
+    return report(path, expected, actual);
+  }
+
+  private static String report(String path, JsonNode expected, JsonNode actual) {
+    return path + ": esperado " + show(expected) + ", obtenido " + show(actual);
+  }
+
+  /** {@code null} de Java = ausente (los nodos JSON {@code null} son {@code JsonNode.nullNode()}). */
+  private static String show(JsonNode node) {
+    return node == null ? "<ausente>" : toCanonicalString(node);
   }
 
   /** {@code JSON.stringify} compacto de {@link #canonical(JsonNode)}; para diagnósticos. */
