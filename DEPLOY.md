@@ -2,7 +2,7 @@
 
 > Para la instalación recomendada con PRE automático y promoción manual del mismo SHA a PRO, sigue primero [`docs/pre-production.md`](docs/pre-production.md). Este documento conserva el detalle operativo del stack.
 
-La publicación replica el modelo operativo de Tabi, adaptado a las dos imágenes de esta aplicación:
+La publicación replica el modelo operativo de Tabi, adaptado a las tres imágenes de esta aplicación (`web`, `server` y `backend`):
 
 ```text
 Cloudflare Tunnel → 127.0.0.1:8080 → pokemon-universe-web (nginx)
@@ -19,15 +19,46 @@ GHCR con el SHA completo del commit y el tag móvil `pre`. El tag `latest` solo 
 
 ## 1. Publicar las imágenes
 
-Sube el proyecto a GitHub con rama principal `main`. El workflow `.github/workflows/docker.yml` ejecuta migraciones de
-prueba, typecheck, lint, tests, build y auditoría antes de publicar:
+Sube el proyecto a GitHub con rama principal `main`. La integración continua está separada por rutas:
+
+| Workflow | Se dispara en PR cuando cambia | Valida | Imagen |
+| --- | --- | --- | --- |
+| `.github/workflows/frontend.yml` | `apps/web/`, `packages/shared/`, `e2e/`, `package*.json`, `Dockerfile`, `infra/nginx.conf`, `backend/openapi/` | lint, typecheck y tests en paralelo (incluye `check:boundaries` y `check:registry`), build Vite | `pokemon-universe-web` (target `web`) |
+| `.github/workflows/node-server.yml` (transitorio) | `apps/server/`, `packages/shared/`, `Dockerfile`, `scripts/start-server.sh`, `package*.json` | migraciones sobre PostgreSQL de prueba, typecheck, lint, tests, build; `npm audit` no bloqueante en el resumen | `pokemon-universe-server` (target `server`) |
+| `.github/workflows/backend.yml` | `backend/` | `./gradlew check` (tests con Testcontainers y `verifyOpenApi`) | `pokemon-universe-backend` (JVM) y `:<sha>-native` experimental, no bloqueante |
+
+En cada push a `main`, `.github/workflows/main.yml` detecta qué zonas cambiaron, llama solo a los workflows afectados
+con `publish: true` y reetiqueta las imágenes no afectadas de `:pre` a `:<commit-sha>`, de modo que **cada SHA de `main`
+tiene las tres imágenes**. Después despliega ese SHA en PRE (ver [`docs/pre-production.md`](docs/pre-production.md)).
+Las imágenes son `linux/amd64` y `linux/arm64` con caché de Buildx en GitHub Actions (`type=gha`, un `scope` por imagen):
 
 ```text
-ghcr.io/matadoreru/pokemon-universe-server:pre
 ghcr.io/matadoreru/pokemon-universe-web:pre
-ghcr.io/matadoreru/pokemon-universe-server:<commit-sha>
+ghcr.io/matadoreru/pokemon-universe-server:pre
+ghcr.io/matadoreru/pokemon-universe-backend:pre
 ghcr.io/matadoreru/pokemon-universe-web:<commit-sha>
+ghcr.io/matadoreru/pokemon-universe-server:<commit-sha>
+ghcr.io/matadoreru/pokemon-universe-backend:<commit-sha>
+ghcr.io/matadoreru/pokemon-universe-backend:<commit-sha>-native   # experimental, solo amd64
 ```
+
+Un tag git `v*` (por ejemplo `v0.9.0`) reconstruye las tres imágenes y les añade ese tag; no despliega. Lanzar `main.yml`
+a mano (`workflow_dispatch`) fuerza las tres builds: hazlo una vez tras introducir estos workflows, porque el retag
+necesita que `pokemon-universe-backend:pre` exista.
+
+### Tiempos antes/después
+
+Antes: un único workflow (`docker.yml`) en cada push, medido. Después: **estimaciones**, a corregir con la primera
+ejecución real de `main.yml`.
+
+| Fase | Antes (medido) | Después (estimado) |
+| --- | --- | --- |
+| Validación Node | validate 2:43 (npm ci 47 s, typecheck 24 s, lint 11 s, test 30 s, build 25 s) | frontend ≈ 2:00 (install 45 s, lint/typecheck/test en paralelo ≈ 30 s, build 25 s); node-server ≈ 2:30 |
+| Imágenes | publish 4:13 (web + server multi-arch bajo QEMU, siempre) | web ≈ 1:00; server ≈ 2:30; backend JVM ≈ 2:00 tras check ≈ 2:30 (Gradle cacheado, Testcontainers ≈ 40 s); solo las que cambian |
+| Nativo backend | — | ≈ 10–15 min, solo en `main` y no bloqueante (alarga la espera de `deploy-pre` cuando cambia `backend/`) |
+| Retag de imágenes no afectadas | — | ≈ 0:20 |
+| Despliegue PRE | 1:11 | ≈ 1:10 |
+| **Total por push** | **≈ 8:15 siempre** | solo frontend ≈ 3:00 + deploy 1:10; solo docs ≈ 0:30 + deploy 1:10 |
 
 Si los paquetes GHCR son privados, inicia sesión en el servidor con un token que tenga `read:packages`:
 

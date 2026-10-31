@@ -1,0 +1,147 @@
+name: Frontend
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'apps/web/**'
+      - 'packages/shared/**'
+      - 'e2e/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/export-game-registry.mjs'
+      - 'scripts/check-public-boundary.mjs'
+      - 'Dockerfile'
+      - 'infra/nginx.conf'
+      - 'backend/openapi/**'
+      - '.github/workflows/frontend.yml'
+  workflow_call:
+    inputs:
+      publish:
+        description: Build and push the web image to GHCR.
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  packages: write
+
+# Pull requests cancel superseded runs. When called from main.yml the group is
+# unique per run (main.yml already serialises and must never cancel a deploy).
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('frontend-pr-{0}', github.ref) || format('frontend-run-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Lint web, shared and e2e
+        run: npm run lint -w @pokemon-universe/web -w @pokemon-universe/shared -w @pokemon-universe/e2e
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Build shared contracts
+        run: npm run build -w @pokemon-universe/shared
+      - name: Typecheck web and e2e
+        run: npm run typecheck -w @pokemon-universe/web -w @pokemon-universe/e2e
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Check the browser contract boundary
+        run: npm run check:boundaries
+      - name: Build shared contracts
+        run: npm run build -w @pokemon-universe/shared
+      - name: Check the exported game registry
+        run: npm run check:registry
+      - name: Test web and shared
+        run: npm test -w @pokemon-universe/web -w @pokemon-universe/shared
+
+  build:
+    name: Build
+    needs: [lint, typecheck, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Build shared and web
+        run: |
+          npm run build -w @pokemon-universe/shared
+          npm run build -w @pokemon-universe/web
+
+  image:
+    name: Publish web image
+    needs: build
+    if: inputs.publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # :pre only moves on main, so a tag push on an older commit or a manual
+      # run from another branch never rewinds the image main.yml retags from.
+      - name: Build and push web image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: web
+          platforms: linux/amd64,linux/arm64
+          push: true
+          build-args: |
+            PU_COMMIT_SHA=${{ github.sha }}
+          tags: |
+            ${{ github.ref == 'refs/heads/main' && format('ghcr.io/{0}/pokemon-universe-web:pre', github.repository_owner) || '' }}
+            ghcr.io/${{ github.repository_owner }}/pokemon-universe-web:${{ github.sha }}
+          # Both targets share the root Dockerfile's build stages: read the other
+          # image's cache too so a packages/shared change is not compiled twice.
+          cache-from: |
+            type=gha,scope=web
+            type=gha,scope=server
+          cache-to: type=gha,mode=max,scope=web
+          provenance: mode=max
+          sbom: true

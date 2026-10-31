@@ -14,9 +14,11 @@ PRE y PRO no comparten PostgreSQL, avatares, JWT, contraseñas, red Compose ni h
 1. Crea en GitHub la variable de repositorio `PRE_DEPLOY_ENABLED=false`.
 2. Fusiona esta infraestructura en `main`; se publicarán las imágenes, pero PRE todavía no se desplegará.
 3. Sigue las secciones siguientes para preparar servidor, `.env`, Cloudflare y GitHub Environments.
-4. Cambia `PRE_DEPLOY_ENABLED=true` y relanza manualmente el workflow de publicación sobre `main`.
+4. Cambia `PRE_DEPLOY_ENABLED=true` y relanza manualmente el workflow **Main** (`.github/workflows/main.yml`) sobre `main` con **Run workflow** (`workflow_dispatch`).
 
 Esto evita que el primer workflow intente conectarse a un PRE que aún no existe.
+
+> **Primera ejecución tras separar los workflows.** `main.yml` solo reconstruye las imágenes cuyas rutas cambiaron y reetiqueta las demás desde `:pre`. La primera vez no existe `pokemon-universe-backend:pre`, así que el job `retag` falla con un mensaje explícito. Lanza **Main** manualmente con `workflow_dispatch` una vez sobre `main`: fuerza las tres builds y publica `:pre` para todas.
 
 ## 1. Preparar DNS y Cloudflare Tunnel
 
@@ -148,7 +150,7 @@ Cuando PRE ya esté preparado y todas las variables y secretos anteriores exista
 En **Settings → Branches → Add branch protection rule** para `main`:
 
 - exige pull request antes de fusionar;
-- exige que pase `Validate Pokémon Universe`;
+- no marques como obligatorios los jobs de `frontend.yml`, `node-server.yml` ni `backend.yml`: se filtran por rutas y un check obligatorio de un workflow que no se dispara deja el PR bloqueado en *pending*; revisa que los que sí se ejecutaron estén en verde;
 - bloquea pushes forzados;
 - exige que la rama esté actualizada antes de fusionar.
 
@@ -156,14 +158,14 @@ En **Settings → Branches → Add branch protection rule** para `main`:
 
 ## 8. Primer despliegue y uso diario
 
-Con la infraestructura ya fusionada inicialmente con `PRE_DEPLOY_ENABLED=false`, termina de preparar los directorios y GitHub Environments, cambia la variable a `true` y vuelve a ejecutar **Validate and publish Docker images** manualmente sobre `main`.
+Con la infraestructura ya fusionada inicialmente con `PRE_DEPLOY_ENABLED=false`, termina de preparar los directorios y GitHub Environments, cambia la variable a `true` y vuelve a ejecutar **Main** (`main.yml`) manualmente sobre `main` con `workflow_dispatch` (fuerza las tres builds y crea `:pre` para el backend).
 
-A partir de entonces, cada ejecución de **Validate and publish Docker images** hará lo siguiente:
+A partir de entonces, cada push a `main` ejecuta **Main** (`main.yml`), que:
 
-1. aplicar migraciones sobre PostgreSQL de prueba;
-2. ejecutar typecheck, lint, tests, build y auditoría;
-3. publicar server y web como `:<SHA>` y `:pre`;
-4. conectarse por SSH y desplegar `:<SHA>` en PRE.
+1. detecta qué zonas cambiaron (frontend, servidor Node, backend Java);
+2. ejecuta solo los workflows afectados (`frontend.yml`, `node-server.yml`, `backend.yml`): migraciones sobre PostgreSQL de prueba, typecheck, lint, tests, build y `./gradlew check`; la auditoría de npm se publica en el resumen sin bloquear;
+3. publica las imágenes reconstruidas como `:<SHA>` y `:pre` y reetiqueta las no afectadas de `:pre` a `:<SHA>`, de modo que las tres imágenes existen para cada SHA;
+4. se conecta por SSH y despliega `:<SHA>` en PRE (solo en `main`; los tags `v*` añaden el tag de versión a las tres imágenes y no despliegan).
 
 Comprueba PRE, incluyendo login, creación de sala, Socket.IO, minijuegos, reconexión y migraciones. Cuando quieras llevarlo a PRO:
 

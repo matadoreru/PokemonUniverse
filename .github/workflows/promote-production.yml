@@ -22,30 +22,22 @@ jobs:
       DEPLOY_PORT: ${{ vars.DEPLOY_PORT || '22' }}
       DEPLOY_USER: ${{ vars.DEPLOY_USER }}
       DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
-      DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-      DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
     steps:
-      - name: Connect to the private Tailscale network
-        uses: tailscale/github-action@v4
-        with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          tags: tag:ci
-          ping: ${{ vars.DEPLOY_HOST }}
+      # The composite action is resolved from the workspace.
+      - uses: actions/checkout@v7
 
-      - name: Configure verified SSH access
-        shell: bash
-        run: |
-          set -euo pipefail
-          : "${DEPLOY_HOST:?Define DEPLOY_HOST in the pre environment}"
-          : "${DEPLOY_USER:?Define DEPLOY_USER in the pre environment}"
-          : "${DEPLOY_PATH:?Define DEPLOY_PATH in the pre environment}"
-          : "${DEPLOY_SSH_KEY:?Define DEPLOY_SSH_KEY in the pre environment}"
-          : "${DEPLOY_KNOWN_HOSTS:?Define DEPLOY_KNOWN_HOSTS in the pre environment}"
-          install -m 700 -d "$HOME/.ssh"
-          printf '%s\n' "$DEPLOY_SSH_KEY" > "$HOME/.ssh/pokemon-universe"
-          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
-          chmod 600 "$HOME/.ssh/pokemon-universe" "$HOME/.ssh/known_hosts"
+      - name: Connect to PRE without deploying
+        uses: ./.github/actions/deploy-ssh
+        with:
+          host: ${{ vars.DEPLOY_HOST }}
+          port: ${{ vars.DEPLOY_PORT || '22' }}
+          user: ${{ vars.DEPLOY_USER }}
+          path: ${{ vars.DEPLOY_PATH }}
+          ssh-key: ${{ secrets.DEPLOY_SSH_KEY }}
+          known-hosts: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          ts-oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          ts-oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          deploy: 'false'
 
       - name: Read PRE server image
         id: resolve
@@ -77,43 +69,23 @@ jobs:
       url: ${{ vars.PUBLIC_URL }}
     env:
       IMAGE_SHA: ${{ needs.resolve_pre_image.outputs.image_sha }}
-      DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
-      DEPLOY_PORT: ${{ vars.DEPLOY_PORT || '22' }}
-      DEPLOY_USER: ${{ vars.DEPLOY_USER }}
-      DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
-      DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-      DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
     steps:
-      - name: Connect to the private Tailscale network
-        uses: tailscale/github-action@v4
-        with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          tags: tag:ci
-          ping: ${{ vars.DEPLOY_HOST }}
-
-      - name: Configure verified SSH access
-        shell: bash
-        run: |
-          set -euo pipefail
-          : "${DEPLOY_HOST:?Define DEPLOY_HOST in the production environment}"
-          : "${DEPLOY_USER:?Define DEPLOY_USER in the production environment}"
-          : "${DEPLOY_PATH:?Define DEPLOY_PATH in the production environment}"
-          : "${DEPLOY_SSH_KEY:?Define DEPLOY_SSH_KEY in the production environment}"
-          : "${DEPLOY_KNOWN_HOSTS:?Define DEPLOY_KNOWN_HOSTS in the production environment}"
-          install -m 700 -d "$HOME/.ssh"
-          printf '%s\n' "$DEPLOY_SSH_KEY" > "$HOME/.ssh/pokemon-universe"
-          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
-          chmod 600 "$HOME/.ssh/pokemon-universe" "$HOME/.ssh/known_hosts"
+      # The composite action is resolved from the workspace.
+      - uses: actions/checkout@v7
 
       - name: Deploy the exact PRE image to production
-        shell: bash
-        run: |
-          set -euo pipefail
-          ssh -i "$HOME/.ssh/pokemon-universe" -p "$DEPLOY_PORT" \
-            -o BatchMode=yes -o StrictHostKeyChecking=yes \
-            "$DEPLOY_USER@$DEPLOY_HOST" \
-            "set -eu; cd '$DEPLOY_PATH'; git fetch --prune origin; git checkout --detach '$IMAGE_SHA'; chmod +x scripts/*.sh; ./scripts/deploy.sh '$IMAGE_SHA'"
+        uses: ./.github/actions/deploy-ssh
+        with:
+          host: ${{ vars.DEPLOY_HOST }}
+          port: ${{ vars.DEPLOY_PORT || '22' }}
+          user: ${{ vars.DEPLOY_USER }}
+          path: ${{ vars.DEPLOY_PATH }}
+          ssh-key: ${{ secrets.DEPLOY_SSH_KEY }}
+          known-hosts: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          ts-oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          ts-oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          sha: ${{ needs.resolve_pre_image.outputs.image_sha }}
+          summary-title: PRO desplegado
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -135,6 +107,9 @@ jobs:
           docker buildx imagetools create \
             --tag "ghcr.io/${GITHUB_REPOSITORY_OWNER}/pokemon-universe-web:latest" \
             "ghcr.io/${GITHUB_REPOSITORY_OWNER}/pokemon-universe-web:$IMAGE_SHA"
+          docker buildx imagetools create \
+            --tag "ghcr.io/${GITHUB_REPOSITORY_OWNER}/pokemon-universe-backend:latest" \
+            "ghcr.io/${GITHUB_REPOSITORY_OWNER}/pokemon-universe-backend:$IMAGE_SHA"
 
       - name: Publish promotion summary
         run: echo "### PRO promocionado desde PRE con \`$IMAGE_SHA\`" >> "$GITHUB_STEP_SUMMARY"

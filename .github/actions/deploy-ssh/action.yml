@@ -1,0 +1,102 @@
+name: Deploy over Tailscale and SSH
+description: >-
+  Joins the private Tailscale network, configures verified SSH access and, unless
+  deploy is 'false', checks out the given SHA on the host and runs scripts/deploy.sh.
+
+inputs:
+  host:
+    description: Tailscale host name of the target server.
+    required: true
+  port:
+    description: SSH port.
+    required: false
+    default: '22'
+  user:
+    description: SSH user.
+    required: true
+  path:
+    description: Checkout directory on the server.
+    required: true
+  ssh-key:
+    description: Private SSH key (pass a secret).
+    required: true
+  known-hosts:
+    description: Verified known_hosts entries (pass a secret).
+    required: true
+  ts-oauth-client-id:
+    description: Tailscale OAuth client id (pass a secret).
+    required: true
+  ts-oauth-secret:
+    description: Tailscale OAuth secret (pass a secret).
+    required: true
+  sha:
+    description: Full commit SHA to deploy. Required when deploy is 'true'.
+    required: false
+    default: ''
+  summary-title:
+    description: Heading written to the step summary after deploying.
+    required: false
+    default: Despliegue
+  deploy:
+    description: "'false' only connects and configures SSH (key at ~/.ssh/pokemon-universe) for later steps."
+    required: false
+    default: 'true'
+
+runs:
+  using: composite
+  steps:
+    - name: Connect to the private Tailscale network
+      uses: tailscale/github-action@v4
+      with:
+        oauth-client-id: ${{ inputs.ts-oauth-client-id }}
+        oauth-secret: ${{ inputs.ts-oauth-secret }}
+        tags: tag:ci
+        ping: ${{ inputs.host }}
+
+    - name: Configure verified SSH access
+      shell: bash
+      env:
+        DEPLOY_HOST: ${{ inputs.host }}
+        DEPLOY_USER: ${{ inputs.user }}
+        DEPLOY_PATH: ${{ inputs.path }}
+        DEPLOY_SSH_KEY: ${{ inputs.ssh-key }}
+        DEPLOY_KNOWN_HOSTS: ${{ inputs.known-hosts }}
+      run: |
+        set -euo pipefail
+        : "${DEPLOY_HOST:?Define DEPLOY_HOST in the environment}"
+        : "${DEPLOY_USER:?Define DEPLOY_USER in the environment}"
+        : "${DEPLOY_PATH:?Define DEPLOY_PATH in the environment}"
+        : "${DEPLOY_SSH_KEY:?Define DEPLOY_SSH_KEY in the environment}"
+        : "${DEPLOY_KNOWN_HOSTS:?Define DEPLOY_KNOWN_HOSTS in the environment}"
+        install -m 700 -d "$HOME/.ssh"
+        printf '%s\n' "$DEPLOY_SSH_KEY" > "$HOME/.ssh/pokemon-universe"
+        printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+        chmod 600 "$HOME/.ssh/pokemon-universe" "$HOME/.ssh/known_hosts"
+
+    - name: Deploy the commit
+      if: inputs.deploy == 'true'
+      shell: bash
+      env:
+        DEPLOY_HOST: ${{ inputs.host }}
+        DEPLOY_PORT: ${{ inputs.port }}
+        DEPLOY_USER: ${{ inputs.user }}
+        DEPLOY_PATH: ${{ inputs.path }}
+        DEPLOY_SHA: ${{ inputs.sha }}
+      run: |
+        set -euo pipefail
+        if ! printf '%s' "$DEPLOY_SHA" | grep -Eq '^[0-9a-f]{40}$'; then
+          echo "::error::sha must be a full 40-character commit SHA (got '$DEPLOY_SHA')"
+          exit 1
+        fi
+        ssh -i "$HOME/.ssh/pokemon-universe" -p "$DEPLOY_PORT" \
+          -o BatchMode=yes -o StrictHostKeyChecking=yes \
+          "$DEPLOY_USER@$DEPLOY_HOST" \
+          "set -eu; cd '$DEPLOY_PATH'; git fetch --prune origin; git checkout --detach '$DEPLOY_SHA'; chmod +x scripts/*.sh; ./scripts/deploy.sh '$DEPLOY_SHA'"
+
+    - name: Publish deployment summary
+      if: inputs.deploy == 'true'
+      shell: bash
+      env:
+        SUMMARY_TITLE: ${{ inputs.summary-title }}
+        DEPLOY_SHA: ${{ inputs.sha }}
+      run: echo "### $SUMMARY_TITLE con \`$DEPLOY_SHA\`" >> "$GITHUB_STEP_SUMMARY"

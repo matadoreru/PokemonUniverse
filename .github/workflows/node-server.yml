@@ -1,0 +1,153 @@
+name: Node server
+
+# Transitional until stage 2 moves the remaining HTTP/Socket.IO surface to backend/.
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'apps/server/**'
+      - 'packages/shared/**'
+      - 'Dockerfile'
+      - 'scripts/start-server.sh'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/node-server.yml'
+  workflow_call:
+    inputs:
+      publish:
+        description: Build and push the server image to GHCR.
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('node-server-pr-{0}', github.ref) || format('node-server-run-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: Migrate, typecheck, lint, test and build
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: pokemon_universe_test
+          POSTGRES_USER: pokemon_test
+          POSTGRES_PASSWORD: pokemon_test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U pokemon_test -d pokemon_universe_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://pokemon_test:pokemon_test_password@127.0.0.1:5432/pokemon_universe_test?schema=public
+      TEST_DATABASE_URL: postgresql://pokemon_test:pokemon_test_password@127.0.0.1:5432/pokemon_universe_test?schema=public
+      JWT_SECRET: github-actions-only-secret-with-32-characters
+      WEB_ORIGIN: http://localhost:5173
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Apply PostgreSQL migrations
+        run: npm run db:deploy -w @pokemon-universe/server
+      - name: Build shared contracts
+        run: npm run build -w @pokemon-universe/shared
+      - name: Typecheck
+        run: npm run typecheck -w @pokemon-universe/server
+      - name: Lint
+        run: npm run lint -w @pokemon-universe/server
+      - name: Test
+        run: npm test -w @pokemon-universe/server
+      - name: Build
+        run: npm run build -w @pokemon-universe/server
+      - name: Verify production artifacts
+        run: |
+          test -x ./apps/server/node_modules/.bin/prisma
+          test -f ./apps/server/dist/src/index.js
+
+  # Non-blocking: an upstream advisory must not stop deploys (three runs on
+  # 2026-10-31 failed only here). The result is published in the run summary.
+  audit:
+    name: Audit production dependencies
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: npm audit
+        shell: bash
+        run: |
+          set -uo pipefail
+          status=0
+          npm audit --omit=dev --audit-level=high > audit.txt 2>&1 || status=$?
+          cat audit.txt
+          {
+            if [ "$status" -eq 0 ]; then
+              echo "### npm audit: sin vulnerabilidades altas o críticas"
+            else
+              echo "### npm audit: vulnerabilidades altas o críticas (no bloqueante)"
+            fi
+            echo
+            echo '```text'
+            tail -n 60 audit.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
+
+  image:
+    name: Publish server image
+    needs: check
+    if: inputs.publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # :pre only moves on main (see frontend.yml).
+      - name: Build and push server image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          target: server
+          platforms: linux/amd64,linux/arm64
+          push: true
+          build-args: |
+            PU_COMMIT_SHA=${{ github.sha }}
+          tags: |
+            ${{ github.ref == 'refs/heads/main' && format('ghcr.io/{0}/pokemon-universe-server:pre', github.repository_owner) || '' }}
+            ghcr.io/${{ github.repository_owner }}/pokemon-universe-server:${{ github.sha }}
+          # Both targets share the root Dockerfile's build stages: read the other
+          # image's cache too so a packages/shared change is not compiled twice.
+          cache-from: |
+            type=gha,scope=server
+            type=gha,scope=web
+          cache-to: type=gha,mode=max,scope=server
+          provenance: mode=max
+          sbom: true

@@ -1,0 +1,135 @@
+name: Backend Java
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend.yml'
+  workflow_call:
+    inputs:
+      publish:
+        description: Build and push the backend images to GHCR.
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('backend-pr-{0}', github.ref) || format('backend-run-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: Gradle check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 25
+
+      # Only main writes the Gradle cache; pull requests read it.
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      # check = tests (Testcontainers uses the runner's Docker) + verifyOpenApi.
+      - name: Gradle check
+        run: ./gradlew check --no-daemon
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: backend-test-reports
+          path: backend/build/reports/tests
+          if-no-files-found: ignore
+
+  image:
+    name: Publish backend JVM image
+    needs: check
+    if: inputs.publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # The Gradle stage runs on the build platform; the arm64 runtime stage
+      # still executes RUN under emulation.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # :pre only moves on main (see frontend.yml).
+      - name: Build and push backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          build-args: |
+            PU_COMMIT_SHA=${{ github.sha }}
+          tags: |
+            ${{ github.ref == 'refs/heads/main' && format('ghcr.io/{0}/pokemon-universe-backend:pre', github.repository_owner) || '' }}
+            ghcr.io/${{ github.repository_owner }}/pokemon-universe-backend:${{ github.sha }}
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,mode=max,scope=backend
+          provenance: mode=max
+          sbom: true
+
+  # Experimental (stage 1): the native binary still crashes at runtime, so this
+  # job never blocks the workflow. Compose deploys the JVM image.
+  native:
+    name: Publish backend native image (experimental)
+    needs: check
+    if: inputs.publish
+    continue-on-error: true
+    timeout-minutes: 40
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push native image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile.native
+          platforms: linux/amd64
+          push: true
+          build-args: |
+            PU_COMMIT_SHA=${{ github.sha }}
+          tags: ghcr.io/${{ github.repository_owner }}/pokemon-universe-backend:${{ github.sha }}-native
+          cache-from: type=gha,scope=backend-native
+          cache-to: type=gha,mode=max,scope=backend-native
+          provenance: mode=max
+          sbom: true
