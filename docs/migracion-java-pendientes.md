@@ -35,8 +35,23 @@ derivados de él, métricas, logs JSON, límites de peticiones, imagen JVM en Co
 10. Retirar Node y `prisma migrate deploy`; Flyway pasa a ser el único dueño del esquema (entonces se permiten `V2__` y
     posteriores) y se elimina la tabla `_prisma_migrations`.
 
+### 2A: núcleo de salas (hecho el 2026-10-31)
+
+Implementado en la rama `etapa-2a-nucleo-salas`: arnés dorado (exportador TS + replayer Java, `npm run check:golden`),
+SPI `GameEngine`, `RoomCoordinator`, transporte `/ws` con sobre, acks, latido y límites, motores `higher-lower` y
+`pokedex-distance`, adaptador WebSocket en la web bajo `VITE_REALTIME=java` y `location /ws` en nginx. Detalle en
+[`architecture.md`](architecture.md#salas-en-java-etapa-2a). E2E: `npm run test:e2e` (Node) y `npm run test:e2e:java`
+(mismos specs contra el `/ws` de Java), 12/12 en ambos. El transporte por defecto sigue siendo Node.
+
+### 2B: lo que necesita
+
+- Los 26 motores restantes, por lotes, cada uno con sus fixtures doradas y su E2E.
+- Proxy de imágenes y audio de ronda (las transformaciones de `sharp` de Node).
+- Canal de cursores de Quién es Quién (`who-is-who:cursor*`, fuera del límite de eventos).
+
 ### Corte 2D: Java dueño de las salas
 
+- `VITE_REALTIME=java` por defecto en la imagen web y quitar `/socket.io/` de nginx.
 - Activar `pu.interrupt-stale-rooms=true` (`INTERRUPT_STALE_ROOMS=true`) en el backend Java. Al arrancar marca como
   `INTERRUPTED`/`SERVER_STOPPED` las filas `RoomHistory` `ACTIVE` y `GameHistory` `IN_PROGRESS` que dejó el proceso
   anterior (`interruptStaleActivity` de Node). Está desactivado por defecto porque, mientras Node sirva salas sobre la

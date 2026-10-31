@@ -27,6 +27,18 @@ The repository is split into four boundaries (the Java backend is described in i
 
 **Operación.** Respuestas JSON con inclusión global NON_NULL. Errores con el mismo formato que Node (`{"error": "...", "issues"?: [...]}`): las excepciones propias pasan por `ExceptionHandler` y los errores que genera Micronaut (404, 405, 415, cuerpo ausente) por `ApiErrorResponseProcessor`, que sustituye el cuerpo HATEOAS. Límites de peticiones en memoria (global 120/min, autenticación 30 por 15 min, feedback 10 por 15 min, cabeceras draft-7), válidos para una sola instancia. Salud en `/health/{liveness,readiness}`, métricas en `/prometheus`, logs JSON en producción (`-Dlogback.configurationFile=logback-prod.xml`). La imagen JVM se construye desde `build/docker/main/layers`; la imagen nativa compila pero falla al arrancar y no se despliega (ver pendientes).
 
+## Salas en Java (etapa 2A)
+
+Desde la etapa 2A el backend Java puede alojar salas completas (lobby, rotación, votación, resultados) con `application/rooms/RoomCoordinator`, port literal de `apps/server/src/rooms/manager.ts` con una sección crítica por sala. **Es solo para desarrollo y E2E: no es apto para producción hasta el corte 2D**, porque una sala puede lanzar cualquiera de los 28 juegos y Java solo tiene dos motores portados (`higher-lower` y `pokedex-distance`, verificados con fixtures doradas contra los motores TypeScript). Arrancar cualquier otro se rechaza con «Este minijuego todavía no está disponible en el servidor Java.»; `/api/games` y el perfil siguen mostrando los 28 manifests.
+
+**Bandera.** La web elige transporte al compilar con `VITE_REALTIME`: `node` (por defecto) usa Socket.IO contra `apps/server`; `java` usa un WebSocket nativo contra `/ws` (`apps/web/src/lib/socket.ts`). `RoomContext` no sabe cuál hay debajo. En desarrollo el proxy de Vite manda `/ws` a `ws://localhost:8080`; en contenedores, nginx tiene `location /ws` hacia `backend:8080`, pero la imagen web se compila sin la bandera, así que el transporte efectivo sigue siendo Node.
+
+**Protocolo `/ws`.** Identidad desde la cookie `pu_session` en el *handshake*; sin cookie o con una inválida la conexión se cierra con 4401 antes de aceptar. Mensajes JSON con sobre: el cliente envía `{id, event, payload}` y recibe `{id, ok, data | error}` como ack (también ante cualquier error inesperado); el servidor empuja eventos con los mismos nombres y payloads que `ClientToServerEvents`/`ServerToClientEvents` de Socket.IO, incluido `session:restored` en cada apertura de un miembro conocido. Cada conexión procesa sus mensajes en orden sobre hilos virtuales.
+
+**Latido y límites.** Ping cada 25 s (`pu.ws.heartbeat-seconds`, el `pingInterval` de Socket.IO) para que Netty no cierre salas tranquilas por inactividad; nginx usa `proxy_read_timeout`/`proxy_send_timeout` de 75 s, por encima del latido. Mensajes de más de 32 768 bytes (`maxHttpBufferSize` de Node) cierran con 1009. Límite de 50 eventos por ventana de 10 s y conexión, aplicado antes de encolar y sin contar los de cursor.
+
+**E2E.** `npm run test:e2e` ejecuta todos los specs con Socket.IO y `npm run test:e2e:java` los mismos con `VITE_REALTIME=java` (project `chromium-java`).
+
 ## Local data authority
 
 All gameplay data is read through server repositories and services backed by

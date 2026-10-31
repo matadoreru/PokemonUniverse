@@ -15,6 +15,7 @@
     "typecheck": "npm run build -w @pokemon-universe/shared && npm run build -w @pokemon-universe/server && npm run typecheck -w @pokemon-universe/web && npm run typecheck -w @pokemon-universe/e2e && tsc -p packages/shared/golden/tsconfig.json",
     "test": "npm run check:boundaries && npm run build -w @pokemon-universe/shared && npm run check:registry && npm run build -w @pokemon-universe/server && npm run check:golden && npm run check:api-types && npm run test --workspaces --if-present",
     "test:e2e": "npm run e2e -w @pokemon-universe/e2e",
+    "test:e2e:java": "VITE_REALTIME=java npm run e2e -w @pokemon-universe/e2e",
     "test:e2e:ui": "npm run e2e:ui -w @pokemon-universe/e2e",
     "lint": "npm run lint --workspaces --if-present",
     "db:generate": "npm run db:generate -w @pokemon-universe/server",

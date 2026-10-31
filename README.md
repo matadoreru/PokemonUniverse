@@ -59,6 +59,16 @@ Las salas admiten hasta 8 jugadores por defecto. Si alguien se desconecta, conse
 
 El backend Java convive con Node detrás del mismo origen y ambos firman y aceptan la misma cookie `pu_session` con `JWT_SECRET`. En esta etapa Java atiende `POST /api/auth/{register,login,guest,logout}`, `GET /api/auth/{me,profile}`, `GET /api/auth/avatars/*`, `GET /api/changelog`, `POST /api/feedback`, `GET /api/games` y `GET /api/pokemon`. Todo lo demás (salas, Socket.IO, administración, TCG, categorías, subida de avatares, `/api/health`…) sigue en Node. En desarrollo el reparto lo hace el proxy de Vite (`apps/web/vite.config.ts`); en contenedores, nginx.
 
+### Salas en Java (etapa 2A, solo desarrollo)
+
+El backend Java también puede alojar salas por un WebSocket propio en `/ws`. Por defecto la web sigue usando Socket.IO (Node); para probar las salas Java en local arranca la web con la bandera:
+
+```bash
+VITE_REALTIME=java npm run dev
+```
+
+Solo dos minijuegos están portados: **Higher or Lower** (`higher-lower`) y **Pokédex Distance** (`pokedex-distance`, el que viene seleccionado en una sala nueva). Si la sala intenta lanzar otro, el servidor responde «Este minijuego todavía no está disponible en el servidor Java.». No es apto para producción hasta el corte 2D.
+
 Los detalles de diseño están en [docs/architecture.md](docs/architecture.md).
 
 ## Puesta en marcha
@@ -95,7 +105,8 @@ docker compose -f compose.yaml -f compose.dev.yaml up -d --build --wait
 | `cd backend && ./gradlew check` | Pruebas, verificación de la especificación OpenAPI y demás comprobaciones del backend Java. |
 | `npm run build` | Compila shared, server y web. |
 | `npm test` | Pruebas unitarias con Vitest. |
-| `npm run test:e2e` | Pruebas end-to-end con Playwright. Ver [e2e/README.md](e2e/README.md). |
+| `npm run test:e2e` | Pruebas end-to-end con Playwright (salas por Socket.IO). Ver [e2e/README.md](e2e/README.md). |
+| `npm run test:e2e:java` | Los mismos specs con `VITE_REALTIME=java`: las salas van por el `/ws` del backend Java. |
 | `npm run lint` | ESLint sin advertencias permitidas. |
 | `npm run typecheck` | Comprobación de tipos de todo el monorepo. |
 | `npm run db:up` / `npm run db:down` | Arranca o para el PostgreSQL local. |

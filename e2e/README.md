@@ -46,8 +46,13 @@ Después basta con `npm run db:up` (si el contenedor está parado) y `npm run te
 ```sh
 npm run test:e2e        # toda la suite
 npm run test:e2e:ui     # modo UI de Playwright
+npm run test:e2e:java   # la misma suite con las salas en el /ws del backend Java
 cd e2e && npx playwright test tests/sala.spec.ts   # un solo spec
 ```
+
+`test:e2e` y `test:e2e:java` ejecutan todos los specs, una vez por transporte: la segunda exporta
+`VITE_REALTIME=java` y el project se llama `chromium-java`. Como la web arrancada se reutiliza
+(`reuseExistingServer`), para la pasada Java no puede haber ya una web con el transporte de Node en el puerto.
 
 `playwright.config.ts` hace lo siguiente por ti:
 

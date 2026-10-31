@@ -7,6 +7,11 @@
 // - Todo pasa por el proxy de Vite, así que `baseURL` es la web y no se define
 //   `VITE_API_URL`.
 // - Las capturas de revisión van a `e2e/screenshots/`.
+// - Transporte de salas: `npm run test:e2e` usa Socket.IO (Node) y
+//   `npm run test:e2e:java` exporta `VITE_REALTIME=java` para que la web hable con
+//   el WebSocket `/ws` del backend Java. Las dos ejecutan todos los specs. Con
+//   `reuseExistingServer` una web ya levantada se reutiliza tal cual: para la
+//   pasada Java no debe haber otra web en el puerto con el transporte de Node.
 import { fileURLToPath } from 'node:url';
 import { defineConfig, devices } from '@playwright/test';
 
@@ -15,6 +20,8 @@ try {
 } catch {
   /* sin .env: se espera env en el shell */
 }
+
+const realtime = process.env.VITE_REALTIME === 'java' ? 'java' : 'node';
 
 export default defineConfig({
   testDir: 'tests',
@@ -35,7 +42,7 @@ export default defineConfig({
   },
   projects: [
     {
-      name: 'chromium',
+      name: realtime === 'java' ? 'chromium-java' : 'chromium',
       use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 720 } },
     },
   ],
@@ -66,8 +73,9 @@ export default defineConfig({
       cwd: '..',
       reuseExistingServer: !process.env.CI,
       timeout: 60_000,
-      // Vacío para que un valor suelto del shell no mande al navegador cross-origin.
-      env: { VITE_API_URL: '' },
+      // VITE_API_URL vacío para que un valor suelto del shell no mande al navegador
+      // cross-origin; VITE_REALTIME elige Socket.IO (node) o el /ws de Java.
+      env: { VITE_API_URL: '', VITE_REALTIME: realtime },
     },
   ],
 });
