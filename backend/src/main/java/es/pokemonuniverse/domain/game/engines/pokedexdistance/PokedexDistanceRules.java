@@ -39,8 +39,10 @@ public final class PokedexDistanceRules {
   /**
    * Posición por supervivencia: el ganador es 1.º y cada eliminación ocupa {@code remainingAfter + 1}; sin ganador,
    * quien quede 1.º no puntúa. No pasa por {@code buildRankedResults}, así que {@code won} queda ausente. El desempate
-   * de TS es {@code playerId.localeCompare}; aquí {@link String#compareTo}, idéntico para los cuid (minúsculas y
-   * dígitos) que usa el servidor como id. {@code List.sort} es estable como {@code Array.prototype.sort}.
+   * de TS es {@code playerId.localeCompare}; aquí {@link String#compareTo}, equivalente para los ids del servidor
+   * (cuid de usuario y {@code guest_<uuid>}: el {@code _} solo en el prefijo fijo, los {@code -} en posiciones fijas,
+   * así que difieren siempre en minúsculas o dígitos, donde ICU y UTF-16 ordenan igual). Los nombres visibles
+   * necesitarían un {@link java.text.Collator}. {@code List.sort} es estable como {@code Array.prototype.sort}.
    */
   public static GameResults buildResults(PokedexDistanceState state) {
     if (state.phase() != GamePhase.GAME_RESULTS) {

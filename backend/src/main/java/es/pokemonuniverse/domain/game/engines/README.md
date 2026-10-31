@@ -40,8 +40,11 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
   `handleTimeout` (por ejemplo, con dos fases activas como `pokedexdistance/`), se porta literal.
 - **Errores**: los literales de `server.ts`, idénticos, en `GameActionResult.reject`. Un `throw new Error` de TS se
   traduce como `EngineException` con el mismo mensaje.
-- **`localeCompare`**: si se traduce como `String.compareTo`, hay que documentar por qué es equivalente (por ejemplo,
-  ids cuid en minúsculas).
+- **`localeCompare`**: si se traduce como `String.compareTo`, hay que documentar por qué es equivalente. Para ids de
+  jugador lo es: cuid de usuario (`c` + minúsculas y dígitos) y `guest_<uuid>` (hexadecimal en minúscula), con el
+  `_` solo en el prefijo fijo y los `-` en posiciones fijas, así que dos ids difieren siempre en una minúscula o un
+  dígito, donde ICU y UTF-16 ordenan igual. No lo es en general (`"_"` va antes que `"-"` en ICU, y las mayúsculas y
+  los acentos cambian el orden): los nombres visibles necesitan un `java.text.Collator` (pendiente de 2B).
 
 ## Escenarios dorados y verificación
 

@@ -98,7 +98,12 @@ public final class HigherLowerRules {
 
   /**
    * Clasificación final con {@code accuracy} derivada. El desempate de TS es {@code playerId.localeCompare}; aquí
-   * {@link String#compareTo}, idéntico para los cuid (minúsculas y dígitos) que usa el servidor como id.
+   * {@link String#compareTo}. Es equivalente para los ids del servidor: cuid de Prisma (usuarios: {@code c} + minúsculas
+   * y dígitos) y {@code guest_<uuid>} (invitados: UUID en hexadecimal minúscula con {@code -} en posiciones fijas). El
+   * único {@code _} está en el prefijo fijo y los {@code -} siempre coinciden en posición, así que dos ids difieren
+   * siempre en una minúscula o un dígito, donde el orden de ICU y el de unidades UTF-16 coinciden. No vale para
+   * nombres visibles ni para separadores en posiciones variables ({@code "_"} va antes que {@code "-"} en ICU): eso
+   * necesita un {@link java.text.Collator}.
    */
   public static GameResults buildHigherLowerResults(HigherLowerState state) {
     if (state.phase() != GamePhase.GAME_RESULTS) throw new EngineException("Results unavailable");
