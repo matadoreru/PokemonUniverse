@@ -24,6 +24,10 @@ environment_name=${PU_DEPLOY_ENVIRONMENT:-production}
 server_container=$(docker compose ps -q server 2>/dev/null || true)
 web_container=$(docker compose ps -q web 2>/dev/null || true)
 backend_container=$(docker compose ps -q backend 2>/dev/null || true)
+had_backend=0
+if [ -n "$backend_container" ]; then
+  had_backend=1
+fi
 
 # Preserve the exact local images that are running. A tag such as `latest` can
 # move during pull, so a tag alone is not a reliable rollback target.
@@ -44,8 +48,9 @@ if [ -n "$previous_server_id" ] && [ -n "$previous_web_id" ] \
   rollback_snapshot=1
 fi
 # The first deployment that introduces the Java backend has no previous backend
-# container: the rollback then pairs the previous server/web with the newly
-# pulled backend image, re-tagged under the rollback name.
+# container (had_backend=0). The previous web image's nginx has no backend
+# routes, so the rollback then removes the new backend and restores only
+# server/web with --no-deps (web's depends_on backend would otherwise block it).
 rollback_backend_snapshot=0
 if [ "$rollback_snapshot" -eq 1 ] && [ -n "$previous_backend_id" ] \
   && docker image tag "$previous_backend_id" "$rollback_backend_image:$rollback_tag"; then
@@ -61,11 +66,6 @@ rollback() {
     export PU_SERVER_IMAGE=$rollback_server_image
     export PU_WEB_IMAGE=$rollback_web_image
     export PU_IMAGE_TAG=$rollback_tag
-    if [ "$rollback_backend_snapshot" -eq 0 ] \
-      && docker image tag "${PU_BACKEND_IMAGE:-ghcr.io/matadoreru/pokemon-universe-backend}:$new_tag" \
-        "$rollback_backend_image:$rollback_tag"; then
-      rollback_backend_snapshot=1
-    fi
     if [ "$rollback_backend_snapshot" -eq 1 ]; then
       export PU_BACKEND_IMAGE=$rollback_backend_image
     fi
@@ -73,7 +73,13 @@ rollback() {
     echo "No se pudo crear el snapshot local; restaurando el tag $previous_tag" >&2
     export PU_IMAGE_TAG=$previous_tag
   fi
-  docker compose up -d --wait --wait-timeout "$deploy_wait_seconds" server backend web || true
+  if [ "$had_backend" -eq 1 ]; then
+    docker compose up -d --wait --wait-timeout "$deploy_wait_seconds" server backend web || true
+  else
+    echo "No había backend antes de este despliegue: se retira y se restauran solo server y web" >&2
+    docker compose rm -sf backend >&2 || true
+    docker compose up -d --no-deps --wait --wait-timeout "$deploy_wait_seconds" server web || true
+  fi
   exit 1
 }
 
@@ -96,9 +102,12 @@ docker compose pull server web backend
 docker compose up -d --wait --wait-timeout "$deploy_wait_seconds" server backend web || rollback
 
 published_port=$(docker compose port web 8080 | sed 's/.*://')
-if ! curl --fail --silent --show-error --max-time 10 "http://127.0.0.1:${published_port:-8080}/api/health" >/dev/null; then
-  rollback
-fi
+# /api/health is served by Node and /api/games by the Java backend through nginx.
+for smoke_path in /api/health /api/games; do
+  if ! curl --fail --silent --show-error --max-time 10 "http://127.0.0.1:${published_port:-8080}$smoke_path" >/dev/null; then
+    rollback
+  fi
+done
 
 if [ "$rollback_snapshot" -eq 1 ]; then
   docker image rm "$rollback_server_image:$rollback_tag" "$rollback_web_image:$rollback_tag" >/dev/null 2>&1 || true
