@@ -9,3 +9,12 @@ test-resources:
 pu:
   auth:
     secret: ${JWT_SECRET:dev-secret-dev-secret-dev-secret-0000000}
+micronaut:
+  server:
+    cors:
+      enabled: true
+      configurations:
+        web:
+          allowed-origins:
+            - ${WEB_ORIGIN:http://localhost:5173}
+          allow-credentials: true
