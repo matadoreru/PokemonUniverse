@@ -1,0 +1,1864 @@
+{
+  "engineId": "pokemon-red-flag",
+  "scenario": "mixed-mode-presence",
+  "seed": 623,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      2,
+      1,
+      2
+    ],
+    "rounds": 3,
+    "phaseSeconds": 120,
+    "includeForms": true,
+    "mode": "MIXED"
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "UPDATE_RED_FLAG_DRAFT",
+        "text": "   "
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "UPDATE_RED_FLAG_DRAFT",
+        "text": " Duerme todo el día　"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "UPDATE_RED_FLAG_DRAFT",
+        "text": " Duerme todo el día y la noche　"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Tarde"
+      },
+      "now": 121000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "UPDATE_RED_FLAG_DRAFT",
+        "text": "Tarde"
+      },
+      "now": 121000
+    },
+    {
+      "kind": "timeout",
+      "now": 121500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 122000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-1-2"
+      },
+      "now": 122500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 123000
+    },
+    {
+      "kind": "timeout",
+      "now": 131000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "UPDATE_RED_FLAG_DRAFT",
+        "text": "Espectadora"
+      },
+      "now": 132000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Colecciona calcetines"
+      },
+      "now": 133000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 134000
+    },
+    {
+      "kind": "timeout",
+      "now": 142000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 143000
+    },
+    {
+      "kind": "timeout",
+      "now": 262000
+    },
+    {
+      "kind": "timeout",
+      "now": 270000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "rounds": 3,
+      "phaseSeconds": 120,
+      "includeForms": true,
+      "mode": "MIXED"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-red-flag",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "pokemon": null,
+        "flagMode": "RED",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "submittedPlayerIds": [],
+        "revealedAnswers": [],
+        "votedPlayerIds": [],
+        "voteCandidateIds": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 121000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-red-flag",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "pokemon": {
+          "id": "marowak-alola",
+          "name": "Marowak de Alola",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10115.png"
+        },
+        "flagMode": "RED",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "submittedPlayerIds": [],
+        "revealedAnswers": [],
+        "votedPlayerIds": [],
+        "voteCandidateIds": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 121000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": "rf-1-3"
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": "rf-1-2"
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": "rf-1-1"
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak-alola",
+              "name": "Marowak de Alola",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10115.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "   ",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak-alola",
+              "name": "Marowak de Alola",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10115.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "   ",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": " Duerme todo el día　",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak-alola",
+              "name": "Marowak de Alola",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10115.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "   ",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": " Duerme todo el día y la noche　",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak-alola",
+              "name": "Marowak de Alola",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10115.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "   ",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": " Duerme todo el día y la noche　",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 241000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak-alola",
+              "name": "Marowak de Alola",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10115.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p2"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-2",
+                "text": "Duerme todo el día y la noche"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-1-2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 241000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "   ",
+              "ownAnswer": null,
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": " Duerme todo el día y la noche　",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Duerme todo el día y la noche"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 241000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak-alola",
+              "name": "Marowak de Alola",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10115.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p2"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-2",
+                "text": "Duerme todo el día y la noche"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-1-2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 241000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "   ",
+              "ownAnswer": null,
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": " Duerme todo el día y la noche　",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Duerme todo el día y la noche"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 241000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak-alola",
+              "name": "Marowak de Alola",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10115.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p2"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-2",
+                "text": "Duerme todo el día y la noche"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-1-2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 241000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "   ",
+              "ownAnswer": null,
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": " Duerme todo el día y la noche　",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Duerme todo el día y la noche"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 241000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak-alola",
+              "name": "Marowak de Alola",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10115.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p2"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-2",
+                "text": "Duerme todo el día y la noche"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidateIds": [
+              "rf-1-2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 241000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "   ",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-2",
+              "ownAnswerId": "rf-1-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": " Duerme todo el día y la noche　",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Duerme todo el día y la noche"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 131000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak-alola",
+              "name": "Marowak de Alola",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10115.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p2"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidateIds": [
+              "rf-1-2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 131000,
+            "lastRound": {
+              "flagMode": "RED",
+              "pokemon": {
+                "id": "marowak-alola",
+                "name": "Marowak de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10115.png"
+              },
+              "answers": [
+                {
+                  "id": "rf-1-2",
+                  "authorId": "p2",
+                  "text": "Duerme todo el día y la noche",
+                  "votesReceived": 1,
+                  "won": true
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "rf-1-2"
+                  ],
+                  "votes": {
+                    "p1": "rf-1-2"
+                  }
+                }
+              ],
+              "winningAnswerIds": [
+                "rf-1-2"
+              ],
+              "winnerIds": [
+                "p2"
+              ],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 3,
+                "p3": 0
+              },
+              "missingPlayerIds": [
+                "p1",
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "   ",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-2",
+              "ownAnswerId": "rf-1-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": " Duerme todo el día y la noche　",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Duerme todo el día y la noche"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 251000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "chikorita",
+              "name": "Chikorita",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 251000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No puedes participar en esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 251000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "chikorita",
+              "name": "Chikorita",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 251000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 251000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "chikorita",
+              "name": "Chikorita",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 251000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Colecciona calcetines",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Colecciona calcetines"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 142000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "chikorita",
+              "name": "Chikorita",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-2-2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 3,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 142000,
+            "lastRound": {
+              "flagMode": "GREEN",
+              "pokemon": {
+                "id": "chikorita",
+                "name": "Chikorita",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+              },
+              "answers": [
+                {
+                  "id": "rf-2-2",
+                  "authorId": "p1",
+                  "text": "Colecciona calcetines",
+                  "votesReceived": 0,
+                  "won": true
+                }
+              ],
+              "voteRounds": [],
+              "winningAnswerIds": [
+                "rf-2-2"
+              ],
+              "winnerIds": [
+                "p1"
+              ],
+              "pointsAwarded": {
+                "p1": 3,
+                "p2": 0,
+                "p3": 0
+              },
+              "missingPlayerIds": [
+                "p2",
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Colecciona calcetines",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Colecciona calcetines"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": null
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 262000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "smoochum",
+              "name": "Smoochum",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 3,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 262000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": null
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 262000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "smoochum",
+              "name": "Smoochum",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 3,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 262000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 270000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "smoochum",
+              "name": "Smoochum",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 3,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 270000,
+            "lastRound": {
+              "flagMode": "RED",
+              "pokemon": {
+                "id": "smoochum",
+                "name": "Smoochum",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+              },
+              "answers": [],
+              "voteRounds": [],
+              "winningAnswerIds": [],
+              "winnerIds": [],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 0,
+                "p3": 0
+              },
+              "missingPlayerIds": [
+                "p1",
+                "p2",
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "smoochum",
+              "name": "Smoochum",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 3,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "flagMode": "RED",
+              "pokemon": {
+                "id": "smoochum",
+                "name": "Smoochum",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+              },
+              "answers": [],
+              "voteRounds": [],
+              "winningAnswerIds": [],
+              "winnerIds": [],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 0,
+                "p3": 0
+              },
+              "missingPlayerIds": [
+                "p1",
+                "p2",
+                "p3"
+              ]
+            },
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 3,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 1,
+                    "roundsMissed": 2,
+                    "votesCast": 0,
+                    "votesReceived": 1,
+                    "roundWins": 1,
+                    "soloWins": 1,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 3
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 1,
+                    "roundsMissed": 2,
+                    "votesCast": 1,
+                    "votesReceived": 0,
+                    "roundWins": 1,
+                    "soloWins": 1,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 3
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 0,
+                    "roundsMissed": 3,
+                    "votesCast": 0,
+                    "votesReceived": 0,
+                    "roundWins": 0,
+                    "soloWins": 0,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p2",
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 3,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 1,
+            "roundsMissed": 2,
+            "votesCast": 0,
+            "votesReceived": 1,
+            "roundWins": 1,
+            "soloWins": 1,
+            "sharedWins": 0,
+            "pointsFromRounds": 3
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 2,
+          "points": 3,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 1,
+            "roundsMissed": 2,
+            "votesCast": 1,
+            "votesReceived": 0,
+            "roundWins": 1,
+            "soloWins": 1,
+            "sharedWins": 0,
+            "pointsFromRounds": 3
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 0,
+            "roundsMissed": 3,
+            "votesCast": 0,
+            "votesReceived": 0,
+            "roundWins": 0,
+            "soloWins": 0,
+            "sharedWins": 0,
+            "pointsFromRounds": 0
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,314 @@
+[
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "RED"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "RED"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        9
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "RED"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        9
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "RED"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 1,
+      "phaseSeconds": 15,
+      "includeForms": false,
+      "mode": "RED"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 1,
+      "phaseSeconds": 15,
+      "includeForms": false,
+      "mode": "RED"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 10,
+      "phaseSeconds": 120,
+      "includeForms": false,
+      "mode": "RED"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 10,
+      "phaseSeconds": 120,
+      "includeForms": false,
+      "mode": "RED"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "RED"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "RED"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": true,
+      "mode": "GREEN"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": true,
+      "mode": "GREEN"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "MIXED"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "MIXED"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 0,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "RED"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 11,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "RED"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 14,
+      "includeForms": false,
+      "mode": "RED"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 121,
+      "includeForms": false,
+      "mode": "RED"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30.5,
+      "includeForms": false,
+      "mode": "RED"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "RED"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "RED"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "RED"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": "no",
+      "mode": "RED"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "BLUE"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "red"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false,
+      "mode": "RED",
+      "unknownKey": "no se admite"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 30,
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]

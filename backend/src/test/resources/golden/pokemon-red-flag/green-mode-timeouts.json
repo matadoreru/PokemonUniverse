@@ -1,0 +1,2513 @@
+{
+  "engineId": "pokemon-red-flag",
+  "scenario": "green-mode-timeouts",
+  "seed": 626,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "rounds": 3,
+    "phaseSeconds": 20,
+    "includeForms": false,
+    "mode": "GREEN"
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Comparte sus bayas"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Te despierta con Canto"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Siempre trae Pociones"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-1-3"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-1-2"
+      },
+      "now": 5500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-1-1"
+      },
+      "now": 6000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-1-3"
+      },
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-1-3"
+      },
+      "now": 7500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 8000
+    },
+    {
+      "kind": "timeout",
+      "now": 16000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Abraza fuerte"
+      },
+      "now": 17000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Ríe con todo"
+      },
+      "now": 18000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 19000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-2-3"
+      },
+      "now": 20000
+    },
+    {
+      "kind": "timeout",
+      "now": 38000
+    },
+    {
+      "kind": "timeout",
+      "now": 46000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "UPDATE_RED_FLAG_DRAFT",
+        "text": "Te presta su gorra"
+      },
+      "now": 47000
+    },
+    {
+      "kind": "timeout",
+      "now": 66000
+    },
+    {
+      "kind": "timeout",
+      "now": 86000
+    },
+    {
+      "kind": "timeout",
+      "now": 94000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 20,
+      "includeForms": false,
+      "mode": "GREEN"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-red-flag",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "pokemon": null,
+        "flagMode": "GREEN",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "submittedPlayerIds": [],
+        "revealedAnswers": [],
+        "votedPlayerIds": [],
+        "voteCandidateIds": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-red-flag",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "pokemon": {
+          "id": "victreebel",
+          "name": "Victreebel",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
+        },
+        "flagMode": "GREEN",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "submittedPlayerIds": [],
+        "revealedAnswers": [],
+        "votedPlayerIds": [],
+        "voteCandidateIds": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 21000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": "rf-1-1"
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": "rf-1-3"
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": "rf-1-2"
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "victreebel",
+              "name": "Victreebel",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Comparte sus bayas",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "victreebel",
+              "name": "Victreebel",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Comparte sus bayas",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "victreebel",
+              "name": "Victreebel",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Comparte sus bayas",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te despierta con Canto",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Te despierta con Canto"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "victreebel",
+              "name": "Victreebel",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Te despierta con Canto"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Siempre trae Pociones"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 24000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Comparte sus bayas",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te despierta con Canto",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Te despierta con Canto"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre trae Pociones",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Siempre trae Pociones"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "victreebel",
+              "name": "Victreebel",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Te despierta con Canto"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Siempre trae Pociones"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 24000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Comparte sus bayas",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-3",
+              "ownAnswerId": "rf-1-1"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te despierta con Canto",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Te despierta con Canto"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre trae Pociones",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Siempre trae Pociones"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "victreebel",
+              "name": "Victreebel",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Te despierta con Canto"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Siempre trae Pociones"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 24000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Comparte sus bayas",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-3",
+              "ownAnswerId": "rf-1-1"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te despierta con Canto",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Te despierta con Canto"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-2",
+              "ownAnswerId": "rf-1-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre trae Pociones",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Siempre trae Pociones"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"REVOTE\",1,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "REVOTE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "victreebel",
+              "name": "Victreebel",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Te despierta con Canto"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Siempre trae Pociones"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 26000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Comparte sus bayas",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te despierta con Canto",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Te despierta con Canto"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre trae Pociones",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Siempre trae Pociones"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"REVOTE\",1,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "REVOTE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "victreebel",
+              "name": "Victreebel",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Te despierta con Canto"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Siempre trae Pociones"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 26000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Comparte sus bayas",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-3",
+              "ownAnswerId": "rf-1-1"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te despierta con Canto",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Te despierta con Canto"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre trae Pociones",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Siempre trae Pociones"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"REVOTE\",1,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "REVOTE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "victreebel",
+              "name": "Victreebel",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Te despierta con Canto"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Siempre trae Pociones"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 26000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Comparte sus bayas",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-3",
+              "ownAnswerId": "rf-1-1"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te despierta con Canto",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Te despierta con Canto"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre trae Pociones",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Siempre trae Pociones"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-3",
+              "ownAnswerId": "rf-1-2"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "victreebel",
+              "name": "Victreebel",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 16000,
+            "lastRound": {
+              "flagMode": "GREEN",
+              "pokemon": {
+                "id": "victreebel",
+                "name": "Victreebel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
+              },
+              "answers": [
+                {
+                  "id": "rf-1-1",
+                  "authorId": "p1",
+                  "text": "Comparte sus bayas",
+                  "votesReceived": 0,
+                  "won": false
+                },
+                {
+                  "id": "rf-1-3",
+                  "authorId": "p2",
+                  "text": "Te despierta con Canto",
+                  "votesReceived": 2,
+                  "won": true
+                },
+                {
+                  "id": "rf-1-2",
+                  "authorId": "p3",
+                  "text": "Siempre trae Pociones",
+                  "votesReceived": 0,
+                  "won": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "rf-1-3",
+                    "rf-1-1",
+                    "rf-1-2"
+                  ],
+                  "votes": {
+                    "p1": "rf-1-3",
+                    "p2": "rf-1-2",
+                    "p3": "rf-1-1"
+                  }
+                },
+                {
+                  "number": 2,
+                  "candidateIds": [
+                    "rf-1-3",
+                    "rf-1-1",
+                    "rf-1-2"
+                  ],
+                  "votes": {
+                    "p1": "rf-1-3",
+                    "p3": "rf-1-3"
+                  }
+                }
+              ],
+              "winningAnswerIds": [
+                "rf-1-3"
+              ],
+              "winnerIds": [
+                "p2"
+              ],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 3,
+                "p3": 0
+              },
+              "missingPlayerIds": []
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Comparte sus bayas",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Comparte sus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-3",
+              "ownAnswerId": "rf-1-1"
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre trae Pociones",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Siempre trae Pociones"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-3",
+              "ownAnswerId": "rf-1-2"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 36000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak",
+              "name": "Marowak",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/105.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 36000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-3"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 36000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak",
+              "name": "Marowak",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/105.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 36000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Abraza fuerte",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Abraza fuerte"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-3"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 38000,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak",
+              "name": "Marowak",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/105.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-2-2",
+                "text": "Abraza fuerte"
+              },
+              {
+                "id": "rf-2-3",
+                "text": "Ríe con todo"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-2-2",
+              "rf-2-3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 38000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Abraza fuerte",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Abraza fuerte"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ríe con todo",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Ríe con todo"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-3"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 38000,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak",
+              "name": "Marowak",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/105.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-2-2",
+                "text": "Abraza fuerte"
+              },
+              {
+                "id": "rf-2-3",
+                "text": "Ríe con todo"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-2-2",
+              "rf-2-3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 38000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Abraza fuerte",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Abraza fuerte"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ríe con todo",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Ríe con todo"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-3"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 38000,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak",
+              "name": "Marowak",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/105.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-2-2",
+                "text": "Abraza fuerte"
+              },
+              {
+                "id": "rf-2-3",
+                "text": "Ríe con todo"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidateIds": [
+              "rf-2-2",
+              "rf-2-3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0
+            },
+            "roundEndsAt": 38000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Abraza fuerte",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Abraza fuerte"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-3",
+              "ownAnswerId": "rf-2-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ríe con todo",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Ríe con todo"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-3"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 46000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "marowak",
+              "name": "Marowak",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/105.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidateIds": [
+              "rf-2-2",
+              "rf-2-3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 46000,
+            "lastRound": {
+              "flagMode": "GREEN",
+              "pokemon": {
+                "id": "marowak",
+                "name": "Marowak",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/105.png"
+              },
+              "answers": [
+                {
+                  "id": "rf-2-2",
+                  "authorId": "p1",
+                  "text": "Abraza fuerte",
+                  "votesReceived": 0,
+                  "won": false
+                },
+                {
+                  "id": "rf-2-3",
+                  "authorId": "p3",
+                  "text": "Ríe con todo",
+                  "votesReceived": 1,
+                  "won": true
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "rf-2-2",
+                    "rf-2-3"
+                  ],
+                  "votes": {
+                    "p1": "rf-2-3"
+                  }
+                }
+              ],
+              "winningAnswerIds": [
+                "rf-2-3"
+              ],
+              "winnerIds": [
+                "p3"
+              ],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 0,
+                "p3": 3
+              },
+              "missingPlayerIds": [
+                "p2"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Abraza fuerte",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Abraza fuerte"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-3",
+              "ownAnswerId": "rf-2-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ríe con todo",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Ríe con todo"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-3"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 66000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "mankey",
+              "name": "Mankey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": 66000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 66000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "mankey",
+              "name": "Mankey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": 66000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "Te presta su gorra",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 86000,
+            "actionEpoch": "[\"VOTING\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "mankey",
+              "name": "Mankey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-3-2",
+                "text": "Te presta su gorra"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-3-2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": 86000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te presta su gorra",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te presta su gorra"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 94000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "mankey",
+              "name": "Mankey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-3-2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 3,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 94000,
+            "lastRound": {
+              "flagMode": "GREEN",
+              "pokemon": {
+                "id": "mankey",
+                "name": "Mankey",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png"
+              },
+              "answers": [
+                {
+                  "id": "rf-3-2",
+                  "authorId": "p1",
+                  "text": "Te presta su gorra",
+                  "votesReceived": 0,
+                  "won": true
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "rf-3-2"
+                  ],
+                  "votes": {}
+                }
+              ],
+              "winningAnswerIds": [
+                "rf-3-2"
+              ],
+              "winnerIds": [
+                "p1"
+              ],
+              "pointsAwarded": {
+                "p1": 3,
+                "p2": 0,
+                "p3": 0
+              },
+              "missingPlayerIds": [
+                "p2",
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te presta su gorra",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te presta su gorra"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "mankey",
+              "name": "Mankey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png"
+            },
+            "flagMode": "GREEN",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-3-2"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 3,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "flagMode": "GREEN",
+              "pokemon": {
+                "id": "mankey",
+                "name": "Mankey",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png"
+              },
+              "answers": [
+                {
+                  "id": "rf-3-2",
+                  "authorId": "p1",
+                  "text": "Te presta su gorra",
+                  "votesReceived": 0,
+                  "won": true
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "rf-3-2"
+                  ],
+                  "votes": {}
+                }
+              ],
+              "winningAnswerIds": [
+                "rf-3-2"
+              ],
+              "winnerIds": [
+                "p1"
+              ],
+              "pointsAwarded": {
+                "p1": 3,
+                "p2": 0,
+                "p3": 0
+              },
+              "missingPlayerIds": [
+                "p2",
+                "p3"
+              ]
+            },
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 3,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 1,
+                    "roundsMissed": 2,
+                    "votesCast": 1,
+                    "votesReceived": 2,
+                    "roundWins": 1,
+                    "soloWins": 1,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 3
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 2,
+                    "roundsMissed": 1,
+                    "votesCast": 2,
+                    "votesReceived": 1,
+                    "roundWins": 1,
+                    "soloWins": 1,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 3
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 3,
+                    "roundsMissed": 0,
+                    "votesCast": 3,
+                    "votesReceived": 0,
+                    "roundWins": 1,
+                    "soloWins": 1,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 3
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te presta su gorra",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te presta su gorra"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p2",
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 3,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 1,
+            "roundsMissed": 2,
+            "votesCast": 1,
+            "votesReceived": 2,
+            "roundWins": 1,
+            "soloWins": 1,
+            "sharedWins": 0,
+            "pointsFromRounds": 3
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 2,
+          "points": 3,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 2,
+            "roundsMissed": 1,
+            "votesCast": 2,
+            "votesReceived": 1,
+            "roundWins": 1,
+            "soloWins": 1,
+            "sharedWins": 0,
+            "pointsFromRounds": 3
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 3,
+          "points": 3,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 3,
+            "roundsMissed": 0,
+            "votesCast": 3,
+            "votesReceived": 0,
+            "roundWins": 1,
+            "soloWins": 1,
+            "sharedWins": 0,
+            "pointsFromRounds": 3
+          }
+        }
+      ]
+    }
+  }
+}

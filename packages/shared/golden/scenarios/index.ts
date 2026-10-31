@@ -6,6 +6,7 @@ import { guessFromStatsScenarios } from './guess-from-stats.js';
 import { higherLowerScenarios } from './higher-lower.js';
 import { pokeddleRaceScenarios } from './pokeddle-race.js';
 import { pokedexDistanceScenarios } from './pokedex-distance.js';
+import { pokemonRedFlagScenarios } from './pokemon-red-flag.js';
 import { pokemonPaletteGuessScenarios } from './pokemon-palette-guess.js';
 import { pokemonTriviaScenarios } from './pokemon-trivia.js';
 import { typeChainScenarios } from './type-chain.js';
@@ -27,4 +28,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'type-duel': typeDuelScenarios,
   'type-chain': typeChainScenarios,
   'pokeddle-race': pokeddleRaceScenarios,
+  'pokemon-red-flag': pokemonRedFlagScenarios,
 };

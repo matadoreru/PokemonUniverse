@@ -1,0 +1,6276 @@
+{
+  "engineId": "pokemon-red-flag",
+  "scenario": "red-mode-votes",
+  "seed": 621,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    },
+    {
+      "id": "p4",
+      "displayName": "Dani"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "rounds": 3,
+    "phaseSeconds": 15,
+    "includeForms": false,
+    "mode": "RED"
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "UPDATE_RED_FLAG_DRAFT",
+        "text": "Hola"
+      },
+      "now": 1500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-1-2"
+      },
+      "now": 1800
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "  Siempre llega tarde  "
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "UPDATE_RED_FLAG_DRAFT",
+        "text": "Otra idea"
+      },
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Otra idea"
+      },
+      "now": 2600
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "UPDATE_RED_FLAG_DRAFT",
+        "text": "Muerde los cables"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Muerde los cables"
+      },
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Nunca devuelve las Poké Balls"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Evoluciona sin avisar"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "UPDATE_RED_FLAG_DRAFT",
+        "text": "Tarde"
+      },
+      "now": 5500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Tarde"
+      },
+      "now": 5600
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-1-4"
+      },
+      "now": 6000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-9-9"
+      },
+      "now": 6100
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-1-2"
+      },
+      "now": 6500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-1-3"
+      },
+      "now": 6600
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-1-2"
+      },
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-1-3"
+      },
+      "now": 7500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-1-4"
+      },
+      "now": 8000
+    },
+    {
+      "kind": "timeout",
+      "now": 15999
+    },
+    {
+      "kind": "timeout",
+      "now": 16000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Se come tus bayas"
+      },
+      "now": 17000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Ronca en el PC"
+      },
+      "now": 17500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Usa Salpicadura en combate"
+      },
+      "now": 18000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "No sabe nadar"
+      },
+      "now": 18500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-2-2"
+      },
+      "now": 19000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-2-3"
+      },
+      "now": 19500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-2-2"
+      },
+      "now": 20000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-2-3"
+      },
+      "now": 20500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-2-1"
+      },
+      "now": 21000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-2-3"
+      },
+      "now": 21100
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-2-2"
+      },
+      "now": 21500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-2-3"
+      },
+      "now": 22000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-2-2"
+      },
+      "now": 22500
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-2-2"
+      },
+      "now": 23000
+    },
+    {
+      "kind": "timeout",
+      "now": 31000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Te deja en visto"
+      },
+      "now": 32000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Cambia de tipo cada martes"
+      },
+      "now": 32500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Huele a Muk"
+      },
+      "now": 33000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "SUBMIT_RED_FLAG",
+        "text": "Solo come Caramelos Raros"
+      },
+      "now": 33500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-3-3"
+      },
+      "now": 34000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-3-2"
+      },
+      "now": 34500
+    },
+    {
+      "kind": "timeout",
+      "now": 48500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-3-2"
+      },
+      "now": 49000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-3-3"
+      },
+      "now": 49500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_RED_FLAG",
+        "answerId": "rf-3-3"
+      },
+      "now": 63500
+    },
+    {
+      "kind": "timeout",
+      "now": 63500
+    },
+    {
+      "kind": "timeout",
+      "now": 71500
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "phaseSeconds": 15,
+      "includeForms": false,
+      "mode": "RED"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-red-flag",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "pokemon": null,
+        "flagMode": "RED",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3",
+          "p4"
+        ],
+        "submittedPlayerIds": [],
+        "revealedAnswers": [],
+        "votedPlayerIds": [],
+        "voteCandidateIds": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0,
+          "p4": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": null
+        },
+        "p4": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 16000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-red-flag",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "pokemon": {
+          "id": "caterpie",
+          "name": "Caterpie",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+        },
+        "flagMode": "RED",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3",
+          "p4"
+        ],
+        "submittedPlayerIds": [],
+        "revealedAnswers": [],
+        "votedPlayerIds": [],
+        "voteCandidateIds": [],
+        "voteRoundNumber": 1,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0,
+          "p4": 0
+        },
+        "roundEndsAt": 16000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": "rf-1-4"
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": "rf-1-2"
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": "rf-1-3"
+        },
+        "p4": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownAnswer": null,
+          "canVote": false,
+          "ownVoteAnswerId": null,
+          "ownAnswerId": "rf-1-1"
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "No puedes participar en esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La votación no está activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Tu respuesta ya está bloqueada.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Tu respuesta ya está bloqueada.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "Muerde los cables",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Muerde los cables",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Muerde los cables",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca devuelve las Poké Balls",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 20000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2",
+              "rf-1-4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 20000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Muerde los cables",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca devuelve las Poké Balls",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Evoluciona sin avisar",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La escritura ya ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 20000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2",
+              "rf-1-4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 20000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Muerde los cables",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca devuelve las Poké Balls",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Evoluciona sin avisar",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La escritura ya ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 20000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2",
+              "rf-1-4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 20000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Muerde los cables",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca devuelve las Poké Balls",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Evoluciona sin avisar",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No puedes votar tu propia respuesta.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 20000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2",
+              "rf-1-4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 20000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Muerde los cables",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca devuelve las Poké Balls",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Evoluciona sin avisar",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Esa respuesta no es candidata.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 20000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2",
+              "rf-1-4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 20000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Muerde los cables",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca devuelve las Poké Balls",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Evoluciona sin avisar",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 20000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2",
+              "rf-1-4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 20000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-2",
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Muerde los cables",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca devuelve las Poké Balls",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Evoluciona sin avisar",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Tu voto ya está bloqueado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 20000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2",
+              "rf-1-4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 20000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-2",
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Muerde los cables",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca devuelve las Poké Balls",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Evoluciona sin avisar",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 20000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2",
+              "rf-1-4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 20000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-2",
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Muerde los cables",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca devuelve las Poké Balls",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-2",
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Evoluciona sin avisar",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 20000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p3",
+              "p4"
+            ],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2",
+              "rf-1-4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 20000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-2",
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Muerde los cables",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca devuelve las Poké Balls",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-2",
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Evoluciona sin avisar",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-3",
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p1",
+              "p3",
+              "p4",
+              "p2"
+            ],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2",
+              "rf-1-4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 16000,
+            "lastRound": {
+              "flagMode": "RED",
+              "pokemon": {
+                "id": "caterpie",
+                "name": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+              },
+              "answers": [
+                {
+                  "id": "rf-1-4",
+                  "authorId": "p1",
+                  "text": "Siempre llega tarde",
+                  "votesReceived": 1,
+                  "won": false
+                },
+                {
+                  "id": "rf-1-2",
+                  "authorId": "p2",
+                  "text": "Muerde los cables",
+                  "votesReceived": 2,
+                  "won": true
+                },
+                {
+                  "id": "rf-1-3",
+                  "authorId": "p3",
+                  "text": "Nunca devuelve las Poké Balls",
+                  "votesReceived": 1,
+                  "won": false
+                },
+                {
+                  "id": "rf-1-1",
+                  "authorId": "p4",
+                  "text": "Evoluciona sin avisar",
+                  "votesReceived": 0,
+                  "won": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "rf-1-3",
+                    "rf-1-1",
+                    "rf-1-2",
+                    "rf-1-4"
+                  ],
+                  "votes": {
+                    "p1": "rf-1-2",
+                    "p3": "rf-1-2",
+                    "p4": "rf-1-3",
+                    "p2": "rf-1-4"
+                  }
+                }
+              ],
+              "winningAnswerIds": [
+                "rf-1-2"
+              ],
+              "winnerIds": [
+                "p2"
+              ],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 3,
+                "p3": 0,
+                "p4": 0
+              },
+              "missingPlayerIds": []
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-2",
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Muerde los cables",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-4",
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca devuelve las Poké Balls",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-2",
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Evoluciona sin avisar",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-3",
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "caterpie",
+              "name": "Caterpie",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p1",
+              "p3",
+              "p4",
+              "p2"
+            ],
+            "voteCandidateIds": [
+              "rf-1-3",
+              "rf-1-1",
+              "rf-1-2",
+              "rf-1-4"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 16000,
+            "lastRound": {
+              "flagMode": "RED",
+              "pokemon": {
+                "id": "caterpie",
+                "name": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+              },
+              "answers": [
+                {
+                  "id": "rf-1-4",
+                  "authorId": "p1",
+                  "text": "Siempre llega tarde",
+                  "votesReceived": 1,
+                  "won": false
+                },
+                {
+                  "id": "rf-1-2",
+                  "authorId": "p2",
+                  "text": "Muerde los cables",
+                  "votesReceived": 2,
+                  "won": true
+                },
+                {
+                  "id": "rf-1-3",
+                  "authorId": "p3",
+                  "text": "Nunca devuelve las Poké Balls",
+                  "votesReceived": 1,
+                  "won": false
+                },
+                {
+                  "id": "rf-1-1",
+                  "authorId": "p4",
+                  "text": "Evoluciona sin avisar",
+                  "votesReceived": 0,
+                  "won": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "rf-1-3",
+                    "rf-1-1",
+                    "rf-1-2",
+                    "rf-1-4"
+                  ],
+                  "votes": {
+                    "p1": "rf-1-2",
+                    "p3": "rf-1-2",
+                    "p4": "rf-1-3",
+                    "p2": "rf-1-4"
+                  }
+                }
+              ],
+              "winningAnswerIds": [
+                "rf-1-2"
+              ],
+              "winnerIds": [
+                "p2"
+              ],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 3,
+                "p3": 0,
+                "p4": 0
+              },
+              "missingPlayerIds": []
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Siempre llega tarde",
+              "ownAnswer": {
+                "id": "rf-1-4",
+                "text": "Siempre llega tarde"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-2",
+              "ownAnswerId": "rf-1-4"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Muerde los cables",
+              "ownAnswer": {
+                "id": "rf-1-2",
+                "text": "Muerde los cables"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-4",
+              "ownAnswerId": "rf-1-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca devuelve las Poké Balls",
+              "ownAnswer": {
+                "id": "rf-1-3",
+                "text": "Nunca devuelve las Poké Balls"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-2",
+              "ownAnswerId": "rf-1-3"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Evoluciona sin avisar",
+              "ownAnswer": {
+                "id": "rf-1-1",
+                "text": "Evoluciona sin avisar"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-1-3",
+              "ownAnswerId": "rf-1-1"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se come tus bayas",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se come tus bayas",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ronca en el PC",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se come tus bayas",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ronca en el PC",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Usa Salpicadura en combate",
+              "ownAnswer": {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 33500,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-2-4",
+              "rf-2-2",
+              "rf-2-3",
+              "rf-2-1"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 33500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se come tus bayas",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ronca en el PC",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Usa Salpicadura en combate",
+              "ownAnswer": {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "No sabe nadar",
+              "ownAnswer": {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 33500,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidateIds": [
+              "rf-2-4",
+              "rf-2-2",
+              "rf-2-3",
+              "rf-2-1"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 33500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se come tus bayas",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-2",
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ronca en el PC",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Usa Salpicadura en combate",
+              "ownAnswer": {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "No sabe nadar",
+              "ownAnswer": {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 33500,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidateIds": [
+              "rf-2-4",
+              "rf-2-2",
+              "rf-2-3",
+              "rf-2-1"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 33500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se come tus bayas",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-2",
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ronca en el PC",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-3",
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Usa Salpicadura en combate",
+              "ownAnswer": {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "No sabe nadar",
+              "ownAnswer": {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 33500,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteCandidateIds": [
+              "rf-2-4",
+              "rf-2-2",
+              "rf-2-3",
+              "rf-2-1"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 33500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se come tus bayas",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-2",
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ronca en el PC",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-3",
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Usa Salpicadura en combate",
+              "ownAnswer": {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-2",
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "No sabe nadar",
+              "ownAnswer": {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 35500,
+            "actionEpoch": "[\"REVOTE\",2,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "REVOTE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-2-2",
+              "rf-2-3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 35500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se come tus bayas",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ronca en el PC",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Usa Salpicadura en combate",
+              "ownAnswer": {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "No sabe nadar",
+              "ownAnswer": {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Esa respuesta no es candidata.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 35500,
+            "actionEpoch": "[\"REVOTE\",2,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "REVOTE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-2-2",
+              "rf-2-3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 35500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se come tus bayas",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ronca en el PC",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Usa Salpicadura en combate",
+              "ownAnswer": {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "No sabe nadar",
+              "ownAnswer": {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No puedes votar tu propia respuesta.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 35500,
+            "actionEpoch": "[\"REVOTE\",2,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "REVOTE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-2-2",
+              "rf-2-3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 35500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se come tus bayas",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ronca en el PC",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Usa Salpicadura en combate",
+              "ownAnswer": {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "No sabe nadar",
+              "ownAnswer": {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 35500,
+            "actionEpoch": "[\"REVOTE\",2,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "REVOTE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidateIds": [
+              "rf-2-2",
+              "rf-2-3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 35500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se come tus bayas",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-2",
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ronca en el PC",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Usa Salpicadura en combate",
+              "ownAnswer": {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "No sabe nadar",
+              "ownAnswer": {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 35500,
+            "actionEpoch": "[\"REVOTE\",2,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "REVOTE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidateIds": [
+              "rf-2-2",
+              "rf-2-3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 35500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se come tus bayas",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-2",
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ronca en el PC",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-3",
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Usa Salpicadura en combate",
+              "ownAnswer": {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "No sabe nadar",
+              "ownAnswer": {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 35500,
+            "actionEpoch": "[\"REVOTE\",2,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "REVOTE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteCandidateIds": [
+              "rf-2-2",
+              "rf-2-3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 3,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 35500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se come tus bayas",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-2",
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ronca en el PC",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-3",
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Usa Salpicadura en combate",
+              "ownAnswer": {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-2",
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "No sabe nadar",
+              "ownAnswer": {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "hitmonlee",
+              "name": "Hitmonlee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "voteCandidateIds": [
+              "rf-2-2",
+              "rf-2-3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 31000,
+            "lastRound": {
+              "flagMode": "RED",
+              "pokemon": {
+                "id": "hitmonlee",
+                "name": "Hitmonlee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+              },
+              "answers": [
+                {
+                  "id": "rf-2-3",
+                  "authorId": "p1",
+                  "text": "Se come tus bayas",
+                  "votesReceived": 1,
+                  "won": false
+                },
+                {
+                  "id": "rf-2-2",
+                  "authorId": "p2",
+                  "text": "Ronca en el PC",
+                  "votesReceived": 3,
+                  "won": true
+                },
+                {
+                  "id": "rf-2-1",
+                  "authorId": "p3",
+                  "text": "Usa Salpicadura en combate",
+                  "votesReceived": 0,
+                  "won": false
+                },
+                {
+                  "id": "rf-2-4",
+                  "authorId": "p4",
+                  "text": "No sabe nadar",
+                  "votesReceived": 0,
+                  "won": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "rf-2-4",
+                    "rf-2-2",
+                    "rf-2-3",
+                    "rf-2-1"
+                  ],
+                  "votes": {
+                    "p1": "rf-2-2",
+                    "p2": "rf-2-3",
+                    "p3": "rf-2-2",
+                    "p4": "rf-2-3"
+                  }
+                },
+                {
+                  "number": 2,
+                  "candidateIds": [
+                    "rf-2-2",
+                    "rf-2-3"
+                  ],
+                  "votes": {
+                    "p1": "rf-2-2",
+                    "p2": "rf-2-3",
+                    "p3": "rf-2-2",
+                    "p4": "rf-2-2"
+                  }
+                }
+              ],
+              "winningAnswerIds": [
+                "rf-2-2"
+              ],
+              "winnerIds": [
+                "p2"
+              ],
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 3,
+                "p3": 0,
+                "p4": 0
+              },
+              "missingPlayerIds": []
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se come tus bayas",
+              "ownAnswer": {
+                "id": "rf-2-3",
+                "text": "Se come tus bayas"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-2",
+              "ownAnswerId": "rf-2-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Ronca en el PC",
+              "ownAnswer": {
+                "id": "rf-2-2",
+                "text": "Ronca en el PC"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-3",
+              "ownAnswerId": "rf-2-2"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Usa Salpicadura en combate",
+              "ownAnswer": {
+                "id": "rf-2-1",
+                "text": "Usa Salpicadura en combate"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-2",
+              "ownAnswerId": "rf-2-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "No sabe nadar",
+              "ownAnswer": {
+                "id": "rf-2-4",
+                "text": "No sabe nadar"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-2-2",
+              "ownAnswerId": "rf-2-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 46000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 46000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 46000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 46000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te deja en visto",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 46000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 46000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te deja en visto",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cambia de tipo cada martes",
+              "ownAnswer": {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 46000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 46000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te deja en visto",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cambia de tipo cada martes",
+              "ownAnswer": {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Huele a Muk",
+              "ownAnswer": {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownAnswer": null,
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 48500,
+            "actionEpoch": "[\"VOTING\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-3-1",
+              "rf-3-4",
+              "rf-3-2",
+              "rf-3-3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 48500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te deja en visto",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cambia de tipo cada martes",
+              "ownAnswer": {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Huele a Muk",
+              "ownAnswer": {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Solo come Caramelos Raros",
+              "ownAnswer": {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 48500,
+            "actionEpoch": "[\"VOTING\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteCandidateIds": [
+              "rf-3-1",
+              "rf-3-4",
+              "rf-3-2",
+              "rf-3-3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 48500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te deja en visto",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-3-3",
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cambia de tipo cada martes",
+              "ownAnswer": {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Huele a Muk",
+              "ownAnswer": {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Solo come Caramelos Raros",
+              "ownAnswer": {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 48500,
+            "actionEpoch": "[\"VOTING\",3,null,null,null,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "VOTING",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidateIds": [
+              "rf-3-1",
+              "rf-3-4",
+              "rf-3-2",
+              "rf-3-3"
+            ],
+            "voteRoundNumber": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 48500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te deja en visto",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-3-3",
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cambia de tipo cada martes",
+              "ownAnswer": {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-3-2",
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Huele a Muk",
+              "ownAnswer": {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Solo come Caramelos Raros",
+              "ownAnswer": {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 63500,
+            "actionEpoch": "[\"REVOTE\",3,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "REVOTE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              }
+            ],
+            "votedPlayerIds": [],
+            "voteCandidateIds": [
+              "rf-3-2",
+              "rf-3-3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 63500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te deja en visto",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cambia de tipo cada martes",
+              "ownAnswer": {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Huele a Muk",
+              "ownAnswer": {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Solo come Caramelos Raros",
+              "ownAnswer": {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 63500,
+            "actionEpoch": "[\"REVOTE\",3,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "REVOTE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              }
+            ],
+            "votedPlayerIds": [
+              "p3"
+            ],
+            "voteCandidateIds": [
+              "rf-3-2",
+              "rf-3-3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 63500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te deja en visto",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cambia de tipo cada martes",
+              "ownAnswer": {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Huele a Muk",
+              "ownAnswer": {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-3-2",
+              "ownAnswerId": "rf-3-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Solo come Caramelos Raros",
+              "ownAnswer": {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 63500,
+            "actionEpoch": "[\"REVOTE\",3,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "REVOTE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              }
+            ],
+            "votedPlayerIds": [
+              "p3",
+              "p4"
+            ],
+            "voteCandidateIds": [
+              "rf-3-2",
+              "rf-3-3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 63500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te deja en visto",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cambia de tipo cada martes",
+              "ownAnswer": {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Huele a Muk",
+              "ownAnswer": {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-3-2",
+              "ownAnswerId": "rf-3-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Solo come Caramelos Raros",
+              "ownAnswer": {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-3-3",
+              "ownAnswerId": "rf-3-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo de votación ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "REVOTE",
+            "nextDeadline": 63500,
+            "actionEpoch": "[\"REVOTE\",3,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "REVOTE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [
+              {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              }
+            ],
+            "votedPlayerIds": [
+              "p3",
+              "p4"
+            ],
+            "voteCandidateIds": [
+              "rf-3-2",
+              "rf-3-3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 6,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 63500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te deja en visto",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cambia de tipo cada martes",
+              "ownAnswer": {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              },
+              "canVote": true,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Huele a Muk",
+              "ownAnswer": {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-3-2",
+              "ownAnswerId": "rf-3-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Solo come Caramelos Raros",
+              "ownAnswer": {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-3-3",
+              "ownAnswerId": "rf-3-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 71500,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p3",
+              "p4"
+            ],
+            "voteCandidateIds": [
+              "rf-3-2",
+              "rf-3-3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 3,
+              "p2": 9,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 71500,
+            "lastRound": {
+              "flagMode": "RED",
+              "pokemon": {
+                "id": "bellsprout",
+                "name": "Bellsprout",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+              },
+              "answers": [
+                {
+                  "id": "rf-3-2",
+                  "authorId": "p1",
+                  "text": "Te deja en visto",
+                  "votesReceived": 1,
+                  "won": true
+                },
+                {
+                  "id": "rf-3-3",
+                  "authorId": "p2",
+                  "text": "Cambia de tipo cada martes",
+                  "votesReceived": 1,
+                  "won": true
+                },
+                {
+                  "id": "rf-3-1",
+                  "authorId": "p3",
+                  "text": "Huele a Muk",
+                  "votesReceived": 0,
+                  "won": false
+                },
+                {
+                  "id": "rf-3-4",
+                  "authorId": "p4",
+                  "text": "Solo come Caramelos Raros",
+                  "votesReceived": 0,
+                  "won": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "rf-3-1",
+                    "rf-3-4",
+                    "rf-3-2",
+                    "rf-3-3"
+                  ],
+                  "votes": {
+                    "p1": "rf-3-3",
+                    "p2": "rf-3-2"
+                  }
+                },
+                {
+                  "number": 2,
+                  "candidateIds": [
+                    "rf-3-2",
+                    "rf-3-3"
+                  ],
+                  "votes": {
+                    "p3": "rf-3-2",
+                    "p4": "rf-3-3"
+                  }
+                }
+              ],
+              "winningAnswerIds": [
+                "rf-3-2",
+                "rf-3-3"
+              ],
+              "winnerIds": [
+                "p1",
+                "p2"
+              ],
+              "pointsAwarded": {
+                "p1": 3,
+                "p2": 3,
+                "p3": 0,
+                "p4": 0
+              },
+              "missingPlayerIds": []
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te deja en visto",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cambia de tipo cada martes",
+              "ownAnswer": {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Huele a Muk",
+              "ownAnswer": {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-3-2",
+              "ownAnswerId": "rf-3-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Solo come Caramelos Raros",
+              "ownAnswer": {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-3-3",
+              "ownAnswerId": "rf-3-4"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,2,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-red-flag",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+            },
+            "flagMode": "RED",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "revealedAnswers": [],
+            "votedPlayerIds": [
+              "p3",
+              "p4"
+            ],
+            "voteCandidateIds": [
+              "rf-3-2",
+              "rf-3-3"
+            ],
+            "voteRoundNumber": 2,
+            "scores": {
+              "p1": 3,
+              "p2": 9,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "flagMode": "RED",
+              "pokemon": {
+                "id": "bellsprout",
+                "name": "Bellsprout",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+              },
+              "answers": [
+                {
+                  "id": "rf-3-2",
+                  "authorId": "p1",
+                  "text": "Te deja en visto",
+                  "votesReceived": 1,
+                  "won": true
+                },
+                {
+                  "id": "rf-3-3",
+                  "authorId": "p2",
+                  "text": "Cambia de tipo cada martes",
+                  "votesReceived": 1,
+                  "won": true
+                },
+                {
+                  "id": "rf-3-1",
+                  "authorId": "p3",
+                  "text": "Huele a Muk",
+                  "votesReceived": 0,
+                  "won": false
+                },
+                {
+                  "id": "rf-3-4",
+                  "authorId": "p4",
+                  "text": "Solo come Caramelos Raros",
+                  "votesReceived": 0,
+                  "won": false
+                }
+              ],
+              "voteRounds": [
+                {
+                  "number": 1,
+                  "candidateIds": [
+                    "rf-3-1",
+                    "rf-3-4",
+                    "rf-3-2",
+                    "rf-3-3"
+                  ],
+                  "votes": {
+                    "p1": "rf-3-3",
+                    "p2": "rf-3-2"
+                  }
+                },
+                {
+                  "number": 2,
+                  "candidateIds": [
+                    "rf-3-2",
+                    "rf-3-3"
+                  ],
+                  "votes": {
+                    "p3": "rf-3-2",
+                    "p4": "rf-3-3"
+                  }
+                }
+              ],
+              "winningAnswerIds": [
+                "rf-3-2",
+                "rf-3-3"
+              ],
+              "winnerIds": [
+                "p1",
+                "p2"
+              ],
+              "pointsAwarded": {
+                "p1": 3,
+                "p2": 3,
+                "p3": 0,
+                "p4": 0
+              },
+              "missingPlayerIds": []
+            },
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 9,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 3,
+                    "roundsMissed": 0,
+                    "votesCast": 4,
+                    "votesReceived": 6,
+                    "roundWins": 3,
+                    "soloWins": 2,
+                    "sharedWins": 1,
+                    "pointsFromRounds": 9
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 3,
+                    "roundsMissed": 0,
+                    "votesCast": 4,
+                    "votesReceived": 3,
+                    "roundWins": 1,
+                    "soloWins": 0,
+                    "sharedWins": 1,
+                    "pointsFromRounds": 3
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 3,
+                    "roundsMissed": 0,
+                    "votesCast": 4,
+                    "votesReceived": 1,
+                    "roundWins": 0,
+                    "soloWins": 0,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 0
+                  }
+                },
+                {
+                  "playerId": "p4",
+                  "position": 4,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "answersSubmitted": 3,
+                    "roundsMissed": 0,
+                    "votesCast": 4,
+                    "votesReceived": 0,
+                    "roundWins": 0,
+                    "soloWins": 0,
+                    "sharedWins": 0,
+                    "pointsFromRounds": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Te deja en visto",
+              "ownAnswer": {
+                "id": "rf-3-2",
+                "text": "Te deja en visto"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cambia de tipo cada martes",
+              "ownAnswer": {
+                "id": "rf-3-3",
+                "text": "Cambia de tipo cada martes"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": null,
+              "ownAnswerId": "rf-3-3"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Huele a Muk",
+              "ownAnswer": {
+                "id": "rf-3-1",
+                "text": "Huele a Muk"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-3-2",
+              "ownAnswerId": "rf-3-1"
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Solo come Caramelos Raros",
+              "ownAnswer": {
+                "id": "rf-3-4",
+                "text": "Solo come Caramelos Raros"
+              },
+              "canVote": false,
+              "ownVoteAnswerId": "rf-3-3",
+              "ownAnswerId": "rf-3-4"
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p2",
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 9,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 3,
+            "roundsMissed": 0,
+            "votesCast": 4,
+            "votesReceived": 6,
+            "roundWins": 3,
+            "soloWins": 2,
+            "sharedWins": 1,
+            "pointsFromRounds": 9
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 2,
+          "points": 3,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 3,
+            "roundsMissed": 0,
+            "votesCast": 4,
+            "votesReceived": 3,
+            "roundWins": 1,
+            "soloWins": 0,
+            "sharedWins": 1,
+            "pointsFromRounds": 3
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 3,
+            "roundsMissed": 0,
+            "votesCast": 4,
+            "votesReceived": 1,
+            "roundWins": 0,
+            "soloWins": 0,
+            "sharedWins": 0,
+            "pointsFromRounds": 0
+          }
+        },
+        {
+          "playerId": "p4",
+          "position": 4,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "answersSubmitted": 3,
+            "roundsMissed": 0,
+            "votesCast": 4,
+            "votesReceived": 0,
+            "roundWins": 0,
+            "soloWins": 0,
+            "sharedWins": 0,
+            "pointsFromRounds": 0
+          }
+        }
+      ]
+    }
+  }
+}
