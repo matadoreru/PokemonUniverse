@@ -152,6 +152,12 @@ export function writeFixtures(outDir: string, files: ReadonlyMap<string, string>
   return { written: files.size, removed };
 }
 
+/** Mensajes de `--check` cuando hay diferencias (vacío si todo coincide). */
+export function checkFailureMessages(out: string, differing: readonly string[]): string[] {
+  if (differing.length === 0) return [];
+  return [...differing.map((path) => `Fixture dorada desactualizada: ${join(out, path)}`), 'Ejecuta npm run golden:export'];
+}
+
 function main(argv: readonly string[]): number {
   const outIndex = argv.indexOf('--out');
   const out = outIndex >= 0 ? argv[outIndex + 1] : undefined;
@@ -162,11 +168,9 @@ function main(argv: readonly string[]): number {
   const outDir = resolve(out);
   const files = renderFixtures();
   if (argv.includes('--check')) {
-    const differing = checkFixtures(outDir, files);
-    if (differing.length === 0) return 0;
-    for (const path of differing) console.error(`Fixture dorada desactualizada: ${join(out, path)}`);
-    console.error('Ejecuta npm run golden:export');
-    return 1;
+    const messages = checkFailureMessages(out, checkFixtures(outDir, files));
+    for (const message of messages) console.error(message);
+    return messages.length === 0 ? 0 : 1;
   }
   const { written, removed } = writeFixtures(outDir, files);
   for (const path of removed) console.log(`Eliminada fixture sin escenario: ${join(out, path)}`);
