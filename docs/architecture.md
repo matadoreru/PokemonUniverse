@@ -1,10 +1,29 @@
 # Architecture
 
-The repository is split into three boundaries:
+The repository is split into four boundaries (the Java backend is described in its own section below):
 
 - `packages/shared`: transport schemas, public types, scoring, game registry and deterministic game engines. It has no Express, Socket.IO, React or database dependency.
 - `apps/server`: authentication, PostgreSQL persistence, the live-room coordinator and Socket.IO transport. The coordinator sends intentions to a registered game module and publishes only its public projection.
+- `backend`: Java REST service for a subset of the HTTP API (stage 1 of the migration).
 - `apps/web`: React screens and presentation. It never decides deadlines, winners, eliminations or whether a selection wins a race.
+
+## Backend Java (etapa 1)
+
+`backend/` es un servicio Micronaut 5.1.5 (Java 25, Gradle 9.8.2) que convive con `apps/server` detrás del mismo origen. Es el primer paso de una migración por estrangulamiento; el diseño completo está en `docs/superpowers/specs/2026-10-31-separacion-frontend-backend-java-design.md` y lo que queda en `docs/migracion-java-pendientes.md`.
+
+**Fronteras.** Java atiende solo REST sin estado de sala: no conoce salas, Socket.IO ni motores de juego. Node sigue siendo la autoridad de las partidas. Las dos aplicaciones leen y escriben el mismo PostgreSQL.
+
+**Rutas servidas por Java (11).** `POST /api/auth/{register,login,guest,logout}`, `GET /api/auth/{me,profile}`, `GET /api/auth/avatars/*`, `GET /api/changelog`, `POST /api/feedback`, `GET /api/games`, `GET /api/pokemon`. En contenedores las reparte nginx (`infra/nginx.conf`, un `location` por ruta antes del `location /api/` de Node); en desarrollo, el proxy de Vite con las mismas rutas (las claves son regex sobre `req.url`, por eso admiten query string). Ambos listados deben coincidir. `/health` y `/prometheus` del backend no se enrutan desde nginx.
+
+**Identidad compartida.** Java y Node firman y aceptan la misma cookie `pu_session` (JWT HS256 con `JWT_SECRET`, HttpOnly, SameSite). Las contraseñas se verifican con bcrypt (at.favre, estrategia de truncado a 72 bytes igual que bcryptjs), de modo que las cuentas existentes siguen entrando.
+
+**Esquema: Flyway y Prisma.** Node sigue ejecutando `prisma migrate deploy` y es el dueño del esquema. Flyway solo tiene `V1__baseline.sql` (baseline-on-migrate sobre el esquema Prisma). Regla: **no se añade ninguna `V2__` mientras Node ejecute `prisma migrate deploy`**; cualquier cambio de esquema pasa por Prisma hasta la etapa 2. El backend usa Hibernate 7 vía Micronaut Data JPA con identificadores entrecomillados para coincidir con los nombres de Prisma.
+
+**Avatares.** El backend corre como uid/gid 1000, igual que el usuario `node`, y monta el mismo volumen de avatares: Node escribe los ficheros con modo 0600 y otro uid no podría servirlos ni borrarlos. Java solo lee y limpia el avatar de invitado; la subida sigue en Node.
+
+**Contrato REST para la web.** El OpenAPI se genera al compilar (`backend/openapi/pokemon-universe.yml`, versionado). `verifyOpenApi` forma parte de `check` y falla si la copia versionada difiere; el procesamiento incremental de anotaciones está desactivado para que la salida sea determinista. La web genera sus tipos con `npm run api:types -w @pokemon-universe/web` (`apps/web/src/lib/api-types.ts`). El registro de minijuegos se exporta de `shared` con `npm run registry:export` a `backend/src/main/resources/games/registry.json`; `npm test` ejecuta `check:registry` (y `check:api-types`) y falla si el fichero versionado está desactualizado.
+
+**Operación.** Respuestas JSON con inclusión global NON_NULL. Errores con el mismo formato que Node. Límites de peticiones en memoria (global 120/min, autenticación 30 por 15 min, feedback 10 por 15 min, cabeceras draft-7), válidos para una sola instancia. Salud en `/health/{liveness,readiness}`, métricas en `/prometheus`, logs JSON en producción (`-Dlogback.configurationFile=logback-prod.xml`). La imagen JVM se construye desde `build/docker/main/layers`; la imagen nativa compila pero falla al arrancar y no se despliega (ver pendientes).
 
 ## Local data authority
 

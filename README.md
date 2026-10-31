@@ -110,6 +110,7 @@ Las normas del proyecto están en [AGENTS.md](AGENTS.md). Cada cambio de interfa
 - [Arquitectura](docs/architecture.md)
 - [Administración](docs/administration.md)
 - [Preproducción](docs/pre-production.md)
+- [Migración a Java: pendientes](docs/migracion-java-pendientes.md)
 - [Rúbrica de revisión visual](docs/visual-review.md)
 - [Pruebas end-to-end](e2e/README.md)
 

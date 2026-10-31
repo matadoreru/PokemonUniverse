@@ -1,5 +1,7 @@
 # Pokémon Universe · Separación frontend / backend Java 25 — Informe Fases 1–3
 
+> **Estado.** Etapa 1 implementada el 2026-10-31 en la rama `backend-java-etapa-1`, pendiente de fusión y de la primera ejecución real de CI. Lo que queda y los riesgos abiertos están en [`docs/migracion-java-pendientes.md`](../../migracion-java-pendientes.md).
+
 Fecha: 2026-10-31. Estado del repo analizado: `main` en `7fa7cd9`. No se ha modificado nada.
 
 ---

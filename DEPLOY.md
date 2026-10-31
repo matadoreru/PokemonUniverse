@@ -6,13 +6,20 @@ La publicación replica el modelo operativo de Tabi, adaptado a las tres imágen
 
 ```text
 Cloudflare Tunnel → 127.0.0.1:8080 → pokemon-universe-web (nginx)
-                                                ↓ HTTP / WebSocket
-                                      pokemon-universe-server
-                                                ↓
+                                        ↓ 11 rutas        ↓ resto de /api y /socket.io
+                              pokemon-universe-backend   pokemon-universe-server
+                                  (Java, :8080)              (Node, :3001)
+                                        ↓                          ↓
                                   pokemon-universe-postgres
                                                 ↓
                            volumen pokemon_universe_postgres_data
 ```
+
+El servicio `backend` (Java, Micronaut) atiende solo las 11 rutas descritas en `docs/architecture.md`; nginx las
+enruta a él y el resto sigue en `server`. Comparte con `server` el volumen de avatares (`pokemon_universe_avatar_data`,
+uid/gid 1000 en ambos) y el secreto `PU_JWT_SECRET`. Arranca después de que `server` esté sano, porque Node aplica las
+migraciones Prisma y Flyway hace baseline sobre ese esquema. No hace falta ninguna variable nueva salvo `PU_BACKEND_IMAGE`
+(con valor por defecto igual al de `.env.example`).
 
 PostgreSQL no publica puertos. GitHub Actions valida el proyecto y publica imágenes `linux/amd64` y `linux/arm64` en
 GHCR con el SHA completo del commit y el tag móvil `pre`. El tag `latest` solo se mueve después de promocionar correctamente ese SHA a PRO. El servidor solo descarga imágenes ya verificadas; no compila.
@@ -89,6 +96,7 @@ PU_HOST_PORT=8080
 PU_IMAGE_TAG=latest
 PU_SERVER_IMAGE=ghcr.io/matadoreru/pokemon-universe-server
 PU_WEB_IMAGE=ghcr.io/matadoreru/pokemon-universe-web
+PU_BACKEND_IMAGE=ghcr.io/matadoreru/pokemon-universe-backend
 PU_POSTGRES_DB=pokemon_universe
 PU_POSTGRES_USER=pokemon
 PU_POSTGRES_PASSWORD=CONTRASENA_HEXADECIMAL_ALEATORIA
@@ -112,6 +120,12 @@ docker compose ps -a
 curl --fail --silent --show-error http://127.0.0.1:8080/api/health
 docker compose exec postgres pg_isready -U pokemon -d pokemon_universe
 ```
+
+Antes del primer despliegue la imagen `pokemon-universe-backend` tiene que existir en GHCR con el tag que vayas a usar
+(`pre`, `latest` o un SHA); `docker compose pull` falla si no está. La primera ejecución de `main.yml` tras fusionar la
+etapa 1 construye las tres imágenes (aún no hay Main verde), así que basta con esperar a que termine antes de desplegar.
+`latest` solo se mueve al promocionar a PRO (`promote-production.yml` reetiqueta también el backend); por eso un servidor
+con `PU_IMAGE_TAG=latest` no puede arrancar el backend hasta la primera promoción: despliega por SHA o `pre`.
 
 Al arrancar, `server` aplica las migraciones Prisma antes de aceptar tráfico y descarga una sola vez las 1.025 especies.
 En reinicios posteriores detecta el catálogo completo y continúa sin consultar PokéAPI.
@@ -150,8 +164,10 @@ cd /srv/docker/pokemon-universe
 ./scripts/deploy.sh SHA_COMPLETO_DEL_COMMIT
 ```
 
-El script crea y valida un backup, descarga las dos imágenes y espera mientras el servidor aplica migraciones y sincroniza
-el catálogo; después comprueba los healthchecks y `/api/health`. Si falla, vuelve al tag anterior. Una migración no se deshace
+El script crea y valida un backup, descarga las tres imágenes y espera mientras el servidor aplica migraciones y sincroniza
+el catálogo; después comprueba los healthchecks y `/api/health`. Si falla, vuelve a las imágenes exactas anteriores. Si el despliegue que falla es el primero que incluye el backend
+(no hay contenedor `backend` previo), el rollback elimina el backend nuevo y restaura solo `server` y `web` con
+`--no-deps`, porque `web` depende de que el backend esté sano y el nginx anterior no tiene rutas hacia él. Flyway (backend) no aplica migraciones propias en la etapa 1: solo hace baseline del esquema Prisma. Una migración no se deshace
 automáticamente; antes de cambios incompatibles debe existir un procedimiento de migración inversa o restaurarse el dump.
 
 No uses `docker compose down -v`: elimina PostgreSQL. Mantén `PU_WATCHTOWER_ENABLE=false`; un despliegue automático sin
