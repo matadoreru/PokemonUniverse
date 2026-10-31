@@ -28,7 +28,7 @@ derivados de él, métricas, logs JSON, límites de peticiones, imagen JVM en Co
 3. `data-sync` (PokéAPI y TCGdex) y su planificador.
 4. Administración.
 5. Escrituras de categorías personalizadas, pares de Would You Rather y avatares (subida).
-6. `/api/tcg/*`.
+6. `/api/tcg/*`. Desviación consciente de la especificación (§0 lo situaba en la etapa 1): el plan lo aplazó porque depende del ciclo de vida de la caché del catálogo TCG que refresca data-sync; mientras tanto lo sigue sirviendo Node.
 7. Proxy de assets de las rondas.
 8. WebSocket (hoy Socket.IO: 21 eventos cliente→servidor, 7 servidor→cliente).
 9. Mover `apps/web` a `frontend/` e incluir dentro `shared/public`.
