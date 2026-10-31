@@ -1,0 +1,352 @@
+package es.pokemonuniverse.domain.game.engines.typeduel;
+
+import es.pokemonuniverse.domain.game.GameManifest;
+import es.pokemonuniverse.domain.game.engine.EngineException;
+import es.pokemonuniverse.domain.game.engine.GameActionResult;
+import es.pokemonuniverse.domain.game.engine.GameContext;
+import es.pokemonuniverse.domain.game.engine.GameEngine;
+import es.pokemonuniverse.domain.game.engine.GameLifecycle;
+import es.pokemonuniverse.domain.game.engine.GamePhase;
+import es.pokemonuniverse.domain.game.engine.GamePlayer;
+import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
+import es.pokemonuniverse.domain.game.engine.infra.Timing;
+import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelAction;
+import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelAttempt;
+import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelPlayerState;
+import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelPublicState;
+import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelRoundReason;
+import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelRoundResult;
+import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelSolution;
+import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelState;
+import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelStats;
+import io.micronaut.core.annotation.Nullable;
+import io.micronaut.json.tree.JsonNode;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+/** Traducción literal de {@code type-duel/server.ts}; {@code handleTimeout} es propio (cinco fases temporizadas). */
+public final class TypeDuelEngine
+    implements GameEngine<TypeDuelConfig, TypeDuelState, TypeDuelAction, TypeDuelPublicState> {
+
+  public static final String ID = "type-duel";
+  private static final long TYPE_REVEAL_MS = 2_000;
+  private static final long INVALID_COMBINATION_MS = 3_000;
+  public static final long RESULT_MS = 10_000;
+
+  private final GameManifest manifest;
+
+  /** {@code manifest} es el de {@code games/registry.json} para {@value #ID}. */
+  public TypeDuelEngine(GameManifest manifest) {
+    if (!ID.equals(Objects.requireNonNull(manifest, "manifest").id())) {
+      throw new IllegalArgumentException("Manifiesto de " + manifest.id() + " para el motor " + ID);
+    }
+    this.manifest = manifest;
+  }
+
+  @Override
+  public GameManifest manifest() {
+    return manifest;
+  }
+
+  @Override
+  public TypeDuelConfig parseConfig(JsonNode raw) {
+    return TypeDuelConfig.parse(raw);
+  }
+
+  @Override
+  public TypeDuelAction parseAction(JsonNode raw) {
+    return TypeDuelAction.parse(raw);
+  }
+
+  @Override
+  public TypeDuelConfig defaultConfig() {
+    return TypeDuelConfig.defaults();
+  }
+
+  /** Consume {@code random} una vez (elección de pareja) salvo que queden menos de dos jugadores y la partida acabe. */
+  private static TypeDuelState selectPlayers(TypeDuelState state, GameContext context) {
+    var availablePlayerIds = context.connectedRequiredPlayerIds(state.playerIds());
+    if (availablePlayerIds.size() < 2) return state.finished();
+    var participants = TypeDuelRules.chooseBalancedPair(availablePlayerIds, state.participationCounts(),
+        state.lastPair(), context.random());
+    var counts = new LinkedHashMap<>(state.participationCounts());
+    for (var id : participants) counts.put(id, counts.getOrDefault(id, 0) + 1);
+    return state.toBuilder()
+        .phase(GamePhase.SELECTING_TYPES)
+        .roundNumber(state.completedRounds() + 1)
+        .participants(participants)
+        .participationCounts(counts)
+        .lastPair(participants)
+        .typeSelections(Map.of())
+        .requiredTypes(null)
+        .validPokemonIds(List.of())
+        .attempts(List.of())
+        .cooldownUntil(Map.of())
+        .roundStartedAt(context.now())
+        .roundEndsAt(context.now() + state.config().typeSelectSeconds() * 1_000L)
+        .nextTransitionAt(null)
+        .lastRound(null)
+        .build();
+  }
+
+  /** Las formas regionales cuentan como solución ({@code includeForms: true}). */
+  private static TypeDuelState resolveTypes(TypeDuelState state, GameContext context) {
+    var typeA = state.typeSelections().get(state.participants().get(0));
+    var typeB = state.typeSelections().get(state.participants().get(1));
+    var valid = context.pokemon().forGenerations(state.config().generations(), true).stream()
+        .filter(pokemon -> TypeDuelRules.isValidPokemonForTypes(pokemon, typeA, typeB))
+        .toList();
+    boolean any = !valid.isEmpty();
+    return state.toBuilder()
+        .phase(any ? GamePhase.TYPE_REVEAL : GamePhase.INVALID_COMBINATION)
+        .requiredTypes(TypeDuelRules.requiredTypeCombination(typeA, typeB))
+        .validPokemonIds(valid.stream().map(pokemon -> pokemon.id()).toList())
+        .roundEndsAt(null)
+        .nextTransitionAt(context.now() + (any ? TYPE_REVEAL_MS : INVALID_COMBINATION_MS))
+        .build();
+  }
+
+  private static TypeDuelState beginSearch(TypeDuelState state, GameContext context) {
+    return state.toBuilder()
+        .phase(GamePhase.POKEMON_SEARCH)
+        .attempts(List.of())
+        .cooldownUntil(Map.of())
+        .roundStartedAt(context.now())
+        .roundEndsAt(context.now() + state.config().searchSeconds() * 1_000L)
+        .nextTransitionAt(null)
+        .build();
+  }
+
+  private static TypeDuelState roundResult(TypeDuelState state, GameContext context, TypeDuelRoundReason reason,
+      @Nullable String winnerId) {
+    boolean canceled = reason == TypeDuelRoundReason.TYPE_TIMEOUT || reason == TypeDuelRoundReason.DISCONNECTED;
+    int completed = canceled ? state.completedRounds() : state.completedRounds() + 1;
+    var stats = new LinkedHashMap<>(state.playerStats());
+    var scores = new LinkedHashMap<>(state.scores());
+    if (!canceled) {
+      for (var id : state.participants()) {
+        stats.put(id, Objects.requireNonNull(stats.get(id), "playerStats").afterDuel(id.equals(winnerId)));
+      }
+    }
+    if (winnerId != null) scores.put(winnerId, scores.getOrDefault(winnerId, 0) + TypeDuelRules.WIN_POINTS);
+    var winningPokemonIds = new HashSet<String>();
+    for (var attempt : state.attempts()) {
+      if (attempt.correct()) winningPokemonIds.add(attempt.pokemonId());
+    }
+    boolean showSolutions = reason == TypeDuelRoundReason.TIMEOUT || reason == TypeDuelRoundReason.WINNER;
+    List<TypeDuelSolution> solutions = showSolutions
+        ? state.validPokemonIds().stream()
+            .filter(id -> !winningPokemonIds.contains(id))
+            .limit(TypeDuelRules.MAX_SOLUTIONS)
+            .map(id -> context.pokemon().byId(id).orElseThrow(() -> new EngineException("Pokémon desconocido: " + id)))
+            .map(pokemon -> new TypeDuelSolution(pokemon.id(), pokemon.name(), pokemon.sprite()))
+            .toList()
+        : List.of();
+    return state.toBuilder()
+        .phase(GamePhase.ROUND_RESULTS)
+        .completedRounds(completed)
+        .scores(scores)
+        .playerStats(stats)
+        .roundEndsAt(null)
+        .nextTransitionAt(context.now() + RESULT_MS)
+        .lastRound(new TypeDuelRoundResult(reason, winnerId, new ArrayList<>(state.attempts()), solutions,
+            state.requiredTypes()))
+        .build();
+  }
+
+  private static TypeDuelState advanceAfterResult(TypeDuelState state, GameContext context) {
+    return state.completedRounds() >= state.config().rounds() ? state.finished() : selectPlayers(state, context);
+  }
+
+  /** {@code context.now >= (deadline ?? Infinity)}. */
+  private static boolean reached(GameContext context, @Nullable Long deadline) {
+    return deadline != null && context.now() >= deadline;
+  }
+
+  @Override
+  public TypeDuelState createInitialState(TypeDuelConfig config, GameContext context) {
+    if (context.players().size() < 2) throw new EngineException("Se necesitan dos jugadores.");
+    var playerIds = context.players().stream().map(GamePlayer::id).toList();
+    var participationCounts = new LinkedHashMap<String, Integer>();
+    var scores = new LinkedHashMap<String, Integer>();
+    var playerStats = new LinkedHashMap<String, TypeDuelStats>();
+    for (var id : playerIds) {
+      participationCounts.put(id, 0);
+      scores.put(id, 0);
+      playerStats.put(id, TypeDuelStats.ZERO);
+    }
+    return TypeDuelState.builder()
+        .phase(GamePhase.GAME_STARTING)
+        .config(config)
+        .playerIds(playerIds)
+        .completedRounds(0)
+        .roundNumber(0)
+        .participants(List.of(playerIds.get(0), playerIds.get(1)))
+        .participationCounts(participationCounts)
+        .scores(scores)
+        .playerStats(playerStats)
+        .build();
+  }
+
+  @Override
+  public TypeDuelState start(TypeDuelState state, GameContext context) {
+    return selectPlayers(state, context);
+  }
+
+  @Override
+  public GameActionResult<TypeDuelState> handleAction(TypeDuelState state, String playerId, TypeDuelAction action,
+      GameContext context) {
+    if (action instanceof TypeDuelAction.Continue) {
+      if (state.phase() != GamePhase.ROUND_RESULTS) {
+        return GameActionResult.reject(state, "No hay ningún resultado que avanzar.");
+      }
+      if (context.hostId() == null || !context.hostId().equals(playerId)) {
+        return GameActionResult.reject(state, "Solo el Host puede avanzar la ronda.");
+      }
+      return GameActionResult.accept(advanceAfterResult(state, context));
+    }
+    if (!state.participants().contains(playerId)) return GameActionResult.reject(state, "Observas este duelo.");
+    if (!context.isPlayerRequired(playerId)) {
+      return GameActionResult.reject(state, "No estás conectado como participante.");
+    }
+    if (action instanceof TypeDuelAction.SelectType select) {
+      if (state.phase() != GamePhase.SELECTING_TYPES) {
+        return GameActionResult.reject(state, "No se están eligiendo tipos.");
+      }
+      if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
+        return GameActionResult.reject(state, "El tiempo ha terminado.");
+      }
+      if (state.typeSelections().containsKey(playerId)) {
+        return GameActionResult.reject(state, "Tu tipo ya está bloqueado.");
+      }
+      var selections = new LinkedHashMap<>(state.typeSelections());
+      selections.put(playerId, select.pokemonType());
+      var next = state.toBuilder().typeSelections(selections).build();
+      if (next.participants().stream().allMatch(next.typeSelections()::containsKey)) next = resolveTypes(next, context);
+      return GameActionResult.accept(next);
+    }
+    var attemptAction = (TypeDuelAction.AttemptPokemon) action;
+    if (state.phase() != GamePhase.POKEMON_SEARCH) return GameActionResult.reject(state, "La carrera no está activa.");
+    if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
+      return GameActionResult.reject(state, "El tiempo ha terminado.");
+    }
+    var cooldown = state.cooldownUntil().get(playerId);
+    if (Timing.cooldownRemainingMs(context.now(), cooldown) > 0) {
+      return GameActionResult.reject(state, Timing.cooldownMessage(context.now(), cooldown));
+    }
+    var found = context.pokemon().byId(attemptAction.pokemonId());
+    if (found.isEmpty() || !state.config().generations().contains(found.get().generation())) {
+      return GameActionResult.reject(state, "Pokémon fuera del pool.");
+    }
+    var pokemon = found.get();
+    boolean correct = state.validPokemonIds().contains(pokemon.id());
+    var attempt = new TypeDuelAttempt(playerId, pokemon.id(), pokemon.name(), pokemon.sprite(), correct, context.now());
+    var prior = Objects.requireNonNull(state.playerStats().get(playerId), "playerStats");
+    var attempts = new ArrayList<>(state.attempts());
+    attempts.add(attempt);
+    var playerStats = new LinkedHashMap<>(state.playerStats());
+    long elapsed = context.now() - (state.roundStartedAt() == null ? context.now() : state.roundStartedAt());
+    playerStats.put(playerId, prior.afterAttempt(correct, elapsed));
+    var next = state.toBuilder()
+        .attempts(attempts)
+        .cooldownUntil(correct ? state.cooldownUntil()
+            : Timing.setPlayerCooldown(state.cooldownUntil(), playerId, context.now(), TypeDuelRules.ATTEMPT_COOLDOWN_MS))
+        .playerStats(playerStats)
+        .build();
+    if (correct) next = roundResult(next, context, TypeDuelRoundReason.WINNER, playerId);
+    return GameActionResult.accept(next);
+  }
+
+  @Override
+  public TypeDuelState handleTimeout(TypeDuelState state, GameContext context) {
+    if (state.phase() == GamePhase.SELECTING_TYPES && reached(context, state.roundEndsAt())) {
+      var playersWhoSelected = state.participants().stream().filter(state.typeSelections()::containsKey).toList();
+      return playersWhoSelected.size() == 1
+          ? roundResult(state, context, TypeDuelRoundReason.TYPE_FORFEIT, playersWhoSelected.getFirst())
+          : roundResult(state, context, TypeDuelRoundReason.TYPE_TIMEOUT, null);
+    }
+    if (state.phase() == GamePhase.TYPE_REVEAL && reached(context, state.nextTransitionAt())) {
+      return beginSearch(state, context);
+    }
+    if (state.phase() == GamePhase.INVALID_COMBINATION && reached(context, state.nextTransitionAt())) {
+      return state.toBuilder()
+          .phase(GamePhase.SELECTING_TYPES)
+          .typeSelections(Map.of())
+          .requiredTypes(null)
+          .validPokemonIds(List.of())
+          .roundStartedAt(context.now())
+          .roundEndsAt(context.now() + state.config().typeSelectSeconds() * 1_000L)
+          .nextTransitionAt(null)
+          .build();
+    }
+    if (state.phase() == GamePhase.POKEMON_SEARCH && reached(context, state.roundEndsAt())) {
+      return roundResult(state, context, TypeDuelRoundReason.TIMEOUT, null);
+    }
+    if (state.phase() == GamePhase.ROUND_RESULTS && reached(context, state.nextTransitionAt())) {
+      return advanceAfterResult(state, context);
+    }
+    return state;
+  }
+
+  @Override
+  public TypeDuelState handlePresenceChange(TypeDuelState state, GameContext context) {
+    var phase = state.phase();
+    if (phase == GamePhase.SELECTING_TYPES || phase == GamePhase.TYPE_REVEAL
+        || phase == GamePhase.INVALID_COMBINATION || phase == GamePhase.POKEMON_SEARCH) {
+      if (state.participants().stream().anyMatch(playerId -> !context.isPlayerRequired(playerId))) {
+        return roundResult(state, context, TypeDuelRoundReason.DISCONNECTED, null);
+      }
+    }
+    return state;
+  }
+
+  @Override
+  public TypeDuelPublicState getPublicState(TypeDuelState state, GameContext context) {
+    boolean reveal = state.participants().stream().allMatch(state.typeSelections()::containsKey)
+        && state.phase() != GamePhase.SELECTING_TYPES;
+    boolean resultsPhase = state.phase() == GamePhase.ROUND_RESULTS || state.phase() == GamePhase.GAME_RESULTS;
+    return new TypeDuelPublicState(ID, state.phase(), state.playerIds(), state.completedRounds(), state.roundNumber(),
+        state.config().rounds(), state.participants(), state.participationCounts(),
+        new ArrayList<>(state.typeSelections().keySet()),
+        reveal ? state.typeSelections() : Map.of(),
+        reveal ? state.requiredTypes() : null,
+        state.attempts(), state.scores(), state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(),
+        resultsPhase ? state.lastRound() : null,
+        state.phase() == GamePhase.GAME_RESULTS ? TypeDuelRules.buildTypeDuelResults(state) : null);
+  }
+
+  @Override
+  public TypeDuelPlayerState getPlayerState(TypeDuelState state, String playerId, GameContext context) {
+    boolean participant = state.participants().contains(playerId);
+    var cooldown = state.cooldownUntil().get(playerId);
+    return new TypeDuelPlayerState(participant, state.typeSelections().get(playerId),
+        participant && state.phase() == GamePhase.SELECTING_TYPES && !state.typeSelections().containsKey(playerId),
+        participant && state.phase() == GamePhase.POKEMON_SEARCH,
+        cooldown == null ? 0 : cooldown);
+  }
+
+  @Override
+  public GameLifecycle getLifecycle(TypeDuelState state) {
+    return TimedLifecycle.builder(state.phase())
+        .roundEndsAt(state.roundEndsAt())
+        .nextTransitionAt(state.nextTransitionAt())
+        .roundStartedAt(state.roundStartedAt())
+        .roundNumber(state.roundNumber())
+        .build();
+  }
+
+  @Override
+  public boolean isFinished(TypeDuelState state) {
+    return state.phase() == GamePhase.GAME_RESULTS;
+  }
+
+  @Override
+  public GameResults getResults(TypeDuelState state) {
+    return TypeDuelRules.buildTypeDuelResults(state);
+  }
+}
