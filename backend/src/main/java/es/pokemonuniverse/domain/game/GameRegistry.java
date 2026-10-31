@@ -1,55 +1,32 @@
 package es.pokemonuniverse.domain.game;
 
-import io.micronaut.core.type.Argument;
-import io.micronaut.serde.ObjectMapper;
-import jakarta.annotation.PostConstruct;
-import jakarta.inject.Singleton;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/** Registro de minijuegos cargado de {@code games/registry.json} (exportado desde el registro TypeScript). */
-@Singleton
-public class GameRegistry {
+/**
+ * Registro de minijuegos exportado desde el registro TypeScript. Clase de dominio pura: la carga desde
+ * {@code games/registry.json} vive en {@code adapters.out.resources.ClasspathGameRegistryLoader}.
+ */
+public final class GameRegistry {
 
-  static final String RESOURCE = "games/registry.json";
+  private final List<GameManifest> games;
+  private final Map<String, GameManifest> byId;
 
-  private final ObjectMapper mapper;
-  private List<GameManifest> games = List.of();
-  private Map<String, GameManifest> byId = Map.of();
-
-  public GameRegistry(ObjectMapper mapper) {
-    this.mapper = mapper;
-  }
-
-  @PostConstruct
-  void init() {
-    try (InputStream in = GameRegistry.class.getClassLoader().getResourceAsStream(RESOURCE)) {
-      if (in == null) {
-        throw new IllegalStateException("Falta el recurso " + RESOURCE + ". Ejecuta npm run registry:export");
-      }
-      games = load(mapper, in);
-    } catch (IOException e) {
-      throw new IllegalStateException("No se pudo leer " + RESOURCE, e);
-    }
+  public GameRegistry(List<GameManifest> games) {
+    this.games = List.copyOf(games);
+    var seen = new HashSet<String>();
     var index = new LinkedHashMap<String, GameManifest>();
-    games.forEach(game -> index.put(game.id(), game));
-    byId = index;
-  }
-
-  static List<GameManifest> load(ObjectMapper mapper, InputStream in) throws IOException {
-    var loaded = List.copyOf(mapper.readValue(in, Argument.listOf(GameManifest.class)));
-    var seen = new java.util.HashSet<String>();
-    for (var game : loaded) {
+    for (var game : this.games) {
       if (!seen.add(game.id())) {
         throw new IllegalStateException("Minijuego duplicado en el registro: " + game.id());
       }
+      index.put(game.id(), game);
     }
-    return loaded;
+    this.byId = index;
   }
 
   /** Orden del fichero exportado (el de {@code gameRegistry.list()} en TypeScript). */
