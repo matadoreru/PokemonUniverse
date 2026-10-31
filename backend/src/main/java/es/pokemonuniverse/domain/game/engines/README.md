@@ -6,8 +6,9 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
 ## Ficheros (`engines/<idsinguiones>/`)
 
 - `<Juego>Config`: un record `@Serdeable` más `parse(JsonNode)`, que reproduce el esquema Zod. Las claves desconocidas
-  se ignoran salvo si el esquema es `.strict()`. Hay que aplicar las mismas transformaciones (dedup, orden). Un entero
-  acepta `10.0` y rechaza `10.5`. Un fallo lanza `ConfigValidationException`.
+  se ignoran salvo si el esquema es `.strict()`. Hay que aplicar las mismas transformaciones (dedup, orden). Se
+  replica `.int().min().max()` de cada campo, con los mismos límites. Un entero acepta `10.0` y rechaza `10.5`. Un
+  fallo lanza `ConfigValidationException`.
 - `<Juego>Types`: los records de `types.ts` con los mismos nombres, más la acción con su `parse(JsonNode)`, que es
   estricto si el esquema TS lo es.
 - `<Juego>Rules`: el port de `rules.ts`.
@@ -19,7 +20,10 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
 - **Estado con builder**: todo record de estado tiene un `Builder` anidado con setters con nombre, más `builder()` y
   `toBuilder()`. Cada transición deriva de `state.toBuilder()…build()`, que es el `{ ...state, … }` de TS. El motor
   nunca llama al constructor posicional: dos campos contiguos del mismo tipo se pueden intercambiar sin que lo detecte
-  el compilador. Un helper como `finished()` vale si usa el builder.
+  el compilador. Un helper como `finished()` vale si usa el builder. La regla del builder se aplica a los records de
+  estado de primer nivel. Los records anidados pequeños (estadísticas, resultados de ronda; hasta 6 campos) pueden usar
+  su constructor, pero si tienen 3 o más campos contiguos del mismo tipo se construyen con un método estático o de
+  instancia con nombre (por ejemplo `PlayerRoundStats.ZERO.afterSelection(distance)`), no por posición.
 - **Inmutabilidad**: los `Record<string, …>` son `LinkedHashMap` copiados con `Immutables.frozenMap` en el constructor
   compacto, y las listas usan `Immutables.frozenList`. Sin esto, una acción rechazada podría mutar el estado.
 - **Orden de claves** (constraint 6): un `LinkedHashMap` conserva el orden de inserción, como JS con claves no numéricas.
@@ -31,8 +35,9 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
   `Randoms.randomItem`/`shuffled`/`contentDeck` y se conserva el `Math.min(Math.floor(r * n), n - 1)`. Una extracción
   de más o de menos aparece como desajuste dorado.
 - **Ciclo de vida**: `TimedLifecycle.builder(phase)` lleva exactamente los campos que `timedGameLifecycle` lee del
-  estado TS. El ciclo activo → resultados → siguiente usa `Timing.advanceTimedRound` con un `TimedRoundStrategy`
-  `static final`.
+  estado TS, incluido `spectatorIds` si el estado lo tiene. El ciclo activo → resultados → siguiente usa
+  `Timing.advanceTimedRound` con un `TimedRoundStrategy` `static final` cuando el TS lo usa. Si el TS escribe su propio
+  `handleTimeout` (por ejemplo, con dos fases activas como `pokedexdistance/`), se porta literal.
 - **Errores**: los literales de `server.ts`, idénticos, en `GameActionResult.reject`. Un `throw new Error` de TS se
   traduce como `EngineException` con el mismo mensaje.
 - **`localeCompare`**: si se traduce como `String.compareTo`, hay que documentar por qué es equivalente (por ejemplo,
@@ -49,6 +54,7 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
    Revisa una fixture a ojo.
 3. Ejecuta `cd backend && ./gradlew test --tests '*GoldenReplayTest*'`. Debe fallar con `Motor no portado: <id>`.
 4. Porta el motor y regístralo en `backend/src/test/java/es/pokemonuniverse/golden/GoldenEngines.java` con
-   `new <Juego>Engine(GoldenManifests.of(<Juego>Engine.ID))`.
+   `new <Juego>Engine(GoldenManifests.of(<Juego>Engine.ID))`. El manifiesto ya está en `registry.json`:
+   `npm run registry:export` solo hace falta cuando cambia un manifiesto.
 5. Vuelve a ejecutar el paso 3 hasta que pase. Ante un desajuste, corrige el Java: nunca las fixtures ni el TS. Termina
    con `./gradlew check` y, en la raíz, con `npm run lint && npm test`, que incluye `check:golden`.

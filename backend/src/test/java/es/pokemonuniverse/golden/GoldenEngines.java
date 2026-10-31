@@ -2,6 +2,7 @@ package es.pokemonuniverse.golden;
 
 import es.pokemonuniverse.domain.game.engine.GameEngine;
 import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerEngine;
+import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceEngine;
 import java.util.Map;
 import java.util.Optional;
 
@@ -9,7 +10,8 @@ import java.util.Optional;
 public final class GoldenEngines {
 
   private static final Map<String, GameEngine<?, ?, ?, ?>> ENGINES = Map.of(
-      HigherLowerEngine.ID, new HigherLowerEngine(GoldenManifests.of(HigherLowerEngine.ID)));
+      HigherLowerEngine.ID, new HigherLowerEngine(GoldenManifests.of(HigherLowerEngine.ID)),
+      PokedexDistanceEngine.ID, new PokedexDistanceEngine(GoldenManifests.of(PokedexDistanceEngine.ID)));
 
   private GoldenEngines() {}
 
