@@ -6,11 +6,13 @@ import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.serde.annotation.Serdeable;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Arrays;
 import java.util.List;
@@ -29,10 +31,11 @@ public class PokemonController {
     this.service = service;
   }
 
-  @Operation(summary = "Catálogo Pokémon")
+  @Operation(summary = "Catálogo Pokémon", operationId = "listPokemon")
+  @ApiResponse(responseCode = "200", description = "OK")
   @Get
-  public HttpResponse<PokemonResponse> list(@QueryValue(defaultValue = "") String generations,
-      @QueryValue(defaultValue = "") String includeForms) {
+  public HttpResponse<PokemonResponse> list(@QueryValue(defaultValue = "") @Nullable String generations,
+      @QueryValue(defaultValue = "") @Nullable String includeForms) {
     var query = new PokemonSearchQuery(parseGenerations(generations), "true".equals(includeForms));
     return HttpResponse.ok(new PokemonResponse(service.search(query)))
         .header("Cache-Control", "public, max-age=3600, stale-while-revalidate=86400");

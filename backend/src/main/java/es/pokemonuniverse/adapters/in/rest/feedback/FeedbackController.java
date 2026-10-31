@@ -1,5 +1,6 @@
 package es.pokemonuniverse.adapters.in.rest.feedback;
 
+import es.pokemonuniverse.adapters.in.rest.ApiError;
 import es.pokemonuniverse.adapters.in.rest.ApiException;
 import es.pokemonuniverse.adapters.in.rest.ApiValidationException;
 import es.pokemonuniverse.adapters.in.rest.identity.Identity;
@@ -14,6 +15,10 @@ import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.serde.annotation.Serdeable;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -34,8 +39,11 @@ public class FeedbackController {
   }
 
   @Operation(summary = "Enviar feedback")
+  @ApiResponse(responseCode = "201", description = "Creado")
+  @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ApiError.class)))
+  @ApiResponse(responseCode = "401", description = "Sesión requerida", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Post
-  public HttpResponse<FeedbackResponse> submit(@Body CreateFeedbackRequest body, @Identity Optional<AuthUser> current) {
+  public HttpResponse<FeedbackResponse> submit(@Body CreateFeedbackRequest body, @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
     var author = current.orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Authentication required"));
     var request = body.normalized();
     var violations = validator.validate(request);

@@ -17,12 +17,18 @@ paths:
           type: string
       responses:
         "200":
-          description: avatar 200 response
+          description: OK
           content:
-            application/json:
+            image/webp:
               schema:
                 type: string
                 format: binary
+        "404":
+          description: No existe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/auth/guest:
     post:
       tags:
@@ -33,22 +39,17 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: "#/components/schemas/GuestRequest"
-              - type: object
-                properties:
-                  current:
-                    nullable: true
-                    allOf:
-                    - $ref: "#/components/schemas/AuthUser"
+              $ref: "#/components/schemas/GuestRequest"
         required: true
       responses:
-        "200":
-          description: guest 200 response
+        "201":
+          description: Creado
+        "400":
+          description: Datos inválidos
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserResponse"
+                $ref: "#/components/schemas/ApiError"
   /api/auth/login:
     post:
       tags:
@@ -59,59 +60,45 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: "#/components/schemas/LoginRequest"
-              - type: object
-                properties:
-                  current:
-                    nullable: true
-                    allOf:
-                    - $ref: "#/components/schemas/AuthUser"
+              $ref: "#/components/schemas/LoginRequest"
         required: true
       responses:
         "200":
-          description: login 200 response
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserResponse"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Credenciales incorrectas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/auth/logout:
     post:
       tags:
       - auth
       summary: Cerrar sesión
       operationId: logout
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                current:
-                  nullable: true
-                  allOf:
-                  - $ref: "#/components/schemas/AuthUser"
-        required: true
       responses:
-        "200":
-          description: logout 200 response
+        "204":
+          description: Sin contenido
   /api/auth/me:
     get:
       tags:
       - auth
       summary: Usuario de la sesión actual
       operationId: me
-      parameters:
-      - name: current
-        in: query
-        explode: false
-        schema:
-          nullable: true
-          allOf:
-          - $ref: "#/components/schemas/AuthUser"
       responses:
         "200":
-          description: me 200 response
+          description: OK
           content:
             application/json:
               schema:
@@ -122,21 +109,19 @@ paths:
       - auth
       summary: Perfil con estadísticas por minijuego
       operationId: profile
-      parameters:
-      - name: current
-        in: query
-        explode: false
-        schema:
-          nullable: true
-          allOf:
-          - $ref: "#/components/schemas/AuthUser"
       responses:
         "200":
-          description: profile 200 response
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProfileResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/auth/register:
     post:
       tags:
@@ -147,31 +132,32 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: "#/components/schemas/RegisterRequest"
-              - type: object
-                properties:
-                  current:
-                    nullable: true
-                    allOf:
-                    - $ref: "#/components/schemas/AuthUser"
+              $ref: "#/components/schemas/RegisterRequest"
         required: true
       responses:
-        "200":
-          description: register 200 response
+        "201":
+          description: Creado
+        "400":
+          description: Datos inválidos
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserResponse"
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Ya existe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/changelog:
     get:
       tags:
       - changelog
       summary: Listar el changelog público
-      operationId: list
+      operationId: listChangelog
       responses:
         "200":
-          description: list 200 response
+          description: OK
           content:
             application/json:
               schema:
@@ -186,31 +172,32 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: "#/components/schemas/CreateFeedbackRequest"
-              - type: object
-                properties:
-                  current:
-                    nullable: true
-                    allOf:
-                    - $ref: "#/components/schemas/AuthUser"
+              $ref: "#/components/schemas/CreateFeedbackRequest"
         required: true
       responses:
-        "200":
-          description: submit 200 response
+        "201":
+          description: Creado
+        "400":
+          description: Datos inválidos
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FeedbackController.FeedbackResponse"
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Sesión requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/games:
     get:
       tags:
       - games
       summary: Listar minijuegos
-      operationId: list_1
+      operationId: listGames
       responses:
         "200":
-          description: list_1 200 response
+          description: OK
           content:
             application/json:
               schema:
@@ -220,29 +207,51 @@ paths:
       tags:
       - pokemon
       summary: Catálogo Pokémon
-      operationId: list_2
+      operationId: listPokemon
       parameters:
       - name: generations
         in: query
-        required: true
         explode: false
         schema:
           type: string
+          nullable: true
       - name: includeForms
         in: query
-        required: true
         explode: false
         schema:
           type: string
+          nullable: true
       responses:
         "200":
-          description: list_2 200 response
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/PokemonController.PokemonResponse"
 components:
   schemas:
+    ApiError:
+      required:
+      - error
+      type: object
+      properties:
+        error:
+          type: string
+        issues:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/ApiError.Issue"
+    ApiError.Issue:
+      required:
+      - message
+      - path
+      type: object
+      properties:
+        path:
+          type: string
+        message:
+          type: string
     AuthUser:
       required:
       - avatar
@@ -266,8 +275,6 @@ components:
           - $ref: "#/components/schemas/UserRole"
         avatar:
           $ref: "#/components/schemas/AvatarRef"
-      description: Identidad autenticada (usuario registrado o invitado); es la misma
-        que viaja en la cookie de sesión.
     AuthUser.Kind:
       type: string
       enum:
@@ -275,8 +282,6 @@ components:
       - GUEST
     AvatarRef:
       type: object
-      description: Avatar de un jugador; el JSON tiene exactamente las formas que
-        acepta el servidor Node.
       discriminator:
         propertyName: type
         mapping:
@@ -321,8 +326,6 @@ components:
           type: string
         text:
           type: string
-      description: Un cambio de una entrada del changelog (changelogChangeSchema en
-        shared).
     ChangelogController.ChangelogResponse:
       required:
       - entries
@@ -390,71 +393,6 @@ components:
           minLength: 10
           type: string
           x-not-null-message: Describe el feedback con al menos 10 caracteres.
-      description: "Cuerpo estricto: una clave desconocida falla la deserializació\
-        n (como `.strict()` de Zod)."
-    FeedbackController.FeedbackResponse:
-      required:
-      - feedback
-      type: object
-      properties:
-        feedback:
-          $ref: "#/components/schemas/FeedbackItemResponse"
-    FeedbackItemResponse:
-      required:
-      - author
-      - createdAt
-      - description
-      - gameId
-      - gameName
-      - id
-      - reference
-      - roomCode
-      - status
-      - type
-      - updatedAt
-      type: object
-      properties:
-        id:
-          type: string
-        reference:
-          type: string
-        gameId:
-          type: string
-          nullable: true
-        gameName:
-          type: string
-          nullable: true
-        roomCode:
-          type: string
-          nullable: true
-        type:
-          type: string
-        status:
-          type: string
-        description:
-          type: string
-        author:
-          $ref: "#/components/schemas/FeedbackItemResponse.Author"
-        createdAt:
-          type: string
-        updatedAt:
-          type: string
-      description: "Vista pública de un feedback; los nulos se emiten explícitos,\
-        \ como hace Node."
-    FeedbackItemResponse.Author:
-      required:
-      - displayName
-      - kind
-      - userId
-      type: object
-      properties:
-        userId:
-          type: string
-          nullable: true
-        displayName:
-          type: string
-        kind:
-          type: string
     FeedbackReference:
       type: string
       enum:
@@ -508,8 +446,6 @@ components:
           type: object
           additionalProperties:
             type: object
-      description: "Manifiesto de un minijuego mas su configuracion por defecto, tal\
-        \ como lo exporta el registro TypeScript."
     GameManifest.DerivedMetricDefinition:
       required:
       - denominator
@@ -701,8 +637,6 @@ components:
           type: array
           items:
             type: string
-      description: Pokémon público del catálogo; sin `palette`/`paletteWeights`. Los
-        null se omiten del JSON.
     PokemonController.PokemonResponse:
       required:
       - pokemon
@@ -719,8 +653,6 @@ components:
       properties:
         profile:
           $ref: "#/components/schemas/ProfileResponse.Profile"
-      description: "Respuesta `{\"profile\": ...}` de `GET /api/auth/profile` (UserProfileResponse\
-        \ en shared)."
     ProfileResponse.GameStats:
       required:
       - gameId
@@ -812,8 +744,6 @@ components:
           $ref: "#/components/schemas/GameManifest.ProfileStatsDefinition"
         stats:
           $ref: "#/components/schemas/ProfileResponse.GameStats"
-      description: "Manifiesto sin `defaultConfig`, con las estadisticas del usuario\
-        \ en ese minijuego."
     ProfileResponse.ProfileUser:
       required:
       - avatar
@@ -870,8 +800,6 @@ components:
           nullable: true
           allOf:
           - $ref: "#/components/schemas/AuthUser"
-      description: "Respuesta `{\"user\": ...}`; la clave se escribe siempre, tambié\
-        n como `null`."
     UserRole:
       type: string
       enum:

@@ -8,6 +8,7 @@ import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.serde.annotation.Serdeable;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
@@ -22,7 +23,8 @@ public class GamesController {
     this.registry = registry;
   }
 
-  @Operation(summary = "Listar minijuegos")
+  @Operation(summary = "Listar minijuegos", operationId = "listGames")
+  @ApiResponse(responseCode = "200", description = "OK")
   @Get
   public GamesResponse list() {
     return new GamesResponse(registry.list());

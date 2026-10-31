@@ -1,5 +1,6 @@
 package es.pokemonuniverse.adapters.in.rest.auth;
 
+import es.pokemonuniverse.adapters.in.rest.ApiError;
 import es.pokemonuniverse.adapters.in.rest.ApiException;
 import es.pokemonuniverse.adapters.in.rest.identity.Identity;
 import es.pokemonuniverse.adapters.in.rest.identity.SessionCookies;
@@ -21,6 +22,10 @@ import io.micronaut.http.annotation.Post;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -55,22 +60,30 @@ public class AuthController {
   }
 
   @Operation(summary = "Registrar usuario")
+  @ApiResponse(responseCode = "201", description = "Creado")
+  @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ApiError.class)))
+  @ApiResponse(responseCode = "409", description = "Ya existe", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Post("/register")
-  public HttpResponse<UserResponse> register(@Body RegisterRequest body, @Identity Optional<AuthUser> current) {
+  public HttpResponse<UserResponse> register(@Body RegisterRequest body, @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
     var request = valid(body.normalized());
     return session(HttpResponse.created(new UserResponse(auth.register(request.toCommand()))));
   }
 
   @Operation(summary = "Iniciar sesión")
+  @ApiResponse(responseCode = "200", description = "OK")
+  @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ApiError.class)))
+  @ApiResponse(responseCode = "401", description = "Credenciales incorrectas", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Post("/login")
-  public HttpResponse<UserResponse> login(@Body LoginRequest body, @Identity Optional<AuthUser> current) {
+  public HttpResponse<UserResponse> login(@Body LoginRequest body, @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
     var request = valid(body.normalized());
     return session(HttpResponse.ok(new UserResponse(auth.login(request.toCommand()))));
   }
 
   @Operation(summary = "Entrar como invitado")
+  @ApiResponse(responseCode = "201", description = "Creado")
+  @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Post("/guest")
-  public HttpResponse<UserResponse> guest(@Body GuestRequest body, @Identity Optional<AuthUser> current) {
+  public HttpResponse<UserResponse> guest(@Body GuestRequest body, @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
     var request = valid(body.normalized());
     var response = session(HttpResponse.created(new UserResponse(auth.guest(request.toCommand()))));
     guestAvatars.removePriorGuestAvatar(current, null);
@@ -78,8 +91,9 @@ public class AuthController {
   }
 
   @Operation(summary = "Cerrar sesión")
+  @ApiResponse(responseCode = "204", description = "Sin contenido")
   @Post("/logout")
-  public HttpResponse<Void> logout(@Identity Optional<AuthUser> current) {
+  public HttpResponse<Void> logout(@Parameter(hidden = true) @Identity Optional<AuthUser> current) {
     MutableHttpResponse<Void> response = HttpResponse.noContent();
     cookies.clear(response);
     guestAvatars.removePriorGuestAvatar(current, null);
@@ -87,6 +101,8 @@ public class AuthController {
   }
 
   @Operation(summary = "Obtener imagen de avatar")
+  @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "image/webp", schema = @Schema(type = "string", format = "binary")))
+  @ApiResponse(responseCode = "404", description = "No existe", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
   @Get("/avatars/{filename}")
   public HttpResponse<byte[]> avatar(String filename) {
     if (!AvatarRef.isValidCustomFile(filename)) return HttpResponse.notFound();
@@ -98,14 +114,17 @@ public class AuthController {
   }
 
   @Operation(summary = "Usuario de la sesión actual")
+  @ApiResponse(responseCode = "200", description = "OK")
   @Get("/me")
-  public UserResponse me(@Identity Optional<AuthUser> current) {
+  public UserResponse me(@Parameter(hidden = true) @Identity Optional<AuthUser> current) {
     return new UserResponse(current.orElse(null));
   }
 
   @Operation(summary = "Perfil con estadísticas por minijuego")
+  @ApiResponse(responseCode = "200", description = "OK")
+  @ApiResponse(responseCode = "401", description = "Cuenta registrada requerida", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Get("/profile")
-  public ProfileResponse profile(@Identity Optional<AuthUser> current) {
+  public ProfileResponse profile(@Parameter(hidden = true) @Identity Optional<AuthUser> current) {
     var user = current.filter(u -> u.kind() == AuthUser.Kind.USER)
         .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
     return profiles.profileOf(user.id()).orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));

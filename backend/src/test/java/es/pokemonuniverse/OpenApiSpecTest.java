@@ -40,6 +40,20 @@ class OpenApiSpecTest {
   }
 
   @Test
+  void specDocumentsRealResponsesAndHidesIdentity() throws IOException {
+    try (InputStream in = getClass().getClassLoader().getResourceAsStream("META-INF/swagger/" + SPEC)) {
+      String text = new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+      assertTrue(!text.contains("current"), "el parámetro de identidad no debe aparecer");
+      Map<String, Object> spec = new Yaml().load(text);
+      Map<?, ?> paths = (Map<?, ?>) spec.get("paths");
+      Map<?, ?> register = (Map<?, ?>) ((Map<?, ?>) ((Map<?, ?>) paths.get("/api/auth/register")).get("post")).get("responses");
+      assertTrue(register.containsKey("201") && register.containsKey("409") && !register.containsKey("200"));
+      Map<?, ?> logout = (Map<?, ?>) ((Map<?, ?>) ((Map<?, ?>) paths.get("/api/auth/logout")).get("post")).get("responses");
+      assertTrue(logout.containsKey("204") && !logout.containsKey("200"));
+    }
+  }
+
+  @Test
   void swaggerSpecIsServedInTest() {
     var response = client.toBlocking().exchange(HttpRequest.GET("/swagger/" + SPEC), String.class);
     assertEquals(HttpStatus.OK, response.status());
