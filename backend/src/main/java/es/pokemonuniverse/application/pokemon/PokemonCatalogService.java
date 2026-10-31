@@ -1,24 +1,37 @@
 package es.pokemonuniverse.application.pokemon;
 
+import es.pokemonuniverse.adapters.out.persistence.MoveEntity;
+import es.pokemonuniverse.adapters.out.persistence.MoveRepository;
+import es.pokemonuniverse.adapters.out.persistence.PokedexEntryEntity;
+import es.pokemonuniverse.adapters.out.persistence.PokedexEntryRepository;
 import es.pokemonuniverse.adapters.out.persistence.PokemonEntity;
+import es.pokemonuniverse.adapters.out.persistence.PokemonLevelUpMoveEntity;
+import es.pokemonuniverse.adapters.out.persistence.PokemonLevelUpMoveRepository;
 import es.pokemonuniverse.adapters.out.persistence.PokemonRepository;
 import es.pokemonuniverse.application.rooms.GameCatalogProvider;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
+import es.pokemonuniverse.domain.pokemon.LearnsetEntry;
+import es.pokemonuniverse.domain.pokemon.Move;
+import es.pokemonuniverse.domain.pokemon.PokedexEntry;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
+import es.pokemonuniverse.domain.pokemon.PokemonEvolutionInfo;
+import es.pokemonuniverse.domain.text.Collations;
 import io.micronaut.data.model.Sort;
 import jakarta.inject.Singleton;
-import java.text.Collator;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-/** Catálogo público: carga todas las filas, aplica el filtro de formas del catálogo y las cachea una hora. */
+/**
+ * Catálogo público y de partidas: carga Pokémon, movimientos, movimientos por nivel y entradas de Pokédex como
+ * {@code loadPokemonCatalog} de Node, aplica el filtro de formas del catálogo y cachea el resultado una hora.
+ */
 @Singleton
 public class PokemonCatalogService implements GameCatalogProvider {
 
@@ -26,32 +39,49 @@ public class PokemonCatalogService implements GameCatalogProvider {
   private static final Sort BASE_ORDER = Sort.of(
       Sort.Order.asc("nationalDexNumber"), Sort.Order.desc("isDefault"), Sort.Order.asc("name"),
       Sort.Order.desc("updatedAt"), Sort.Order.asc("id"));
+  private static final Sort LEARNSET_ORDER = Sort.of(
+      Sort.Order.asc("pokemonId"), Sort.Order.asc("referenceGeneration"), Sort.Order.asc("level"));
+  private static final Sort POKEDEX_ORDER = Sort.of(
+      Sort.Order.asc("pokemonId"), Sort.Order.desc("generation"), Sort.Order.asc("version"));
+  /** El cargador de Node etiqueta todas las entradas como españolas. */
+  private static final String POKEDEX_LANGUAGE = "es";
 
-  private record Cached(List<Pokemon> list, Instant loadedAt) {}
+  private record Cached(InMemoryPokemonCatalog catalog, Instant loadedAt) {}
 
   private final PokemonRepository repository;
+  private final MoveRepository moves;
+  private final PokemonLevelUpMoveRepository learnsets;
+  private final PokedexEntryRepository pokedexEntries;
   private final AtomicReference<Cached> cache = new AtomicReference<>();
 
-  public PokemonCatalogService(PokemonRepository repository) {
+  public PokemonCatalogService(PokemonRepository repository, MoveRepository moves,
+      PokemonLevelUpMoveRepository learnsets, PokedexEntryRepository pokedexEntries) {
     this.repository = repository;
+    this.moves = moves;
+    this.learnsets = learnsets;
+    this.pokedexEntries = pokedexEntries;
   }
 
   public List<Pokemon> search(PokemonSearchQuery query) {
     var allowed = Set.copyOf(query.generations());
-    var collator = Collator.getInstance(Locale.ROOT);
     var order = Comparator.comparingInt(Pokemon::nationalDexNumber)
         .thenComparing(p -> p.isDefault() ? 0 : 1)
-        .thenComparing(Pokemon::name, collator);
-    return base().stream()
+        .thenComparing(Pokemon::name, Collations.names());
+    return catalog().all().stream()
         .filter(p -> allowed.isEmpty() || allowed.contains(p.generation()))
         .filter(p -> query.includeForms() || p.isDefault())
         .sorted(order)
         .toList();
   }
 
-  /** Instantánea del catálogo para las partidas (mismo filtro y orden que {@code loadPokemonCatalog} de Node). */
+  /** Instantánea cacheada del catálogo para las partidas (mismo filtro y orden que {@code loadPokemonCatalog} de Node). */
   public InMemoryPokemonCatalog catalog() {
-    return new InMemoryPokemonCatalog(base());
+    var current = cache.get();
+    if (current == null || current.loadedAt().plus(TTL).isBefore(Instant.now())) {
+      current = new Cached(load(), Instant.now());
+      cache.set(current);
+    }
+    return current.catalog();
   }
 
   @Override
@@ -59,24 +89,28 @@ public class PokemonCatalogService implements GameCatalogProvider {
     return catalog();
   }
 
-  /** Descarta la caché; la siguiente búsqueda recarga desde la base de datos. */
+  /** Descarta la caché; la siguiente consulta recarga desde la base de datos. */
   public void refresh() {
     cache.set(null);
   }
 
-  private List<Pokemon> base() {
-    var current = cache.get();
-    if (current == null || current.loadedAt().plus(TTL).isBefore(Instant.now())) {
-      current = new Cached(load(), Instant.now());
-      cache.set(current);
+  private InMemoryPokemonCatalog load() {
+    var rows = repository.findAll(BASE_ORDER);
+    var pokemon = new ArrayList<Pokemon>();
+    var evolution = new HashMap<String, PokemonEvolutionInfo>();
+    for (var row : rows) {
+      pokemon.add(toPokemon(row));
+      var stage = nonZero(row.getEvolutionStage());
+      var stages = nonZero(row.getEvolutionStages());
+      if (stage != null && stages != null) evolution.put(row.getId(), new PokemonEvolutionInfo(stage, stages));
     }
-    return current.list();
-  }
-
-  private List<Pokemon> load() {
-    var rows = new ArrayList<Pokemon>();
-    for (var row : repository.findAll(BASE_ORDER)) rows.add(toPokemon(row));
-    return new InMemoryPokemonCatalog(rows).all();
+    var moveList = new ArrayList<Move>();
+    for (var row : moves.findAll()) moveList.add(toMove(row));
+    var learnsetList = new ArrayList<LearnsetEntry>();
+    for (var row : learnsets.findAll(LEARNSET_ORDER)) learnsetList.add(toLearnset(row));
+    var entryList = new ArrayList<PokedexEntry>();
+    for (var row : pokedexEntries.findAll(POKEDEX_ORDER)) entryList.add(toPokedexEntry(row));
+    return new InMemoryPokemonCatalog(pokemon, moveList, learnsetList, evolution, entryList);
   }
 
   private static Pokemon toPokemon(PokemonEntity r) {
@@ -88,6 +122,19 @@ public class PokemonCatalogService implements GameCatalogProvider {
         r.getSpecialDefense(), r.getSpeed(), r.getBaseStatTotal(), r.getHeightDecimeters(),
         r.getWeightHectograms(), nonZero(r.getEvolutionStage()), nonZero(r.getEvolutionStages()),
         r.getLegendaryStatus(), r.getColor(), list(r.getAbilities()), names, list(r.getTypes()));
+  }
+
+  private static Move toMove(MoveEntity r) {
+    return new Move(r.getId(), r.getName(), r.getType(), r.getCategory(), r.getNames());
+  }
+
+  private static LearnsetEntry toLearnset(PokemonLevelUpMoveEntity r) {
+    return new LearnsetEntry(r.getPokemonId(), r.getMoveId(), r.getReferenceGeneration(), r.getLevel());
+  }
+
+  private static PokedexEntry toPokedexEntry(PokedexEntryEntity r) {
+    return new PokedexEntry(r.getPokemonId(), r.getText(), POKEDEX_LANGUAGE, r.getGeneration(), r.getVersion(),
+        r.getVersionLabel());
   }
 
   private static Integer nonZero(Integer v) {

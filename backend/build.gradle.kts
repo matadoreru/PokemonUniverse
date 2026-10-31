@@ -46,6 +46,8 @@ dependencies {
   implementation("io.micronaut.sql:micronaut-jdbc-hikari")
   implementation("com.nimbusds:nimbus-jose-jwt:10.10")
   implementation("at.favre.lib:bcrypt:0.10.2")
+  // Misma ICU que Node (process.versions.icu): Collations replica localeCompare, espacios y guiones incluidos.
+  implementation("com.ibm.icu:icu4j:78.3")
   implementation("io.micronaut.flyway:micronaut-flyway")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql")

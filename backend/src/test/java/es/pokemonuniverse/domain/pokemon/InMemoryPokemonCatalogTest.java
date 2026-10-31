@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 
@@ -66,5 +67,115 @@ class InMemoryPokemonCatalogTest {
     assertEquals("a", catalog.byDexNumber(1).orElseThrow().id());
     assertFalse(catalog.byId("a-dup").isPresent());
     assertNull(catalog.byId("a").orElseThrow().shinySprite());
+  }
+
+  private static Move move(String id, String name) {
+    return new Move(id, name, "normal", "physical", null);
+  }
+
+  private static PokedexEntry entry(String pokemonId, int generation, String version) {
+    return new PokedexEntry(pokemonId, "texto " + version, "es", generation, version, version.toUpperCase());
+  }
+
+  private static InMemoryPokemonCatalog withLearnsets(List<LearnsetEntry> learnsets) {
+    return new InMemoryPokemonCatalog(List.of(pokemon("a", 1, true)),
+        List.of(move("tackle", "Placaje"), move("acid", "Ácido"), move("growl", "gruñido"), move("ember", "Ñ"),
+            move("wave", "Onda")),
+        learnsets, Map.of("a", new PokemonEvolutionInfo(1, 2)), List.of());
+  }
+
+  @Test
+  void learnsetsOfOneLevelAreOrderedByMoveNameWithCollations() {
+    var catalog = withLearnsets(List.of(new LearnsetEntry("a", "wave", 1, 5), new LearnsetEntry("a", "tackle", 1, 1),
+        new LearnsetEntry("a", "ember", 1, 5), new LearnsetEntry("a", "growl", 1, 1), new LearnsetEntry("a", "acid", 1, 1)));
+    var moves = catalog.levelUpMoves("a", 1);
+    assertEquals(List.of("Ácido", "gruñido", "Placaje", "Ñ", "Onda"), moves.stream().map(m -> m.move().name()).toList());
+    assertEquals(List.of(1, 1, 1, 5, 5), moves.stream().map(ResolvedLevelUpMove::level).toList());
+    assertEquals("acid", moves.get(0).moveId());
+    assertEquals(List.of(), catalog.levelUpMoves("a", 2));
+    assertEquals(List.of(), catalog.levelUpMoves("missing", 1));
+  }
+
+  @Test
+  void learnsetsOfAnUnknownMoveAreDropped() {
+    var catalog = withLearnsets(List.of(new LearnsetEntry("a", "tackle", 1, 1), new LearnsetEntry("a", "hyper-beam", 1, 1),
+        new LearnsetEntry("b", "hyper-beam", 2, 3)));
+    assertEquals(List.of("tackle"), catalog.levelUpMoves("a", 1).stream().map(ResolvedLevelUpMove::moveId).toList());
+    assertEquals(List.of(), catalog.levelUpMoves("b", 2));
+  }
+
+  @Test
+  void evolutionInfoIsLookedUpById() {
+    var catalog = withLearnsets(List.of());
+    assertEquals(Optional.of(new PokemonEvolutionInfo(1, 2)), catalog.evolutionInfo("a"));
+    assertEquals(Optional.empty(), catalog.evolutionInfo("missing"));
+  }
+
+  @Test
+  void pokedexEntriesKeepArrivalOrderWhenAlreadySortedLikeTheLoader() {
+    var entries = List.of(entry("a", 2, "crystal"), entry("a", 2, "gold"), entry("a", 1, "red"), entry("b", 1, "blue"));
+    var catalog = new InMemoryPokemonCatalog(List.of(pokemon("a", 1, true)), List.of(), List.of(), Map.of(), entries);
+    assertEquals(entries.subList(0, 3), catalog.pokedexEntries("a"));
+    assertEquals(List.of(entries.get(3)), catalog.pokedexEntries("b"));
+    assertEquals(List.of(), catalog.pokedexEntries("missing"));
+  }
+
+  @Test
+  void pokedexEntriesAreSortedNewestGenerationFirstThenVersionLikeNode() {
+    // El constructor de Node reordena cada lista: generación descendente y después versión con localeCompare.
+    var catalog = new InMemoryPokemonCatalog(List.of(pokemon("a", 1, true)), List.of(), List.of(), Map.of(),
+        List.of(entry("a", 1, "yellow"), entry("a", 2, "silver"), entry("a", 1, "Blue"), entry("a", 2, "crystal")));
+    assertEquals(List.of("crystal", "silver", "Blue", "yellow"),
+        catalog.pokedexEntries("a").stream().map(PokedexEntry::version).toList());
+  }
+
+  @Test
+  void implementsBothExtendedCatalogInterfaces() {
+    PokemonCatalog plain = new InMemoryPokemonCatalog(List.of(pokemon("a", 1, true)));
+    assertTrue(plain instanceof LearnsetPokemonCatalog);
+    assertTrue(plain instanceof PokedexEntryPokemonCatalog);
+    assertEquals(List.of(), ((LearnsetPokemonCatalog) plain).levelUpMoves("a", 1));
+    assertEquals(Optional.empty(), ((LearnsetPokemonCatalog) plain).evolutionInfo("a"));
+  }
+
+  @Test
+  void theFixtureCarriesLearnsetsEvolutionAndPokedexEntries() {
+    assertEquals(Optional.of(new PokemonEvolutionInfo(1, 3)), CATALOG.evolutionInfo("bulbasaur"));
+    var bulbasaur = CATALOG.levelUpMoves("bulbasaur", 1);
+    assertFalse(bulbasaur.isEmpty());
+    assertTrue(bulbasaur.stream().allMatch(m -> m.moveId().equals(m.move().id())));
+    assertFalse(CATALOG.levelUpMoves("chikorita", 2).isEmpty());
+    assertTrue(CATALOG.levelUpMoves("bulbasaur", 3).isEmpty());
+    var entries = CATALOG.pokedexEntries("bulbasaur");
+    assertFalse(entries.isEmpty());
+    assertTrue(entries.stream().allMatch(e -> e.language().equals("es")));
+  }
+
+  @Test
+  void fixtureLearnsetsKeepTheOrderNodeExportedThemIn() {
+    // El exportador escribe cada lista tal como la ordenó Node (nivel y localeCompare): Collations debe coincidir.
+    var exported = GoldenCatalogs.learnsets("gen1-2");
+    var resolved = CATALOG.all().stream()
+        .flatMap(p -> List.of(1, 2).stream().flatMap(gen -> CATALOG.levelUpMoves(p.id(), gen).stream()
+            .map(m -> new LearnsetEntry(p.id(), m.moveId(), gen, m.level()))))
+        .toList();
+    assertEquals(3322, exported.size());
+    assertEquals(exported, resolved);
+  }
+
+  @Test
+  void fixturePokedexEntriesKeepTheOrderNodeExportedThemIn() {
+    var exported = GoldenCatalogs.pokedexEntries("gen1-2");
+    var resolved = CATALOG.all().stream().flatMap(p -> CATALOG.pokedexEntries(p.id()).stream()).toList();
+    assertFalse(exported.isEmpty());
+    assertEquals(exported, resolved);
+  }
+
+  @Test
+  void generationLearnsetSourcesMatchTheSharedConstant() {
+    assertEquals("yellow", GenerationLearnsetSources.versionGroup(1));
+    assertEquals("Pokémon Crystal", GenerationLearnsetSources.label(2));
+    assertEquals("scarlet-violet", GenerationLearnsetSources.versionGroup(9));
+    assertEquals("Pokémon HeartGold / SoulSilver", GenerationLearnsetSources.label(4));
   }
 }

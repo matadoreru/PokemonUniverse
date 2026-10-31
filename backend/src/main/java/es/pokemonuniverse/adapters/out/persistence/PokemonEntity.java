@@ -76,6 +76,12 @@ public class PokemonEntity {
     return e;
   }
 
+  /** Para pruebas: etapa evolutiva y número de etapas de la línea. */
+  public void setEvolution(Integer stage, Integer stages) {
+    this.evolutionStage = stage;
+    this.evolutionStages = stages;
+  }
+
   public String getId() { return id; }
   public int getNationalDexNumber() { return nationalDexNumber; }
   public String getName() { return name; }

@@ -42,11 +42,32 @@ try {
   if (new InMemoryPokemonCatalog(pokemon).all().length !== pokemon.length) {
     throw new Error('El catálogo exportado no es estable bajo el filtrado de InMemoryPokemonCatalog.');
   }
-  const fixture = { fixtureId, pokemon, moves: [], learnsets: [], evolution: {}, pokedexEntries: [] };
+  // Datos extra de esos Pokémon por la API pública del catálogo: movimientos por nivel de las generaciones de
+  // referencia 1 y 2 (ya ordenados como los reordena el constructor), los movimientos referenciados, la evolución y
+  // las entradas de Pokédex.
+  const learnsets = [];
+  const moves = new Map();
+  const evolution = {};
+  const pokedexEntries = [];
+  for (const entry of pokemon) {
+    for (const referenceGeneration of [1, 2]) {
+      for (const levelUp of catalog.levelUpMoves(entry.id, referenceGeneration)) {
+        learnsets.push({ pokemonId: entry.id, moveId: levelUp.moveId, referenceGeneration, level: levelUp.level });
+        moves.set(levelUp.moveId, levelUp.move);
+      }
+    }
+    const info = catalog.evolutionInfo(entry.id);
+    if (info) evolution[entry.id] = info;
+    pokedexEntries.push(...catalog.pokedexEntries(entry.id));
+  }
+  const sortedMoves = [...moves.values()].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  const fixture = { fixtureId, pokemon, moves: sortedMoves, learnsets, evolution, pokedexEntries };
   mkdirSync(dirname(target), { recursive: true });
   writeFileSync(target, JSON.stringify(sortKeys(JSON.parse(JSON.stringify(fixture))), null, 2) + '\n');
   const forms = pokemon.filter((entry) => entry.isDefault === false).length;
-  console.log(`Exportados ${pokemon.length} Pokémon (${pokemon.length - forms} por defecto, ${forms} formas regionales) a ${target}`);
+  console.log(`Exportados ${pokemon.length} Pokémon (${pokemon.length - forms} por defecto, ${forms} formas regionales), `
+    + `${sortedMoves.length} movimientos, ${learnsets.length} movimientos por nivel, ${Object.keys(evolution).length} evoluciones `
+    + `y ${pokedexEntries.length} entradas de Pokédex a ${target}`);
 } finally {
   await prisma.$disconnect();
 }

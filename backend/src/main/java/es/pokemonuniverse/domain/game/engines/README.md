@@ -55,8 +55,9 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
   `_` solo en el prefijo fijo y los `-` en posiciones fijas, así que dos ids difieren siempre en una minúscula o un
   dígito, donde ICU y UTF-16 ordenan igual. No lo es en general (`"_"` va antes que `"-"` en ICU, y las mayúsculas y
   los acentos cambian el orden). Sobre cualquier otro texto (nombres de movimientos, de Pokémon o de jugadores) se usa
-  `Collations.names()` (`Collator.getInstance(Locale.ROOT)`, el mismo que `PokemonCatalogService`) y la fixture dorada
-  arbitra. Las fixtures se exportan con `LANG=en_US.UTF-8` (ICU `en-US`): si CI difiere en una comparación de textos, la
+  `Collations.names()` (ICU4J con la raíz CLDR y fuerza terciaria, la misma ICU que Node; también lo usa
+  `PokemonCatalogService`) y la fixture dorada arbitra. `java.text.Collator` no vale: ignora espacios y guiones en el
+  nivel primario y pone `"Thunderbolt"` antes que `"Thunder Shock"`, al revés que `localeCompare`. Las fixtures se exportan con `LANG=en_US.UTF-8` (ICU `en-US`): si CI difiere en una comparación de textos, la
   causa es la configuración regional del exportador, no el motor.
 
 ## Escenarios dorados y verificación
