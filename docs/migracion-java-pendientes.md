@@ -30,7 +30,8 @@ derivados de él, métricas, logs JSON, límites de peticiones, imagen JVM en Co
 5. Escrituras de categorías personalizadas, pares de Would You Rather y avatares (subida).
 6. `/api/tcg/*`. Desviación consciente de la especificación (§0 lo situaba en la etapa 1): el plan lo aplazó porque depende del ciclo de vida de la caché del catálogo TCG que refresca data-sync; mientras tanto lo sigue sirviendo Node.
 7. Proxy de assets de las rondas.
-8. WebSocket (hoy Socket.IO: 21 eventos cliente→servidor, 7 servidor→cliente).
+8. WebSocket: el transporte `/ws` de Java existe desde 2A (mismos 21 eventos cliente→servidor y 7 servidor→cliente que
+   Socket.IO); 2D lo convierte en el transporte por defecto y retira Socket.IO.
 9. Mover `apps/web` a `frontend/` e incluir dentro `shared/public`.
 10. Retirar Node y `prisma migrate deploy`; Flyway pasa a ser el único dueño del esquema (entonces se permiten `V2__` y
     posteriores) y se elimina la tabla `_prisma_migrations`.
@@ -49,6 +50,11 @@ SPI `GameEngine`, `RoomCoordinator`, transporte `/ws` con sobre, acks, latido y 
 - Los 26 motores restantes, por lotes, cada uno con sus fixtures doradas y su E2E.
 - Proxy de imágenes y audio de ronda (las transformaciones de `sharp` de Node).
 - Canal de cursores de Quién es Quién (`who-is-who:cursor*`, fuera del límite de eventos).
+- Comparación sensible al orden de claves de `Record<string,…>` en el arnés dorado (constraint 3 frente a 6): hoy
+  `JsonTree.firstDifference` compara los objetos clave a clave sin mirar el orden, así que un `LinkedHashMap` con otro
+  orden de inserción que el de TS pasaría el arnés y cambiaría el orden en el cable.
+- Catálogo en memoria: `levelUpMoves`, `evolutionInfo` y `pokedexEntries` (los motores que los usan no están portados).
+- `Collator` para los `localeCompare` sobre nombres visibles (los ids de jugador se ordenan igual con `compareTo`).
 
 ### Corte 2D: Java dueño de las salas
 
