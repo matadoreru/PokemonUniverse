@@ -5,7 +5,9 @@ micronaut:
     port: ${PORT:8080}
     # Segunda guarda tras el latido de /ws (pu.ws.heartbeat-seconds): Netty cierra una conexión inactiva al cumplirse.
     idle-timeout: ${SERVER_IDLE_TIMEOUT:10m}
-    read-idle-timeout: ${SERVER_IDLE_TIMEOUT:10m}
+    # Detección de clientes muertos (pingTimeout de Socket.IO): un cliente vivo contesta cada ping de 25 s con un pong,
+    # así que 60 s sin leer nada (≈ 2,4 latidos) cierran la conexión (1001) y el coordinador ve la desconexión.
+    read-idle-timeout: ${WS_READ_IDLE_TIMEOUT:60s}
     write-idle-timeout: ${SERVER_IDLE_TIMEOUT:10m}
   router:
     static-resources:
