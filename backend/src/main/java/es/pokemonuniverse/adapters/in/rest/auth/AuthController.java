@@ -127,7 +127,7 @@ public class AuthController {
   public ProfileResponse profile(@Parameter(hidden = true) @Identity Optional<AuthUser> current) {
     var user = current.filter(u -> u.kind() == AuthUser.Kind.USER)
         .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
-    return profiles.profileOf(user.id()).orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
+    return profiles.profileOf(user.id()).map(ProfileResponse::from).orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
   }
 
   /** Valida el cuerpo ya normalizado; el manejador global da formato al fallo con la ruta del campo. */
