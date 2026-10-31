@@ -360,10 +360,9 @@ public class RoomCoordinator {
       applyPresenceChange(room);
       var timer = new RoomTimer();
       member.disconnectTimer = timer;
-      timer.bind(schedulers.schedule(settings.reconnectGraceMs(), () -> locked(room, () -> {
-        if (room.members.get(playerId) != member || member.disconnectTimer != timer) return null;
+      timer.bind(schedulers.schedule(settings.reconnectGraceMs(), () -> timerCallback(room, () -> {
+        if (room.members.get(playerId) != member || member.disconnectTimer != timer) return;
         finalDisconnect(room, playerId, false);
-        return null;
       })));
       return null;
     });
@@ -1141,11 +1140,10 @@ public class RoomCoordinator {
     var timer = new RoomTimer();
     room.transitionTimer = timer;
     long delay = Math.max(0, deadline - clock.now() + DEADLINE_TOLERANCE_MS);
-    timer.bind(schedulers.schedule(delay, () -> locked(room, () -> {
-      if (room.transitionTimer != timer) return null;
+    timer.bind(schedulers.schedule(delay, () -> timerCallback(room, () -> {
+      if (room.transitionTimer != timer) return;
       room.transitionTimer = null;
       tick(room);
-      return null;
     })));
   }
 
@@ -1352,6 +1350,18 @@ public class RoomCoordinator {
   private static <T> T logged(String message, Throwable error) {
     LOG.error(message, error);
     return null;
+  }
+
+  /** Callback de temporizador: re-entra por el lock de la sala y registra cualquier fallo (nunca lo propaga al hilo). */
+  private void timerCallback(LiveRoom room, Runnable callback) {
+    try {
+      locked(room, () -> {
+        callback.run();
+        return null;
+      });
+    } catch (RuntimeException error) {
+      LOG.error("Room timer failed for {}", room.code, error);
+    }
   }
 
   /** Ejecuta {@code operation} con el lock de {@code room}; los errores del motor se vuelven {@link RoomException}. */

@@ -653,6 +653,36 @@ class RoomCoordinatorTest {
   }
 
   @Test
+  @DisplayName("turns absent, null and scalar payloads into RoomException like a ZodError ack")
+  void malformedPayloadsAreRoomExceptions() {
+    var fixture = activeSkipFixture(2, 10);
+    var kit = fixture.kit();
+    var room = fixture.room();
+    var envelope = "{\"gameInstanceId\":\"" + room.game.resultId + "\",\"actionEpoch\":"
+        + JsonTree.quote(room.game.engine.getLifecycle(room.game.state).actionEpoch()) + ",\"action\":";
+    rejects(() -> kit.manager.gameAction("skip-p1", json(envelope + "null}")));
+    rejects(() -> kit.manager.gameAction("skip-p1", json(envelope + "5}")));
+    rejects(() -> kit.manager.gameAction("skip-p1", (JsonNode) null));
+    rejects(() -> kit.manager.setGameSkipVote("skip-p1", null));
+    rejects(() -> kit.manager.setReady("skip-p2", (JsonNode) null));
+    var lobby = new RoomTestKit();
+    lobby.room(8, guest("host", "Host"));
+    rejects(() -> lobby.manager.updateConfig("host", null));
+    rejects(() -> lobby.manager.updateConfig("host", JsonNode.createNumberNode(5)));
+    rejects(() -> lobby.manager.updateSession("host", null));
+    rejects(() -> lobby.manager.updateGameSelection("host", null));
+    rejects(() -> lobby.manager.setRoomRole("host", "x", null));
+    rejects(() -> lobby.manager.selectGame("host", null));
+    rejects(() -> lobby.manager.updateGameConfig("host", null, null));
+    rejects(() -> lobby.manager.voteNextGame("host", null));
+    rejects(() -> lobby.manager.join(guest("x", "X"), "c", (JsonNode) null));
+    rejects(() -> lobby.manager.updateWhoIsWhoCursor("host", "socket-host", null));
+    assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
+    assertTrue(serialize(kit.manager.view(room, "skip-p1")).contains("\"game\":{\"gameId\":\"higher-lower\""));
+    assertTrue(serialize(kit.manager.view(room, "skip-p1")).contains("\"gamePlayerState\":{"));
+  }
+
+  @Test
   @DisplayName("rejects actions without a live game or from spectators")
   void rejectsActionsWithoutGame() {
     var kit = new RoomTestKit();

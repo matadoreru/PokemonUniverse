@@ -1,6 +1,8 @@
-package es.pokemonuniverse.application.rooms;
+package es.pokemonuniverse.config;
 
-import es.pokemonuniverse.config.PuConfig;
+import es.pokemonuniverse.application.rooms.HostContentProvider;
+import es.pokemonuniverse.application.rooms.RoomSettings;
+import es.pokemonuniverse.application.rooms.UserGameConfigPreferences;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Secondary;
 import jakarta.inject.Singleton;
