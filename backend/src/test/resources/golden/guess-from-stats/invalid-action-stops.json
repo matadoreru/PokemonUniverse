@@ -1,0 +1,316 @@
+{
+  "engineId": "guess-from-stats",
+  "scenario": "invalid-action-stops",
+  "seed": 504,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "roundSeconds": 20,
+    "rounds": 3,
+    "stats": {
+      "hp": true,
+      "attack": true,
+      "defense": true,
+      "specialAttack": true,
+      "specialDefense": true,
+      "speed": true,
+      "bst": false
+    },
+    "hintsEnabled": false,
+    "hints": {
+      "generation": true,
+      "types": true,
+      "typeCount": false,
+      "evolution": true,
+      "height": false,
+      "weight": false,
+      "category": false
+    }
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pikachu",
+        "extra": true
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 4000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "stats": {
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "bst": false
+      },
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "types": true,
+        "typeCount": false,
+        "evolution": true,
+        "height": false,
+        "weight": false,
+        "category": false
+      }
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "guess-from-stats",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "visibleStats": [],
+        "hints": [],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "guess-from-stats",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "visibleStats": [
+          {
+            "key": "hp",
+            "value": 30
+          },
+          {
+            "key": "attack",
+            "value": 45
+          },
+          {
+            "key": "defense",
+            "value": 55
+          },
+          {
+            "key": "specialAttack",
+            "value": 70
+          },
+          {
+            "key": "specialDefense",
+            "value": 55
+          },
+          {
+            "key": "speed",
+            "value": 85
+          }
+        ],
+        "hints": [],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 21000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "guess-from-stats",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "visibleStats": [
+              {
+                "key": "hp",
+                "value": 30
+              },
+              {
+                "key": "attack",
+                "value": 45
+              },
+              {
+                "key": "defense",
+                "value": 55
+              },
+              {
+                "key": "specialAttack",
+                "value": 70
+              },
+              {
+                "key": "specialDefense",
+                "value": 55
+              },
+              {
+                "key": "speed",
+                "value": 85
+              }
+            ],
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+                },
+                "attemptedAt": 2000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 3000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 2000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 1
+}

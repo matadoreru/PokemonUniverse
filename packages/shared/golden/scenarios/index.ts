@@ -2,6 +2,7 @@
 // congelada): npm run build -w @pokemon-universe/shared debe preceder a golden:export y check:golden.
 import type { MiniGameModule } from '../../dist/index.js';
 import type { GoldenScenario } from '../types.js';
+import { guessFromStatsScenarios } from './guess-from-stats.js';
 import { higherLowerScenarios } from './higher-lower.js';
 import { pokedexDistanceScenarios } from './pokedex-distance.js';
 import { typeDuelScenarios } from './type-duel.js';
@@ -16,5 +17,6 @@ export interface GoldenEngineEntry {
 export const scenarios: Record<string, GoldenEngineEntry> = {
   'higher-lower': higherLowerScenarios,
   'pokedex-distance': pokedexDistanceScenarios,
+  'guess-from-stats': guessFromStatsScenarios,
   'type-duel': typeDuelScenarios,
 };

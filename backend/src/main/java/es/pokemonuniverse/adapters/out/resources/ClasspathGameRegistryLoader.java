@@ -3,6 +3,7 @@ package es.pokemonuniverse.adapters.out.resources;
 import es.pokemonuniverse.domain.game.GameManifest;
 import es.pokemonuniverse.domain.game.GameRegistry;
 import es.pokemonuniverse.domain.game.engine.GameEngine;
+import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsEngine;
 import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerEngine;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceEngine;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelEngine;
@@ -51,6 +52,7 @@ public class ClasspathGameRegistryLoader {
     var engines = new LinkedHashMap<String, GameEngine<?, ?, ?, ?>>();
     engines.put(HigherLowerEngine.ID, new HigherLowerEngine(manifest(manifests, HigherLowerEngine.ID)));
     engines.put(PokedexDistanceEngine.ID, new PokedexDistanceEngine(manifest(manifests, PokedexDistanceEngine.ID)));
+    engines.put(GuessFromStatsEngine.ID, new GuessFromStatsEngine(manifest(manifests, GuessFromStatsEngine.ID)));
     engines.put(TypeDuelEngine.ID, new TypeDuelEngine(manifest(manifests, TypeDuelEngine.ID)));
     return engines;
   }

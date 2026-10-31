@@ -1,0 +1,1592 @@
+{
+  "engineId": "guess-from-stats",
+  "scenario": "equivalent-signatures",
+  "seed": 502,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      2,
+      1
+    ],
+    "roundSeconds": 30,
+    "rounds": 4,
+    "stats": {
+      "hp": true,
+      "attack": false,
+      "defense": false,
+      "specialAttack": false,
+      "specialDefense": false,
+      "speed": true,
+      "bst": false
+    },
+    "hintsEnabled": false,
+    "hints": {
+      "generation": false,
+      "types": false,
+      "typeCount": false,
+      "evolution": false,
+      "height": false,
+      "weight": false,
+      "category": false
+    }
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "moltres"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "zapdos"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "moltres-galar"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "timeout",
+      "now": 9000
+    },
+    {
+      "kind": "timeout",
+      "now": 39000
+    },
+    {
+      "kind": "timeout",
+      "now": 43000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "hitmonlee"
+      },
+      "now": 44000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "hitmonchan"
+      },
+      "now": 45000
+    },
+    {
+      "kind": "timeout",
+      "now": 73000
+    },
+    {
+      "kind": "timeout",
+      "now": 77000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "gengar"
+      },
+      "now": 78000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "dodrio"
+      },
+      "now": 79000
+    },
+    {
+      "kind": "timeout",
+      "now": 83000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 30,
+      "rounds": 4,
+      "stats": {
+        "hp": true,
+        "attack": false,
+        "defense": false,
+        "specialAttack": false,
+        "specialDefense": false,
+        "speed": true,
+        "bst": false
+      },
+      "hintsEnabled": false,
+      "hints": {
+        "generation": false,
+        "types": false,
+        "typeCount": false,
+        "evolution": false,
+        "height": false,
+        "weight": false,
+        "category": false
+      }
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "guess-from-stats",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 4,
+        "visibleStats": [],
+        "hints": [],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 31000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "guess-from-stats",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 4,
+        "visibleStats": [
+          {
+            "key": "hp",
+            "value": 90
+          },
+          {
+            "key": "speed",
+            "value": 90
+          }
+        ],
+        "hints": [],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 31000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "guess-from-stats",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "visibleStats": [
+              {
+                "key": "hp",
+                "value": 90
+              },
+              {
+                "key": "speed",
+                "value": 90
+              }
+            ],
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 3000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "guess-from-stats",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "visibleStats": [
+              {
+                "key": "hp",
+                "value": 90
+              },
+              {
+                "key": "speed",
+                "value": 90
+              }
+            ],
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "zapdos",
+                  "name": "Zapdos",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/145.png"
+                },
+                "attemptedAt": 4000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 3000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 5000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 4000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 9000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "guess-from-stats",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "visibleStats": [],
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "zapdos",
+                  "name": "Zapdos",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/145.png"
+                },
+                "attemptedAt": 4000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 2
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 9000,
+            "lastRound": {
+              "answers": [
+                {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "generation": 1,
+                  "types": [
+                    "fire",
+                    "flying"
+                  ],
+                  "hp": 90,
+                  "attack": 100,
+                  "defense": 90,
+                  "specialAttack": 125,
+                  "specialDefense": 85,
+                  "speed": 90,
+                  "bst": 580
+                },
+                {
+                  "id": "moltres-galar",
+                  "name": "Moltres de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10171.png",
+                  "generation": 1,
+                  "types": [
+                    "dark",
+                    "flying"
+                  ],
+                  "hp": 90,
+                  "attack": 85,
+                  "defense": 90,
+                  "specialAttack": 100,
+                  "specialDefense": 125,
+                  "speed": 90,
+                  "bst": 580
+                }
+              ],
+              "visibleStats": [
+                {
+                  "key": "hp",
+                  "value": 90
+                },
+                {
+                  "key": "speed",
+                  "value": 90
+                }
+              ],
+              "hints": [],
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 3000,
+                  "elapsedMs": 2000,
+                  "points": 4,
+                  "attempts": 1,
+                  "submittedPokemon": {
+                    "id": "moltres",
+                    "name": "Moltres",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+                  }
+                },
+                "p2": {
+                  "solveOrder": 2,
+                  "solvedAt": 5000,
+                  "elapsedMs": 4000,
+                  "points": 2,
+                  "attempts": 2,
+                  "submittedPokemon": {
+                    "id": "moltres-galar",
+                    "name": "Moltres de Galar",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10171.png"
+                  }
+                }
+              },
+              "attemptCounts": {
+                "p1": 1,
+                "p2": 2
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 3000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": 5000,
+              "roundPoints": 2,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 5000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 39000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,9000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "guess-from-stats",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "visibleStats": [
+              {
+                "key": "hp",
+                "value": 35
+              },
+              {
+                "key": "speed",
+                "value": 90
+              }
+            ],
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 4,
+              "p2": 2
+            },
+            "roundStartedAt": 9000,
+            "roundEndsAt": 39000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 43000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,9000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "guess-from-stats",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "visibleStats": [],
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 4,
+              "p2": 2
+            },
+            "roundStartedAt": 9000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 43000,
+            "lastRound": {
+              "answers": [
+                {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "generation": 1,
+                  "types": [
+                    "electric"
+                  ],
+                  "hp": 35,
+                  "attack": 55,
+                  "defense": 40,
+                  "specialAttack": 50,
+                  "specialDefense": 50,
+                  "speed": 90,
+                  "bst": 320
+                }
+              ],
+              "visibleStats": [
+                {
+                  "key": "hp",
+                  "value": 35
+                },
+                {
+                  "key": "speed",
+                  "value": 90
+                }
+              ],
+              "hints": [],
+              "solves": {},
+              "attemptCounts": {}
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 73000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,43000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "guess-from-stats",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "visibleStats": [
+              {
+                "key": "hp",
+                "value": 50
+              },
+              {
+                "key": "speed",
+                "value": 87
+              }
+            ],
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 4,
+              "p2": 2
+            },
+            "roundStartedAt": 43000,
+            "roundEndsAt": 73000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 73000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,43000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "guess-from-stats",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "visibleStats": [
+              {
+                "key": "hp",
+                "value": 50
+              },
+              {
+                "key": "speed",
+                "value": 87
+              }
+            ],
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 6
+            },
+            "roundStartedAt": 43000,
+            "roundEndsAt": 73000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 44000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 73000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,43000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "guess-from-stats",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "visibleStats": [
+              {
+                "key": "hp",
+                "value": 50
+              },
+              {
+                "key": "speed",
+                "value": 87
+              }
+            ],
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "hitmonchan",
+                  "name": "Hitmonchan",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/107.png"
+                },
+                "attemptedAt": 45000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 6
+            },
+            "roundStartedAt": 43000,
+            "roundEndsAt": 73000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 46000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 45000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 44000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 77000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,43000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "guess-from-stats",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "visibleStats": [],
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "hitmonchan",
+                  "name": "Hitmonchan",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/107.png"
+                },
+                "attemptedAt": 45000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 6
+            },
+            "roundStartedAt": 43000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 77000,
+            "lastRound": {
+              "answers": [
+                {
+                  "id": "hitmonlee",
+                  "name": "Hitmonlee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png",
+                  "generation": 1,
+                  "types": [
+                    "fighting"
+                  ],
+                  "hp": 50,
+                  "attack": 120,
+                  "defense": 53,
+                  "specialAttack": 35,
+                  "specialDefense": 110,
+                  "speed": 87,
+                  "bst": 455
+                }
+              ],
+              "visibleStats": [
+                {
+                  "key": "hp",
+                  "value": 50
+                },
+                {
+                  "key": "speed",
+                  "value": 87
+                }
+              ],
+              "hints": [],
+              "solves": {
+                "p2": {
+                  "solveOrder": 1,
+                  "solvedAt": 44000,
+                  "elapsedMs": 1000,
+                  "points": 4,
+                  "attempts": 1,
+                  "submittedPokemon": {
+                    "id": "hitmonlee",
+                    "name": "Hitmonlee",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+                  }
+                }
+              },
+              "attemptCounts": {
+                "p2": 1,
+                "p1": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 46000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 45000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 44000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 107000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,77000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "guess-from-stats",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "visibleStats": [
+              {
+                "key": "hp",
+                "value": 60
+              },
+              {
+                "key": "speed",
+                "value": 110
+              }
+            ],
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 4,
+              "p2": 6
+            },
+            "roundStartedAt": 77000,
+            "roundEndsAt": 107000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 107000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,77000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "guess-from-stats",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "visibleStats": [
+              {
+                "key": "hp",
+                "value": 60
+              },
+              {
+                "key": "speed",
+                "value": 110
+              }
+            ],
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 6
+            },
+            "roundStartedAt": 77000,
+            "roundEndsAt": 107000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 78000
+              }
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 83000,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,77000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "guess-from-stats",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "visibleStats": [],
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 8
+            },
+            "roundStartedAt": 77000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 83000,
+            "lastRound": {
+              "answers": [
+                {
+                  "id": "raichu",
+                  "name": "Raichu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png",
+                  "generation": 1,
+                  "types": [
+                    "electric"
+                  ],
+                  "hp": 60,
+                  "attack": 90,
+                  "defense": 55,
+                  "specialAttack": 90,
+                  "specialDefense": 80,
+                  "speed": 110,
+                  "bst": 485
+                },
+                {
+                  "id": "raichu-alola",
+                  "name": "Raichu de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png",
+                  "generation": 1,
+                  "types": [
+                    "electric",
+                    "psychic"
+                  ],
+                  "hp": 60,
+                  "attack": 85,
+                  "defense": 50,
+                  "specialAttack": 95,
+                  "specialDefense": 85,
+                  "speed": 110,
+                  "bst": 485
+                },
+                {
+                  "id": "dodrio",
+                  "name": "Dodrio",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png",
+                  "generation": 1,
+                  "types": [
+                    "normal",
+                    "flying"
+                  ],
+                  "hp": 60,
+                  "attack": 110,
+                  "defense": 70,
+                  "specialAttack": 60,
+                  "specialDefense": 60,
+                  "speed": 110,
+                  "bst": 470
+                },
+                {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png",
+                  "generation": 1,
+                  "types": [
+                    "ghost",
+                    "poison"
+                  ],
+                  "hp": 60,
+                  "attack": 65,
+                  "defense": 60,
+                  "specialAttack": 130,
+                  "specialDefense": 75,
+                  "speed": 110,
+                  "bst": 500
+                }
+              ],
+              "visibleStats": [
+                {
+                  "key": "hp",
+                  "value": 60
+                },
+                {
+                  "key": "speed",
+                  "value": 110
+                }
+              ],
+              "hints": [],
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 78000,
+                  "elapsedMs": 1000,
+                  "points": 4,
+                  "attempts": 1,
+                  "submittedPokemon": {
+                    "id": "gengar",
+                    "name": "Gengar",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                  }
+                },
+                "p2": {
+                  "solveOrder": 2,
+                  "solvedAt": 79000,
+                  "elapsedMs": 2000,
+                  "points": 2,
+                  "attempts": 1,
+                  "submittedPokemon": {
+                    "id": "dodrio",
+                    "name": "Dodrio",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                  }
+                }
+              },
+              "attemptCounts": {
+                "p1": 1,
+                "p2": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 78000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 2,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 79000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",4,77000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "guess-from-stats",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "visibleStats": [],
+            "hints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 8
+            },
+            "roundStartedAt": 77000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "answers": [
+                {
+                  "id": "raichu",
+                  "name": "Raichu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png",
+                  "generation": 1,
+                  "types": [
+                    "electric"
+                  ],
+                  "hp": 60,
+                  "attack": 90,
+                  "defense": 55,
+                  "specialAttack": 90,
+                  "specialDefense": 80,
+                  "speed": 110,
+                  "bst": 485
+                },
+                {
+                  "id": "raichu-alola",
+                  "name": "Raichu de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png",
+                  "generation": 1,
+                  "types": [
+                    "electric",
+                    "psychic"
+                  ],
+                  "hp": 60,
+                  "attack": 85,
+                  "defense": 50,
+                  "specialAttack": 95,
+                  "specialDefense": 85,
+                  "speed": 110,
+                  "bst": 485
+                },
+                {
+                  "id": "dodrio",
+                  "name": "Dodrio",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png",
+                  "generation": 1,
+                  "types": [
+                    "normal",
+                    "flying"
+                  ],
+                  "hp": 60,
+                  "attack": 110,
+                  "defense": 70,
+                  "specialAttack": 60,
+                  "specialDefense": 60,
+                  "speed": 110,
+                  "bst": 470
+                },
+                {
+                  "id": "gengar",
+                  "name": "Gengar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png",
+                  "generation": 1,
+                  "types": [
+                    "ghost",
+                    "poison"
+                  ],
+                  "hp": 60,
+                  "attack": 65,
+                  "defense": 60,
+                  "specialAttack": 130,
+                  "specialDefense": 75,
+                  "speed": 110,
+                  "bst": 500
+                }
+              ],
+              "visibleStats": [
+                {
+                  "key": "hp",
+                  "value": 60
+                },
+                {
+                  "key": "speed",
+                  "value": 110
+                }
+              ],
+              "hints": [],
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 78000,
+                  "elapsedMs": 1000,
+                  "points": 4,
+                  "attempts": 1,
+                  "submittedPokemon": {
+                    "id": "gengar",
+                    "name": "Gengar",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                  }
+                },
+                "p2": {
+                  "solveOrder": 2,
+                  "solvedAt": 79000,
+                  "elapsedMs": 2000,
+                  "points": 2,
+                  "attempts": 1,
+                  "submittedPokemon": {
+                    "id": "dodrio",
+                    "name": "Dodrio",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                  }
+                }
+              },
+              "attemptCounts": {
+                "p1": 1,
+                "p2": 1
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 8,
+                  "won": true,
+                  "stats": {
+                    "correct": 2,
+                    "missed": 2,
+                    "totalAttempts": 3,
+                    "firstTry": 2,
+                    "roundFirsts": 2,
+                    "solveTimeTotalMs": 3000,
+                    "bestTimeMs": 1000,
+                    "pointsFromRounds": 8
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 8,
+                  "won": false,
+                  "stats": {
+                    "correct": 3,
+                    "missed": 1,
+                    "totalAttempts": 4,
+                    "firstTry": 2,
+                    "roundFirsts": 1,
+                    "solveTimeTotalMs": 7000,
+                    "bestTimeMs": 1000,
+                    "pointsFromRounds": 8
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 4,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 78000
+              }
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 2,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 79000
+              }
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 8,
+          "won": true,
+          "stats": {
+            "correct": 2,
+            "missed": 2,
+            "totalAttempts": 3,
+            "firstTry": 2,
+            "roundFirsts": 2,
+            "solveTimeTotalMs": 3000,
+            "bestTimeMs": 1000,
+            "pointsFromRounds": 8
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 8,
+          "won": false,
+          "stats": {
+            "correct": 3,
+            "missed": 1,
+            "totalAttempts": 4,
+            "firstTry": 2,
+            "roundFirsts": 1,
+            "solveTimeTotalMs": 7000,
+            "bestTimeMs": 1000,
+            "pointsFromRounds": 8
+          }
+        }
+      ]
+    }
+  }
+}
