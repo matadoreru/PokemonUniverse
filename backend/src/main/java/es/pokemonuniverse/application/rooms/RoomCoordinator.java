@@ -95,8 +95,8 @@ public class RoomCoordinator {
   private static final Logger LOG = LoggerFactory.getLogger(RoomCoordinator.class);
 
   private volatile boolean stopping;
-  private volatile String catalogVersion;
-  private volatile PokemonCatalog pokemon;
+  /** Catálogo y versión se publican juntos: una lectura nunca mezcla el catálogo nuevo con la versión anterior. */
+  private volatile GameCatalogSnapshot currentCatalog;
   private final PendingTasks pending = new PendingTasks();
   final RoomStore store = new RoomStore();
   private final CursorRelay cursors;
@@ -135,8 +135,8 @@ public class RoomCoordinator {
     this.settings = settings;
     this.cursors = new CursorRelay(events, clock);
     this.views = new RoomViews(registry, defaultConfigs, clock, events, this::toTree);
-    this.pokemon = catalog.loadPokemonCatalog();
-    this.catalogVersion = random.uuid();
+    var initialCatalog = catalog.loadPokemonCatalog();
+    this.currentCatalog = new GameCatalogSnapshot(random.uuid(), initialCatalog);
     for (var manifest : registry.list()) {
       defaultConfigs.put(manifest.id(), toTree(manifest.defaultConfig()));
       registry.engine(manifest.id()).ifPresent(engine -> engines.put(manifest.id(), new ErasedEngine(engine)));
@@ -145,12 +145,11 @@ public class RoomCoordinator {
 
   /** Las partidas en curso conservan su catálogo; la siguiente usa este. */
   public void replaceCatalog(PokemonCatalog value) {
-    this.pokemon = value;
-    this.catalogVersion = random.uuid();
+    this.currentCatalog = new GameCatalogSnapshot(random.uuid(), value);
   }
 
   private GameCatalogSnapshot catalogSnapshot() {
-    return new GameCatalogSnapshot(catalogVersion, pokemon);
+    return currentCatalog;
   }
 
   public void stop() {
