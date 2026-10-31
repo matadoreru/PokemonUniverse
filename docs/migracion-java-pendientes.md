@@ -35,6 +35,14 @@ derivados de él, métricas, logs JSON, límites de peticiones, imagen JVM en Co
 10. Retirar Node y `prisma migrate deploy`; Flyway pasa a ser el único dueño del esquema (entonces se permiten `V2__` y
     posteriores) y se elimina la tabla `_prisma_migrations`.
 
+### Corte 2D: Java dueño de las salas
+
+- Activar `pu.interrupt-stale-rooms=true` (`INTERRUPT_STALE_ROOMS=true`) en el backend Java. Al arrancar marca como
+  `INTERRUPTED`/`SERVER_STOPPED` las filas `RoomHistory` `ACTIVE` y `GameHistory` `IN_PROGRESS` que dejó el proceso
+  anterior (`interruptStaleActivity` de Node). Está desactivado por defecto porque, mientras Node sirva salas sobre la
+  misma base de datos, cada arranque de Java interrumpiría las salas vivas de Node y su `roomClosed` posterior ya no
+  encontraría la fila `ACTIVE`. Al activarlo en Java hay que dejar de servir salas desde Node.
+
 ## Riesgos abiertos
 
 | Riesgo | Detalle |

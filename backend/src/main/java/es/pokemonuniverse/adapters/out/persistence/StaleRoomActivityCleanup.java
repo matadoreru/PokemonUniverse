@@ -2,25 +2,29 @@ package es.pokemonuniverse.adapters.out.persistence;
 
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.annotation.Nullable;
 import jakarta.annotation.PostConstruct;
 import java.time.Instant;
 import javax.sql.DataSource;
 
 /**
- * Al arrancar (tras {@link PrismaSchemaGuard}), marca como INTERRUPTED las salas y partidas que el proceso anterior
- * dejó abiertas ({@code interruptStaleActivity} de Node). Se puede desactivar con
- * {@code pu.interrupt-stale-rooms=false} mientras Node siga sirviendo salas sobre la misma base de datos.
+ * Al arrancar (tras {@link PrismaSchemaGuard} cuando existe), marca como INTERRUPTED las salas y partidas que el
+ * proceso anterior dejó abiertas ({@code interruptStaleActivity} de Node). Desactivado por defecto: mientras Node sea
+ * dueño de las salas y comparta la base de datos, marcaría como interrumpidas sus salas vivas. Se activa con
+ * {@code pu.interrupt-stale-rooms=true} en el corte 2D, cuando Java sea el único dueño de las salas.
  */
 @Context
-@Requires(notEnv = "test")
 @Requires(beans = DataSource.class)
-@Requires(property = "pu.interrupt-stale-rooms", value = "true", defaultValue = "true")
+@Requires(property = "pu.interrupt-stale-rooms", value = "true", defaultValue = "false")
 public class StaleRoomActivityCleanup {
 
   private final RoomHistoryWriter writer;
 
-  /** {@code guard} fuerza el orden: el esquema está comprobado y migrado antes de escribir. */
-  public StaleRoomActivityCleanup(PrismaSchemaGuard guard, RoomHistoryWriter writer) {
+  /**
+   * {@code guard} fuerza el orden fuera de test: el esquema está comprobado y migrado antes de escribir (en test no
+   * existe; Flyway de Micronaut migra antes de crear beans de datos).
+   */
+  public StaleRoomActivityCleanup(@Nullable PrismaSchemaGuard guard, RoomHistoryWriter writer) {
     this.writer = writer;
   }
 

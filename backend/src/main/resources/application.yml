@@ -66,3 +66,6 @@ pu:
   commit-sha: ${PU_COMMIT_SHA:}
   room-max-players: ${ROOM_MAX_PLAYERS:8}
   reconnect-grace-ms: ${RECONNECT_GRACE_MS:30000}
+  # Marca INTERRUPTED las salas/partidas abiertas al arrancar. Activar en el cutover 2D cuando Java sea el único
+  # dueño de las salas; antes rompería el historial de las salas vivas de Node sobre la misma base de datos.
+  interrupt-stale-rooms: ${INTERRUPT_STALE_ROOMS:false}
