@@ -19,7 +19,8 @@ El servicio `backend` (Java, Micronaut) atiende solo las 11 rutas descritas en `
 enruta a él y el resto sigue en `server`. Comparte con `server` el volumen de avatares (`pokemon_universe_avatar_data`,
 uid/gid 1000 en ambos) y el secreto `PU_JWT_SECRET`. Arranca después de que `server` esté sano, porque Node aplica las
 migraciones Prisma y Flyway hace baseline sobre ese esquema. No hace falta ninguna variable nueva salvo `PU_BACKEND_IMAGE`
-(con valor por defecto igual al de `.env.example`).
+(con valor por defecto igual al de `.env.example`). `PU_ROOMS_ENABLED` (`ROOMS_ENABLED` del backend) vale `false` por
+defecto: el `/ws` de Java cierra cada conexión con 4403 y las salas siguen en Node; el corte 2D lo pone a `true`.
 
 PostgreSQL no publica puertos. GitHub Actions valida el proyecto y publica imágenes `linux/amd64` y `linux/arm64` en
 GHCR con el SHA completo del commit y el tag móvil `pre`. El tag `latest` solo se mueve después de promocionar correctamente ese SHA a PRO. El servidor solo descarga imágenes ya verificadas; no compila.
@@ -106,6 +107,7 @@ PU_POSTGRES_PASSWORD=CONTRASENA_HEXADECIMAL_ALEATORIA
 PU_JWT_SECRET=SECRETO_HEXADECIMAL_ALEATORIO
 PU_PUBLIC_ORIGIN=https://pokemon.example.com
 PU_SECURE_COOKIE=true
+PU_ROOMS_ENABLED=false
 PU_WATCHTOWER_ENABLE=false
 ```
 

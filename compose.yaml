@@ -92,6 +92,8 @@ services:
       WEB_ORIGIN: "${PU_PUBLIC_ORIGIN:?Define PU_PUBLIC_ORIGIN en .env}"
       COOKIE_SECURE: "${PU_SECURE_COOKIE:-true}"
       AVATAR_STORAGE_DIR: "/data/avatars"
+      # Salas Java en /ws: apagadas (cierre 4403) hasta el corte 2D, que pone PU_ROOMS_ENABLED=true.
+      ROOMS_ENABLED: "${PU_ROOMS_ENABLED:-false}"
     volumes:
       - pokemon_universe_avatar_data:/data/avatars
     depends_on:

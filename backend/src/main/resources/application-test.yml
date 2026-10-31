@@ -15,3 +15,6 @@ pu:
     secret: test-secret-test-secret-test-secret-1234
   # Sin límite por defecto: muchas pruebas comparten la IP de loopback. RateLimitFilterTest lo activa.
   rate-limit-disabled: true
+  # Salas Java en /ws activas (en producción están apagadas hasta el corte 2D).
+  rooms:
+    enabled: true

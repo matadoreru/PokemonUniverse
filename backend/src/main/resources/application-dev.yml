@@ -13,6 +13,9 @@ pu:
   # dev:backend se ejecuta desde backend/, así que hay que apuntar al mismo directorio para servir los avatares
   # de invitado que sube Node.
   avatar-storage-dir: ${AVATAR_STORAGE_DIR:../apps/server/.data/avatars}
+  # Salas Java en /ws activas (en producción están apagadas hasta el corte 2D).
+  rooms:
+    enabled: true
 micronaut:
   server:
     cors:

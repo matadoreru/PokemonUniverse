@@ -73,6 +73,10 @@ pu:
   # Marca INTERRUPTED las salas/partidas abiertas al arrancar. Activar en el cutover 2D cuando Java sea el único
   # dueño de las salas; antes rompería el historial de las salas vivas de Node sobre la misma base de datos.
   interrupt-stale-rooms: ${INTERRUPT_STALE_ROOMS:false}
+  rooms:
+    # Salas en Java (/ws). Apagadas en producción durante la etapa 2A: /ws cierra con 4403 sin tocar el coordinador.
+    # Activas en dev y test; el corte 2D pone ROOMS_ENABLED=true en compose.
+    enabled: ${ROOMS_ENABLED:false}
   ws:
     # Ping a cada sesión de /ws (pingInterval de Socket.IO); 0 lo desactiva. El proxy debe tolerar más que esto.
     heartbeat-seconds: ${WS_HEARTBEAT_SECONDS:25}

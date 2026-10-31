@@ -61,7 +61,7 @@ El backend Java convive con Node detrás del mismo origen y ambos firman y acept
 
 ### Salas en Java (etapa 2A, solo desarrollo)
 
-El backend Java también puede alojar salas por un WebSocket propio en `/ws`. Por defecto la web sigue usando Socket.IO (Node); para probar las salas Java en local arranca la web con la bandera:
+El backend Java también puede alojar salas por un WebSocket propio en `/ws`. En el servidor lo controla `pu.rooms.enabled` (`ROOMS_ENABLED`): está activo en el entorno `dev` que usan `npm run dev`/`npm run dev:backend` y en los tests, y apagado por defecto en producción (`/ws` cierra con 4403) hasta el corte 2D. Por defecto la web sigue usando Socket.IO (Node); para probar las salas Java en local arranca la web con la bandera:
 
 ```bash
 VITE_REALTIME=java npm run dev

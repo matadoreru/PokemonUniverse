@@ -7,6 +7,7 @@ import es.pokemonuniverse.application.rooms.RoomCoordinator;
 import es.pokemonuniverse.application.rooms.RoomException;
 import es.pokemonuniverse.application.rooms.RoomView;
 import es.pokemonuniverse.domain.game.engine.EngineException;
+import io.micronaut.context.annotation.Value;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.json.JsonMapper;
@@ -30,12 +31,16 @@ import org.slf4j.LoggerFactory;
  * conexión ejecuta apertura, comandos y cierre en orden en un hilo virtual propio ({@link WsSessions.Connection#enqueue}),
  * y el coordinador toma ahí el lock de la sala. Un mensaje rechazado por el límite no llega a la cola.
  * Mensajes de más de {@value #MAX_FRAME_BYTES} bytes ({@code maxHttpBufferSize} de Node) cierran con 1009.
+ *
+ * <p>Con {@code pu.rooms.enabled=false} (producción hasta el corte 2D) toda conexión se cierra con 4403 al abrirse,
+ * antes de registrar la sesión: el coordinador nunca la ve.
  */
 @ServerWebSocket("/ws")
 public class RoomWebSocket {
 
   static final int MAX_FRAME_BYTES = 32_768;
   static final CloseReason AUTHENTICATION_REQUIRED = new CloseReason(4401, "Authentication required");
+  static final CloseReason ROOMS_DISABLED = new CloseReason(4403, "Rooms disabled");
   static final String INVALID_MESSAGE = "Mensaje inválido";
   static final String UNKNOWN_EVENT = "Evento desconocido";
   static final String RATE_LIMITED = "Rate limit exceeded";
@@ -50,16 +55,23 @@ public class RoomWebSocket {
   private final WsSessions sessions;
   private final WsHandshake handshake;
   private final JsonMapper json;
+  private final boolean roomsEnabled;
 
-  public RoomWebSocket(RoomCoordinator coordinator, WsSessions sessions, WsHandshake handshake, JsonMapper json) {
+  public RoomWebSocket(RoomCoordinator coordinator, WsSessions sessions, WsHandshake handshake, JsonMapper json,
+      @Value("${pu.rooms.enabled:false}") boolean roomsEnabled) {
     this.coordinator = coordinator;
     this.sessions = sessions;
     this.handshake = handshake;
     this.json = json;
+    this.roomsEnabled = roomsEnabled;
   }
 
   @OnOpen
   public void onOpen(WebSocketSession session, HttpRequest<?> request) {
+    if (!roomsEnabled) {
+      session.close(ROOMS_DISABLED);
+      return;
+    }
     var identity = handshake.identify(request).orElse(null);
     if (identity == null) {
       session.close(AUTHENTICATION_REQUIRED);
