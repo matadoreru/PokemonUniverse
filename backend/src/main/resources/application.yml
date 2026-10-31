@@ -32,3 +32,10 @@ jpa:
           time_zone: UTC
         hbm2ddl:
           auto: none
+pu:
+  auth:
+    cookie-secure: ${COOKIE_SECURE:false}
+  web-origin: ${WEB_ORIGIN:http://localhost:5173}
+  rate-limit-disabled: ${RATE_LIMIT_DISABLED:false}
+  avatar-storage-dir: ${AVATAR_STORAGE_DIR:.data/avatars}
+  commit-sha: ${PU_COMMIT_SHA:}

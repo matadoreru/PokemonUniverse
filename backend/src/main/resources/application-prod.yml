@@ -5,3 +5,6 @@ datasources:
     url: ${JDBC_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+pu:
+  auth:
+    secret: ${JWT_SECRET}

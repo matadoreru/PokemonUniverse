@@ -6,3 +6,6 @@ datasources:
     password: pokemon
 test-resources:
   enabled: false
+pu:
+  auth:
+    secret: ${JWT_SECRET:dev-secret-dev-secret-dev-secret-0000000}

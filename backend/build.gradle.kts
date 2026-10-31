@@ -35,6 +35,8 @@ dependencies {
   implementation("io.micronaut:micronaut-management")
   implementation("io.micronaut.serde:micronaut-serde-jackson")
   annotationProcessor("io.micronaut.data:micronaut-data-processor")
+  annotationProcessor("io.micronaut.validation:micronaut-validation-processor")
+  implementation("io.micronaut.validation:micronaut-validation")
   implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
   implementation("io.micronaut.sql:micronaut-jdbc-hikari")
   implementation("io.micronaut.flyway:micronaut-flyway")

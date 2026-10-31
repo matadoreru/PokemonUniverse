@@ -4,3 +4,6 @@ flyway:
   datasources:
     default:
       baseline-on-migrate: false
+pu:
+  auth:
+    secret: test-secret-test-secret-test-secret-1234
