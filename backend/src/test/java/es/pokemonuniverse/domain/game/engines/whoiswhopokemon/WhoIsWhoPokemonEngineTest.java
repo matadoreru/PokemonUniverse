@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
 /** Lo que las fixtures doradas no cubren: manifiesto, parseo, errores de arranque, ramas inalcanzables y cursores. */
@@ -135,6 +136,28 @@ class WhoIsWhoPokemonEngineTest {
     assertEquals(GamePhase.GAME_RESULTS, finished.phase());
     assertEquals(WhoIsWhoTeam.BLUE, finished.winnerTeam());
     assertEquals(Optional.empty(), engine.getCursorChannel(finished, blue.getFirst()));
+  }
+
+  /** Ningún equipo elige: el plazo sortea un secreto por equipo (BLUE y luego RED), un random() cada uno. */
+  @Test
+  void selectionTimeoutDrawsOneSecretPerTeamWithoutOne() {
+    var draws = new AtomicInteger();
+    var source = new Mulberry32(7);
+    var context = GameContext.builder(GoldenCatalogs.load("gen1-2"), () -> {
+      draws.incrementAndGet();
+      return source.getAsDouble();
+    }).players(List.of(new GamePlayer("p1", "Ana"), new GamePlayer("p2", "Bruno"))).now(1000).build();
+    var config = new WhoIsWhoPokemonConfig(List.of(1), 6, false, 10, 3, 20, WhoIsWhoSecretSelection.PLAYER_CHOICE);
+    var state = engine.start(engine.createInitialState(config, context), context);
+    assertEquals(6 + 2, draws.get(), "tablero y equipos; sin secretos aleatorios");
+    assertEquals(21_000L, state.roundEndsAt());
+    assertEquals(state, engine.handleTimeout(state, context.withNow(20_999)));
+    var drawn = engine.handleTimeout(state, context.withNow(21_000));
+    assertEquals(6 + 2 + 2, draws.get());
+    assertTrue(drawn.teams().allSecretsReady());
+    assertEquals(21_000L, drawn.roundStartedAt());
+    assertEquals(31_000L, drawn.roundEndsAt());
+    assertEquals(WhoIsWhoTeam.BLUE, drawn.currentTeam());
   }
 
   @Test
