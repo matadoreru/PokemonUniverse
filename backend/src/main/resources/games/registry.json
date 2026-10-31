@@ -1,0 +1,2477 @@
+[
+  {
+    "id": "pokedex-distance",
+    "name": "Pokédex Distance",
+    "icon": "🎯",
+    "description": "Elige un Pokémon cuyo número esté lo más cerca posible del objetivo.",
+    "minPlayers": 2,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "exactHits",
+          "label": "Exact Hits",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "roundsSurvived",
+          "label": "Rondas superadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "selections",
+          "label": "Selecciones",
+          "aggregation": "SUM"
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 20
+    }
+  },
+  {
+    "id": "shiny-vote",
+    "name": "Shiny Quiz",
+    "recommended": true,
+    "icon": "✨",
+    "description": "Encuentra el shiny verdadero entre varios candidatos.",
+    "minPlayers": 1,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "correctVotes",
+          "label": "Aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "incorrectVotes",
+          "label": "Fallos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "unanswered",
+          "label": "Sin respuesta",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "votes",
+          "label": "Respuestas",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "accuracy",
+          "label": "Precisión",
+          "kind": "PERCENT",
+          "numerator": "correctVotes",
+          "denominator": [
+            "votes"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 20,
+      "rounds": 10,
+      "candidateMode": "SAME_POKEMON",
+      "optionCount": 4,
+      "showVotes": true
+    }
+  },
+  {
+    "id": "pokemon-impostor",
+    "name": "Pokémon Impostor",
+    "recommended": true,
+    "icon": "🕵️",
+    "description": "Da pistas, detecta a quienes no conocen el Pokémon y expulsa a los impostores.",
+    "minPlayers": 3,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "playedAsInnocent",
+          "label": "Como inocente",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "wonAsInnocent",
+          "label": "Victorias de inocente",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "playedAsImpostor",
+          "label": "Como impostor",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "wonAsImpostor",
+          "label": "Victorias de impostor",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pokemonGuessed",
+          "label": "Pokémon adivinados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "cluesSubmitted",
+          "label": "Pistas enviadas",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "innocentWinRate",
+          "label": "Winrate inocente",
+          "kind": "PERCENT",
+          "numerator": "wonAsInnocent",
+          "denominator": [
+            "playedAsInnocent"
+          ]
+        },
+        {
+          "key": "impostorWinRate",
+          "label": "Winrate impostor",
+          "kind": "PERCENT",
+          "numerator": "wonAsImpostor",
+          "denominator": [
+            "playedAsImpostor"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "impostorCount": 1,
+      "clueSeconds": 15,
+      "voteSeconds": 20
+    }
+  },
+  {
+    "id": "higher-lower",
+    "name": "Higher or Lower",
+    "icon": "📈",
+    "description": "Acierta si la stat de dos Pokémon es mayor, menor o igual.",
+    "minPlayers": 1,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "correct",
+          "label": "Respuestas correctas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "incorrect",
+          "label": "Respuestas incorrectas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "sameCorrect",
+          "label": "SAME acertados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "bestStreak",
+          "label": "Mejor racha",
+          "aggregation": "MAX"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "accuracy",
+          "label": "Precisión",
+          "kind": "PERCENT",
+          "numerator": "correct",
+          "denominator": [
+            "correct",
+            "incorrect"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "categories": [
+        "DEX_NUMBER",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BASE_STAT_TOTAL"
+      ],
+      "showPreviousValue": true,
+      "answerVisibility": "REALTIME",
+      "difficulty": "NORMAL",
+      "roundSeconds": 20,
+      "rounds": 10
+    }
+  },
+  {
+    "id": "type-duel",
+    "name": "Type Duel",
+    "recommended": true,
+    "icon": "⚔️",
+    "description": "Elige un tipo en secreto y corre contra otro entrenador para encontrar la combinación exacta.",
+    "minPlayers": 2,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "duelsPlayed",
+          "label": "Duelos jugados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "duelsWon",
+          "label": "Duelos ganados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "correctAttempts",
+          "label": "Intentos correctos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "incorrectAttempts",
+          "label": "Intentos incorrectos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "correctTimeTotalMs",
+          "label": "Tiempo total al acertar",
+          "aggregation": "SUM",
+          "format": "DURATION_MS"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "duelWinRate",
+          "label": "Winrate de duelos",
+          "kind": "PERCENT",
+          "numerator": "duelsWon",
+          "denominator": [
+            "duelsPlayed"
+          ]
+        },
+        {
+          "key": "averageCorrectTime",
+          "label": "Tiempo medio de acierto",
+          "kind": "AVERAGE",
+          "numerator": "correctTimeTotalMs",
+          "denominator": [
+            "correctAttempts"
+          ],
+          "format": "DURATION_MS"
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10
+    }
+  },
+  {
+    "id": "learnset-guess",
+    "name": "Learnset Guess",
+    "icon": "📚",
+    "description": "Descubre el Pokémon mientras se revela progresivamente su learnset por nivel.",
+    "minPlayers": 2,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "correct",
+          "label": "Pokémon acertados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "missed",
+          "label": "Pokémon fallados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "initialSolves",
+          "label": "Aciertos con pistas iniciales",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "incorrectGuesses",
+          "label": "Intentos incorrectos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pointsFromSolves",
+          "label": "Puntos de aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "bestRoundPoints",
+          "label": "Mejor ronda",
+          "aggregation": "MAX"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "accuracy",
+          "label": "Precisión",
+          "kind": "PERCENT",
+          "numerator": "correct",
+          "denominator": [
+            "correct",
+            "missed"
+          ]
+        },
+        {
+          "key": "averagePoints",
+          "label": "Puntos medios por acierto",
+          "kind": "AVERAGE",
+          "numerator": "pointsFromSolves",
+          "denominator": [
+            "correct"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 60,
+      "rounds": 10
+    }
+  },
+  {
+    "id": "pokeddle-race",
+    "name": "Pokédle Race",
+    "icon": "🏁",
+    "description": "Descubre tu Pokémon secreto mediante pistas comparativas antes que tus rivales.",
+    "minPlayers": 2,
+    "maxPlayers": 8,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "resolved",
+          "label": "Pokémon resueltos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "unresolved",
+          "label": "Pokémon no resueltos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "totalGuesses",
+          "label": "Intentos totales",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "guessesToSolveTotal",
+          "label": "Intentos en resoluciones",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "resolutionRoundsTotal",
+          "label": "Rondas hasta resolver",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "bestResolutionRounds",
+          "label": "Mejor resolución",
+          "aggregation": "MIN"
+        },
+        {
+          "key": "bestTimeMs",
+          "label": "Mejor tiempo",
+          "aggregation": "MIN",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "missedRounds",
+          "label": "Rondas sin responder",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "solveRate",
+          "label": "Porcentaje de resolución",
+          "kind": "PERCENT",
+          "numerator": "resolved",
+          "denominator": [
+            "resolved",
+            "unresolved"
+          ]
+        },
+        {
+          "key": "averageGuesses",
+          "label": "Intentos medios al resolver",
+          "kind": "AVERAGE",
+          "numerator": "guessesToSolveTotal",
+          "denominator": [
+            "resolved"
+          ]
+        },
+        {
+          "key": "averageSolveRound",
+          "label": "Ronda media de resolución",
+          "kind": "AVERAGE",
+          "numerator": "resolutionRoundsTotal",
+          "denominator": [
+            "resolved"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 20,
+      "maxRounds": 10,
+      "clues": {
+        "generation": true,
+        "dexNumber": true,
+        "types": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "id": "pokemon-bingo",
+    "name": "Pokémon Bingo",
+    "icon": "🎉",
+    "description": "Completa antes que nadie un tablero de condiciones con Pokémon distintos.",
+    "minPlayers": 1,
+    "maxPlayers": 8,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "games",
+          "label": "Partidas registradas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "bingos",
+          "label": "Bingos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "cellsCompleted",
+          "label": "Casillas completadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "cellsTotal",
+          "label": "Casillas totales",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "correctAssignments",
+          "label": "Pokémon correctos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "incorrectAttempts",
+          "label": "Pokémon incorrectos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "bestBingoTimeMs",
+          "label": "Mejor tiempo de Bingo",
+          "aggregation": "MIN",
+          "format": "DURATION_MS"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "completionRate",
+          "label": "Tablero completado",
+          "kind": "PERCENT",
+          "numerator": "cellsCompleted",
+          "denominator": [
+            "cellsTotal"
+          ]
+        },
+        {
+          "key": "bingoRate",
+          "label": "Bingos por partida",
+          "kind": "PERCENT",
+          "numerator": "bingos",
+          "denominator": [
+            "games"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "id": "whos-that-pokemon",
+    "name": "¿Quién es ese Pokémon?",
+    "icon": "❓",
+    "description": "Reconoce la silueta antes que nadie y suma más puntos cuanto más rápido aciertes.",
+    "minPlayers": 1,
+    "maxPlayers": 8,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "correct",
+          "label": "Pokémon acertados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "missed",
+          "label": "Pokémon no acertados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "totalAttempts",
+          "label": "Intentos totales",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "firstTry",
+          "label": "Aciertos al primer intento",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "roundFirsts",
+          "label": "Primeros puestos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "solveTimeTotalMs",
+          "label": "Tiempo total en aciertos",
+          "aggregation": "SUM",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "bestTimeMs",
+          "label": "Mejor tiempo",
+          "aggregation": "MIN",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "pointsFromRounds",
+          "label": "Puntos en rondas",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "solveRate",
+          "label": "Tasa de resolución",
+          "kind": "PERCENT",
+          "numerator": "correct",
+          "denominator": [
+            "correct",
+            "missed"
+          ]
+        },
+        {
+          "key": "accuracy",
+          "label": "Precisión",
+          "kind": "PERCENT",
+          "numerator": "correct",
+          "denominator": [
+            "totalAttempts"
+          ]
+        },
+        {
+          "key": "averageSolveTime",
+          "label": "Tiempo medio para acertar",
+          "kind": "AVERAGE",
+          "numerator": "solveTimeTotalMs",
+          "denominator": [
+            "correct"
+          ],
+          "format": "DURATION_MS"
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 20,
+      "rounds": 10,
+      "hintsEnabled": false,
+      "includeRegionalForms": true
+    }
+  },
+  {
+    "id": "pokedex-entry-guess",
+    "name": "Pokédex Entry Guess",
+    "icon": "📖",
+    "description": "Reconoce al Pokémon por una entrada oficial de la Pokédex en español.",
+    "minPlayers": 2,
+    "maxPlayers": 8,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "correct",
+          "label": "Pokémon acertados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "missed",
+          "label": "Pokémon no acertados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "totalAttempts",
+          "label": "Intentos totales",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "firstTry",
+          "label": "Aciertos al primer intento",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "roundFirsts",
+          "label": "Primeras posiciones de ronda",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "solveTimeTotalMs",
+          "label": "Tiempo total en aciertos",
+          "aggregation": "SUM",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "bestTimeMs",
+          "label": "Mejor tiempo",
+          "aggregation": "MIN",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "pointsFromRounds",
+          "label": "Puntos en rondas",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "solveRate",
+          "label": "Tasa de resolución",
+          "kind": "PERCENT",
+          "numerator": "correct",
+          "denominator": [
+            "correct",
+            "missed"
+          ]
+        },
+        {
+          "key": "guessAccuracy",
+          "label": "Precisión de intentos",
+          "kind": "PERCENT",
+          "numerator": "correct",
+          "denominator": [
+            "totalAttempts"
+          ]
+        },
+        {
+          "key": "averageSolveTime",
+          "label": "Tiempo medio para acertar",
+          "kind": "AVERAGE",
+          "numerator": "solveTimeTotalMs",
+          "denominator": [
+            "correct"
+          ],
+          "format": "DURATION_MS"
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 25,
+      "rounds": 10,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      }
+    }
+  },
+  {
+    "id": "type-chain",
+    "name": "Type Chain",
+    "icon": "⛓️",
+    "description": "Encadena Pokémon compartiendo exactamente un tipo antes de que termine tu turno.",
+    "minPlayers": 2,
+    "maxPlayers": 8,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "validSubmissions",
+          "label": "Pokémon válidos enviados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "invalidAttempts",
+          "label": "Intentos inválidos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "turnsSurvived",
+          "label": "Turnos sobrevividos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "timeoutEliminations",
+          "label": "Eliminaciones por timeout",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "longestChain",
+          "label": "Cadena más larga",
+          "aggregation": "MAX"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "validSubmissionRate",
+          "label": "Tasa de intentos válidos",
+          "kind": "PERCENT",
+          "numerator": "validSubmissions",
+          "denominator": [
+            "validSubmissions",
+            "invalidAttempts"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "turnSeconds": 15
+    }
+  },
+  {
+    "id": "guess-from-stats",
+    "name": "Guess from Stats",
+    "icon": "📊",
+    "description": "Reconoce Pokémon por sus estadísticas base y resuelve antes que tus rivales.",
+    "minPlayers": 2,
+    "maxPlayers": 8,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "correct",
+          "label": "Pokémon acertados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "missed",
+          "label": "Pokémon no acertados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "totalAttempts",
+          "label": "Intentos totales",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "firstTry",
+          "label": "Aciertos al primer intento",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "roundFirsts",
+          "label": "Primeras posiciones",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "solveTimeTotalMs",
+          "label": "Tiempo total en aciertos",
+          "aggregation": "SUM",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "bestTimeMs",
+          "label": "Mejor tiempo",
+          "aggregation": "MIN",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "pointsFromRounds",
+          "label": "Puntos en rondas",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "solveRate",
+          "label": "Tasa de resolución",
+          "kind": "PERCENT",
+          "numerator": "correct",
+          "denominator": [
+            "correct",
+            "missed"
+          ]
+        },
+        {
+          "key": "guessAccuracy",
+          "label": "Precisión de intentos",
+          "kind": "PERCENT",
+          "numerator": "correct",
+          "denominator": [
+            "totalAttempts"
+          ]
+        },
+        {
+          "key": "averageSolveTime",
+          "label": "Tiempo medio de resolución",
+          "kind": "AVERAGE",
+          "numerator": "solveTimeTotalMs",
+          "denominator": [
+            "correct"
+          ],
+          "format": "DURATION_MS"
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 30,
+      "rounds": 10,
+      "stats": {
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "bst": false
+      },
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "types": true,
+        "typeCount": false,
+        "evolution": true,
+        "height": false,
+        "weight": false,
+        "category": false
+      }
+    }
+  },
+  {
+    "id": "zoomed-pokemon",
+    "name": "Zoomed Pokémon",
+    "recommended": true,
+    "icon": "🔎",
+    "description": "Reconoce el Pokémon mientras una cámara compartida se aleja progresivamente.",
+    "minPlayers": 1,
+    "maxPlayers": 8,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "correct",
+          "label": "Pokémon acertados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "missed",
+          "label": "Pokémon no acertados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "totalAttempts",
+          "label": "Intentos totales",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "firstTry",
+          "label": "Aciertos al primer intento",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "firstPositions",
+          "label": "Primeras posiciones",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "solveTimeTotalMs",
+          "label": "Tiempo total en aciertos",
+          "aggregation": "SUM",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "bestTimeMs",
+          "label": "Mejor tiempo",
+          "aggregation": "MIN",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "maxZoomSolves",
+          "label": "Aciertos en máximo zoom",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "solveStageTotal",
+          "label": "Total de stages al resolver",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pointsFromRounds",
+          "label": "Puntos históricos",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "solveRate",
+          "label": "Tasa de resolución",
+          "kind": "PERCENT",
+          "numerator": "correct",
+          "denominator": [
+            "correct",
+            "missed"
+          ]
+        },
+        {
+          "key": "averageSolveTime",
+          "label": "Tiempo medio de acierto",
+          "kind": "AVERAGE",
+          "numerator": "solveTimeTotalMs",
+          "denominator": [
+            "correct"
+          ],
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "averageSolveStage",
+          "label": "Stage medio de resolución",
+          "kind": "AVERAGE",
+          "numerator": "solveStageTotal",
+          "denominator": [
+            "correct"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "imageMode": "MIXED",
+      "roundSeconds": 30,
+      "rounds": 10,
+      "hintsEnabled": false,
+      "hintKinds": [
+        "GENERATION",
+        "TYPE",
+        "EVOLUTION"
+      ],
+      "includeForms": true
+    }
+  },
+  {
+    "id": "poke-taboo",
+    "name": "PokéTaboo",
+    "icon": "🎙️",
+    "description": "Describe un Pokémon sin decir su nombre y ayuda al grupo a descubrirlo.",
+    "minPlayers": 2,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "guessedPokemon",
+          "label": "Pokémon adivinados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "firstTry",
+          "label": "Aciertos al primer intento",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "totalAttempts",
+          "label": "Intentos totales",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "firstCorrectResponses",
+          "label": "Primeras respuestas correctas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "descriptorRounds",
+          "label": "Rondas como descriptor",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "descriptorSuccesses",
+          "label": "Rondas de descriptor exitosas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "descriptorFailures",
+          "label": "Rondas de descriptor fallidas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pointsFromGuessing",
+          "label": "Puntos por adivinar",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pointsFromDescribing",
+          "label": "Puntos por describir",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "descriptorSuccessRate",
+          "label": "Tasa de éxito como descriptor",
+          "kind": "PERCENT",
+          "numerator": "descriptorSuccesses",
+          "denominator": [
+            "descriptorSuccesses",
+            "descriptorFailures"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 60,
+      "laps": 1,
+      "includeRegionalForms": true
+    }
+  },
+  {
+    "id": "one-of-us-is-fake",
+    "name": "One of Us Is Fake",
+    "icon": "🕵️",
+    "description": "Elegid Pokémon para categorías secretas y descubrid quién recibió una diferente.",
+    "minPlayers": 3,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "roundsPlayed",
+          "label": "Rondas jugadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "victoriesAsFake",
+          "label": "Victorias como fake",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "victoriesAsNormal",
+          "label": "Victorias como normal",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "timesFake",
+          "label": "Veces como fake",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "fakeDiscovered",
+          "label": "Fake descubierto",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "fakeUndiscovered",
+          "label": "Fake no descubierto",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "correctVotes",
+          "label": "Votos correctos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "incorrectVotes",
+          "label": "Votos incorrectos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "normalWronglySelected",
+          "label": "Expulsado siendo normal",
+          "aggregation": "SUM"
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "selectionSeconds": 30,
+      "discussionSeconds": 180,
+      "rounds": 5,
+      "fakeKnows": false,
+      "categorySource": "OFFICIAL",
+      "includeRegionalForms": true
+    }
+  },
+  {
+    "id": "pokemon-bluff-auction",
+    "name": "Pokémon Bluff Auction",
+    "icon": "🔨",
+    "description": "Puja cuántos Pokémon puedes nombrar y demuestra tu apuesta ante el grupo.",
+    "minPlayers": 2,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "roundsWon",
+          "label": "Rondas ganadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "bidderRounds",
+          "label": "Rondas como apostador",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "completedBids",
+          "label": "Apuestas completadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "failedBids",
+          "label": "Apuestas falladas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "correctPokemon",
+          "label": "Pokémon correctos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "incorrectPokemon",
+          "label": "Pokémon incorrectos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "highestCompletedBid",
+          "label": "Mayor apuesta completada",
+          "aggregation": "MAX"
+        },
+        {
+          "key": "highestAttemptedBid",
+          "label": "Mayor apuesta intentada",
+          "aggregation": "MAX"
+        },
+        {
+          "key": "impossibleBids",
+          "label": "Apuestas imposibles",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "bidderSuccessRate",
+          "label": "Éxito como apostador",
+          "kind": "PERCENT",
+          "numerator": "completedBids",
+          "denominator": [
+            "completedBids",
+            "failedBids"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    }
+  },
+  {
+    "id": "sketchmon",
+    "name": "Sketchmon",
+    "icon": "🎨",
+    "description": "Dibuja un Pokémon en tiempo real para que el resto lo descubra.",
+    "experimental": false,
+    "minPlayers": 2,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "guessedPokemon",
+          "label": "Pokémon adivinados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "firstTry",
+          "label": "Aciertos al primer intento",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "totalAttempts",
+          "label": "Intentos totales",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "firstCorrectResponses",
+          "label": "Primeras respuestas correctas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "drawingRounds",
+          "label": "Rondas dibujando",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "drawingSuccesses",
+          "label": "Dibujos adivinados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "drawingFailures",
+          "label": "Dibujos no adivinados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pointsFromGuessing",
+          "label": "Puntos por adivinar",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pointsFromDrawing",
+          "label": "Puntos por dibujar",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "drawingSuccessRate",
+          "label": "Tasa de dibujos adivinados",
+          "kind": "PERCENT",
+          "numerator": "drawingSuccesses",
+          "denominator": [
+            "drawingSuccesses",
+            "drawingFailures"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 90,
+      "laps": 1,
+      "hintsEnabled": false,
+      "memoryPreviewEnabled": false,
+      "includeForms": false
+    }
+  },
+  {
+    "id": "pokemon-connections",
+    "name": "Pokémon Connections",
+    "icon": "🧩",
+    "description": "Encuentra en privado los grupos de Pokémon que comparten una conexión.",
+    "experimental": true,
+    "minPlayers": 1,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "roundsPlayed",
+          "label": "Puzles jugados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "groupsFound",
+          "label": "Grupos encontrados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "boardsSolved",
+          "label": "Tableros completados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "mistakes",
+          "label": "Errores",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "nearMisses",
+          "label": "Intentos a una",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "podiumFinishes",
+          "label": "Podios de velocidad",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "solveTimeTotalMs",
+          "label": "Tiempo total al resolver",
+          "aggregation": "SUM",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "bestSolveTimeMs",
+          "label": "Mejor tiempo",
+          "aggregation": "MIN",
+          "format": "DURATION_MS"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "solveRate",
+          "label": "Puzles completados",
+          "kind": "PERCENT",
+          "numerator": "boardsSolved",
+          "denominator": [
+            "roundsPlayed"
+          ]
+        },
+        {
+          "key": "averageSolveTime",
+          "label": "Tiempo medio",
+          "kind": "AVERAGE",
+          "numerator": "solveTimeTotalMs",
+          "denominator": [
+            "boardsSolved"
+          ],
+          "format": "DURATION_MS"
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "groupSize": 4,
+      "pokemonCount": 16,
+      "mistakesAllowed": 4,
+      "roundSeconds": 120,
+      "rounds": 5
+    }
+  },
+  {
+    "id": "pokemon-team-auction",
+    "name": "Pokémon Team Auction",
+    "recommended": true,
+    "icon": "💰",
+    "description": "Construye tu equipo pujando por Pokémon en una subasta visible.",
+    "experimental": true,
+    "minPlayers": 2,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "lotsWon",
+          "label": "Lotes ganados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pokemonWon",
+          "label": "Pokémon adquiridos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "bstTotal",
+          "label": "BST del equipo",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "coinsRemaining",
+          "label": "Monedas restantes",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "legendaryCount",
+          "label": "Legendarios",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "mythicalCount",
+          "label": "Míticos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "unownedLots",
+          "label": "Lotes sin dueño",
+          "aggregation": "SUM"
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "initialBudget": 20,
+      "bidSeconds": 20,
+      "includeForms": true
+    }
+  },
+  {
+    "id": "secret-ranking",
+    "name": "Secret Ranking",
+    "icon": "📋",
+    "description": "Ordena cinco Pokémon en secreto e intenta pensar como el resto del grupo.",
+    "experimental": true,
+    "minPlayers": 3,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "roundsPlayed",
+          "label": "Rondas jugadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "rankingsSubmitted",
+          "label": "Rankings enviados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "roundsMissed",
+          "label": "Rondas sin respuesta",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "roundWins",
+          "label": "Rankings más cercanos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "perfectMatches",
+          "label": "Coincidencias perfectas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "distanceTotal",
+          "label": "Distancia total",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pointsFromRounds",
+          "label": "Puntos en rondas",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "submissionRate",
+          "label": "Rankings completados",
+          "kind": "PERCENT",
+          "numerator": "rankingsSubmitted",
+          "denominator": [
+            "roundsPlayed"
+          ]
+        },
+        {
+          "key": "averageDistance",
+          "label": "Distancia media",
+          "kind": "AVERAGE",
+          "numerator": "distanceTotal",
+          "denominator": [
+            "rankingsSubmitted"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 3,
+      "roundSeconds": 45,
+      "promptSource": "OFFICIAL",
+      "includeForms": true
+    }
+  },
+  {
+    "id": "most-likely-to",
+    "name": "Most Likely To",
+    "icon": "👉",
+    "description": "Elige qué Pokémon encaja mejor con una situación y convence al grupo.",
+    "experimental": true,
+    "minPlayers": 3,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "roundsPlayed",
+          "label": "Rondas jugadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "answersSubmitted",
+          "label": "Respuestas enviadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "roundsMissed",
+          "label": "Rondas sin respuesta",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "votesCast",
+          "label": "Votos emitidos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "votesReceived",
+          "label": "Votos recibidos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "roundWins",
+          "label": "Victorias",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "soloWins",
+          "label": "Victorias en solitario",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "sharedWins",
+          "label": "Victorias compartidas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pointsFromRounds",
+          "label": "Puntos en rondas",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "answerRate",
+          "label": "Rondas respondidas",
+          "kind": "PERCENT",
+          "numerator": "answersSubmitted",
+          "denominator": [
+            "roundsPlayed"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "selectionSeconds": 45,
+      "votingSeconds": 30,
+      "promptSource": "OFFICIAL",
+      "includeForms": true
+    }
+  },
+  {
+    "id": "would-you-rather",
+    "name": "Would You Rather Pokémon",
+    "icon": "⚖️",
+    "description": "Elige entre dos situaciones absurdas y predice qué preferirá la mayoría.",
+    "experimental": true,
+    "minPlayers": 3,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "roundsPlayed",
+          "label": "Rondas jugadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "ballotsSubmitted",
+          "label": "Papeletas enviadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "roundsMissed",
+          "label": "Rondas sin respuesta",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "majorityChoices",
+          "label": "Elecciones mayoritarias",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "correctPredictions",
+          "label": "Mayorías predichas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "perfectRounds",
+          "label": "Rondas perfectas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pointsFromRounds",
+          "label": "Puntos en rondas",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "predictionRate",
+          "label": "Predicciones acertadas",
+          "kind": "PERCENT",
+          "numerator": "correctPredictions",
+          "denominator": [
+            "ballotsSubmitted"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "rounds": 5,
+      "roundSeconds": 45,
+      "promptSource": "OFFICIAL"
+    }
+  },
+  {
+    "id": "pokemon-red-flag",
+    "name": "Pokémon Red Flag / Green Flag",
+    "recommended": true,
+    "icon": "🚩",
+    "description": "Escribe la red o green flag más divertida de un Pokémon y gana la votación anónima.",
+    "experimental": true,
+    "minPlayers": 3,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "roundsPlayed",
+          "label": "Rondas jugadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "answersSubmitted",
+          "label": "Respuestas enviadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "roundsMissed",
+          "label": "Rondas sin respuesta",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "votesCast",
+          "label": "Votos emitidos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "votesReceived",
+          "label": "Votos recibidos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "roundWins",
+          "label": "Victorias",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "soloWins",
+          "label": "Victorias en solitario",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "sharedWins",
+          "label": "Victorias compartidas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pointsFromRounds",
+          "label": "Puntos en rondas",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "answerRate",
+          "label": "Rondas respondidas",
+          "kind": "PERCENT",
+          "numerator": "answersSubmitted",
+          "denominator": [
+            "roundsPlayed"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "phaseSeconds": 30,
+      "includeForms": true,
+      "mode": "RED"
+    }
+  },
+  {
+    "id": "tcg-higher-lower",
+    "name": "Higher or Lower: Cartas",
+    "icon": "🃏",
+    "recommended": true,
+    "description": "Compara el precio actual de dos cartas Pokémon TCG.",
+    "minPlayers": 1,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "comparisons",
+          "label": "Comparaciones",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "correct",
+          "label": "Aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "incorrect",
+          "label": "Errores",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "sameCorrect",
+          "label": "Igualdades acertadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "bestStreak",
+          "label": "Mejor racha",
+          "aggregation": "MAX"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "accuracy",
+          "label": "Precisión",
+          "kind": "PERCENT",
+          "numerator": "correct",
+          "denominator": [
+            "correct",
+            "incorrect"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "setIds": [],
+      "rarities": [],
+      "minPrice": null,
+      "maxPrice": null,
+      "showRarity": true,
+      "rounds": 10,
+      "roundSeconds": 15
+    }
+  },
+  {
+    "id": "pokemon-cry-quiz",
+    "name": "Adivina el Grito",
+    "icon": "🔊",
+    "recommended": true,
+    "description": "Escucha el grito oficial y descubre qué Pokémon lo está haciendo.",
+    "minPlayers": 1,
+    "maxPlayers": 12,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "correct",
+          "label": "Gritos acertados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "missed",
+          "label": "Gritos no acertados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "totalAttempts",
+          "label": "Intentos totales",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "firstTry",
+          "label": "Aciertos al primer intento",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "roundFirsts",
+          "label": "Primeros puestos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "solveTimeTotalMs",
+          "label": "Tiempo total en aciertos",
+          "aggregation": "SUM",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "bestTimeMs",
+          "label": "Mejor tiempo",
+          "aggregation": "MIN",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "pointsFromRounds",
+          "label": "Puntos en rondas",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "accuracy",
+          "label": "Precisión",
+          "kind": "PERCENT",
+          "numerator": "correct",
+          "denominator": [
+            "totalAttempts"
+          ]
+        },
+        {
+          "key": "averageSolveTime",
+          "label": "Tiempo medio",
+          "kind": "AVERAGE",
+          "numerator": "solveTimeTotalMs",
+          "denominator": [
+            "correct"
+          ],
+          "format": "DURATION_MS"
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 20,
+      "rounds": 10,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    }
+  },
+  {
+    "id": "pokemon-trivia",
+    "name": "Pokémon Trivia",
+    "icon": "🧠",
+    "recommended": true,
+    "description": "Responde preguntas objetivas sobre tipos, generaciones, estadísticas y medidas.",
+    "minPlayers": 1,
+    "maxPlayers": 12,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "answers",
+          "label": "Respuestas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "correct",
+          "label": "Aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "incorrect",
+          "label": "Fallos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "unanswered",
+          "label": "Sin respuesta",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "fastestCorrectMs",
+          "label": "Respuesta más rápida",
+          "aggregation": "MIN",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "correctTimeTotalMs",
+          "label": "Tiempo total en aciertos",
+          "aggregation": "SUM",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "pointsFromRounds",
+          "label": "Puntos en rondas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "typeAnswers",
+          "label": "TYPE: respuestas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "typeCorrect",
+          "label": "TYPE: aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "generationAnswers",
+          "label": "GENERATION: respuestas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "generationCorrect",
+          "label": "GENERATION: aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "hpAnswers",
+          "label": "HP: respuestas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "hpCorrect",
+          "label": "HP: aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "attackAnswers",
+          "label": "ATTACK: respuestas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "attackCorrect",
+          "label": "ATTACK: aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "defenseAnswers",
+          "label": "DEFENSE: respuestas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "defenseCorrect",
+          "label": "DEFENSE: aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "special_attackAnswers",
+          "label": "SPECIAL_ATTACK: respuestas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "special_attackCorrect",
+          "label": "SPECIAL_ATTACK: aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "special_defenseAnswers",
+          "label": "SPECIAL_DEFENSE: respuestas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "special_defenseCorrect",
+          "label": "SPECIAL_DEFENSE: aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "speedAnswers",
+          "label": "SPEED: respuestas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "speedCorrect",
+          "label": "SPEED: aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "bstAnswers",
+          "label": "BST: respuestas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "bstCorrect",
+          "label": "BST: aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "heightAnswers",
+          "label": "HEIGHT: respuestas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "heightCorrect",
+          "label": "HEIGHT: aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "weightAnswers",
+          "label": "WEIGHT: respuestas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "weightCorrect",
+          "label": "WEIGHT: aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "dex_numberAnswers",
+          "label": "DEX_NUMBER: respuestas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "dex_numberCorrect",
+          "label": "DEX_NUMBER: aciertos",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "accuracy",
+          "label": "Precisión",
+          "kind": "PERCENT",
+          "numerator": "correct",
+          "denominator": [
+            "answers"
+          ]
+        },
+        {
+          "key": "averageCorrectTime",
+          "label": "Tiempo medio",
+          "kind": "AVERAGE",
+          "numerator": "correctTimeTotalMs",
+          "denominator": [
+            "correct"
+          ],
+          "format": "DURATION_MS"
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 20,
+      "rounds": 10,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    }
+  },
+  {
+    "id": "pokemon-palette-guess",
+    "name": "Adivina por la Paleta",
+    "icon": "🎨",
+    "recommended": true,
+    "description": "Reconoce al Pokémon usando únicamente los colores dominantes de su sprite.",
+    "minPlayers": 1,
+    "maxPlayers": 12,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "correct",
+          "label": "Paletas acertadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "missed",
+          "label": "Paletas no acertadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "totalAttempts",
+          "label": "Intentos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "firstTry",
+          "label": "A la primera",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "roundFirsts",
+          "label": "Primeros puestos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "solveTimeTotalMs",
+          "label": "Tiempo total",
+          "aggregation": "SUM",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "bestTimeMs",
+          "label": "Mejor tiempo",
+          "aggregation": "MIN",
+          "format": "DURATION_MS"
+        },
+        {
+          "key": "pointsFromRounds",
+          "label": "Puntos",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "accuracy",
+          "label": "Precisión",
+          "kind": "PERCENT",
+          "numerator": "correct",
+          "denominator": [
+            "totalAttempts"
+          ]
+        },
+        {
+          "key": "averageSolveTime",
+          "label": "Tiempo medio",
+          "kind": "AVERAGE",
+          "numerator": "solveTimeTotalMs",
+          "denominator": [
+            "correct"
+          ],
+          "format": "DURATION_MS"
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 25,
+      "rounds": 10,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": [
+        "GENERATION",
+        "TYPE",
+        "EVOLUTION"
+      ]
+    }
+  },
+  {
+    "id": "who-is-who-pokemon",
+    "name": "Quién es Quién — Pokémon",
+    "icon": "🃏",
+    "description": "Dos equipos se enfrentan para descubrir el Pokémon secreto rival.",
+    "minPlayers": 2,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "wins",
+          "label": "Victorias",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "turnsPlayed",
+          "label": "Turnos jugados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "correctGuesses",
+          "label": "Aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "incorrectGuesses",
+          "label": "Fallos",
+          "aggregation": "SUM"
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "boardSize": 24,
+      "includeForms": true,
+      "turnSeconds": 40,
+      "rounds": 25,
+      "selectionSeconds": 30,
+      "secretSelection": "RANDOM"
+    }
+  }
+]
