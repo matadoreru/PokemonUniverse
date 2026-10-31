@@ -21,10 +21,6 @@ public final class RoomTimer {
     cancel.run();
   }
 
-  public boolean isCancelled() {
-    return cancelled;
-  }
-
   /** {@code cancelTimer(timer)}: cancela si existe y devuelve {@code null}. */
   public static RoomTimer cancel(RoomTimer timer) {
     if (timer != null) timer.cancel();

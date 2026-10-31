@@ -113,6 +113,8 @@ public class RoomCoordinator {
   private final RoomSchedulers schedulers;
   private final RoomSettings settings;
   private final Map<String, JsonNode> defaultConfigs = new LinkedHashMap<>();
+  /** Motores portados con los tipos borrados, uno por juego. */
+  private final Map<String, ErasedEngine> engines = new LinkedHashMap<>();
 
   @Inject
   public RoomCoordinator(GameRegistry registry, JsonMapper json, RoomEvents events, RoomAuditSink audit,
@@ -133,7 +135,10 @@ public class RoomCoordinator {
     this.cursors = new CursorRelay(events, clock);
     this.pokemon = catalog.loadPokemonCatalog();
     this.catalogVersion = random.uuid();
-    for (var manifest : registry.list()) defaultConfigs.put(manifest.id(), toTree(manifest.defaultConfig()));
+    for (var manifest : registry.list()) {
+      defaultConfigs.put(manifest.id(), toTree(manifest.defaultConfig()));
+      registry.engine(manifest.id()).ifPresent(engine -> engines.put(manifest.id(), new ErasedEngine(engine)));
+    }
   }
 
   /** Las partidas en curso conservan su catálogo; la siguiente usa este. */
@@ -426,7 +431,7 @@ public class RoomCoordinator {
       var room = permissionRoom(playerId, RoomPermission.EDIT_GAME_CONFIG);
       assertLobby(room);
       registry.get(gameId).orElseThrow(() -> new RoomException("Minijuego desconocido."));
-      var engine = registry.engine(gameId).map(ErasedEngine::new).orElseThrow(() -> new RoomException(NOT_PORTED));
+      var engine = engine(gameId).orElseThrow(() -> new RoomException(NOT_PORTED));
       var parsed = toTree(engine.parseConfig(config));
       room.gameConfigs.put(gameId, parsed);
       var actor = room.members.get(playerId);
@@ -574,7 +579,7 @@ public class RoomCoordinator {
     int playerCount = connectedPlayerCount(room);
     return gameIds.stream().filter(gameId -> {
       var module = registry.get(gameId).orElse(null);
-      var engine = registry.engine(gameId).map(ErasedEngine::new).orElse(null);
+      var engine = engine(gameId).orElse(null);
       if (module == null || engine == null || !ManifestView.supportsPlayerCount(module, playerCount)) return false;
       Object parsed;
       try {
@@ -589,7 +594,7 @@ public class RoomCoordinator {
 
   private Optional<String> gameConfigReadinessReason(LiveRoom room, String gameId) {
     if (registry.get(gameId).isEmpty()) return Optional.of("Minijuego desconocido.");
-    var engine = registry.engine(gameId).map(ErasedEngine::new).orElse(null);
+    var engine = engine(gameId).orElse(null);
     if (engine == null) return Optional.of(NOT_PORTED);
     Object parsed;
     try {
@@ -654,7 +659,7 @@ public class RoomCoordinator {
     var players = room.members.values().stream().filter(member -> member.presence == PresenceStatus.CONNECTED)
         .map(member -> new GamePlayer(member.identity.id(), member.identity.displayName(), true, true)).toList();
     var module = registry.get(room.selectedGameId).orElseThrow(() -> new RoomException("Unknown game"));
-    var engine = registry.engine(room.selectedGameId).map(ErasedEngine::new)
+    var engine = engine(room.selectedGameId)
         .orElseThrow(() -> new RoomException(NOT_PORTED));
     if (players.size() < module.minPlayers()) {
       throw new RoomException("Se necesitan al menos " + module.minPlayers() + " jugadores.");
@@ -1312,14 +1317,18 @@ public class RoomCoordinator {
     return RoomCodes.generate(random::nextInt);
   }
 
+  private Optional<ErasedEngine> engine(@Nullable String gameId) {
+    return gameId == null ? Optional.empty() : Optional.ofNullable(engines.get(gameId));
+  }
+
   private static boolean isInteger(double value) {
     return Double.isFinite(value) && value == Math.rint(value);
   }
 
   /** {@code configSchema.parse(raw)} para un juego portado; un juego sin motor guarda su configuración tal cual. */
   private JsonNode normalizedConfig(GameManifest manifest, JsonNode raw) {
-    var engine = registry.engine(manifest.id());
-    return engine.isPresent() ? toTree(new ErasedEngine(engine.get()).parseConfig(raw)) : raw;
+    var engine = engines.get(manifest.id());
+    return engine != null ? toTree(engine.parseConfig(raw)) : raw;
   }
 
   private JsonNode toTree(@Nullable Object value) {
