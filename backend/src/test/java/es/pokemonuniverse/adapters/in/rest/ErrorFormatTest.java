@@ -60,6 +60,24 @@ class ErrorFormatTest {
   }
 
   @Test
+  void applicationExceptionsMapToTheirStatus() {
+    var cases = Map.of(
+        "conflict", HttpStatus.CONFLICT,
+        "unauthorized", HttpStatus.UNAUTHORIZED,
+        "not-found", HttpStatus.NOT_FOUND,
+        "bad-request", HttpStatus.BAD_REQUEST);
+    var messages = Map.of("conflict", "conflicto", "unauthorized", "sin sesion", "not-found", "no existe",
+        "bad-request", "mal");
+    cases.forEach((kind, status) -> {
+      var ex = call(HttpRequest.GET("/test-errors/application/" + kind));
+      assertEquals(status, ex.getStatus(), kind);
+      var json = body(ex);
+      assertEquals(messages.get(kind), json.get("error"), kind);
+      assertFalse(json.containsKey("issues"), json.toString());
+    });
+  }
+
+  @Test
   void unknownExceptionShowsMessageOutsideProd() throws Exception {
     var ex = call(HttpRequest.GET("/test-errors/boom"));
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());

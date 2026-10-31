@@ -1,12 +1,11 @@
 package es.pokemonuniverse.application.feedback;
 
-import es.pokemonuniverse.adapters.in.rest.ApiException;
 import es.pokemonuniverse.adapters.out.persistence.FeedbackEntity;
 import es.pokemonuniverse.adapters.out.persistence.FeedbackRepository;
+import es.pokemonuniverse.application.errors.BadRequestException;
 import es.pokemonuniverse.domain.game.GameManifest;
 import es.pokemonuniverse.domain.game.GameRegistry;
 import es.pokemonuniverse.domain.identity.AuthUser;
-import io.micronaut.http.HttpStatus;
 import io.micronaut.core.annotation.Nullable;
 import jakarta.inject.Singleton;
 import java.time.Instant;
@@ -30,7 +29,7 @@ public class FeedbackService {
     if (command.gameId() != null) {
       gameName = games.get(command.gameId())
           .map(GameManifest::name)
-          .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "El minijuego seleccionado no existe."));
+          .orElseThrow(() -> new BadRequestException("El minijuego seleccionado no existe."));
     }
     var registered = author.kind() == AuthUser.Kind.USER;
     var saved = repository.save(FeedbackEntity.create(UUID.randomUUID().toString(), command.reference(),

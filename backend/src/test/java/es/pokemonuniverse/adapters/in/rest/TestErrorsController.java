@@ -1,5 +1,9 @@
 package es.pokemonuniverse.adapters.in.rest;
 
+import es.pokemonuniverse.application.errors.BadRequestException;
+import es.pokemonuniverse.application.errors.ConflictException;
+import es.pokemonuniverse.application.errors.NotFoundException;
+import es.pokemonuniverse.application.errors.UnauthorizedException;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Body;
@@ -21,6 +25,17 @@ class TestErrorsController {
   @Get("/conflict")
   String conflict() {
     throw new ApiException(HttpStatus.CONFLICT, "Email or username already in use");
+  }
+
+  /** Errores de la capa de aplicación: el adaptador REST les pone el estado HTTP. */
+  @Get("/application/{kind}")
+  String application(String kind) {
+    throw switch (kind) {
+      case "conflict" -> new ConflictException("conflicto");
+      case "unauthorized" -> new UnauthorizedException("sin sesion");
+      case "not-found" -> new NotFoundException("no existe");
+      default -> new BadRequestException("mal");
+    };
   }
 
   @Post("/validate")

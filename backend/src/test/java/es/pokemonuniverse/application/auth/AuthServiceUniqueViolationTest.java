@@ -3,10 +3,9 @@ package es.pokemonuniverse.application.auth;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import es.pokemonuniverse.adapters.in.rest.ApiException;
 import es.pokemonuniverse.adapters.out.persistence.UserEntity;
 import es.pokemonuniverse.adapters.out.persistence.UserRepository;
-import io.micronaut.http.HttpStatus;
+import es.pokemonuniverse.application.errors.ConflictException;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.time.Instant;
@@ -26,8 +25,8 @@ class AuthServiceUniqueViolationTest {
     var first = UserEntity.create(UUID.randomUUID().toString(), "dup_" + tag, tag + "@mail.com", "h", Instant.now());
     service.insert(first);
     var second = UserEntity.create(UUID.randomUUID().toString(), "dup2_" + tag, tag + "@mail.com", "h", Instant.now());
-    var e = assertThrows(ApiException.class, () -> service.insert(second));
-    assertEquals(HttpStatus.CONFLICT, e.status());
+    var e = assertThrows(ConflictException.class, () -> service.insert(second));
+    assertEquals("Email or username already in use", e.getMessage());
     assertEquals("Email or username already in use", e.getMessage());
   }
 }

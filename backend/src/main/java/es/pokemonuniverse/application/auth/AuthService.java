@@ -1,14 +1,14 @@
 package es.pokemonuniverse.application.auth;
 
-import es.pokemonuniverse.adapters.in.rest.ApiException;
 import es.pokemonuniverse.adapters.out.persistence.UserEntity;
 import es.pokemonuniverse.adapters.out.persistence.UserRepository;
 import es.pokemonuniverse.adapters.out.persistence.UserStatsEntity;
 import es.pokemonuniverse.adapters.out.persistence.UserStatsRepository;
+import es.pokemonuniverse.application.errors.ConflictException;
+import es.pokemonuniverse.application.errors.UnauthorizedException;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
 import io.micronaut.data.exceptions.DataAccessException;
-import io.micronaut.http.HttpStatus;
 import jakarta.inject.Singleton;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
@@ -37,7 +37,7 @@ public class AuthService {
   @Transactional
   public AuthUser register(RegisterCommand cmd) {
     if (users.existsByEmailOrUsername(cmd.email(), cmd.username())) {
-      throw new ApiException(HttpStatus.CONFLICT, CONFLICT);
+      throw new ConflictException(CONFLICT);
     }
     var user = UserEntity.create(UUID.randomUUID().toString(), cmd.username(), cmd.email(), hasher.hash(cmd.password()), Instant.now());
     insert(user);
@@ -51,7 +51,7 @@ public class AuthService {
       stats.save(new UserStatsEntity(user.getId()));
       entityManager.flush();
     } catch (DataAccessException | PersistenceException e) {
-      if (isUniqueViolation(e)) throw new ApiException(HttpStatus.CONFLICT, CONFLICT);
+      if (isUniqueViolation(e)) throw new ConflictException(CONFLICT);
       throw e;
     }
   }
@@ -68,7 +68,7 @@ public class AuthService {
     return users.findByEmail(cmd.email())
         .filter(user -> hasher.matches(cmd.password(), user.getPasswordHash()))
         .map(UserIdentityMapper::identityFromUser)
-        .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
+        .orElseThrow(() -> new UnauthorizedException("Invalid email or password"));
   }
 
   public AuthUser guest(GuestCommand cmd) {
