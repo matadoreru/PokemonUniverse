@@ -1,0 +1,298 @@
+{
+  "engineId": "pokemon-trivia",
+  "scenario": "invalid-action-stops",
+  "seed": 605,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "roundSeconds": 20,
+    "rounds": 4,
+    "optionCount": 4,
+    "difficulty": "NORMAL",
+    "questionTypes": [
+      "TYPE",
+      "GENERATION",
+      "HP",
+      "ATTACK",
+      "DEFENSE",
+      "SPECIAL_ATTACK",
+      "SPECIAL_DEFENSE",
+      "SPEED",
+      "BST",
+      "HEIGHT",
+      "WEIGHT",
+      "DEX_NUMBER"
+    ]
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "A"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "E"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "B"
+      },
+      "now": 4000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-trivia",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 4,
+        "difficulty": "NORMAL",
+        "prompt": null,
+        "questionType": null,
+        "options": [],
+        "answeredPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canAnswer": false,
+          "answer": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canAnswer": false,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-trivia",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 4,
+        "difficulty": "NORMAL",
+        "prompt": "¿Cuál de estos Pokémon pertenece a la generación 1?",
+        "questionType": "GENERATION",
+        "options": [
+          {
+            "id": "A",
+            "pokemon": {
+              "id": "tyranitar",
+              "name": "Tyranitar",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/248.png"
+            }
+          },
+          {
+            "id": "B",
+            "pokemon": {
+              "id": "chikorita",
+              "name": "Chikorita",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+            }
+          },
+          {
+            "id": "C",
+            "pokemon": {
+              "id": "jumpluff",
+              "name": "Jumpluff",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+            }
+          },
+          {
+            "id": "D",
+            "pokemon": {
+              "id": "farfetchd",
+              "name": "Farfetchd",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/83.png"
+            }
+          }
+        ],
+        "answeredPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 21000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canAnswer": true,
+          "answer": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canAnswer": true,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál de estos Pokémon pertenece a la generación 1?",
+            "questionType": "GENERATION",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "tyranitar",
+                  "name": "Tyranitar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/248.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "chikorita",
+                  "name": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "jumpluff",
+                  "name": "Jumpluff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "farfetchd",
+                  "name": "Farfetchd",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/83.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "A",
+                "answeredAt": 2000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 1
+}

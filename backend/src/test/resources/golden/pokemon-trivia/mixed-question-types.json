@@ -1,0 +1,2510 @@
+{
+  "engineId": "pokemon-trivia",
+  "scenario": "mixed-question-types",
+  "seed": 601,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "roundSeconds": 20,
+    "rounds": 4,
+    "optionCount": 4,
+    "difficulty": "NORMAL",
+    "questionTypes": [
+      "TYPE",
+      "GENERATION",
+      "HP",
+      "ATTACK",
+      "DEFENSE",
+      "SPECIAL_ATTACK",
+      "SPECIAL_DEFENSE",
+      "SPEED",
+      "BST",
+      "HEIGHT",
+      "WEIGHT",
+      "DEX_NUMBER"
+    ]
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "A"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "A"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "B"
+      },
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "B"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "D"
+      },
+      "now": 9000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "A"
+      },
+      "now": 10000
+    },
+    {
+      "kind": "timeout",
+      "now": 13000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "B"
+      },
+      "now": 14000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "A"
+      },
+      "now": 33000
+    },
+    {
+      "kind": "timeout",
+      "now": 37000
+    },
+    {
+      "kind": "timeout",
+      "now": 57000
+    },
+    {
+      "kind": "timeout",
+      "now": 61000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "C"
+      },
+      "now": 62000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "D"
+      },
+      "now": 70000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "A"
+      },
+      "now": 80999
+    },
+    {
+      "kind": "timeout",
+      "now": 85000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-trivia",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 4,
+        "difficulty": "NORMAL",
+        "prompt": null,
+        "questionType": null,
+        "options": [],
+        "answeredPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canAnswer": false,
+          "answer": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canAnswer": false,
+          "answer": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canAnswer": false,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-trivia",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 4,
+        "difficulty": "NORMAL",
+        "prompt": "¿Cuál aparece más tarde en la Pokédex Nacional?",
+        "questionType": "DEX_NUMBER",
+        "options": [
+          {
+            "id": "A",
+            "pokemon": {
+              "id": "golem",
+              "name": "Golem",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+            }
+          },
+          {
+            "id": "B",
+            "pokemon": {
+              "id": "charizard",
+              "name": "Charizard",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+            }
+          },
+          {
+            "id": "C",
+            "pokemon": {
+              "id": "scyther",
+              "name": "Scyther",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+            }
+          },
+          {
+            "id": "D",
+            "pokemon": {
+              "id": "qwilfish",
+              "name": "Qwilfish",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/211.png"
+            }
+          }
+        ],
+        "answeredPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 21000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canAnswer": true,
+          "answer": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canAnswer": true,
+          "answer": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canAnswer": true,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "Estás observando esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál aparece más tarde en la Pokédex Nacional?",
+            "questionType": "DEX_NUMBER",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "charizard",
+                  "name": "Charizard",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "scyther",
+                  "name": "Scyther",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "qwilfish",
+                  "name": "Qwilfish",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/211.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál aparece más tarde en la Pokédex Nacional?",
+            "questionType": "DEX_NUMBER",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "charizard",
+                  "name": "Charizard",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "scyther",
+                  "name": "Scyther",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "qwilfish",
+                  "name": "Qwilfish",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/211.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "A",
+                "answeredAt": 3000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Tu respuesta ya está bloqueada.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál aparece más tarde en la Pokédex Nacional?",
+            "questionType": "DEX_NUMBER",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "charizard",
+                  "name": "Charizard",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "scyther",
+                  "name": "Scyther",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "qwilfish",
+                  "name": "Qwilfish",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/211.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "A",
+                "answeredAt": 3000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál aparece más tarde en la Pokédex Nacional?",
+            "questionType": "DEX_NUMBER",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "charizard",
+                  "name": "Charizard",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "scyther",
+                  "name": "Scyther",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "qwilfish",
+                  "name": "Qwilfish",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/211.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "A",
+                "answeredAt": 3000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "B",
+                "answeredAt": 5000
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 13000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál aparece más tarde en la Pokédex Nacional?",
+            "questionType": "DEX_NUMBER",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "charizard",
+                  "name": "Charizard",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "scyther",
+                  "name": "Scyther",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "qwilfish",
+                  "name": "Qwilfish",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/211.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 160
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 13000,
+            "lastRound": {
+              "correctOptionId": "D",
+              "fact": "Qwilfish: N.º 211 de la Pokédex Nacional.",
+              "answers": {
+                "p1": {
+                  "optionId": "A",
+                  "answeredAt": 3000
+                },
+                "p2": {
+                  "optionId": "B",
+                  "answeredAt": 5000
+                },
+                "p3": {
+                  "optionId": "D",
+                  "answeredAt": 9000
+                }
+              },
+              "points": {
+                "p1": 0,
+                "p2": 0,
+                "p3": 160
+              },
+              "optionDetails": {
+                "A": {
+                  "nationalDexNumber": 76,
+                  "generation": 1,
+                  "types": [
+                    "rock",
+                    "ground"
+                  ],
+                  "hp": 80,
+                  "attack": 120,
+                  "defense": 130,
+                  "specialAttack": 55,
+                  "specialDefense": 65,
+                  "speed": 45,
+                  "baseStatTotal": 495,
+                  "heightDecimeters": 14,
+                  "weightHectograms": 3000
+                },
+                "B": {
+                  "nationalDexNumber": 6,
+                  "generation": 1,
+                  "types": [
+                    "fire",
+                    "flying"
+                  ],
+                  "hp": 78,
+                  "attack": 84,
+                  "defense": 78,
+                  "specialAttack": 109,
+                  "specialDefense": 85,
+                  "speed": 100,
+                  "baseStatTotal": 534,
+                  "heightDecimeters": 17,
+                  "weightHectograms": 905
+                },
+                "C": {
+                  "nationalDexNumber": 123,
+                  "generation": 1,
+                  "types": [
+                    "bug",
+                    "flying"
+                  ],
+                  "hp": 70,
+                  "attack": 110,
+                  "defense": 80,
+                  "specialAttack": 55,
+                  "specialDefense": 80,
+                  "speed": 105,
+                  "baseStatTotal": 500,
+                  "heightDecimeters": 15,
+                  "weightHectograms": 560
+                },
+                "D": {
+                  "nationalDexNumber": 211,
+                  "generation": 2,
+                  "types": [
+                    "water",
+                    "poison"
+                  ],
+                  "hp": 65,
+                  "attack": 95,
+                  "defense": 85,
+                  "specialAttack": 55,
+                  "specialDefense": 55,
+                  "speed": 85,
+                  "baseStatTotal": 440,
+                  "heightDecimeters": 5,
+                  "weightHectograms": 39
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "A",
+                "answeredAt": 3000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "B",
+                "answeredAt": 5000
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "D",
+                "answeredAt": 9000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No hay una pregunta activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 13000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál aparece más tarde en la Pokédex Nacional?",
+            "questionType": "DEX_NUMBER",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "charizard",
+                  "name": "Charizard",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "scyther",
+                  "name": "Scyther",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "qwilfish",
+                  "name": "Qwilfish",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/211.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 160
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 13000,
+            "lastRound": {
+              "correctOptionId": "D",
+              "fact": "Qwilfish: N.º 211 de la Pokédex Nacional.",
+              "answers": {
+                "p1": {
+                  "optionId": "A",
+                  "answeredAt": 3000
+                },
+                "p2": {
+                  "optionId": "B",
+                  "answeredAt": 5000
+                },
+                "p3": {
+                  "optionId": "D",
+                  "answeredAt": 9000
+                }
+              },
+              "points": {
+                "p1": 0,
+                "p2": 0,
+                "p3": 160
+              },
+              "optionDetails": {
+                "A": {
+                  "nationalDexNumber": 76,
+                  "generation": 1,
+                  "types": [
+                    "rock",
+                    "ground"
+                  ],
+                  "hp": 80,
+                  "attack": 120,
+                  "defense": 130,
+                  "specialAttack": 55,
+                  "specialDefense": 65,
+                  "speed": 45,
+                  "baseStatTotal": 495,
+                  "heightDecimeters": 14,
+                  "weightHectograms": 3000
+                },
+                "B": {
+                  "nationalDexNumber": 6,
+                  "generation": 1,
+                  "types": [
+                    "fire",
+                    "flying"
+                  ],
+                  "hp": 78,
+                  "attack": 84,
+                  "defense": 78,
+                  "specialAttack": 109,
+                  "specialDefense": 85,
+                  "speed": 100,
+                  "baseStatTotal": 534,
+                  "heightDecimeters": 17,
+                  "weightHectograms": 905
+                },
+                "C": {
+                  "nationalDexNumber": 123,
+                  "generation": 1,
+                  "types": [
+                    "bug",
+                    "flying"
+                  ],
+                  "hp": 70,
+                  "attack": 110,
+                  "defense": 80,
+                  "specialAttack": 55,
+                  "specialDefense": 80,
+                  "speed": 105,
+                  "baseStatTotal": 500,
+                  "heightDecimeters": 15,
+                  "weightHectograms": 560
+                },
+                "D": {
+                  "nationalDexNumber": 211,
+                  "generation": 2,
+                  "types": [
+                    "water",
+                    "poison"
+                  ],
+                  "hp": 65,
+                  "attack": 95,
+                  "defense": 85,
+                  "specialAttack": 55,
+                  "specialDefense": 55,
+                  "speed": 85,
+                  "baseStatTotal": 440,
+                  "heightDecimeters": 5,
+                  "weightHectograms": 39
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "A",
+                "answeredAt": 3000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "B",
+                "answeredAt": 5000
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "D",
+                "answeredAt": 9000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 33000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál tiene mayor Velocidad base?",
+            "questionType": "SPEED",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "omanyte",
+                  "name": "Omanyte",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/138.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "grimer",
+                  "name": "Grimer",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "jigglypuff",
+                  "name": "Jigglypuff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 160
+            },
+            "roundStartedAt": 13000,
+            "roundEndsAt": 33000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 33000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál tiene mayor Velocidad base?",
+            "questionType": "SPEED",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "omanyte",
+                  "name": "Omanyte",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/138.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "grimer",
+                  "name": "Grimer",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "jigglypuff",
+                  "name": "Jigglypuff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 160
+            },
+            "roundStartedAt": 13000,
+            "roundEndsAt": 33000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "B",
+                "answeredAt": 14000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál tiene mayor Velocidad base?",
+            "questionType": "SPEED",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "omanyte",
+                  "name": "Omanyte",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/138.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "grimer",
+                  "name": "Grimer",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "jigglypuff",
+                  "name": "Jigglypuff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 195,
+              "p2": 0,
+              "p3": 160
+            },
+            "roundStartedAt": 13000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 37000,
+            "lastRound": {
+              "correctOptionId": "B",
+              "fact": "Golem: Velocidad base 45.",
+              "answers": {
+                "p1": {
+                  "optionId": "B",
+                  "answeredAt": 14000
+                }
+              },
+              "points": {
+                "p1": 195,
+                "p2": 0,
+                "p3": 0
+              },
+              "optionDetails": {
+                "A": {
+                  "nationalDexNumber": 138,
+                  "generation": 1,
+                  "types": [
+                    "rock",
+                    "water"
+                  ],
+                  "hp": 35,
+                  "attack": 40,
+                  "defense": 100,
+                  "specialAttack": 90,
+                  "specialDefense": 55,
+                  "speed": 35,
+                  "baseStatTotal": 355,
+                  "heightDecimeters": 4,
+                  "weightHectograms": 75
+                },
+                "B": {
+                  "nationalDexNumber": 76,
+                  "generation": 1,
+                  "types": [
+                    "rock",
+                    "ground"
+                  ],
+                  "hp": 80,
+                  "attack": 120,
+                  "defense": 130,
+                  "specialAttack": 55,
+                  "specialDefense": 65,
+                  "speed": 45,
+                  "baseStatTotal": 495,
+                  "heightDecimeters": 14,
+                  "weightHectograms": 3000
+                },
+                "C": {
+                  "nationalDexNumber": 88,
+                  "generation": 1,
+                  "types": [
+                    "poison"
+                  ],
+                  "hp": 80,
+                  "attack": 80,
+                  "defense": 50,
+                  "specialAttack": 40,
+                  "specialDefense": 50,
+                  "speed": 25,
+                  "baseStatTotal": 325,
+                  "heightDecimeters": 9,
+                  "weightHectograms": 300
+                },
+                "D": {
+                  "nationalDexNumber": 39,
+                  "generation": 1,
+                  "types": [
+                    "normal",
+                    "fairy"
+                  ],
+                  "hp": 115,
+                  "attack": 45,
+                  "defense": 20,
+                  "specialAttack": 45,
+                  "specialDefense": 25,
+                  "speed": 20,
+                  "baseStatTotal": 270,
+                  "heightDecimeters": 5,
+                  "weightHectograms": 55
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "B",
+                "answeredAt": 14000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 57000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,37000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál tiene mayor Defensa base?",
+            "questionType": "DEFENSE",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "charizard",
+                  "name": "Charizard",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "tangela",
+                  "name": "Tangela",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/114.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "poliwag",
+                  "name": "Poliwag",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/60.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [],
+            "scores": {
+              "p1": 195,
+              "p2": 0,
+              "p3": 160
+            },
+            "roundStartedAt": 37000,
+            "roundEndsAt": 57000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 61000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,37000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál tiene mayor Defensa base?",
+            "questionType": "DEFENSE",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "charizard",
+                  "name": "Charizard",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "voltorb",
+                  "name": "Voltorb",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "tangela",
+                  "name": "Tangela",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/114.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "poliwag",
+                  "name": "Poliwag",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/60.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [],
+            "scores": {
+              "p1": 195,
+              "p2": 0,
+              "p3": 160
+            },
+            "roundStartedAt": 37000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 61000,
+            "lastRound": {
+              "correctOptionId": "C",
+              "fact": "Tangela: Defensa base 115.",
+              "answers": {},
+              "points": {
+                "p1": 0,
+                "p2": 0,
+                "p3": 0
+              },
+              "optionDetails": {
+                "A": {
+                  "nationalDexNumber": 6,
+                  "generation": 1,
+                  "types": [
+                    "fire",
+                    "flying"
+                  ],
+                  "hp": 78,
+                  "attack": 84,
+                  "defense": 78,
+                  "specialAttack": 109,
+                  "specialDefense": 85,
+                  "speed": 100,
+                  "baseStatTotal": 534,
+                  "heightDecimeters": 17,
+                  "weightHectograms": 905
+                },
+                "B": {
+                  "nationalDexNumber": 100,
+                  "generation": 1,
+                  "types": [
+                    "electric"
+                  ],
+                  "hp": 40,
+                  "attack": 30,
+                  "defense": 50,
+                  "specialAttack": 55,
+                  "specialDefense": 55,
+                  "speed": 100,
+                  "baseStatTotal": 330,
+                  "heightDecimeters": 5,
+                  "weightHectograms": 104
+                },
+                "C": {
+                  "nationalDexNumber": 114,
+                  "generation": 1,
+                  "types": [
+                    "grass"
+                  ],
+                  "hp": 65,
+                  "attack": 55,
+                  "defense": 115,
+                  "specialAttack": 100,
+                  "specialDefense": 40,
+                  "speed": 60,
+                  "baseStatTotal": 435,
+                  "heightDecimeters": 10,
+                  "weightHectograms": 350
+                },
+                "D": {
+                  "nationalDexNumber": 60,
+                  "generation": 1,
+                  "types": [
+                    "water"
+                  ],
+                  "hp": 40,
+                  "attack": 50,
+                  "defense": 40,
+                  "specialAttack": 40,
+                  "specialDefense": 40,
+                  "speed": 90,
+                  "baseStatTotal": 300,
+                  "heightDecimeters": 6,
+                  "weightHectograms": 124
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 81000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,61000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál es el Pokémon más pesado?",
+            "questionType": "WEIGHT",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "octillery",
+                  "name": "Octillery",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/224.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "geodude",
+                  "name": "Geodude",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "jigglypuff",
+                  "name": "Jigglypuff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [],
+            "scores": {
+              "p1": 195,
+              "p2": 0,
+              "p3": 160
+            },
+            "roundStartedAt": 61000,
+            "roundEndsAt": 81000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 81000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,61000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál es el Pokémon más pesado?",
+            "questionType": "WEIGHT",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "octillery",
+                  "name": "Octillery",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/224.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "geodude",
+                  "name": "Geodude",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "jigglypuff",
+                  "name": "Jigglypuff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p2"
+            ],
+            "scores": {
+              "p1": 195,
+              "p2": 0,
+              "p3": 160
+            },
+            "roundStartedAt": 61000,
+            "roundEndsAt": 81000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "C",
+                "answeredAt": 62000
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 81000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,61000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál es el Pokémon más pesado?",
+            "questionType": "WEIGHT",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "octillery",
+                  "name": "Octillery",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/224.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "geodude",
+                  "name": "Geodude",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "jigglypuff",
+                  "name": "Jigglypuff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 195,
+              "p2": 0,
+              "p3": 160
+            },
+            "roundStartedAt": 61000,
+            "roundEndsAt": 81000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "C",
+                "answeredAt": 62000
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "D",
+                "answeredAt": 70000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 84999,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,61000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál es el Pokémon más pesado?",
+            "questionType": "WEIGHT",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "octillery",
+                  "name": "Octillery",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/224.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "geodude",
+                  "name": "Geodude",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "jigglypuff",
+                  "name": "Jigglypuff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "scores": {
+              "p1": 296,
+              "p2": 0,
+              "p3": 160
+            },
+            "roundStartedAt": 61000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 84999,
+            "lastRound": {
+              "correctOptionId": "A",
+              "fact": "Golem: 300 kg.",
+              "answers": {
+                "p2": {
+                  "optionId": "C",
+                  "answeredAt": 62000
+                },
+                "p3": {
+                  "optionId": "D",
+                  "answeredAt": 70000
+                },
+                "p1": {
+                  "optionId": "A",
+                  "answeredAt": 80999
+                }
+              },
+              "points": {
+                "p1": 101,
+                "p2": 0,
+                "p3": 0
+              },
+              "optionDetails": {
+                "A": {
+                  "nationalDexNumber": 76,
+                  "generation": 1,
+                  "types": [
+                    "rock",
+                    "ground"
+                  ],
+                  "hp": 80,
+                  "attack": 120,
+                  "defense": 130,
+                  "specialAttack": 55,
+                  "specialDefense": 65,
+                  "speed": 45,
+                  "baseStatTotal": 495,
+                  "heightDecimeters": 14,
+                  "weightHectograms": 3000
+                },
+                "B": {
+                  "nationalDexNumber": 224,
+                  "generation": 2,
+                  "types": [
+                    "water"
+                  ],
+                  "hp": 75,
+                  "attack": 105,
+                  "defense": 75,
+                  "specialAttack": 105,
+                  "specialDefense": 75,
+                  "speed": 45,
+                  "baseStatTotal": 480,
+                  "heightDecimeters": 9,
+                  "weightHectograms": 285
+                },
+                "C": {
+                  "nationalDexNumber": 74,
+                  "generation": 1,
+                  "types": [
+                    "rock",
+                    "ground"
+                  ],
+                  "hp": 40,
+                  "attack": 80,
+                  "defense": 100,
+                  "specialAttack": 30,
+                  "specialDefense": 30,
+                  "speed": 20,
+                  "baseStatTotal": 300,
+                  "heightDecimeters": 4,
+                  "weightHectograms": 200
+                },
+                "D": {
+                  "nationalDexNumber": 39,
+                  "generation": 1,
+                  "types": [
+                    "normal",
+                    "fairy"
+                  ],
+                  "hp": 115,
+                  "attack": 45,
+                  "defense": 20,
+                  "specialAttack": 45,
+                  "specialDefense": 25,
+                  "speed": 20,
+                  "baseStatTotal": 270,
+                  "heightDecimeters": 5,
+                  "weightHectograms": 55
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "A",
+                "answeredAt": 80999
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "C",
+                "answeredAt": 62000
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "D",
+                "answeredAt": 70000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",4,61000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "difficulty": "NORMAL",
+            "prompt": "¿Cuál es el Pokémon más pesado?",
+            "questionType": "WEIGHT",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "golem",
+                  "name": "Golem",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "octillery",
+                  "name": "Octillery",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/224.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "geodude",
+                  "name": "Geodude",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "jigglypuff",
+                  "name": "Jigglypuff",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "scores": {
+              "p1": 296,
+              "p2": 0,
+              "p3": 160
+            },
+            "roundStartedAt": 61000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "correctOptionId": "A",
+              "fact": "Golem: 300 kg.",
+              "answers": {
+                "p2": {
+                  "optionId": "C",
+                  "answeredAt": 62000
+                },
+                "p3": {
+                  "optionId": "D",
+                  "answeredAt": 70000
+                },
+                "p1": {
+                  "optionId": "A",
+                  "answeredAt": 80999
+                }
+              },
+              "points": {
+                "p1": 101,
+                "p2": 0,
+                "p3": 0
+              },
+              "optionDetails": {
+                "A": {
+                  "nationalDexNumber": 76,
+                  "generation": 1,
+                  "types": [
+                    "rock",
+                    "ground"
+                  ],
+                  "hp": 80,
+                  "attack": 120,
+                  "defense": 130,
+                  "specialAttack": 55,
+                  "specialDefense": 65,
+                  "speed": 45,
+                  "baseStatTotal": 495,
+                  "heightDecimeters": 14,
+                  "weightHectograms": 3000
+                },
+                "B": {
+                  "nationalDexNumber": 224,
+                  "generation": 2,
+                  "types": [
+                    "water"
+                  ],
+                  "hp": 75,
+                  "attack": 105,
+                  "defense": 75,
+                  "specialAttack": 105,
+                  "specialDefense": 75,
+                  "speed": 45,
+                  "baseStatTotal": 480,
+                  "heightDecimeters": 9,
+                  "weightHectograms": 285
+                },
+                "C": {
+                  "nationalDexNumber": 74,
+                  "generation": 1,
+                  "types": [
+                    "rock",
+                    "ground"
+                  ],
+                  "hp": 40,
+                  "attack": 80,
+                  "defense": 100,
+                  "specialAttack": 30,
+                  "specialDefense": 30,
+                  "speed": 20,
+                  "baseStatTotal": 300,
+                  "heightDecimeters": 4,
+                  "weightHectograms": 200
+                },
+                "D": {
+                  "nationalDexNumber": 39,
+                  "generation": 1,
+                  "types": [
+                    "normal",
+                    "fairy"
+                  ],
+                  "hp": 115,
+                  "attack": 45,
+                  "defense": 20,
+                  "specialAttack": 45,
+                  "specialDefense": 25,
+                  "speed": 20,
+                  "baseStatTotal": 270,
+                  "heightDecimeters": 5,
+                  "weightHectograms": 55
+                }
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 296,
+                  "won": true,
+                  "stats": {
+                    "answers": 3,
+                    "correct": 2,
+                    "incorrect": 1,
+                    "unanswered": 1,
+                    "fastestCorrectMs": 1000,
+                    "correctTimeTotalMs": 20999,
+                    "pointsFromRounds": 296,
+                    "typeAnswers": 0,
+                    "typeCorrect": 0,
+                    "generationAnswers": 0,
+                    "generationCorrect": 0,
+                    "hpAnswers": 0,
+                    "hpCorrect": 0,
+                    "attackAnswers": 0,
+                    "attackCorrect": 0,
+                    "defenseAnswers": 0,
+                    "defenseCorrect": 0,
+                    "special_attackAnswers": 0,
+                    "special_attackCorrect": 0,
+                    "special_defenseAnswers": 0,
+                    "special_defenseCorrect": 0,
+                    "speedAnswers": 1,
+                    "speedCorrect": 1,
+                    "bstAnswers": 0,
+                    "bstCorrect": 0,
+                    "heightAnswers": 0,
+                    "heightCorrect": 0,
+                    "weightAnswers": 1,
+                    "weightCorrect": 1,
+                    "dex_numberAnswers": 1,
+                    "dex_numberCorrect": 0
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 160,
+                  "won": false,
+                  "stats": {
+                    "answers": 2,
+                    "correct": 1,
+                    "incorrect": 1,
+                    "unanswered": 2,
+                    "fastestCorrectMs": 8000,
+                    "correctTimeTotalMs": 8000,
+                    "pointsFromRounds": 160,
+                    "typeAnswers": 0,
+                    "typeCorrect": 0,
+                    "generationAnswers": 0,
+                    "generationCorrect": 0,
+                    "hpAnswers": 0,
+                    "hpCorrect": 0,
+                    "attackAnswers": 0,
+                    "attackCorrect": 0,
+                    "defenseAnswers": 0,
+                    "defenseCorrect": 0,
+                    "special_attackAnswers": 0,
+                    "special_attackCorrect": 0,
+                    "special_defenseAnswers": 0,
+                    "special_defenseCorrect": 0,
+                    "speedAnswers": 0,
+                    "speedCorrect": 0,
+                    "bstAnswers": 0,
+                    "bstCorrect": 0,
+                    "heightAnswers": 0,
+                    "heightCorrect": 0,
+                    "weightAnswers": 1,
+                    "weightCorrect": 0,
+                    "dex_numberAnswers": 1,
+                    "dex_numberCorrect": 1
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "answers": 2,
+                    "correct": 0,
+                    "incorrect": 2,
+                    "unanswered": 2,
+                    "fastestCorrectMs": 0,
+                    "correctTimeTotalMs": 0,
+                    "pointsFromRounds": 0,
+                    "typeAnswers": 0,
+                    "typeCorrect": 0,
+                    "generationAnswers": 0,
+                    "generationCorrect": 0,
+                    "hpAnswers": 0,
+                    "hpCorrect": 0,
+                    "attackAnswers": 0,
+                    "attackCorrect": 0,
+                    "defenseAnswers": 0,
+                    "defenseCorrect": 0,
+                    "special_attackAnswers": 0,
+                    "special_attackCorrect": 0,
+                    "special_defenseAnswers": 0,
+                    "special_defenseCorrect": 0,
+                    "speedAnswers": 0,
+                    "speedCorrect": 0,
+                    "bstAnswers": 0,
+                    "bstCorrect": 0,
+                    "heightAnswers": 0,
+                    "heightCorrect": 0,
+                    "weightAnswers": 1,
+                    "weightCorrect": 0,
+                    "dex_numberAnswers": 1,
+                    "dex_numberCorrect": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "A",
+                "answeredAt": 80999
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "C",
+                "answeredAt": 62000
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "D",
+                "answeredAt": 70000
+              }
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 296,
+          "won": true,
+          "stats": {
+            "answers": 3,
+            "correct": 2,
+            "incorrect": 1,
+            "unanswered": 1,
+            "fastestCorrectMs": 1000,
+            "correctTimeTotalMs": 20999,
+            "pointsFromRounds": 296,
+            "typeAnswers": 0,
+            "typeCorrect": 0,
+            "generationAnswers": 0,
+            "generationCorrect": 0,
+            "hpAnswers": 0,
+            "hpCorrect": 0,
+            "attackAnswers": 0,
+            "attackCorrect": 0,
+            "defenseAnswers": 0,
+            "defenseCorrect": 0,
+            "special_attackAnswers": 0,
+            "special_attackCorrect": 0,
+            "special_defenseAnswers": 0,
+            "special_defenseCorrect": 0,
+            "speedAnswers": 1,
+            "speedCorrect": 1,
+            "bstAnswers": 0,
+            "bstCorrect": 0,
+            "heightAnswers": 0,
+            "heightCorrect": 0,
+            "weightAnswers": 1,
+            "weightCorrect": 1,
+            "dex_numberAnswers": 1,
+            "dex_numberCorrect": 0
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 2,
+          "points": 160,
+          "won": false,
+          "stats": {
+            "answers": 2,
+            "correct": 1,
+            "incorrect": 1,
+            "unanswered": 2,
+            "fastestCorrectMs": 8000,
+            "correctTimeTotalMs": 8000,
+            "pointsFromRounds": 160,
+            "typeAnswers": 0,
+            "typeCorrect": 0,
+            "generationAnswers": 0,
+            "generationCorrect": 0,
+            "hpAnswers": 0,
+            "hpCorrect": 0,
+            "attackAnswers": 0,
+            "attackCorrect": 0,
+            "defenseAnswers": 0,
+            "defenseCorrect": 0,
+            "special_attackAnswers": 0,
+            "special_attackCorrect": 0,
+            "special_defenseAnswers": 0,
+            "special_defenseCorrect": 0,
+            "speedAnswers": 0,
+            "speedCorrect": 0,
+            "bstAnswers": 0,
+            "bstCorrect": 0,
+            "heightAnswers": 0,
+            "heightCorrect": 0,
+            "weightAnswers": 1,
+            "weightCorrect": 0,
+            "dex_numberAnswers": 1,
+            "dex_numberCorrect": 1
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "answers": 2,
+            "correct": 0,
+            "incorrect": 2,
+            "unanswered": 2,
+            "fastestCorrectMs": 0,
+            "correctTimeTotalMs": 0,
+            "pointsFromRounds": 0,
+            "typeAnswers": 0,
+            "typeCorrect": 0,
+            "generationAnswers": 0,
+            "generationCorrect": 0,
+            "hpAnswers": 0,
+            "hpCorrect": 0,
+            "attackAnswers": 0,
+            "attackCorrect": 0,
+            "defenseAnswers": 0,
+            "defenseCorrect": 0,
+            "special_attackAnswers": 0,
+            "special_attackCorrect": 0,
+            "special_defenseAnswers": 0,
+            "special_defenseCorrect": 0,
+            "speedAnswers": 0,
+            "speedCorrect": 0,
+            "bstAnswers": 0,
+            "bstCorrect": 0,
+            "heightAnswers": 0,
+            "heightCorrect": 0,
+            "weightAnswers": 1,
+            "weightCorrect": 0,
+            "dex_numberAnswers": 1,
+            "dex_numberCorrect": 0
+          }
+        }
+      ]
+    }
+  }
+}

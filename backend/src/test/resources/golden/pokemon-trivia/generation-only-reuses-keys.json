@@ -1,0 +1,1273 @@
+{
+  "engineId": "pokemon-trivia",
+  "scenario": "generation-only-reuses-keys",
+  "seed": 603,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "roundSeconds": 10,
+    "rounds": 4,
+    "optionCount": 4,
+    "difficulty": "EASY",
+    "questionTypes": [
+      "GENERATION"
+    ]
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "B"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "timeout",
+      "now": 6000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "B"
+      },
+      "now": 7000
+    },
+    {
+      "kind": "timeout",
+      "now": 11000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "A"
+      },
+      "now": 12000
+    },
+    {
+      "kind": "timeout",
+      "now": 16000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "optionId": "D"
+      },
+      "now": 17000
+    },
+    {
+      "kind": "timeout",
+      "now": 21000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 10,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "EASY",
+      "questionTypes": [
+        "GENERATION"
+      ]
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-trivia",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 4,
+        "difficulty": "EASY",
+        "prompt": null,
+        "questionType": null,
+        "options": [],
+        "answeredPlayerIds": [],
+        "scores": {
+          "p1": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canAnswer": false,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 11000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-trivia",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 4,
+        "difficulty": "EASY",
+        "prompt": "¿Cuál de estos Pokémon pertenece a la generación 1?",
+        "questionType": "GENERATION",
+        "options": [
+          {
+            "id": "A",
+            "pokemon": {
+              "id": "shuckle",
+              "name": "Shuckle",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/213.png"
+            }
+          },
+          {
+            "id": "B",
+            "pokemon": {
+              "id": "cloyster",
+              "name": "Cloyster",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/91.png"
+            }
+          },
+          {
+            "id": "C",
+            "pokemon": {
+              "id": "aipom",
+              "name": "Aipom",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/190.png"
+            }
+          },
+          {
+            "id": "D",
+            "pokemon": {
+              "id": "forretress",
+              "name": "Forretress",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/205.png"
+            }
+          }
+        ],
+        "answeredPlayerIds": [],
+        "scores": {
+          "p1": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 11000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canAnswer": true,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "difficulty": "EASY",
+            "prompt": "¿Cuál de estos Pokémon pertenece a la generación 1?",
+            "questionType": "GENERATION",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "shuckle",
+                  "name": "Shuckle",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/213.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "cloyster",
+                  "name": "Cloyster",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/91.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "aipom",
+                  "name": "Aipom",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/190.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "forretress",
+                  "name": "Forretress",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/205.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 190
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 6000,
+            "lastRound": {
+              "correctOptionId": "B",
+              "fact": "Cloyster es la respuesta correcta: pertenece a la generación 1.",
+              "answers": {
+                "p1": {
+                  "optionId": "B",
+                  "answeredAt": 2000
+                }
+              },
+              "points": {
+                "p1": 190
+              },
+              "optionDetails": {
+                "A": {
+                  "nationalDexNumber": 213,
+                  "generation": 2,
+                  "types": [
+                    "bug",
+                    "rock"
+                  ],
+                  "hp": 20,
+                  "attack": 10,
+                  "defense": 230,
+                  "specialAttack": 10,
+                  "specialDefense": 230,
+                  "speed": 5,
+                  "baseStatTotal": 505,
+                  "heightDecimeters": 6,
+                  "weightHectograms": 205
+                },
+                "B": {
+                  "nationalDexNumber": 91,
+                  "generation": 1,
+                  "types": [
+                    "water",
+                    "ice"
+                  ],
+                  "hp": 50,
+                  "attack": 95,
+                  "defense": 180,
+                  "specialAttack": 85,
+                  "specialDefense": 45,
+                  "speed": 70,
+                  "baseStatTotal": 525,
+                  "heightDecimeters": 15,
+                  "weightHectograms": 1325
+                },
+                "C": {
+                  "nationalDexNumber": 190,
+                  "generation": 2,
+                  "types": [
+                    "normal"
+                  ],
+                  "hp": 55,
+                  "attack": 70,
+                  "defense": 55,
+                  "specialAttack": 40,
+                  "specialDefense": 55,
+                  "speed": 85,
+                  "baseStatTotal": 360,
+                  "heightDecimeters": 8,
+                  "weightHectograms": 115
+                },
+                "D": {
+                  "nationalDexNumber": 205,
+                  "generation": 2,
+                  "types": [
+                    "bug",
+                    "steel"
+                  ],
+                  "hp": 75,
+                  "attack": 90,
+                  "defense": 140,
+                  "specialAttack": 60,
+                  "specialDefense": 60,
+                  "speed": 40,
+                  "baseStatTotal": 465,
+                  "heightDecimeters": 12,
+                  "weightHectograms": 1258
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "B",
+                "answeredAt": 2000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,6000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "difficulty": "EASY",
+            "prompt": "¿Cuál de estos Pokémon pertenece a la generación 2?",
+            "questionType": "GENERATION",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "hitmonlee",
+                  "name": "Hitmonlee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "dugtrio",
+                  "name": "Dugtrio",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "venomoth",
+                  "name": "Venomoth",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/49.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "teddiursa",
+                  "name": "Teddiursa",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/216.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [],
+            "scores": {
+              "p1": 190
+            },
+            "roundStartedAt": 6000,
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,6000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "difficulty": "EASY",
+            "prompt": "¿Cuál de estos Pokémon pertenece a la generación 2?",
+            "questionType": "GENERATION",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "hitmonlee",
+                  "name": "Hitmonlee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "dugtrio",
+                  "name": "Dugtrio",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "venomoth",
+                  "name": "Venomoth",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/49.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "teddiursa",
+                  "name": "Teddiursa",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/216.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 190
+            },
+            "roundStartedAt": 6000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 11000,
+            "lastRound": {
+              "correctOptionId": "D",
+              "fact": "Teddiursa es la respuesta correcta: pertenece a la generación 2.",
+              "answers": {
+                "p1": {
+                  "optionId": "B",
+                  "answeredAt": 7000
+                }
+              },
+              "points": {
+                "p1": 0
+              },
+              "optionDetails": {
+                "A": {
+                  "nationalDexNumber": 106,
+                  "generation": 1,
+                  "types": [
+                    "fighting"
+                  ],
+                  "hp": 50,
+                  "attack": 120,
+                  "defense": 53,
+                  "specialAttack": 35,
+                  "specialDefense": 110,
+                  "speed": 87,
+                  "baseStatTotal": 455,
+                  "heightDecimeters": 15,
+                  "weightHectograms": 498
+                },
+                "B": {
+                  "nationalDexNumber": 51,
+                  "generation": 1,
+                  "types": [
+                    "ground"
+                  ],
+                  "hp": 35,
+                  "attack": 100,
+                  "defense": 50,
+                  "specialAttack": 50,
+                  "specialDefense": 70,
+                  "speed": 120,
+                  "baseStatTotal": 425,
+                  "heightDecimeters": 7,
+                  "weightHectograms": 333
+                },
+                "C": {
+                  "nationalDexNumber": 49,
+                  "generation": 1,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ],
+                  "hp": 70,
+                  "attack": 65,
+                  "defense": 60,
+                  "specialAttack": 90,
+                  "specialDefense": 75,
+                  "speed": 90,
+                  "baseStatTotal": 450,
+                  "heightDecimeters": 15,
+                  "weightHectograms": 125
+                },
+                "D": {
+                  "nationalDexNumber": 216,
+                  "generation": 2,
+                  "types": [
+                    "normal"
+                  ],
+                  "hp": 60,
+                  "attack": 80,
+                  "defense": 50,
+                  "specialAttack": 50,
+                  "specialDefense": 50,
+                  "speed": 40,
+                  "baseStatTotal": 330,
+                  "heightDecimeters": 6,
+                  "weightHectograms": 88
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "B",
+                "answeredAt": 7000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,11000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "difficulty": "EASY",
+            "prompt": "¿Cuál de estos Pokémon pertenece a la generación 1?",
+            "questionType": "GENERATION",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "magmar",
+                  "name": "Magmar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "scizor",
+                  "name": "Scizor",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "girafarig",
+                  "name": "Girafarig",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "politoed",
+                  "name": "Politoed",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [],
+            "scores": {
+              "p1": 190
+            },
+            "roundStartedAt": 11000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,11000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "difficulty": "EASY",
+            "prompt": "¿Cuál de estos Pokémon pertenece a la generación 1?",
+            "questionType": "GENERATION",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "magmar",
+                  "name": "Magmar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "scizor",
+                  "name": "Scizor",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "girafarig",
+                  "name": "Girafarig",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "politoed",
+                  "name": "Politoed",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 380
+            },
+            "roundStartedAt": 11000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 16000,
+            "lastRound": {
+              "correctOptionId": "A",
+              "fact": "Magmar es la respuesta correcta: pertenece a la generación 1.",
+              "answers": {
+                "p1": {
+                  "optionId": "A",
+                  "answeredAt": 12000
+                }
+              },
+              "points": {
+                "p1": 190
+              },
+              "optionDetails": {
+                "A": {
+                  "nationalDexNumber": 126,
+                  "generation": 1,
+                  "types": [
+                    "fire"
+                  ],
+                  "hp": 65,
+                  "attack": 95,
+                  "defense": 57,
+                  "specialAttack": 100,
+                  "specialDefense": 85,
+                  "speed": 93,
+                  "baseStatTotal": 495,
+                  "heightDecimeters": 13,
+                  "weightHectograms": 445
+                },
+                "B": {
+                  "nationalDexNumber": 212,
+                  "generation": 2,
+                  "types": [
+                    "bug",
+                    "steel"
+                  ],
+                  "hp": 70,
+                  "attack": 130,
+                  "defense": 100,
+                  "specialAttack": 55,
+                  "specialDefense": 80,
+                  "speed": 65,
+                  "baseStatTotal": 500,
+                  "heightDecimeters": 18,
+                  "weightHectograms": 1180
+                },
+                "C": {
+                  "nationalDexNumber": 203,
+                  "generation": 2,
+                  "types": [
+                    "normal",
+                    "psychic"
+                  ],
+                  "hp": 70,
+                  "attack": 80,
+                  "defense": 65,
+                  "specialAttack": 90,
+                  "specialDefense": 65,
+                  "speed": 85,
+                  "baseStatTotal": 455,
+                  "heightDecimeters": 15,
+                  "weightHectograms": 415
+                },
+                "D": {
+                  "nationalDexNumber": 186,
+                  "generation": 2,
+                  "types": [
+                    "water"
+                  ],
+                  "hp": 90,
+                  "attack": 75,
+                  "defense": 75,
+                  "specialAttack": 90,
+                  "specialDefense": 100,
+                  "speed": 70,
+                  "baseStatTotal": 500,
+                  "heightDecimeters": 11,
+                  "weightHectograms": 339
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "A",
+                "answeredAt": 12000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,16000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "difficulty": "EASY",
+            "prompt": "¿Cuál de estos Pokémon pertenece a la generación 2?",
+            "questionType": "GENERATION",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "growlithe",
+                  "name": "Growlithe",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "seaking",
+                  "name": "Seaking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "ledian",
+                  "name": "Ledian",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/166.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [],
+            "scores": {
+              "p1": 380
+            },
+            "roundStartedAt": 16000,
+            "roundEndsAt": 26000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,16000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "difficulty": "EASY",
+            "prompt": "¿Cuál de estos Pokémon pertenece a la generación 2?",
+            "questionType": "GENERATION",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "growlithe",
+                  "name": "Growlithe",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "seaking",
+                  "name": "Seaking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "ledian",
+                  "name": "Ledian",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/166.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 380
+            },
+            "roundStartedAt": 16000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 21000,
+            "lastRound": {
+              "correctOptionId": "C",
+              "fact": "Ledian es la respuesta correcta: pertenece a la generación 2.",
+              "answers": {
+                "p1": {
+                  "optionId": "D",
+                  "answeredAt": 17000
+                }
+              },
+              "points": {
+                "p1": 0
+              },
+              "optionDetails": {
+                "A": {
+                  "nationalDexNumber": 58,
+                  "generation": 1,
+                  "types": [
+                    "fire"
+                  ],
+                  "hp": 55,
+                  "attack": 70,
+                  "defense": 45,
+                  "specialAttack": 70,
+                  "specialDefense": 50,
+                  "speed": 60,
+                  "baseStatTotal": 350,
+                  "heightDecimeters": 7,
+                  "weightHectograms": 190
+                },
+                "B": {
+                  "nationalDexNumber": 119,
+                  "generation": 1,
+                  "types": [
+                    "water"
+                  ],
+                  "hp": 80,
+                  "attack": 92,
+                  "defense": 65,
+                  "specialAttack": 65,
+                  "specialDefense": 80,
+                  "speed": 68,
+                  "baseStatTotal": 450,
+                  "heightDecimeters": 13,
+                  "weightHectograms": 390
+                },
+                "C": {
+                  "nationalDexNumber": 166,
+                  "generation": 2,
+                  "types": [
+                    "bug",
+                    "flying"
+                  ],
+                  "hp": 55,
+                  "attack": 35,
+                  "defense": 50,
+                  "specialAttack": 55,
+                  "specialDefense": 110,
+                  "speed": 85,
+                  "baseStatTotal": 390,
+                  "heightDecimeters": 14,
+                  "weightHectograms": 356
+                },
+                "D": {
+                  "nationalDexNumber": 66,
+                  "generation": 1,
+                  "types": [
+                    "fighting"
+                  ],
+                  "hp": 70,
+                  "attack": 80,
+                  "defense": 50,
+                  "specialAttack": 35,
+                  "specialDefense": 35,
+                  "speed": 35,
+                  "baseStatTotal": 305,
+                  "heightDecimeters": 8,
+                  "weightHectograms": 195
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "D",
+                "answeredAt": 17000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",4,16000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-trivia",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "difficulty": "EASY",
+            "prompt": "¿Cuál de estos Pokémon pertenece a la generación 2?",
+            "questionType": "GENERATION",
+            "options": [
+              {
+                "id": "A",
+                "pokemon": {
+                  "id": "growlithe",
+                  "name": "Growlithe",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png"
+                }
+              },
+              {
+                "id": "B",
+                "pokemon": {
+                  "id": "seaking",
+                  "name": "Seaking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                }
+              },
+              {
+                "id": "C",
+                "pokemon": {
+                  "id": "ledian",
+                  "name": "Ledian",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/166.png"
+                }
+              },
+              {
+                "id": "D",
+                "pokemon": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png"
+                }
+              }
+            ],
+            "answeredPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 380
+            },
+            "roundStartedAt": 16000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "correctOptionId": "C",
+              "fact": "Ledian es la respuesta correcta: pertenece a la generación 2.",
+              "answers": {
+                "p1": {
+                  "optionId": "D",
+                  "answeredAt": 17000
+                }
+              },
+              "points": {
+                "p1": 0
+              },
+              "optionDetails": {
+                "A": {
+                  "nationalDexNumber": 58,
+                  "generation": 1,
+                  "types": [
+                    "fire"
+                  ],
+                  "hp": 55,
+                  "attack": 70,
+                  "defense": 45,
+                  "specialAttack": 70,
+                  "specialDefense": 50,
+                  "speed": 60,
+                  "baseStatTotal": 350,
+                  "heightDecimeters": 7,
+                  "weightHectograms": 190
+                },
+                "B": {
+                  "nationalDexNumber": 119,
+                  "generation": 1,
+                  "types": [
+                    "water"
+                  ],
+                  "hp": 80,
+                  "attack": 92,
+                  "defense": 65,
+                  "specialAttack": 65,
+                  "specialDefense": 80,
+                  "speed": 68,
+                  "baseStatTotal": 450,
+                  "heightDecimeters": 13,
+                  "weightHectograms": 390
+                },
+                "C": {
+                  "nationalDexNumber": 166,
+                  "generation": 2,
+                  "types": [
+                    "bug",
+                    "flying"
+                  ],
+                  "hp": 55,
+                  "attack": 35,
+                  "defense": 50,
+                  "specialAttack": 55,
+                  "specialDefense": 110,
+                  "speed": 85,
+                  "baseStatTotal": 390,
+                  "heightDecimeters": 14,
+                  "weightHectograms": 356
+                },
+                "D": {
+                  "nationalDexNumber": 66,
+                  "generation": 1,
+                  "types": [
+                    "fighting"
+                  ],
+                  "hp": 70,
+                  "attack": 80,
+                  "defense": 50,
+                  "specialAttack": 35,
+                  "specialDefense": 35,
+                  "speed": 35,
+                  "baseStatTotal": 305,
+                  "heightDecimeters": 8,
+                  "weightHectograms": 195
+                }
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 380,
+                  "won": true,
+                  "stats": {
+                    "answers": 4,
+                    "correct": 2,
+                    "incorrect": 2,
+                    "unanswered": 0,
+                    "fastestCorrectMs": 1000,
+                    "correctTimeTotalMs": 2000,
+                    "pointsFromRounds": 380,
+                    "typeAnswers": 0,
+                    "typeCorrect": 0,
+                    "generationAnswers": 4,
+                    "generationCorrect": 2,
+                    "hpAnswers": 0,
+                    "hpCorrect": 0,
+                    "attackAnswers": 0,
+                    "attackCorrect": 0,
+                    "defenseAnswers": 0,
+                    "defenseCorrect": 0,
+                    "special_attackAnswers": 0,
+                    "special_attackCorrect": 0,
+                    "special_defenseAnswers": 0,
+                    "special_defenseCorrect": 0,
+                    "speedAnswers": 0,
+                    "speedCorrect": 0,
+                    "bstAnswers": 0,
+                    "bstCorrect": 0,
+                    "heightAnswers": 0,
+                    "heightCorrect": 0,
+                    "weightAnswers": 0,
+                    "weightCorrect": 0,
+                    "dex_numberAnswers": 0,
+                    "dex_numberCorrect": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canAnswer": false,
+              "answer": {
+                "optionId": "D",
+                "answeredAt": 17000
+              }
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 380,
+          "won": true,
+          "stats": {
+            "answers": 4,
+            "correct": 2,
+            "incorrect": 2,
+            "unanswered": 0,
+            "fastestCorrectMs": 1000,
+            "correctTimeTotalMs": 2000,
+            "pointsFromRounds": 380,
+            "typeAnswers": 0,
+            "typeCorrect": 0,
+            "generationAnswers": 4,
+            "generationCorrect": 2,
+            "hpAnswers": 0,
+            "hpCorrect": 0,
+            "attackAnswers": 0,
+            "attackCorrect": 0,
+            "defenseAnswers": 0,
+            "defenseCorrect": 0,
+            "special_attackAnswers": 0,
+            "special_attackCorrect": 0,
+            "special_defenseAnswers": 0,
+            "special_defenseCorrect": 0,
+            "speedAnswers": 0,
+            "speedCorrect": 0,
+            "bstAnswers": 0,
+            "bstCorrect": 0,
+            "heightAnswers": 0,
+            "heightCorrect": 0,
+            "weightAnswers": 0,
+            "weightCorrect": 0,
+            "dex_numberAnswers": 0,
+            "dex_numberCorrect": 0
+          }
+        }
+      ]
+    }
+  }
+}

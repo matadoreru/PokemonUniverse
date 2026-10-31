@@ -5,6 +5,7 @@ import type { GoldenScenario } from '../types.js';
 import { guessFromStatsScenarios } from './guess-from-stats.js';
 import { higherLowerScenarios } from './higher-lower.js';
 import { pokedexDistanceScenarios } from './pokedex-distance.js';
+import { pokemonTriviaScenarios } from './pokemon-trivia.js';
 import { typeDuelScenarios } from './type-duel.js';
 
 export interface GoldenEngineEntry {
@@ -18,5 +19,6 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'higher-lower': higherLowerScenarios,
   'pokedex-distance': pokedexDistanceScenarios,
   'guess-from-stats': guessFromStatsScenarios,
+  'pokemon-trivia': pokemonTriviaScenarios,
   'type-duel': typeDuelScenarios,
 };

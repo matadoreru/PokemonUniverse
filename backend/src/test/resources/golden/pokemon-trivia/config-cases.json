@@ -1,0 +1,718 @@
+[
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 10,
+      "rounds": 1,
+      "optionCount": 3,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 10,
+      "rounds": 1,
+      "optionCount": 3,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 60,
+      "rounds": 30,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 60,
+      "rounds": 30,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 10,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "HARD",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 10,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "HARD",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "HP",
+        "HP",
+        "TYPE",
+        "HP",
+        "HP",
+        "HP",
+        "HP",
+        "HP",
+        "HP",
+        "HP",
+        "HP",
+        "HP"
+      ]
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "HP",
+        "HP",
+        "TYPE",
+        "HP",
+        "HP",
+        "HP",
+        "HP",
+        "HP",
+        "HP",
+        "HP",
+        "HP",
+        "HP"
+      ]
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "GENERATION"
+      ]
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "GENERATION"
+      ]
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "GENERATION",
+        "TYPE"
+      ]
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "GENERATION",
+        "TYPE"
+      ]
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 9,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 61,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 0,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 31,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 2,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 5,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 3.5,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "VERY_HARD",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": []
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER",
+        "HP"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "COLOR"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "GENERATION"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ],
+      "unknownKey": "no se admite"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": "4",
+      "optionCount": 4,
+      "difficulty": "NORMAL",
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 4,
+      "optionCount": 4,
+      "questionTypes": [
+        "TYPE",
+        "GENERATION",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BST",
+        "HEIGHT",
+        "WEIGHT",
+        "DEX_NUMBER"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]
