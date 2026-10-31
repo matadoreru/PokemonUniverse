@@ -4,6 +4,7 @@ import type { MiniGameModule } from '../../dist/index.js';
 import type { GoldenScenario } from '../types.js';
 import { guessFromStatsScenarios } from './guess-from-stats.js';
 import { higherLowerScenarios } from './higher-lower.js';
+import { pokeTabooScenarios } from './poke-taboo.js';
 import { pokeddleRaceScenarios } from './pokeddle-race.js';
 import { pokedexDistanceScenarios } from './pokedex-distance.js';
 import { pokemonRedFlagScenarios } from './pokemon-red-flag.js';
@@ -29,4 +30,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'type-chain': typeChainScenarios,
   'pokeddle-race': pokeddleRaceScenarios,
   'pokemon-red-flag': pokemonRedFlagScenarios,
+  'poke-taboo': pokeTabooScenarios,
 };

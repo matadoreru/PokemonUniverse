@@ -10,6 +10,7 @@ import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceEng
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessEngine;
 import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagEngine;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaEngine;
+import es.pokemonuniverse.domain.game.engines.poketaboo.PokeTabooEngine;
 import es.pokemonuniverse.domain.game.engines.typechain.TypeChainEngine;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelEngine;
 import io.micronaut.context.annotation.Factory;
@@ -66,6 +67,7 @@ public class ClasspathGameRegistryLoader {
     engines.put(PokeddleRaceEngine.ID, new PokeddleRaceEngine(manifest(manifests, PokeddleRaceEngine.ID)));
     engines.put(PokemonRedFlagEngine.ID,
         new PokemonRedFlagEngine(manifest(manifests, PokemonRedFlagEngine.ID)));
+    engines.put(PokeTabooEngine.ID, new PokeTabooEngine(manifest(manifests, PokeTabooEngine.ID)));
     return engines;
   }
 

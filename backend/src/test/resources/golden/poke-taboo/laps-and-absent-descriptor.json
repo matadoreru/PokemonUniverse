@@ -1,0 +1,1243 @@
+{
+  "engineId": "poke-taboo",
+  "scenario": "laps-and-absent-descriptor",
+  "seed": 632,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      2,
+      1,
+      2
+    ],
+    "roundSeconds": 45,
+    "laps": 2,
+    "includeRegionalForms": false
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SEND_HINT",
+        "text": "Dragón furioso que sale de un pez"
+      },
+      "now": 1500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "gyarados"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        }
+      ],
+      "now": 3000
+    },
+    {
+      "kind": "timeout",
+      "now": 6000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        }
+      ],
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SEND_HINT",
+        "text": "Tiene una flor enorme"
+      },
+      "now": 8000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "ivysaur"
+      },
+      "now": 48000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "venusaur"
+      },
+      "now": 50000
+    },
+    {
+      "kind": "timeout",
+      "now": 54000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SEND_HINT",
+        "text": "Es un imán"
+      },
+      "now": 55000
+    },
+    {
+      "kind": "timeout",
+      "now": 99000
+    },
+    {
+      "kind": "timeout",
+      "now": 103000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 45,
+      "laps": 2,
+      "includeRegionalForms": false
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "poke-taboo",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 4,
+        "lapNumber": 1,
+        "totalLaps": 2,
+        "descriptorId": null,
+        "nextDescriptorId": "p2",
+        "descriptorOrder": [
+          "p2",
+          "p1"
+        ],
+        "hints": [],
+        "attempts": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "GUESSER",
+          "canGuess": false,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        },
+        "p2": {
+          "role": "GUESSER",
+          "canGuess": false,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 46000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "poke-taboo",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 4,
+        "lapNumber": 1,
+        "totalLaps": 2,
+        "descriptorId": "p2",
+        "nextDescriptorId": "p1",
+        "descriptorOrder": [
+          "p2",
+          "p1"
+        ],
+        "hints": [],
+        "attempts": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 46000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "GUESSER",
+          "canGuess": true,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        },
+        "p2": {
+          "role": "DESCRIPTOR",
+          "canSendHint": true,
+          "secretPokemon": {
+            "id": "gyarados",
+            "name": "Gyarados",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png",
+            "generation": 1,
+            "types": [
+              "water",
+              "flying"
+            ],
+            "hp": 95,
+            "attack": 125,
+            "defense": 79,
+            "specialAttack": 60,
+            "specialDefense": 100,
+            "speed": 81,
+            "baseStatTotal": 540,
+            "evolutionStage": 2,
+            "evolutionStageCount": 2,
+            "heightDecimeters": 65,
+            "weightHectograms": 2350,
+            "legendaryStatus": "NORMAL",
+            "abilities": [
+              "Intimidación",
+              "Autoestima"
+            ]
+          }
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 46000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "descriptorId": "p2",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p2",
+              "p1"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Dragón furioso que sale de un pez",
+                "sentAt": 1500
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 46000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png",
+                "generation": 1,
+                "types": [
+                  "water",
+                  "flying"
+                ],
+                "hp": 95,
+                "attack": 125,
+                "defense": 79,
+                "specialAttack": 60,
+                "specialDefense": 100,
+                "speed": 81,
+                "baseStatTotal": 540,
+                "evolutionStage": 2,
+                "evolutionStageCount": 2,
+                "heightDecimeters": 65,
+                "weightHectograms": 2350,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Intimidación",
+                  "Autoestima"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "descriptorId": "p2",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p2",
+              "p1"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Dragón furioso que sale de un pez",
+                "sentAt": 1500
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 5,
+              "p2": 2
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 6000,
+            "lastRound": {
+              "reason": "GUESSED",
+              "pokemon": {
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png",
+                "generation": 1,
+                "types": [
+                  "water",
+                  "flying"
+                ]
+              },
+              "descriptorId": "p2",
+              "winnerId": "p1",
+              "guesserPoints": 5,
+              "descriptorPoints": 2,
+              "winnerAttemptCount": 1
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 1
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "descriptorId": "p2",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p2",
+              "p1"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Dragón furioso que sale de un pez",
+                "sentAt": 1500
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 5,
+              "p2": 2
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 6000,
+            "lastRound": {
+              "reason": "GUESSED",
+              "pokemon": {
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png",
+                "generation": 1,
+                "types": [
+                  "water",
+                  "flying"
+                ]
+              },
+              "descriptorId": "p2",
+              "winnerId": "p1",
+              "guesserPoints": 5,
+              "descriptorPoints": 2,
+              "winnerAttemptCount": 1
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 51000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,6000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "descriptorId": "p2",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p2",
+              "p1"
+            ],
+            "hints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 5,
+              "p2": 2
+            },
+            "roundStartedAt": 6000,
+            "roundEndsAt": 51000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png",
+                "generation": 1,
+                "types": [
+                  "grass",
+                  "poison"
+                ],
+                "hp": 80,
+                "attack": 82,
+                "defense": 83,
+                "specialAttack": 100,
+                "specialDefense": 100,
+                "speed": 80,
+                "baseStatTotal": 525,
+                "evolutionStage": 3,
+                "evolutionStageCount": 3,
+                "heightDecimeters": 20,
+                "weightHectograms": 1000,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Espesura",
+                  "Clorofila"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 51000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,6000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "descriptorId": "p2",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p2",
+              "p1"
+            ],
+            "hints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 5,
+              "p2": 2
+            },
+            "roundStartedAt": 6000,
+            "roundEndsAt": 51000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png",
+                "generation": 1,
+                "types": [
+                  "grass",
+                  "poison"
+                ],
+                "hp": 80,
+                "attack": 82,
+                "defense": 83,
+                "specialAttack": 100,
+                "specialDefense": 100,
+                "speed": 80,
+                "baseStatTotal": 525,
+                "evolutionStage": 3,
+                "evolutionStageCount": 3,
+                "heightDecimeters": 20,
+                "weightHectograms": 1000,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Espesura",
+                  "Clorofila"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 51000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,6000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "descriptorId": "p2",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p2",
+              "p1"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Tiene una flor enorme",
+                "sentAt": 8000
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 5,
+              "p2": 2
+            },
+            "roundStartedAt": 6000,
+            "roundEndsAt": 51000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png",
+                "generation": 1,
+                "types": [
+                  "grass",
+                  "poison"
+                ],
+                "hp": 80,
+                "attack": 82,
+                "defense": 83,
+                "specialAttack": 100,
+                "specialDefense": 100,
+                "speed": 80,
+                "baseStatTotal": 525,
+                "evolutionStage": 3,
+                "evolutionStageCount": 3,
+                "heightDecimeters": 20,
+                "weightHectograms": 1000,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Espesura",
+                  "Clorofila"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 51000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,6000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "descriptorId": "p2",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p2",
+              "p1"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Tiene una flor enorme",
+                "sentAt": 8000
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "ivysaur",
+                  "name": "Ivysaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
+                },
+                "attemptedAt": 48000
+              }
+            ],
+            "scores": {
+              "p1": 5,
+              "p2": 2
+            },
+            "roundStartedAt": 6000,
+            "roundEndsAt": 51000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": 49000,
+              "attemptCount": 1
+            },
+            "p2": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png",
+                "generation": 1,
+                "types": [
+                  "grass",
+                  "poison"
+                ],
+                "hp": 80,
+                "attack": 82,
+                "defense": 83,
+                "specialAttack": 100,
+                "specialDefense": 100,
+                "speed": 80,
+                "baseStatTotal": 525,
+                "evolutionStage": 3,
+                "evolutionStageCount": 3,
+                "heightDecimeters": 20,
+                "weightHectograms": 1000,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Espesura",
+                  "Clorofila"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 54000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,6000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "descriptorId": "p2",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p2",
+              "p1"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Tiene una flor enorme",
+                "sentAt": 8000
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "ivysaur",
+                  "name": "Ivysaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
+                },
+                "attemptedAt": 48000
+              }
+            ],
+            "scores": {
+              "p1": 6,
+              "p2": 4
+            },
+            "roundStartedAt": 6000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 54000,
+            "lastRound": {
+              "reason": "GUESSED",
+              "pokemon": {
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png",
+                "generation": 1,
+                "types": [
+                  "grass",
+                  "poison"
+                ]
+              },
+              "descriptorId": "p2",
+              "winnerId": "p1",
+              "guesserPoints": 1,
+              "descriptorPoints": 2,
+              "winnerAttemptCount": 2
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": 49000,
+              "attemptCount": 2
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 99000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,54000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "descriptorId": "p1",
+            "nextDescriptorId": null,
+            "descriptorOrder": [
+              "p2",
+              "p1"
+            ],
+            "hints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 6,
+              "p2": 4
+            },
+            "roundStartedAt": 54000,
+            "roundEndsAt": 99000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "magnemite",
+                "name": "Magnemite",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                "generation": 1,
+                "types": [
+                  "electric",
+                  "steel"
+                ],
+                "hp": 25,
+                "attack": 35,
+                "defense": 70,
+                "specialAttack": 95,
+                "specialDefense": 55,
+                "speed": 45,
+                "baseStatTotal": 325,
+                "evolutionStage": 1,
+                "evolutionStageCount": 3,
+                "heightDecimeters": 3,
+                "weightHectograms": 60,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Imán",
+                  "Robustez",
+                  "Cálculo Final"
+                ]
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 99000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,54000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "descriptorId": "p1",
+            "nextDescriptorId": null,
+            "descriptorOrder": [
+              "p2",
+              "p1"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Es un imán",
+                "sentAt": 55000
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 6,
+              "p2": 4
+            },
+            "roundStartedAt": 54000,
+            "roundEndsAt": 99000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "magnemite",
+                "name": "Magnemite",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                "generation": 1,
+                "types": [
+                  "electric",
+                  "steel"
+                ],
+                "hp": 25,
+                "attack": 35,
+                "defense": 70,
+                "specialAttack": 95,
+                "specialDefense": 55,
+                "speed": 45,
+                "baseStatTotal": 325,
+                "evolutionStage": 1,
+                "evolutionStageCount": 3,
+                "heightDecimeters": 3,
+                "weightHectograms": 60,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Imán",
+                  "Robustez",
+                  "Cálculo Final"
+                ]
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 103000,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,54000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "descriptorId": "p1",
+            "nextDescriptorId": null,
+            "descriptorOrder": [
+              "p2",
+              "p1"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Es un imán",
+                "sentAt": 55000
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 6,
+              "p2": 4
+            },
+            "roundStartedAt": 54000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 103000,
+            "lastRound": {
+              "reason": "TIMEOUT",
+              "pokemon": {
+                "id": "magnemite",
+                "name": "Magnemite",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png",
+                "generation": 1,
+                "types": [
+                  "electric",
+                  "steel"
+                ]
+              },
+              "descriptorId": "p1",
+              "winnerId": null,
+              "guesserPoints": 0,
+              "descriptorPoints": 0,
+              "winnerAttemptCount": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",4,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "descriptorId": null,
+            "nextDescriptorId": null,
+            "descriptorOrder": [
+              "p2",
+              "p1"
+            ],
+            "hints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 6,
+              "p2": 4
+            },
+            "roundStartedAt": null,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 6,
+                  "won": true,
+                  "stats": {
+                    "guessedPokemon": 2,
+                    "firstTry": 1,
+                    "totalAttempts": 3,
+                    "firstCorrectResponses": 2,
+                    "descriptorRounds": 2,
+                    "descriptorSuccesses": 0,
+                    "descriptorFailures": 2,
+                    "pointsFromGuessing": 6,
+                    "pointsFromDescribing": 0
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 4,
+                  "won": false,
+                  "stats": {
+                    "guessedPokemon": 0,
+                    "firstTry": 0,
+                    "totalAttempts": 0,
+                    "firstCorrectResponses": 0,
+                    "descriptorRounds": 2,
+                    "descriptorSuccesses": 2,
+                    "descriptorFailures": 0,
+                    "pointsFromGuessing": 0,
+                    "pointsFromDescribing": 4
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 6,
+          "won": true,
+          "stats": {
+            "guessedPokemon": 2,
+            "firstTry": 1,
+            "totalAttempts": 3,
+            "firstCorrectResponses": 2,
+            "descriptorRounds": 2,
+            "descriptorSuccesses": 0,
+            "descriptorFailures": 2,
+            "pointsFromGuessing": 6,
+            "pointsFromDescribing": 0
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 4,
+          "won": false,
+          "stats": {
+            "guessedPokemon": 0,
+            "firstTry": 0,
+            "totalAttempts": 0,
+            "firstCorrectResponses": 0,
+            "descriptorRounds": 2,
+            "descriptorSuccesses": 2,
+            "descriptorFailures": 0,
+            "pointsFromGuessing": 0,
+            "pointsFromDescribing": 4
+          }
+        }
+      ]
+    }
+  }
+}

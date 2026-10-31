@@ -1,0 +1,2594 @@
+{
+  "engineId": "poke-taboo",
+  "scenario": "three-players-hints",
+  "seed": 631,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "roundSeconds": 30,
+    "laps": 1,
+    "includeRegionalForms": true
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "SEND_HINT",
+        "text": "Hola"
+      },
+      "now": 1500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SEND_HINT",
+        "text": "Es rosa"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SEND_HINT",
+        "text": "  Es un SLÓWBRO   raro "
+      },
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SEND_HINT",
+        "text": "Parece un slow-bro"
+      },
+      "now": 2600
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SEND_HINT",
+        "text": "  Su forma de GALÁR es   rosa  "
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SEND_HINT",
+        "text": "Psíquico y veneno"
+      },
+      "now": 3200
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SEND_HINT",
+        "text": "Psíquico y veneno"
+      },
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "slowbro"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "chikorita"
+      },
+      "now": 4500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "slowbro"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "slowpoke-galar"
+      },
+      "now": 5500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "slowbro-galar"
+      },
+      "now": 10000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "slowbro-galar"
+      },
+      "now": 11000
+    },
+    {
+      "kind": "timeout",
+      "now": 13999
+    },
+    {
+      "kind": "timeout",
+      "now": 14000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SEND_HINT",
+        "text": "Unicornio de Galar"
+      },
+      "now": 15000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "rapidash-galar"
+      },
+      "now": 16000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 17000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 18000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "horsea"
+      },
+      "now": 19000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "seadra"
+      },
+      "now": 47000
+    },
+    {
+      "kind": "timeout",
+      "now": 51000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SEND_HINT",
+        "text": "Tarde"
+      },
+      "now": 52000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 30,
+      "laps": 1,
+      "includeRegionalForms": true
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "poke-taboo",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "lapNumber": 1,
+        "totalLaps": 1,
+        "descriptorId": null,
+        "nextDescriptorId": "p3",
+        "descriptorOrder": [
+          "p3",
+          "p1",
+          "p2"
+        ],
+        "hints": [],
+        "attempts": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "GUESSER",
+          "canGuess": false,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        },
+        "p2": {
+          "role": "GUESSER",
+          "canGuess": false,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        },
+        "p3": {
+          "role": "GUESSER",
+          "canGuess": false,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 31000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "poke-taboo",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "lapNumber": 1,
+        "totalLaps": 1,
+        "descriptorId": "p3",
+        "nextDescriptorId": "p1",
+        "descriptorOrder": [
+          "p3",
+          "p1",
+          "p2"
+        ],
+        "hints": [],
+        "attempts": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 31000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "GUESSER",
+          "canGuess": true,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        },
+        "p2": {
+          "role": "GUESSER",
+          "canGuess": true,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        },
+        "p3": {
+          "role": "DESCRIPTOR",
+          "canSendHint": true,
+          "secretPokemon": {
+            "id": "slowbro-galar",
+            "name": "Slowbro de Galar",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+            "generation": 1,
+            "types": [
+              "poison",
+              "psychic"
+            ],
+            "hp": 95,
+            "attack": 100,
+            "defense": 95,
+            "specialAttack": 100,
+            "specialDefense": 70,
+            "speed": 30,
+            "baseStatTotal": 490,
+            "evolutionStage": null,
+            "evolutionStageCount": null,
+            "heightDecimeters": 16,
+            "weightHectograms": 705,
+            "legendaryStatus": "NORMAL",
+            "abilities": [
+              "Mano Rápida",
+              "Ritmo Propio",
+              "Regeneración"
+            ]
+          }
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "Estás observando esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p3",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "slowbro-galar",
+                "name": "Slowbro de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+                "generation": 1,
+                "types": [
+                  "poison",
+                  "psychic"
+                ],
+                "hp": 95,
+                "attack": 100,
+                "defense": 95,
+                "specialAttack": 100,
+                "specialDefense": 70,
+                "speed": 30,
+                "baseStatTotal": 490,
+                "evolutionStage": null,
+                "evolutionStageCount": null,
+                "heightDecimeters": 16,
+                "weightHectograms": 705,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Mano Rápida",
+                  "Ritmo Propio",
+                  "Regeneración"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Solo el descriptor puede escribir pistas.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p3",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "slowbro-galar",
+                "name": "Slowbro de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+                "generation": 1,
+                "types": [
+                  "poison",
+                  "psychic"
+                ],
+                "hp": 95,
+                "attack": 100,
+                "defense": 95,
+                "specialAttack": 100,
+                "specialDefense": 70,
+                "speed": 30,
+                "baseStatTotal": 490,
+                "evolutionStage": null,
+                "evolutionStageCount": null,
+                "heightDecimeters": 16,
+                "weightHectograms": 705,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Mano Rápida",
+                  "Ritmo Propio",
+                  "Regeneración"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No puedes escribir el nombre del Pokémon.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p3",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "slowbro-galar",
+                "name": "Slowbro de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+                "generation": 1,
+                "types": [
+                  "poison",
+                  "psychic"
+                ],
+                "hp": 95,
+                "attack": 100,
+                "defense": 95,
+                "specialAttack": 100,
+                "specialDefense": 70,
+                "speed": 30,
+                "baseStatTotal": 490,
+                "evolutionStage": null,
+                "evolutionStageCount": null,
+                "heightDecimeters": 16,
+                "weightHectograms": 705,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Mano Rápida",
+                  "Ritmo Propio",
+                  "Regeneración"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No puedes escribir el nombre del Pokémon.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p3",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "slowbro-galar",
+                "name": "Slowbro de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+                "generation": 1,
+                "types": [
+                  "poison",
+                  "psychic"
+                ],
+                "hp": 95,
+                "attack": 100,
+                "defense": 95,
+                "specialAttack": 100,
+                "specialDefense": 70,
+                "speed": 30,
+                "baseStatTotal": 490,
+                "evolutionStage": null,
+                "evolutionStageCount": null,
+                "heightDecimeters": 16,
+                "weightHectograms": 705,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Mano Rápida",
+                  "Ritmo Propio",
+                  "Regeneración"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p3",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Su forma de GALÁR es   rosa",
+                "sentAt": 3000
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "slowbro-galar",
+                "name": "Slowbro de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+                "generation": 1,
+                "types": [
+                  "poison",
+                  "psychic"
+                ],
+                "hp": 95,
+                "attack": 100,
+                "defense": 95,
+                "specialAttack": 100,
+                "specialDefense": 70,
+                "speed": 30,
+                "baseStatTotal": 490,
+                "evolutionStage": null,
+                "evolutionStageCount": null,
+                "heightDecimeters": 16,
+                "weightHectograms": 705,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Mano Rápida",
+                  "Ritmo Propio",
+                  "Regeneración"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Espera un momento antes de enviar otra pista.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p3",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Su forma de GALÁR es   rosa",
+                "sentAt": 3000
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "slowbro-galar",
+                "name": "Slowbro de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+                "generation": 1,
+                "types": [
+                  "poison",
+                  "psychic"
+                ],
+                "hp": 95,
+                "attack": 100,
+                "defense": 95,
+                "specialAttack": 100,
+                "specialDefense": 70,
+                "speed": 30,
+                "baseStatTotal": 490,
+                "evolutionStage": null,
+                "evolutionStageCount": null,
+                "heightDecimeters": 16,
+                "weightHectograms": 705,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Mano Rápida",
+                  "Ritmo Propio",
+                  "Regeneración"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p3",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Su forma de GALÁR es   rosa",
+                "sentAt": 3000
+              },
+              {
+                "id": 2,
+                "text": "Psíquico y veneno",
+                "sentAt": 3500
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "slowbro-galar",
+                "name": "Slowbro de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+                "generation": 1,
+                "types": [
+                  "poison",
+                  "psychic"
+                ],
+                "hp": 95,
+                "attack": 100,
+                "defense": 95,
+                "specialAttack": 100,
+                "specialDefense": 70,
+                "speed": 30,
+                "baseStatTotal": 490,
+                "evolutionStage": null,
+                "evolutionStageCount": null,
+                "heightDecimeters": 16,
+                "weightHectograms": 705,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Mano Rápida",
+                  "Ritmo Propio",
+                  "Regeneración"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El descriptor no puede adivinar.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p3",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Su forma de GALÁR es   rosa",
+                "sentAt": 3000
+              },
+              {
+                "id": 2,
+                "text": "Psíquico y veneno",
+                "sentAt": 3500
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "slowbro-galar",
+                "name": "Slowbro de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+                "generation": 1,
+                "types": [
+                  "poison",
+                  "psychic"
+                ],
+                "hp": 95,
+                "attack": 100,
+                "defense": 95,
+                "specialAttack": 100,
+                "specialDefense": 70,
+                "speed": 30,
+                "baseStatTotal": 490,
+                "evolutionStage": null,
+                "evolutionStageCount": null,
+                "heightDecimeters": 16,
+                "weightHectograms": 705,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Mano Rápida",
+                  "Ritmo Propio",
+                  "Regeneración"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon no pertenece al pool configurado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p3",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Su forma de GALÁR es   rosa",
+                "sentAt": 3000
+              },
+              {
+                "id": 2,
+                "text": "Psíquico y veneno",
+                "sentAt": 3500
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "slowbro-galar",
+                "name": "Slowbro de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+                "generation": 1,
+                "types": [
+                  "poison",
+                  "psychic"
+                ],
+                "hp": 95,
+                "attack": 100,
+                "defense": 95,
+                "specialAttack": 100,
+                "specialDefense": 70,
+                "speed": 30,
+                "baseStatTotal": 490,
+                "evolutionStage": null,
+                "evolutionStageCount": null,
+                "heightDecimeters": 16,
+                "weightHectograms": 705,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Mano Rápida",
+                  "Ritmo Propio",
+                  "Regeneración"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p3",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Su forma de GALÁR es   rosa",
+                "sentAt": 3000
+              },
+              {
+                "id": 2,
+                "text": "Psíquico y veneno",
+                "sentAt": 3500
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "slowbro",
+                  "name": "Slowbro",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+                },
+                "attemptedAt": 5000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": 6000,
+              "attemptCount": 1
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "slowbro-galar",
+                "name": "Slowbro de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+                "generation": 1,
+                "types": [
+                  "poison",
+                  "psychic"
+                ],
+                "hp": 95,
+                "attack": 100,
+                "defense": 95,
+                "specialAttack": 100,
+                "specialDefense": 70,
+                "speed": 30,
+                "baseStatTotal": 490,
+                "evolutionStage": null,
+                "evolutionStageCount": null,
+                "heightDecimeters": 16,
+                "weightHectograms": 705,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Mano Rápida",
+                  "Ritmo Propio",
+                  "Regeneración"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Espera 0.5s antes de volver a intentar.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p3",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Su forma de GALÁR es   rosa",
+                "sentAt": 3000
+              },
+              {
+                "id": 2,
+                "text": "Psíquico y veneno",
+                "sentAt": 3500
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "slowbro",
+                  "name": "Slowbro",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+                },
+                "attemptedAt": 5000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": 6000,
+              "attemptCount": 1
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "slowbro-galar",
+                "name": "Slowbro de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+                "generation": 1,
+                "types": [
+                  "poison",
+                  "psychic"
+                ],
+                "hp": 95,
+                "attack": 100,
+                "defense": 95,
+                "specialAttack": 100,
+                "specialDefense": 70,
+                "speed": 30,
+                "baseStatTotal": 490,
+                "evolutionStage": null,
+                "evolutionStageCount": null,
+                "heightDecimeters": 16,
+                "weightHectograms": 705,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Mano Rápida",
+                  "Ritmo Propio",
+                  "Regeneración"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 14000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p3",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Su forma de GALÁR es   rosa",
+                "sentAt": 3000
+              },
+              {
+                "id": 2,
+                "text": "Psíquico y veneno",
+                "sentAt": 3500
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "slowbro",
+                  "name": "Slowbro",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+                },
+                "attemptedAt": 5000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 14000,
+            "lastRound": {
+              "reason": "GUESSED",
+              "pokemon": {
+                "id": "slowbro-galar",
+                "name": "Slowbro de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+                "generation": 1,
+                "types": [
+                  "poison",
+                  "psychic"
+                ]
+              },
+              "descriptorId": "p3",
+              "winnerId": "p2",
+              "guesserPoints": 4,
+              "descriptorPoints": 2,
+              "winnerAttemptCount": 1
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": 6000,
+              "attemptCount": 1
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 1
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No hay una ronda activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 14000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p3",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Su forma de GALÁR es   rosa",
+                "sentAt": 3000
+              },
+              {
+                "id": 2,
+                "text": "Psíquico y veneno",
+                "sentAt": 3500
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "slowbro",
+                  "name": "Slowbro",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+                },
+                "attemptedAt": 5000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 14000,
+            "lastRound": {
+              "reason": "GUESSED",
+              "pokemon": {
+                "id": "slowbro-galar",
+                "name": "Slowbro de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+                "generation": 1,
+                "types": [
+                  "poison",
+                  "psychic"
+                ]
+              },
+              "descriptorId": "p3",
+              "winnerId": "p2",
+              "guesserPoints": 4,
+              "descriptorPoints": 2,
+              "winnerAttemptCount": 1
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": 6000,
+              "attemptCount": 1
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 1
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 14000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p3",
+            "nextDescriptorId": "p1",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Su forma de GALÁR es   rosa",
+                "sentAt": 3000
+              },
+              {
+                "id": 2,
+                "text": "Psíquico y veneno",
+                "sentAt": 3500
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "slowbro",
+                  "name": "Slowbro",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+                },
+                "attemptedAt": 5000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 14000,
+            "lastRound": {
+              "reason": "GUESSED",
+              "pokemon": {
+                "id": "slowbro-galar",
+                "name": "Slowbro de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10165.png",
+                "generation": 1,
+                "types": [
+                  "poison",
+                  "psychic"
+                ]
+              },
+              "descriptorId": "p3",
+              "winnerId": "p2",
+              "guesserPoints": 4,
+              "descriptorPoints": 2,
+              "winnerAttemptCount": 1
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": 6000,
+              "attemptCount": 1
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 1
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 44000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,14000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p1",
+            "nextDescriptorId": "p2",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundStartedAt": 14000,
+            "roundEndsAt": 44000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "ponyta-galar",
+                "name": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png",
+                "generation": 1,
+                "types": [
+                  "psychic"
+                ],
+                "hp": 50,
+                "attack": 85,
+                "defense": 55,
+                "specialAttack": 65,
+                "specialDefense": 65,
+                "speed": 90,
+                "baseStatTotal": 410,
+                "evolutionStage": null,
+                "evolutionStageCount": null,
+                "heightDecimeters": 8,
+                "weightHectograms": 240,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Fuga",
+                  "Velo Pastel",
+                  "Anticipación"
+                ]
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 44000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,14000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p1",
+            "nextDescriptorId": "p2",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Unicornio de Galar",
+                "sentAt": 15000
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundStartedAt": 14000,
+            "roundEndsAt": 44000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "ponyta-galar",
+                "name": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png",
+                "generation": 1,
+                "types": [
+                  "psychic"
+                ],
+                "hp": 50,
+                "attack": 85,
+                "defense": 55,
+                "specialAttack": 65,
+                "specialDefense": 65,
+                "speed": 90,
+                "baseStatTotal": 410,
+                "evolutionStage": null,
+                "evolutionStageCount": null,
+                "heightDecimeters": 8,
+                "weightHectograms": 240,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Fuga",
+                  "Velo Pastel",
+                  "Anticipación"
+                ]
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 44000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,14000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p1",
+            "nextDescriptorId": "p2",
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [
+              {
+                "id": 1,
+                "text": "Unicornio de Galar",
+                "sentAt": 15000
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "rapidash-galar",
+                  "name": "Rapidash de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10163.png"
+                },
+                "attemptedAt": 16000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundStartedAt": 14000,
+            "roundEndsAt": 44000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "ponyta-galar",
+                "name": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png",
+                "generation": 1,
+                "types": [
+                  "psychic"
+                ],
+                "hp": 50,
+                "attack": 85,
+                "defense": 55,
+                "specialAttack": 65,
+                "specialDefense": 65,
+                "speed": 90,
+                "baseStatTotal": 410,
+                "evolutionStage": null,
+                "evolutionStageCount": null,
+                "heightDecimeters": 8,
+                "weightHectograms": 240,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Fuga",
+                  "Velo Pastel",
+                  "Anticipación"
+                ]
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": 17000,
+              "attemptCount": 1
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 47000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,17000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p2",
+            "nextDescriptorId": null,
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundStartedAt": 17000,
+            "roundEndsAt": 47000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "seadra",
+                "name": "Seadra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
+                "generation": 1,
+                "types": [
+                  "water"
+                ],
+                "hp": 55,
+                "attack": 65,
+                "defense": 95,
+                "specialAttack": 95,
+                "specialDefense": 45,
+                "speed": 85,
+                "baseStatTotal": 440,
+                "evolutionStage": 2,
+                "evolutionStageCount": 3,
+                "heightDecimeters": 12,
+                "weightHectograms": 250,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Punto Tóxico",
+                  "Francotirador",
+                  "Humedad"
+                ]
+              }
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 47000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,17000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p2",
+            "nextDescriptorId": null,
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundStartedAt": 17000,
+            "roundEndsAt": 47000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "seadra",
+                "name": "Seadra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
+                "generation": 1,
+                "types": [
+                  "water"
+                ],
+                "hp": 55,
+                "attack": 65,
+                "defense": 95,
+                "specialAttack": 95,
+                "specialDefense": 45,
+                "speed": 85,
+                "baseStatTotal": 440,
+                "evolutionStage": 2,
+                "evolutionStageCount": 3,
+                "heightDecimeters": 12,
+                "weightHectograms": 250,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Punto Tóxico",
+                  "Francotirador",
+                  "Humedad"
+                ]
+              }
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 47000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,17000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p2",
+            "nextDescriptorId": null,
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p3",
+                "guessedPokemon": {
+                  "id": "horsea",
+                  "name": "Horsea",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png"
+                },
+                "attemptedAt": 19000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundStartedAt": 17000,
+            "roundEndsAt": 47000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "DESCRIPTOR",
+              "canSendHint": true,
+              "secretPokemon": {
+                "id": "seadra",
+                "name": "Seadra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
+                "generation": 1,
+                "types": [
+                  "water"
+                ],
+                "hp": 55,
+                "attack": 65,
+                "defense": 95,
+                "specialAttack": 95,
+                "specialDefense": 45,
+                "speed": 85,
+                "baseStatTotal": 440,
+                "evolutionStage": 2,
+                "evolutionStageCount": 3,
+                "heightDecimeters": 12,
+                "weightHectograms": 250,
+                "legendaryStatus": "NORMAL",
+                "abilities": [
+                  "Punto Tóxico",
+                  "Francotirador",
+                  "Humedad"
+                ]
+              }
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": 20000,
+              "attemptCount": 1
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 51000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,17000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": "p2",
+            "nextDescriptorId": null,
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [],
+            "attempts": [
+              {
+                "playerId": "p3",
+                "guessedPokemon": {
+                  "id": "horsea",
+                  "name": "Horsea",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png"
+                },
+                "attemptedAt": 19000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundStartedAt": 17000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 51000,
+            "lastRound": {
+              "reason": "TIMEOUT",
+              "pokemon": {
+                "id": "seadra",
+                "name": "Seadra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
+                "generation": 1,
+                "types": [
+                  "water"
+                ]
+              },
+              "descriptorId": "p2",
+              "winnerId": null,
+              "guesserPoints": 0,
+              "descriptorPoints": 0,
+              "winnerAttemptCount": null
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": 20000,
+              "attemptCount": 1
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": null,
+            "nextDescriptorId": null,
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundStartedAt": null,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 4,
+                  "won": true,
+                  "stats": {
+                    "guessedPokemon": 1,
+                    "firstTry": 1,
+                    "totalAttempts": 2,
+                    "firstCorrectResponses": 1,
+                    "descriptorRounds": 1,
+                    "descriptorSuccesses": 0,
+                    "descriptorFailures": 1,
+                    "pointsFromGuessing": 4,
+                    "pointsFromDescribing": 0
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "guessedPokemon": 0,
+                    "firstTry": 0,
+                    "totalAttempts": 1,
+                    "firstCorrectResponses": 0,
+                    "descriptorRounds": 1,
+                    "descriptorSuccesses": 1,
+                    "descriptorFailures": 0,
+                    "pointsFromGuessing": 0,
+                    "pointsFromDescribing": 2
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "guessedPokemon": 0,
+                    "firstTry": 0,
+                    "totalAttempts": 1,
+                    "firstCorrectResponses": 0,
+                    "descriptorRounds": 1,
+                    "descriptorSuccesses": 0,
+                    "descriptorFailures": 1,
+                    "pointsFromGuessing": 0,
+                    "pointsFromDescribing": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": 20000,
+              "attemptCount": 1
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No hay una ronda activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "poke-taboo",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "descriptorId": null,
+            "nextDescriptorId": null,
+            "descriptorOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "hints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 2
+            },
+            "roundStartedAt": null,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 4,
+                  "won": true,
+                  "stats": {
+                    "guessedPokemon": 1,
+                    "firstTry": 1,
+                    "totalAttempts": 2,
+                    "firstCorrectResponses": 1,
+                    "descriptorRounds": 1,
+                    "descriptorSuccesses": 0,
+                    "descriptorFailures": 1,
+                    "pointsFromGuessing": 4,
+                    "pointsFromDescribing": 0
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "guessedPokemon": 0,
+                    "firstTry": 0,
+                    "totalAttempts": 1,
+                    "firstCorrectResponses": 0,
+                    "descriptorRounds": 1,
+                    "descriptorSuccesses": 1,
+                    "descriptorFailures": 0,
+                    "pointsFromGuessing": 0,
+                    "pointsFromDescribing": 2
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "guessedPokemon": 0,
+                    "firstTry": 0,
+                    "totalAttempts": 1,
+                    "firstCorrectResponses": 0,
+                    "descriptorRounds": 1,
+                    "descriptorSuccesses": 0,
+                    "descriptorFailures": 1,
+                    "pointsFromGuessing": 0,
+                    "pointsFromDescribing": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": 20000,
+              "attemptCount": 1
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p2",
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 4,
+          "won": true,
+          "stats": {
+            "guessedPokemon": 1,
+            "firstTry": 1,
+            "totalAttempts": 2,
+            "firstCorrectResponses": 1,
+            "descriptorRounds": 1,
+            "descriptorSuccesses": 0,
+            "descriptorFailures": 1,
+            "pointsFromGuessing": 4,
+            "pointsFromDescribing": 0
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 2,
+          "points": 2,
+          "won": false,
+          "stats": {
+            "guessedPokemon": 0,
+            "firstTry": 0,
+            "totalAttempts": 1,
+            "firstCorrectResponses": 0,
+            "descriptorRounds": 1,
+            "descriptorSuccesses": 1,
+            "descriptorFailures": 0,
+            "pointsFromGuessing": 0,
+            "pointsFromDescribing": 2
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "guessedPokemon": 0,
+            "firstTry": 0,
+            "totalAttempts": 1,
+            "firstCorrectResponses": 0,
+            "descriptorRounds": 1,
+            "descriptorSuccesses": 0,
+            "descriptorFailures": 1,
+            "pointsFromGuessing": 0,
+            "pointsFromDescribing": 0
+          }
+        }
+      ]
+    }
+  }
+}
