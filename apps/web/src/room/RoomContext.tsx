@@ -1,9 +1,9 @@
 import type { GameSelectionMode, RoomView, SessionMode, SetGameSkipVoteRequest } from '@pokemon-universe/shared/public';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 import { useAuth } from '../auth/AuthContext';
-import { createSocket, type GameSocket } from '../lib/socket';
+import type { CommandEvent, CommandPayload, RealtimeClient } from '../lib/realtime';
+import { createRealtime } from '../lib/socket';
 import { OptimisticRoomProjection, runOptimisticLobbyMutation, type OptimisticLobbyUpdate } from './optimistic-room';
-import { sendCommand, type CommandEvent, type CommandPayload } from './send-command';
 import { attachWhoIsWhoCursorChannel } from './who-is-who-cursor-channel';
 
 interface RoomContextValue {
@@ -36,7 +36,7 @@ const RoomContext = createContext<RoomContextValue | null>(null);
 
 export function RoomProvider({ children }: PropsWithChildren) {
   const { user } = useAuth();
-  const socketRef = useRef<GameSocket | null>(null);
+  const socketRef = useRef<RealtimeClient | null>(null);
   const projectionRef = useRef(new OptimisticRoomProjection());
   const continuationRef = useRef<Promise<void> | null>(null);
   const [room, setRoom] = useState<RoomView | null>(null);
@@ -46,15 +46,18 @@ export function RoomProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     const projection = projectionRef.current;
     if (!user) { socketRef.current?.disconnect(); socketRef.current = null; setRoom(projection.setAuthoritative(null, true)); return; }
-    const socket = createSocket(); socketRef.current = socket;
+    const socket = createRealtime(); socketRef.current = socket;
     const detachCursorChannel = attachWhoIsWhoCursorChannel(socket);
-    socket.on('connect', () => setConnected(true));
-    socket.on('disconnect', () => { setConnected(false); setRoom(projection.clearPending()); });
+    // `error` only comes with a failed connection attempt (Socket.IO `connect_error`, WebSocket close 4401), never with a plain disconnect.
+    socket.onConnection((isConnected, connectionError) => {
+      setConnected(isConnected);
+      if (!isConnected) setRoom(projection.clearPending());
+      if (connectionError !== undefined) setError(connectionError);
+    });
     socket.on('room:state', (nextRoom) => setRoom(projection.setAuthoritative(nextRoom)));
     socket.on('session:restored', (nextRoom) => setRoom(projection.setAuthoritative(nextRoom, true)));
     socket.on('room:kicked', (message) => { setRoom(projection.setAuthoritative(null, true)); setError(message); });
     socket.on('error:message', setError);
-    socket.on('connect_error', (event) => setError(event.message));
     return () => { detachCursorChannel(); socket.disconnect(); socketRef.current = null; projection.setAuthoritative(null, true); };
   }, [user?.id]);
 
@@ -62,7 +65,7 @@ export function RoomProvider({ children }: PropsWithChildren) {
     const socket = socketRef.current;
     if (!socket) throw new Error('Sin conexión con el servidor');
     setError(null);
-    try { return await sendCommand(socket, event, payload); }
+    try { return await socket.request(event, payload); }
     catch (error) {
       if (socketRef.current === socket) setError(error instanceof Error ? error.message : String(error));
       throw error;

@@ -10,6 +10,7 @@ export default defineConfig({
     '^/api/(changelog|feedback|games|pokemon)(\\?.*)?$': 'http://localhost:8080',
     '/api': 'http://localhost:3001',
     '/socket.io': { target: 'http://localhost:3001', ws: true },
+    '/ws': { target: 'ws://localhost:8080', ws: true },
   } },
   build: { rollupOptions: { output: { manualChunks: {
     'vendor-react': ['react', 'react-dom', 'react-router-dom'],
