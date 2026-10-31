@@ -226,7 +226,7 @@ public final class PokedexDistanceTypes {
   /** {@code PublicActiveSelection}: sin número ni distancia mientras la ronda está activa. */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record PublicActiveSelection(String pokemonId, String pokemonName, String sprite, long selectedAt) {}
+  public record PublicActiveSelection(String pokemonId, long selectedAt, String pokemonName, String sprite) {}
 
   /** {@code PublicRoundResult['targetPokemon']}. */
   @Serdeable
@@ -245,7 +245,7 @@ public final class PokedexDistanceTypes {
     }
   }
 
-  /** {@code PokedexDistancePublicState}. Tres listas y tres instantes contiguos: se construye con {@link #builder()}. */
+  /** {@code PokedexDistancePublicState}. Tres listas y dos instantes contiguos: se construye con {@link #builder()}. */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record PokedexDistancePublicState(
@@ -261,9 +261,9 @@ public final class PokedexDistanceTypes {
       List<String> lockedPokemonIds,
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
-      @Nullable Long nextTransitionAt,
       @Nullable PublicRoundResult lastRound,
       @Nullable String winnerId,
+      @Nullable Long nextTransitionAt,
       @Nullable GameResults results) {
 
     public PokedexDistancePublicState {
@@ -331,8 +331,8 @@ public final class PokedexDistanceTypes {
             Objects.requireNonNull(phase, "phase"), roundNumber, tiebreakDepth, targetDexNumber,
             Objects.requireNonNull(eligibleIds, "eligibleIds"), Objects.requireNonNull(survivorIds, "survivorIds"),
             Objects.requireNonNull(spectatorIds, "spectatorIds"), Objects.requireNonNull(selections, "selections"),
-            Objects.requireNonNull(lockedPokemonIds, "lockedPokemonIds"), roundStartedAt, roundEndsAt,
-            nextTransitionAt, lastRound, winnerId, results);
+            Objects.requireNonNull(lockedPokemonIds, "lockedPokemonIds"), roundStartedAt, roundEndsAt, lastRound,
+            winnerId, nextTransitionAt, results);
       }
     }
   }

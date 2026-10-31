@@ -1,5 +1,7 @@
 package es.pokemonuniverse.golden;
 
+import es.pokemonuniverse.domain.game.engine.AssetRequest;
+import es.pokemonuniverse.domain.game.engine.AssetResolution;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.GameEngine;
@@ -15,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Reproduce una fixture dorada con la misma secuencia de llamadas que {@code runner.ts} y compara cada proyección
@@ -25,6 +28,10 @@ import java.util.Objects;
  * {@code invalidAction: true} y el escenario se detiene; si TS grabó un snapshot, es un fallo ("la acción cruda no
  * valida en Java pero sí en TS"). Cualquier excepción durante el paso o al calcular su snapshot se compara con
  * {@code threw}; {@code stoppedAt} debe coincidir con el paso que detuvo el escenario.
+ *
+ * <p>Un paso {@code asset} llama a {@code resolveAsset} sin cambiar el estado y compara {@code resolution} (sin
+ * snapshot). Todas las comparaciones usan {@link OrderedJsonCompare}: el orden de claves de TS forma parte del
+ * contrato (constraint 13 de la etapa 2B).
  */
 public final class GoldenReplayer {
 
@@ -44,14 +51,7 @@ public final class GoldenReplayer {
 
   private static <C, S, A, P> void run(GameEngine<C, S, A, P> engine, GoldenFixture fixture, PokemonCatalog catalog) {
     var id = fixture.engineId() + "/" + fixture.scenario();
-    long startNow = fixture.startNow() != null ? fixture.startNow() : 1000L;
-    var players = fixture.players();
-    var context = GameContext.builder(catalog, new Mulberry32(fixture.seed()))
-        .players(players)
-        .now(startNow)
-        .roomCode(fixture.roomCode() != null ? fixture.roomCode() : "GOLD01")
-        .hostId(players.isEmpty() ? null : players.get(0).id())
-        .build();
+    var context = GoldenContexts.contextFor(fixture, catalog, new Mulberry32(fixture.seed()));
     var expected = fixture.expected();
 
     var config = engine.parseConfig(fixture.config());
@@ -70,7 +70,7 @@ public final class GoldenReplayer {
         throw new AssertionError(id + ": " + path + ": esperado <ausente>, obtenido un paso ejecutado");
       }
       var want = expected.afterSteps().get(i);
-      if (!List.of("action", "timeout", "presence").contains(step.kind())) {
+      if (!List.of("action", "timeout", "presence", "asset").contains(step.kind())) {
         throw new IllegalStateException(id + ": paso de tipo desconocido " + step.kind());
       }
       context = context.withNow(step.now());
@@ -95,7 +95,8 @@ public final class GoldenReplayer {
       }
       Boolean accepted = null;
       String error = null;
-      GoldenFixture.Snapshot got;
+      Optional<AssetResolution> resolution = Optional.empty();
+      GoldenFixture.Snapshot got = null;
       try {
         switch (step.kind()) {
           case "action" -> {
@@ -105,9 +106,11 @@ public final class GoldenReplayer {
             error = result.error();
           }
           case "timeout" -> state = engine.handleTimeout(state, context);
+          case "asset" -> resolution = engine.resolveAsset(state,
+              new AssetRequest(step.assetToken(), step.roundNumber(), step.assetId()), context);
           default -> state = engine.handlePresenceChange(state, context); // "presence"
         }
-        got = snapshot(engine, state, context);
+        if (!"asset".equals(step.kind())) got = snapshot(engine, state, context);
       } catch (Exception thrown) { // runner.ts captura cualquier error; la SPI no declara excepciones comprobadas
         if (want.threw() == null) {
           throw new AssertionError(id + ": " + path + ": esperado un paso sin excepción, lanzó " + thrown, thrown);
@@ -130,7 +133,11 @@ public final class GoldenReplayer {
       if (!Objects.equals(want.error(), error)) {
         throw new AssertionError(id + ": " + path + ".error: esperado " + want.error() + ", obtenido " + error);
       }
-      compareSnapshot(id, path + ".snapshot", want.snapshot(), got);
+      if ("asset".equals(step.kind())) {
+        compare(id, path + ".resolution", want.resolution(), tree(resolution.orElse(null)));
+      } else {
+        compareSnapshot(id, path + ".snapshot", want.snapshot(), got);
+      }
     }
 
     if (!stopped && fixture.stoppedAt() != null) {
@@ -194,8 +201,10 @@ public final class GoldenReplayer {
     }
   }
 
+  /** Un {@code null} de Java en la raíz es el {@code null} JSON que Serde no distingue de la clave ausente. */
   private static void compare(String id, String path, JsonNode want, JsonNode got) {
-    var difference = JsonTree.firstDifference(path, JsonTree.canonical(want), JsonTree.canonical(got));
+    var difference = OrderedJsonCompare.firstDifference(path, want != null ? want : JsonNode.nullNode(),
+        got != null ? got : JsonNode.nullNode());
     if (difference.isPresent()) throw new AssertionError(id + ": " + difference.get());
   }
 

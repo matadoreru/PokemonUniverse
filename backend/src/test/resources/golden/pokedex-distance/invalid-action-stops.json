@@ -1,5 +1,18 @@
 {
+  "engineId": "pokedex-distance",
+  "scenario": "invalid-action-stops",
+  "seed": 505,
   "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
   "config": {
     "generations": [
       1,
@@ -7,118 +20,36 @@
     ],
     "roundSeconds": 20
   },
-  "engineId": "pokedex-distance",
-  "expected": {
-    "afterStart": {
-      "finished": false,
-      "lifecycle": {
-        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-        "nextDeadline": 21000,
-        "phase": "ROUND_ACTIVE",
-        "spectatorIds": []
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "bulbasaur"
       },
-      "playerStates": {
-        "p1": {
-          "canSelect": true,
-          "exactHit": false,
-          "selection": null
-        },
-        "p2": {
-          "canSelect": true,
-          "exactHit": false,
-          "selection": null
-        }
-      },
-      "publicState": {
-        "eligibleIds": [
-          "p1",
-          "p2"
-        ],
-        "gameId": "pokedex-distance",
-        "lastRound": null,
-        "lockedPokemonIds": [],
-        "nextTransitionAt": null,
-        "phase": "ROUND_ACTIVE",
-        "results": null,
-        "roundEndsAt": 21000,
-        "roundNumber": 1,
-        "roundStartedAt": 1000,
-        "selections": {},
-        "spectatorIds": [],
-        "survivorIds": [
-          "p1",
-          "p2"
-        ],
-        "targetDexNumber": 11,
-        "tiebreakDepth": 0,
-        "winnerId": null
-      }
+      "now": 2000
     },
-    "afterSteps": [
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 21000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": {
-                "pokemonId": "bulbasaur",
-                "selectedAt": 2000
-              }
-            },
-            "p2": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": null,
-            "lockedPokemonIds": [
-              "bulbasaur"
-            ],
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "results": null,
-            "roundEndsAt": 21000,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "selections": {
-              "p1": {
-                "pokemonId": "bulbasaur",
-                "pokemonName": "Bulbasaur",
-                "selectedAt": 2000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
-              }
-            },
-            "spectatorIds": [],
-            "survivorIds": [
-              "p1",
-              "p2"
-            ],
-            "targetDexNumber": 11,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": ""
       },
-      {
-        "invalidAction": true
-      }
-    ],
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "ivysaur"
+      },
+      "now": 4000
+    }
+  ],
+  "expected": {
     "configNormalized": {
       "generations": [
         1,
@@ -127,88 +58,157 @@
       "roundSeconds": 20
     },
     "initial": {
-      "finished": false,
       "lifecycle": {
-        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
-        "nextDeadline": null,
         "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
         "spectatorIds": []
       },
-      "playerStates": {
-        "p1": {
-          "canSelect": false,
-          "exactHit": false,
-          "selection": null
-        },
-        "p2": {
-          "canSelect": false,
-          "exactHit": false,
-          "selection": null
-        }
-      },
       "publicState": {
-        "eligibleIds": [],
         "gameId": "pokedex-distance",
-        "lastRound": null,
-        "lockedPokemonIds": [],
-        "nextTransitionAt": null,
         "phase": "GAME_STARTING",
-        "results": null,
-        "roundEndsAt": null,
         "roundNumber": 0,
-        "roundStartedAt": null,
-        "selections": {},
-        "spectatorIds": [],
+        "tiebreakDepth": 0,
+        "targetDexNumber": null,
+        "eligibleIds": [],
         "survivorIds": [
           "p1",
           "p2"
         ],
-        "targetDexNumber": null,
+        "spectatorIds": [],
+        "selections": {},
+        "lockedPokemonIds": [],
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "lastRound": null,
+        "winnerId": null,
+        "nextTransitionAt": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canSelect": false,
+          "selection": null,
+          "exactHit": false
+        },
+        "p2": {
+          "canSelect": false,
+          "selection": null,
+          "exactHit": false
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokedex-distance",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
         "tiebreakDepth": 0,
-        "winnerId": null
+        "targetDexNumber": 11,
+        "eligibleIds": [
+          "p1",
+          "p2"
+        ],
+        "survivorIds": [
+          "p1",
+          "p2"
+        ],
+        "spectatorIds": [],
+        "selections": {},
+        "lockedPokemonIds": [],
+        "roundStartedAt": 1000,
+        "roundEndsAt": 21000,
+        "lastRound": null,
+        "winnerId": null,
+        "nextTransitionAt": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canSelect": true,
+          "selection": null,
+          "exactHit": false
+        },
+        "p2": {
+          "canSelect": true,
+          "selection": null,
+          "exactHit": false
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 11,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [],
+            "selections": {
+              "p1": {
+                "pokemonId": "bulbasaur",
+                "selectedAt": 2000,
+                "pokemonName": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "bulbasaur"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "bulbasaur",
+                "selectedAt": 2000
+              },
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
       }
-    }
+    ]
   },
-  "players": [
-    {
-      "displayName": "Ana",
-      "id": "p1"
-    },
-    {
-      "displayName": "Bruno",
-      "id": "p2"
-    }
-  ],
-  "scenario": "invalid-action-stops",
-  "seed": 505,
-  "steps": [
-    {
-      "action": {
-        "pokemonId": "bulbasaur",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 2000,
-      "playerId": "p1"
-    },
-    {
-      "action": {
-        "pokemonId": "",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 3000,
-      "playerId": "p2"
-    },
-    {
-      "action": {
-        "pokemonId": "ivysaur",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 4000,
-      "playerId": "p2"
-    }
-  ],
   "stoppedAt": 1
 }

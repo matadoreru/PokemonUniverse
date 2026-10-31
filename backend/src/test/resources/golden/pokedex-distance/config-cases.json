@@ -8,14 +8,14 @@
       ],
       "roundSeconds": 20
     },
+    "valid": true,
     "normalized": {
       "generations": [
         1,
         2
       ],
       "roundSeconds": 20
-    },
-    "valid": true
+    }
   },
   {
     "input": {
@@ -27,14 +27,14 @@
       "roundSeconds": 60,
       "unknownKey": "se ignora"
     },
+    "valid": true,
     "normalized": {
       "generations": [
         3,
         9
       ],
       "roundSeconds": 60
-    },
-    "valid": true
+    }
   },
   {
     "input": {
@@ -43,13 +43,13 @@
       ],
       "roundSeconds": 10
     },
+    "valid": true,
     "normalized": {
       "generations": [
         1
       ],
       "roundSeconds": 10
-    },
-    "valid": true
+    }
   },
   {
     "input": {
@@ -66,6 +66,7 @@
       ],
       "roundSeconds": 20
     },
+    "valid": true,
     "normalized": {
       "generations": [
         1,
@@ -79,8 +80,7 @@
         9
       ],
       "roundSeconds": 20
-    },
-    "valid": true
+    }
   },
   {
     "input": {

@@ -1,1471 +1,106 @@
 {
+  "engineId": "higher-lower",
+  "scenario": "presence-resolves-round",
+  "seed": 33,
   "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
   "config": {
-    "answerVisibility": "REALTIME",
+    "generations": [
+      1,
+      2
+    ],
     "categories": [
       "ATTACK",
       "DEFENSE",
       "SPEED"
     ],
+    "showPreviousValue": true,
+    "answerVisibility": "REALTIME",
     "difficulty": "HARD",
-    "generations": [
-      1,
-      2
-    ],
     "roundSeconds": 20,
-    "rounds": 3,
-    "showPreviousValue": true
+    "rounds": 3
   },
-  "engineId": "higher-lower",
-  "expected": {
-    "afterStart": {
-      "finished": false,
-      "lifecycle": {
-        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-        "nextDeadline": 21000,
-        "phase": "ROUND_ACTIVE",
-        "spectatorIds": []
-      },
-      "playerStates": {
-        "p1": {
-          "answer": null,
-          "canAnswer": true
-        },
-        "p2": {
-          "answer": null,
-          "canAnswer": true
-        },
-        "p3": {
-          "answer": null,
-          "canAnswer": true
-        }
-      },
-      "publicState": {
-        "answeredIds": [],
-        "answers": {},
-        "category": "SPEED",
-        "currentPokemon": {
-          "id": "chinchou",
-          "name": "Chinchou",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
-          "value": null
-        },
-        "gameId": "higher-lower",
-        "lastRound": null,
-        "nextTransitionAt": null,
-        "phase": "ROUND_ACTIVE",
-        "playerIds": [
-          "p1",
-          "p2",
-          "p3"
-        ],
-        "previousPokemon": {
-          "id": "omastar",
-          "name": "Omastar",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
-          "value": 55
-        },
-        "results": null,
-        "roundEndsAt": 21000,
-        "roundNumber": 1,
-        "roundStartedAt": 1000,
-        "scores": {
-          "p1": 0,
-          "p2": 0,
-          "p3": 0
-        },
-        "streaks": {
-          "p1": 0,
-          "p2": 0,
-          "p3": 0
-        },
-        "totalRounds": 3
-      }
-    },
-    "afterSteps": [
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 21000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": {
-                "answeredAt": 2000,
-                "choice": "HIGHER"
-              },
-              "canAnswer": false
-            },
-            "p2": {
-              "answer": null,
-              "canAnswer": true
-            },
-            "p3": {
-              "answer": null,
-              "canAnswer": true
-            }
-          },
-          "publicState": {
-            "answeredIds": [
-              "p1"
-            ],
-            "answers": {
-              "p1": {
-                "answeredAt": 2000,
-                "choice": "HIGHER"
-              }
-            },
-            "category": "SPEED",
-            "currentPokemon": {
-              "id": "chinchou",
-              "name": "Chinchou",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
-              "value": null
-            },
-            "gameId": "higher-lower",
-            "lastRound": null,
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "previousPokemon": {
-              "id": "omastar",
-              "name": "Omastar",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
-              "value": 55
-            },
-            "results": null,
-            "roundEndsAt": 21000,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "scores": {
-              "p1": 0,
-              "p2": 0,
-              "p3": 0
-            },
-            "streaks": {
-              "p1": 0,
-              "p2": 0,
-              "p3": 0
-            },
-            "totalRounds": 3
-          }
-        }
-      },
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 21000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": {
-                "answeredAt": 2000,
-                "choice": "HIGHER"
-              },
-              "canAnswer": false
-            },
-            "p2": {
-              "answer": {
-                "answeredAt": 3000,
-                "choice": "LOWER"
-              },
-              "canAnswer": false
-            },
-            "p3": {
-              "answer": null,
-              "canAnswer": true
-            }
-          },
-          "publicState": {
-            "answeredIds": [
-              "p1",
-              "p2"
-            ],
-            "answers": {
-              "p1": {
-                "answeredAt": 2000,
-                "choice": "HIGHER"
-              },
-              "p2": {
-                "answeredAt": 3000,
-                "choice": "LOWER"
-              }
-            },
-            "category": "SPEED",
-            "currentPokemon": {
-              "id": "chinchou",
-              "name": "Chinchou",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
-              "value": null
-            },
-            "gameId": "higher-lower",
-            "lastRound": null,
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "previousPokemon": {
-              "id": "omastar",
-              "name": "Omastar",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
-              "value": 55
-            },
-            "results": null,
-            "roundEndsAt": 21000,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "scores": {
-              "p1": 0,
-              "p2": 0,
-              "p3": 0
-            },
-            "streaks": {
-              "p1": 0,
-              "p2": 0,
-              "p3": 0
-            },
-            "totalRounds": 3
-          }
-        }
-      },
-      {
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 7000,
-            "phase": "ROUND_RESULTS",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": {
-                "answeredAt": 2000,
-                "choice": "HIGHER"
-              },
-              "canAnswer": false
-            },
-            "p2": {
-              "answer": {
-                "answeredAt": 3000,
-                "choice": "LOWER"
-              },
-              "canAnswer": false
-            },
-            "p3": {
-              "answer": null,
-              "canAnswer": false
-            }
-          },
-          "publicState": {
-            "answeredIds": [
-              "p1",
-              "p2"
-            ],
-            "answers": {
-              "p1": {
-                "answeredAt": 2000,
-                "choice": "HIGHER"
-              },
-              "p2": {
-                "answeredAt": 3000,
-                "choice": "LOWER"
-              }
-            },
-            "category": "SPEED",
-            "currentPokemon": {
-              "id": "chinchou",
-              "name": "Chinchou",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
-              "value": 67
-            },
-            "gameId": "higher-lower",
-            "lastRound": {
-              "correctAnswer": "HIGHER",
-              "currentValue": 67,
-              "outcomes": {
-                "p1": {
-                  "awardedPoints": 1,
-                  "basePoints": 1,
-                  "choice": "HIGHER",
-                  "correct": true,
-                  "streak": 1,
-                  "streakBonus": 0
-                },
-                "p2": {
-                  "awardedPoints": 0,
-                  "basePoints": 0,
-                  "choice": "LOWER",
-                  "correct": false,
-                  "streak": 0,
-                  "streakBonus": 0
-                },
-                "p3": {
-                  "awardedPoints": 0,
-                  "basePoints": 0,
-                  "choice": null,
-                  "correct": false,
-                  "streak": 0,
-                  "streakBonus": 0
-                }
-              },
-              "previousValue": 55
-            },
-            "nextTransitionAt": 7000,
-            "phase": "ROUND_RESULTS",
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "previousPokemon": {
-              "id": "omastar",
-              "name": "Omastar",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
-              "value": 55
-            },
-            "results": null,
-            "roundEndsAt": null,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "scores": {
-              "p1": 1,
-              "p2": 0,
-              "p3": 0
-            },
-            "streaks": {
-              "p1": 1,
-              "p2": 0,
-              "p3": 0
-            },
-            "totalRounds": 3
-          }
-        }
-      },
-      {
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",2,7000,null,null,null,null,null]",
-            "nextDeadline": 27000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": null,
-              "canAnswer": true
-            },
-            "p2": {
-              "answer": null,
-              "canAnswer": true
-            },
-            "p3": {
-              "answer": null,
-              "canAnswer": true
-            }
-          },
-          "publicState": {
-            "answeredIds": [],
-            "answers": {},
-            "category": "ATTACK",
-            "currentPokemon": {
-              "id": "pikachu",
-              "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-              "value": null
-            },
-            "gameId": "higher-lower",
-            "lastRound": null,
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "previousPokemon": {
-              "id": "chinchou",
-              "name": "Chinchou",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
-              "value": 38
-            },
-            "results": null,
-            "roundEndsAt": 27000,
-            "roundNumber": 2,
-            "roundStartedAt": 7000,
-            "scores": {
-              "p1": 1,
-              "p2": 0,
-              "p3": 0
-            },
-            "streaks": {
-              "p1": 1,
-              "p2": 0,
-              "p3": 0
-            },
-            "totalRounds": 3
-          }
-        }
-      },
-      {
-        "accepted": false,
-        "error": "No estás conectado como participante.",
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",2,7000,null,null,null,null,null]",
-            "nextDeadline": 27000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": null,
-              "canAnswer": true
-            },
-            "p2": {
-              "answer": null,
-              "canAnswer": true
-            },
-            "p3": {
-              "answer": null,
-              "canAnswer": true
-            }
-          },
-          "publicState": {
-            "answeredIds": [],
-            "answers": {},
-            "category": "ATTACK",
-            "currentPokemon": {
-              "id": "pikachu",
-              "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-              "value": null
-            },
-            "gameId": "higher-lower",
-            "lastRound": null,
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "previousPokemon": {
-              "id": "chinchou",
-              "name": "Chinchou",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
-              "value": 38
-            },
-            "results": null,
-            "roundEndsAt": 27000,
-            "roundNumber": 2,
-            "roundStartedAt": 7000,
-            "scores": {
-              "p1": 1,
-              "p2": 0,
-              "p3": 0
-            },
-            "streaks": {
-              "p1": 1,
-              "p2": 0,
-              "p3": 0
-            },
-            "totalRounds": 3
-          }
-        }
-      },
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",2,7000,null,null,null,null,null]",
-            "nextDeadline": 27000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": null,
-              "canAnswer": true
-            },
-            "p2": {
-              "answer": {
-                "answeredAt": 9000,
-                "choice": "HIGHER"
-              },
-              "canAnswer": false
-            },
-            "p3": {
-              "answer": null,
-              "canAnswer": true
-            }
-          },
-          "publicState": {
-            "answeredIds": [
-              "p2"
-            ],
-            "answers": {
-              "p2": {
-                "answeredAt": 9000,
-                "choice": "HIGHER"
-              }
-            },
-            "category": "ATTACK",
-            "currentPokemon": {
-              "id": "pikachu",
-              "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-              "value": null
-            },
-            "gameId": "higher-lower",
-            "lastRound": null,
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "previousPokemon": {
-              "id": "chinchou",
-              "name": "Chinchou",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
-              "value": 38
-            },
-            "results": null,
-            "roundEndsAt": 27000,
-            "roundNumber": 2,
-            "roundStartedAt": 7000,
-            "scores": {
-              "p1": 1,
-              "p2": 0,
-              "p3": 0
-            },
-            "streaks": {
-              "p1": 1,
-              "p2": 0,
-              "p3": 0
-            },
-            "totalRounds": 3
-          }
-        }
-      },
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_RESULTS\",2,7000,null,null,null,null,null]",
-            "nextDeadline": 13000,
-            "phase": "ROUND_RESULTS",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": {
-                "answeredAt": 10000,
-                "choice": "SAME"
-              },
-              "canAnswer": false
-            },
-            "p2": {
-              "answer": {
-                "answeredAt": 9000,
-                "choice": "HIGHER"
-              },
-              "canAnswer": false
-            },
-            "p3": {
-              "answer": null,
-              "canAnswer": false
-            }
-          },
-          "publicState": {
-            "answeredIds": [
-              "p2",
-              "p1"
-            ],
-            "answers": {
-              "p1": {
-                "answeredAt": 10000,
-                "choice": "SAME"
-              },
-              "p2": {
-                "answeredAt": 9000,
-                "choice": "HIGHER"
-              }
-            },
-            "category": "ATTACK",
-            "currentPokemon": {
-              "id": "pikachu",
-              "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-              "value": 55
-            },
-            "gameId": "higher-lower",
-            "lastRound": {
-              "correctAnswer": "HIGHER",
-              "currentValue": 55,
-              "outcomes": {
-                "p1": {
-                  "awardedPoints": 0,
-                  "basePoints": 0,
-                  "choice": "SAME",
-                  "correct": false,
-                  "streak": 0,
-                  "streakBonus": 0
-                },
-                "p2": {
-                  "awardedPoints": 1,
-                  "basePoints": 1,
-                  "choice": "HIGHER",
-                  "correct": true,
-                  "streak": 1,
-                  "streakBonus": 0
-                },
-                "p3": {
-                  "awardedPoints": 0,
-                  "basePoints": 0,
-                  "choice": null,
-                  "correct": false,
-                  "streak": 0,
-                  "streakBonus": 0
-                }
-              },
-              "previousValue": 38
-            },
-            "nextTransitionAt": 13000,
-            "phase": "ROUND_RESULTS",
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "previousPokemon": {
-              "id": "chinchou",
-              "name": "Chinchou",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
-              "value": 38
-            },
-            "results": null,
-            "roundEndsAt": null,
-            "roundNumber": 2,
-            "roundStartedAt": 7000,
-            "scores": {
-              "p1": 1,
-              "p2": 1,
-              "p3": 0
-            },
-            "streaks": {
-              "p1": 0,
-              "p2": 1,
-              "p3": 0
-            },
-            "totalRounds": 3
-          }
-        }
-      },
-      {
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",3,13000,null,null,null,null,null]",
-            "nextDeadline": 33000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": null,
-              "canAnswer": true
-            },
-            "p2": {
-              "answer": null,
-              "canAnswer": true
-            },
-            "p3": {
-              "answer": null,
-              "canAnswer": true
-            }
-          },
-          "publicState": {
-            "answeredIds": [],
-            "answers": {},
-            "category": "SPEED",
-            "currentPokemon": {
-              "id": "elekid",
-              "name": "Elekid",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
-              "value": null
-            },
-            "gameId": "higher-lower",
-            "lastRound": null,
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "previousPokemon": {
-              "id": "pikachu",
-              "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-              "value": 90
-            },
-            "results": null,
-            "roundEndsAt": 33000,
-            "roundNumber": 3,
-            "roundStartedAt": 13000,
-            "scores": {
-              "p1": 1,
-              "p2": 1,
-              "p3": 0
-            },
-            "streaks": {
-              "p1": 0,
-              "p2": 1,
-              "p3": 0
-            },
-            "totalRounds": 3
-          }
-        }
-      },
-      {
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",3,13000,null,null,null,null,null]",
-            "nextDeadline": 33000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": null,
-              "canAnswer": true
-            },
-            "p2": {
-              "answer": null,
-              "canAnswer": true
-            },
-            "p3": {
-              "answer": null,
-              "canAnswer": true
-            }
-          },
-          "publicState": {
-            "answeredIds": [],
-            "answers": {},
-            "category": "SPEED",
-            "currentPokemon": {
-              "id": "elekid",
-              "name": "Elekid",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
-              "value": null
-            },
-            "gameId": "higher-lower",
-            "lastRound": null,
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "previousPokemon": {
-              "id": "pikachu",
-              "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-              "value": 90
-            },
-            "results": null,
-            "roundEndsAt": 33000,
-            "roundNumber": 3,
-            "roundStartedAt": 13000,
-            "scores": {
-              "p1": 1,
-              "p2": 1,
-              "p3": 0
-            },
-            "streaks": {
-              "p1": 0,
-              "p2": 1,
-              "p3": 0
-            },
-            "totalRounds": 3
-          }
-        }
-      },
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",3,13000,null,null,null,null,null]",
-            "nextDeadline": 33000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": {
-                "answeredAt": 15000,
-                "choice": "LOWER"
-              },
-              "canAnswer": false
-            },
-            "p2": {
-              "answer": null,
-              "canAnswer": true
-            },
-            "p3": {
-              "answer": null,
-              "canAnswer": true
-            }
-          },
-          "publicState": {
-            "answeredIds": [
-              "p1"
-            ],
-            "answers": {
-              "p1": {
-                "answeredAt": 15000,
-                "choice": "LOWER"
-              }
-            },
-            "category": "SPEED",
-            "currentPokemon": {
-              "id": "elekid",
-              "name": "Elekid",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
-              "value": null
-            },
-            "gameId": "higher-lower",
-            "lastRound": null,
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "previousPokemon": {
-              "id": "pikachu",
-              "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-              "value": 90
-            },
-            "results": null,
-            "roundEndsAt": 33000,
-            "roundNumber": 3,
-            "roundStartedAt": 13000,
-            "scores": {
-              "p1": 1,
-              "p2": 1,
-              "p3": 0
-            },
-            "streaks": {
-              "p1": 0,
-              "p2": 1,
-              "p3": 0
-            },
-            "totalRounds": 3
-          }
-        }
-      },
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",3,13000,null,null,null,null,null]",
-            "nextDeadline": 33000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": {
-                "answeredAt": 15000,
-                "choice": "LOWER"
-              },
-              "canAnswer": false
-            },
-            "p2": {
-              "answer": {
-                "answeredAt": 16000,
-                "choice": "LOWER"
-              },
-              "canAnswer": false
-            },
-            "p3": {
-              "answer": null,
-              "canAnswer": true
-            }
-          },
-          "publicState": {
-            "answeredIds": [
-              "p1",
-              "p2"
-            ],
-            "answers": {
-              "p1": {
-                "answeredAt": 15000,
-                "choice": "LOWER"
-              },
-              "p2": {
-                "answeredAt": 16000,
-                "choice": "LOWER"
-              }
-            },
-            "category": "SPEED",
-            "currentPokemon": {
-              "id": "elekid",
-              "name": "Elekid",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
-              "value": null
-            },
-            "gameId": "higher-lower",
-            "lastRound": null,
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "previousPokemon": {
-              "id": "pikachu",
-              "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-              "value": 90
-            },
-            "results": null,
-            "roundEndsAt": 33000,
-            "roundNumber": 3,
-            "roundStartedAt": 13000,
-            "scores": {
-              "p1": 1,
-              "p2": 1,
-              "p3": 0
-            },
-            "streaks": {
-              "p1": 0,
-              "p2": 1,
-              "p3": 0
-            },
-            "totalRounds": 3
-          }
-        }
-      },
-      {
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_RESULTS\",3,13000,null,null,null,null,null]",
-            "nextDeadline": 36000,
-            "phase": "ROUND_RESULTS",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": {
-                "answeredAt": 15000,
-                "choice": "LOWER"
-              },
-              "canAnswer": false
-            },
-            "p2": {
-              "answer": {
-                "answeredAt": 16000,
-                "choice": "LOWER"
-              },
-              "canAnswer": false
-            },
-            "p3": {
-              "answer": null,
-              "canAnswer": false
-            }
-          },
-          "publicState": {
-            "answeredIds": [
-              "p1",
-              "p2"
-            ],
-            "answers": {
-              "p1": {
-                "answeredAt": 15000,
-                "choice": "LOWER"
-              },
-              "p2": {
-                "answeredAt": 16000,
-                "choice": "LOWER"
-              }
-            },
-            "category": "SPEED",
-            "currentPokemon": {
-              "id": "elekid",
-              "name": "Elekid",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
-              "value": 95
-            },
-            "gameId": "higher-lower",
-            "lastRound": {
-              "correctAnswer": "HIGHER",
-              "currentValue": 95,
-              "outcomes": {
-                "p1": {
-                  "awardedPoints": 0,
-                  "basePoints": 0,
-                  "choice": "LOWER",
-                  "correct": false,
-                  "streak": 0,
-                  "streakBonus": 0
-                },
-                "p2": {
-                  "awardedPoints": 0,
-                  "basePoints": 0,
-                  "choice": "LOWER",
-                  "correct": false,
-                  "streak": 0,
-                  "streakBonus": 0
-                },
-                "p3": {
-                  "awardedPoints": 0,
-                  "basePoints": 0,
-                  "choice": null,
-                  "correct": false,
-                  "streak": 0,
-                  "streakBonus": 0
-                }
-              },
-              "previousValue": 90
-            },
-            "nextTransitionAt": 36000,
-            "phase": "ROUND_RESULTS",
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "previousPokemon": {
-              "id": "pikachu",
-              "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-              "value": 90
-            },
-            "results": null,
-            "roundEndsAt": null,
-            "roundNumber": 3,
-            "roundStartedAt": 13000,
-            "scores": {
-              "p1": 1,
-              "p2": 1,
-              "p3": 0
-            },
-            "streaks": {
-              "p1": 0,
-              "p2": 0,
-              "p3": 0
-            },
-            "totalRounds": 3
-          }
-        }
-      },
-      {
-        "snapshot": {
-          "finished": true,
-          "lifecycle": {
-            "actionEpoch": "[\"GAME_RESULTS\",3,13000,null,null,null,null,null]",
-            "nextDeadline": null,
-            "phase": "GAME_RESULTS",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": {
-                "answeredAt": 15000,
-                "choice": "LOWER"
-              },
-              "canAnswer": false
-            },
-            "p2": {
-              "answer": {
-                "answeredAt": 16000,
-                "choice": "LOWER"
-              },
-              "canAnswer": false
-            },
-            "p3": {
-              "answer": null,
-              "canAnswer": false
-            }
-          },
-          "publicState": {
-            "answeredIds": [
-              "p1",
-              "p2"
-            ],
-            "answers": {
-              "p1": {
-                "answeredAt": 15000,
-                "choice": "LOWER"
-              },
-              "p2": {
-                "answeredAt": 16000,
-                "choice": "LOWER"
-              }
-            },
-            "category": "SPEED",
-            "currentPokemon": {
-              "id": "elekid",
-              "name": "Elekid",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
-              "value": 95
-            },
-            "gameId": "higher-lower",
-            "lastRound": {
-              "correctAnswer": "HIGHER",
-              "currentValue": 95,
-              "outcomes": {
-                "p1": {
-                  "awardedPoints": 0,
-                  "basePoints": 0,
-                  "choice": "LOWER",
-                  "correct": false,
-                  "streak": 0,
-                  "streakBonus": 0
-                },
-                "p2": {
-                  "awardedPoints": 0,
-                  "basePoints": 0,
-                  "choice": "LOWER",
-                  "correct": false,
-                  "streak": 0,
-                  "streakBonus": 0
-                },
-                "p3": {
-                  "awardedPoints": 0,
-                  "basePoints": 0,
-                  "choice": null,
-                  "correct": false,
-                  "streak": 0,
-                  "streakBonus": 0
-                }
-              },
-              "previousValue": 90
-            },
-            "nextTransitionAt": null,
-            "phase": "GAME_RESULTS",
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "previousPokemon": {
-              "id": "pikachu",
-              "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-              "value": 90
-            },
-            "results": {
-              "standings": [
-                {
-                  "playerId": "p1",
-                  "points": 1,
-                  "position": 1,
-                  "stats": {
-                    "accuracy": 33,
-                    "answered": 3,
-                    "bestStreak": 1,
-                    "correct": 1,
-                    "incorrect": 2,
-                    "sameCorrect": 0
-                  },
-                  "won": true
-                },
-                {
-                  "playerId": "p2",
-                  "points": 1,
-                  "position": 1,
-                  "stats": {
-                    "accuracy": 33,
-                    "answered": 3,
-                    "bestStreak": 1,
-                    "correct": 1,
-                    "incorrect": 2,
-                    "sameCorrect": 0
-                  },
-                  "won": true
-                },
-                {
-                  "playerId": "p3",
-                  "points": 0,
-                  "position": 3,
-                  "stats": {
-                    "accuracy": 0,
-                    "answered": 0,
-                    "bestStreak": 0,
-                    "correct": 0,
-                    "incorrect": 3,
-                    "sameCorrect": 0
-                  },
-                  "won": false
-                }
-              ],
-              "winnerId": null
-            },
-            "roundEndsAt": null,
-            "roundNumber": 3,
-            "roundStartedAt": 13000,
-            "scores": {
-              "p1": 1,
-              "p2": 1,
-              "p3": 0
-            },
-            "streaks": {
-              "p1": 0,
-              "p2": 0,
-              "p3": 0
-            },
-            "totalRounds": 3
-          }
-        }
-      }
-    ],
-    "configNormalized": {
-      "answerVisibility": "REALTIME",
-      "categories": [
-        "ATTACK",
-        "DEFENSE",
-        "SPEED"
-      ],
-      "difficulty": "HARD",
-      "generations": [
-        1,
-        2
-      ],
-      "roundSeconds": 20,
-      "rounds": 3,
-      "showPreviousValue": true
-    },
-    "initial": {
-      "finished": false,
-      "lifecycle": {
-        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
-        "nextDeadline": null,
-        "phase": "GAME_STARTING",
-        "spectatorIds": []
-      },
-      "playerStates": {
-        "p1": {
-          "answer": null,
-          "canAnswer": false
-        },
-        "p2": {
-          "answer": null,
-          "canAnswer": false
-        },
-        "p3": {
-          "answer": null,
-          "canAnswer": false
-        }
-      },
-      "publicState": {
-        "answeredIds": [],
-        "answers": {},
-        "category": "ATTACK",
-        "currentPokemon": {
-          "id": "omastar",
-          "name": "Omastar",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
-          "value": null
-        },
-        "gameId": "higher-lower",
-        "lastRound": null,
-        "nextTransitionAt": null,
-        "phase": "GAME_STARTING",
-        "playerIds": [
-          "p1",
-          "p2",
-          "p3"
-        ],
-        "previousPokemon": {
-          "id": "omastar",
-          "name": "Omastar",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
-          "value": 60
-        },
-        "results": null,
-        "roundEndsAt": null,
-        "roundNumber": 0,
-        "roundStartedAt": null,
-        "scores": {
-          "p1": 0,
-          "p2": 0,
-          "p3": 0
-        },
-        "streaks": {
-          "p1": 0,
-          "p2": 0,
-          "p3": 0
-        },
-        "totalRounds": 3
-      }
-    },
-    "results": {
-      "standings": [
-        {
-          "playerId": "p1",
-          "points": 1,
-          "position": 1,
-          "stats": {
-            "accuracy": 33,
-            "answered": 3,
-            "bestStreak": 1,
-            "correct": 1,
-            "incorrect": 2,
-            "sameCorrect": 0
-          },
-          "won": true
-        },
-        {
-          "playerId": "p2",
-          "points": 1,
-          "position": 1,
-          "stats": {
-            "accuracy": 33,
-            "answered": 3,
-            "bestStreak": 1,
-            "correct": 1,
-            "incorrect": 2,
-            "sameCorrect": 0
-          },
-          "won": true
-        },
-        {
-          "playerId": "p3",
-          "points": 0,
-          "position": 3,
-          "stats": {
-            "accuracy": 0,
-            "answered": 0,
-            "bestStreak": 0,
-            "correct": 0,
-            "incorrect": 3,
-            "sameCorrect": 0
-          },
-          "won": false
-        }
-      ],
-      "winnerId": null
-    }
-  },
-  "players": [
-    {
-      "displayName": "Ana",
-      "id": "p1"
-    },
-    {
-      "displayName": "Bruno",
-      "id": "p2"
-    },
-    {
-      "displayName": "Carla",
-      "id": "p3"
-    }
-  ],
-  "scenario": "presence-resolves-round",
-  "seed": 33,
   "steps": [
     {
-      "action": {
-        "choice": "HIGHER",
-        "type": "ANSWER"
-      },
       "kind": "action",
-      "now": 2000,
-      "playerId": "p1"
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "HIGHER"
+      },
+      "now": 2000
     },
     {
-      "action": {
-        "choice": "LOWER",
-        "type": "ANSWER"
-      },
       "kind": "action",
-      "now": 3000,
-      "playerId": "p2"
+      "playerId": "p2",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER"
+      },
+      "now": 3000
     },
     {
       "kind": "presence",
-      "now": 4000,
       "players": [
         {
-          "displayName": "Ana",
-          "id": "p1"
+          "id": "p1",
+          "displayName": "Ana"
         },
         {
-          "displayName": "Bruno",
-          "id": "p2"
+          "id": "p2",
+          "displayName": "Bruno"
         },
         {
-          "connected": false,
+          "id": "p3",
           "displayName": "Carla",
-          "id": "p3"
+          "connected": false
         }
-      ]
+      ],
+      "now": 4000
     },
     {
       "kind": "timeout",
       "now": 7000
     },
     {
-      "action": {
-        "choice": "HIGHER",
-        "type": "ANSWER"
-      },
       "kind": "action",
-      "now": 8000,
-      "playerId": "p3"
+      "playerId": "p3",
+      "action": {
+        "type": "ANSWER",
+        "choice": "HIGHER"
+      },
+      "now": 8000
     },
     {
-      "action": {
-        "choice": "HIGHER",
-        "type": "ANSWER"
-      },
       "kind": "action",
-      "now": 9000,
-      "playerId": "p2"
+      "playerId": "p2",
+      "action": {
+        "type": "ANSWER",
+        "choice": "HIGHER"
+      },
+      "now": 9000
     },
     {
-      "action": {
-        "choice": "SAME",
-        "type": "ANSWER"
-      },
       "kind": "action",
-      "now": 10000,
-      "playerId": "p1"
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "SAME"
+      },
+      "now": 10000
     },
     {
       "kind": "timeout",
@@ -1473,39 +108,39 @@
     },
     {
       "kind": "presence",
-      "now": 14000,
       "players": [
         {
-          "displayName": "Ana",
-          "id": "p1"
+          "id": "p1",
+          "displayName": "Ana"
         },
         {
-          "displayName": "Bruno",
-          "id": "p2"
+          "id": "p2",
+          "displayName": "Bruno"
         },
         {
-          "displayName": "Carla",
-          "id": "p3"
+          "id": "p3",
+          "displayName": "Carla"
         }
-      ]
+      ],
+      "now": 14000
     },
     {
-      "action": {
-        "choice": "LOWER",
-        "type": "ANSWER"
-      },
       "kind": "action",
-      "now": 15000,
-      "playerId": "p1"
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER"
+      },
+      "now": 15000
     },
     {
-      "action": {
-        "choice": "LOWER",
-        "type": "ANSWER"
-      },
       "kind": "action",
-      "now": 16000,
-      "playerId": "p2"
+      "playerId": "p2",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER"
+      },
+      "now": 16000
     },
     {
       "kind": "timeout",
@@ -1515,5 +150,1370 @@
       "kind": "timeout",
       "now": 36000
     }
-  ]
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "categories": [
+        "ATTACK",
+        "DEFENSE",
+        "SPEED"
+      ],
+      "showPreviousValue": true,
+      "answerVisibility": "REALTIME",
+      "difficulty": "HARD",
+      "roundSeconds": 20,
+      "rounds": 3
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "higher-lower",
+        "phase": "GAME_STARTING",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "category": "ATTACK",
+        "previousPokemon": {
+          "id": "omastar",
+          "name": "Omastar",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
+          "value": 60
+        },
+        "currentPokemon": {
+          "id": "omastar",
+          "name": "Omastar",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
+          "value": null
+        },
+        "answers": {},
+        "answeredIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "streaks": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canAnswer": false,
+          "answer": null
+        },
+        "p2": {
+          "canAnswer": false,
+          "answer": null
+        },
+        "p3": {
+          "canAnswer": false,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "higher-lower",
+        "phase": "ROUND_ACTIVE",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "category": "SPEED",
+        "previousPokemon": {
+          "id": "omastar",
+          "name": "Omastar",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
+          "value": 55
+        },
+        "currentPokemon": {
+          "id": "chinchou",
+          "name": "Chinchou",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+          "value": null
+        },
+        "answers": {},
+        "answeredIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "streaks": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 21000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canAnswer": true,
+          "answer": null
+        },
+        "p2": {
+          "canAnswer": true,
+          "answer": null
+        },
+        "p3": {
+          "canAnswer": true,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "omastar",
+              "name": "Omastar",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
+              "value": 55
+            },
+            "currentPokemon": {
+              "id": "chinchou",
+              "name": "Chinchou",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+              "value": null
+            },
+            "answers": {
+              "p1": {
+                "choice": "HIGHER",
+                "answeredAt": 2000
+              }
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "HIGHER",
+                "answeredAt": 2000
+              }
+            },
+            "p2": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "omastar",
+              "name": "Omastar",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
+              "value": 55
+            },
+            "currentPokemon": {
+              "id": "chinchou",
+              "name": "Chinchou",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+              "value": null
+            },
+            "answers": {
+              "p1": {
+                "choice": "HIGHER",
+                "answeredAt": 2000
+              },
+              "p2": {
+                "choice": "LOWER",
+                "answeredAt": 3000
+              }
+            },
+            "answeredIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "HIGHER",
+                "answeredAt": 2000
+              }
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 3000
+              }
+            },
+            "p3": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 7000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "omastar",
+              "name": "Omastar",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
+              "value": 55
+            },
+            "currentPokemon": {
+              "id": "chinchou",
+              "name": "Chinchou",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+              "value": 67
+            },
+            "answers": {
+              "p1": {
+                "choice": "HIGHER",
+                "answeredAt": 2000
+              },
+              "p2": {
+                "choice": "LOWER",
+                "answeredAt": 3000
+              }
+            },
+            "answeredIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 7000,
+            "lastRound": {
+              "previousValue": 55,
+              "currentValue": 67,
+              "correctAnswer": "HIGHER",
+              "outcomes": {
+                "p1": {
+                  "choice": "HIGHER",
+                  "correct": true,
+                  "basePoints": 1,
+                  "streakBonus": 0,
+                  "awardedPoints": 1,
+                  "streak": 1
+                },
+                "p2": {
+                  "choice": "LOWER",
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 0
+                },
+                "p3": {
+                  "choice": null,
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 0
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "HIGHER",
+                "answeredAt": 2000
+              }
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 3000
+              }
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "category": "ATTACK",
+            "previousPokemon": {
+              "id": "chinchou",
+              "name": "Chinchou",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+              "value": 38
+            },
+            "currentPokemon": {
+              "id": "pikachu",
+              "name": "Pikachu",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "value": null
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No estás conectado como participante.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "category": "ATTACK",
+            "previousPokemon": {
+              "id": "chinchou",
+              "name": "Chinchou",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+              "value": 38
+            },
+            "currentPokemon": {
+              "id": "pikachu",
+              "name": "Pikachu",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "value": null
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "category": "ATTACK",
+            "previousPokemon": {
+              "id": "chinchou",
+              "name": "Chinchou",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+              "value": 38
+            },
+            "currentPokemon": {
+              "id": "pikachu",
+              "name": "Pikachu",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "value": null
+            },
+            "answers": {
+              "p2": {
+                "choice": "HIGHER",
+                "answeredAt": 9000
+              }
+            },
+            "answeredIds": [
+              "p2"
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "HIGHER",
+                "answeredAt": 9000
+              }
+            },
+            "p3": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 13000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "category": "ATTACK",
+            "previousPokemon": {
+              "id": "chinchou",
+              "name": "Chinchou",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+              "value": 38
+            },
+            "currentPokemon": {
+              "id": "pikachu",
+              "name": "Pikachu",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "value": 55
+            },
+            "answers": {
+              "p2": {
+                "choice": "HIGHER",
+                "answeredAt": 9000
+              },
+              "p1": {
+                "choice": "SAME",
+                "answeredAt": 10000
+              }
+            },
+            "answeredIds": [
+              "p2",
+              "p1"
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 0
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 13000,
+            "lastRound": {
+              "previousValue": 38,
+              "currentValue": 55,
+              "correctAnswer": "HIGHER",
+              "outcomes": {
+                "p1": {
+                  "choice": "SAME",
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 0
+                },
+                "p2": {
+                  "choice": "HIGHER",
+                  "correct": true,
+                  "basePoints": 1,
+                  "streakBonus": 0,
+                  "awardedPoints": 1,
+                  "streak": 1
+                },
+                "p3": {
+                  "choice": null,
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 0
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "SAME",
+                "answeredAt": 10000
+              }
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "HIGHER",
+                "answeredAt": 9000
+              }
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 33000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "pikachu",
+              "name": "Pikachu",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "value": 90
+            },
+            "currentPokemon": {
+              "id": "elekid",
+              "name": "Elekid",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
+              "value": null
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 0
+            },
+            "roundStartedAt": 13000,
+            "roundEndsAt": 33000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 33000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "pikachu",
+              "name": "Pikachu",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "value": 90
+            },
+            "currentPokemon": {
+              "id": "elekid",
+              "name": "Elekid",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
+              "value": null
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 0
+            },
+            "roundStartedAt": 13000,
+            "roundEndsAt": 33000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 33000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "pikachu",
+              "name": "Pikachu",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "value": 90
+            },
+            "currentPokemon": {
+              "id": "elekid",
+              "name": "Elekid",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
+              "value": null
+            },
+            "answers": {
+              "p1": {
+                "choice": "LOWER",
+                "answeredAt": 15000
+              }
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 0
+            },
+            "roundStartedAt": 13000,
+            "roundEndsAt": 33000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 15000
+              }
+            },
+            "p2": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 33000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "pikachu",
+              "name": "Pikachu",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "value": 90
+            },
+            "currentPokemon": {
+              "id": "elekid",
+              "name": "Elekid",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
+              "value": null
+            },
+            "answers": {
+              "p1": {
+                "choice": "LOWER",
+                "answeredAt": 15000
+              },
+              "p2": {
+                "choice": "LOWER",
+                "answeredAt": 16000
+              }
+            },
+            "answeredIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 0
+            },
+            "roundStartedAt": 13000,
+            "roundEndsAt": 33000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 15000
+              }
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 16000
+              }
+            },
+            "p3": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 36000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "pikachu",
+              "name": "Pikachu",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "value": 90
+            },
+            "currentPokemon": {
+              "id": "elekid",
+              "name": "Elekid",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
+              "value": 95
+            },
+            "answers": {
+              "p1": {
+                "choice": "LOWER",
+                "answeredAt": 15000
+              },
+              "p2": {
+                "choice": "LOWER",
+                "answeredAt": 16000
+              }
+            },
+            "answeredIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 13000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 36000,
+            "lastRound": {
+              "previousValue": 90,
+              "currentValue": 95,
+              "correctAnswer": "HIGHER",
+              "outcomes": {
+                "p1": {
+                  "choice": "LOWER",
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 0
+                },
+                "p2": {
+                  "choice": "LOWER",
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 0
+                },
+                "p3": {
+                  "choice": null,
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 0
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 15000
+              }
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 16000
+              }
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "GAME_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "pikachu",
+              "name": "Pikachu",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "value": 90
+            },
+            "currentPokemon": {
+              "id": "elekid",
+              "name": "Elekid",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
+              "value": 95
+            },
+            "answers": {
+              "p1": {
+                "choice": "LOWER",
+                "answeredAt": 15000
+              },
+              "p2": {
+                "choice": "LOWER",
+                "answeredAt": 16000
+              }
+            },
+            "answeredIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 13000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "previousValue": 90,
+              "currentValue": 95,
+              "correctAnswer": "HIGHER",
+              "outcomes": {
+                "p1": {
+                  "choice": "LOWER",
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 0
+                },
+                "p2": {
+                  "choice": "LOWER",
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 0
+                },
+                "p3": {
+                  "choice": null,
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 0
+                }
+              }
+            },
+            "results": {
+              "winnerId": null,
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 1,
+                  "won": true,
+                  "stats": {
+                    "correct": 1,
+                    "incorrect": 2,
+                    "sameCorrect": 0,
+                    "answered": 3,
+                    "bestStreak": 1,
+                    "accuracy": 33
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 1,
+                  "won": true,
+                  "stats": {
+                    "correct": 1,
+                    "incorrect": 2,
+                    "sameCorrect": 0,
+                    "answered": 3,
+                    "bestStreak": 1,
+                    "accuracy": 33
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "correct": 0,
+                    "incorrect": 3,
+                    "sameCorrect": 0,
+                    "answered": 0,
+                    "bestStreak": 0,
+                    "accuracy": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 15000
+              }
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 16000
+              }
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": null,
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 1,
+          "won": true,
+          "stats": {
+            "correct": 1,
+            "incorrect": 2,
+            "sameCorrect": 0,
+            "answered": 3,
+            "bestStreak": 1,
+            "accuracy": 33
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 1,
+          "won": true,
+          "stats": {
+            "correct": 1,
+            "incorrect": 2,
+            "sameCorrect": 0,
+            "answered": 3,
+            "bestStreak": 1,
+            "accuracy": 33
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "correct": 0,
+            "incorrect": 3,
+            "sameCorrect": 0,
+            "answered": 0,
+            "bestStreak": 0,
+            "accuracy": 0
+          }
+        }
+      ]
+    }
+  }
 }

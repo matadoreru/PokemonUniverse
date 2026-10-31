@@ -1,15 +1,33 @@
 // Formato de las fixtures doradas (constraint 2 del plan de la etapa 2A). El replayer Java
 // (backend/src/test) lee exactamente estas formas y compara presencia de claves de forma estricta:
 // una clave ausente aquí debe estar ausente allí, por eso el runner nunca inventa claves.
-import type { GameLifecycle, GamePlayer, GameResults } from '../dist/index.js';
+import type {
+  GameAssetResolution, GameLifecycle, GamePlayer, GameResults, PokemonVisualAsset, SubjectiveCategory, TcgComparableCard,
+  WouldYouRatherPromptPair,
+} from '../dist/index.js';
 
 export type GoldenStep =
   | { kind: 'action'; playerId: string; action: unknown; now: number }
   | { kind: 'timeout'; now: number }
   /** Sustituye `context.players` por completo. Si el motor no implementa `handlePresenceChange`, el estado no cambia. */
-  | { kind: 'presence'; players: GamePlayer[]; now: number };
+  | { kind: 'presence'; players: GamePlayer[]; now: number }
+  /** Llama a `resolveAsset` (si el motor lo implementa) sin cambiar el estado. */
+  | { kind: 'asset'; assetToken: string; roundNumber: number; assetId: string; now: number };
 
-export interface GoldenScenario {
+/**
+ * Contexto opcional del escenario. Cada clave solo llega a `GameContext` si el escenario la trae (ausente ≠ vacío).
+ * `pokemonVisuals`/`pokemonAudio` se indexan por id de Pokémon en el orden de la fixture.
+ */
+export interface GoldenContextData {
+  hostCustomCategories?: SubjectiveCategory[];
+  hostWouldYouRatherPrompts?: WouldYouRatherPromptPair[];
+  pokemonVisuals?: Record<string, PokemonVisualAsset>;
+  pokemonAudio?: Record<string, { latest?: string; legacy?: string }>;
+  /** Cartas ya comparables; `cardsFor` filtra por sets, rarezas y precio (no por generación: la carta no la trae). */
+  tcgCards?: TcgComparableCard[];
+}
+
+export interface GoldenScenario extends GoldenContextData {
   name: string;
   seed: number;
   /** Id de `backend/src/test/resources/golden/catalog/<id>.json`. */
@@ -42,16 +60,20 @@ export interface GoldenSnapshot {
  */
 export type GoldenStepResult =
   | { accepted?: boolean; error?: string; snapshot: GoldenSnapshot }
+  /** Paso `asset`: sin snapshot. Un `string` del motor se normaliza a `{ source, transform: 'ORIGINAL' }`. */
+  | { resolution: GameAssetResolution | null }
   | { threw: string }
   | { invalidAction: true };
 
-export interface GoldenFixture {
+export interface GoldenFixture extends GoldenContextData {
   engineId: string;
   scenario: string;
   seed: number;
   catalog: string;
   players: GamePlayer[];
   config: unknown;
+  startNow?: number;
+  roomCode?: string;
   steps: GoldenStep[];
   expected: {
     configNormalized: unknown;

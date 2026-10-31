@@ -1,1691 +1,182 @@
 {
+  "engineId": "pokedex-distance",
+  "scenario": "every-rejection",
+  "seed": 404,
   "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
   "config": {
     "generations": [
       1
     ],
     "roundSeconds": 10
   },
-  "engineId": "pokedex-distance",
-  "expected": {
-    "afterStart": {
-      "finished": false,
-      "lifecycle": {
-        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-        "nextDeadline": 11000,
-        "phase": "ROUND_ACTIVE",
-        "spectatorIds": []
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "psyduck"
       },
-      "playerStates": {
-        "p1": {
-          "canSelect": true,
-          "exactHit": false,
-          "selection": null
-        },
-        "p2": {
-          "canSelect": true,
-          "exactHit": false,
-          "selection": null
-        },
-        "p3": {
-          "canSelect": true,
-          "exactHit": false,
-          "selection": null
-        }
-      },
-      "publicState": {
-        "eligibleIds": [
-          "p1",
-          "p2",
-          "p3"
-        ],
-        "gameId": "pokedex-distance",
-        "lastRound": null,
-        "lockedPokemonIds": [],
-        "nextTransitionAt": null,
-        "phase": "ROUND_ACTIVE",
-        "results": null,
-        "roundEndsAt": 11000,
-        "roundNumber": 1,
-        "roundStartedAt": 1000,
-        "selections": {},
-        "spectatorIds": [],
-        "survivorIds": [
-          "p1",
-          "p2",
-          "p3"
-        ],
-        "targetDexNumber": 54,
-        "tiebreakDepth": 0,
-        "winnerId": null
-      }
+      "now": 2000
     },
-    "afterSteps": [
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 11000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": true,
-              "selection": {
-                "pokemonId": "psyduck",
-                "selectedAt": 2000
-              }
-            },
-            "p2": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            },
-            "p3": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": null,
-            "lockedPokemonIds": [
-              "psyduck"
-            ],
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "results": null,
-            "roundEndsAt": 11000,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "selections": {
-              "p1": {
-                "pokemonId": "psyduck",
-                "pokemonName": "Psyduck",
-                "selectedAt": 2000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-              }
-            },
-            "spectatorIds": [],
-            "survivorIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "targetDexNumber": 54,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "golduck"
       },
-      {
-        "accepted": false,
-        "error": "Selection already locked",
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 11000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": true,
-              "selection": {
-                "pokemonId": "psyduck",
-                "selectedAt": 2000
-              }
-            },
-            "p2": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            },
-            "p3": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": null,
-            "lockedPokemonIds": [
-              "psyduck"
-            ],
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "results": null,
-            "roundEndsAt": 11000,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "selections": {
-              "p1": {
-                "pokemonId": "psyduck",
-                "pokemonName": "Psyduck",
-                "selectedAt": 2000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-              }
-            },
-            "spectatorIds": [],
-            "survivorIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "targetDexNumber": 54,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "psyduck"
       },
-      {
-        "accepted": false,
-        "error": "Ese Pokémon ya ha sido elegido.",
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 11000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": true,
-              "selection": {
-                "pokemonId": "psyduck",
-                "selectedAt": 2000
-              }
-            },
-            "p2": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            },
-            "p3": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": null,
-            "lockedPokemonIds": [
-              "psyduck"
-            ],
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "results": null,
-            "roundEndsAt": 11000,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "selections": {
-              "p1": {
-                "pokemonId": "psyduck",
-                "pokemonName": "Psyduck",
-                "selectedAt": 2000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-              }
-            },
-            "spectatorIds": [],
-            "survivorIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "targetDexNumber": 54,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "chikorita"
       },
-      {
-        "accepted": false,
-        "error": "Pokémon is not in the configured pool",
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 11000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": true,
-              "selection": {
-                "pokemonId": "psyduck",
-                "selectedAt": 2000
-              }
-            },
-            "p2": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            },
-            "p3": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": null,
-            "lockedPokemonIds": [
-              "psyduck"
-            ],
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "results": null,
-            "roundEndsAt": 11000,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "selections": {
-              "p1": {
-                "pokemonId": "psyduck",
-                "pokemonName": "Psyduck",
-                "selectedAt": 2000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-              }
-            },
-            "spectatorIds": [],
-            "survivorIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "targetDexNumber": 54,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "missingno"
       },
-      {
-        "accepted": false,
-        "error": "Pokémon is not in the configured pool",
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 11000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": true,
-              "selection": {
-                "pokemonId": "psyduck",
-                "selectedAt": 2000
-              }
-            },
-            "p2": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            },
-            "p3": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": null,
-            "lockedPokemonIds": [
-              "psyduck"
-            ],
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "results": null,
-            "roundEndsAt": 11000,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "selections": {
-              "p1": {
-                "pokemonId": "psyduck",
-                "pokemonName": "Psyduck",
-                "selectedAt": 2000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-              }
-            },
-            "spectatorIds": [],
-            "survivorIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "targetDexNumber": 54,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "golduck"
       },
-      {
-        "accepted": false,
-        "error": "You are spectating this round",
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 11000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": true,
-              "selection": {
-                "pokemonId": "psyduck",
-                "selectedAt": 2000
-              }
-            },
-            "p2": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            },
-            "p3": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": null,
-            "lockedPokemonIds": [
-              "psyduck"
-            ],
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "results": null,
-            "roundEndsAt": 11000,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "selections": {
-              "p1": {
-                "pokemonId": "psyduck",
-                "pokemonName": "Psyduck",
-                "selectedAt": 2000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-              }
-            },
-            "spectatorIds": [],
-            "survivorIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "targetDexNumber": 54,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+      "now": 4500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "golduck"
       },
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 11000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": true,
-              "selection": {
-                "pokemonId": "psyduck",
-                "selectedAt": 2000
-              }
-            },
-            "p2": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": {
-                "pokemonId": "golduck",
-                "selectedAt": 5000
-              }
-            },
-            "p3": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": null,
-            "lockedPokemonIds": [
-              "psyduck",
-              "golduck"
-            ],
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "results": null,
-            "roundEndsAt": 11000,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "selections": {
-              "p1": {
-                "pokemonId": "psyduck",
-                "pokemonName": "Psyduck",
-                "selectedAt": 2000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-              },
-              "p2": {
-                "pokemonId": "golduck",
-                "pokemonName": "Golduck",
-                "selectedAt": 5000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
-              }
-            },
-            "spectatorIds": [],
-            "survivorIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "targetDexNumber": 54,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+      "now": 5000
+    },
+    {
+      "kind": "timeout",
+      "now": 10999
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "grimer"
       },
-      {
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 11000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": true,
-              "selection": {
-                "pokemonId": "psyduck",
-                "selectedAt": 2000
-              }
-            },
-            "p2": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": {
-                "pokemonId": "golduck",
-                "selectedAt": 5000
-              }
-            },
-            "p3": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": null,
-            "lockedPokemonIds": [
-              "psyduck",
-              "golduck"
-            ],
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "results": null,
-            "roundEndsAt": 11000,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "selections": {
-              "p1": {
-                "pokemonId": "psyduck",
-                "pokemonName": "Psyduck",
-                "selectedAt": 2000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-              },
-              "p2": {
-                "pokemonId": "golduck",
-                "pokemonName": "Golduck",
-                "selectedAt": 5000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
-              }
-            },
-            "spectatorIds": [],
-            "survivorIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "targetDexNumber": 54,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+      "now": 11000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "golduck"
       },
-      {
-        "accepted": false,
-        "error": "Round has ended",
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 17000,
-            "phase": "ROUND_RESULTS",
-            "spectatorIds": [
-              "p3"
-            ]
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": true,
-              "selection": {
-                "pokemonId": "psyduck",
-                "selectedAt": 2000
-              }
-            },
-            "p2": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": {
-                "pokemonId": "golduck",
-                "selectedAt": 5000
-              }
-            },
-            "p3": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": {
-              "eligibleIds": [
-                "p1",
-                "p2",
-                "p3"
-              ],
-              "eliminatedIds": [
-                "p3"
-              ],
-              "reason": "NO_RESPONSE",
-              "selections": {
-                "p1": {
-                  "dexNumber": 54,
-                  "distance": 0,
-                  "pokemonId": "psyduck",
-                  "pokemonName": "Psyduck",
-                  "selectedAt": 2000,
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-                },
-                "p2": {
-                  "dexNumber": 55,
-                  "distance": 1,
-                  "pokemonId": "golduck",
-                  "pokemonName": "Golduck",
-                  "selectedAt": 5000,
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
-                }
-              },
-              "targetDexNumber": 54,
-              "targetPokemon": {
-                "id": "psyduck",
-                "name": "Psyduck",
-                "nationalDexNumber": 54,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-              },
-              "tiedIds": []
-            },
-            "lockedPokemonIds": [
-              "psyduck",
-              "golduck"
-            ],
-            "nextTransitionAt": 17000,
-            "phase": "ROUND_RESULTS",
-            "results": null,
-            "roundEndsAt": null,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "selections": {
-              "p1": {
-                "pokemonId": "psyduck",
-                "pokemonName": "Psyduck",
-                "selectedAt": 2000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-              },
-              "p2": {
-                "pokemonId": "golduck",
-                "pokemonName": "Golduck",
-                "selectedAt": 5000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
-              }
-            },
-            "spectatorIds": [
-              "p3"
-            ],
-            "survivorIds": [
-              "p1",
-              "p2"
-            ],
-            "targetDexNumber": 54,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+      "now": 12000
+    },
+    {
+      "kind": "timeout",
+      "now": 17000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "flareon"
       },
-      {
-        "accepted": false,
-        "error": "No active round",
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 17000,
-            "phase": "ROUND_RESULTS",
-            "spectatorIds": [
-              "p3"
-            ]
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": true,
-              "selection": {
-                "pokemonId": "psyduck",
-                "selectedAt": 2000
-              }
-            },
-            "p2": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": {
-                "pokemonId": "golduck",
-                "selectedAt": 5000
-              }
-            },
-            "p3": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2",
-              "p3"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": {
-              "eligibleIds": [
-                "p1",
-                "p2",
-                "p3"
-              ],
-              "eliminatedIds": [
-                "p3"
-              ],
-              "reason": "NO_RESPONSE",
-              "selections": {
-                "p1": {
-                  "dexNumber": 54,
-                  "distance": 0,
-                  "pokemonId": "psyduck",
-                  "pokemonName": "Psyduck",
-                  "selectedAt": 2000,
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-                },
-                "p2": {
-                  "dexNumber": 55,
-                  "distance": 1,
-                  "pokemonId": "golduck",
-                  "pokemonName": "Golduck",
-                  "selectedAt": 5000,
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
-                }
-              },
-              "targetDexNumber": 54,
-              "targetPokemon": {
-                "id": "psyduck",
-                "name": "Psyduck",
-                "nationalDexNumber": 54,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-              },
-              "tiedIds": []
-            },
-            "lockedPokemonIds": [
-              "psyduck",
-              "golduck"
-            ],
-            "nextTransitionAt": 17000,
-            "phase": "ROUND_RESULTS",
-            "results": null,
-            "roundEndsAt": null,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "selections": {
-              "p1": {
-                "pokemonId": "psyduck",
-                "pokemonName": "Psyduck",
-                "selectedAt": 2000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-              },
-              "p2": {
-                "pokemonId": "golduck",
-                "pokemonName": "Golduck",
-                "selectedAt": 5000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
-              }
-            },
-            "spectatorIds": [
-              "p3"
-            ],
-            "survivorIds": [
-              "p1",
-              "p2"
-            ],
-            "targetDexNumber": 54,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+      "now": 18000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "gyarados"
       },
-      {
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",2,17000,null,null,null,null,null]",
-            "nextDeadline": 27000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": [
-              "p3"
-            ]
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            },
-            "p2": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            },
-            "p3": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": null,
-            "lockedPokemonIds": [],
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "results": null,
-            "roundEndsAt": 27000,
-            "roundNumber": 2,
-            "roundStartedAt": 17000,
-            "selections": {},
-            "spectatorIds": [
-              "p3"
-            ],
-            "survivorIds": [
-              "p1",
-              "p2"
-            ],
-            "targetDexNumber": 136,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+      "now": 19000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "aerodactyl"
       },
-      {
-        "accepted": false,
-        "error": "You are spectating this round",
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",2,17000,null,null,null,null,null]",
-            "nextDeadline": 27000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": [
-              "p3"
-            ]
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            },
-            "p2": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            },
-            "p3": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": null,
-            "lockedPokemonIds": [],
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "results": null,
-            "roundEndsAt": 27000,
-            "roundNumber": 2,
-            "roundStartedAt": 17000,
-            "selections": {},
-            "spectatorIds": [
-              "p3"
-            ],
-            "survivorIds": [
-              "p1",
-              "p2"
-            ],
-            "targetDexNumber": 136,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+      "now": 20000
+    },
+    {
+      "kind": "timeout",
+      "now": 26000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "raichu-alola"
       },
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",2,17000,null,null,null,null,null]",
-            "nextDeadline": 27000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": [
-              "p3"
-            ]
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": {
-                "pokemonId": "gyarados",
-                "selectedAt": 19000
-              }
-            },
-            "p2": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            },
-            "p3": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": null,
-            "lockedPokemonIds": [
-              "gyarados"
-            ],
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "results": null,
-            "roundEndsAt": 27000,
-            "roundNumber": 2,
-            "roundStartedAt": 17000,
-            "selections": {
-              "p1": {
-                "pokemonId": "gyarados",
-                "pokemonName": "Gyarados",
-                "selectedAt": 19000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
-              }
-            },
-            "spectatorIds": [
-              "p3"
-            ],
-            "survivorIds": [
-              "p1",
-              "p2"
-            ],
-            "targetDexNumber": 136,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+      "now": 27000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "ekans"
       },
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_RESULTS\",2,17000,null,null,null,null,null]",
-            "nextDeadline": 26000,
-            "phase": "ROUND_RESULTS",
-            "spectatorIds": [
-              "p3"
-            ]
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": {
-                "pokemonId": "gyarados",
-                "selectedAt": 19000
-              }
-            },
-            "p2": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": {
-                "pokemonId": "aerodactyl",
-                "selectedAt": 20000
-              }
-            },
-            "p3": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": {
-              "eligibleIds": [
-                "p1",
-                "p2"
-              ],
-              "eliminatedIds": [],
-              "reason": "TIE",
-              "selections": {
-                "p1": {
-                  "dexNumber": 130,
-                  "distance": 6,
-                  "pokemonId": "gyarados",
-                  "pokemonName": "Gyarados",
-                  "selectedAt": 19000,
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
-                },
-                "p2": {
-                  "dexNumber": 142,
-                  "distance": 6,
-                  "pokemonId": "aerodactyl",
-                  "pokemonName": "Aerodactyl",
-                  "selectedAt": 20000,
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
-                }
-              },
-              "targetDexNumber": 136,
-              "targetPokemon": {
-                "id": "flareon",
-                "name": "Flareon",
-                "nationalDexNumber": 136,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/136.png"
-              },
-              "tiedIds": [
-                "p1",
-                "p2"
-              ]
-            },
-            "lockedPokemonIds": [
-              "gyarados",
-              "aerodactyl"
-            ],
-            "nextTransitionAt": 26000,
-            "phase": "ROUND_RESULTS",
-            "results": null,
-            "roundEndsAt": null,
-            "roundNumber": 2,
-            "roundStartedAt": 17000,
-            "selections": {
-              "p1": {
-                "pokemonId": "gyarados",
-                "pokemonName": "Gyarados",
-                "selectedAt": 19000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
-              },
-              "p2": {
-                "pokemonId": "aerodactyl",
-                "pokemonName": "Aerodactyl",
-                "selectedAt": 20000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
-              }
-            },
-            "spectatorIds": [
-              "p3"
-            ],
-            "survivorIds": [
-              "p1",
-              "p2"
-            ],
-            "targetDexNumber": 136,
-            "tiebreakDepth": 0,
-            "winnerId": null
-          }
-        }
+      "now": 28000
+    },
+    {
+      "kind": "timeout",
+      "now": 34000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "golduck"
       },
-      {
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"TIEBREAKER_ACTIVE\",2,26000,null,null,null,null,null]",
-            "nextDeadline": 36000,
-            "phase": "TIEBREAKER_ACTIVE",
-            "spectatorIds": [
-              "p3"
-            ]
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            },
-            "p2": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            },
-            "p3": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": null,
-            "lockedPokemonIds": [],
-            "nextTransitionAt": null,
-            "phase": "TIEBREAKER_ACTIVE",
-            "results": null,
-            "roundEndsAt": 36000,
-            "roundNumber": 2,
-            "roundStartedAt": 26000,
-            "selections": {},
-            "spectatorIds": [
-              "p3"
-            ],
-            "survivorIds": [
-              "p1",
-              "p2"
-            ],
-            "targetDexNumber": 23,
-            "tiebreakDepth": 1,
-            "winnerId": null
-          }
-        }
-      },
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"TIEBREAKER_ACTIVE\",2,26000,null,null,null,null,null]",
-            "nextDeadline": 36000,
-            "phase": "TIEBREAKER_ACTIVE",
-            "spectatorIds": [
-              "p3"
-            ]
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": {
-                "pokemonId": "raichu-alola",
-                "selectedAt": 27000
-              }
-            },
-            "p2": {
-              "canSelect": true,
-              "exactHit": false,
-              "selection": null
-            },
-            "p3": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": null,
-            "lockedPokemonIds": [
-              "raichu-alola"
-            ],
-            "nextTransitionAt": null,
-            "phase": "TIEBREAKER_ACTIVE",
-            "results": null,
-            "roundEndsAt": 36000,
-            "roundNumber": 2,
-            "roundStartedAt": 26000,
-            "selections": {
-              "p1": {
-                "pokemonId": "raichu-alola",
-                "pokemonName": "Raichu de Alola",
-                "selectedAt": 27000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
-              }
-            },
-            "spectatorIds": [
-              "p3"
-            ],
-            "survivorIds": [
-              "p1",
-              "p2"
-            ],
-            "targetDexNumber": 23,
-            "tiebreakDepth": 1,
-            "winnerId": null
-          }
-        }
-      },
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_RESULTS\",2,26000,null,null,null,null,null]",
-            "nextDeadline": 34000,
-            "phase": "ROUND_RESULTS",
-            "spectatorIds": [
-              "p3",
-              "p1"
-            ]
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": {
-                "pokemonId": "raichu-alola",
-                "selectedAt": 27000
-              }
-            },
-            "p2": {
-              "canSelect": false,
-              "exactHit": true,
-              "selection": {
-                "pokemonId": "ekans",
-                "selectedAt": 28000
-              }
-            },
-            "p3": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [
-              "p1",
-              "p2"
-            ],
-            "gameId": "pokedex-distance",
-            "lastRound": {
-              "eligibleIds": [
-                "p1",
-                "p2"
-              ],
-              "eliminatedIds": [
-                "p1"
-              ],
-              "reason": "FARTHEST",
-              "selections": {
-                "p1": {
-                  "dexNumber": 26,
-                  "distance": 3,
-                  "pokemonId": "raichu-alola",
-                  "pokemonName": "Raichu de Alola",
-                  "selectedAt": 27000,
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
-                },
-                "p2": {
-                  "dexNumber": 23,
-                  "distance": 0,
-                  "pokemonId": "ekans",
-                  "pokemonName": "Ekans",
-                  "selectedAt": 28000,
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
-                }
-              },
-              "targetDexNumber": 23,
-              "targetPokemon": {
-                "id": "ekans",
-                "name": "Ekans",
-                "nationalDexNumber": 23,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
-              },
-              "tiedIds": []
-            },
-            "lockedPokemonIds": [
-              "raichu-alola",
-              "ekans"
-            ],
-            "nextTransitionAt": 34000,
-            "phase": "ROUND_RESULTS",
-            "results": null,
-            "roundEndsAt": null,
-            "roundNumber": 2,
-            "roundStartedAt": 26000,
-            "selections": {
-              "p1": {
-                "pokemonId": "raichu-alola",
-                "pokemonName": "Raichu de Alola",
-                "selectedAt": 27000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
-              },
-              "p2": {
-                "pokemonId": "ekans",
-                "pokemonName": "Ekans",
-                "selectedAt": 28000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
-              }
-            },
-            "spectatorIds": [
-              "p3",
-              "p1"
-            ],
-            "survivorIds": [
-              "p2"
-            ],
-            "targetDexNumber": 23,
-            "tiebreakDepth": 1,
-            "winnerId": null
-          }
-        }
-      },
-      {
-        "snapshot": {
-          "finished": true,
-          "lifecycle": {
-            "actionEpoch": "[\"GAME_RESULTS\",2,26000,null,null,null,null,null]",
-            "nextDeadline": null,
-            "phase": "GAME_RESULTS",
-            "spectatorIds": [
-              "p3",
-              "p1"
-            ]
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": {
-                "pokemonId": "raichu-alola",
-                "selectedAt": 27000
-              }
-            },
-            "p2": {
-              "canSelect": false,
-              "exactHit": true,
-              "selection": {
-                "pokemonId": "ekans",
-                "selectedAt": 28000
-              }
-            },
-            "p3": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [],
-            "gameId": "pokedex-distance",
-            "lastRound": {
-              "eligibleIds": [],
-              "eliminatedIds": [
-                "p1"
-              ],
-              "reason": "FARTHEST",
-              "selections": {
-                "p1": {
-                  "dexNumber": 26,
-                  "distance": 3,
-                  "pokemonId": "raichu-alola",
-                  "pokemonName": "Raichu de Alola",
-                  "selectedAt": 27000,
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
-                },
-                "p2": {
-                  "dexNumber": 23,
-                  "distance": 0,
-                  "pokemonId": "ekans",
-                  "pokemonName": "Ekans",
-                  "selectedAt": 28000,
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
-                }
-              },
-              "targetDexNumber": 23,
-              "targetPokemon": {
-                "id": "ekans",
-                "name": "Ekans",
-                "nationalDexNumber": 23,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
-              },
-              "tiedIds": []
-            },
-            "lockedPokemonIds": [
-              "raichu-alola",
-              "ekans"
-            ],
-            "nextTransitionAt": null,
-            "phase": "GAME_RESULTS",
-            "results": {
-              "standings": [
-                {
-                  "playerId": "p2",
-                  "points": 6,
-                  "position": 1,
-                  "stats": {
-                    "averageDistance": 2.33,
-                    "exactHits": 1,
-                    "roundsSurvived": 3,
-                    "selections": 3
-                  }
-                },
-                {
-                  "playerId": "p1",
-                  "points": 3,
-                  "position": 2,
-                  "stats": {
-                    "averageDistance": 3,
-                    "exactHits": 1,
-                    "roundsSurvived": 3,
-                    "selections": 3
-                  }
-                },
-                {
-                  "playerId": "p3",
-                  "points": 2,
-                  "position": 3,
-                  "stats": {
-                    "averageDistance": 0,
-                    "exactHits": 0,
-                    "roundsSurvived": 0,
-                    "selections": 0
-                  }
-                }
-              ],
-              "winnerId": "p2"
-            },
-            "roundEndsAt": null,
-            "roundNumber": 2,
-            "roundStartedAt": 26000,
-            "selections": {
-              "p1": {
-                "pokemonId": "raichu-alola",
-                "pokemonName": "Raichu de Alola",
-                "selectedAt": 27000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
-              },
-              "p2": {
-                "pokemonId": "ekans",
-                "pokemonName": "Ekans",
-                "selectedAt": 28000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
-              }
-            },
-            "spectatorIds": [
-              "p3",
-              "p1"
-            ],
-            "survivorIds": [
-              "p2"
-            ],
-            "targetDexNumber": 23,
-            "tiebreakDepth": 1,
-            "winnerId": "p2"
-          }
-        }
-      },
-      {
-        "accepted": false,
-        "error": "No active round",
-        "snapshot": {
-          "finished": true,
-          "lifecycle": {
-            "actionEpoch": "[\"GAME_RESULTS\",2,26000,null,null,null,null,null]",
-            "nextDeadline": null,
-            "phase": "GAME_RESULTS",
-            "spectatorIds": [
-              "p3",
-              "p1"
-            ]
-          },
-          "playerStates": {
-            "p1": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": {
-                "pokemonId": "raichu-alola",
-                "selectedAt": 27000
-              }
-            },
-            "p2": {
-              "canSelect": false,
-              "exactHit": true,
-              "selection": {
-                "pokemonId": "ekans",
-                "selectedAt": 28000
-              }
-            },
-            "p3": {
-              "canSelect": false,
-              "exactHit": false,
-              "selection": null
-            }
-          },
-          "publicState": {
-            "eligibleIds": [],
-            "gameId": "pokedex-distance",
-            "lastRound": {
-              "eligibleIds": [],
-              "eliminatedIds": [
-                "p1"
-              ],
-              "reason": "FARTHEST",
-              "selections": {
-                "p1": {
-                  "dexNumber": 26,
-                  "distance": 3,
-                  "pokemonId": "raichu-alola",
-                  "pokemonName": "Raichu de Alola",
-                  "selectedAt": 27000,
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
-                },
-                "p2": {
-                  "dexNumber": 23,
-                  "distance": 0,
-                  "pokemonId": "ekans",
-                  "pokemonName": "Ekans",
-                  "selectedAt": 28000,
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
-                }
-              },
-              "targetDexNumber": 23,
-              "targetPokemon": {
-                "id": "ekans",
-                "name": "Ekans",
-                "nationalDexNumber": 23,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
-              },
-              "tiedIds": []
-            },
-            "lockedPokemonIds": [
-              "raichu-alola",
-              "ekans"
-            ],
-            "nextTransitionAt": null,
-            "phase": "GAME_RESULTS",
-            "results": {
-              "standings": [
-                {
-                  "playerId": "p2",
-                  "points": 6,
-                  "position": 1,
-                  "stats": {
-                    "averageDistance": 2.33,
-                    "exactHits": 1,
-                    "roundsSurvived": 3,
-                    "selections": 3
-                  }
-                },
-                {
-                  "playerId": "p1",
-                  "points": 3,
-                  "position": 2,
-                  "stats": {
-                    "averageDistance": 3,
-                    "exactHits": 1,
-                    "roundsSurvived": 3,
-                    "selections": 3
-                  }
-                },
-                {
-                  "playerId": "p3",
-                  "points": 2,
-                  "position": 3,
-                  "stats": {
-                    "averageDistance": 0,
-                    "exactHits": 0,
-                    "roundsSurvived": 0,
-                    "selections": 0
-                  }
-                }
-              ],
-              "winnerId": "p2"
-            },
-            "roundEndsAt": null,
-            "roundNumber": 2,
-            "roundStartedAt": 26000,
-            "selections": {
-              "p1": {
-                "pokemonId": "raichu-alola",
-                "pokemonName": "Raichu de Alola",
-                "selectedAt": 27000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
-              },
-              "p2": {
-                "pokemonId": "ekans",
-                "pokemonName": "Ekans",
-                "selectedAt": 28000,
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
-              }
-            },
-            "spectatorIds": [
-              "p3",
-              "p1"
-            ],
-            "survivorIds": [
-              "p2"
-            ],
-            "targetDexNumber": 23,
-            "tiebreakDepth": 1,
-            "winnerId": "p2"
-          }
-        }
-      }
-    ],
+      "now": 35000
+    }
+  ],
+  "expected": {
     "configNormalized": {
       "generations": [
         1
@@ -1693,259 +184,1768 @@
       "roundSeconds": 10
     },
     "initial": {
-      "finished": false,
       "lifecycle": {
-        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
-        "nextDeadline": null,
         "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
         "spectatorIds": []
       },
-      "playerStates": {
-        "p1": {
-          "canSelect": false,
-          "exactHit": false,
-          "selection": null
-        },
-        "p2": {
-          "canSelect": false,
-          "exactHit": false,
-          "selection": null
-        },
-        "p3": {
-          "canSelect": false,
-          "exactHit": false,
-          "selection": null
-        }
-      },
       "publicState": {
-        "eligibleIds": [],
         "gameId": "pokedex-distance",
-        "lastRound": null,
-        "lockedPokemonIds": [],
-        "nextTransitionAt": null,
         "phase": "GAME_STARTING",
-        "results": null,
-        "roundEndsAt": null,
         "roundNumber": 0,
-        "roundStartedAt": null,
-        "selections": {},
-        "spectatorIds": [],
+        "tiebreakDepth": 0,
+        "targetDexNumber": null,
+        "eligibleIds": [],
         "survivorIds": [
           "p1",
           "p2",
           "p3"
         ],
-        "targetDexNumber": null,
-        "tiebreakDepth": 0,
-        "winnerId": null
-      }
+        "spectatorIds": [],
+        "selections": {},
+        "lockedPokemonIds": [],
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "lastRound": null,
+        "winnerId": null,
+        "nextTransitionAt": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canSelect": false,
+          "selection": null,
+          "exactHit": false
+        },
+        "p2": {
+          "canSelect": false,
+          "selection": null,
+          "exactHit": false
+        },
+        "p3": {
+          "canSelect": false,
+          "selection": null,
+          "exactHit": false
+        }
+      },
+      "finished": false
     },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 11000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokedex-distance",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "tiebreakDepth": 0,
+        "targetDexNumber": 54,
+        "eligibleIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "survivorIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "spectatorIds": [],
+        "selections": {},
+        "lockedPokemonIds": [],
+        "roundStartedAt": 1000,
+        "roundEndsAt": 11000,
+        "lastRound": null,
+        "winnerId": null,
+        "nextTransitionAt": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canSelect": true,
+          "selection": null,
+          "exactHit": false
+        },
+        "p2": {
+          "canSelect": true,
+          "selection": null,
+          "exactHit": false
+        },
+        "p3": {
+          "canSelect": true,
+          "selection": null,
+          "exactHit": false
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 54,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "spectatorIds": [],
+            "selections": {
+              "p1": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000,
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "psyduck"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Selection already locked",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 54,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "spectatorIds": [],
+            "selections": {
+              "p1": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000,
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "psyduck"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon ya ha sido elegido.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 54,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "spectatorIds": [],
+            "selections": {
+              "p1": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000,
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "psyduck"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Pokémon is not in the configured pool",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 54,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "spectatorIds": [],
+            "selections": {
+              "p1": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000,
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "psyduck"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Pokémon is not in the configured pool",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 54,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "spectatorIds": [],
+            "selections": {
+              "p1": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000,
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "psyduck"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "You are spectating this round",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 54,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "spectatorIds": [],
+            "selections": {
+              "p1": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000,
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "psyduck"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 54,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "spectatorIds": [],
+            "selections": {
+              "p1": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000,
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "p2": {
+                "pokemonId": "golduck",
+                "selectedAt": 5000,
+                "pokemonName": "Golduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "psyduck",
+              "golduck"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "golduck",
+                "selectedAt": 5000
+              },
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 54,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "spectatorIds": [],
+            "selections": {
+              "p1": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000,
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "p2": {
+                "pokemonId": "golduck",
+                "selectedAt": 5000,
+                "pokemonName": "Golduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "psyduck",
+              "golduck"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "golduck",
+                "selectedAt": 5000
+              },
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Round has ended",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 17000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 54,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {
+              "p1": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000,
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "p2": {
+                "pokemonId": "golduck",
+                "selectedAt": 5000,
+                "pokemonName": "Golduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "psyduck",
+              "golduck"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "lastRound": {
+              "targetDexNumber": 54,
+              "selections": {
+                "p1": {
+                  "pokemonId": "psyduck",
+                  "dexNumber": 54,
+                  "distance": 0,
+                  "selectedAt": 2000,
+                  "pokemonName": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                },
+                "p2": {
+                  "pokemonId": "golduck",
+                  "dexNumber": 55,
+                  "distance": 1,
+                  "selectedAt": 5000,
+                  "pokemonName": "Golduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
+                }
+              },
+              "eliminatedIds": [
+                "p3"
+              ],
+              "reason": "NO_RESPONSE",
+              "tiedIds": [],
+              "eligibleIds": [
+                "p1",
+                "p2",
+                "p3"
+              ],
+              "targetPokemon": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "nationalDexNumber": 54,
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              }
+            },
+            "winnerId": null,
+            "nextTransitionAt": 17000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "golduck",
+                "selectedAt": 5000
+              },
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No active round",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 17000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 54,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {
+              "p1": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000,
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              },
+              "p2": {
+                "pokemonId": "golduck",
+                "selectedAt": 5000,
+                "pokemonName": "Golduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "psyduck",
+              "golduck"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "lastRound": {
+              "targetDexNumber": 54,
+              "selections": {
+                "p1": {
+                  "pokemonId": "psyduck",
+                  "dexNumber": 54,
+                  "distance": 0,
+                  "selectedAt": 2000,
+                  "pokemonName": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                },
+                "p2": {
+                  "pokemonId": "golduck",
+                  "dexNumber": 55,
+                  "distance": 1,
+                  "selectedAt": 5000,
+                  "pokemonName": "Golduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
+                }
+              },
+              "eliminatedIds": [
+                "p3"
+              ],
+              "reason": "NO_RESPONSE",
+              "tiedIds": [],
+              "eligibleIds": [
+                "p1",
+                "p2",
+                "p3"
+              ],
+              "targetPokemon": {
+                "id": "psyduck",
+                "name": "Psyduck",
+                "nationalDexNumber": 54,
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              }
+            },
+            "winnerId": null,
+            "nextTransitionAt": 17000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "golduck",
+                "selectedAt": 5000
+              },
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,17000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 136,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {},
+            "lockedPokemonIds": [],
+            "roundStartedAt": 17000,
+            "roundEndsAt": 27000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "You are spectating this round",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,17000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 136,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {},
+            "lockedPokemonIds": [],
+            "roundStartedAt": 17000,
+            "roundEndsAt": 27000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,17000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 136,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {
+              "p1": {
+                "pokemonId": "gyarados",
+                "selectedAt": 19000,
+                "pokemonName": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "gyarados"
+            ],
+            "roundStartedAt": 17000,
+            "roundEndsAt": 27000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "gyarados",
+                "selectedAt": 19000
+              },
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,17000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 136,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {
+              "p1": {
+                "pokemonId": "gyarados",
+                "selectedAt": 19000,
+                "pokemonName": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
+              },
+              "p2": {
+                "pokemonId": "aerodactyl",
+                "selectedAt": 20000,
+                "pokemonName": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "gyarados",
+              "aerodactyl"
+            ],
+            "roundStartedAt": 17000,
+            "roundEndsAt": null,
+            "lastRound": {
+              "targetDexNumber": 136,
+              "selections": {
+                "p1": {
+                  "pokemonId": "gyarados",
+                  "dexNumber": 130,
+                  "distance": 6,
+                  "selectedAt": 19000,
+                  "pokemonName": "Gyarados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
+                },
+                "p2": {
+                  "pokemonId": "aerodactyl",
+                  "dexNumber": 142,
+                  "distance": 6,
+                  "selectedAt": 20000,
+                  "pokemonName": "Aerodactyl",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+                }
+              },
+              "eliminatedIds": [],
+              "reason": "TIE",
+              "tiedIds": [
+                "p1",
+                "p2"
+              ],
+              "eligibleIds": [
+                "p1",
+                "p2"
+              ],
+              "targetPokemon": {
+                "id": "flareon",
+                "name": "Flareon",
+                "nationalDexNumber": 136,
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/136.png"
+              }
+            },
+            "winnerId": null,
+            "nextTransitionAt": 26000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "gyarados",
+                "selectedAt": 19000
+              },
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "aerodactyl",
+                "selectedAt": 20000
+              },
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TIEBREAKER_ACTIVE",
+            "nextDeadline": 36000,
+            "actionEpoch": "[\"TIEBREAKER_ACTIVE\",2,26000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "TIEBREAKER_ACTIVE",
+            "roundNumber": 2,
+            "tiebreakDepth": 1,
+            "targetDexNumber": 23,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {},
+            "lockedPokemonIds": [],
+            "roundStartedAt": 26000,
+            "roundEndsAt": 36000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TIEBREAKER_ACTIVE",
+            "nextDeadline": 36000,
+            "actionEpoch": "[\"TIEBREAKER_ACTIVE\",2,26000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "TIEBREAKER_ACTIVE",
+            "roundNumber": 2,
+            "tiebreakDepth": 1,
+            "targetDexNumber": 23,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {
+              "p1": {
+                "pokemonId": "raichu-alola",
+                "selectedAt": 27000,
+                "pokemonName": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "raichu-alola"
+            ],
+            "roundStartedAt": 26000,
+            "roundEndsAt": 36000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "raichu-alola",
+                "selectedAt": 27000
+              },
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 34000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,26000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3",
+              "p1"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "tiebreakDepth": 1,
+            "targetDexNumber": 23,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3",
+              "p1"
+            ],
+            "selections": {
+              "p1": {
+                "pokemonId": "raichu-alola",
+                "selectedAt": 27000,
+                "pokemonName": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "p2": {
+                "pokemonId": "ekans",
+                "selectedAt": 28000,
+                "pokemonName": "Ekans",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "raichu-alola",
+              "ekans"
+            ],
+            "roundStartedAt": 26000,
+            "roundEndsAt": null,
+            "lastRound": {
+              "targetDexNumber": 23,
+              "selections": {
+                "p1": {
+                  "pokemonId": "raichu-alola",
+                  "dexNumber": 26,
+                  "distance": 3,
+                  "selectedAt": 27000,
+                  "pokemonName": "Raichu de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                },
+                "p2": {
+                  "pokemonId": "ekans",
+                  "dexNumber": 23,
+                  "distance": 0,
+                  "selectedAt": 28000,
+                  "pokemonName": "Ekans",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
+                }
+              },
+              "eliminatedIds": [
+                "p1"
+              ],
+              "reason": "FARTHEST",
+              "tiedIds": [],
+              "eligibleIds": [
+                "p1",
+                "p2"
+              ],
+              "targetPokemon": {
+                "id": "ekans",
+                "name": "Ekans",
+                "nationalDexNumber": 23,
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
+              }
+            },
+            "winnerId": null,
+            "nextTransitionAt": 34000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "raichu-alola",
+                "selectedAt": 27000
+              },
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "ekans",
+                "selectedAt": 28000
+              },
+              "exactHit": true
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",2,26000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3",
+              "p1"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 2,
+            "tiebreakDepth": 1,
+            "targetDexNumber": 23,
+            "eligibleIds": [],
+            "survivorIds": [
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3",
+              "p1"
+            ],
+            "selections": {
+              "p1": {
+                "pokemonId": "raichu-alola",
+                "selectedAt": 27000,
+                "pokemonName": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "p2": {
+                "pokemonId": "ekans",
+                "selectedAt": 28000,
+                "pokemonName": "Ekans",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "raichu-alola",
+              "ekans"
+            ],
+            "roundStartedAt": 26000,
+            "roundEndsAt": null,
+            "lastRound": {
+              "targetDexNumber": 23,
+              "selections": {
+                "p1": {
+                  "pokemonId": "raichu-alola",
+                  "dexNumber": 26,
+                  "distance": 3,
+                  "selectedAt": 27000,
+                  "pokemonName": "Raichu de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                },
+                "p2": {
+                  "pokemonId": "ekans",
+                  "dexNumber": 23,
+                  "distance": 0,
+                  "selectedAt": 28000,
+                  "pokemonName": "Ekans",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
+                }
+              },
+              "eliminatedIds": [
+                "p1"
+              ],
+              "reason": "FARTHEST",
+              "tiedIds": [],
+              "eligibleIds": [],
+              "targetPokemon": {
+                "id": "ekans",
+                "name": "Ekans",
+                "nationalDexNumber": 23,
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
+              }
+            },
+            "winnerId": "p2",
+            "nextTransitionAt": null,
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 6,
+                  "stats": {
+                    "exactHits": 1,
+                    "roundsSurvived": 3,
+                    "selections": 3,
+                    "averageDistance": 2.33
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 3,
+                  "stats": {
+                    "exactHits": 1,
+                    "roundsSurvived": 3,
+                    "selections": 3,
+                    "averageDistance": 3
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 2,
+                  "stats": {
+                    "exactHits": 0,
+                    "roundsSurvived": 0,
+                    "selections": 0,
+                    "averageDistance": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "raichu-alola",
+                "selectedAt": 27000
+              },
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "ekans",
+                "selectedAt": 28000
+              },
+              "exactHit": true
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No active round",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",2,26000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3",
+              "p1"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 2,
+            "tiebreakDepth": 1,
+            "targetDexNumber": 23,
+            "eligibleIds": [],
+            "survivorIds": [
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3",
+              "p1"
+            ],
+            "selections": {
+              "p1": {
+                "pokemonId": "raichu-alola",
+                "selectedAt": 27000,
+                "pokemonName": "Raichu de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+              },
+              "p2": {
+                "pokemonId": "ekans",
+                "selectedAt": 28000,
+                "pokemonName": "Ekans",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "raichu-alola",
+              "ekans"
+            ],
+            "roundStartedAt": 26000,
+            "roundEndsAt": null,
+            "lastRound": {
+              "targetDexNumber": 23,
+              "selections": {
+                "p1": {
+                  "pokemonId": "raichu-alola",
+                  "dexNumber": 26,
+                  "distance": 3,
+                  "selectedAt": 27000,
+                  "pokemonName": "Raichu de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                },
+                "p2": {
+                  "pokemonId": "ekans",
+                  "dexNumber": 23,
+                  "distance": 0,
+                  "selectedAt": 28000,
+                  "pokemonName": "Ekans",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
+                }
+              },
+              "eliminatedIds": [
+                "p1"
+              ],
+              "reason": "FARTHEST",
+              "tiedIds": [],
+              "eligibleIds": [],
+              "targetPokemon": {
+                "id": "ekans",
+                "name": "Ekans",
+                "nationalDexNumber": 23,
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
+              }
+            },
+            "winnerId": "p2",
+            "nextTransitionAt": null,
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 6,
+                  "stats": {
+                    "exactHits": 1,
+                    "roundsSurvived": 3,
+                    "selections": 3,
+                    "averageDistance": 2.33
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 3,
+                  "stats": {
+                    "exactHits": 1,
+                    "roundsSurvived": 3,
+                    "selections": 3,
+                    "averageDistance": 3
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 2,
+                  "stats": {
+                    "exactHits": 0,
+                    "roundsSurvived": 0,
+                    "selections": 0,
+                    "averageDistance": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "raichu-alola",
+                "selectedAt": 27000
+              },
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "ekans",
+                "selectedAt": 28000
+              },
+              "exactHit": true
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
     "results": {
+      "winnerId": "p2",
       "standings": [
         {
           "playerId": "p2",
-          "points": 6,
           "position": 1,
+          "points": 6,
           "stats": {
-            "averageDistance": 2.33,
             "exactHits": 1,
             "roundsSurvived": 3,
-            "selections": 3
+            "selections": 3,
+            "averageDistance": 2.33
           }
         },
         {
           "playerId": "p1",
-          "points": 3,
           "position": 2,
+          "points": 3,
           "stats": {
-            "averageDistance": 3,
             "exactHits": 1,
             "roundsSurvived": 3,
-            "selections": 3
+            "selections": 3,
+            "averageDistance": 3
           }
         },
         {
           "playerId": "p3",
-          "points": 2,
           "position": 3,
+          "points": 2,
           "stats": {
-            "averageDistance": 0,
             "exactHits": 0,
             "roundsSurvived": 0,
-            "selections": 0
+            "selections": 0,
+            "averageDistance": 0
           }
         }
-      ],
-      "winnerId": "p2"
+      ]
     }
-  },
-  "players": [
-    {
-      "displayName": "Ana",
-      "id": "p1"
-    },
-    {
-      "displayName": "Bruno",
-      "id": "p2"
-    },
-    {
-      "displayName": "Carla",
-      "id": "p3"
-    }
-  ],
-  "scenario": "every-rejection",
-  "seed": 404,
-  "steps": [
-    {
-      "action": {
-        "pokemonId": "psyduck",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 2000,
-      "playerId": "p1"
-    },
-    {
-      "action": {
-        "pokemonId": "golduck",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 2500,
-      "playerId": "p1"
-    },
-    {
-      "action": {
-        "pokemonId": "psyduck",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 3000,
-      "playerId": "p2"
-    },
-    {
-      "action": {
-        "pokemonId": "chikorita",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 3500,
-      "playerId": "p2"
-    },
-    {
-      "action": {
-        "pokemonId": "missingno",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 4000,
-      "playerId": "p2"
-    },
-    {
-      "action": {
-        "pokemonId": "golduck",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 4500,
-      "playerId": "p9"
-    },
-    {
-      "action": {
-        "pokemonId": "golduck",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 5000,
-      "playerId": "p2"
-    },
-    {
-      "kind": "timeout",
-      "now": 10999
-    },
-    {
-      "action": {
-        "pokemonId": "grimer",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 11000,
-      "playerId": "p3"
-    },
-    {
-      "action": {
-        "pokemonId": "golduck",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 12000,
-      "playerId": "p1"
-    },
-    {
-      "kind": "timeout",
-      "now": 17000
-    },
-    {
-      "action": {
-        "pokemonId": "flareon",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 18000,
-      "playerId": "p3"
-    },
-    {
-      "action": {
-        "pokemonId": "gyarados",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 19000,
-      "playerId": "p1"
-    },
-    {
-      "action": {
-        "pokemonId": "aerodactyl",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 20000,
-      "playerId": "p2"
-    },
-    {
-      "kind": "timeout",
-      "now": 26000
-    },
-    {
-      "action": {
-        "pokemonId": "raichu-alola",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 27000,
-      "playerId": "p1"
-    },
-    {
-      "action": {
-        "pokemonId": "ekans",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 28000,
-      "playerId": "p2"
-    },
-    {
-      "kind": "timeout",
-      "now": 34000
-    },
-    {
-      "action": {
-        "pokemonId": "golduck",
-        "type": "SELECT_POKEMON"
-      },
-      "kind": "action",
-      "now": 35000,
-      "playerId": "p1"
-    }
-  ]
+  }
 }

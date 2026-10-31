@@ -1,7 +1,23 @@
 {
+  "engineId": "higher-lower",
+  "scenario": "invalid-action-stops",
+  "seed": 55,
   "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
   "config": {
-    "answerVisibility": "REALTIME",
+    "generations": [
+      1,
+      2
+    ],
     "categories": [
       "DEX_NUMBER",
       "HP",
@@ -12,151 +28,48 @@
       "SPEED",
       "BASE_STAT_TOTAL"
     ],
+    "showPreviousValue": true,
+    "answerVisibility": "REALTIME",
     "difficulty": "VERY_EASY",
-    "generations": [
-      1,
-      2
-    ],
     "roundSeconds": 20,
-    "rounds": 3,
-    "showPreviousValue": true
+    "rounds": 3
   },
-  "engineId": "higher-lower",
-  "expected": {
-    "afterStart": {
-      "finished": false,
-      "lifecycle": {
-        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-        "nextDeadline": 21000,
-        "phase": "ROUND_ACTIVE",
-        "spectatorIds": []
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "HIGHER"
       },
-      "playerStates": {
-        "p1": {
-          "answer": null,
-          "canAnswer": true
-        },
-        "p2": {
-          "answer": null,
-          "canAnswer": true
-        }
-      },
-      "publicState": {
-        "answeredIds": [],
-        "answers": {},
-        "category": "SPEED",
-        "currentPokemon": {
-          "id": "raichu",
-          "name": "Raichu",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png",
-          "value": null
-        },
-        "gameId": "higher-lower",
-        "lastRound": null,
-        "nextTransitionAt": null,
-        "phase": "ROUND_ACTIVE",
-        "playerIds": [
-          "p1",
-          "p2"
-        ],
-        "previousPokemon": {
-          "id": "chansey",
-          "name": "Chansey",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
-          "value": 50
-        },
-        "results": null,
-        "roundEndsAt": 21000,
-        "roundNumber": 1,
-        "roundStartedAt": 1000,
-        "scores": {
-          "p1": 0,
-          "p2": 0
-        },
-        "streaks": {
-          "p1": 0,
-          "p2": 0
-        },
-        "totalRounds": 3
-      }
+      "now": 2000
     },
-    "afterSteps": [
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 21000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": {
-                "answeredAt": 2000,
-                "choice": "HIGHER"
-              },
-              "canAnswer": false
-            },
-            "p2": {
-              "answer": null,
-              "canAnswer": true
-            }
-          },
-          "publicState": {
-            "answeredIds": [
-              "p1"
-            ],
-            "answers": {
-              "p1": {
-                "answeredAt": 2000,
-                "choice": "HIGHER"
-              }
-            },
-            "category": "SPEED",
-            "currentPokemon": {
-              "id": "raichu",
-              "name": "Raichu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png",
-              "value": null
-            },
-            "gameId": "higher-lower",
-            "lastRound": null,
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "playerIds": [
-              "p1",
-              "p2"
-            ],
-            "previousPokemon": {
-              "id": "chansey",
-              "name": "Chansey",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
-              "value": 50
-            },
-            "results": null,
-            "roundEndsAt": 21000,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "scores": {
-              "p1": 0,
-              "p2": 0
-            },
-            "streaks": {
-              "p1": 0,
-              "p2": 0
-            },
-            "totalRounds": 3
-          }
-        }
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER",
+        "extra": true
       },
-      {
-        "invalidAction": true
-      }
-    ],
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER"
+      },
+      "now": 4000
+    }
+  ],
+  "expected": {
     "configNormalized": {
-      "answerVisibility": "REALTIME",
+      "generations": [
+        1,
+        2
+      ],
       "categories": [
         "DEX_NUMBER",
         "HP",
@@ -167,61 +80,43 @@
         "SPEED",
         "BASE_STAT_TOTAL"
       ],
+      "showPreviousValue": true,
+      "answerVisibility": "REALTIME",
       "difficulty": "VERY_EASY",
-      "generations": [
-        1,
-        2
-      ],
       "roundSeconds": 20,
-      "rounds": 3,
-      "showPreviousValue": true
+      "rounds": 3
     },
     "initial": {
-      "finished": false,
       "lifecycle": {
-        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
-        "nextDeadline": null,
         "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
         "spectatorIds": []
       },
-      "playerStates": {
-        "p1": {
-          "answer": null,
-          "canAnswer": false
-        },
-        "p2": {
-          "answer": null,
-          "canAnswer": false
-        }
-      },
       "publicState": {
-        "answeredIds": [],
-        "answers": {},
-        "category": "DEX_NUMBER",
-        "currentPokemon": {
-          "id": "chansey",
-          "name": "Chansey",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
-          "value": null
-        },
         "gameId": "higher-lower",
-        "lastRound": null,
-        "nextTransitionAt": null,
         "phase": "GAME_STARTING",
         "playerIds": [
           "p1",
           "p2"
         ],
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "category": "DEX_NUMBER",
         "previousPokemon": {
           "id": "chansey",
           "name": "Chansey",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
           "value": 113
         },
-        "results": null,
-        "roundEndsAt": null,
-        "roundNumber": 0,
-        "roundStartedAt": null,
+        "currentPokemon": {
+          "id": "chansey",
+          "name": "Chansey",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+          "value": null
+        },
+        "answers": {},
+        "answeredIds": [],
         "scores": {
           "p1": 0,
           "p2": 0
@@ -230,51 +125,156 @@
           "p1": 0,
           "p2": 0
         },
-        "totalRounds": 3
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canAnswer": false,
+          "answer": null
+        },
+        "p2": {
+          "canAnswer": false,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "higher-lower",
+        "phase": "ROUND_ACTIVE",
+        "playerIds": [
+          "p1",
+          "p2"
+        ],
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "category": "SPEED",
+        "previousPokemon": {
+          "id": "chansey",
+          "name": "Chansey",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+          "value": 50
+        },
+        "currentPokemon": {
+          "id": "raichu",
+          "name": "Raichu",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png",
+          "value": null
+        },
+        "answers": {},
+        "answeredIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "streaks": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 21000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canAnswer": true,
+          "answer": null
+        },
+        "p2": {
+          "canAnswer": true,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "chansey",
+              "name": "Chansey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "value": 50
+            },
+            "currentPokemon": {
+              "id": "raichu",
+              "name": "Raichu",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png",
+              "value": null
+            },
+            "answers": {
+              "p1": {
+                "choice": "HIGHER",
+                "answeredAt": 2000
+              }
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "HIGHER",
+                "answeredAt": 2000
+              }
+            },
+            "p2": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
       }
-    }
+    ]
   },
-  "players": [
-    {
-      "displayName": "Ana",
-      "id": "p1"
-    },
-    {
-      "displayName": "Bruno",
-      "id": "p2"
-    }
-  ],
-  "scenario": "invalid-action-stops",
-  "seed": 55,
-  "steps": [
-    {
-      "action": {
-        "choice": "HIGHER",
-        "type": "ANSWER"
-      },
-      "kind": "action",
-      "now": 2000,
-      "playerId": "p1"
-    },
-    {
-      "action": {
-        "choice": "LOWER",
-        "extra": true,
-        "type": "ANSWER"
-      },
-      "kind": "action",
-      "now": 3000,
-      "playerId": "p2"
-    },
-    {
-      "action": {
-        "choice": "LOWER",
-        "type": "ANSWER"
-      },
-      "kind": "action",
-      "now": 4000,
-      "playerId": "p2"
-    }
-  ],
   "stoppedAt": 1
 }

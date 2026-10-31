@@ -6,11 +6,11 @@
 import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import type { GameContext, MiniGameModule } from '../dist/index.js';
+import type { GameAssetResolution, GameContext, MiniGameModule } from '../dist/index.js';
 import { loadGoldenCatalog } from './catalog.js';
-import { mulberry32 } from './prng.js';
+import { buildGoldenContext } from './context.js';
 import { scenarios as defaultScenarios, type GoldenEngineEntry } from './scenarios/index.js';
-import type { ConfigCase, GoldenFixture, GoldenScenario, GoldenSnapshot, GoldenStepResult } from './types.js';
+import type { ConfigCase, GoldenContextData, GoldenFixture, GoldenScenario, GoldenSnapshot, GoldenStepResult } from './types.js';
 
 type AnyModule = MiniGameModule<any, any, any, any>;
 
@@ -25,16 +25,25 @@ function snapshot(module: AnyModule, state: unknown, context: GameContext): Gold
   };
 }
 
-export function runScenario(module: AnyModule, scenario: GoldenScenario): GoldenFixture {
-  const startNow = scenario.startNow ?? 1000;
-  let context: GameContext = {
-    players: scenario.players,
-    pokemon: loadGoldenCatalog(scenario.catalog),
-    now: startNow,
-    random: mulberry32(scenario.seed),
-    roomCode: scenario.roomCode ?? 'GOLD01',
-    ...(scenario.players[0] ? { hostId: scenario.players[0].id } : {}),
+/** Como `resolution()` de `game-image-cache.ts`: un `string` es la fuente sin transformar. */
+function normalizeResolution(asset: string | GameAssetResolution | null | undefined): GameAssetResolution | null {
+  if (asset === null || asset === undefined) return null;
+  return typeof asset === 'string' ? { source: asset, transform: 'ORIGINAL' } : asset;
+}
+
+/** Datos de contexto que el escenario trae, en orden fijo; las claves ausentes no aparecen en la fixture. */
+function contextData(scenario: GoldenScenario): GoldenContextData {
+  return {
+    ...(scenario.hostCustomCategories ? { hostCustomCategories: scenario.hostCustomCategories } : {}),
+    ...(scenario.hostWouldYouRatherPrompts ? { hostWouldYouRatherPrompts: scenario.hostWouldYouRatherPrompts } : {}),
+    ...(scenario.pokemonVisuals ? { pokemonVisuals: scenario.pokemonVisuals } : {}),
+    ...(scenario.pokemonAudio ? { pokemonAudio: scenario.pokemonAudio } : {}),
+    ...(scenario.tcgCards ? { tcgCards: scenario.tcgCards } : {}),
   };
+}
+
+export function runScenario(module: AnyModule, scenario: GoldenScenario): GoldenFixture {
+  let context: GameContext = buildGoldenContext(scenario, loadGoldenCatalog(scenario.catalog));
   const configNormalized = module.configSchema.parse(scenario.config);
   let state = module.createInitialState(configNormalized, context);
   const initial = snapshot(module, state, context);
@@ -57,6 +66,9 @@ export function runScenario(module: AnyModule, scenario: GoldenScenario): Golden
         const result = module.handleAction(state, step.playerId, parsed.data, context);
         state = result.state;
         afterSteps.push({ accepted: result.accepted, ...(result.error !== undefined ? { error: result.error } : {}), snapshot: snapshot(module, state, context) });
+      } else if (step.kind === 'asset') {
+        const request = { assetToken: step.assetToken, roundNumber: step.roundNumber, assetId: step.assetId };
+        afterSteps.push({ resolution: normalizeResolution(module.resolveAsset?.(state, request, context)) });
       } else {
         if (step.kind === 'timeout') state = module.handleTimeout(state, context);
         else if (module.handlePresenceChange) state = module.handlePresenceChange(state, context);
@@ -76,6 +88,10 @@ export function runScenario(module: AnyModule, scenario: GoldenScenario): Golden
     catalog: scenario.catalog,
     players: scenario.players,
     config: scenario.config,
+    // GoldenReplayer los lee de la fixture: sin ellos Java arrancaría en 1000/GOLD01 aunque el escenario diga otra cosa.
+    ...(scenario.startNow !== undefined ? { startNow: scenario.startNow } : {}),
+    ...(scenario.roomCode !== undefined ? { roomCode: scenario.roomCode } : {}),
+    ...contextData(scenario),
     steps: scenario.steps,
     expected: {
       configNormalized,
@@ -95,17 +111,12 @@ export function runConfigCases(module: AnyModule, inputs: readonly unknown[]): C
   });
 }
 
-function sortKeys(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(sortKeys);
-  if (value !== null && typeof value === 'object') {
-    return Object.fromEntries(Object.keys(value).sort().map((key) => [key, sortKeys((value as Record<string, unknown>)[key])]));
-  }
-  return value;
-}
-
-/** JSON estable: semántica de JSON.stringify (undefined fuera, null dentro) con claves ordenadas recursivamente. */
+/**
+ * JSON de fixture: semántica de JSON.stringify (undefined fuera, null dentro) y el orden de claves de JS (claves con
+ * aspecto de entero ascendentes, el resto en orden de inserción del motor). El replayer Java compara ese orden.
+ */
 export function toCanonicalJson(value: unknown): string {
-  return JSON.stringify(sortKeys(JSON.parse(JSON.stringify(value))), null, 2) + '\n';
+  return JSON.stringify(value, null, 2) + '\n';
 }
 
 /** Ruta relativa (`<engineId>/<fichero>.json`) → contenido, en el orden del registro de escenarios. */

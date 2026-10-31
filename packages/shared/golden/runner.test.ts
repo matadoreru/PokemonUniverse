@@ -8,6 +8,7 @@ const { stubCatalog } = vi.hoisted(() => ({ stubCatalog: { fixture: 'stub' } }))
 vi.mock('./catalog.js', () => ({ loadGoldenCatalog: (fixtureId: string) => (fixtureId === 'gen1-2' ? stubCatalog : null) }));
 
 const { renderFixtures, runScenario } = await import('./runner.js');
+const { buildGoldenContext } = await import('./context.js');
 
 interface CounterConfig { target: number }
 interface CounterState { count: number; target: number; lastNow: number; started: boolean }
@@ -82,6 +83,7 @@ describe('runScenario', () => {
     expect(fixture.expected.initial.playerStates.p1).toEqual({ playerId: 'p1', isHost: true, room: 'ABC123' });
     expect(fixture.expected.afterSteps).toEqual([expect.objectContaining({ accepted: true }), { threw: 'boom' }]);
     expect(fixture.stoppedAt).toBe(1);
+    expect(fixture).toMatchObject({ startNow: 500, roomCode: 'ABC123' });
     expect(fixture).not.toHaveProperty('expected.results');
   });
 });
@@ -103,7 +105,7 @@ describe('runScenario con acción inválida', () => {
 });
 
 describe('renderFixtures', () => {
-  it('genera un fichero por escenario y config-cases con claves ordenadas y sin undefined', () => {
+  it('genera un fichero por escenario y config-cases en orden de inserción y sin undefined', () => {
     const files = renderFixtures({
       counter: {
         module: counter,
@@ -115,7 +117,7 @@ describe('renderFixtures', () => {
     const basic = files.get('counter/basic.json')!;
     expect(basic.endsWith('}\n')).toBe(true);
     expect(basic).not.toContain('absent');
-    expect(Object.keys(JSON.parse(basic) as object)).toEqual(['catalog', 'config', 'engineId', 'expected', 'players', 'scenario', 'seed', 'steps']);
+    expect(Object.keys(JSON.parse(basic) as object)).toEqual(['engineId', 'scenario', 'seed', 'catalog', 'players', 'config', 'steps', 'expected']);
     expect(JSON.parse(files.get('counter/config-cases.json')!)).toEqual([
       { input: { target: 3 }, valid: true, normalized: { target: 3 } },
       { input: { target: 0 }, valid: false },
@@ -125,5 +127,85 @@ describe('renderFixtures', () => {
 
   it('no genera nada sin escenarios', () => {
     expect(renderFixtures({}).size).toBe(0);
+  });
+});
+
+describe('orden de claves', () => {
+  it('conserva el orden de inserción del motor en la fixture serializada', () => {
+    const unordered = { ...counter, getPublicState: () => ({ b: 1, a: 2 }) };
+    const files = renderFixtures({
+      counter: { module: unordered, scenarios: [{ name: 'order', seed: 1, catalog: 'gen1-2', players, config: {}, steps: [] }], configCases: [] },
+    });
+    const text = files.get('counter/order.json')!;
+    expect(text).toContain('"b": 1');
+    expect(text.indexOf('"b": 1')).toBeLessThan(text.indexOf('"a": 2'));
+  });
+});
+
+describe('buildGoldenContext', () => {
+  const base: GoldenScenario = { name: 'ctx', seed: 1, catalog: 'gen1-2', players, config: {}, steps: [] };
+
+  it('monta pokemonAudio desde el escenario', () => {
+    const context = buildGoldenContext({ ...base, pokemonAudio: { bulbasaur: { latest: 'https://raw.githubusercontent.com/PokeAPI/cries/x.ogg' } } }, stubCatalog as never);
+    expect(context.pokemonAudio?.cryFor('bulbasaur', 'LATEST')).toBe('https://raw.githubusercontent.com/PokeAPI/cries/x.ogg');
+    expect(context.pokemonAudio?.cryFor('bulbasaur', 'LEGACY')).toBeNull();
+    expect(context.pokemonAudio?.pokemonIds('LEGACY')).toEqual([]);
+    expect(context.pokemonAudio?.pokemonIds()).toEqual(['bulbasaur']);
+  });
+
+  it('solo incluye las claves de contexto que trae el escenario', () => {
+    const context = buildGoldenContext(base, stubCatalog as never);
+    expect(context).not.toHaveProperty('pokemonAudio');
+    expect(context).not.toHaveProperty('pokemonVisuals');
+    expect(context).not.toHaveProperty('tcgCards');
+    expect(context).not.toHaveProperty('hostCustomCategories');
+    expect(context).not.toHaveProperty('hostWouldYouRatherPrompts');
+    expect(context.hostId).toBe('p1');
+    expect(context.roomCode).toBe('GOLD01');
+  });
+
+  it('monta pokemonVisuals y el contenido del host', () => {
+    const asset = { pokemonId: 'pikachu', source: 'ARTWORK' as const, location: 'local-artwork:pikachu', width: 10, height: 10 };
+    const context = buildGoldenContext({
+      ...base,
+      pokemonVisuals: { pikachu: asset },
+      hostCustomCategories: [{ id: 'c1', text: 'Quién' }],
+      hostWouldYouRatherPrompts: [{ id: 'w1', optionA: 'A', optionB: 'B' }],
+    }, stubCatalog as never);
+    expect(context.pokemonVisuals?.artworkFor('pikachu')).toEqual(asset);
+    expect(context.pokemonVisuals?.artworkFor('mew')).toBeNull();
+    expect(context.pokemonVisuals?.artworkPokemonIds()).toEqual(['pikachu']);
+    expect(context.hostCustomCategories).toEqual([{ id: 'c1', text: 'Quién' }]);
+    expect(context.hostWouldYouRatherPrompts).toEqual([{ id: 'w1', optionA: 'A', optionB: 'B' }]);
+  });
+
+  it('filtra tcgCards por sets, rarezas y precio decimal', () => {
+    const card = (id: string, setId: string, rarity: string | null, price: string) => ({
+      id, name: id, localId: '1', setId, setName: setId, rarity, imageUrl: `https://example.test/${id}.png`, price, currency: 'EUR', provider: 'cardmarket', variant: 'standard',
+    });
+    const cards = [card('a', 's1', 'Rare', '1.001'), card('b', 's1', 'Common', '1.002'), card('c', 's2', 'Rare', '10'), card('d', 's2', null, '0')];
+    const tcg = buildGoldenContext({ ...base, tcgCards: cards }, stubCatalog as never).tcgCards!;
+    const ids = (filters: Partial<Parameters<typeof tcg.cardsFor>[0]>) =>
+      tcg.cardsFor({ generations: [1], setIds: [], rarities: [], minPrice: null, maxPrice: null, ...filters }).map((found) => found.id);
+    expect(ids({})).toEqual(['a', 'b', 'c', 'd']);
+    expect(ids({ setIds: ['s2'] })).toEqual(['c', 'd']);
+    expect(ids({ rarities: ['Rare'] })).toEqual(['a', 'c']);
+    expect(ids({ minPrice: '1.002', maxPrice: '9.99' })).toEqual(['b']);
+  });
+});
+
+describe('paso asset', () => {
+  const assetStep = { kind: 'asset' as const, assetToken: 'tok', roundNumber: 1, assetId: 'shadow', now: 1500 };
+
+  it('normaliza un string a ORIGINAL y no añade snapshot', () => {
+    const fixture = runScenario({ ...counter, resolveAsset: () => 'https://raw.githubusercontent.com/a.png' },
+      { name: 'asset', seed: 1, catalog: 'gen1-2', players, config: {}, steps: [assetStep] });
+    expect(fixture.expected.afterSteps).toEqual([{ resolution: { source: 'https://raw.githubusercontent.com/a.png', transform: 'ORIGINAL' } }]);
+  });
+
+  it('registra resolution null si el motor devuelve null o no resuelve assets', () => {
+    const scenario: GoldenScenario = { name: 'asset', seed: 1, catalog: 'gen1-2', players, config: {}, steps: [assetStep] };
+    expect(runScenario({ ...counter, resolveAsset: () => null }, scenario).expected.afterSteps).toEqual([{ resolution: null }]);
+    expect(runScenario(counter, scenario).expected.afterSteps).toEqual([{ resolution: null }]);
   });
 });

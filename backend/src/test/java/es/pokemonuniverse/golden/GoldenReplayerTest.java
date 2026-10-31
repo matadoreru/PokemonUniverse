@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import es.pokemonuniverse.domain.game.GameManifest;
+import es.pokemonuniverse.domain.game.engine.AssetRequest;
+import es.pokemonuniverse.domain.game.engine.AssetResolution;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameActionResult;
@@ -22,6 +24,7 @@ import io.micronaut.serde.annotation.Serdeable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 class GoldenReplayerTest {
@@ -46,10 +49,23 @@ class GoldenReplayerTest {
   static final class FakeEngine implements GameEngine<Config, Counter, JsonNode, PublicView> {
     /** {@code getPublicState} lanza "pub" cuando el contador llega a este valor. */
     private final int failPublicAt;
+    /** Lo que devuelve {@code resolveAsset}. */
+    private final Optional<AssetResolution> asset;
 
     FakeEngine() { this(-1); }
 
-    FakeEngine(int failPublicAt) { this.failPublicAt = failPublicAt; }
+    FakeEngine(int failPublicAt) { this(failPublicAt, Optional.empty()); }
+
+    FakeEngine(Optional<AssetResolution> asset) { this(-1, asset); }
+
+    FakeEngine(int failPublicAt, Optional<AssetResolution> asset) {
+      this.failPublicAt = failPublicAt;
+      this.asset = asset;
+    }
+
+    @Override public Optional<AssetResolution> resolveAsset(Counter state, AssetRequest request, GameContext context) {
+      return asset;
+    }
 
     @Override public GameManifest manifest() { return null; }
 
@@ -239,9 +255,33 @@ class GoldenReplayerTest {
     assertTrue(tree.get("missing") == null, tree.toString());
   }
 
+  private static final String ASSET =
+      "{\"kind\":\"asset\",\"assetToken\":\"t\",\"roundNumber\":1,\"assetId\":\"shadow\",\"now\":2000}";
+
+  @Test
+  void assetStepComparesTheResolution() throws IOException {
+    var original = Optional.of(AssetResolution.original("https://raw.githubusercontent.com/a.png"));
+    var fixture = fixture(ASSET,
+        "{\"resolution\":{\"source\":\"https://raw.githubusercontent.com/a.png\",\"transform\":\"ORIGINAL\"}}", ok(0));
+    assertDoesNotThrow(() -> replay(new FakeEngine(original), fixture));
+    var empty = failure(fixture, new FakeEngine(Optional.empty()));
+    assertTrue(empty.getMessage().contains("expected.afterSteps[0].resolution"), empty.getMessage());
+    assertDoesNotThrow(() -> replay(new FakeEngine(Optional.empty()), fixture(ASSET, "{\"resolution\":null}", ok(0))));
+  }
+
+  @Test
+  void keyOrderOfProjectionsIsCompared() throws IOException {
+    var swapped = "{\"lifecycle\":" + LIFECYCLE + ",\"publicState\":{\"note\":null,\"count\":0},"
+        + "\"playerStates\":{\"p1\":{\"seen\":0}},\"finished\":false}";
+    var error = failure(fixture(INC, "{\"accepted\":true,\"snapshot\":" + ok(1) + "}", swapped));
+    assertTrue(error.getMessage().contains("expected.initial.publicState: orden de claves esperado [note,count] obtenido [count,note]"),
+        error.getMessage());
+  }
+
   private static GoldenFixture withStoppedAt(GoldenFixture f, int index) {
-    return new GoldenFixture(f.engineId(), f.scenario(), f.seed(), f.catalog(), f.players(), f.config(), f.startNow(),
-        f.roomCode(), f.steps(), f.expected(), index);
+    return new GoldenFixture(f.engineId(), f.scenario(), f.seed(), f.catalog(), f.players(), f.config(),
+        f.hostCustomCategories(), f.hostWouldYouRatherPrompts(), f.pokemonVisuals(), f.pokemonAudio(), f.tcgCards(),
+        f.startNow(), f.roomCode(), f.steps(), f.expected(), index);
   }
 
   private static void configCase(String json) throws IOException {

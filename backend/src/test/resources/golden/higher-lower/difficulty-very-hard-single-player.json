@@ -1,881 +1,77 @@
 {
+  "engineId": "higher-lower",
+  "scenario": "difficulty-very-hard-single-player",
+  "seed": 44,
   "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    }
+  ],
   "config": {
-    "answerVisibility": "REALTIME",
+    "generations": [
+      1
+    ],
     "categories": [
       "BASE_STAT_TOTAL",
       "DEX_NUMBER",
       "ATTACK"
     ],
+    "showPreviousValue": false,
+    "answerVisibility": "REALTIME",
     "difficulty": "VERY_HARD",
-    "generations": [
-      1
-    ],
     "roundSeconds": 10,
-    "rounds": 5,
-    "showPreviousValue": false
+    "rounds": 5
   },
-  "engineId": "higher-lower",
-  "expected": {
-    "afterStart": {
-      "finished": false,
-      "lifecycle": {
-        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-        "nextDeadline": 11000,
-        "phase": "ROUND_ACTIVE",
-        "spectatorIds": []
-      },
-      "playerStates": {
-        "p1": {
-          "answer": null,
-          "canAnswer": true
-        }
-      },
-      "publicState": {
-        "answeredIds": [],
-        "answers": {},
-        "category": "BASE_STAT_TOTAL",
-        "currentPokemon": {
-          "id": "rapidash",
-          "name": "Rapidash",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
-          "value": null
-        },
-        "gameId": "higher-lower",
-        "lastRound": null,
-        "nextTransitionAt": null,
-        "phase": "ROUND_ACTIVE",
-        "playerIds": [
-          "p1"
-        ],
-        "previousPokemon": {
-          "id": "pinsir",
-          "name": "Pinsir",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
-          "value": null
-        },
-        "results": null,
-        "roundEndsAt": 11000,
-        "roundNumber": 1,
-        "roundStartedAt": 1000,
-        "scores": {
-          "p1": 0
-        },
-        "streaks": {
-          "p1": 0
-        },
-        "totalRounds": 5
-      }
-    },
-    "afterSteps": [
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
-            "nextDeadline": 5000,
-            "phase": "ROUND_RESULTS",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": {
-                "answeredAt": 2000,
-                "choice": "SAME"
-              },
-              "canAnswer": false
-            }
-          },
-          "publicState": {
-            "answeredIds": [
-              "p1"
-            ],
-            "answers": {
-              "p1": {
-                "answeredAt": 2000,
-                "choice": "SAME"
-              }
-            },
-            "category": "BASE_STAT_TOTAL",
-            "currentPokemon": {
-              "id": "rapidash",
-              "name": "Rapidash",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
-              "value": 500
-            },
-            "gameId": "higher-lower",
-            "lastRound": {
-              "correctAnswer": "SAME",
-              "currentValue": 500,
-              "outcomes": {
-                "p1": {
-                  "awardedPoints": 3,
-                  "basePoints": 3,
-                  "choice": "SAME",
-                  "correct": true,
-                  "streak": 1,
-                  "streakBonus": 0
-                }
-              },
-              "previousValue": 500
-            },
-            "nextTransitionAt": 5000,
-            "phase": "ROUND_RESULTS",
-            "playerIds": [
-              "p1"
-            ],
-            "previousPokemon": {
-              "id": "pinsir",
-              "name": "Pinsir",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
-              "value": 500
-            },
-            "results": null,
-            "roundEndsAt": null,
-            "roundNumber": 1,
-            "roundStartedAt": 1000,
-            "scores": {
-              "p1": 3
-            },
-            "streaks": {
-              "p1": 1
-            },
-            "totalRounds": 5
-          }
-        }
-      },
-      {
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",2,5000,null,null,null,null,null]",
-            "nextDeadline": 15000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": null,
-              "canAnswer": true
-            }
-          },
-          "publicState": {
-            "answeredIds": [],
-            "answers": {},
-            "category": "ATTACK",
-            "currentPokemon": {
-              "id": "seaking",
-              "name": "Seaking",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png",
-              "value": null
-            },
-            "gameId": "higher-lower",
-            "lastRound": null,
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "playerIds": [
-              "p1"
-            ],
-            "previousPokemon": {
-              "id": "rapidash",
-              "name": "Rapidash",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
-              "value": null
-            },
-            "results": null,
-            "roundEndsAt": 15000,
-            "roundNumber": 2,
-            "roundStartedAt": 5000,
-            "scores": {
-              "p1": 3
-            },
-            "streaks": {
-              "p1": 1
-            },
-            "totalRounds": 5
-          }
-        }
-      },
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_RESULTS\",2,5000,null,null,null,null,null]",
-            "nextDeadline": 9000,
-            "phase": "ROUND_RESULTS",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": {
-                "answeredAt": 6000,
-                "choice": "LOWER"
-              },
-              "canAnswer": false
-            }
-          },
-          "publicState": {
-            "answeredIds": [
-              "p1"
-            ],
-            "answers": {
-              "p1": {
-                "answeredAt": 6000,
-                "choice": "LOWER"
-              }
-            },
-            "category": "ATTACK",
-            "currentPokemon": {
-              "id": "seaking",
-              "name": "Seaking",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png",
-              "value": 92
-            },
-            "gameId": "higher-lower",
-            "lastRound": {
-              "correctAnswer": "LOWER",
-              "currentValue": 92,
-              "outcomes": {
-                "p1": {
-                  "awardedPoints": 1,
-                  "basePoints": 1,
-                  "choice": "LOWER",
-                  "correct": true,
-                  "streak": 2,
-                  "streakBonus": 0
-                }
-              },
-              "previousValue": 100
-            },
-            "nextTransitionAt": 9000,
-            "phase": "ROUND_RESULTS",
-            "playerIds": [
-              "p1"
-            ],
-            "previousPokemon": {
-              "id": "rapidash",
-              "name": "Rapidash",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
-              "value": 100
-            },
-            "results": null,
-            "roundEndsAt": null,
-            "roundNumber": 2,
-            "roundStartedAt": 5000,
-            "scores": {
-              "p1": 4
-            },
-            "streaks": {
-              "p1": 2
-            },
-            "totalRounds": 5
-          }
-        }
-      },
-      {
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",3,9000,null,null,null,null,null]",
-            "nextDeadline": 19000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": null,
-              "canAnswer": true
-            }
-          },
-          "publicState": {
-            "answeredIds": [],
-            "answers": {},
-            "category": "DEX_NUMBER",
-            "currentPokemon": {
-              "id": "pinsir",
-              "name": "Pinsir",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
-              "value": null
-            },
-            "gameId": "higher-lower",
-            "lastRound": null,
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "playerIds": [
-              "p1"
-            ],
-            "previousPokemon": {
-              "id": "seaking",
-              "name": "Seaking",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png",
-              "value": null
-            },
-            "results": null,
-            "roundEndsAt": 19000,
-            "roundNumber": 3,
-            "roundStartedAt": 9000,
-            "scores": {
-              "p1": 4
-            },
-            "streaks": {
-              "p1": 2
-            },
-            "totalRounds": 5
-          }
-        }
-      },
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_RESULTS\",3,9000,null,null,null,null,null]",
-            "nextDeadline": 13000,
-            "phase": "ROUND_RESULTS",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": {
-                "answeredAt": 10000,
-                "choice": "HIGHER"
-              },
-              "canAnswer": false
-            }
-          },
-          "publicState": {
-            "answeredIds": [
-              "p1"
-            ],
-            "answers": {
-              "p1": {
-                "answeredAt": 10000,
-                "choice": "HIGHER"
-              }
-            },
-            "category": "DEX_NUMBER",
-            "currentPokemon": {
-              "id": "pinsir",
-              "name": "Pinsir",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
-              "value": 127
-            },
-            "gameId": "higher-lower",
-            "lastRound": {
-              "correctAnswer": "HIGHER",
-              "currentValue": 127,
-              "outcomes": {
-                "p1": {
-                  "awardedPoints": 2,
-                  "basePoints": 1,
-                  "choice": "HIGHER",
-                  "correct": true,
-                  "streak": 3,
-                  "streakBonus": 1
-                }
-              },
-              "previousValue": 119
-            },
-            "nextTransitionAt": 13000,
-            "phase": "ROUND_RESULTS",
-            "playerIds": [
-              "p1"
-            ],
-            "previousPokemon": {
-              "id": "seaking",
-              "name": "Seaking",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png",
-              "value": 119
-            },
-            "results": null,
-            "roundEndsAt": null,
-            "roundNumber": 3,
-            "roundStartedAt": 9000,
-            "scores": {
-              "p1": 6
-            },
-            "streaks": {
-              "p1": 3
-            },
-            "totalRounds": 5
-          }
-        }
-      },
-      {
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",4,13000,null,null,null,null,null]",
-            "nextDeadline": 23000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": null,
-              "canAnswer": true
-            }
-          },
-          "publicState": {
-            "answeredIds": [],
-            "answers": {},
-            "category": "DEX_NUMBER",
-            "currentPokemon": {
-              "id": "seadra",
-              "name": "Seadra",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
-              "value": null
-            },
-            "gameId": "higher-lower",
-            "lastRound": null,
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "playerIds": [
-              "p1"
-            ],
-            "previousPokemon": {
-              "id": "pinsir",
-              "name": "Pinsir",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
-              "value": null
-            },
-            "results": null,
-            "roundEndsAt": 23000,
-            "roundNumber": 4,
-            "roundStartedAt": 13000,
-            "scores": {
-              "p1": 6
-            },
-            "streaks": {
-              "p1": 3
-            },
-            "totalRounds": 5
-          }
-        }
-      },
-      {
-        "accepted": true,
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_RESULTS\",4,13000,null,null,null,null,null]",
-            "nextDeadline": 17000,
-            "phase": "ROUND_RESULTS",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": {
-                "answeredAt": 14000,
-                "choice": "LOWER"
-              },
-              "canAnswer": false
-            }
-          },
-          "publicState": {
-            "answeredIds": [
-              "p1"
-            ],
-            "answers": {
-              "p1": {
-                "answeredAt": 14000,
-                "choice": "LOWER"
-              }
-            },
-            "category": "DEX_NUMBER",
-            "currentPokemon": {
-              "id": "seadra",
-              "name": "Seadra",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
-              "value": 117
-            },
-            "gameId": "higher-lower",
-            "lastRound": {
-              "correctAnswer": "LOWER",
-              "currentValue": 117,
-              "outcomes": {
-                "p1": {
-                  "awardedPoints": 2,
-                  "basePoints": 1,
-                  "choice": "LOWER",
-                  "correct": true,
-                  "streak": 4,
-                  "streakBonus": 1
-                }
-              },
-              "previousValue": 127
-            },
-            "nextTransitionAt": 17000,
-            "phase": "ROUND_RESULTS",
-            "playerIds": [
-              "p1"
-            ],
-            "previousPokemon": {
-              "id": "pinsir",
-              "name": "Pinsir",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
-              "value": 127
-            },
-            "results": null,
-            "roundEndsAt": null,
-            "roundNumber": 4,
-            "roundStartedAt": 13000,
-            "scores": {
-              "p1": 8
-            },
-            "streaks": {
-              "p1": 4
-            },
-            "totalRounds": 5
-          }
-        }
-      },
-      {
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_ACTIVE\",5,17000,null,null,null,null,null]",
-            "nextDeadline": 27000,
-            "phase": "ROUND_ACTIVE",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": null,
-              "canAnswer": true
-            }
-          },
-          "publicState": {
-            "answeredIds": [],
-            "answers": {},
-            "category": "ATTACK",
-            "currentPokemon": {
-              "id": "jolteon",
-              "name": "Jolteon",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
-              "value": null
-            },
-            "gameId": "higher-lower",
-            "lastRound": null,
-            "nextTransitionAt": null,
-            "phase": "ROUND_ACTIVE",
-            "playerIds": [
-              "p1"
-            ],
-            "previousPokemon": {
-              "id": "seadra",
-              "name": "Seadra",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
-              "value": null
-            },
-            "results": null,
-            "roundEndsAt": 27000,
-            "roundNumber": 5,
-            "roundStartedAt": 17000,
-            "scores": {
-              "p1": 8
-            },
-            "streaks": {
-              "p1": 4
-            },
-            "totalRounds": 5
-          }
-        }
-      },
-      {
-        "snapshot": {
-          "finished": false,
-          "lifecycle": {
-            "actionEpoch": "[\"ROUND_RESULTS\",5,17000,null,null,null,null,null]",
-            "nextDeadline": 31000,
-            "phase": "ROUND_RESULTS",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": null,
-              "canAnswer": false
-            }
-          },
-          "publicState": {
-            "answeredIds": [],
-            "answers": {},
-            "category": "ATTACK",
-            "currentPokemon": {
-              "id": "jolteon",
-              "name": "Jolteon",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
-              "value": 65
-            },
-            "gameId": "higher-lower",
-            "lastRound": {
-              "correctAnswer": "SAME",
-              "currentValue": 65,
-              "outcomes": {
-                "p1": {
-                  "awardedPoints": 0,
-                  "basePoints": 0,
-                  "choice": null,
-                  "correct": false,
-                  "streak": 0,
-                  "streakBonus": 0
-                }
-              },
-              "previousValue": 65
-            },
-            "nextTransitionAt": 31000,
-            "phase": "ROUND_RESULTS",
-            "playerIds": [
-              "p1"
-            ],
-            "previousPokemon": {
-              "id": "seadra",
-              "name": "Seadra",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
-              "value": 65
-            },
-            "results": null,
-            "roundEndsAt": null,
-            "roundNumber": 5,
-            "roundStartedAt": 17000,
-            "scores": {
-              "p1": 8
-            },
-            "streaks": {
-              "p1": 0
-            },
-            "totalRounds": 5
-          }
-        }
-      },
-      {
-        "snapshot": {
-          "finished": true,
-          "lifecycle": {
-            "actionEpoch": "[\"GAME_RESULTS\",5,17000,null,null,null,null,null]",
-            "nextDeadline": null,
-            "phase": "GAME_RESULTS",
-            "spectatorIds": []
-          },
-          "playerStates": {
-            "p1": {
-              "answer": null,
-              "canAnswer": false
-            }
-          },
-          "publicState": {
-            "answeredIds": [],
-            "answers": {},
-            "category": "ATTACK",
-            "currentPokemon": {
-              "id": "jolteon",
-              "name": "Jolteon",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
-              "value": 65
-            },
-            "gameId": "higher-lower",
-            "lastRound": {
-              "correctAnswer": "SAME",
-              "currentValue": 65,
-              "outcomes": {
-                "p1": {
-                  "awardedPoints": 0,
-                  "basePoints": 0,
-                  "choice": null,
-                  "correct": false,
-                  "streak": 0,
-                  "streakBonus": 0
-                }
-              },
-              "previousValue": 65
-            },
-            "nextTransitionAt": null,
-            "phase": "GAME_RESULTS",
-            "playerIds": [
-              "p1"
-            ],
-            "previousPokemon": {
-              "id": "seadra",
-              "name": "Seadra",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
-              "value": 65
-            },
-            "results": {
-              "standings": [
-                {
-                  "playerId": "p1",
-                  "points": 8,
-                  "position": 1,
-                  "stats": {
-                    "accuracy": 80,
-                    "answered": 4,
-                    "bestStreak": 4,
-                    "correct": 4,
-                    "incorrect": 1,
-                    "sameCorrect": 1
-                  },
-                  "won": true
-                }
-              ],
-              "winnerId": "p1"
-            },
-            "roundEndsAt": null,
-            "roundNumber": 5,
-            "roundStartedAt": 17000,
-            "scores": {
-              "p1": 8
-            },
-            "streaks": {
-              "p1": 0
-            },
-            "totalRounds": 5
-          }
-        }
-      }
-    ],
-    "configNormalized": {
-      "answerVisibility": "REALTIME",
-      "categories": [
-        "BASE_STAT_TOTAL",
-        "DEX_NUMBER",
-        "ATTACK"
-      ],
-      "difficulty": "VERY_HARD",
-      "generations": [
-        1
-      ],
-      "roundSeconds": 10,
-      "rounds": 5,
-      "showPreviousValue": false
-    },
-    "initial": {
-      "finished": false,
-      "lifecycle": {
-        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
-        "nextDeadline": null,
-        "phase": "GAME_STARTING",
-        "spectatorIds": []
-      },
-      "playerStates": {
-        "p1": {
-          "answer": null,
-          "canAnswer": false
-        }
-      },
-      "publicState": {
-        "answeredIds": [],
-        "answers": {},
-        "category": "BASE_STAT_TOTAL",
-        "currentPokemon": {
-          "id": "pinsir",
-          "name": "Pinsir",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
-          "value": null
-        },
-        "gameId": "higher-lower",
-        "lastRound": null,
-        "nextTransitionAt": null,
-        "phase": "GAME_STARTING",
-        "playerIds": [
-          "p1"
-        ],
-        "previousPokemon": {
-          "id": "pinsir",
-          "name": "Pinsir",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
-          "value": null
-        },
-        "results": null,
-        "roundEndsAt": null,
-        "roundNumber": 0,
-        "roundStartedAt": null,
-        "scores": {
-          "p1": 0
-        },
-        "streaks": {
-          "p1": 0
-        },
-        "totalRounds": 5
-      }
-    },
-    "results": {
-      "standings": [
-        {
-          "playerId": "p1",
-          "points": 8,
-          "position": 1,
-          "stats": {
-            "accuracy": 80,
-            "answered": 4,
-            "bestStreak": 4,
-            "correct": 4,
-            "incorrect": 1,
-            "sameCorrect": 1
-          },
-          "won": true
-        }
-      ],
-      "winnerId": "p1"
-    }
-  },
-  "players": [
-    {
-      "displayName": "Ana",
-      "id": "p1"
-    }
-  ],
-  "scenario": "difficulty-very-hard-single-player",
-  "seed": 44,
   "steps": [
     {
-      "action": {
-        "choice": "SAME",
-        "type": "ANSWER"
-      },
       "kind": "action",
-      "now": 2000,
-      "playerId": "p1"
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "SAME"
+      },
+      "now": 2000
     },
     {
       "kind": "timeout",
       "now": 5000
     },
     {
-      "action": {
-        "choice": "LOWER",
-        "type": "ANSWER"
-      },
       "kind": "action",
-      "now": 6000,
-      "playerId": "p1"
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER"
+      },
+      "now": 6000
     },
     {
       "kind": "timeout",
       "now": 9000
     },
     {
-      "action": {
-        "choice": "HIGHER",
-        "type": "ANSWER"
-      },
       "kind": "action",
-      "now": 10000,
-      "playerId": "p1"
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "HIGHER"
+      },
+      "now": 10000
     },
     {
       "kind": "timeout",
       "now": 13000
     },
     {
-      "action": {
-        "choice": "LOWER",
-        "type": "ANSWER"
-      },
       "kind": "action",
-      "now": 14000,
-      "playerId": "p1"
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER"
+      },
+      "now": 14000
     },
     {
       "kind": "timeout",
@@ -889,5 +85,809 @@
       "kind": "timeout",
       "now": 31000
     }
-  ]
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "categories": [
+        "BASE_STAT_TOTAL",
+        "DEX_NUMBER",
+        "ATTACK"
+      ],
+      "showPreviousValue": false,
+      "answerVisibility": "REALTIME",
+      "difficulty": "VERY_HARD",
+      "roundSeconds": 10,
+      "rounds": 5
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "higher-lower",
+        "phase": "GAME_STARTING",
+        "playerIds": [
+          "p1"
+        ],
+        "roundNumber": 0,
+        "totalRounds": 5,
+        "category": "BASE_STAT_TOTAL",
+        "previousPokemon": {
+          "id": "pinsir",
+          "name": "Pinsir",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+          "value": null
+        },
+        "currentPokemon": {
+          "id": "pinsir",
+          "name": "Pinsir",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+          "value": null
+        },
+        "answers": {},
+        "answeredIds": [],
+        "scores": {
+          "p1": 0
+        },
+        "streaks": {
+          "p1": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canAnswer": false,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 11000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "higher-lower",
+        "phase": "ROUND_ACTIVE",
+        "playerIds": [
+          "p1"
+        ],
+        "roundNumber": 1,
+        "totalRounds": 5,
+        "category": "BASE_STAT_TOTAL",
+        "previousPokemon": {
+          "id": "pinsir",
+          "name": "Pinsir",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+          "value": null
+        },
+        "currentPokemon": {
+          "id": "rapidash",
+          "name": "Rapidash",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
+          "value": null
+        },
+        "answers": {},
+        "answeredIds": [],
+        "scores": {
+          "p1": 0
+        },
+        "streaks": {
+          "p1": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 11000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canAnswer": true,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 5000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "category": "BASE_STAT_TOTAL",
+            "previousPokemon": {
+              "id": "pinsir",
+              "name": "Pinsir",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+              "value": 500
+            },
+            "currentPokemon": {
+              "id": "rapidash",
+              "name": "Rapidash",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
+              "value": 500
+            },
+            "answers": {
+              "p1": {
+                "choice": "SAME",
+                "answeredAt": 2000
+              }
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 3
+            },
+            "streaks": {
+              "p1": 1
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 5000,
+            "lastRound": {
+              "previousValue": 500,
+              "currentValue": 500,
+              "correctAnswer": "SAME",
+              "outcomes": {
+                "p1": {
+                  "choice": "SAME",
+                  "correct": true,
+                  "basePoints": 3,
+                  "streakBonus": 0,
+                  "awardedPoints": 3,
+                  "streak": 1
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "SAME",
+                "answeredAt": 2000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 15000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,5000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 2,
+            "totalRounds": 5,
+            "category": "ATTACK",
+            "previousPokemon": {
+              "id": "rapidash",
+              "name": "Rapidash",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
+              "value": null
+            },
+            "currentPokemon": {
+              "id": "seaking",
+              "name": "Seaking",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png",
+              "value": null
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 3
+            },
+            "streaks": {
+              "p1": 1
+            },
+            "roundStartedAt": 5000,
+            "roundEndsAt": 15000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 9000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,5000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 2,
+            "totalRounds": 5,
+            "category": "ATTACK",
+            "previousPokemon": {
+              "id": "rapidash",
+              "name": "Rapidash",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
+              "value": 100
+            },
+            "currentPokemon": {
+              "id": "seaking",
+              "name": "Seaking",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png",
+              "value": 92
+            },
+            "answers": {
+              "p1": {
+                "choice": "LOWER",
+                "answeredAt": 6000
+              }
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 4
+            },
+            "streaks": {
+              "p1": 2
+            },
+            "roundStartedAt": 5000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 9000,
+            "lastRound": {
+              "previousValue": 100,
+              "currentValue": 92,
+              "correctAnswer": "LOWER",
+              "outcomes": {
+                "p1": {
+                  "choice": "LOWER",
+                  "correct": true,
+                  "basePoints": 1,
+                  "streakBonus": 0,
+                  "awardedPoints": 1,
+                  "streak": 2
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 6000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 19000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,9000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 3,
+            "totalRounds": 5,
+            "category": "DEX_NUMBER",
+            "previousPokemon": {
+              "id": "seaking",
+              "name": "Seaking",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png",
+              "value": null
+            },
+            "currentPokemon": {
+              "id": "pinsir",
+              "name": "Pinsir",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+              "value": null
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 4
+            },
+            "streaks": {
+              "p1": 2
+            },
+            "roundStartedAt": 9000,
+            "roundEndsAt": 19000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 13000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,9000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 3,
+            "totalRounds": 5,
+            "category": "DEX_NUMBER",
+            "previousPokemon": {
+              "id": "seaking",
+              "name": "Seaking",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png",
+              "value": 119
+            },
+            "currentPokemon": {
+              "id": "pinsir",
+              "name": "Pinsir",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+              "value": 127
+            },
+            "answers": {
+              "p1": {
+                "choice": "HIGHER",
+                "answeredAt": 10000
+              }
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 6
+            },
+            "streaks": {
+              "p1": 3
+            },
+            "roundStartedAt": 9000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 13000,
+            "lastRound": {
+              "previousValue": 119,
+              "currentValue": 127,
+              "correctAnswer": "HIGHER",
+              "outcomes": {
+                "p1": {
+                  "choice": "HIGHER",
+                  "correct": true,
+                  "basePoints": 1,
+                  "streakBonus": 1,
+                  "awardedPoints": 2,
+                  "streak": 3
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "HIGHER",
+                "answeredAt": 10000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 23000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 4,
+            "totalRounds": 5,
+            "category": "DEX_NUMBER",
+            "previousPokemon": {
+              "id": "pinsir",
+              "name": "Pinsir",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+              "value": null
+            },
+            "currentPokemon": {
+              "id": "seadra",
+              "name": "Seadra",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
+              "value": null
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 6
+            },
+            "streaks": {
+              "p1": 3
+            },
+            "roundStartedAt": 13000,
+            "roundEndsAt": 23000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 17000,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 4,
+            "totalRounds": 5,
+            "category": "DEX_NUMBER",
+            "previousPokemon": {
+              "id": "pinsir",
+              "name": "Pinsir",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+              "value": 127
+            },
+            "currentPokemon": {
+              "id": "seadra",
+              "name": "Seadra",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
+              "value": 117
+            },
+            "answers": {
+              "p1": {
+                "choice": "LOWER",
+                "answeredAt": 14000
+              }
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 8
+            },
+            "streaks": {
+              "p1": 4
+            },
+            "roundStartedAt": 13000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 17000,
+            "lastRound": {
+              "previousValue": 127,
+              "currentValue": 117,
+              "correctAnswer": "LOWER",
+              "outcomes": {
+                "p1": {
+                  "choice": "LOWER",
+                  "correct": true,
+                  "basePoints": 1,
+                  "streakBonus": 1,
+                  "awardedPoints": 2,
+                  "streak": 4
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 14000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",5,17000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 5,
+            "totalRounds": 5,
+            "category": "ATTACK",
+            "previousPokemon": {
+              "id": "seadra",
+              "name": "Seadra",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
+              "value": null
+            },
+            "currentPokemon": {
+              "id": "jolteon",
+              "name": "Jolteon",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+              "value": null
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 8
+            },
+            "streaks": {
+              "p1": 4
+            },
+            "roundStartedAt": 17000,
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_RESULTS\",5,17000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 5,
+            "totalRounds": 5,
+            "category": "ATTACK",
+            "previousPokemon": {
+              "id": "seadra",
+              "name": "Seadra",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
+              "value": 65
+            },
+            "currentPokemon": {
+              "id": "jolteon",
+              "name": "Jolteon",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+              "value": 65
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 8
+            },
+            "streaks": {
+              "p1": 0
+            },
+            "roundStartedAt": 17000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 31000,
+            "lastRound": {
+              "previousValue": 65,
+              "currentValue": 65,
+              "correctAnswer": "SAME",
+              "outcomes": {
+                "p1": {
+                  "choice": null,
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 0
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",5,17000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "GAME_RESULTS",
+            "playerIds": [
+              "p1"
+            ],
+            "roundNumber": 5,
+            "totalRounds": 5,
+            "category": "ATTACK",
+            "previousPokemon": {
+              "id": "seadra",
+              "name": "Seadra",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
+              "value": 65
+            },
+            "currentPokemon": {
+              "id": "jolteon",
+              "name": "Jolteon",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+              "value": 65
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 8
+            },
+            "streaks": {
+              "p1": 0
+            },
+            "roundStartedAt": 17000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "previousValue": 65,
+              "currentValue": 65,
+              "correctAnswer": "SAME",
+              "outcomes": {
+                "p1": {
+                  "choice": null,
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 0
+                }
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 8,
+                  "won": true,
+                  "stats": {
+                    "correct": 4,
+                    "incorrect": 1,
+                    "sameCorrect": 1,
+                    "answered": 4,
+                    "bestStreak": 4,
+                    "accuracy": 80
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 8,
+          "won": true,
+          "stats": {
+            "correct": 4,
+            "incorrect": 1,
+            "sameCorrect": 1,
+            "answered": 4,
+            "bestStreak": 4,
+            "accuracy": 80
+          }
+        }
+      ]
+    }
+  }
 }

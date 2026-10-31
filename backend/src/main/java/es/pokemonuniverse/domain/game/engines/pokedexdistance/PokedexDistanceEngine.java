@@ -263,9 +263,8 @@ public final class PokedexDistanceEngine implements
     var selections = new LinkedHashMap<String, PublicActiveSelection>();
     state.selections().forEach((playerId, selection) -> {
       var pokemon = context.pokemon().byId(selection.pokemonId());
-      selections.put(playerId, new PublicActiveSelection(selection.pokemonId(),
-          pokemon.map(Pokemon::name).orElse("Unknown"), pokemon.map(Pokemon::sprite).orElse(""),
-          selection.selectedAt()));
+      selections.put(playerId, new PublicActiveSelection(selection.pokemonId(), selection.selectedAt(),
+          pokemon.map(Pokemon::name).orElse("Unknown"), pokemon.map(Pokemon::sprite).orElse("")));
     });
     PublicRoundResult lastRound = null;
     var round = state.lastRound();
