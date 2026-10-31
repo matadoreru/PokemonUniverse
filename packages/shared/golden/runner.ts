@@ -47,7 +47,14 @@ export function runScenario(module: AnyModule, scenario: GoldenScenario): Golden
     context = { ...context, now: step.now, ...(step.kind === 'presence' ? { players: step.players } : {}) };
     try {
       if (step.kind === 'action') {
-        const result = module.handleAction(state, step.playerId, step.action, context);
+        // Como producción (rooms/manager.ts action()): la acción cruda pasa por actionSchema antes de handleAction.
+        const parsed = module.actionSchema.safeParse(step.action);
+        if (!parsed.success) {
+          afterSteps.push({ invalidAction: true });
+          stoppedAt = index;
+          break;
+        }
+        const result = module.handleAction(state, step.playerId, parsed.data, context);
         state = result.state;
         afterSteps.push({ accepted: result.accepted, ...(result.error !== undefined ? { error: result.error } : {}), snapshot: snapshot(module, state, context) });
       } else {

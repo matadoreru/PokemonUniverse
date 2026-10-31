@@ -18,6 +18,12 @@ import java.util.Objects;
 /**
  * Reproduce una fixture dorada con la misma secuencia de llamadas que {@code runner.ts} y compara cada proyección
  * con lo que grabó TypeScript. El primer desajuste lanza {@link AssertionError} con la ruta JSON.
+ *
+ * <p>Regla de acciones (igual que producción, {@code rooms/manager.ts}): la acción cruda se valida antes de
+ * {@code handleAction}. Si {@code parseAction} lanza {@link ConfigValidationException}, el paso esperado debe ser
+ * {@code invalidAction: true} y el escenario se detiene; si TS grabó un snapshot, es un fallo ("la acción cruda no
+ * valida en Java pero sí en TS"). Cualquier excepción durante el paso o al calcular su snapshot se compara con
+ * {@code threw}; {@code stoppedAt} debe coincidir con el paso que detuvo el escenario.
  */
 public final class GoldenReplayer {
 
@@ -62,20 +68,40 @@ public final class GoldenReplayer {
       }
       context = context.withNow(step.now());
       if ("presence".equals(step.kind())) context = context.withPlayers(step.players());
+      boolean invalid = Boolean.TRUE.equals(want.invalidAction());
+      A action = null;
+      if ("action".equals(step.kind())) {
+        try {
+          action = engine.parseAction(step.action());
+        } catch (ConfigValidationException e) {
+          if (!invalid) {
+            throw new AssertionError(id + ": " + path + ": la acción cruda no valida en Java pero sí en TS: "
+                + e.getMessage(), e);
+          }
+          checkStoppedAt(id, fixture, i);
+          stopped = true;
+          continue;
+        }
+      }
+      if (invalid) {
+        throw new AssertionError(id + ": " + path + ".invalidAction: esperado true, obtenido la acción válida en Java");
+      }
       Boolean accepted = null;
       String error = null;
+      GoldenFixture.Snapshot got;
       try {
         switch (step.kind()) {
           case "action" -> {
-            var result = engine.handleAction(state, step.playerId(), engine.parseAction(step.action()), context);
+            var result = engine.handleAction(state, step.playerId(), action, context);
             state = result.state();
             accepted = result.accepted();
             error = result.error();
           }
           case "timeout" -> state = engine.handleTimeout(state, context);
-          default -> state = engine.handlePresenceChange(state, context);
+          default -> state = engine.handlePresenceChange(state, context); // "presence"
         }
-      } catch (RuntimeException thrown) {
+        got = snapshot(engine, state, context);
+      } catch (Exception thrown) { // runner.ts captura cualquier error; la SPI no declara excepciones comprobadas
         if (want.threw() == null) {
           throw new AssertionError(id + ": " + path + ": esperado un paso sin excepción, lanzó " + thrown, thrown);
         }
@@ -83,6 +109,7 @@ public final class GoldenReplayer {
           throw new AssertionError(id + ": " + path + ".threw: esperado " + JsonTree.quote(want.threw())
               + ", obtenido " + JsonTree.quote(String.valueOf(thrown.getMessage())), thrown);
         }
+        checkStoppedAt(id, fixture, i);
         stopped = true;
         continue;
       }
@@ -96,9 +123,12 @@ public final class GoldenReplayer {
       if (!Objects.equals(want.error(), error)) {
         throw new AssertionError(id + ": " + path + ".error: esperado " + want.error() + ", obtenido " + error);
       }
-      compareSnapshot(id, path + ".snapshot", want.snapshot(), snapshot(engine, state, context));
+      compareSnapshot(id, path + ".snapshot", want.snapshot(), got);
     }
 
+    if (!stopped && fixture.stoppedAt() != null) {
+      throw new AssertionError(id + ": stoppedAt: esperado " + fixture.stoppedAt() + ", obtenido <ningún paso se detuvo>");
+    }
     if (!stopped && expected.afterSteps().size() != steps.size()) {
       throw new AssertionError(id + ": expected.afterSteps: esperado " + expected.afterSteps().size()
           + " resultados, obtenido " + steps.size());
@@ -110,6 +140,12 @@ public final class GoldenReplayer {
           + (wantsResults ? "resultados" : "<ausente>") + ", obtenido " + (hasResults ? "resultados" : "<ausente>"));
     }
     if (wantsResults) compare(id, "expected.results", expected.results(), tree(engine.getResults(state)));
+  }
+
+  private static void checkStoppedAt(String id, GoldenFixture fixture, int index) {
+    if (!Objects.equals(fixture.stoppedAt(), index)) {
+      throw new AssertionError(id + ": stoppedAt: esperado " + fixture.stoppedAt() + ", obtenido " + index);
+    }
   }
 
   /** {@code valid}: la normalización coincide con la de TS; si no, {@code parseConfig} lanza {@link ConfigValidationException}. */

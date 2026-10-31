@@ -39,6 +39,13 @@ class GoldenReplayerTest {
 
   /** Contador: {@code inc} acepta, {@code reject} rechaza con "nope", {@code explode} lanza "boom". */
   static final class FakeEngine implements GameEngine<Config, Counter, JsonNode, PublicView> {
+    /** {@code getPublicState} lanza "pub" cuando el contador llega a este valor. */
+    private final int failPublicAt;
+
+    FakeEngine() { this(-1); }
+
+    FakeEngine(int failPublicAt) { this.failPublicAt = failPublicAt; }
+
     @Override public GameManifest manifest() { return null; }
 
     @Override public Config parseConfig(JsonNode raw) {
@@ -47,7 +54,10 @@ class GoldenReplayerTest {
       return new Config(start.getNumberValue().intValue());
     }
 
-    @Override public JsonNode parseAction(JsonNode raw) { return raw; }
+    @Override public JsonNode parseAction(JsonNode raw) {
+      if ("bad".equals(raw.get("op").getStringValue())) throw new ConfigValidationException("acción inválida");
+      return raw;
+    }
 
     @Override public Config defaultConfig() { return new Config(0); }
 
@@ -65,6 +75,7 @@ class GoldenReplayerTest {
     }
 
     @Override public PublicView getPublicState(Counter state, GameContext context) {
+      if (state.count() == failPublicAt) throw new EngineException("pub");
       return new PublicView(state.count(), null);
     }
 
@@ -108,11 +119,19 @@ class GoldenReplayerTest {
   private static final String INC = "{\"kind\":\"action\",\"playerId\":\"p1\",\"action\":{\"op\":\"inc\"},\"now\":2000}";
 
   private static void replay(GoldenFixture fixture) {
-    GoldenReplayer.replay(new FakeEngine(), fixture, new InMemoryPokemonCatalog(List.of()));
+    replay(new FakeEngine(), fixture);
+  }
+
+  private static void replay(FakeEngine engine, GoldenFixture fixture) {
+    GoldenReplayer.replay(engine, fixture, new InMemoryPokemonCatalog(List.of()));
   }
 
   private static AssertionError failure(GoldenFixture fixture) {
     return assertThrows(AssertionError.class, () -> replay(fixture));
+  }
+
+  private static AssertionError failure(GoldenFixture fixture, FakeEngine engine) {
+    return assertThrows(AssertionError.class, () -> replay(engine, fixture));
   }
 
   @Test
@@ -161,13 +180,54 @@ class GoldenReplayerTest {
   @Test
   void threwStepNeedsTheSameMessage() throws IOException {
     var explode = "{\"kind\":\"action\",\"playerId\":\"p1\",\"action\":{\"op\":\"explode\"},\"now\":2000}";
-    assertDoesNotThrow(() -> replay(fixture(explode, "{\"threw\":\"boom\"}", ok(0))));
+    assertDoesNotThrow(() -> replay(withStoppedAt(fixture(explode, "{\"threw\":\"boom\"}", ok(0)), 0)));
     var wrong = failure(fixture(explode, "{\"threw\":\"bang\"}", ok(0)));
     assertTrue(wrong.getMessage().contains("threw: esperado \"bang\", obtenido \"boom\""), wrong.getMessage());
     var noThrow = failure(fixture(INC, "{\"threw\":\"boom\"}", ok(0)));
     assertTrue(noThrow.getMessage().contains("obtenido <sin excepción>"), noThrow.getMessage());
     var unexpected = failure(fixture(explode, "{\"accepted\":true,\"snapshot\":" + ok(0) + "}", ok(0)));
     assertTrue(unexpected.getMessage().contains("lanzó"), unexpected.getMessage());
+  }
+
+  private static final String BAD = "{\"kind\":\"action\",\"playerId\":\"p1\",\"action\":{\"op\":\"bad\"},\"now\":2000}";
+
+  @Test
+  void invalidActionMirrorsProductionParsing() throws IOException {
+    assertDoesNotThrow(() -> replay(withStoppedAt(fixture(BAD, "{\"invalidAction\":true}", ok(0)), 0)));
+    var vsSnapshot = failure(withStoppedAt(fixture(BAD, "{\"accepted\":true,\"snapshot\":" + ok(0) + "}", ok(0)), 0));
+    assertTrue(vsSnapshot.getMessage().contains("la acción cruda no valida en Java pero sí en TS"), vsSnapshot.getMessage());
+    var validInJava = failure(fixture(INC, "{\"invalidAction\":true}", ok(0)));
+    assertTrue(validInJava.getMessage().contains("invalidAction: esperado true"), validInJava.getMessage());
+  }
+
+  @Test
+  void stoppedAtMustMatchTheStoppingStep() throws IOException {
+    var wrong = failure(withStoppedAt(fixture(BAD, "{\"invalidAction\":true}", ok(0)), 3));
+    assertTrue(wrong.getMessage().contains("stoppedAt: esperado 3, obtenido 0"), wrong.getMessage());
+    var missing = failure(fixture(BAD, "{\"invalidAction\":true}", ok(0)));
+    assertTrue(missing.getMessage().contains("stoppedAt: esperado null, obtenido 0"), missing.getMessage());
+  }
+
+  @Test
+  void exceptionWhileProjectingAfterAStepIsComparedAsThrew() throws IOException {
+    var steps = INC + "," + INC;
+    var fixture = withStoppedAt(fixture(steps, "{\"accepted\":true,\"snapshot\":" + ok(1) + "},{\"threw\":\"pub\"}", ok(0)), 1);
+    assertDoesNotThrow(() -> replay(new FakeEngine(2), fixture));
+    var other = failure(fixture(steps, "{\"accepted\":true,\"snapshot\":" + ok(1) + "},{\"accepted\":true,\"snapshot\":" + ok(2) + "}", ok(0)),
+        new FakeEngine(2));
+    assertTrue(other.getMessage().contains("esperado un paso sin excepción"), other.getMessage());
+  }
+
+  @Test
+  void jsonNullProjectionsAreComparedAsNull() throws IOException {
+    var nullPublic = "{\"lifecycle\":" + LIFECYCLE + ",\"publicState\":null,\"playerStates\":{\"p1\":{\"seen\":0}},\"finished\":false}";
+    var error = failure(fixture(INC, "{\"accepted\":true,\"snapshot\":" + ok(1) + "}", nullPublic));
+    assertTrue(error.getMessage().contains("expected.initial.publicState: esperado null, obtenido {"), error.getMessage());
+  }
+
+  private static GoldenFixture withStoppedAt(GoldenFixture f, int index) {
+    return new GoldenFixture(f.engineId(), f.scenario(), f.seed(), f.catalog(), f.players(), f.config(), f.startNow(),
+        f.roomCode(), f.steps(), f.expected(), index);
   }
 
   private static void configCase(String json) throws IOException {

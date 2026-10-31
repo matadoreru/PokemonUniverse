@@ -102,4 +102,11 @@ class JsonTreeTest {
         JsonTree.firstDifference("", obj("l", JsonNode.createArrayNode(List.of(num(1)))),
             obj("l", JsonNode.createArrayNode(List.of(num(1), num(2))))).orElseThrow());
   }
+
+  @Test
+  void javaNullBehavesAsJsonNull() {
+    assertTrue(JsonTree.canonical(null).isNull());
+    assertTrue(JsonTree.equal(JsonTree.canonical(null), JsonNode.nullNode()));
+    assertEquals("null", JsonTree.toCanonicalString(null));
+  }
 }

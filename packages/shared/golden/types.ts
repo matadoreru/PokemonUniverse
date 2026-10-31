@@ -36,11 +36,14 @@ export interface GoldenSnapshot {
 /**
  * Resultado de un paso. `accepted` solo aparece en pasos `action`; `error` solo cuando
  * el resultado TS de `handleAction` lo trae (semántica JSON: nunca `error: null`).
- * Si el motor lanza, el paso es `{ threw: message }` sin snapshot y el escenario se detiene.
+ * Si el motor lanza (también al calcular el snapshot), el paso es `{ threw: message }` sin snapshot y el escenario se detiene.
+ * Como en producción, la acción cruda se valida con `actionSchema` antes de `handleAction`: si no valida, el paso es
+ * `{ invalidAction: true }` (sin snapshot), el escenario se detiene y `handleAction` recibe la acción ya parseada.
  */
 export type GoldenStepResult =
   | { accepted?: boolean; error?: string; snapshot: GoldenSnapshot }
-  | { threw: string };
+  | { threw: string }
+  | { invalidAction: true };
 
 export interface GoldenFixture {
   engineId: string;
@@ -58,7 +61,7 @@ export interface GoldenFixture {
     /** `getResults(state)` solo si el estado final está terminado y ningún paso lanzó. */
     results?: GameResults;
   };
-  /** Índice del paso que lanzó; los pasos posteriores no se ejecutan. */
+  /** Índice del paso que lanzó o cuya acción no validó; los pasos posteriores no se ejecutan. */
   stoppedAt?: number;
 }
 

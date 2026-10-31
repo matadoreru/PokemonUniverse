@@ -86,6 +86,22 @@ describe('runScenario', () => {
   });
 });
 
+describe('runScenario con acción inválida', () => {
+  it('registra invalidAction y detiene el escenario sin llamar a handleAction', () => {
+    const fixture = runScenario(counter, {
+      name: 'invalid', seed: 1, catalog: 'gen1-2', players, config: {},
+      steps: [
+        { kind: 'action', playerId: 'p1', action: { type: 'INCREMENT' }, now: 600 },
+        { kind: 'action', playerId: 'p1', action: { type: 'NOPE' }, now: 700 },
+        { kind: 'timeout', now: 800 },
+      ],
+    });
+    expect(fixture.expected.afterSteps).toEqual([expect.objectContaining({ accepted: true }), { invalidAction: true }]);
+    expect(fixture.stoppedAt).toBe(1);
+    expect(fixture.expected).not.toHaveProperty('results');
+  });
+});
+
 describe('renderFixtures', () => {
   it('genera un fichero por escenario y config-cases con claves ordenadas y sin undefined', () => {
     const files = renderFixtures({

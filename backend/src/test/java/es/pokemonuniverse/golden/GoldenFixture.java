@@ -27,12 +27,16 @@ public record GoldenFixture(
       @Nullable List<GamePlayer> players, long now) {}
 
   @Serdeable
-  public record Snapshot(JsonNode lifecycle, JsonNode publicState, JsonNode playerStates, boolean finished) {}
+  public record Snapshot(@Nullable JsonNode lifecycle, @Nullable JsonNode publicState, @Nullable JsonNode playerStates,
+      boolean finished) {}
 
-  /** O {@code threw}, o {@code snapshot} con {@code accepted}/{@code error} opcionales (ausentes en TS = nulos). */
+  /**
+   * O {@code threw}, o {@code invalidAction: true}, o {@code snapshot} con {@code accepted}/{@code error} opcionales
+   * (ausentes en TS = nulos).
+   */
   @Serdeable
   public record StepResult(@Nullable Boolean accepted, @Nullable String error, @Nullable Snapshot snapshot,
-      @Nullable String threw) {}
+      @Nullable String threw, @Nullable Boolean invalidAction) {}
 
   @Serdeable
   public record Expected(JsonNode configNormalized, Snapshot initial, Snapshot afterStart, List<StepResult> afterSteps,
