@@ -1,0 +1,314 @@
+[
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        9
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        9
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 10,
+      "rounds": 1,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 10,
+      "rounds": 1,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 60,
+      "rounds": 20,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 60,
+      "rounds": 20,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 10,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 10,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LEGACY",
+      "includeRegionalForms": true
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LEGACY",
+      "includeRegionalForms": true
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "RANDOM",
+      "includeRegionalForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "RANDOM",
+      "includeRegionalForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 9,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 61,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 0,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 21,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 1.5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "latest",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "BOTH",
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "includeRegionalForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": "no"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false,
+      "unknownKey": "no se admite"
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]

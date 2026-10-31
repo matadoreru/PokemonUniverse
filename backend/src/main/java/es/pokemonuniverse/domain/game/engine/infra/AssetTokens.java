@@ -23,7 +23,8 @@ public final class AssetTokens {
   }
 
   /**
-   * {@code /api/rooms/${encodeURIComponent(roomCode)}/games/${assetToken}/rounds/${roundNumber}/options/${assetId}/${media}}.
+   * {@code /api/rooms/${encodeURIComponent(roomCode)}/games/${assetToken}/rounds/${roundNumber}/options/${assetId}/}
+   * seguido de {@code media} ({@code sprite} o {@code audio}).
    * {@code roomCode} ya trae el respaldo de cada motor ({@code ?? 'opaque'} o la condición de {@code shiny-vote}).
    */
   public static String roundAssetPath(String roomCode, String assetToken, int roundNumber, String assetId,

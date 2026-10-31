@@ -11,6 +11,7 @@ import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeEngine;
 import es.pokemonuniverse.domain.game.engines.pokeddlerace.PokeddleRaceEngine;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceEngine;
 import es.pokemonuniverse.domain.game.engines.pokedexentryguess.PokedexEntryGuessEngine;
+import es.pokemonuniverse.domain.game.engines.pokemoncryquiz.PokemonCryQuizEngine;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessEngine;
 import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagEngine;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaEngine;
@@ -83,6 +84,7 @@ public class ClasspathGameRegistryLoader {
     engines.put(PokedexEntryGuessEngine.ID,
         new PokedexEntryGuessEngine(manifest(manifests, PokedexEntryGuessEngine.ID)));
     engines.put(WhosThatPokemonEngine.ID, new WhosThatPokemonEngine(manifest(manifests, WhosThatPokemonEngine.ID)));
+    engines.put(PokemonCryQuizEngine.ID, new PokemonCryQuizEngine(manifest(manifests, PokemonCryQuizEngine.ID)));
     return engines;
   }
 

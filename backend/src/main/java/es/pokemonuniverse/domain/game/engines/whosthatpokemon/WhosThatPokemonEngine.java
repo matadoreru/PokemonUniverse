@@ -142,7 +142,9 @@ public final class WhosThatPokemonEngine implements
   private static WhosThatPokemonState beginRound(WhosThatPokemonState state, GameContext context) {
     var allCandidates = new ArrayList<Pokemon>();
     for (var id : state.poolIds()) context.pokemon().byId(id).ifPresent(allCandidates::add);
-    if (allCandidates.isEmpty()) throw new EngineException("No hay Pokémon con sprites válidos para esta configuración.");
+    if (allCandidates.isEmpty()) {
+      throw new EngineException("No hay Pokémon con sprites válidos para esta configuración.");
+    }
     List<Pokemon> candidates = allCandidates.stream()
         .filter(pokemon -> !state.usedPokemonIds().contains(pokemon.id()))
         .toList();

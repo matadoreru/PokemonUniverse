@@ -1,0 +1,330 @@
+{
+  "engineId": "pokemon-cry-quiz",
+  "scenario": "invalid-action-stops",
+  "seed": 913,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "roundSeconds": 10,
+    "rounds": 3,
+    "cryVersion": "LEGACY",
+    "includeRegionalForms": false
+  },
+  "pokemonAudio": {
+    "bulbasaur": {
+      "latest": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/1.ogg",
+      "legacy": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/1.ogg"
+    },
+    "charmander": {
+      "latest": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/4.ogg"
+    },
+    "squirtle": {
+      "latest": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/7.ogg",
+      "legacy": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/7.ogg"
+    },
+    "pikachu": {
+      "latest": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/25.ogg",
+      "legacy": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/25.ogg"
+    },
+    "eevee": {
+      "legacy": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/133.ogg"
+    },
+    "meowth-alola": {
+      "latest": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10107.ogg"
+    },
+    "mewtwo": {
+      "latest": "",
+      "legacy": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/150.ogg"
+    },
+    "chikorita": {
+      "latest": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/152.ogg",
+      "legacy": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/152.ogg"
+    },
+    "togepi": {
+      "legacy": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/175.ogg"
+    }
+  },
+  "steps": [
+    {
+      "kind": "asset",
+      "assetToken": "rs-tf3mpt-1c4aj62-gczdw6",
+      "roundNumber": 1,
+      "assetId": "cry",
+      "now": 1500
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-tf3mpt-1c4aj62-gczdw6",
+      "roundNumber": 1,
+      "assetId": "CRY",
+      "now": 1500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "eevee"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "timeout",
+      "now": 6000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-tf3mpt-1c4aj62-gczdw6",
+      "roundNumber": 2,
+      "assetId": "cry",
+      "now": 6500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "chikorita"
+      },
+      "now": 8000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 10,
+      "rounds": 3,
+      "cryVersion": "LEGACY",
+      "includeRegionalForms": false
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-cry-quiz",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "cryUrl": null,
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 11000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-cry-quiz",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "cryUrl": "/api/rooms/GOLD01/games/rs-tf3mpt-1c4aj62-gczdw6/rounds/1/options/cry/audio",
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 11000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/133.ogg",
+          "transform": "ORIGINAL"
+        }
+      },
+      {
+        "resolution": null
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-cry-quiz",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "cryUrl": null,
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 12
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 6000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Eevee",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png",
+                "generation": 1
+              },
+              "cryVersion": "LEGACY",
+              "cryUrl": "/api/rooms/GOLD01/games/rs-tf3mpt-1c4aj62-gczdw6/rounds/1/options/cry/audio",
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 2000,
+                  "elapsedMs": 1000,
+                  "speedPoints": 9,
+                  "placementBonus": 3,
+                  "points": 12,
+                  "attempts": 1
+                }
+              },
+              "attemptCounts": {
+                "p1": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 12,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 2000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,6000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-cry-quiz",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "cryUrl": "/api/rooms/GOLD01/games/rs-tf3mpt-1c4aj62-gczdw6/rounds/2/options/cry/audio",
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 12
+            },
+            "roundStartedAt": 6000,
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/152.ogg",
+          "transform": "ORIGINAL"
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 5
+}

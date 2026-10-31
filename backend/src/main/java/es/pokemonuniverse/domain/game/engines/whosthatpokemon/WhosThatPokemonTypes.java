@@ -153,8 +153,8 @@ public final class WhosThatPokemonTypes {
   public record WhosThatPokemonRoundPokemon(String id, String name, String sprite, int generation) {}
 
   /** {@code WhosThatPokemonRoundResult} (solo en el estado). */
-  public record WhosThatPokemonRoundResult(WhosThatPokemonRoundPokemon pokemon, Map<String, WhosThatPokemonSolve> solves,
-      Map<String, Integer> attemptCounts) {
+  public record WhosThatPokemonRoundResult(WhosThatPokemonRoundPokemon pokemon,
+      Map<String, WhosThatPokemonSolve> solves, Map<String, Integer> attemptCounts) {
 
     public WhosThatPokemonRoundResult {
       solves = frozenMap(solves);
@@ -224,7 +224,7 @@ public final class WhosThatPokemonTypes {
       return toBuilder().phase(GamePhase.GAME_RESULTS).roundEndsAt(null).nextTransitionAt(null).build();
     }
 
-    /** Listas y mapas vacíos por defecto; {@code phase}, {@code config} y {@code assetToken} los valida {@link #build()}. */
+    /** Listas y mapas vacíos por defecto; {@link #build()} exige {@code phase}, {@code config} y {@code assetToken}. */
     public static final class Builder {
       private GamePhase phase;
       private WhosThatPokemonConfig config;
@@ -293,10 +293,11 @@ public final class WhosThatPokemonTypes {
       public Builder lastRound(@Nullable WhosThatPokemonRoundResult value) { lastRound = value; return this; }
 
       public WhosThatPokemonState build() {
-        return new WhosThatPokemonState(Objects.requireNonNull(phase, "phase"), Objects.requireNonNull(config, "config"),
-            Objects.requireNonNull(assetToken, "assetToken"), playerIds, poolIds, roundNumber, targetPokemonId,
-            usedPokemonIds, attempts, attemptCounts, solves, cooldownUntil, lastAttemptResult, scores, playerStats,
-            revealedHintCount, roundStartedAt, roundEndsAt, nextTransitionAt, lastRound);
+        return new WhosThatPokemonState(Objects.requireNonNull(phase, "phase"),
+            Objects.requireNonNull(config, "config"), Objects.requireNonNull(assetToken, "assetToken"), playerIds,
+            poolIds, roundNumber, targetPokemonId, usedPokemonIds, attempts, attemptCounts, solves, cooldownUntil,
+            lastAttemptResult, scores, playerStats, revealedHintCount, roundStartedAt, roundEndsAt, nextTransitionAt,
+            lastRound);
       }
     }
   }

@@ -12,6 +12,7 @@ import { pokeddleRaceScenarios } from './pokeddle-race.js';
 import { pokedexEntryGuessScenarios } from './pokedex-entry-guess.js';
 import { pokedexDistanceScenarios } from './pokedex-distance.js';
 import { pokemonRedFlagScenarios } from './pokemon-red-flag.js';
+import { pokemonCryQuizScenarios } from './pokemon-cry-quiz.js';
 import { pokemonPaletteGuessScenarios } from './pokemon-palette-guess.js';
 import { pokemonTriviaScenarios } from './pokemon-trivia.js';
 import { secretRankingScenarios } from './secret-ranking.js';
@@ -45,4 +46,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'learnset-guess': learnsetGuessScenarios,
   'pokedex-entry-guess': pokedexEntryGuessScenarios,
   'whos-that-pokemon': whosThatPokemonScenarios,
+  'pokemon-cry-quiz': pokemonCryQuizScenarios,
 };
