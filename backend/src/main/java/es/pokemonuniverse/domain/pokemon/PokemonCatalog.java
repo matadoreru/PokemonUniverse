@@ -15,4 +15,9 @@ public interface PokemonCatalog {
 
   /** Entradas de esas generaciones en el orden del catálogo; las formas solo con {@code includeForms}. */
   List<Pokemon> forGenerations(List<Integer> generations, boolean includeForms);
+
+  /** {@code forGenerations(generations)} de TS: sin formas. */
+  default List<Pokemon> forGenerations(List<Integer> generations) {
+    return forGenerations(generations, false);
+  }
 }

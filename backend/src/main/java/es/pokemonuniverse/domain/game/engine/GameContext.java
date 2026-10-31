@@ -4,18 +4,19 @@ import es.pokemonuniverse.domain.pokemon.PokemonCatalog;
 import es.pokemonuniverse.domain.tcg.TcgCardCatalog;
 import io.micronaut.core.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Predicate;
 
 /**
  * Contexto de una llamada a un motor ({@code GameContext} de {@code contracts.ts}). {@code now} en ms epoch y
- * {@code random} en [0, 1) son las únicas fuentes de tiempo y azar. Las listas del host nunca son nulas (el
- * {@code ?? []} de los motores TS).
+ * {@code random} en [0, 1) son las únicas fuentes de tiempo y azar; ambos, {@code pokemon} y {@code players}, son
+ * obligatorios. Las listas del host nunca son nulas (el {@code ?? []} de los motores TS).
  */
 public record GameContext(
     List<GamePlayer> players,
-    @Nullable PokemonCatalog pokemon,
+    PokemonCatalog pokemon,
     long now,
     DoubleSupplier random,
     @Nullable String roomCode,
@@ -28,17 +29,20 @@ public record GameContext(
     @Nullable Consumer<String> preloadImage) {
 
   public GameContext {
-    players = List.copyOf(players);
+    Objects.requireNonNull(pokemon, "GameContext necesita un catálogo de Pokémon (pokemon)");
+    Objects.requireNonNull(random, "GameContext necesita una fuente de azar (random)");
+    players = List.copyOf(Objects.requireNonNull(players, "GameContext necesita la lista de jugadores (players)"));
     hostCustomCategories = hostCustomCategories == null ? List.of() : List.copyOf(hostCustomCategories);
     hostWouldYouRatherPrompts = hostWouldYouRatherPrompts == null ? List.of() : List.copyOf(hostWouldYouRatherPrompts);
   }
 
-  public static Builder builder() {
-    return new Builder();
+  /** {@code pokemon} y {@code random} son obligatorios: no hay valores por defecto silenciosos. */
+  public static Builder builder(PokemonCatalog pokemon, DoubleSupplier random) {
+    return new Builder(pokemon, random);
   }
 
   public Builder toBuilder() {
-    return new Builder().players(players).pokemon(pokemon).now(now).random(random).roomCode(roomCode).hostId(hostId)
+    return new Builder(pokemon, random).players(players).now(now).roomCode(roomCode).hostId(hostId)
         .hostCustomCategories(hostCustomCategories).hostWouldYouRatherPrompts(hostWouldYouRatherPrompts)
         .tcgCards(tcgCards).pokemonVisuals(pokemonVisuals).pokemonAudio(pokemonAudio).preloadImage(preloadImage);
   }
@@ -72,9 +76,9 @@ public record GameContext(
 
   public static final class Builder {
     private List<GamePlayer> players = List.of();
-    private PokemonCatalog pokemon;
+    private final PokemonCatalog pokemon;
     private long now;
-    private DoubleSupplier random;
+    private final DoubleSupplier random;
     private String roomCode;
     private String hostId;
     private List<SubjectiveCategory> hostCustomCategories = List.of();
@@ -84,15 +88,14 @@ public record GameContext(
     private PokemonAudioCatalog pokemonAudio;
     private Consumer<String> preloadImage;
 
-    private Builder() {}
+    private Builder(PokemonCatalog pokemon, DoubleSupplier random) {
+      this.pokemon = Objects.requireNonNull(pokemon, "GameContext necesita un catálogo de Pokémon (pokemon)");
+      this.random = Objects.requireNonNull(random, "GameContext necesita una fuente de azar (random)");
+    }
 
     public Builder players(List<GamePlayer> value) { players = value; return this; }
 
-    public Builder pokemon(@Nullable PokemonCatalog value) { pokemon = value; return this; }
-
     public Builder now(long value) { now = value; return this; }
-
-    public Builder random(DoubleSupplier value) { random = value; return this; }
 
     public Builder roomCode(@Nullable String value) { roomCode = value; return this; }
 

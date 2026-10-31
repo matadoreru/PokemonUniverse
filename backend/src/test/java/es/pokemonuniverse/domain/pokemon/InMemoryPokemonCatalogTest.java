@@ -35,6 +35,7 @@ class InMemoryPokemonCatalogTest {
     assertEquals(151, gen1.size());
     assertEquals(IntStream.rangeClosed(1, 151).boxed().toList(), gen1.stream().map(Pokemon::nationalDexNumber).toList());
     assertTrue(gen1.stream().allMatch(Pokemon::isDefault));
+    assertEquals(gen1, CATALOG.forGenerations(List.of(1)));
   }
 
   @Test

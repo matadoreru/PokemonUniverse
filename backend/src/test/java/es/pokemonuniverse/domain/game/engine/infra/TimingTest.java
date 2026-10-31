@@ -3,11 +3,13 @@ package es.pokemonuniverse.domain.game.engine.infra;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
+import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +42,7 @@ class TimingTest {
   };
 
   private static GameContext context(long now, List<GamePlayer> players) {
-    return GameContext.builder().players(players).now(now).random(() -> 0).build();
+    return GameContext.builder(new InMemoryPokemonCatalog(List.of()), () -> 0).players(players).now(now).build();
   }
 
   @Test
@@ -80,6 +82,19 @@ class TimingTest {
     assertSame(waiting, Timing.advanceTimedRound(waiting, context, STRATEGY));
     var other = new State(GamePhase.VOTING, 1L, 1L, 1);
     assertSame(other, Timing.advanceTimedRound(other, context, STRATEGY));
+  }
+
+  @Test
+  void contextRequiresCatalogAndRandom() {
+    var catalog = new InMemoryPokemonCatalog(List.of());
+    var noCatalog = assertThrows(NullPointerException.class, () -> GameContext.builder(null, () -> 0));
+    assertEquals("GameContext necesita un catálogo de Pokémon (pokemon)", noCatalog.getMessage());
+    var noRandom = assertThrows(NullPointerException.class, () -> GameContext.builder(catalog, null));
+    assertEquals("GameContext necesita una fuente de azar (random)", noRandom.getMessage());
+    var context = context(5, List.of());
+    assertEquals(9, context.withNow(9).now());
+    assertEquals(List.of("x"), context.withPlayers(List.of(new GamePlayer("x", "X"))).players().stream()
+        .map(GamePlayer::id).toList());
   }
 
   @Test

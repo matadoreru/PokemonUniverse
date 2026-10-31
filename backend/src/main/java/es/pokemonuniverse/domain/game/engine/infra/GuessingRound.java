@@ -3,17 +3,12 @@ package es.pokemonuniverse.domain.game.engine.infra;
 /** Traducción literal de {@code games/infrastructure/guessing-round.ts}: contabilidad común de aciertos. */
 public final class GuessingRound {
 
-  public record GuessSolveStats(int correct, int totalAttempts, int firstTry, int roundFirsts, long solveTimeTotalMs,
-      long bestTimeMs, int pointsFromRounds) {
-
-    public static final GuessSolveStats EMPTY = new GuessSolveStats(0, 0, 0, 0, 0, 0, 0);
-  }
-
   private GuessingRound() {}
 
-  public static GuessSolveStats recordGuessSolve(GuessSolveStats stats, int attemptCount, int solveOrder, long elapsedMs,
-      int points) {
-    return new GuessSolveStats(
+  /** Las respuestas aceptadas y la política de puntos siguen siendo del juego. */
+  public static <T extends GuessSolveStats<T>> T recordGuessSolve(T stats, int attemptCount, int solveOrder,
+      long elapsedMs, int points) {
+    return stats.withSolve(
         stats.correct() + 1,
         stats.totalAttempts() + 1,
         stats.firstTry() + (attemptCount == 1 ? 1 : 0),
