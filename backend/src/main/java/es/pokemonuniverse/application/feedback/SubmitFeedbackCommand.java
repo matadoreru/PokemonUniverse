@@ -1,7 +1,7 @@
 package es.pokemonuniverse.application.feedback;
 
-import es.pokemonuniverse.adapters.out.persistence.FeedbackReference;
-import es.pokemonuniverse.adapters.out.persistence.FeedbackType;
+import es.pokemonuniverse.domain.feedback.FeedbackReference;
+import es.pokemonuniverse.domain.feedback.FeedbackType;
 import io.micronaut.core.annotation.Nullable;
 
 /** Feedback ya validado y normalizado; {@code reference} es la referencia efectiva. */

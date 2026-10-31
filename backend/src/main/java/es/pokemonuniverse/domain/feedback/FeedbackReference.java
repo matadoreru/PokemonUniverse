@@ -1,4 +1,4 @@
-package es.pokemonuniverse.adapters.out.persistence;
+package es.pokemonuniverse.domain.feedback;
 
 public enum FeedbackReference {
   GENERAL,

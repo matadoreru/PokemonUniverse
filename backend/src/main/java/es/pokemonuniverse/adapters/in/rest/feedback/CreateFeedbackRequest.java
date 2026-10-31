@@ -2,8 +2,8 @@ package es.pokemonuniverse.adapters.in.rest.feedback;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import es.pokemonuniverse.adapters.in.rest.ApiError;
-import es.pokemonuniverse.adapters.out.persistence.FeedbackReference;
-import es.pokemonuniverse.adapters.out.persistence.FeedbackType;
+import es.pokemonuniverse.domain.feedback.FeedbackReference;
+import es.pokemonuniverse.domain.feedback.FeedbackType;
 import es.pokemonuniverse.application.feedback.SubmitFeedbackCommand;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.serde.annotation.Serdeable;

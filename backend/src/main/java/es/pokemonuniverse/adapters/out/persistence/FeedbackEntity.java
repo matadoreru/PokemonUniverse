@@ -1,5 +1,8 @@
 package es.pokemonuniverse.adapters.out.persistence;
 
+import es.pokemonuniverse.domain.feedback.FeedbackReference;
+import es.pokemonuniverse.domain.feedback.FeedbackStatus;
+import es.pokemonuniverse.domain.feedback.FeedbackType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
