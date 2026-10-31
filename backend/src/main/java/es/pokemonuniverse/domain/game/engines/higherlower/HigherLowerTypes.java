@@ -1,5 +1,8 @@
 package es.pokemonuniverse.domain.game.engines.higherlower;
 
+import static es.pokemonuniverse.domain.game.engine.infra.Immutables.frozenList;
+import static es.pokemonuniverse.domain.game.engine.infra.Immutables.frozenMap;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
@@ -9,24 +12,18 @@ import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerConfig.High
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
- * Tipos de {@code higher-lower/types.ts}. Los {@code Record<string, …>} son {@link LinkedHashMap} inmutables (orden de
- * inserción, como un objeto JS con claves no numéricas); cada transición crea copias nuevas.
+ * Tipos de {@code higher-lower/types.ts}. Los {@code Record<string, …>} son mapas inmutables con orden de inserción
+ * ({@code Immutables.frozenMap}); cada transición crea un estado nuevo con {@code toBuilder()}.
  */
 public final class HigherLowerTypes {
 
   private HigherLowerTypes() {}
-
-  /** Copia inmutable que conserva el orden de inserción. */
-  static <V> Map<String, V> frozen(Map<String, V> map) {
-    return Collections.unmodifiableMap(new LinkedHashMap<>(map));
-  }
 
   public enum HigherLowerChoice { HIGHER, SAME, LOWER }
 
@@ -52,11 +49,14 @@ public final class HigherLowerTypes {
       Map<String, HigherLowerOutcome> outcomes) {
 
     public HigherLowerRoundResult {
-      outcomes = frozen(outcomes);
+      outcomes = frozenMap(outcomes);
     }
   }
 
-  /** Estado opaco del servidor; nunca se serializa hacia los clientes. */
+  /**
+   * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
+   * {@link #toBuilder()} (setters con nombre: el constructor posicional de 15 campos no se usa en el motor).
+   */
   public record HigherLowerState(
       GamePhase phase,
       HigherLowerConfig config,
@@ -75,27 +75,84 @@ public final class HigherLowerTypes {
       @Nullable HigherLowerRoundResult lastRound) implements TimedGameState {
 
     public HigherLowerState {
-      playerIds = List.copyOf(playerIds);
-      answers = frozen(answers);
-      scores = frozen(scores);
-      streaks = frozen(streaks);
-      playerStats = frozen(playerStats);
+      playerIds = frozenList(playerIds);
+      answers = frozenMap(answers);
+      scores = frozenMap(scores);
+      streaks = frozenMap(streaks);
+      playerStats = frozenMap(playerStats);
     }
 
-    HigherLowerState withAnswers(Map<String, HigherLowerAnswer> value) {
-      return new HigherLowerState(phase, config, playerIds, roundNumber, previousPokemonId, currentPokemonId, category,
-          value, scores, streaks, playerStats, roundStartedAt, roundEndsAt, nextTransitionAt, lastRound);
+    public static Builder builder() {
+      return new Builder();
     }
 
-    HigherLowerState withPreviousPokemonId(String value) {
-      return new HigherLowerState(phase, config, playerIds, roundNumber, value, currentPokemonId, category,
-          answers, scores, streaks, playerStats, roundStartedAt, roundEndsAt, nextTransitionAt, lastRound);
+    public Builder toBuilder() {
+      return new Builder().phase(phase).config(config).playerIds(playerIds).roundNumber(roundNumber)
+          .previousPokemonId(previousPokemonId).currentPokemonId(currentPokemonId).category(category).answers(answers)
+          .scores(scores).streaks(streaks).playerStats(playerStats).roundStartedAt(roundStartedAt)
+          .roundEndsAt(roundEndsAt).nextTransitionAt(nextTransitionAt).lastRound(lastRound);
     }
 
     /** {@code finish}: {@code { ...state, phase: 'GAME_RESULTS', roundEndsAt: null, nextTransitionAt: null }}. */
     HigherLowerState finished() {
-      return new HigherLowerState(GamePhase.GAME_RESULTS, config, playerIds, roundNumber, previousPokemonId,
-          currentPokemonId, category, answers, scores, streaks, playerStats, roundStartedAt, null, null, lastRound);
+      return toBuilder().phase(GamePhase.GAME_RESULTS).roundEndsAt(null).nextTransitionAt(null).build();
+    }
+
+    /** Mapas vacíos por defecto; el resto de campos obligatorios los valida el constructor al hacer {@link #build()}. */
+    public static final class Builder {
+      private GamePhase phase;
+      private HigherLowerConfig config;
+      private List<String> playerIds = List.of();
+      private int roundNumber;
+      private String previousPokemonId;
+      private String currentPokemonId;
+      private HigherLowerCategory category;
+      private Map<String, HigherLowerAnswer> answers = Map.of();
+      private Map<String, Integer> scores = Map.of();
+      private Map<String, Integer> streaks = Map.of();
+      private Map<String, HigherLowerStats> playerStats = Map.of();
+      private Long roundStartedAt;
+      private Long roundEndsAt;
+      private Long nextTransitionAt;
+      private HigherLowerRoundResult lastRound;
+
+      private Builder() {}
+
+      public Builder phase(GamePhase value) { phase = value; return this; }
+
+      public Builder config(HigherLowerConfig value) { config = value; return this; }
+
+      public Builder playerIds(List<String> value) { playerIds = value; return this; }
+
+      public Builder roundNumber(int value) { roundNumber = value; return this; }
+
+      public Builder previousPokemonId(String value) { previousPokemonId = value; return this; }
+
+      public Builder currentPokemonId(@Nullable String value) { currentPokemonId = value; return this; }
+
+      public Builder category(@Nullable HigherLowerCategory value) { category = value; return this; }
+
+      public Builder answers(Map<String, HigherLowerAnswer> value) { answers = value; return this; }
+
+      public Builder scores(Map<String, Integer> value) { scores = value; return this; }
+
+      public Builder streaks(Map<String, Integer> value) { streaks = value; return this; }
+
+      public Builder playerStats(Map<String, HigherLowerStats> value) { playerStats = value; return this; }
+
+      public Builder roundStartedAt(@Nullable Long value) { roundStartedAt = value; return this; }
+
+      public Builder roundEndsAt(@Nullable Long value) { roundEndsAt = value; return this; }
+
+      public Builder nextTransitionAt(@Nullable Long value) { nextTransitionAt = value; return this; }
+
+      public Builder lastRound(@Nullable HigherLowerRoundResult value) { lastRound = value; return this; }
+
+      public HigherLowerState build() {
+        return new HigherLowerState(Objects.requireNonNull(phase, "phase"), Objects.requireNonNull(config, "config"),
+            playerIds, roundNumber, Objects.requireNonNull(previousPokemonId, "previousPokemonId"), currentPokemonId,
+            category, answers, scores, streaks, playerStats, roundStartedAt, roundEndsAt, nextTransitionAt, lastRound);
+      }
     }
   }
 

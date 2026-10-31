@@ -17,6 +17,11 @@ public class ClasspathGameRegistryLoader {
 
   @Singleton
   GameRegistry gameRegistry(ObjectMapper mapper) {
+    return loadFromClasspath(mapper);
+  }
+
+  /** Lee {@code games/registry.json} del classpath; también lo usan los tests que construyen motores sin contenedor. */
+  public static GameRegistry loadFromClasspath(ObjectMapper mapper) {
     try (InputStream in = ClasspathGameRegistryLoader.class.getClassLoader().getResourceAsStream(RESOURCE)) {
       if (in == null) {
         throw new IllegalStateException("Falta el recurso " + RESOURCE + ". Ejecuta npm run registry:export");

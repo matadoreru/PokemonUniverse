@@ -41,7 +41,7 @@ public final class HigherLowerEngine
 
   private final GameManifest manifest;
 
-  private final TimedRoundStrategy<HigherLowerState> roundStrategy = new TimedRoundStrategy<>() {
+  private static final TimedRoundStrategy<HigherLowerState> ROUND_STRATEGY = new TimedRoundStrategy<>() {
     @Override
     public HigherLowerState beginNext(HigherLowerState state, GameContext context) {
       return beginNextRound(state, context);
@@ -107,9 +107,17 @@ public final class HigherLowerEngine
     var category = Randoms.randomItem(state.config().categories(), context.random());
     var current = HigherLowerRules.selectPokemonByDifficulty(previous, candidates, category,
         state.config().difficulty(), context.random());
-    return new HigherLowerState(GamePhase.ROUND_ACTIVE, state.config(), state.playerIds(), state.roundNumber() + 1,
-        state.previousPokemonId(), current.id(), category, Map.of(), state.scores(), state.streaks(),
-        state.playerStats(), context.now(), context.now() + state.config().roundSeconds() * 1_000L, null, null);
+    return state.toBuilder()
+        .phase(GamePhase.ROUND_ACTIVE)
+        .roundNumber(state.roundNumber() + 1)
+        .currentPokemonId(current.id())
+        .category(category)
+        .answers(Map.of())
+        .roundStartedAt(context.now())
+        .roundEndsAt(context.now() + state.config().roundSeconds() * 1_000L)
+        .nextTransitionAt(null)
+        .lastRound(null)
+        .build();
   }
 
   private static HigherLowerState reveal(HigherLowerState state, GameContext context) {
@@ -144,14 +152,19 @@ public final class HigherLowerEngine
           Math.max(prior.bestStreak(), streak)));
       outcomes.put(id, new HigherLowerOutcome(choice, correct, basePoints, bonus, basePoints + bonus, streak));
     }
-    return new HigherLowerState(GamePhase.ROUND_RESULTS, state.config(), state.playerIds(), state.roundNumber(),
-        state.previousPokemonId(), state.currentPokemonId(), category, state.answers(), scores, streaks, playerStats,
-        state.roundStartedAt(), null, context.now() + REVEAL_MS,
-        new HigherLowerRoundResult(previousValue, currentValue, correctAnswer, outcomes));
+    return state.toBuilder()
+        .phase(GamePhase.ROUND_RESULTS)
+        .scores(scores)
+        .streaks(streaks)
+        .playerStats(playerStats)
+        .roundEndsAt(null)
+        .nextTransitionAt(context.now() + REVEAL_MS)
+        .lastRound(new HigherLowerRoundResult(previousValue, currentValue, correctAnswer, outcomes))
+        .build();
   }
 
   private static HigherLowerState beginNextRound(HigherLowerState state, GameContext context) {
-    return beginRound(state.withPreviousPokemonId(Objects.requireNonNull(state.currentPokemonId())), context);
+    return beginRound(state.toBuilder().previousPokemonId(Objects.requireNonNull(state.currentPokemonId())).build(), context);
   }
 
   private static HigherLowerState resolveIfComplete(HigherLowerState state, GameContext context) {
@@ -173,8 +186,16 @@ public final class HigherLowerEngine
       streaks.put(id, 0);
       playerStats.put(id, HigherLowerStats.ZERO);
     }
-    return new HigherLowerState(GamePhase.GAME_STARTING, config, playerIds, 0, Randoms.randomItem(pool, context.random()).id(),
-        null, null, Map.of(), scores, streaks, playerStats, null, null, null, null);
+    return HigherLowerState.builder()
+        .phase(GamePhase.GAME_STARTING)
+        .config(config)
+        .playerIds(playerIds)
+        .roundNumber(0)
+        .previousPokemonId(Randoms.randomItem(pool, context.random()).id())
+        .scores(scores)
+        .streaks(streaks)
+        .playerStats(playerStats)
+        .build();
   }
 
   @Override
@@ -196,12 +217,12 @@ public final class HigherLowerEngine
     if (state.answers().containsKey(playerId)) return GameActionResult.reject(state, "Tu respuesta ya está bloqueada.");
     var answers = new LinkedHashMap<>(state.answers());
     answers.put(playerId, new HigherLowerAnswer(action.choice(), context.now()));
-    return GameActionResult.accept(resolveIfComplete(state.withAnswers(answers), context));
+    return GameActionResult.accept(resolveIfComplete(state.toBuilder().answers(answers).build(), context));
   }
 
   @Override
   public HigherLowerState handleTimeout(HigherLowerState state, GameContext context) {
-    return Timing.advanceTimedRound(state, context, roundStrategy);
+    return Timing.advanceTimedRound(state, context, ROUND_STRATEGY);
   }
 
   @Override
