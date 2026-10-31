@@ -5,6 +5,9 @@ import es.pokemonuniverse.adapters.in.rest.identity.SessionCookies;
 import es.pokemonuniverse.application.auth.AuthService;
 import es.pokemonuniverse.application.auth.GuestAvatarCleanup;
 import es.pokemonuniverse.application.auth.IdentityTokens;
+import es.pokemonuniverse.application.profile.ProfileService;
+import es.pokemonuniverse.adapters.in.rest.ApiException;
+import io.micronaut.http.HttpStatus;
 import es.pokemonuniverse.application.ports.AvatarStorage;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
@@ -27,21 +30,25 @@ import java.util.Set;
 @ExecuteOn(TaskExecutors.BLOCKING)
 public class AuthController {
 
+  private static final String REGISTERED_REQUIRED = "Registered account required";
+
   private final AuthService auth;
   private final IdentityTokens tokens;
   private final SessionCookies cookies;
   private final Validator validator;
   private final GuestAvatarCleanup guestAvatars;
   private final AvatarStorage avatars;
+  private final ProfileService profiles;
 
   public AuthController(AuthService auth, IdentityTokens tokens, SessionCookies cookies, Validator validator,
-      GuestAvatarCleanup guestAvatars, AvatarStorage avatars) {
+      GuestAvatarCleanup guestAvatars, AvatarStorage avatars, ProfileService profiles) {
     this.auth = auth;
     this.tokens = tokens;
     this.cookies = cookies;
     this.validator = validator;
     this.guestAvatars = guestAvatars;
     this.avatars = avatars;
+    this.profiles = profiles;
   }
 
   @Post("/register")
@@ -85,6 +92,13 @@ public class AuthController {
   @Get("/me")
   public UserResponse me(@Identity Optional<AuthUser> current) {
     return new UserResponse(current.orElse(null));
+  }
+
+  @Get("/profile")
+  public ProfileResponse profile(@Identity Optional<AuthUser> current) {
+    var user = current.filter(u -> u.kind() == AuthUser.Kind.USER)
+        .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
+    return profiles.profileOf(user.id()).orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
   }
 
   /** Valida el cuerpo ya normalizado; el manejador global da formato al fallo con la ruta del campo. */

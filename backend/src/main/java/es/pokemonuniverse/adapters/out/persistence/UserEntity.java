@@ -98,4 +98,8 @@ public class UserEntity {
   public UserRole getRole() {
     return role;
   }
+
+  public Instant getCreatedAt() {
+    return createdAt;
+  }
 }
