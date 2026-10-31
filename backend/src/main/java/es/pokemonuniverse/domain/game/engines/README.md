@@ -53,8 +53,11 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
 2. Ejecuta `npm run build -w @pokemon-universe/shared && npm run golden:export` y commitea los escenarios y las fixtures.
    Revisa una fixture a ojo.
 3. Ejecuta `cd backend && ./gradlew test --tests '*GoldenReplayTest*'`. Debe fallar con `Motor no portado: <id>`.
-4. Porta el motor y regístralo en `backend/src/test/java/es/pokemonuniverse/golden/GoldenEngines.java` con
-   `new <Juego>Engine(GoldenManifests.of(<Juego>Engine.ID))`. El manifiesto ya está en `registry.json`:
-   `npm run registry:export` solo hace falta cuando cambia un manifiesto.
+4. Porta el motor y regístralo en un único sitio: `portedEngines` de
+   `adapters/out/resources/ClasspathGameRegistryLoader.java`, con
+   `engines.put(<Juego>Engine.ID, new <Juego>Engine(manifest(manifests, <Juego>Engine.ID)))`. El arnés dorado
+   (`GoldenEngines`) lee ese mismo registro, así que `GoldenReplayTest` lo recoge solo, y
+   `GoldenRegistryConsistencyTest` exige que todo motor registrado tenga fixtures y viceversa. El manifiesto ya está en
+   `registry.json`: `npm run registry:export` solo hace falta cuando cambia un manifiesto.
 5. Vuelve a ejecutar el paso 3 hasta que pase. Ante un desajuste, corrige el Java: nunca las fixtures ni el TS. Termina
    con `./gradlew check` y, en la raíz, con `npm run lint && npm test`, que incluye `check:golden`.

@@ -45,7 +45,7 @@ public class ClasspathGameRegistryLoader {
     return new GameRegistry(mapper.readValue(in, Argument.listOf(GameManifest.class)));
   }
 
-  /** Motores portados; añadir aquí cada motor nuevo. */
+  /** Motores portados; único registro: añadir aquí cada motor nuevo (el arnés dorado lee este mismo mapa). */
   static Map<String, GameEngine<?, ?, ?, ?>> portedEngines(GameRegistry manifests) {
     var engines = new LinkedHashMap<String, GameEngine<?, ?, ?, ?>>();
     engines.put(HigherLowerEngine.ID, new HigherLowerEngine(manifest(manifests, HigherLowerEngine.ID)));

@@ -12,6 +12,11 @@ public final class GoldenManifests {
 
   private GoldenManifests() {}
 
+  /** El registro de producción, con los motores portados de {@code ClasspathGameRegistryLoader}. */
+  public static GameRegistry registry() {
+    return REGISTRY;
+  }
+
   public static GameManifest of(String gameId) {
     return REGISTRY.get(gameId).orElseThrow(() -> new IllegalStateException("Sin manifiesto en el registro: " + gameId));
   }
