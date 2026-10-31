@@ -1,0 +1,2310 @@
+{
+  "engineId": "secret-ranking",
+  "scenario": "both-sources-timeouts",
+  "seed": 773,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      2
+    ],
+    "rounds": 4,
+    "roundSeconds": 20,
+    "promptSource": "BOTH",
+    "includeForms": false
+  },
+  "hostCustomCategories": [
+    {
+      "id": "host-1",
+      "text": "De más dormilón a menos dormilón"
+    },
+    {
+      "id": "host-2",
+      "text": "De mejor a peor cantante de ducha"
+    }
+  ],
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_RANKING",
+        "pokemonIds": [
+          "pineco",
+          "ledyba",
+          "girafarig",
+          "snubbull",
+          "feraligatr"
+        ]
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_RANKING",
+        "pokemonIds": [
+          "ledyba",
+          "pineco",
+          "girafarig",
+          "feraligatr",
+          "snubbull"
+        ]
+      },
+      "now": 3000
+    },
+    {
+      "kind": "timeout",
+      "now": 21000
+    },
+    {
+      "kind": "timeout",
+      "now": 29000
+    },
+    {
+      "kind": "timeout",
+      "now": 49000
+    },
+    {
+      "kind": "timeout",
+      "now": 57000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_RANKING",
+        "pokemonIds": [
+          "granbull",
+          "hitmontop",
+          "slugma",
+          "smoochum",
+          "ariados"
+        ]
+      },
+      "now": 58000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_RANKING",
+        "pokemonIds": [
+          "hitmontop",
+          "granbull",
+          "slugma",
+          "smoochum",
+          "ariados"
+        ]
+      },
+      "now": 59000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_RANKING",
+        "pokemonIds": [
+          "granbull",
+          "hitmontop",
+          "slugma",
+          "ariados",
+          "smoochum"
+        ]
+      },
+      "now": 60000
+    },
+    {
+      "kind": "timeout",
+      "now": 68000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_RANKING",
+        "pokemonIds": [
+          "togetic",
+          "azumarill",
+          "meganium",
+          "sunkern",
+          "umbreon"
+        ]
+      },
+      "now": 69000
+    },
+    {
+      "kind": "timeout",
+      "now": 88000
+    },
+    {
+      "kind": "timeout",
+      "now": 96000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        2
+      ],
+      "rounds": 4,
+      "roundSeconds": 20,
+      "promptSource": "BOTH",
+      "includeForms": false
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "secret-ranking",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 4,
+        "prompt": "",
+        "pokemon": [],
+        "submittedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownRanking": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownRanking": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownRanking": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "secret-ranking",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 4,
+        "prompt": "De más probable a menos probable que venda el sofá para comprar criptomonedas",
+        "pokemon": [
+          {
+            "id": "pineco",
+            "name": "Pineco",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+          },
+          {
+            "id": "ledyba",
+            "name": "Ledyba",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png"
+          },
+          {
+            "id": "girafarig",
+            "name": "Girafarig",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+          },
+          {
+            "id": "snubbull",
+            "name": "Snubbull",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+          },
+          {
+            "id": "feraligatr",
+            "name": "Feraligatr",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/160.png"
+          }
+        ],
+        "submittedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 21000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownRanking": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownRanking": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownRanking": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "prompt": "De más probable a menos probable que venda el sofá para comprar criptomonedas",
+            "pokemon": [
+              {
+                "id": "pineco",
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "ledyba",
+                "name": "Ledyba",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png"
+              },
+              {
+                "id": "girafarig",
+                "name": "Girafarig",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+              },
+              {
+                "id": "snubbull",
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "feraligatr",
+                "name": "Feraligatr",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/160.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "pineco",
+                  "name": "Pineco",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                },
+                {
+                  "id": "ledyba",
+                  "name": "Ledyba",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png"
+                },
+                {
+                  "id": "girafarig",
+                  "name": "Girafarig",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+                },
+                {
+                  "id": "snubbull",
+                  "name": "Snubbull",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+                },
+                {
+                  "id": "feraligatr",
+                  "name": "Feraligatr",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/160.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "prompt": "De más probable a menos probable que venda el sofá para comprar criptomonedas",
+            "pokemon": [
+              {
+                "id": "pineco",
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "ledyba",
+                "name": "Ledyba",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png"
+              },
+              {
+                "id": "girafarig",
+                "name": "Girafarig",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+              },
+              {
+                "id": "snubbull",
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "feraligatr",
+                "name": "Feraligatr",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/160.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "pineco",
+                  "name": "Pineco",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                },
+                {
+                  "id": "ledyba",
+                  "name": "Ledyba",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png"
+                },
+                {
+                  "id": "girafarig",
+                  "name": "Girafarig",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+                },
+                {
+                  "id": "snubbull",
+                  "name": "Snubbull",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+                },
+                {
+                  "id": "feraligatr",
+                  "name": "Feraligatr",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/160.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "ledyba",
+                  "name": "Ledyba",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png"
+                },
+                {
+                  "id": "pineco",
+                  "name": "Pineco",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                },
+                {
+                  "id": "girafarig",
+                  "name": "Girafarig",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+                },
+                {
+                  "id": "feraligatr",
+                  "name": "Feraligatr",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/160.png"
+                },
+                {
+                  "id": "snubbull",
+                  "name": "Snubbull",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 29000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "prompt": "De más probable a menos probable que venda el sofá para comprar criptomonedas",
+            "pokemon": [
+              {
+                "id": "pineco",
+                "name": "Pineco",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+              },
+              {
+                "id": "ledyba",
+                "name": "Ledyba",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png"
+              },
+              {
+                "id": "girafarig",
+                "name": "Girafarig",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+              },
+              {
+                "id": "snubbull",
+                "name": "Snubbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+              },
+              {
+                "id": "feraligatr",
+                "name": "Feraligatr",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/160.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 29000,
+            "lastRound": {
+              "prompt": "De más probable a menos probable que venda el sofá para comprar criptomonedas",
+              "pokemon": [
+                {
+                  "id": "pineco",
+                  "name": "Pineco",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                },
+                {
+                  "id": "ledyba",
+                  "name": "Ledyba",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png"
+                },
+                {
+                  "id": "girafarig",
+                  "name": "Girafarig",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+                },
+                {
+                  "id": "snubbull",
+                  "name": "Snubbull",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+                },
+                {
+                  "id": "feraligatr",
+                  "name": "Feraligatr",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/160.png"
+                }
+              ],
+              "consensus": [
+                {
+                  "pokemon": {
+                    "id": "pineco",
+                    "name": "Pineco",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                  },
+                  "averagePosition": 1.5
+                },
+                {
+                  "pokemon": {
+                    "id": "ledyba",
+                    "name": "Ledyba",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png"
+                  },
+                  "averagePosition": 1.5
+                },
+                {
+                  "pokemon": {
+                    "id": "girafarig",
+                    "name": "Girafarig",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "snubbull",
+                    "name": "Snubbull",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+                  },
+                  "averagePosition": 4.5
+                },
+                {
+                  "pokemon": {
+                    "id": "feraligatr",
+                    "name": "Feraligatr",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/160.png"
+                  },
+                  "averagePosition": 4.5
+                }
+              ],
+              "players": {
+                "p1": {
+                  "ranking": [
+                    {
+                      "id": "pineco",
+                      "name": "Pineco",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                    },
+                    {
+                      "id": "ledyba",
+                      "name": "Ledyba",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png"
+                    },
+                    {
+                      "id": "girafarig",
+                      "name": "Girafarig",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+                    },
+                    {
+                      "id": "snubbull",
+                      "name": "Snubbull",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+                    },
+                    {
+                      "id": "feraligatr",
+                      "name": "Feraligatr",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/160.png"
+                    }
+                  ],
+                  "distance": 4,
+                  "position": 1,
+                  "pointsAwarded": 4
+                },
+                "p2": {
+                  "ranking": [
+                    {
+                      "id": "ledyba",
+                      "name": "Ledyba",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png"
+                    },
+                    {
+                      "id": "pineco",
+                      "name": "Pineco",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                    },
+                    {
+                      "id": "girafarig",
+                      "name": "Girafarig",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+                    },
+                    {
+                      "id": "feraligatr",
+                      "name": "Feraligatr",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/160.png"
+                    },
+                    {
+                      "id": "snubbull",
+                      "name": "Snubbull",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+                    }
+                  ],
+                  "distance": 4,
+                  "position": 1,
+                  "pointsAwarded": 4
+                },
+                "p3": {
+                  "ranking": null,
+                  "distance": null,
+                  "position": null,
+                  "pointsAwarded": 0
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "pineco",
+                  "name": "Pineco",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                },
+                {
+                  "id": "ledyba",
+                  "name": "Ledyba",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png"
+                },
+                {
+                  "id": "girafarig",
+                  "name": "Girafarig",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+                },
+                {
+                  "id": "snubbull",
+                  "name": "Snubbull",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+                },
+                {
+                  "id": "feraligatr",
+                  "name": "Feraligatr",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/160.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "ledyba",
+                  "name": "Ledyba",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png"
+                },
+                {
+                  "id": "pineco",
+                  "name": "Pineco",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                },
+                {
+                  "id": "girafarig",
+                  "name": "Girafarig",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png"
+                },
+                {
+                  "id": "feraligatr",
+                  "name": "Feraligatr",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/160.png"
+                },
+                {
+                  "id": "snubbull",
+                  "name": "Snubbull",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "prompt": "De más dormilón a menos dormilón",
+            "pokemon": [
+              {
+                "id": "politoed",
+                "name": "Politoed",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png"
+              },
+              {
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+              },
+              {
+                "id": "cleffa",
+                "name": "Cleffa",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/173.png"
+              },
+              {
+                "id": "spinarak",
+                "name": "Spinarak",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/167.png"
+              },
+              {
+                "id": "porygon2",
+                "name": "Porygon2",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/233.png"
+              }
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundEndsAt": 49000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 57000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "prompt": "De más dormilón a menos dormilón",
+            "pokemon": [
+              {
+                "id": "politoed",
+                "name": "Politoed",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png"
+              },
+              {
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+              },
+              {
+                "id": "cleffa",
+                "name": "Cleffa",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/173.png"
+              },
+              {
+                "id": "spinarak",
+                "name": "Spinarak",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/167.png"
+              },
+              {
+                "id": "porygon2",
+                "name": "Porygon2",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/233.png"
+              }
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 57000,
+            "lastRound": {
+              "prompt": "De más dormilón a menos dormilón",
+              "pokemon": [
+                {
+                  "id": "politoed",
+                  "name": "Politoed",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png"
+                },
+                {
+                  "id": "togepi",
+                  "name": "Togepi",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                },
+                {
+                  "id": "cleffa",
+                  "name": "Cleffa",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/173.png"
+                },
+                {
+                  "id": "spinarak",
+                  "name": "Spinarak",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/167.png"
+                },
+                {
+                  "id": "porygon2",
+                  "name": "Porygon2",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/233.png"
+                }
+              ],
+              "consensus": [],
+              "players": {
+                "p1": {
+                  "ranking": null,
+                  "distance": null,
+                  "position": null,
+                  "pointsAwarded": 0
+                },
+                "p2": {
+                  "ranking": null,
+                  "distance": null,
+                  "position": null,
+                  "pointsAwarded": 0
+                },
+                "p3": {
+                  "ranking": null,
+                  "distance": null,
+                  "position": null,
+                  "pointsAwarded": 0
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 77000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": "De más probable a menos probable que se haga influencer",
+            "pokemon": [
+              {
+                "id": "granbull",
+                "name": "Granbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+              },
+              {
+                "id": "hitmontop",
+                "name": "Hitmontop",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+              },
+              {
+                "id": "slugma",
+                "name": "Slugma",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+              },
+              {
+                "id": "smoochum",
+                "name": "Smoochum",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+              },
+              {
+                "id": "ariados",
+                "name": "Ariados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+              }
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundEndsAt": 77000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 77000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": "De más probable a menos probable que se haga influencer",
+            "pokemon": [
+              {
+                "id": "granbull",
+                "name": "Granbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+              },
+              {
+                "id": "hitmontop",
+                "name": "Hitmontop",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+              },
+              {
+                "id": "slugma",
+                "name": "Slugma",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+              },
+              {
+                "id": "smoochum",
+                "name": "Smoochum",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+              },
+              {
+                "id": "ariados",
+                "name": "Ariados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundEndsAt": 77000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "granbull",
+                  "name": "Granbull",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+                },
+                {
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+                },
+                {
+                  "id": "slugma",
+                  "name": "Slugma",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+                },
+                {
+                  "id": "smoochum",
+                  "name": "Smoochum",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+                },
+                {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 77000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": "De más probable a menos probable que se haga influencer",
+            "pokemon": [
+              {
+                "id": "granbull",
+                "name": "Granbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+              },
+              {
+                "id": "hitmontop",
+                "name": "Hitmontop",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+              },
+              {
+                "id": "slugma",
+                "name": "Slugma",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+              },
+              {
+                "id": "smoochum",
+                "name": "Smoochum",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+              },
+              {
+                "id": "ariados",
+                "name": "Ariados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundEndsAt": 77000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "granbull",
+                  "name": "Granbull",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+                },
+                {
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+                },
+                {
+                  "id": "slugma",
+                  "name": "Slugma",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+                },
+                {
+                  "id": "smoochum",
+                  "name": "Smoochum",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+                },
+                {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+                },
+                {
+                  "id": "granbull",
+                  "name": "Granbull",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+                },
+                {
+                  "id": "slugma",
+                  "name": "Slugma",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+                },
+                {
+                  "id": "smoochum",
+                  "name": "Smoochum",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+                },
+                {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 68000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "prompt": "De más probable a menos probable que se haga influencer",
+            "pokemon": [
+              {
+                "id": "granbull",
+                "name": "Granbull",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+              },
+              {
+                "id": "hitmontop",
+                "name": "Hitmontop",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+              },
+              {
+                "id": "slugma",
+                "name": "Slugma",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+              },
+              {
+                "id": "smoochum",
+                "name": "Smoochum",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+              },
+              {
+                "id": "ariados",
+                "name": "Ariados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 10,
+              "p2": 7,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 68000,
+            "lastRound": {
+              "prompt": "De más probable a menos probable que se haga influencer",
+              "pokemon": [
+                {
+                  "id": "granbull",
+                  "name": "Granbull",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+                },
+                {
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+                },
+                {
+                  "id": "slugma",
+                  "name": "Slugma",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+                },
+                {
+                  "id": "smoochum",
+                  "name": "Smoochum",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+                },
+                {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+                }
+              ],
+              "consensus": [
+                {
+                  "pokemon": {
+                    "id": "granbull",
+                    "name": "Granbull",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+                  },
+                  "averagePosition": 1.3333333333333333
+                },
+                {
+                  "pokemon": {
+                    "id": "hitmontop",
+                    "name": "Hitmontop",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+                  },
+                  "averagePosition": 1.6666666666666667
+                },
+                {
+                  "pokemon": {
+                    "id": "slugma",
+                    "name": "Slugma",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "smoochum",
+                    "name": "Smoochum",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+                  },
+                  "averagePosition": 4.333333333333333
+                },
+                {
+                  "pokemon": {
+                    "id": "ariados",
+                    "name": "Ariados",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+                  },
+                  "averagePosition": 4.666666666666667
+                }
+              ],
+              "players": {
+                "p1": {
+                  "ranking": [
+                    {
+                      "id": "granbull",
+                      "name": "Granbull",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+                    },
+                    {
+                      "id": "hitmontop",
+                      "name": "Hitmontop",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+                    },
+                    {
+                      "id": "slugma",
+                      "name": "Slugma",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+                    },
+                    {
+                      "id": "smoochum",
+                      "name": "Smoochum",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+                    },
+                    {
+                      "id": "ariados",
+                      "name": "Ariados",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+                    }
+                  ],
+                  "distance": 2,
+                  "position": 1,
+                  "pointsAwarded": 6
+                },
+                "p2": {
+                  "ranking": [
+                    {
+                      "id": "hitmontop",
+                      "name": "Hitmontop",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+                    },
+                    {
+                      "id": "granbull",
+                      "name": "Granbull",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+                    },
+                    {
+                      "id": "slugma",
+                      "name": "Slugma",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+                    },
+                    {
+                      "id": "smoochum",
+                      "name": "Smoochum",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+                    },
+                    {
+                      "id": "ariados",
+                      "name": "Ariados",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+                    }
+                  ],
+                  "distance": 3,
+                  "position": 2,
+                  "pointsAwarded": 3
+                },
+                "p3": {
+                  "ranking": [
+                    {
+                      "id": "granbull",
+                      "name": "Granbull",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+                    },
+                    {
+                      "id": "hitmontop",
+                      "name": "Hitmontop",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+                    },
+                    {
+                      "id": "slugma",
+                      "name": "Slugma",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+                    },
+                    {
+                      "id": "ariados",
+                      "name": "Ariados",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+                    },
+                    {
+                      "id": "smoochum",
+                      "name": "Smoochum",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+                    }
+                  ],
+                  "distance": 3,
+                  "position": 2,
+                  "pointsAwarded": 3
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "granbull",
+                  "name": "Granbull",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+                },
+                {
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+                },
+                {
+                  "id": "slugma",
+                  "name": "Slugma",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+                },
+                {
+                  "id": "smoochum",
+                  "name": "Smoochum",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+                },
+                {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+                },
+                {
+                  "id": "granbull",
+                  "name": "Granbull",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+                },
+                {
+                  "id": "slugma",
+                  "name": "Slugma",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+                },
+                {
+                  "id": "smoochum",
+                  "name": "Smoochum",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+                },
+                {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "granbull",
+                  "name": "Granbull",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/210.png"
+                },
+                {
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+                },
+                {
+                  "id": "slugma",
+                  "name": "Slugma",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png"
+                },
+                {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+                },
+                {
+                  "id": "smoochum",
+                  "name": "Smoochum",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 88000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "prompt": "De más probable a menos probable que duerma todo el día",
+            "pokemon": [
+              {
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+              },
+              {
+                "id": "sunkern",
+                "name": "Sunkern",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+              },
+              {
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+              },
+              {
+                "id": "azumarill",
+                "name": "Azumarill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+              },
+              {
+                "id": "togetic",
+                "name": "Togetic",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/176.png"
+              }
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 10,
+              "p2": 7,
+              "p3": 3
+            },
+            "roundEndsAt": 88000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 88000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "prompt": "De más probable a menos probable que duerma todo el día",
+            "pokemon": [
+              {
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+              },
+              {
+                "id": "sunkern",
+                "name": "Sunkern",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+              },
+              {
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+              },
+              {
+                "id": "azumarill",
+                "name": "Azumarill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+              },
+              {
+                "id": "togetic",
+                "name": "Togetic",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/176.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p3"
+            ],
+            "scores": {
+              "p1": 10,
+              "p2": 7,
+              "p3": 3
+            },
+            "roundEndsAt": 88000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "togetic",
+                  "name": "Togetic",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/176.png"
+                },
+                {
+                  "id": "azumarill",
+                  "name": "Azumarill",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+                },
+                {
+                  "id": "meganium",
+                  "name": "Meganium",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+                },
+                {
+                  "id": "sunkern",
+                  "name": "Sunkern",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                },
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 96000,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "prompt": "De más probable a menos probable que duerma todo el día",
+            "pokemon": [
+              {
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+              },
+              {
+                "id": "sunkern",
+                "name": "Sunkern",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+              },
+              {
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+              },
+              {
+                "id": "azumarill",
+                "name": "Azumarill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+              },
+              {
+                "id": "togetic",
+                "name": "Togetic",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/176.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p3"
+            ],
+            "scores": {
+              "p1": 10,
+              "p2": 7,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 96000,
+            "lastRound": {
+              "prompt": "De más probable a menos probable que duerma todo el día",
+              "pokemon": [
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                },
+                {
+                  "id": "sunkern",
+                  "name": "Sunkern",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                },
+                {
+                  "id": "meganium",
+                  "name": "Meganium",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+                },
+                {
+                  "id": "azumarill",
+                  "name": "Azumarill",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+                },
+                {
+                  "id": "togetic",
+                  "name": "Togetic",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/176.png"
+                }
+              ],
+              "consensus": [
+                {
+                  "pokemon": {
+                    "id": "togetic",
+                    "name": "Togetic",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/176.png"
+                  },
+                  "averagePosition": 1
+                },
+                {
+                  "pokemon": {
+                    "id": "azumarill",
+                    "name": "Azumarill",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+                  },
+                  "averagePosition": 2
+                },
+                {
+                  "pokemon": {
+                    "id": "meganium",
+                    "name": "Meganium",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "sunkern",
+                    "name": "Sunkern",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                  },
+                  "averagePosition": 4
+                },
+                {
+                  "pokemon": {
+                    "id": "umbreon",
+                    "name": "Umbreon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                  },
+                  "averagePosition": 5
+                }
+              ],
+              "players": {
+                "p1": {
+                  "ranking": null,
+                  "distance": null,
+                  "position": null,
+                  "pointsAwarded": 0
+                },
+                "p2": {
+                  "ranking": null,
+                  "distance": null,
+                  "position": null,
+                  "pointsAwarded": 0
+                },
+                "p3": {
+                  "ranking": [
+                    {
+                      "id": "togetic",
+                      "name": "Togetic",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/176.png"
+                    },
+                    {
+                      "id": "azumarill",
+                      "name": "Azumarill",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+                    },
+                    {
+                      "id": "meganium",
+                      "name": "Meganium",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+                    },
+                    {
+                      "id": "sunkern",
+                      "name": "Sunkern",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                    },
+                    {
+                      "id": "umbreon",
+                      "name": "Umbreon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                    }
+                  ],
+                  "distance": null,
+                  "position": null,
+                  "pointsAwarded": 0
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "togetic",
+                  "name": "Togetic",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/176.png"
+                },
+                {
+                  "id": "azumarill",
+                  "name": "Azumarill",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+                },
+                {
+                  "id": "meganium",
+                  "name": "Meganium",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+                },
+                {
+                  "id": "sunkern",
+                  "name": "Sunkern",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                },
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",4,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "prompt": "De más probable a menos probable que duerma todo el día",
+            "pokemon": [
+              {
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+              },
+              {
+                "id": "sunkern",
+                "name": "Sunkern",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+              },
+              {
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+              },
+              {
+                "id": "azumarill",
+                "name": "Azumarill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+              },
+              {
+                "id": "togetic",
+                "name": "Togetic",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/176.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p3"
+            ],
+            "scores": {
+              "p1": 10,
+              "p2": 7,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "prompt": "De más probable a menos probable que duerma todo el día",
+              "pokemon": [
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                },
+                {
+                  "id": "sunkern",
+                  "name": "Sunkern",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                },
+                {
+                  "id": "meganium",
+                  "name": "Meganium",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+                },
+                {
+                  "id": "azumarill",
+                  "name": "Azumarill",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+                },
+                {
+                  "id": "togetic",
+                  "name": "Togetic",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/176.png"
+                }
+              ],
+              "consensus": [
+                {
+                  "pokemon": {
+                    "id": "togetic",
+                    "name": "Togetic",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/176.png"
+                  },
+                  "averagePosition": 1
+                },
+                {
+                  "pokemon": {
+                    "id": "azumarill",
+                    "name": "Azumarill",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+                  },
+                  "averagePosition": 2
+                },
+                {
+                  "pokemon": {
+                    "id": "meganium",
+                    "name": "Meganium",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "sunkern",
+                    "name": "Sunkern",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                  },
+                  "averagePosition": 4
+                },
+                {
+                  "pokemon": {
+                    "id": "umbreon",
+                    "name": "Umbreon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                  },
+                  "averagePosition": 5
+                }
+              ],
+              "players": {
+                "p1": {
+                  "ranking": null,
+                  "distance": null,
+                  "position": null,
+                  "pointsAwarded": 0
+                },
+                "p2": {
+                  "ranking": null,
+                  "distance": null,
+                  "position": null,
+                  "pointsAwarded": 0
+                },
+                "p3": {
+                  "ranking": [
+                    {
+                      "id": "togetic",
+                      "name": "Togetic",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/176.png"
+                    },
+                    {
+                      "id": "azumarill",
+                      "name": "Azumarill",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+                    },
+                    {
+                      "id": "meganium",
+                      "name": "Meganium",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+                    },
+                    {
+                      "id": "sunkern",
+                      "name": "Sunkern",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                    },
+                    {
+                      "id": "umbreon",
+                      "name": "Umbreon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                    }
+                  ],
+                  "distance": null,
+                  "position": null,
+                  "pointsAwarded": 0
+                }
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 10,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 4,
+                    "rankingsSubmitted": 2,
+                    "roundsMissed": 2,
+                    "roundWins": 2,
+                    "perfectMatches": 0,
+                    "distanceTotal": 6,
+                    "pointsFromRounds": 10
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 7,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 4,
+                    "rankingsSubmitted": 2,
+                    "roundsMissed": 2,
+                    "roundWins": 1,
+                    "perfectMatches": 0,
+                    "distanceTotal": 7,
+                    "pointsFromRounds": 7
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 4,
+                    "rankingsSubmitted": 2,
+                    "roundsMissed": 2,
+                    "roundWins": 0,
+                    "perfectMatches": 0,
+                    "distanceTotal": 3,
+                    "pointsFromRounds": 3
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "togetic",
+                  "name": "Togetic",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/176.png"
+                },
+                {
+                  "id": "azumarill",
+                  "name": "Azumarill",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+                },
+                {
+                  "id": "meganium",
+                  "name": "Meganium",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+                },
+                {
+                  "id": "sunkern",
+                  "name": "Sunkern",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                },
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                }
+              ]
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 10,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 4,
+            "rankingsSubmitted": 2,
+            "roundsMissed": 2,
+            "roundWins": 2,
+            "perfectMatches": 0,
+            "distanceTotal": 6,
+            "pointsFromRounds": 10
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 7,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 4,
+            "rankingsSubmitted": 2,
+            "roundsMissed": 2,
+            "roundWins": 1,
+            "perfectMatches": 0,
+            "distanceTotal": 7,
+            "pointsFromRounds": 7
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 3,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 4,
+            "rankingsSubmitted": 2,
+            "roundsMissed": 2,
+            "roundWins": 0,
+            "perfectMatches": 0,
+            "distanceTotal": 3,
+            "pointsFromRounds": 3
+          }
+        }
+      ]
+    }
+  }
+}

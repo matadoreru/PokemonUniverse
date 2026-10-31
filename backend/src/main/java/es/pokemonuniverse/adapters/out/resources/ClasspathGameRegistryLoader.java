@@ -12,6 +12,7 @@ import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPalette
 import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagEngine;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaEngine;
 import es.pokemonuniverse.domain.game.engines.poketaboo.PokeTabooEngine;
+import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingEngine;
 import es.pokemonuniverse.domain.game.engines.typechain.TypeChainEngine;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelEngine;
 import es.pokemonuniverse.domain.game.engines.wouldyourather.WouldYouRatherEngine;
@@ -72,6 +73,7 @@ public class ClasspathGameRegistryLoader {
     engines.put(PokeTabooEngine.ID, new PokeTabooEngine(manifest(manifests, PokeTabooEngine.ID)));
     engines.put(WouldYouRatherEngine.ID, new WouldYouRatherEngine(manifest(manifests, WouldYouRatherEngine.ID)));
     engines.put(MostLikelyToEngine.ID, new MostLikelyToEngine(manifest(manifests, MostLikelyToEngine.ID)));
+    engines.put(SecretRankingEngine.ID, new SecretRankingEngine(manifest(manifests, SecretRankingEngine.ID)));
     return engines;
   }
 

@@ -1,0 +1,3055 @@
+{
+  "engineId": "secret-ranking",
+  "scenario": "custom-categories-presence",
+  "seed": 733,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      2,
+      1,
+      2
+    ],
+    "rounds": 3,
+    "roundSeconds": 120,
+    "promptSource": "CUSTOM",
+    "includeForms": true
+  },
+  "hostCustomCategories": [
+    {
+      "id": "host-1",
+      "text": "De más dormilón a menos dormilón"
+    },
+    {
+      "id": "host-2",
+      "text": "De mejor a peor cantante de ducha"
+    }
+  ],
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_RANKING",
+        "pokemonIds": [
+          "graveler",
+          "umbreon",
+          "weezing-galar",
+          "weezing",
+          "dratini"
+        ]
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_RANKING",
+        "pokemonIds": [
+          "dratini",
+          "weezing",
+          "weezing-galar",
+          "umbreon",
+          "graveler"
+        ]
+      },
+      "now": 3000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 3500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_RANKING",
+        "pokemonIds": [
+          "graveler",
+          "umbreon",
+          "weezing-galar",
+          "weezing",
+          "dratini"
+        ]
+      },
+      "now": 4500
+    },
+    {
+      "kind": "timeout",
+      "now": 12000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 13000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_RANKING",
+        "pokemonIds": [
+          "slowking",
+          "slowbro",
+          "aerodactyl",
+          "skarmory",
+          "grimer-alola"
+        ]
+      },
+      "now": 14000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_RANKING",
+        "pokemonIds": [
+          "slowbro",
+          "slowking",
+          "aerodactyl",
+          "grimer-alola",
+          "skarmory"
+        ]
+      },
+      "now": 15000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 16000
+    },
+    {
+      "kind": "timeout",
+      "now": 24000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 25000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_RANKING",
+        "pokemonIds": [
+          "seaking",
+          "ampharos",
+          "sandslash",
+          "sentret",
+          "ursaring"
+        ]
+      },
+      "now": 26000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_RANKING",
+        "pokemonIds": [
+          "ursaring",
+          "sentret",
+          "sandslash",
+          "ampharos",
+          "seaking"
+        ]
+      },
+      "now": 27000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_RANKING",
+        "pokemonIds": [
+          "sentret",
+          "ursaring",
+          "sandslash",
+          "seaking",
+          "ampharos"
+        ]
+      },
+      "now": 28000
+    },
+    {
+      "kind": "timeout",
+      "now": 36000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "rounds": 3,
+      "roundSeconds": 120,
+      "promptSource": "CUSTOM",
+      "includeForms": true
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "secret-ranking",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "prompt": "",
+        "pokemon": [],
+        "submittedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownRanking": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownRanking": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownRanking": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 121000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "secret-ranking",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "prompt": "De más dormilón a menos dormilón",
+        "pokemon": [
+          {
+            "id": "graveler",
+            "name": "Graveler",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+          },
+          {
+            "id": "umbreon",
+            "name": "Umbreon",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+          },
+          {
+            "id": "weezing-galar",
+            "name": "Weezing de Galar",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+          },
+          {
+            "id": "weezing",
+            "name": "Weezing",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+          },
+          {
+            "id": "dratini",
+            "name": "Dratini",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+          }
+        ],
+        "submittedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 121000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownRanking": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownRanking": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownRanking": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "De más dormilón a menos dormilón",
+            "pokemon": [
+              {
+                "id": "graveler",
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              },
+              {
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+              },
+              {
+                "id": "weezing-galar",
+                "name": "Weezing de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+              },
+              {
+                "id": "weezing",
+                "name": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+              },
+              {
+                "id": "dratini",
+                "name": "Dratini",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "graveler",
+                  "name": "Graveler",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                },
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                },
+                {
+                  "id": "weezing-galar",
+                  "name": "Weezing de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                },
+                {
+                  "id": "weezing",
+                  "name": "Weezing",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                },
+                {
+                  "id": "dratini",
+                  "name": "Dratini",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "De más dormilón a menos dormilón",
+            "pokemon": [
+              {
+                "id": "graveler",
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              },
+              {
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+              },
+              {
+                "id": "weezing-galar",
+                "name": "Weezing de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+              },
+              {
+                "id": "weezing",
+                "name": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+              },
+              {
+                "id": "dratini",
+                "name": "Dratini",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "graveler",
+                  "name": "Graveler",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                },
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                },
+                {
+                  "id": "weezing-galar",
+                  "name": "Weezing de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                },
+                {
+                  "id": "weezing",
+                  "name": "Weezing",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                },
+                {
+                  "id": "dratini",
+                  "name": "Dratini",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "dratini",
+                  "name": "Dratini",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                },
+                {
+                  "id": "weezing",
+                  "name": "Weezing",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                },
+                {
+                  "id": "weezing-galar",
+                  "name": "Weezing de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                },
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                },
+                {
+                  "id": "graveler",
+                  "name": "Graveler",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "De más dormilón a menos dormilón",
+            "pokemon": [
+              {
+                "id": "graveler",
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              },
+              {
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+              },
+              {
+                "id": "weezing-galar",
+                "name": "Weezing de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+              },
+              {
+                "id": "weezing",
+                "name": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+              },
+              {
+                "id": "dratini",
+                "name": "Dratini",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "graveler",
+                  "name": "Graveler",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                },
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                },
+                {
+                  "id": "weezing-galar",
+                  "name": "Weezing de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                },
+                {
+                  "id": "weezing",
+                  "name": "Weezing",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                },
+                {
+                  "id": "dratini",
+                  "name": "Dratini",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "dratini",
+                  "name": "Dratini",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                },
+                {
+                  "id": "weezing",
+                  "name": "Weezing",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                },
+                {
+                  "id": "weezing-galar",
+                  "name": "Weezing de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                },
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                },
+                {
+                  "id": "graveler",
+                  "name": "Graveler",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 12000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "De más dormilón a menos dormilón",
+            "pokemon": [
+              {
+                "id": "graveler",
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              },
+              {
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+              },
+              {
+                "id": "weezing-galar",
+                "name": "Weezing de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+              },
+              {
+                "id": "weezing",
+                "name": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+              },
+              {
+                "id": "dratini",
+                "name": "Dratini",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 12000,
+            "lastRound": {
+              "prompt": "De más dormilón a menos dormilón",
+              "pokemon": [
+                {
+                  "id": "graveler",
+                  "name": "Graveler",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                },
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                },
+                {
+                  "id": "weezing-galar",
+                  "name": "Weezing de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                },
+                {
+                  "id": "weezing",
+                  "name": "Weezing",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                },
+                {
+                  "id": "dratini",
+                  "name": "Dratini",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                }
+              ],
+              "consensus": [
+                {
+                  "pokemon": {
+                    "id": "graveler",
+                    "name": "Graveler",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "umbreon",
+                    "name": "Umbreon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "weezing-galar",
+                    "name": "Weezing de Galar",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "weezing",
+                    "name": "Weezing",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "dratini",
+                    "name": "Dratini",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                  },
+                  "averagePosition": 3
+                }
+              ],
+              "players": {
+                "p1": {
+                  "ranking": [
+                    {
+                      "id": "graveler",
+                      "name": "Graveler",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                    },
+                    {
+                      "id": "umbreon",
+                      "name": "Umbreon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                    },
+                    {
+                      "id": "weezing-galar",
+                      "name": "Weezing de Galar",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                    },
+                    {
+                      "id": "weezing",
+                      "name": "Weezing",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                    },
+                    {
+                      "id": "dratini",
+                      "name": "Dratini",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                    }
+                  ],
+                  "distance": 12,
+                  "position": 1,
+                  "pointsAwarded": 4
+                },
+                "p2": {
+                  "ranking": [
+                    {
+                      "id": "dratini",
+                      "name": "Dratini",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                    },
+                    {
+                      "id": "weezing",
+                      "name": "Weezing",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                    },
+                    {
+                      "id": "weezing-galar",
+                      "name": "Weezing de Galar",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                    },
+                    {
+                      "id": "umbreon",
+                      "name": "Umbreon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                    },
+                    {
+                      "id": "graveler",
+                      "name": "Graveler",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                    }
+                  ],
+                  "distance": 12,
+                  "position": 1,
+                  "pointsAwarded": 4
+                },
+                "p3": {
+                  "ranking": null,
+                  "distance": null,
+                  "position": null,
+                  "pointsAwarded": 0
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "graveler",
+                  "name": "Graveler",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                },
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                },
+                {
+                  "id": "weezing-galar",
+                  "name": "Weezing de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                },
+                {
+                  "id": "weezing",
+                  "name": "Weezing",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                },
+                {
+                  "id": "dratini",
+                  "name": "Dratini",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "dratini",
+                  "name": "Dratini",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                },
+                {
+                  "id": "weezing",
+                  "name": "Weezing",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                },
+                {
+                  "id": "weezing-galar",
+                  "name": "Weezing de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                },
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                },
+                {
+                  "id": "graveler",
+                  "name": "Graveler",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                }
+              ]
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La ronda ya está cerrada.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 12000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "prompt": "De más dormilón a menos dormilón",
+            "pokemon": [
+              {
+                "id": "graveler",
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              },
+              {
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+              },
+              {
+                "id": "weezing-galar",
+                "name": "Weezing de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+              },
+              {
+                "id": "weezing",
+                "name": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+              },
+              {
+                "id": "dratini",
+                "name": "Dratini",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 12000,
+            "lastRound": {
+              "prompt": "De más dormilón a menos dormilón",
+              "pokemon": [
+                {
+                  "id": "graveler",
+                  "name": "Graveler",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                },
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                },
+                {
+                  "id": "weezing-galar",
+                  "name": "Weezing de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                },
+                {
+                  "id": "weezing",
+                  "name": "Weezing",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                },
+                {
+                  "id": "dratini",
+                  "name": "Dratini",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                }
+              ],
+              "consensus": [
+                {
+                  "pokemon": {
+                    "id": "graveler",
+                    "name": "Graveler",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "umbreon",
+                    "name": "Umbreon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "weezing-galar",
+                    "name": "Weezing de Galar",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "weezing",
+                    "name": "Weezing",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "dratini",
+                    "name": "Dratini",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                  },
+                  "averagePosition": 3
+                }
+              ],
+              "players": {
+                "p1": {
+                  "ranking": [
+                    {
+                      "id": "graveler",
+                      "name": "Graveler",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                    },
+                    {
+                      "id": "umbreon",
+                      "name": "Umbreon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                    },
+                    {
+                      "id": "weezing-galar",
+                      "name": "Weezing de Galar",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                    },
+                    {
+                      "id": "weezing",
+                      "name": "Weezing",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                    },
+                    {
+                      "id": "dratini",
+                      "name": "Dratini",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                    }
+                  ],
+                  "distance": 12,
+                  "position": 1,
+                  "pointsAwarded": 4
+                },
+                "p2": {
+                  "ranking": [
+                    {
+                      "id": "dratini",
+                      "name": "Dratini",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                    },
+                    {
+                      "id": "weezing",
+                      "name": "Weezing",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                    },
+                    {
+                      "id": "weezing-galar",
+                      "name": "Weezing de Galar",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                    },
+                    {
+                      "id": "umbreon",
+                      "name": "Umbreon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                    },
+                    {
+                      "id": "graveler",
+                      "name": "Graveler",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                    }
+                  ],
+                  "distance": 12,
+                  "position": 1,
+                  "pointsAwarded": 4
+                },
+                "p3": {
+                  "ranking": null,
+                  "distance": null,
+                  "position": null,
+                  "pointsAwarded": 0
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "graveler",
+                  "name": "Graveler",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                },
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                },
+                {
+                  "id": "weezing-galar",
+                  "name": "Weezing de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                },
+                {
+                  "id": "weezing",
+                  "name": "Weezing",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                },
+                {
+                  "id": "dratini",
+                  "name": "Dratini",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "dratini",
+                  "name": "Dratini",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                },
+                {
+                  "id": "weezing",
+                  "name": "Weezing",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                },
+                {
+                  "id": "weezing-galar",
+                  "name": "Weezing de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png"
+                },
+                {
+                  "id": "umbreon",
+                  "name": "Umbreon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+                },
+                {
+                  "id": "graveler",
+                  "name": "Graveler",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                }
+              ]
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": "De mejor a peor cantante de ducha",
+            "pokemon": [
+              {
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+              },
+              {
+                "id": "slowking",
+                "name": "Slowking",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+              },
+              {
+                "id": "slowbro",
+                "name": "Slowbro",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+              },
+              {
+                "id": "grimer-alola",
+                "name": "Grimer de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10112.png"
+              },
+              {
+                "id": "skarmory",
+                "name": "Skarmory",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png"
+              }
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundEndsAt": 132000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": "De mejor a peor cantante de ducha",
+            "pokemon": [
+              {
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+              },
+              {
+                "id": "slowking",
+                "name": "Slowking",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+              },
+              {
+                "id": "slowbro",
+                "name": "Slowbro",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+              },
+              {
+                "id": "grimer-alola",
+                "name": "Grimer de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10112.png"
+              },
+              {
+                "id": "skarmory",
+                "name": "Skarmory",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png"
+              }
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundEndsAt": 132000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": "De mejor a peor cantante de ducha",
+            "pokemon": [
+              {
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+              },
+              {
+                "id": "slowking",
+                "name": "Slowking",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+              },
+              {
+                "id": "slowbro",
+                "name": "Slowbro",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+              },
+              {
+                "id": "grimer-alola",
+                "name": "Grimer de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10112.png"
+              },
+              {
+                "id": "skarmory",
+                "name": "Skarmory",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundEndsAt": 132000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "slowking",
+                  "name": "Slowking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+                },
+                {
+                  "id": "slowbro",
+                  "name": "Slowbro",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+                },
+                {
+                  "id": "aerodactyl",
+                  "name": "Aerodactyl",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+                },
+                {
+                  "id": "skarmory",
+                  "name": "Skarmory",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png"
+                },
+                {
+                  "id": "grimer-alola",
+                  "name": "Grimer de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10112.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 132000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": "De mejor a peor cantante de ducha",
+            "pokemon": [
+              {
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+              },
+              {
+                "id": "slowking",
+                "name": "Slowking",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+              },
+              {
+                "id": "slowbro",
+                "name": "Slowbro",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+              },
+              {
+                "id": "grimer-alola",
+                "name": "Grimer de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10112.png"
+              },
+              {
+                "id": "skarmory",
+                "name": "Skarmory",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundEndsAt": 132000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "slowking",
+                  "name": "Slowking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+                },
+                {
+                  "id": "slowbro",
+                  "name": "Slowbro",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+                },
+                {
+                  "id": "aerodactyl",
+                  "name": "Aerodactyl",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+                },
+                {
+                  "id": "skarmory",
+                  "name": "Skarmory",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png"
+                },
+                {
+                  "id": "grimer-alola",
+                  "name": "Grimer de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10112.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "slowbro",
+                  "name": "Slowbro",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+                },
+                {
+                  "id": "slowking",
+                  "name": "Slowking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+                },
+                {
+                  "id": "aerodactyl",
+                  "name": "Aerodactyl",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+                },
+                {
+                  "id": "grimer-alola",
+                  "name": "Grimer de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10112.png"
+                },
+                {
+                  "id": "skarmory",
+                  "name": "Skarmory",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "prompt": "De mejor a peor cantante de ducha",
+            "pokemon": [
+              {
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+              },
+              {
+                "id": "slowking",
+                "name": "Slowking",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+              },
+              {
+                "id": "slowbro",
+                "name": "Slowbro",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+              },
+              {
+                "id": "grimer-alola",
+                "name": "Grimer de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10112.png"
+              },
+              {
+                "id": "skarmory",
+                "name": "Skarmory",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 24000,
+            "lastRound": {
+              "prompt": "De mejor a peor cantante de ducha",
+              "pokemon": [
+                {
+                  "id": "aerodactyl",
+                  "name": "Aerodactyl",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+                },
+                {
+                  "id": "slowking",
+                  "name": "Slowking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+                },
+                {
+                  "id": "slowbro",
+                  "name": "Slowbro",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+                },
+                {
+                  "id": "grimer-alola",
+                  "name": "Grimer de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10112.png"
+                },
+                {
+                  "id": "skarmory",
+                  "name": "Skarmory",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png"
+                }
+              ],
+              "consensus": [
+                {
+                  "pokemon": {
+                    "id": "slowking",
+                    "name": "Slowking",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+                  },
+                  "averagePosition": 1.5
+                },
+                {
+                  "pokemon": {
+                    "id": "slowbro",
+                    "name": "Slowbro",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+                  },
+                  "averagePosition": 1.5
+                },
+                {
+                  "pokemon": {
+                    "id": "aerodactyl",
+                    "name": "Aerodactyl",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "grimer-alola",
+                    "name": "Grimer de Alola",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10112.png"
+                  },
+                  "averagePosition": 4.5
+                },
+                {
+                  "pokemon": {
+                    "id": "skarmory",
+                    "name": "Skarmory",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png"
+                  },
+                  "averagePosition": 4.5
+                }
+              ],
+              "players": {
+                "p1": {
+                  "ranking": [
+                    {
+                      "id": "slowking",
+                      "name": "Slowking",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+                    },
+                    {
+                      "id": "slowbro",
+                      "name": "Slowbro",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+                    },
+                    {
+                      "id": "aerodactyl",
+                      "name": "Aerodactyl",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+                    },
+                    {
+                      "id": "skarmory",
+                      "name": "Skarmory",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png"
+                    },
+                    {
+                      "id": "grimer-alola",
+                      "name": "Grimer de Alola",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10112.png"
+                    }
+                  ],
+                  "distance": 4,
+                  "position": 1,
+                  "pointsAwarded": 4
+                },
+                "p2": {
+                  "ranking": [
+                    {
+                      "id": "slowbro",
+                      "name": "Slowbro",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+                    },
+                    {
+                      "id": "slowking",
+                      "name": "Slowking",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+                    },
+                    {
+                      "id": "aerodactyl",
+                      "name": "Aerodactyl",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+                    },
+                    {
+                      "id": "grimer-alola",
+                      "name": "Grimer de Alola",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10112.png"
+                    },
+                    {
+                      "id": "skarmory",
+                      "name": "Skarmory",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png"
+                    }
+                  ],
+                  "distance": 4,
+                  "position": 1,
+                  "pointsAwarded": 4
+                },
+                "p3": {
+                  "ranking": null,
+                  "distance": null,
+                  "position": null,
+                  "pointsAwarded": 0
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "slowking",
+                  "name": "Slowking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+                },
+                {
+                  "id": "slowbro",
+                  "name": "Slowbro",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+                },
+                {
+                  "id": "aerodactyl",
+                  "name": "Aerodactyl",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+                },
+                {
+                  "id": "skarmory",
+                  "name": "Skarmory",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png"
+                },
+                {
+                  "id": "grimer-alola",
+                  "name": "Grimer de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10112.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "slowbro",
+                  "name": "Slowbro",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+                },
+                {
+                  "id": "slowking",
+                  "name": "Slowking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+                },
+                {
+                  "id": "aerodactyl",
+                  "name": "Aerodactyl",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
+                },
+                {
+                  "id": "grimer-alola",
+                  "name": "Grimer de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10112.png"
+                },
+                {
+                  "id": "skarmory",
+                  "name": "Skarmory",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png"
+                }
+              ]
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 144000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "De más dormilón a menos dormilón",
+            "pokemon": [
+              {
+                "id": "ursaring",
+                "name": "Ursaring",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+              },
+              {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              {
+                "id": "sandslash",
+                "name": "Sandslash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+              },
+              {
+                "id": "ampharos",
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "seaking",
+                "name": "Seaking",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+              }
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 8,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundEndsAt": 144000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 144000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "De más dormilón a menos dormilón",
+            "pokemon": [
+              {
+                "id": "ursaring",
+                "name": "Ursaring",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+              },
+              {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              {
+                "id": "sandslash",
+                "name": "Sandslash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+              },
+              {
+                "id": "ampharos",
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "seaking",
+                "name": "Seaking",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+              }
+            ],
+            "submittedPlayerIds": [],
+            "scores": {
+              "p1": 8,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundEndsAt": 144000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 144000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "De más dormilón a menos dormilón",
+            "pokemon": [
+              {
+                "id": "ursaring",
+                "name": "Ursaring",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+              },
+              {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              {
+                "id": "sandslash",
+                "name": "Sandslash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+              },
+              {
+                "id": "ampharos",
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "seaking",
+                "name": "Seaking",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p3"
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundEndsAt": 144000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "seaking",
+                  "name": "Seaking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                },
+                {
+                  "id": "ampharos",
+                  "name": "Ampharos",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                },
+                {
+                  "id": "sandslash",
+                  "name": "Sandslash",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                },
+                {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                },
+                {
+                  "id": "ursaring",
+                  "name": "Ursaring",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 144000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "De más dormilón a menos dormilón",
+            "pokemon": [
+              {
+                "id": "ursaring",
+                "name": "Ursaring",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+              },
+              {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              {
+                "id": "sandslash",
+                "name": "Sandslash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+              },
+              {
+                "id": "ampharos",
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "seaking",
+                "name": "Seaking",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p3",
+              "p1"
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundEndsAt": 144000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "ursaring",
+                  "name": "Ursaring",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                },
+                {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                },
+                {
+                  "id": "sandslash",
+                  "name": "Sandslash",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                },
+                {
+                  "id": "ampharos",
+                  "name": "Ampharos",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                },
+                {
+                  "id": "seaking",
+                  "name": "Seaking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownRanking": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "seaking",
+                  "name": "Seaking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                },
+                {
+                  "id": "ampharos",
+                  "name": "Ampharos",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                },
+                {
+                  "id": "sandslash",
+                  "name": "Sandslash",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                },
+                {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                },
+                {
+                  "id": "ursaring",
+                  "name": "Ursaring",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 36000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "De más dormilón a menos dormilón",
+            "pokemon": [
+              {
+                "id": "ursaring",
+                "name": "Ursaring",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+              },
+              {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              {
+                "id": "sandslash",
+                "name": "Sandslash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+              },
+              {
+                "id": "ampharos",
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "seaking",
+                "name": "Seaking",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 14,
+              "p2": 14,
+              "p3": 2
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 36000,
+            "lastRound": {
+              "prompt": "De más dormilón a menos dormilón",
+              "pokemon": [
+                {
+                  "id": "ursaring",
+                  "name": "Ursaring",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                },
+                {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                },
+                {
+                  "id": "sandslash",
+                  "name": "Sandslash",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                },
+                {
+                  "id": "ampharos",
+                  "name": "Ampharos",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                },
+                {
+                  "id": "seaking",
+                  "name": "Seaking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                }
+              ],
+              "consensus": [
+                {
+                  "pokemon": {
+                    "id": "sentret",
+                    "name": "Sentret",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                  },
+                  "averagePosition": 2.3333333333333335
+                },
+                {
+                  "pokemon": {
+                    "id": "ursaring",
+                    "name": "Ursaring",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                  },
+                  "averagePosition": 2.6666666666666665
+                },
+                {
+                  "pokemon": {
+                    "id": "sandslash",
+                    "name": "Sandslash",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "seaking",
+                    "name": "Seaking",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                  },
+                  "averagePosition": 3.3333333333333335
+                },
+                {
+                  "pokemon": {
+                    "id": "ampharos",
+                    "name": "Ampharos",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                  },
+                  "averagePosition": 3.6666666666666665
+                }
+              ],
+              "players": {
+                "p1": {
+                  "ranking": [
+                    {
+                      "id": "ursaring",
+                      "name": "Ursaring",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                    },
+                    {
+                      "id": "sentret",
+                      "name": "Sentret",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                    },
+                    {
+                      "id": "sandslash",
+                      "name": "Sandslash",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                    },
+                    {
+                      "id": "ampharos",
+                      "name": "Ampharos",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                    },
+                    {
+                      "id": "seaking",
+                      "name": "Seaking",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                    }
+                  ],
+                  "distance": 6,
+                  "position": 1,
+                  "pointsAwarded": 6
+                },
+                "p2": {
+                  "ranking": [
+                    {
+                      "id": "sentret",
+                      "name": "Sentret",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                    },
+                    {
+                      "id": "ursaring",
+                      "name": "Ursaring",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                    },
+                    {
+                      "id": "sandslash",
+                      "name": "Sandslash",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                    },
+                    {
+                      "id": "seaking",
+                      "name": "Seaking",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                    },
+                    {
+                      "id": "ampharos",
+                      "name": "Ampharos",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                    }
+                  ],
+                  "distance": 6,
+                  "position": 1,
+                  "pointsAwarded": 6
+                },
+                "p3": {
+                  "ranking": [
+                    {
+                      "id": "seaking",
+                      "name": "Seaking",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                    },
+                    {
+                      "id": "ampharos",
+                      "name": "Ampharos",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                    },
+                    {
+                      "id": "sandslash",
+                      "name": "Sandslash",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                    },
+                    {
+                      "id": "sentret",
+                      "name": "Sentret",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                    },
+                    {
+                      "id": "ursaring",
+                      "name": "Ursaring",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                    }
+                  ],
+                  "distance": 12,
+                  "position": 3,
+                  "pointsAwarded": 2
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "ursaring",
+                  "name": "Ursaring",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                },
+                {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                },
+                {
+                  "id": "sandslash",
+                  "name": "Sandslash",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                },
+                {
+                  "id": "ampharos",
+                  "name": "Ampharos",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                },
+                {
+                  "id": "seaking",
+                  "name": "Seaking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                },
+                {
+                  "id": "ursaring",
+                  "name": "Ursaring",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                },
+                {
+                  "id": "sandslash",
+                  "name": "Sandslash",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                },
+                {
+                  "id": "seaking",
+                  "name": "Seaking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                },
+                {
+                  "id": "ampharos",
+                  "name": "Ampharos",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "seaking",
+                  "name": "Seaking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                },
+                {
+                  "id": "ampharos",
+                  "name": "Ampharos",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                },
+                {
+                  "id": "sandslash",
+                  "name": "Sandslash",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                },
+                {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                },
+                {
+                  "id": "ursaring",
+                  "name": "Ursaring",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "secret-ranking",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "prompt": "De más dormilón a menos dormilón",
+            "pokemon": [
+              {
+                "id": "ursaring",
+                "name": "Ursaring",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+              },
+              {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              {
+                "id": "sandslash",
+                "name": "Sandslash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+              },
+              {
+                "id": "ampharos",
+                "name": "Ampharos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+              },
+              {
+                "id": "seaking",
+                "name": "Seaking",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+              }
+            ],
+            "submittedPlayerIds": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 14,
+              "p2": 14,
+              "p3": 2
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "prompt": "De más dormilón a menos dormilón",
+              "pokemon": [
+                {
+                  "id": "ursaring",
+                  "name": "Ursaring",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                },
+                {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                },
+                {
+                  "id": "sandslash",
+                  "name": "Sandslash",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                },
+                {
+                  "id": "ampharos",
+                  "name": "Ampharos",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                },
+                {
+                  "id": "seaking",
+                  "name": "Seaking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                }
+              ],
+              "consensus": [
+                {
+                  "pokemon": {
+                    "id": "sentret",
+                    "name": "Sentret",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                  },
+                  "averagePosition": 2.3333333333333335
+                },
+                {
+                  "pokemon": {
+                    "id": "ursaring",
+                    "name": "Ursaring",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                  },
+                  "averagePosition": 2.6666666666666665
+                },
+                {
+                  "pokemon": {
+                    "id": "sandslash",
+                    "name": "Sandslash",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                  },
+                  "averagePosition": 3
+                },
+                {
+                  "pokemon": {
+                    "id": "seaking",
+                    "name": "Seaking",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                  },
+                  "averagePosition": 3.3333333333333335
+                },
+                {
+                  "pokemon": {
+                    "id": "ampharos",
+                    "name": "Ampharos",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                  },
+                  "averagePosition": 3.6666666666666665
+                }
+              ],
+              "players": {
+                "p1": {
+                  "ranking": [
+                    {
+                      "id": "ursaring",
+                      "name": "Ursaring",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                    },
+                    {
+                      "id": "sentret",
+                      "name": "Sentret",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                    },
+                    {
+                      "id": "sandslash",
+                      "name": "Sandslash",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                    },
+                    {
+                      "id": "ampharos",
+                      "name": "Ampharos",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                    },
+                    {
+                      "id": "seaking",
+                      "name": "Seaking",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                    }
+                  ],
+                  "distance": 6,
+                  "position": 1,
+                  "pointsAwarded": 6
+                },
+                "p2": {
+                  "ranking": [
+                    {
+                      "id": "sentret",
+                      "name": "Sentret",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                    },
+                    {
+                      "id": "ursaring",
+                      "name": "Ursaring",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                    },
+                    {
+                      "id": "sandslash",
+                      "name": "Sandslash",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                    },
+                    {
+                      "id": "seaking",
+                      "name": "Seaking",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                    },
+                    {
+                      "id": "ampharos",
+                      "name": "Ampharos",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                    }
+                  ],
+                  "distance": 6,
+                  "position": 1,
+                  "pointsAwarded": 6
+                },
+                "p3": {
+                  "ranking": [
+                    {
+                      "id": "seaking",
+                      "name": "Seaking",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                    },
+                    {
+                      "id": "ampharos",
+                      "name": "Ampharos",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                    },
+                    {
+                      "id": "sandslash",
+                      "name": "Sandslash",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                    },
+                    {
+                      "id": "sentret",
+                      "name": "Sentret",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                    },
+                    {
+                      "id": "ursaring",
+                      "name": "Ursaring",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                    }
+                  ],
+                  "distance": 12,
+                  "position": 3,
+                  "pointsAwarded": 2
+                }
+              }
+            },
+            "results": {
+              "winnerId": null,
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 14,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "rankingsSubmitted": 3,
+                    "roundsMissed": 0,
+                    "roundWins": 3,
+                    "perfectMatches": 0,
+                    "distanceTotal": 22,
+                    "pointsFromRounds": 14
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 14,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "rankingsSubmitted": 3,
+                    "roundsMissed": 0,
+                    "roundWins": 3,
+                    "perfectMatches": 0,
+                    "distanceTotal": 22,
+                    "pointsFromRounds": 14
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "rankingsSubmitted": 1,
+                    "roundsMissed": 2,
+                    "roundWins": 0,
+                    "perfectMatches": 0,
+                    "distanceTotal": 12,
+                    "pointsFromRounds": 2
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "ursaring",
+                  "name": "Ursaring",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                },
+                {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                },
+                {
+                  "id": "sandslash",
+                  "name": "Sandslash",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                },
+                {
+                  "id": "ampharos",
+                  "name": "Ampharos",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                },
+                {
+                  "id": "seaking",
+                  "name": "Seaking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                },
+                {
+                  "id": "ursaring",
+                  "name": "Ursaring",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                },
+                {
+                  "id": "sandslash",
+                  "name": "Sandslash",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                },
+                {
+                  "id": "seaking",
+                  "name": "Seaking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                },
+                {
+                  "id": "ampharos",
+                  "name": "Ampharos",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownRanking": [
+                {
+                  "id": "seaking",
+                  "name": "Seaking",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+                },
+                {
+                  "id": "ampharos",
+                  "name": "Ampharos",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/181.png"
+                },
+                {
+                  "id": "sandslash",
+                  "name": "Sandslash",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                },
+                {
+                  "id": "sentret",
+                  "name": "Sentret",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                },
+                {
+                  "id": "ursaring",
+                  "name": "Ursaring",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/217.png"
+                }
+              ]
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": null,
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 14,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 3,
+            "rankingsSubmitted": 3,
+            "roundsMissed": 0,
+            "roundWins": 3,
+            "perfectMatches": 0,
+            "distanceTotal": 22,
+            "pointsFromRounds": 14
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 14,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 3,
+            "rankingsSubmitted": 3,
+            "roundsMissed": 0,
+            "roundWins": 3,
+            "perfectMatches": 0,
+            "distanceTotal": 22,
+            "pointsFromRounds": 14
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 2,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "rankingsSubmitted": 1,
+            "roundsMissed": 2,
+            "roundWins": 0,
+            "perfectMatches": 0,
+            "distanceTotal": 12,
+            "pointsFromRounds": 2
+          }
+        }
+      ]
+    }
+  }
+}

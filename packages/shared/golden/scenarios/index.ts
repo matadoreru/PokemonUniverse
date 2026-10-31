@@ -11,6 +11,7 @@ import { pokedexDistanceScenarios } from './pokedex-distance.js';
 import { pokemonRedFlagScenarios } from './pokemon-red-flag.js';
 import { pokemonPaletteGuessScenarios } from './pokemon-palette-guess.js';
 import { pokemonTriviaScenarios } from './pokemon-trivia.js';
+import { secretRankingScenarios } from './secret-ranking.js';
 import { typeChainScenarios } from './type-chain.js';
 import { typeDuelScenarios } from './type-duel.js';
 import { wouldYouRatherScenarios } from './would-you-rather.js';
@@ -35,4 +36,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'poke-taboo': pokeTabooScenarios,
   'would-you-rather': wouldYouRatherScenarios,
   'most-likely-to': mostLikelyToScenarios,
+  'secret-ranking': secretRankingScenarios,
 };
