@@ -95,4 +95,43 @@ class PuConfigTest {
       assertTrue(chain(ex).contains(entry.getKey().substring("pu.data-sync.".length()).replace("-z", "Z")), chain(ex));
     }
   }
+
+  /** PokéAPI y sprites solo por https; http únicamente hacia loopback (servidor de fixtures de las pruebas). */
+  @Test
+  void dataSyncSourcesMustBeHttpsOrLoopback() {
+    String secret = "x".repeat(40);
+    for (var entry : Map.<String, Object>of("pu.data-sync.pokeapi-base-url", "http://pokeapi.co/api/v2",
+        "pu.data-sync.sprite-base-url", "ftp://raw.githubusercontent.com").entrySet()) {
+      var invalid = new java.util.HashMap<String, Object>(props(secret, false));
+      invalid.put(entry.getKey(), entry.getValue());
+      var ex = assertThrows(Exception.class,
+          () -> ApplicationContext.run(invalid, "test").getBean(PuConfig.DataSync.class));
+      assertTrue(chain(ex).contains("must be an https URL"), chain(ex));
+    }
+    var loopback = new java.util.HashMap<String, Object>(props(secret, false));
+    loopback.put("pu.data-sync.pokeapi-base-url", "http://127.0.0.1:8099/api/v2");
+    loopback.put("pu.data-sync.sprite-base-url", "http://localhost:8099/raw");
+    try (var ctx = ApplicationContext.run(loopback, "test")) {
+      assertTrue(ctx.getBean(PuConfig.DataSync.class).pokeapiBaseUrl().startsWith("http://127.0.0.1"));
+    }
+  }
+
+  /**
+   * Java no comparte el interruptor de Node: {@code DATA_SYNC_ENABLED=true} (el {@code .env} de Node) no enciende el
+   * data-sync Java; solo {@code BACKEND_DATA_SYNC_ENABLED}.
+   */
+  @Test
+  void onlyTheBackendSwitchEnablesTheJavaDataSync() {
+    String secret = "x".repeat(40);
+    var nodeSwitch = new java.util.HashMap<String, Object>(props(secret, false));
+    nodeSwitch.put("DATA_SYNC_ENABLED", "true");
+    try (var ctx = ApplicationContext.run(nodeSwitch, "test")) {
+      assertFalse(ctx.getBean(PuConfig.DataSync.class).enabled());
+    }
+    var javaSwitch = new java.util.HashMap<String, Object>(props(secret, false));
+    javaSwitch.put("BACKEND_DATA_SYNC_ENABLED", "true");
+    try (var ctx = ApplicationContext.run(javaSwitch, "test")) {
+      assertTrue(ctx.getBean(PuConfig.DataSync.class).enabled());
+    }
+  }
 }

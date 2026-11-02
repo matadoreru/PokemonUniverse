@@ -131,8 +131,8 @@ public class PuConfig {
       this.enabled = enabled;
       this.hour = hour;
       this.minute = minute;
-      this.pokeapiBaseUrl = pokeapiBaseUrl;
-      this.spriteBaseUrl = spriteBaseUrl;
+      this.pokeapiBaseUrl = requireSecureSource("pokeapiBaseUrl", pokeapiBaseUrl);
+      this.spriteBaseUrl = requireSecureSource("spriteBaseUrl", spriteBaseUrl);
       try {
         this.zone = ZoneId.of(timeZone);
       } catch (DateTimeException e) {
@@ -154,6 +154,23 @@ public class PuConfig {
 
     public ZoneId zone() {
       return zone;
+    }
+
+    /** Solo {@code https}; {@code http} únicamente hacia loopback (el servidor de fixtures de las pruebas). */
+    private static String requireSecureSource(String name, String value) {
+      java.net.URI uri;
+      try {
+        uri = new java.net.URI(value);
+      } catch (java.net.URISyntaxException e) {
+        uri = null;
+      }
+      var host = uri == null || uri.getHost() == null ? "" : uri.getHost();
+      var scheme = uri == null || uri.getScheme() == null ? "" : uri.getScheme().toLowerCase(java.util.Locale.ROOT);
+      boolean loopback = host.equals("localhost") || host.equals("127.0.0.1") || host.equals("[::1]");
+      if (host.isEmpty() || !(scheme.equals("https") || scheme.equals("http") && loopback)) {
+        throw new IllegalArgumentException("pu.data-sync." + name + " must be an https URL: " + value);
+      }
+      return value;
     }
 
     public String pokeapiBaseUrl() {

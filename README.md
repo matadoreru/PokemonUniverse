@@ -86,7 +86,7 @@ npm run db:seed                               # descarga los Pokémon de PokéAP
 npm run dev                                   # Node en :3001, Java en :8080 y web en http://localhost:5173
 ```
 
-En el `.env` local quita la línea `VITE_API_URL`: la web usa el proxy de Vite. Pon también `DATA_SYNC_ENABLED=false` si no quieres sincronizar datos externos al arrancar.
+En el `.env` local quita la línea `VITE_API_URL`: la web usa el proxy de Vite. Pon también `DATA_SYNC_ENABLED=false` si no quieres sincronizar datos externos al arrancar. Esa variable solo la lee Node: el backend Java tiene su propio interruptor, `BACKEND_DATA_SYNC_ENABLED` (por defecto `false` hasta el corte 2D).
 
 El backend Java (`npm run dev:backend`, recarga en caliente con `./gradlew run -t`) toma del entorno `JWT_SECRET`, `COOKIE_SECURE`, `WEB_ORIGIN` y `RATE_LIMIT_DISABLED`; la conexión a la BD local está fijada en `backend/src/main/resources/application-dev.yml` y el puerto se fuerza a 8080 aunque el `.env` traiga `PORT=3001`. Los avatares de invitado los sube Node a `apps/server/.data/avatars` y Java los sirve desde ese mismo directorio (`pu.avatar-storage-dir` en `application-dev.yml`, `../apps/server/.data/avatars` relativo a `backend/`; `AVATAR_STORAGE_DIR` lo sustituye). Los artworks del modo Artwork los lee de `pu.artwork-dir` (`../apps/server/assets/pokemon-artworks` por defecto, el mismo directorio que Node; `POKEMON_ARTWORK_DIR` lo sustituye).
 

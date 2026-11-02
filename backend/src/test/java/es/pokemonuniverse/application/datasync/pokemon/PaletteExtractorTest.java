@@ -2,6 +2,7 @@ package es.pokemonuniverse.application.datasync.pokemon;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
@@ -9,7 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
+import java.util.zip.CRC32;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * {@code extractPokemonPaletteData} de {@code pokemon-palette-sync.ts}: las salidas esperadas se obtuvieron una vez
@@ -104,5 +110,42 @@ class PaletteExtractorTest {
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }
+  }
+
+  /** Un PNG diminuto que declara 20000×20000: se rechaza por la cabecera sin reservar el ráster (como sharp). */
+  @Test
+  @Timeout(value = 5, unit = TimeUnit.SECONDS)
+  void aDecompressionBombIsRejectedFromItsHeader() {
+    var bomb = pngHeaderOnly(20_000, 20_000);
+    assertTrue(bomb.length < 200);
+    var error = assertThrows(IllegalArgumentException.class, () -> PaletteExtractor.extract(bomb));
+    assertEquals("Input image exceeds pixel limit", error.getMessage());
+  }
+
+  /** Firma, IHDR (RGBA de 8 bits), un IDAT con unos bytes comprimidos e IEND, con CRC válidos. */
+  static byte[] pngHeaderOnly(int width, int height) {
+    var out = new ByteArrayOutputStream();
+    out.writeBytes(new byte[] {(byte) 0x89, 'P', 'N', 'G', '\r', '\n', 0x1a, '\n'});
+    chunk(out, "IHDR", ByteBuffer.allocate(13).putInt(width).putInt(height).put((byte) 8).put((byte) 6)
+        .put((byte) 0).put((byte) 0).put((byte) 0).array());
+    var deflater = new java.util.zip.Deflater();
+    deflater.setInput(new byte[1024]);
+    deflater.finish();
+    var compressed = new byte[256];
+    int length = deflater.deflate(compressed);
+    deflater.end();
+    chunk(out, "IDAT", java.util.Arrays.copyOf(compressed, length));
+    chunk(out, "IEND", new byte[0]);
+    return out.toByteArray();
+  }
+
+  private static void chunk(ByteArrayOutputStream out, String type, byte[] data) {
+    out.writeBytes(ByteBuffer.allocate(4).putInt(data.length).array());
+    var typed = ByteBuffer.allocate(4 + data.length).put(type.getBytes(java.nio.charset.StandardCharsets.US_ASCII))
+        .put(data).array();
+    out.writeBytes(typed);
+    var crc = new CRC32();
+    crc.update(typed);
+    out.writeBytes(ByteBuffer.allocate(4).putInt((int) crc.getValue()).array());
   }
 }

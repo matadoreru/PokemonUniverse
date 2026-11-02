@@ -185,6 +185,11 @@ buscador desplaza la página (Bingo); además, 8 juegos no muestran el título d
     ahí. La imagen `node:22-alpine` sin versión fija puede cambiar de ICU respecto a `icu4j` 78.3.
 
 - Sincronización de Pokémon en Java (2C, `application/datasync/pokemon`; apagada con `pu.data-sync.enabled=false`):
+  - Interruptor propio `BACKEND_DATA_SYNC_ENABLED` (no el `DATA_SYNC_ENABLED` de Node, que vale `true` en `.env`); en
+    el corte 2D se pone a `true` y Node deja de sincronizar. `POKEAPI_BASE_URL` y `POKEAPI_SPRITE_BASE_URL` solo
+    existen para las pruebas y exigen https (http solo hacia loopback).
+  - Sprites: se rechaza por la cabecera una imagen de más de 4096² píxeles (sharp admite 16383² por defecto) con el
+    literal `Input image exceeds pixel limit`; cuenta como paleta fallida.
   - Atajo INCREMENTAL portado con su defecto: con ≥ 100 paletas se compara `pokemon-species?limit=1`.count con el
     total de filas de `Pokemon` (formas incluidas), que ya lo supera en cuanto hay formas; una especie nueva no se
     detecta hasta un FULL (o hasta que falten paletas). Corregirlo en los dos lados a la vez.

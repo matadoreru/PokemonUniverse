@@ -37,6 +37,14 @@ public final class PaletteExtractor {
   public static final String NOT_VARIED = "El sprite no contiene una paleta suficientemente variada.";
   /** Mensaje de sharp ante un formato desconocido. */
   static final String UNSUPPORTED = "Input buffer contains unsupported image format";
+  /** Mensaje de sharp al superar {@code limitInputPixels}. */
+  static final String PIXEL_LIMIT = "Input image exceeds pixel limit";
+  /**
+   * Tope de píxeles de la cabecera. sharp admite por defecto 268 402 689 (16383²), pero eso son ~1 GiB de ráster ARGB
+   * por decodificación y la sincronización decodifica 6 en paralelo; los sprites de PokéAPI son de 96×96, así que se
+   * usa el mismo tope que los avatares (4096², 64 MiB por ráster).
+   */
+  static final long MAX_PIXELS = 4096L * 4096L;
   private static final int MAX_SIDE = 96;
   private static final int MIN_ALPHA = 96;
   private static final int MIN_CHANNEL = 20;
@@ -114,11 +122,25 @@ public final class PaletteExtractor {
     return new Palette(colors, weights);
   }
 
+  /**
+   * Decodifica tras leer las dimensiones de la cabecera: por encima de {@link #MAX_PIXELS} se rechaza sin reservar el
+   * ráster (bomba de descompresión), como el {@code limitInputPixels} de sharp. El fallo es una
+   * {@link RuntimeException}: la paleta de ese Pokémon cuenta como fallida y la sincronización sigue.
+   */
   private static BufferedImage decode(byte[] image) {
-    try {
-      var decoded = ImageIO.read(new ByteArrayInputStream(image));
-      if (decoded == null) throw new IllegalArgumentException(UNSUPPORTED);
-      return decoded;
+    try (var stream = ImageIO.createImageInputStream(new ByteArrayInputStream(image))) {
+      var readers = stream == null ? null : ImageIO.getImageReaders(stream);
+      if (readers == null || !readers.hasNext()) throw new IllegalArgumentException(UNSUPPORTED);
+      var reader = readers.next();
+      try {
+        reader.setInput(stream, true, true);
+        if ((long) reader.getWidth(0) * reader.getHeight(0) > MAX_PIXELS) {
+          throw new IllegalArgumentException(PIXEL_LIMIT);
+        }
+        return reader.read(0);
+      } finally {
+        reader.dispose();
+      }
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

@@ -79,6 +79,12 @@ refreshes persisted prices daily. Failed runs are recorded without deleting or
 invalidating the last successful dataset. The scheduler defaults to 06:00 in
 `Europe/Madrid` and is configurable through the `DATA_SYNC_*` variables.
 
+The Java backend carries a port of this sync (`backend/.../application/datasync`), switched off until the 2D cutover.
+Its switch is `BACKEND_DATA_SYNC_ENABLED` (default `false`), deliberately not Node's `DATA_SYNC_ENABLED`, so exporting
+Node's `.env` into the Java process never starts a second syncer on the same database. `DATA_SYNC_HOUR`, `_MINUTE` and
+`_TIMEZONE` are shared. `POKEAPI_BASE_URL` and `POKEAPI_SPRITE_BASE_URL` (https only, http only to loopback) exist for
+tests.
+
 ## State and authority
 
 The room state machine uses `LOBBY → game-owned phases → GAME_RESULTS → SESSION_RESULTS`. `GAME_RESULTS` is an obligatory, host-confirmed stop even when the session target has just been reached, so reconnecting clients always receive the last game's complete result before the session ranking. In a non-final session, continuing from `GAME_RESULTS` launches the same minigame in fixed mode or a compatible server-random minigame in random mode without passing through `LOBBY`. Player voting starts only after that confirmation and continues through `NEXT_GAME_VOTE → NEXT_GAME_VOTE_RESULTS`, then launches the compatible winner after its reveal. The coordinator falls back to `LOBBY` only when a changed player count leaves the configured rotation without enough compatible games. Round games use active/results phases; Pokémon Impostor uses `ROLE_REVEAL → ordered CLUE_PHASE turns → VOTING → VOTE_RESULTS → ELIMINATION`, while Type Duel owns its private type-selection, reveal and Pokémon-search phases. A game module owns every gameplay state; the room coordinator owns only the inter-game vote. There are no combinations of gameplay booleans.

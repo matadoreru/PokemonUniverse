@@ -198,7 +198,7 @@ class PokemonDataSyncTest {
     } finally {
       service.stop();
     }
-    assertEquals(List.of(2_000L, 2_000L, 2_000L), sleeps);
+    assertEquals(List.of(2_000L, 2_000L, 2_000L), sleeps, server.requests().toString());
     assertEquals(4, server.requests().stream().filter("/api/v2/pokemon-species/75"::equals).count());
     try (var connection = resolver.resolve(dataSource).getConnection(); var statement = connection.createStatement();
         var set = statement.executeQuery("SELECT \"status\"::text, \"error\" FROM \"DataSyncRun\"")) {
@@ -207,5 +207,39 @@ class PokemonDataSyncTest {
       assertEquals("PokéAPI returned 429 for species 75", set.getString(2));
     }
     dump().values().forEach(rows -> assertTrue(((List<?>) rows).isEmpty()));
+  }
+
+  /**
+   * El SQL nativo del almacén corre dentro de la transacción de {@code backfillPokemon}: si la reconciliación falla
+   * (dos habilidades en el mismo hueco), el {@code speciesId} ya escrito se deshace junto con todo lo demás.
+   */
+  @Test
+  void aFailedReconciliationRollsBackTheWholeRow() throws Exception {
+    insertDefault("broken", 9_997, SPRITES + "9997.png", "{\"abilityRelations\":["
+        + "{\"id\":\"a\",\"name\":\"A\",\"slot\":1,\"isHidden\":false},"
+        + "{\"id\":\"b\",\"name\":\"B\",\"slot\":1,\"isHidden\":false}]}");
+    var error = assertThrows(IllegalStateException.class, () -> sync.backfillNormalizedData());
+    assertEquals("Duplicate ability slot: 1", error.getMessage());
+    try (var connection = resolver.resolve(dataSource).getConnection(); var statement = connection.createStatement();
+        var set = statement.executeQuery("SELECT \"speciesId\", \"sourceUpdatedAt\" FROM \"Pokemon\" WHERE \"id\" = 'broken'")) {
+      assertTrue(set.next());
+      assertEquals(null, set.getObject(1));
+      assertEquals(null, set.getObject(2));
+    }
+    var tables = dump();
+    for (var table : List.of("Ability", "PokemonAbility", "PokemonType", "PokemonStat", "PokemonAssetReference")) {
+      assertEquals(List.of(), tables.get(table), table);
+    }
+  }
+
+  /** Un sprite que declara 20000×20000 se rechaza por la cabecera y cuenta como fallido; el resto sigue. */
+  @Test
+  void aDecompressionBombSpriteCountsAsFailed() throws Exception {
+    insertDefault("bomb", 9_996, SPRITES + "9996.png", "{}");
+    server.override("/raw/PokeAPI/sprites/master/sprites/pokemon/9996.png", new PokeApiFixtureServer.Canned(200,
+        PaletteExtractorTest.pngHeaderOnly(20_000, 20_000), "image/png", Map.of()));
+    var result = sync.run(DataSyncMode.FULL);
+    assertEquals(palettesDetails(4, 3, 0, 1), details(result));
+    assertEquals(3, palettes.persisted());
   }
 }

@@ -220,7 +220,8 @@ public class PokemonCatalogSeeder {
         try {
           results.add(future.get());
         } catch (ExecutionException e) {
-          futures.forEach(pending -> pending.cancel(true));
+          // Como Promise.all, las demás peticiones no se interrumpen (un hilo interrumpido haría que SyncHttpClient
+          // reintentase como si fuera un timeout); el cierre del ejecutor espera a que terminen.
           if (e.getCause() instanceof RuntimeException runtime) throw runtime;
           if (e.getCause() instanceof Error error) throw error;
           throw new IllegalStateException(e.getCause());
