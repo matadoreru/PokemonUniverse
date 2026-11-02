@@ -123,13 +123,19 @@ buscador desplaza la página (Bingo); además, 8 juegos no muestran el título d
   los filtros están duplicadas entre workflows.
 - Deuda de 2B (aplazada en las revisiones):
   - Resuelto en 2C: los helpers de lectura de configuración de las 28 clases `<Juego>Config` están en
-    `engine/infra/ConfigReader` (de 2 830 a 1 678 líneas). Quedan locales, por su mensaje propio, las familias de
-    Pokémon Bingo, `maxConditionsPerCell`, el enum de Zoomed Pokémon y las listas de texto y precios de TCG Higher or
-    Lower. Los `parse` de acciones de `<Juego>Types` siguen con su `strict`/`invalid()` propios (un único mensaje
-    «Acción de … no válida.»). También hay helpers pequeños repetidos entre motores (`takeRandom`, `formatEs`, comprobaciones de sprite, `choosePrompt` y el pool de
-    prompts); `isUsableWhoPokemonSprite` duplica `isUsableZoomedSprite`, `GuessFromStatsPlayerStats` duplica
-    `PokemonPaletteStats` y los recuentos de lotes ganados y sin dueño están duplicados entre `PokemonTeamAuctionEngine`
-    y `PokemonTeamAuctionRules`.
+    `engine/infra/ConfigReader` (de 2 830 a 1 678 líneas), y `ConfigMessagesSnapshotTest` fija sus mensajes en
+    `config-messages.json`. Quedan locales, por su mensaje propio: el enum de Zoomed Pokémon («no admite ese valor»),
+    las familias de Pokémon Bingo (una ausente da `families.<clave> debe ser booleano`) y su `maxConditionsPerCell`
+    (`1.5` da «debe ser 1 o 2»), las pistas de Pokédle Race (`clues.<clave> debe ser booleano`), el `refine` de
+    `roundSeconds` de PokéTaboo y las listas de texto y precios de TCG Higher or Lower. PokéTaboo lee `roundSeconds`
+    como entero entre `Integer.MIN_VALUE` y `MAX_VALUE` antes del `refine`; con `option(...)` y el literal de Node
+    igualaría el primer mensaje de Node para valores fuera de `int` (divergencia anterior a 2C, sin cambiar). Los
+    `parse` de acciones de `<Juego>Types` siguen con su `strict`/`invalid()` propios (un único mensaje
+    «Acción de … no válida.»).
+  - Helpers pequeños repetidos entre motores (`takeRandom`, `formatEs`, comprobaciones de sprite, `choosePrompt` y el
+    pool de prompts); `isUsableWhoPokemonSprite` duplica `isUsableZoomedSprite`, `GuessFromStatsPlayerStats` duplica
+    `PokemonPaletteStats` y los recuentos de lotes ganados y sin dueño están duplicados entre
+    `PokemonTeamAuctionEngine` y `PokemonTeamAuctionRules`.
   - Records posicionales anteriores a la regla del builder, que siguen como deuda documentada (los de Pokémon
     Connections y Sketchmon ya usan builder): `PokeTabooPublicState`, `WhoIsWhoPublicState`, las copias `ZERO`/`afterX()`
     de `MostLikelyToStats`, `OneOfUsIsFakeStats`, `PokeTabooPlayerStats` y `TypeChainPlayerStats`,

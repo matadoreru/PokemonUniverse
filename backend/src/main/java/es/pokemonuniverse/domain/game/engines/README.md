@@ -77,7 +77,9 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
   obliga a subir `icu4j` y a reexportar las fixtures. Las fixtures se exportan con `LANG=en_US.UTF-8` (ICU `en-US`): si
   CI difiere en una comparación de textos, la causa es la configuración regional del exportador, no el motor.
 - **`.int()` de Zod**: en Zod 4 es `Number.isSafeInteger` (`|n| <= 2^53 - 1`), no solo "sin decimales": se traduce
-  con `JsNumbers.isSafeInteger` (`domain/json`). `1e20` y `2^53` no validan; `2^53 - 1` sí.
+  con `JsNumbers.isSafeInteger` (`domain/json`). `1e20` y `2^53` no validan; `2^53 - 1` sí. Con `.min().max()`, el
+  primer issue de Zod para `1e20` es `too_big`, no `invalid_type`: `ConfigReader.integer` lo rechaza con «debe estar
+  entre», y reserva «debe ser un número entero» para `10.5` o un tipo erróneo.
 - **`trim()`**: todo `trim()` de TS o de Zod (`z.string().trim()`) se traduce con `JsStrings.trim`, nunca con
   `String.trim()` ni `String.strip()`: JS también quita los espacios de no separación (`U+00A0`, `U+202F`), `U+FEFF` y
   toda la categoría `Zs`.

@@ -13,8 +13,10 @@ import java.util.TreeSet;
  * Lector común de los {@code *Config.parse}: reproduce los esquemas Zod de configuración sobre un objeto JSON. Falla en
  * el primer error con una {@link ConfigValidationException} cuyo mensaje es
  * {@code "Configuración de <juego> no válida: <detalle>."}, que llega tal cual a la sala como motivo de no
- * disponibilidad. Los enteros siguen {@code .int()} de Zod 4 ({@link JsNumbers#isSafeInteger}): admiten {@code 10.0}
- * y rechazan {@code 10.5} y {@code 2^53}.
+ * disponibilidad. Los enteros admiten {@code 10.0} y rechazan {@code 10.5} («debe ser un número entero»). Un entero
+ * fuera del rango seguro ({@code 2^53}, {@code 1e20}) también se rechaza, pero con un acotado lo hace la comprobación de
+ * rango («debe estar entre»), como el primer issue de Zod 4 ({@code too_big}); sin cotas, {@link #safeInteger} lo
+ * rechaza con {@link JsNumbers#isSafeInteger} como {@code .int()}.
  */
 public final class ConfigReader {
 
@@ -75,14 +77,16 @@ public final class ConfigReader {
 
   /** {@code z.number().int().min(min).max(max)} sobre un valor ya extraído (un elemento de lista, por ejemplo). */
   public int integer(JsonNode value, String key, int min, int max) {
-    double number = safeNumber(value, key);
+    double number = wholeNumber(value, key);
     if (number < min || number > max) throw invalid(key + " debe estar entre " + min + " y " + max);
     return (int) number;
   }
 
   /** {@code z.number().int()} sin límites: un entero seguro, que siempre cabe en un {@code long}. */
   public long safeInteger(String key) {
-    return (long) safeNumber(required(key), key);
+    double number = wholeNumber(required(key), key);
+    if (!JsNumbers.isSafeInteger(number)) throw invalid(key + " debe ser un número entero");
+    return (long) number;
   }
 
   /** Entero de una lista cerrada ({@code z.union} de literales o {@code .refine}); fuera de ella, {@code message}. */
@@ -134,11 +138,12 @@ public final class ConfigReader {
     return new ConfigValidationException("Configuración de " + game + " no válida: " + detail + ".");
   }
 
-  private double safeNumber(JsonNode value, String key) {
-    if (!value.isNumber() || !JsNumbers.isSafeInteger(value.getDoubleValue())) {
-      throw invalid(key + " debe ser un número entero");
-    }
-    return value.getDoubleValue();
+  /** Número finito sin parte decimal; la magnitud la comprueba quien llama (rango o entero seguro). */
+  private double wholeNumber(JsonNode value, String key) {
+    if (!value.isNumber()) throw invalid(key + " debe ser un número entero");
+    double number = value.getDoubleValue();
+    if (Double.isInfinite(number) || number != Math.rint(number)) throw invalid(key + " debe ser un número entero");
+    return number;
   }
 
   private static <E extends Enum<E>> E constant(JsonNode value, Class<E> type) {

@@ -63,12 +63,13 @@ class ConfigReaderTest {
   }
 
   @Test
-  void integerRejectsOutOfRangeFractionsUnsafeWrongTypeAndMissing() {
+  void integerRejectsFractionsWrongTypeMissingAndOutOfRangeIncludingUnsafe() {
     Consumer<ConfigReader> read = config -> config.integer("roundSeconds", 10, 60);
     rejectsWith("roundSeconds", number(9), "roundSeconds debe estar entre 10 y 60", read);
     rejectsWith("roundSeconds", number(61), "roundSeconds debe estar entre 10 y 60", read);
     rejectsWith("roundSeconds", number(10.5), "roundSeconds debe ser un número entero", read);
-    rejectsWith("roundSeconds", number(9_007_199_254_740_992d), "roundSeconds debe ser un número entero", read);
+    rejectsWith("roundSeconds", number(9_007_199_254_740_992d), "roundSeconds debe estar entre 10 y 60", read);
+    rejectsWith("roundSeconds", number(1e20), "roundSeconds debe estar entre 10 y 60", read);
     rejectsWith("roundSeconds", JsonNode.createStringNode("10"), "roundSeconds debe ser un número entero", read);
     rejectsWith("laps", number(10), "falta roundSeconds", read);
   }
