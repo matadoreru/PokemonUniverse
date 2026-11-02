@@ -1,0 +1,1624 @@
+{
+ "abilities": {
+  "sturdy": "Robustez",
+  "sand-veil": "Velo Arena",
+  "magnet-pull": "Imán",
+  "rock-head": "Cabeza Roca",
+  "galvanize": "Piel Eléctrica"
+ },
+ "abilityNameCases": [
+  "Foco Interno",
+  null,
+  null
+ ],
+ "learnsets": {
+  "geodude@1": [
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 1,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 2,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 1,
+    "level": 16
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 2,
+    "level": 11
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 3,
+    "level": 11
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 4,
+    "level": 11
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 5,
+    "level": 11
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 6,
+    "level": 16
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 7,
+    "level": 16
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 9,
+    "level": 16
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 1,
+    "level": 11
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 2,
+    "level": 6
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-polish",
+    "referenceGeneration": 4,
+    "level": 8
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-polish",
+    "referenceGeneration": 5,
+    "level": 8
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-polish",
+    "referenceGeneration": 6,
+    "level": 6
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-polish",
+    "referenceGeneration": 7,
+    "level": 6
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-polish",
+    "referenceGeneration": 9,
+    "level": 6
+   }
+  ],
+  "geodude@3": [
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 3,
+    "level": 11
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 4,
+    "level": 11
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 5,
+    "level": 11
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 6,
+    "level": 16
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 7,
+    "level": 16
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 9,
+    "level": 16
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-polish",
+    "referenceGeneration": 4,
+    "level": 8
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-polish",
+    "referenceGeneration": 5,
+    "level": 8
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-polish",
+    "referenceGeneration": 6,
+    "level": 6
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-polish",
+    "referenceGeneration": 7,
+    "level": 6
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-polish",
+    "referenceGeneration": 9,
+    "level": 6
+   }
+  ],
+  "geodude@9": [
+   {
+    "pokemonId": "geodude",
+    "moveId": "tackle",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-throw",
+    "referenceGeneration": 9,
+    "level": 16
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "defense-curl",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "geodude",
+    "moveId": "rock-polish",
+    "referenceGeneration": 9,
+    "level": 6
+   }
+  ],
+  "graveler@1": [
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 1,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 2,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 1,
+    "level": 16
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 2,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 2,
+    "level": 11
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 3,
+    "level": 11
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 4,
+    "level": 11
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 5,
+    "level": 11
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 6,
+    "level": 16
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 7,
+    "level": 16
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 9,
+    "level": 16
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 1,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 1,
+    "level": 11
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 2,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 2,
+    "level": 6
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 4,
+    "level": 8
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 5,
+    "level": 8
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 6,
+    "level": 6
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 7,
+    "level": 6
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 9,
+    "level": 1
+   }
+  ],
+  "graveler@3": [
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 3,
+    "level": 11
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 4,
+    "level": 11
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 5,
+    "level": 11
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 6,
+    "level": 16
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 7,
+    "level": 16
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 9,
+    "level": 16
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 4,
+    "level": 8
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 5,
+    "level": 8
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 6,
+    "level": 6
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 7,
+    "level": 6
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 9,
+    "level": 1
+   }
+  ],
+  "graveler@9": [
+   {
+    "pokemonId": "graveler",
+    "moveId": "tackle",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-throw",
+    "referenceGeneration": 9,
+    "level": 16
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "defense-curl",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "graveler",
+    "moveId": "rock-polish",
+    "referenceGeneration": 9,
+    "level": 1
+   }
+  ],
+  "golem@1": [
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 1,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 2,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 1,
+    "level": 16
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 2,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 2,
+    "level": 11
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 3,
+    "level": 11
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 4,
+    "level": 11
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 5,
+    "level": 11
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 6,
+    "level": 16
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 7,
+    "level": 16
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 9,
+    "level": 16
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 1,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 1,
+    "level": 11
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 2,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 2,
+    "level": 6
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 4,
+    "level": 8
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 5,
+    "level": 8
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 6,
+    "level": 6
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 7,
+    "level": 6
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 9,
+    "level": 1
+   }
+  ],
+  "golem@3": [
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 3,
+    "level": 11
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 4,
+    "level": 11
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 5,
+    "level": 11
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 6,
+    "level": 16
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 7,
+    "level": 16
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 9,
+    "level": 16
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 3,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 4,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 4,
+    "level": 8
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 5,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 5,
+    "level": 8
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 6,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 6,
+    "level": 6
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 7,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 7,
+    "level": 6
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 9,
+    "level": 1
+   }
+  ],
+  "golem@9": [
+   {
+    "pokemonId": "golem",
+    "moveId": "tackle",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-throw",
+    "referenceGeneration": 9,
+    "level": 16
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "defense-curl",
+    "referenceGeneration": 9,
+    "level": 1
+   },
+   {
+    "pokemonId": "golem",
+    "moveId": "rock-polish",
+    "referenceGeneration": 9,
+    "level": 1
+   }
+  ]
+ },
+ "pokedexEntries": {
+  "geodude": [
+   {
+    "pokemonId": "geodude",
+    "text": "Cuando Geodude duerme profundamente, se entierra a medias en el suelo y no se despierta ni aunque lo pisen sin querer. Por la mañana, se dedica a buscar comida rodando ladera abajo.",
+    "language": "es",
+    "generation": 6,
+    "version": "alpha-sapphire",
+    "versionLabel": "Pokémon Zafiro Alfa"
+   },
+   {
+    "pokemonId": "geodude",
+    "text": "Cuanto más larga es la vida de Geodude, mayor es el desgaste y la erosión que sufre, y más redondeada la forma que va adquiriendo. Sin embargo, el corazón permanece siempre duro, rocoso y tosco.",
+    "language": "es",
+    "generation": 6,
+    "version": "omega-ruby",
+    "versionLabel": "Pokémon Rubí Omega"
+   },
+   {
+    "pokemonId": "geodude",
+    "text": "Aparecen en llanos y montañas. Como parecen rocas, la gente se tropieza con ellos o los pisa.",
+    "language": "es",
+    "generation": 6,
+    "version": "x",
+    "versionLabel": "Pokémon X"
+   },
+   {
+    "pokemonId": "geodude",
+    "text": "Es imposible distinguirlos de las rocas. Para probar su dureza, chocan entre sí en duelo.",
+    "language": "es",
+    "generation": 6,
+    "version": "y",
+    "versionLabel": "Pokémon Y"
+   },
+   {
+    "pokemonId": "geodude",
+    "text": "Se suele encontrar en senderos de montaña y sitios parecidos. Conviene andar con cuidado para no pisarlo sin querer y provocar su enfado.",
+    "language": "es",
+    "generation": 7,
+    "version": "lets-go-eevee",
+    "versionLabel": "Pokémon Let's Go, Eevee!"
+   },
+   {
+    "pokemonId": "geodude",
+    "text": "Se suele encontrar en senderos de montaña y sitios parecidos. Conviene andar con cuidado para no pisarlo sin querer y provocar su enfado.",
+    "language": "es",
+    "generation": 7,
+    "version": "lets-go-pikachu",
+    "versionLabel": "Pokémon Let's Go, Pikachu!"
+   },
+   {
+    "pokemonId": "geodude",
+    "text": "Se encuentran en masa en las cunetas de los caminos. Un investigador con mucho tiempo libre llegó a contar una vez una centena de Geodude.",
+    "language": "es",
+    "generation": 7,
+    "version": "moon",
+    "versionLabel": "Pokémon Luna"
+   },
+   {
+    "pokemonId": "geodude",
+    "text": "Aunque su forma invita a lanzarlo cual bola de nieve, su peso y dureza hacen de esta una actividad de riesgo nada recomendable.",
+    "language": "es",
+    "generation": 7,
+    "version": "sun",
+    "versionLabel": "Pokémon Sol"
+   },
+   {
+    "pokemonId": "geodude",
+    "text": "Escala a manos desnudas las pendientes de las montañas. Al parecer, esta fue la fuente de inspiración para la práctica de la escalada libre.",
+    "language": "es",
+    "generation": 7,
+    "version": "ultra-moon",
+    "versionLabel": "Pokémon Ultraluna"
+   },
+   {
+    "pokemonId": "geodude",
+    "text": "Con la edad, su temperamento se amansa y su cuerpo se va alisando hasta adquirir una forma completamente redonda.",
+    "language": "es",
+    "generation": 7,
+    "version": "ultra-sun",
+    "versionLabel": "Pokémon Ultrasol"
+   }
+  ],
+  "graveler": [
+   {
+    "pokemonId": "graveler",
+    "text": "Las piedras son la comida preferida de Graveler. Este Pokémon sube a la cima de las montañas devorando todas las rocas que va encontrando a su paso. Una vez que alcanza la cumbre, baja rodando hasta la falda.",
+    "language": "es",
+    "generation": 6,
+    "version": "alpha-sapphire",
+    "versionLabel": "Pokémon Zafiro Alfa"
+   },
+   {
+    "pokemonId": "graveler",
+    "text": "Graveler crece alimentándose a base de piedras. Y, según parece, las prefiere cubiertas de musgo. Cada día se abre camino comiéndose una tonelada de rocas.",
+    "language": "es",
+    "generation": 6,
+    "version": "omega-ruby",
+    "versionLabel": "Pokémon Rubí Omega"
+   },
+   {
+    "pokemonId": "graveler",
+    "text": "De naturaleza descuidada y libre, no le importa dañarse cuando baja rodando montañas.",
+    "language": "es",
+    "generation": 6,
+    "version": "x",
+    "versionLabel": "Pokémon X"
+   },
+   {
+    "pokemonId": "graveler",
+    "text": "Se mueve rodando cuesta abajo y sobre cualquier obstáculo, sin frenar ni cambiar de dirección.",
+    "language": "es",
+    "generation": 6,
+    "version": "y",
+    "versionLabel": "Pokémon Y"
+   },
+   {
+    "pokemonId": "graveler",
+    "text": "Se le suele ver rodando montaña abajo. No evita los obstáculos, sino que los arrolla.",
+    "language": "es",
+    "generation": 7,
+    "version": "lets-go-eevee",
+    "versionLabel": "Pokémon Let's Go, Eevee!"
+   },
+   {
+    "pokemonId": "graveler",
+    "text": "Se le suele ver rodando montaña abajo. No evita los obstáculos, sino que los arrolla.",
+    "language": "es",
+    "generation": 7,
+    "version": "lets-go-pikachu",
+    "versionLabel": "Pokémon Let's Go, Pikachu!"
+   },
+   {
+    "pokemonId": "graveler",
+    "text": "Se desplaza rodando, pues a pie va muy despacio. Si toma carrerilla, puede superar los 100 km/h.",
+    "language": "es",
+    "generation": 7,
+    "version": "moon",
+    "versionLabel": "Pokémon Luna"
+   },
+   {
+    "pokemonId": "graveler",
+    "text": "Su comida preferida son las rocas cubiertas de musgo. Llega a comer más de una tonelada en un día y causa un gran estruendo al masticar.",
+    "language": "es",
+    "generation": 7,
+    "version": "sun",
+    "versionLabel": "Pokémon Sol"
+   },
+   {
+    "pokemonId": "graveler",
+    "text": "Se desplaza rodando por las laderas. Si por mala fortuna termina cayendo en un río, con su último aliento causa una gigantesca explosión.",
+    "language": "es",
+    "generation": 7,
+    "version": "ultra-moon",
+    "versionLabel": "Pokémon Ultraluna"
+   },
+   {
+    "pokemonId": "graveler",
+    "text": "Escala los riscos de las montañas y, una vez alcanzada la cima, desciende rodando por los senderos.",
+    "language": "es",
+    "generation": 7,
+    "version": "ultra-sun",
+    "versionLabel": "Pokémon Ultrasol"
+   }
+  ],
+  "golem": [
+   {
+    "pokemonId": "golem",
+    "text": "Golem es conocido por su afición a bajar de las montañas rodando. La gente que vive en la falda de las mismas ha cavado surcos para conducirlo en su descenso por las laderas y evitar que se cuele en sus casas.",
+    "language": "es",
+    "generation": 6,
+    "version": "alpha-sapphire",
+    "versionLabel": "Pokémon Zafiro Alfa"
+   },
+   {
+    "pokemonId": "golem",
+    "text": "Golem vive en las montañas. Si se produce un gran terremoto, estos Pokémon descienden rodando en masa por las laderas.",
+    "language": "es",
+    "generation": 6,
+    "version": "omega-ruby",
+    "versionLabel": "Pokémon Rubí Omega"
+   },
+   {
+    "pokemonId": "golem",
+    "text": "Se lanza montaña abajo y deja un surco desde la cima hasta el pie. Es mejor mantenerse alejado.",
+    "language": "es",
+    "generation": 6,
+    "version": "x",
+    "versionLabel": "Pokémon X"
+   },
+   {
+    "pokemonId": "golem",
+    "text": "Ni siquiera la dinamita puede dañar su cuerpo rocoso. Muda la piel una vez al año.",
+    "language": "es",
+    "generation": 6,
+    "version": "y",
+    "versionLabel": "Pokémon Y"
+   },
+   {
+    "pokemonId": "golem",
+    "text": "Nada más mudar la piel, su cuerpo se vuelve blando y blanquecino, pero se endurece al poco tiempo de entrar en contacto con el aire.",
+    "language": "es",
+    "generation": 7,
+    "version": "lets-go-eevee",
+    "versionLabel": "Pokémon Let's Go, Eevee!"
+   },
+   {
+    "pokemonId": "golem",
+    "text": "Nada más mudar la piel, su cuerpo se vuelve blando y blanquecino, pero se endurece al poco tiempo de entrar en contacto con el aire.",
+    "language": "es",
+    "generation": 7,
+    "version": "lets-go-pikachu",
+    "versionLabel": "Pokémon Let's Go, Pikachu!"
+   },
+   {
+    "pokemonId": "golem",
+    "text": "Muda su caparazón una vez al año. En muchas granjas lo aprovechan, pues este se puede utilizar para fertilizar el suelo.",
+    "language": "es",
+    "generation": 7,
+    "version": "moon",
+    "versionLabel": "Pokémon Luna"
+   },
+   {
+    "pokemonId": "golem",
+    "text": "Su robusto cuerpo puede soportar una explosión de dinamita sin inmutarse, pero no tolera bien ni la humedad ni la lluvia.",
+    "language": "es",
+    "generation": 7,
+    "version": "sun",
+    "versionLabel": "Pokémon Sol"
+   },
+   {
+    "pokemonId": "golem",
+    "text": "Puede hacer estallar su cuerpo a voluntad. El impulso que esto genera le permite ascender a toda velocidad a la cima de las montañas.",
+    "language": "es",
+    "generation": 7,
+    "version": "ultra-moon",
+    "versionLabel": "Pokémon Ultraluna"
+   },
+   {
+    "pokemonId": "golem",
+    "text": "A medida que envejece, pierde la facultad de mudar la piel. Se han observado ejemplares de edad avanzada totalmente cubiertos de musgo.",
+    "language": "es",
+    "generation": 7,
+    "version": "ultra-sun",
+    "versionLabel": "Pokémon Ultrasol"
+   }
+  ]
+ },
+ "synthetic": [
+  {
+   "pokemonId": "pikachu",
+   "text": "Segunda versión",
+   "language": "es",
+   "generation": 1,
+   "version": "yellow",
+   "versionLabel": "Pokémon Amarillo"
+  },
+  {
+   "pokemonId": "pikachu",
+   "text": "Negro",
+   "language": "es",
+   "generation": 5,
+   "version": "black",
+   "versionLabel": "Pokémon Negro"
+  },
+  {
+   "pokemonId": "pikachu",
+   "text": "Negro dos",
+   "language": "es",
+   "generation": 5,
+   "version": "black-2",
+   "versionLabel": "Pokémon Negro 2"
+  },
+  {
+   "pokemonId": "pikachu",
+   "text": "Let’s Go",
+   "language": "es",
+   "generation": 7,
+   "version": "lets-go-eevee",
+   "versionLabel": "Pokémon Let's Go, Eevee!"
+  },
+  {
+   "pokemonId": "pikachu",
+   "text": "Leyendas",
+   "language": "es",
+   "generation": 8,
+   "version": "legends-arceus",
+   "versionLabel": "Leyendas Pokémon: Arceus"
+  }
+ ],
+ "normalize": [
+  {
+   "input": "Almacena\nelectricidad\f en sus mejillas.",
+   "output": "Almacena electricidad en sus mejillas."
+  },
+  {
+   "input": "  ¡Dicen que…  aparece!  ",
+   "output": "¡Dicen que… aparece!"
+  },
+  {
+   "input": " Texto  con NBSP﻿",
+   "output": "Texto con NBSP"
+  },
+  {
+   "input": "a\u000bb  c",
+   "output": "a\u000bb c"
+  },
+  {
+   "input": "\r\n\t",
+   "output": ""
+  },
+  {
+   "input": "x　　y​",
+   "output": "x y​"
+  }
+ ],
+ "fallbackAbilityIds": [
+  {
+   "name": "Electricidad Estática",
+   "id": "electricidad-estatica"
+  },
+  {
+   "name": "Cabeza Roca",
+   "id": "cabeza-roca"
+  },
+  {
+   "name": "  Piel  Seca!! ",
+   "id": "piel-seca"
+  },
+  {
+   "name": "Ñandú",
+   "id": "nandu"
+  },
+  {
+   "name": "ÆON İstanbul",
+   "id": "on-istanbul"
+  },
+  {
+   "name": "Œil-de-bœuf",
+   "id": "il-de-b-uf"
+  },
+  {
+   "name": "",
+   "id": ""
+  }
+ ],
+ "metadataCases": [
+  [
+   {
+    "abilityId": "static",
+    "name": "Electricidad estática",
+    "slot": 1,
+    "isHidden": false
+   },
+   {
+    "abilityId": "lightning-rod",
+    "name": "Pararrayos",
+    "slot": 3,
+    "isHidden": true
+   }
+  ],
+  [
+   {
+    "abilityId": "a",
+    "name": "A",
+    "slot": 1,
+    "isHidden": false
+   }
+  ],
+  [
+   {
+    "abilityId": "cabeza-roca",
+    "name": "Cabeza Roca",
+    "slot": 1,
+    "isHidden": false
+   },
+   {
+    "abilityId": "robustez",
+    "name": "Robustez",
+    "slot": 2,
+    "isHidden": false
+   }
+  ],
+  [
+   {
+    "abilityId": "cabeza-roca",
+    "name": "Cabeza Roca",
+    "slot": 1,
+    "isHidden": false
+   },
+   {
+    "abilityId": "robustez",
+    "name": "Robustez",
+    "slot": 2,
+    "isHidden": false
+   }
+  ],
+  [
+   {
+    "abilityId": "cabeza-roca",
+    "name": "Cabeza Roca",
+    "slot": 1,
+    "isHidden": false
+   },
+   {
+    "abilityId": "robustez",
+    "name": "Robustez",
+    "slot": 2,
+    "isHidden": false
+   }
+  ],
+  [
+   {
+    "abilityId": "cabeza-roca",
+    "name": "Cabeza Roca",
+    "slot": 1,
+    "isHidden": false
+   },
+   {
+    "abilityId": "robustez",
+    "name": "Robustez",
+    "slot": 2,
+    "isHidden": false
+   }
+  ]
+ ]
+}

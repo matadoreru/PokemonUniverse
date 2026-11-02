@@ -1,0 +1,57 @@
+[
+ {
+  "abilityRelations": [
+   {
+    "id": "static",
+    "name": "Electricidad estática",
+    "slot": 1,
+    "isHidden": false
+   },
+   {
+    "id": "lightning-rod",
+    "name": "Pararrayos",
+    "slot": 3,
+    "isHidden": true
+   }
+  ]
+ },
+ {
+  "abilityRelations": [
+   {
+    "id": "a",
+    "name": "A",
+    "slot": 1,
+    "isHidden": "true"
+   },
+   {
+    "id": "b",
+    "name": "B",
+    "slot": 1.5
+   },
+   {
+    "id": "c",
+    "name": "C",
+    "slot": 0
+   },
+   {
+    "id": 3,
+    "name": "D",
+    "slot": 2
+   },
+   null,
+   [
+    "x"
+   ]
+  ]
+ },
+ {
+  "abilityRelations": []
+ },
+ {
+  "abilityRelations": "none"
+ },
+ null,
+ [
+  "array"
+ ]
+]

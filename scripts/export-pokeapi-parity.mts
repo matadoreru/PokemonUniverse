@@ -15,6 +15,9 @@
 // 4. Ejecuta `backfillNormalizedData()` de PokemonDataSync y `syncMissingPokemonPalettes()` → expected-run.json.
 // 5. Calcula `extractPokemonPaletteData` sobre los PNG de datasync/palette/ (los genera con sharp si faltan) y sobre el
 //    sprite real 74.png → datasync/palette/expected.json.
+// 6. Ejecuta los extractores (habilidad, learnset, entradas de Pokédex, fallbackAbilityId y
+//    desiredAbilitiesFromMetadata) sobre las fixtures y casos límite → datasync/pokeapi/expected-extractors.json.
+//    Con `--extractors-only` solo se hace este paso (sin BD).
 // El volcado usa dump-tables.json (mismo SQL que PokemonCatalogSeederTest). Los ficheros resultantes se commitean.
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -146,7 +149,59 @@ async function paletteFixtures(): Promise<void> {
   write(join(paletteDir, 'expected.json'), expected);
 }
 
+async function extractorFixtures(): Promise<void> {
+  const { extractSpanishAbilityName } = await import(pathToFileURL(join(root, 'apps/server/src/pokemon/ability-source.ts')).href);
+  const { extractCanonicalLevelUpEntries } = await import(pathToFileURL(join(root, 'apps/server/src/pokemon/learnset-source.ts')).href);
+  const { extractSpanishPokedexEntries, normalizePokedexEntryText } = await import(pathToFileURL(join(root, 'apps/server/src/pokemon/pokedex-entry-source.ts')).href);
+  const { fallbackAbilityId, desiredAbilitiesFromMetadata } = await import(pathToFileURL(join(root, 'apps/server/src/data-sync/pokemon-relation-reconciler.ts')).href);
+  const read = (path: string) => JSON.parse(readFileSync(join(fixtures, 'api/v2', path), 'utf8'));
+  const abilities: Record<string, unknown> = {};
+  for (const id of [5, 8, 42, 69, 206]) { const ability = read(`ability/${id}.json`); abilities[ability.name] = extractSpanishAbilityName(ability.names) ?? null; }
+  const learnsets: Record<string, unknown> = {};
+  const pokedexEntries: Record<string, unknown> = {};
+  for (const number of [74, 75, 76]) {
+    const pokemon = read(`pokemon/${number}.json`); const species = read(`pokemon-species/${number}.json`);
+    for (const generation of [1, 3, 9]) learnsets[`${pokemon.name}@${generation}`] = extractCanonicalLevelUpEntries(pokemon.name, generation, pokemon.moves);
+    pokedexEntries[pokemon.name] = extractSpanishPokedexEntries(pokemon.name, species.flavor_text_entries);
+  }
+  const normalizeCases = ['Almacena\nelectricidad\f en sus mejillas.', '  ¡Dicen que…  aparece!  ', '\u00a0Texto\u00a0\u00a0con\u2028NBSP\ufeff', 'a\u000bb  c', '\r\n\t', 'x\u3000\u3000y\u200b'];
+  const synthetic = extractSpanishPokedexEntries('pikachu', [
+    { flavor_text: 'Primera\nversión', language: { name: 'es' }, version: { name: 'yellow' } },
+    { flavor_text: 'Segunda versión', language: { name: 'es' }, version: { name: 'yellow' } },
+    { flavor_text: 'Negro dos', language: { name: 'es' }, version: { name: 'black-2' } },
+    { flavor_text: 'Negro', language: { name: 'es' }, version: { name: 'black' } },
+    { flavor_text: '   ', language: { name: 'es' }, version: { name: 'red' } },
+    { flavor_text: 'Futuro', language: { name: 'es' }, version: { name: 'future-game' } },
+    { flavor_text: 'English', language: { name: 'en' }, version: { name: 'blue' } },
+    { flavor_text: 'Leyendas', language: { name: 'es' }, version: { name: 'legends-arceus' } },
+    { flavor_text: 'Let’s Go', language: { name: 'es' }, version: { name: 'lets-go-eevee' } },
+  ]);
+  const abilityNameCases = [
+    [{ name: 'Inner Focus', language: { name: 'en' } }, { name: '  Foco Interno  ', language: { name: 'es' } }],
+    [{ name: 'Overgrow', language: { name: 'en' } }],
+    [{ name: ' \u00a0', language: { name: 'es' } }, { name: 'Segundo', language: { name: 'es' } }],
+  ].map((names) => extractSpanishAbilityName(names) ?? null);
+  const fallbackCases = ['Electricidad Estática', 'Cabeza Roca', '  Piel  Seca!! ', 'Ñandú', 'ÆON İstanbul', 'Œil-de-bœuf', ''];
+  const metadataInputs = [
+    { abilityRelations: [{ id: 'static', name: 'Electricidad estática', slot: 1, isHidden: false }, { id: 'lightning-rod', name: 'Pararrayos', slot: 3, isHidden: true }] },
+    { abilityRelations: [{ id: 'a', name: 'A', slot: 1.0, isHidden: 'true' }, { id: 'b', name: 'B', slot: 1.5 }, { id: 'c', name: 'C', slot: 0 }, { id: 3, name: 'D', slot: 2 }, null, ['x']] },
+    { abilityRelations: [] },
+    { abilityRelations: 'none' },
+    null,
+    ['array'],
+  ];
+  write(join(fixtures, 'metadata-cases.json'), metadataInputs);
+  const metadataCases = metadataInputs.map((metadata) => desiredAbilitiesFromMetadata(metadata, ['Cabeza Roca', 'Robustez']));
+  write(join(fixtures, 'expected-extractors.json'), {
+    abilities, abilityNameCases, learnsets, pokedexEntries, synthetic,
+    normalize: normalizeCases.map((input) => ({ input, output: normalizePokedexEntryText(input) })),
+    fallbackAbilityIds: fallbackCases.map((name) => ({ name, id: fallbackAbilityId(name) })),
+    metadataCases,
+  });
+}
+
 async function main(): Promise<void> {
+  if (process.argv.includes('--extractors-only')) { await extractorFixtures(); return; }
   psql(`DROP DATABASE IF EXISTS ${database}`);
   psql(`CREATE DATABASE ${database}`);
   const seedCopy = join(root, 'apps/server/prisma/.seed-parity.tmp.ts');
@@ -176,6 +231,7 @@ async function main(): Promise<void> {
     write(join(fixtures, 'expected-run.json'), { palettes, tables: await dump(prisma) });
     console.info(`First pass requests: ${firstPass}; palettes: ${JSON.stringify(palettes)}`);
     await paletteFixtures();
+    await extractorFixtures();
     await prisma.$disconnect();
     await seed.default?.$disconnect?.();
   } finally {
