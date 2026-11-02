@@ -23,6 +23,9 @@ migraciones Prisma y Flyway hace baseline sobre ese esquema. No hace falta ningu
 defecto: el `/ws` de Java cierra cada conexión con 4403 y las salas siguen en Node; el corte 2D lo pone a `true`.
 `PU_POKEMON_ARTWORK_DIR` (opcional, `/data/pokemon-artworks`) no tiene volumen montado, así que las salas Java no tienen
 artworks locales; solo importa a partir del corte 2D.
+Para escribir avatares (WebP) el backend carga la libwebp nativa de `webp-imageio`: la extrae a `/tmp` y, si el tmpfs
+es `noexec`, escribe una vez «Failed to load native library…» en stderr y la carga desde `/app/native` (copiada en la
+imagen para la arquitectura de destino). No hace falta cambiar la base Alpine ni el `tmpfs` del compose.
 
 PostgreSQL no publica puertos. GitHub Actions valida el proyecto y publica imágenes `linux/amd64` y `linux/arm64` en
 GHCR con el SHA completo del commit y el tag móvil `pre`. El tag `latest` solo se mueve después de promocionar correctamente ese SHA a PRO. El servidor solo descarga imágenes ya verificadas; no compila.

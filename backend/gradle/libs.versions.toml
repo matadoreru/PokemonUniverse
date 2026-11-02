@@ -1,6 +1,13 @@
 [versions]
 micronaut = "5.1.5"
 micronautPlugin = "5.0.2"
+twelvemonkeys = "3.15.3"
+webpImageio = "0.11.0"
+
+[libraries]
+twelvemonkeys-imageio-jpeg = { module = "com.twelvemonkeys.imageio:imageio-jpeg", version.ref = "twelvemonkeys" }
+twelvemonkeys-imageio-webp = { module = "com.twelvemonkeys.imageio:imageio-webp", version.ref = "twelvemonkeys" }
+webp-imageio = { module = "com.github.usefulness:webp-imageio", version.ref = "webpImageio" }
 
 [plugins]
 micronaut-application = { id = "io.micronaut.application", version.ref = "micronautPlugin" }

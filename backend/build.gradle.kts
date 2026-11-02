@@ -48,6 +48,11 @@ dependencies {
   implementation("at.favre.lib:bcrypt:0.10.2")
   // Misma ICU que Node (process.versions.icu): Collations replica localeCompare, espacios y guiones incluidos.
   implementation("com.ibm.icu:icu4j:78.3")
+  // Avatares: lectura en Java puro (JPEG robusto con CMYK/ICC y WebP; PNG con el lector del JDK) y escritura WebP
+  // con la libwebp nativa empaquetada (Linux x86_64/aarch64, también sobre musl).
+  implementation(libs.twelvemonkeys.imageio.jpeg)
+  implementation(libs.twelvemonkeys.imageio.webp)
+  implementation(libs.webp.imageio)
   implementation("io.micronaut.flyway:micronaut-flyway")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   runtimeOnly("org.postgresql:postgresql")
@@ -58,6 +63,10 @@ dependencies {
   testImplementation("io.micronaut:micronaut-http-client")
   testImplementation("org.yaml:snakeyaml")
   testResourcesService("org.postgresql:postgresql")
+}
+
+tasks.named<JavaExec>("run") {
+  jvmArgs("--enable-native-access=ALL-UNNAMED")
 }
 
 tasks.named<JavaCompile>("compileJava") {
@@ -114,6 +123,8 @@ val exportFixture = providers.systemProperty("pu.exportFixture").orElse("false")
 // Reenvía -Dupdate (ConfigMessagesSnapshotTest reescribe su instantánea con "true").
 val updateSnapshots = providers.systemProperty("update").orElse("false")
 tasks.named<Test>("test") {
+  // webp-imageio carga su libwebp con System.load (acceso nativo restringido desde Java 24).
+  jvmArgs("--enable-native-access=ALL-UNNAMED")
   systemProperty("pu.exportFixture", exportFixture.get())
   systemProperty("update", updateSnapshots.get())
 }

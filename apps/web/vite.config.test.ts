@@ -57,4 +57,21 @@ describe('proxyFor', () => {
       for (const url of urls) expect(Object.keys(proxy).find((k) => k.startsWith('^') && new RegExp(k).test(url))).toBeUndefined();
     }
   });
+
+  it('routes avatar writes to Java only when realtime is java', () => {
+    const urls = ['/api/auth/guest/custom-avatar', '/api/auth/guest/custom-avatar?displayName=Ana', '/api/auth/profile/avatar', '/api/auth/profile/avatar/preset', '/api/auth/profile/avatar/custom'];
+    const java = proxyFor('java');
+    for (const url of urls) {
+      const key = Object.keys(java).find((k) => new RegExp(k).test(url));
+      expect(java[key as string]).toBe('http://localhost:8080');
+      expect(Object.keys(java).indexOf(key as string)).toBeLessThan(Object.keys(java).indexOf('/api'));
+    }
+    for (const url of ['/api/auth/profile/avatarx', '/api/auth/guest/custom-avatarx']) {
+      expect(Object.keys(java).find((k) => k.startsWith('^') && new RegExp(k).test(url))).toBeUndefined();
+    }
+    for (const realtime of [undefined, 'node']) {
+      const proxy = proxyFor(realtime);
+      for (const url of urls) expect(Object.keys(proxy).find((k) => k.startsWith('^') && new RegExp(k).test(url))).toBeUndefined();
+    }
+  });
 });

@@ -147,10 +147,15 @@ public final class ZodIssues {
   }
 
   public void invalidValue(List<String> values) {
+    invalidValue(values, List.of());
+  }
+
+  /** {@code z.enum(values)} no satisfecho en {@code path}. */
+  public void invalidValue(List<String> values, List<Object> path) {
     var issue = new LinkedHashMap<String, Object>();
     issue.put("code", "invalid_value");
     issue.put("values", values);
-    issue.put("path", List.of());
+    issue.put("path", path);
     issue.put("message", "Invalid option: expected one of "
         + String.join("|", values.stream().map(JsonTree::quote).toList()));
     issues.add(issue);

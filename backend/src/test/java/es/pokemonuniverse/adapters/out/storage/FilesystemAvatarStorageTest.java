@@ -1,13 +1,18 @@
 package es.pokemonuniverse.adapters.out.storage;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -54,5 +59,25 @@ class FilesystemAvatarStorageTest {
     storage().remove(file);
     assertFalse(Files.exists(dir.resolve(file)));
     storage().remove(file);
+  }
+
+  @Test
+  void writeIsExclusiveWith0600AndCreatesTheDirectory() throws IOException {
+    var nested = new FilesystemAvatarStorage(dir.resolve("a/b"));
+    var file = name();
+    nested.write(file, new byte[] {4, 5});
+    var path = dir.resolve("a/b").resolve(file);
+    assertArrayEquals(new byte[] {4, 5}, Files.readAllBytes(path));
+    assertEquals("rw-------", PosixFilePermissions.toString(Files.getPosixFilePermissions(path)));
+    var error = assertThrows(UncheckedIOException.class, () -> nested.write(file, new byte[] {6}));
+    assertInstanceOf(FileAlreadyExistsException.class, error.getCause());
+    assertArrayEquals(new byte[] {4, 5}, Files.readAllBytes(path));
+  }
+
+  @Test
+  void writeRejectsInvalidNamesWithoutTouchingTheDisk() {
+    var nested = new FilesystemAvatarStorage(dir.resolve("never"));
+    assertThrows(IllegalArgumentException.class, () -> nested.write("../x.webp", new byte[] {1}));
+    assertFalse(Files.exists(dir.resolve("never")));
   }
 }

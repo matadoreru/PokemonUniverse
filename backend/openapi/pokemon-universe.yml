@@ -50,6 +50,69 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+  /api/auth/guest/custom-avatar:
+    post:
+      tags:
+      - auth
+      summary: Entrar como invitado con un avatar subido
+      operationId: createGuestWithCustomAvatar
+      parameters:
+      - name: displayName
+        in: query
+        description: "Nombre del invitado (2 a 24 letras, números, espacios, `_` o\
+          \ `-`)."
+        explode: false
+        schema:
+          type: string
+          nullable: true
+      requestBody:
+        content:
+          image/jpeg:
+            schema:
+              type: string
+              format: binary
+          image/png:
+            schema:
+              type: string
+              format: binary
+          image/webp:
+            schema:
+              type: string
+              format: binary
+        required: true
+      responses:
+        "201":
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          description: Nombre (incidencias Zod) o imagen no válidos
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/ValidationErrorResponse"
+                - $ref: "#/components/schemas/ApiError"
+        "413":
+          description: Más de 5 MiB
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "415":
+          description: "No es JPEG, PNG ni WEBP"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "429":
+          description: Demasiadas peticiones
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/auth/login:
     post:
       tags:
@@ -118,6 +181,126 @@ paths:
                 $ref: "#/components/schemas/ProfileResponse"
         "401":
           description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/auth/profile/avatar:
+    delete:
+      tags:
+      - auth
+      summary: Volver al avatar por defecto
+      operationId: resetAvatar
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "429":
+          description: Demasiadas peticiones
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/auth/profile/avatar/custom:
+    put:
+      tags:
+      - auth
+      summary: Subir un avatar personalizado
+      operationId: uploadCustomAvatar
+      requestBody:
+        content:
+          image/jpeg:
+            schema:
+              type: string
+              format: binary
+          image/png:
+            schema:
+              type: string
+              format: binary
+          image/webp:
+            schema:
+              type: string
+              format: binary
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          description: Imagen no válida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "413":
+          description: Más de 5 MiB
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "415":
+          description: "No es JPEG, PNG ni WEBP"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "429":
+          description: Demasiadas peticiones
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/auth/profile/avatar/preset:
+    put:
+      tags:
+      - auth
+      summary: Elegir un avatar predefinido
+      operationId: setPresetAvatar
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PresetAvatarRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "429":
+          description: Demasiadas peticiones
           content:
             application/json:
               schema:
@@ -1246,6 +1429,19 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Pokemon"
+    PresetAvatarRequest:
+      required:
+      - presetId
+      type: object
+      properties:
+        presetId:
+          type: string
+          enum:
+          - trainer-berry
+          - trainer-aqua
+          - trainer-electric
+          - trainer-violet
+      description: "Estricto: una clave desconocida es un 400 `unrecognized_keys`."
     ProfileResponse:
       required:
       - profile

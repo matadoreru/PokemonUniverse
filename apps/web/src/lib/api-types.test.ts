@@ -4,8 +4,9 @@ import type { components, paths } from './api-types';
 import type { ChangelogResponse, FeedbackCreateResponse, MeResponse } from './api-contract';
 
 const ROUTES = [
-  '/api/auth/avatars/{filename}', '/api/auth/guest', '/api/auth/login', '/api/auth/logout', '/api/auth/me',
-  '/api/auth/profile', '/api/auth/register', '/api/categories', '/api/categories/{id}', '/api/changelog',
+  '/api/auth/avatars/{filename}', '/api/auth/guest', '/api/auth/guest/custom-avatar', '/api/auth/login',
+  '/api/auth/logout', '/api/auth/me', '/api/auth/profile', '/api/auth/profile/avatar', '/api/auth/profile/avatar/custom',
+  '/api/auth/profile/avatar/preset', '/api/auth/register', '/api/categories', '/api/categories/{id}', '/api/changelog',
   '/api/feedback', '/api/games', '/api/health', '/api/pokemon',
   '/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/audio',
   '/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/sprite',
@@ -13,9 +14,18 @@ const ROUTES = [
 ] as const satisfies readonly (keyof paths)[];
 
 describe('contrato OpenAPI generado', () => {
-  it('expone exactamente las 19 rutas del backend Java', () => {
+  it('expone exactamente las 23 rutas del backend Java', () => {
     expectTypeOf<keyof paths>().toEqualTypeOf<typeof ROUTES[number]>();
-    expect(ROUTES).toHaveLength(19);
+    expect(ROUTES).toHaveLength(23);
+  });
+  it('las escrituras de avatar devuelven el usuario y el preset valida con incidencias de Zod', () => {
+    type UserResponse = paths['/api/auth/me']['get']['responses'][200]['content']['application/json'];
+    expectTypeOf<paths['/api/auth/guest/custom-avatar']['post']['responses'][201]['content']['application/json']>().toEqualTypeOf<UserResponse>();
+    expectTypeOf<paths['/api/auth/profile/avatar/custom']['put']['responses'][200]['content']['application/json']>().toEqualTypeOf<UserResponse>();
+    expectTypeOf<paths['/api/auth/profile/avatar']['delete']['responses'][200]['content']['application/json']>().toEqualTypeOf<UserResponse>();
+    expectTypeOf<paths['/api/auth/profile/avatar/preset']['put']['responses'][400]['content']['application/json']>()
+      .toEqualTypeOf<components['schemas']['ValidationErrorResponse']>();
+    expectTypeOf<paths['/api/auth/profile/avatar/custom']['put']['requestBody']['content']['image/png']>().toEqualTypeOf<string>();
   });
   it('el usuario compartido es asignable al contrato generado', () => {
     expectTypeOf<AuthUser>().toMatchTypeOf<NonNullable<MeResponse['user']>>();

@@ -30,7 +30,8 @@ derivados de él, métricas, logs JSON, límites de peticiones, imagen JVM en Co
    2A + 2B).
 3. `data-sync` (PokéAPI y TCGdex) y su planificador.
 4. Administración.
-5. Escrituras de categorías personalizadas, pares de Would You Rather y avatares (subida).
+5. Escrituras de categorías personalizadas, pares de Would You Rather y avatares (subida) (hechas en 2C; solo se enrutan a
+   Java con `VITE_REALTIME=java` hasta 2D).
 6. `/api/tcg/*`. Desviación consciente de la especificación (§0 lo situaba en la etapa 1): el plan lo aplazó porque depende del ciclo de vida de la caché del catálogo TCG que refresca data-sync; mientras tanto lo sigue sirviendo Node.
 7. Proxy de assets de las rondas (hecho en 2B; producción lo sigue sirviendo Node hasta 2D).
 8. WebSocket: el transporte `/ws` de Java existe desde 2A (mismos 21 eventos cliente→servidor y 7 servidor→cliente que
@@ -99,10 +100,10 @@ buscador desplaza la página (Bingo); además, 8 juegos no muestran el título d
 
 | Riesgo | Detalle |
 | --- | --- |
-| Imagen nativa | Compila (UBI-micro) pero **falla al arrancar**: faltan metadatos de reflexión de Hibernate/ByteBuddy. El job `backend-native` de `main.yml` es no bloqueante y está fuera de la cadena de `deploy-pre`; nunca se ha comprobado su healthcheck. Se despliega la imagen JVM. Desde 2B, además, AWT (ImageIO) e ICU4J necesitan su `resource-config`/metadatos en la imagen nativa; sin verificar. |
+| Imagen nativa | Compila (UBI-micro) pero **falla al arrancar**: faltan metadatos de reflexión de Hibernate/ByteBuddy. El job `backend-native` de `main.yml` es no bloqueante y está fuera de la cadena de `deploy-pre`; nunca se ha comprobado su healthcheck. Se despliega la imagen JVM. Desde 2B, además, AWT (ImageIO) e ICU4J necesitan su `resource-config`/metadatos en la imagen nativa; sin verificar. Desde 2C, los SPI de ImageIO de TwelveMonkeys y `webp-imageio` (JNI con `System.load` de su `.so` y Kotlin stdlib) también. |
 | E2E fuera de CI | Playwright necesita un catálogo sembrado (`npm run db:seed`, descarga de PokéAPI); ningún workflow lo ejecuta. |
 | Micronaut 5.1 | Versión reciente (5.1.5); hay que vigilar versiones de parche y la compatibilidad de Micronaut Data/Serialization. |
-| Imagen base | `eclipse-temurin:25-jre-alpine` ha de ser multiarquitectura (amd64/arm64); se comprueba al construir en CI, no está verificado de antemano. |
+| Imagen base | `eclipse-temurin:25-jre-alpine` ha de ser multiarquitectura (amd64/arm64); se comprueba al construir en CI, no está verificado de antemano. La libwebp de `webp-imageio` 0.11.0 está enlazada contra glibc, pero solo pide símbolos que musl exporta: en amd64 se comprobó codificando en la imagen Alpine (también con `/tmp` `noexec`); en arm64 solo se revisaron los símbolos, falta ejecutarla. |
 | Primer despliegue | La imagen `pokemon-universe-backend` debe existir en GHCR antes de `docker compose pull`; la primera ejecución de `main.yml` la crea. |
 | Contadores de límite | Los límites de peticiones viven en memoria: válidos con una sola instancia del backend. |
 | Observabilidad expuesta | `/health` y `/prometheus` no tienen autenticación; es seguro solo mientras nginx no los enrute. |

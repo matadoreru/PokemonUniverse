@@ -4,6 +4,7 @@ import es.pokemonuniverse.adapters.in.rest.ApiError;
 import es.pokemonuniverse.config.PuConfig;
 import io.micronaut.context.env.Environment;
 import io.micronaut.core.annotation.Nullable;
+import io.micronaut.core.annotation.Order;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
@@ -14,8 +15,12 @@ import io.micronaut.http.annotation.ServerFilter;
 import java.time.Clock;
 import java.util.List;
 
-/** Límite de peticiones por IP (global, auth, feedback) con cabeceras RateLimit-* draft-7. */
+/**
+ * Límite de peticiones por IP (global, auth, feedback, avatares) con cabeceras RateLimit-* draft-7. Corre después de
+ * {@code IdentityFilter} (orden 0 por defecto): la política de avatares necesita saber si hay cuenta registrada.
+ */
 @ServerFilter("/api/**")
+@Order(100)
 public class RateLimitFilter {
 
   private static final String ATTRIBUTE = "pu.rateLimit";
@@ -40,14 +45,11 @@ public class RateLimitFilter {
   @RequestFilter
   @Nullable
   public HttpResponse<?> limit(HttpRequest<?> request) {
-    if (!active) {
-      return null;
-    }
     String ip = ClientAddress.of(request);
     long now = clock.instant().getEpochSecond();
     Status worst = null;
     for (Entry e : entries) {
-      if (!e.policy().matcher().test(request)) {
+      if (!active && !e.policy().alwaysActive() || !e.policy().matcher().test(request)) {
         continue;
       }
       var hit = e.counter().hit(ip, now);

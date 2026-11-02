@@ -73,6 +73,11 @@ public class AuthService {
 
   public AuthUser guest(GuestCommand cmd) {
     AvatarRef avatar = cmd.avatarPresetId() == null ? new AvatarRef.Default() : new AvatarRef.Preset(cmd.avatarPresetId());
-    return new AuthUser("guest_" + UUID.randomUUID(), cmd.displayName(), AuthUser.Kind.GUEST, null, null, avatar);
+    return guest(cmd.displayName(), avatar);
+  }
+
+  /** {@code guestIdentity(displayName, avatar)} de Node: id nuevo en cada llamada. */
+  public AuthUser guest(String displayName, AvatarRef avatar) {
+    return new AuthUser("guest_" + UUID.randomUUID(), displayName, AuthUser.Kind.GUEST, null, null, avatar);
   }
 }
