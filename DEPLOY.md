@@ -21,6 +21,8 @@ uid/gid 1000 en ambos) y el secreto `PU_JWT_SECRET`. Arranca después de que `se
 migraciones Prisma y Flyway hace baseline sobre ese esquema. No hace falta ninguna variable nueva salvo `PU_BACKEND_IMAGE`
 (con valor por defecto igual al de `.env.example`). `PU_ROOMS_ENABLED` (`ROOMS_ENABLED` del backend) vale `false` por
 defecto: el `/ws` de Java cierra cada conexión con 4403 y las salas siguen en Node; el corte 2D lo pone a `true`.
+`PU_POKEMON_ARTWORK_DIR` (opcional, `/data/pokemon-artworks`) no tiene volumen montado, así que las salas Java no tienen
+artworks locales; solo importa a partir del corte 2D.
 
 PostgreSQL no publica puertos. GitHub Actions valida el proyecto y publica imágenes `linux/amd64` y `linux/arm64` en
 GHCR con el SHA completo del commit y el tag móvil `pre`. El tag `latest` solo se mueve después de promocionar correctamente ese SHA a PRO. El servidor solo descarga imágenes ya verificadas; no compila.

@@ -1,6 +1,8 @@
 # Migración a Java: pendientes tras la etapa 1
 
-Estado: etapa 1 implementada el 2026-10-31 en la rama `backend-java-etapa-1` (pendiente de fusión). Diseño en
+Estado: etapa 1 implementada el 2026-10-31 en la rama `backend-java-etapa-1` (fusionada en `main` en local); 2A
+fusionada en `main`; 2B implementada el 2026-11-02 en la rama `etapa-2b-motores` (pendiente de la decisión de
+integración). Diseño en
 [`superpowers/specs/2026-10-31-separacion-frontend-backend-java-design.md`](superpowers/specs/2026-10-31-separacion-frontend-backend-java-design.md);
 estructura vigente en [`architecture.md`](architecture.md#backend-java-etapa-1).
 
@@ -24,12 +26,13 @@ derivados de él, métricas, logs JSON, límites de peticiones, imagen JVM en Co
 ## Etapa 2: alcance
 
 1. Salas, estado de sala y reconexión en Java.
-2. Los 28 motores de juego, cada uno con pruebas golden contra el comportamiento de los motores TypeScript.
+2. Los 28 motores de juego, cada uno con pruebas golden contra el comportamiento de los motores TypeScript (hecho en
+   2A + 2B).
 3. `data-sync` (PokéAPI y TCGdex) y su planificador.
 4. Administración.
 5. Escrituras de categorías personalizadas, pares de Would You Rather y avatares (subida).
 6. `/api/tcg/*`. Desviación consciente de la especificación (§0 lo situaba en la etapa 1): el plan lo aplazó porque depende del ciclo de vida de la caché del catálogo TCG que refresca data-sync; mientras tanto lo sigue sirviendo Node.
-7. Proxy de assets de las rondas.
+7. Proxy de assets de las rondas (hecho en 2B; producción lo sigue sirviendo Node hasta 2D).
 8. WebSocket: el transporte `/ws` de Java existe desde 2A (mismos 21 eventos cliente→servidor y 7 servidor→cliente que
    Socket.IO); 2D lo convierte en el transporte por defecto y retira Socket.IO.
 9. Mover `apps/web` a `frontend/` e incluir dentro `shared/public`.
@@ -45,20 +48,43 @@ SPI `GameEngine`, `RoomCoordinator`, transporte `/ws` con sobre, acks, latido y 
 [`architecture.md`](architecture.md#salas-en-java-etapa-2a). E2E: `npm run test:e2e` (Node) y `npm run test:e2e:java`
 (mismos specs contra el `/ws` de Java), 12/12 en ambos. El transporte por defecto sigue siendo Node.
 
-### 2B: lo que necesita
+### 2B: motores y assets (hecho el 2026-11-02)
 
-- Los 26 motores restantes, por lotes, cada uno con sus fixtures doradas y su E2E.
-- Proxy de imágenes y audio de ronda (las transformaciones de `sharp` de Node).
-- Canal de cursores de Quién es Quién (`who-is-who:cursor*`, fuera del límite de eventos).
-- Comparación sensible al orden de claves de `Record<string,…>` en el arnés dorado (constraint 3 frente a 6): hoy
-  `JsonTree.firstDifference` compara los objetos clave a clave sin mirar el orden, así que un `LinkedHashMap` con otro
-  orden de inserción que el de TS pasaría el arnés y cambiaría el orden en el cable.
-- Catálogo en memoria: `levelUpMoves`, `evolutionInfo` y `pokedexEntries` (los motores que los usan no están portados).
-- `Collator` para los `localeCompare` sobre nombres visibles (los ids de jugador se ordenan igual con `compareTo`).
+Implementado en la rama `etapa-2b-motores` (plan `superpowers/plans/2026-10-31-etapa-2b-motores.md`): los 26 motores
+restantes, 28/28 registrados en `portedEngines` con sus fixtures; arnés dorado con comparación sensible al orden de
+claves, fixtures de contexto (host, visuales, audio, TCG, `catalogPatch`) y pasos `asset`; catálogo en memoria con
+learnsets, evolución, entradas de Pokédex y paletas; `Collations` sobre ICU4J; proxy de imágenes y gritos de ronda
+(`GameAssetController`, caché, catálogos visual y de audio, límite propio de 5000/min) y regla de Vite `^/api/rooms/`
+con `VITE_REALTIME=java`. Canal de cursores de Quién es Quién sobre el `CursorRelay` de 2A. E2E `juegos.spec.ts`:
+26 pasados y 2 saltados con el literal del servidor en cada transporte. Detalle en
+[`architecture.md`](architecture.md#motores-y-assets-en-java-etapa-2b).
+
+Deuda de UI que destapa `juegos.spec.ts` (no es de 2B; seguimiento del responsable de la UI): la pasada estricta
+(`PU_LAYOUT_STRICT=1`) falla en la mayoría de juegos, en Node y en Java, por etiquetas de `ServerTimer` a
+`text-[10px]`, iniciales de `Avatar` `xs` a `text-[9px]` y la cabecera fija que tapa contenido cuando el autofoco del
+buscador desplaza la página (Bingo); además, 8 juegos no muestran el título del manifest en pantalla.
+
+### 2C: lo que necesita
+
+- Catálogo TCG real (`TcgCardCatalog` JPA, port de `comparable-price.ts` y `CachedTcgCardCatalog`): hasta entonces
+  las salas Java pasan `tcgCards = null` y `tcg-higher-lower` no se puede lanzar. El filtro por generaciones lo cubren
+  sus tests (el `cardsFor` del arnés lo ignora en los dos lados).
+- Paletas calculadas por el data-sync: la BD local no tiene `metadata.palette` y `pokemon-palette-guess` no se puede
+  lanzar (en las fixtures llegan por `catalogPatch`).
+- `PokemonAssetReference` lo escribe el data-sync (gritos y referencias que lee `JpaPokemonAudioCatalog`).
+- `replaceCatalog` tras el sync debe recargar también visuales y audio (`GameCatalogs`), no solo el catálogo Pokémon;
+  hoy nadie lo llama en producción.
+- `HostContentProvider` respaldado por tablas (categorías personalizadas y pares de Would You Rather del host); hoy
+  `config/RoomBeans` devuelve `HostContentProvider.EMPTY`.
 
 ### Corte 2D: Java dueño de las salas
 
 - `VITE_REALTIME=java` por defecto en la imagen web y quitar `/socket.io/` de nginx.
+- `location` de `/api/rooms/` en `infra/nginx.conf` hacia el backend Java (imágenes y gritos de ronda; en dev ya lo
+  hace el proxy de Vite con `VITE_REALTIME=java`).
+- Directorio de artworks en el backend: compose define `POKEMON_ARTWORK_DIR` (`/data/pokemon-artworks`) pero no monta
+  nada; copiar los PNG a la imagen o compartir un volumen con Node (que los lleva dentro de la suya).
+- Imagen nativa: AWT (ImageIO) e ICU4J necesitan su `resource-config`/metadatos; ver el riesgo «Imagen nativa».
 - `PU_ROOMS_ENABLED=true` en el `.env` de compose (`ROOMS_ENABLED` del backend; hoy `false`, y `/ws` cierra con 4403).
 - Activar `pu.interrupt-stale-rooms=true` (`INTERRUPT_STALE_ROOMS=true`) en el backend Java. Al arrancar marca como
   `INTERRUPTED`/`SERVER_STOPPED` las filas `RoomHistory` `ACTIVE` y `GameHistory` `IN_PROGRESS` que dejó el proceso
@@ -70,7 +96,7 @@ SPI `GameEngine`, `RoomCoordinator`, transporte `/ws` con sobre, acks, latido y 
 
 | Riesgo | Detalle |
 | --- | --- |
-| Imagen nativa | Compila (UBI-micro) pero **falla al arrancar**: faltan metadatos de reflexión de Hibernate/ByteBuddy. El job `backend-native` de `main.yml` es no bloqueante y está fuera de la cadena de `deploy-pre`; nunca se ha comprobado su healthcheck. Se despliega la imagen JVM. |
+| Imagen nativa | Compila (UBI-micro) pero **falla al arrancar**: faltan metadatos de reflexión de Hibernate/ByteBuddy. El job `backend-native` de `main.yml` es no bloqueante y está fuera de la cadena de `deploy-pre`; nunca se ha comprobado su healthcheck. Se despliega la imagen JVM. Desde 2B, además, AWT (ImageIO) e ICU4J necesitan su `resource-config`/metadatos en la imagen nativa; sin verificar. |
 | E2E fuera de CI | Playwright necesita un catálogo sembrado (`npm run db:seed`, descarga de PokéAPI); ningún workflow lo ejecuta. |
 | Micronaut 5.1 | Versión reciente (5.1.5); hay que vigilar versiones de parche y la compatibilidad de Micronaut Data/Serialization. |
 | Imagen base | `eclipse-temurin:25-jre-alpine` ha de ser multiarquitectura (amd64/arm64); se comprueba al construir en CI, no está verificado de antemano. |
@@ -92,6 +118,22 @@ SPI `GameEngine`, `RoomCoordinator`, transporte `/ws` con sobre, acks, latido y 
 - CI: los pushes en cola esperan a un build nativo en curso (concurrencia serie); un push solo de documentación
   redespliega PRE con imágenes idénticas; volver a lanzar un Main antiguo reetiqueta el `:pre` actual; las listas de rutas de
   los filtros están duplicadas entre workflows.
+- Deuda de 2B (aplazada en las revisiones):
+  - Helpers de lectura de configuración duplicados en las clases `<Juego>Config` (candidato: un lector común en
+    `engine/infra`), y helpers pequeños repetidos entre motores (`takeRandom`, `formatEs`, comprobaciones de sprite,
+    `choosePrompt` y el pool de prompts).
+  - Formato de dobles enteros: Java emite `1.0` donde Node emite `1` (Sketchmon); igual por valor, distinto en texto. Los
+    `configCases` con `x.0` se serializan como enteros, así que no prueban que Java acepte `20.0`.
+  - El `cardsFor` del arnés no aplica la regla de producción «al menos 2 cartas o ninguna».
+  - El lookbehind de Java mide unidades UTF-16: una letra fuera del BMP antes de un alias enmascara de más frente a JS
+    (Learnset/Pokédex Entry).
+  - `application-test.yml` apunta `pu.artwork-dir` a `java.io.tmpdir` (escanea `/tmp`; mejor una carpeta de `build/`).
+  - `TrustedAssetSourceLoader` sigue redirecciones sin volver a comprobar el host; la decodificación de imágenes no
+    limita el número de píxeles (riesgo de memoria, bajo).
+  - `PokemonCatalogService` depende de clases adaptador (`FilesystemArtworkCatalog`, `JpaPokemonAudioCatalog`) en vez
+    de puertos, como la concesión de la etapa 1.
+  - El script de exportación dorada no fija `LANG=en_US.UTF-8`; si CI difiere en una comparación de textos, fijarlo
+    ahí. La imagen `node:22-alpine` sin versión fija puede cambiar de ICU respecto a `icu4j` 78.3.
 
 ## Métricas de CI
 

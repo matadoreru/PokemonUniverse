@@ -82,7 +82,9 @@ consola y que a 1280×720 no hay scroll horizontal (`measureLayout` se anota, ve
   contrato (`measureLayout` vacío), `PU_LAYOUT_STRICT=1 npm run test:e2e -- juegos`. Hoy esa pasada
   falla en la mayoría de juegos por deuda de UI previa: etiquetas de `ServerTimer` y similares a
   `text-[10px]`, iniciales de `Avatar` `xs` a `text-[9px]` y la cabecera fija tapando contenido cuando
-  el autofoco del buscador desplaza la página.
+  el autofoco del buscador desplaza la página. Además, 8 juegos no muestran el título del manifest en
+  pantalla (anotación `pantalla`). Es deuda para el responsable de la UI, no de la etapa 2B
+  (`docs/migracion-java-pendientes.md`).
 - **Detalle por juego**: el spec deja anotaciones (recurso comprobado, título visible y encaje a
   los tres tamaños). `npm run` se come `--reporter`, así que para verlas lánzalo desde `e2e/`:
   `PLAYWRIGHT_JSON_OUTPUT_FILE=juegos.json npx playwright test juegos --reporter=list,json`

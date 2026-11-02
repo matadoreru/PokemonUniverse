@@ -59,7 +59,7 @@ Las salas admiten hasta 8 jugadores por defecto. Si alguien se desconecta, conse
 
 El backend Java convive con Node detrás del mismo origen y ambos firman y aceptan la misma cookie `pu_session` con `JWT_SECRET`. En esta etapa Java atiende `POST /api/auth/{register,login,guest,logout}`, `GET /api/auth/{me,profile}`, `GET /api/auth/avatars/*`, `GET /api/changelog`, `POST /api/feedback`, `GET /api/games` y `GET /api/pokemon`. Todo lo demás (salas, Socket.IO, administración, TCG, categorías, subida de avatares, `/api/health`…) sigue en Node. En desarrollo el reparto lo hace el proxy de Vite (`apps/web/vite.config.ts`); en contenedores, nginx.
 
-### Salas en Java (etapa 2A, solo desarrollo)
+### Salas en Java (etapas 2A y 2B, solo desarrollo)
 
 El backend Java también puede alojar salas por un WebSocket propio en `/ws`. En el servidor lo controla `pu.rooms.enabled` (`ROOMS_ENABLED`): está activo en el entorno `dev` que usan `npm run dev`/`npm run dev:backend` y en los tests, y apagado por defecto en producción (`/ws` cierra con 4403) hasta el corte 2D. Por defecto la web sigue usando Socket.IO (Node); para probar las salas Java en local arranca la web con la bandera:
 
@@ -67,7 +67,7 @@ El backend Java también puede alojar salas por un WebSocket propio en `/ws`. En
 VITE_REALTIME=java npm run dev
 ```
 
-Solo dos minijuegos están portados: **Higher or Lower** (`higher-lower`) y **Pokédex Distance** (`pokedex-distance`, el que viene seleccionado en una sala nueva). Si la sala intenta lanzar otro, el servidor responde «Este minijuego todavía no está disponible en el servidor Java.». No es apto para producción hasta el corte 2D.
+Los 28 minijuegos están portados y verificados con fixtures doradas contra los motores TypeScript, y Java sirve también las imágenes y gritos de ronda (con la bandera, Vite le manda `/api/rooms/`). Dos no se pueden lanzar todavía en una sala Java porque faltan datos que trae el data-sync de la etapa 2C: **Higher or Lower: Cartas** (`tcg-higher-lower`, sin catálogo TCG) y **Adivina por la Paleta** (`pokemon-palette-guess`, sin paletas en la BD). No es apto para producción hasta el corte 2D.
 
 Los detalles de diseño están en [docs/architecture.md](docs/architecture.md).
 
@@ -88,7 +88,7 @@ npm run dev                                   # Node en :3001, Java en :8080 y w
 
 En el `.env` local quita la línea `VITE_API_URL`: la web usa el proxy de Vite. Pon también `DATA_SYNC_ENABLED=false` si no quieres sincronizar datos externos al arrancar.
 
-El backend Java (`npm run dev:backend`, recarga en caliente con `./gradlew run -t`) toma del entorno `JWT_SECRET`, `COOKIE_SECURE`, `WEB_ORIGIN` y `RATE_LIMIT_DISABLED`; la conexión a la BD local está fijada en `backend/src/main/resources/application-dev.yml` y el puerto se fuerza a 8080 aunque el `.env` traiga `PORT=3001`. Los avatares de invitado los sube Node a `apps/server/.data/avatars` y Java los sirve desde ese mismo directorio (`pu.avatar-storage-dir` en `application-dev.yml`, `../apps/server/.data/avatars` relativo a `backend/`; `AVATAR_STORAGE_DIR` lo sustituye).
+El backend Java (`npm run dev:backend`, recarga en caliente con `./gradlew run -t`) toma del entorno `JWT_SECRET`, `COOKIE_SECURE`, `WEB_ORIGIN` y `RATE_LIMIT_DISABLED`; la conexión a la BD local está fijada en `backend/src/main/resources/application-dev.yml` y el puerto se fuerza a 8080 aunque el `.env` traiga `PORT=3001`. Los avatares de invitado los sube Node a `apps/server/.data/avatars` y Java los sirve desde ese mismo directorio (`pu.avatar-storage-dir` en `application-dev.yml`, `../apps/server/.data/avatars` relativo a `backend/`; `AVATAR_STORAGE_DIR` lo sustituye). Los artworks del modo Artwork los lee de `pu.artwork-dir` (`../apps/server/assets/pokemon-artworks` por defecto, el mismo directorio que Node; `POKEMON_ARTWORK_DIR` lo sustituye).
 
 Todo en contenedores con un solo comando:
 
