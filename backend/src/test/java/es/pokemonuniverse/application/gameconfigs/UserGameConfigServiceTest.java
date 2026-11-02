@@ -233,4 +233,19 @@ class UserGameConfigServiceTest {
     assertEquals(List.of("u1:higher-lower:6"), store.writes);
     assertEquals(0, scheduler.live());
   }
+
+  @Test
+  void concurrentSavesOfOneKeyLeaveTheSameWinnerInCacheAndDatabase() throws Exception {
+    for (int round = 0; round < 50; round++) {
+      var threads = new ArrayList<Thread>();
+      for (int rounds = 1; rounds <= 4; rounds++) {
+        int value = rounds;
+        threads.add(Thread.ofVirtual().start(() -> service.save("u1", "higher-lower", higherLower(value))));
+      }
+      for (var thread : threads) thread.join();
+      service.flush();
+      var cached = service.forUser("u1").get("higher-lower").get("rounds").getIntValue();
+      assertEquals("u1:higher-lower:" + cached, store.writes.getLast());
+    }
+  }
 }

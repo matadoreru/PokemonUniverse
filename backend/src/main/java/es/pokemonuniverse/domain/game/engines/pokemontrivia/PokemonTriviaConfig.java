@@ -60,9 +60,12 @@ public record PokemonTriviaConfig(
     var typesNode = config.required("questionTypes");
     int maxTypes = PokemonTriviaQuestionType.values().length;
     var questionTypes = new ArrayList<PokemonTriviaQuestionType>();
-    if (!typesNode.isArray() || typesNode.size() < 1 || typesNode.size() > maxTypes) {
+    if (!typesNode.isArray()) {
       config.reject("questionTypes", "questionTypes debe tener entre 1 y " + maxTypes + " tipos");
     } else {
+      if (typesNode.size() < 1 || typesNode.size() > maxTypes) {
+        config.rejectContinuable("questionTypes", "questionTypes debe tener entre 1 y " + maxTypes + " tipos");
+      }
       for (var value : typesNode.values()) {
         questionTypes.add(config.enumValue(value, "questionTypes", PokemonTriviaQuestionType.class));
       }

@@ -13,6 +13,7 @@ import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,11 @@ class StoredGameConfigMigrationTest {
 
   private static final ObjectMapper MAPPER = ObjectMapper.getDefault();
   private static final GameRegistry REGISTRY = ClasspathGameRegistryLoader.loadFromClasspath(MAPPER);
-  private static final StoredGameConfigMigration MIGRATION = new StoredGameConfigMigration(MAPPER);
+  /** El mapper de producción ({@code micronaut.serde.serialization.inclusion: NON_NULL} en application.yml). */
+  private static final ObjectMapper PRODUCTION_MAPPER =
+      ObjectMapper.create(Map.of("micronaut.serde.serialization.inclusion", "NON_NULL"), "es.pokemonuniverse");
+  private static final Map<String, StoredGameConfigMigration> MIGRATIONS = Map.of(
+      "NON_EMPTY", new StoredGameConfigMigration(MAPPER), "NON_NULL", new StoredGameConfigMigration(PRODUCTION_MAPPER));
 
   private record Case(String name, String gameId, JsonNode stored, JsonNode expected) {}
 
@@ -45,12 +50,14 @@ class StoredGameConfigMigrationTest {
 
   @TestFactory
   Stream<DynamicTest> matchesNodeOnEveryPinnedCase() throws IOException {
-    return cases().stream().map(c -> dynamicTest(c.name(), () -> {
-      var engine = REGISTRY.engine(c.gameId()).orElseThrow();
-      var migrated = MIGRATION.migrate(engine, c.stored());
-      assertTrue(JsonTree.equal(c.expected(), migrated),
-          () -> JsonTree.firstDifference("$", c.expected(), migrated).orElse("orden"));
-    }));
+    var all = cases();
+    return MIGRATIONS.entrySet().stream().sorted(Map.Entry.comparingByKey()).flatMap(mode -> all.stream()
+        .map(c -> dynamicTest(mode.getKey() + " " + c.name(), () -> {
+          var engine = REGISTRY.engine(c.gameId()).orElseThrow();
+          var migrated = mode.getValue().migrate(engine, c.stored());
+          assertTrue(JsonTree.equal(c.expected(), migrated),
+              () -> JsonTree.firstDifference("$", c.expected(), migrated).orElse("orden"));
+        })));
   }
 
   @Test

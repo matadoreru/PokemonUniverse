@@ -113,9 +113,10 @@ public class UserGameConfigService implements UserGameConfigPreferences {
     var engine = engine(gameId);
     if (engine.isEmpty()) return;
     var parsed = toTree(engine.get().parseConfig(config));
-    cache(userId, gameId, parsed);
     var key = new Key(userId, gameId);
     synchronized (lock) {
+      // Caché y escritura pendiente en el mismo lock: dos save simultáneos dejan el mismo ganador en ambas.
+      cache(userId, gameId, parsed);
       pending.put(key, new PendingWrite(userId, gameId, parsed));
       var prior = timers.remove(key);
       if (prior != null) prior.cancel.run();

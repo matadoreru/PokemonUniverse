@@ -36,7 +36,7 @@ public record PokeTabooConfig(List<Integer> generations, int roundSeconds, int l
     var generations = config.generations("generations");
     int roundSeconds = config.integer("roundSeconds", Integer.MIN_VALUE, Integer.MAX_VALUE);
     if (!ROUND_SECONDS.contains(roundSeconds)) {
-      config.reject("roundSeconds", "El tiempo debe ser 30, 45, 60, 90 o 120 segundos");
+      config.rejectContinuable("roundSeconds", "El tiempo debe ser 30, 45, 60, 90 o 120 segundos");
     }
     int laps = config.integer("laps", 1, 5);
     boolean includeRegionalForms = config.bool("includeRegionalForms");

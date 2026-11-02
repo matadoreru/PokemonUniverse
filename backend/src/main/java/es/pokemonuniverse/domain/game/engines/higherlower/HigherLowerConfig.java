@@ -49,9 +49,12 @@ public record HigherLowerConfig(
     var generations = config.generations("generations");
     var categoriesNode = config.required("categories");
     var categories = new LinkedHashSet<HigherLowerCategory>();
-    if (!categoriesNode.isArray() || categoriesNode.size() < 1) {
+    if (!categoriesNode.isArray()) {
       config.reject("categories", "categories debe ser una lista con al menos una categoría");
     } else {
+      if (categoriesNode.size() < 1) {
+        config.rejectContinuable("categories", "categories debe ser una lista con al menos una categoría");
+      }
       for (var value : categoriesNode.values()) {
         categories.add(config.enumValue(value, "categories", HigherLowerCategory.class));
       }

@@ -276,4 +276,40 @@ class ConfigReaderTest {
     assertEquals(List.of(new ConfigIssue(List.of("roundSeconds"),
         "Configuración de Prueba no válida: roundSeconds debe ser un número entero.")), issues);
   }
+
+  @Test
+  void aRangeIssueKeepsTheRealValueAndTheRuleStillCounts() {
+    // Zod 4: too_big es continuable y el superRefine corre (connections {groupSize: 6, pokemonCount: 20}).
+    var entries = new LinkedHashMap<String, JsonNode>();
+    entries.put("groupSize", number(6));
+    entries.put("pokemonCount", number(20));
+    var issues = ConfigReader.collectIssues(() -> {
+      var config = ConfigReader.of(object(entries), "Prueba");
+      int groupSize = config.integer("groupSize", 3, 5);
+      int pokemonCount = config.integer("pokemonCount", 9, 25);
+      assertEquals(6, groupSize);
+      if (pokemonCount % groupSize != 0) throw config.invalidAt("pokemonCount", "tablero");
+    });
+    assertEquals(List.of(List.of("groupSize"), List.of("pokemonCount")), paths(issues));
+  }
+
+  @Test
+  void continuableIssuesDoNotBlockTheRuleButAbortingOnesDo() {
+    var continuable = ConfigReader.collectIssues(() -> {
+      var config = reader("extra", number(1));
+      config.strict(Set.of());
+      config.rejectContinuable("roundSeconds", "tiempo");
+      throw config.invalidAt("maxPrice", "precio");
+    });
+    assertEquals(List.of(List.of(), List.of("roundSeconds"), List.of("maxPrice")), paths(continuable));
+    var aborting = ConfigReader.collectIssues(() -> {
+      var config = reader("rounds", number(1.5));
+      config.integer("rounds", 1, 5);
+      throw config.invalidAt("maxPrice", "precio");
+    });
+    assertEquals(List.of(List.of("rounds")), paths(aborting));
+    var error = assertThrows(ConfigValidationException.class,
+        () -> reader("a", number(1)).rejectContinuable("a", "a no vale"));
+    assertEquals("Configuración de Prueba no válida: a no vale.", error.getMessage());
+  }
 }

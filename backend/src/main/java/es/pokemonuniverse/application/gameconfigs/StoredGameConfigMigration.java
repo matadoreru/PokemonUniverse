@@ -1,6 +1,7 @@
 package es.pokemonuniverse.application.gameconfigs;
 
 import es.pokemonuniverse.domain.game.engine.ConfigIssue;
+import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.GameEngine;
 import es.pokemonuniverse.domain.json.JsonTree;
 import io.micronaut.core.annotation.Nullable;
@@ -16,7 +17,8 @@ import java.util.List;
 /**
  * {@code migrateStoredGameConfig} de {@code game-configs/service.ts}: mezcla la configuración guardada sobre la
  * configuración por defecto actual, descarta las claves retiradas y repara las ramas no válidas, de modo que un
- * cambio de esquema no borra los ajustes del usuario que siguen valiendo. Nunca lanza: lo irreparable cae al defecto.
+ * cambio de esquema no borra los ajustes del usuario que siguen valiendo. Una configuración irreparable cae al defecto;
+ * solo lanza ante un fallo que no es de validación (p. ej. de serialización).
  *
  * <p>Los issues salen de {@link GameEngine#configIssues} (el modo que recoge todo de
  * {@link es.pokemonuniverse.domain.game.engine.infra.ConfigReader}); los que ese modo deja para la siguiente pasada se
@@ -40,8 +42,8 @@ public final class StoredGameConfigMigration {
     for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt += 1) {
       try {
         return toTree(engine.parseConfig(candidate));
-      } catch (RuntimeException invalid) {
-        // safeParse fallido: se reparan las rutas de sus issues.
+      } catch (ConfigValidationException invalid) {
+        // safeParse fallido: se reparan las rutas de sus issues. Otro error (serialización) no se oculta.
       }
       if (!priorCandidates.add(JsonTree.toCanonicalString(candidate))) return fallback;
       var paths = engine.configIssues(candidate).stream().map(ConfigIssue::path)

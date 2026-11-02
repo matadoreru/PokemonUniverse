@@ -138,10 +138,12 @@ buscador desplaza la página (Bingo); además, 8 juegos no muestran el título d
   - 2C (configuraciones por usuario): `ConfigValidationException.path()` lleva la ruta Zod del primer issue y
     `GameEngine.configIssues` (modo «recoger todo» de `ConfigReader`) da todos los issues con su ruta para
     `StoredGameConfigMigration`. Los helpers locales anteriores informan su ruta (`reject`/`invalidAt`), así que ningún
-    motor cae a la raíz. Diferencias con Zod: una ruta guarda solo su primer issue; los elementos de listas que recorre
-    el motor (no `generations`) llevan la ruta de la lista sin índice; y una regla entre campos (`superRefine`) solo
-    cuenta si antes no falló nada, de modo que la migración la repara en la pasada siguiente. Contrastado con el
-    `migrateStoredGameConfig` de Node en `backend/src/test/resources/gameconfigs/migration-cases.json` (1 389 casos).
+    motor cae a la raíz. Como Zod 4, los issues de rango, lista vacía, clave desconocida y `refine` de campo son
+    continuables (el `parse` sigue con el valor real y los `superRefine` cuentan) y los de tipo, enum y unión abortan.
+    Diferencias con Zod: una ruta guarda solo su primer issue; los elementos de listas que recorre el motor (no
+    `generations`) llevan la ruta de la lista sin índice; y un precio TCG no canónico frente a otro precio hace lanzar
+    a `safeParse` en Node (y al arranque), mientras Java lo repara al defecto. Contrastado con el
+    `migrateStoredGameConfig` de Node en `backend/src/test/resources/gameconfigs/migration-cases.json` (2 245 casos).
   - Helpers pequeños repetidos entre motores (`takeRandom`, `formatEs`, comprobaciones de sprite, `choosePrompt` y el
     pool de prompts); `isUsableWhoPokemonSprite` duplica `isUsableZoomedSprite`, `GuessFromStatsPlayerStats` duplica
     `PokemonPaletteStats` y los recuentos de lotes ganados y sin dueño están duplicados entre

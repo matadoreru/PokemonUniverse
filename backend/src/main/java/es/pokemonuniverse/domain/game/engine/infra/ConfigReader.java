@@ -28,12 +28,21 @@ import java.util.TreeSet;
  * clave de la lista.
  *
  * <p>{@link #collectIssues} ejecuta un {@code parse} en modo «recoger todo», el {@code safeParse(...).error.issues} que
- * necesita {@code migrateStoredGameConfig}: cada fallo del lector se anota y devuelve un valor centinela válido para
- * que el {@code parse} siga. Diferencias deliberadas con Zod: una ruta guarda solo su primer issue; un objeto anidado
- * que no es objeto es un issue y sus campos ya no se leen; y una regla del motor que lanza ({@link #invalid},
- * {@link #invalidAt}) solo cuenta si antes no falló nada, porque con centinelas su resultado no es fiable (Zod tampoco
- * corre los {@code superRefine} sobre una entrada rota). Lo que quede sin anotar aparece en la siguiente pasada de
- * quien itera sobre las rutas.
+ * necesita {@code migrateStoredGameConfig}, con la misma división que Zod 4 entre issues que abortan y continuables:
+ * <ul>
+ *   <li>Abortan el campo (tipo erróneo, clave ausente, decimal en un entero, enum, unión): se anota el issue y el
+ *       {@code parse} sigue con un centinela válido; desde ese momento las reglas entre campos ({@code superRefine})
+ *       no cuentan, como Zod, que no las corre sobre una entrada abortada.</li>
+ *   <li>Continuables (rango {@code too_small}/{@code too_big}, lista vacía, clave desconocida de {@code .strict()},
+ *       {@code refine} de un campo, {@link #rejectContinuable}): se anota el issue y el {@code parse} sigue con el valor
+ *       real, y una regla del motor que lanza ({@link #invalid}, {@link #invalidAt}) también se anota, como el
+ *       {@code superRefine} que Zod sí corre.</li>
+ * </ul>
+ * Diferencias deliberadas con Zod: una ruta guarda solo su primer issue; un objeto anidado que no es objeto es un issue
+ * y sus campos ya no se leen; tras la primera regla que lanza no se lee nada más (las reglas van al final del
+ * {@code parse}); y una excepción ajena a la validación (p. ej. {@code compareTcgPrices} con un precio no canónico, que
+ * en Node hace lanzar al propio {@code safeParse}) se descarta si ya hay issues. Lo que quede sin anotar aparece en la
+ * siguiente pasada de quien itera sobre las rutas.
  */
 public final class ConfigReader {
 
@@ -68,15 +77,16 @@ public final class ConfigReader {
   }
 
   /**
-   * Ejecuta {@code parse} recogiendo todos los issues con su ruta, en orden de lectura; vacío si es válido. Una
-   * excepción del motor cuenta como issue solo si no se anotó ninguno antes (si no es de validación, en la raíz).
+   * Ejecuta {@code parse} recogiendo todos los issues con su ruta, en orden de lectura; vacío si es válido. Una regla
+   * del motor que lanza ({@link #invalid}, {@link #invalidAt}) cuenta si antes no se anotó ningún issue que aborte;
+   * otra excepción cuenta solo si no se anotó nada (en la raíz).
    */
   public static List<ConfigIssue> collectIssues(Runnable parse) {
     var issues = new Issues();
     try {
       ScopedValue.where(COLLECTING, issues).run(parse);
     } catch (ConfigValidationException e) {
-      if (issues.isEmpty()) issues.add(e.path(), e.getMessage());
+      if (!issues.aborted) issues.add(e.path(), e.getMessage());
     } catch (RuntimeException e) {
       if (issues.isEmpty()) issues.add(List.of(), String.valueOf(e.getMessage()));
     }
@@ -111,7 +121,7 @@ public final class ConfigReader {
   public void strict(Set<String> allowed) {
     for (var entry : raw.entries()) {
       if (!allowed.contains(entry.getKey())) {
-        fail(path, "clave desconocida " + entry.getKey());
+        failContinuable(path, "clave desconocida " + entry.getKey());
         return;
       }
     }
@@ -152,8 +162,8 @@ public final class ConfigReader {
     double number = wholeNumber(value, at(key), key);
     if (Double.isNaN(number)) return 0;
     if (!JsNumbers.isSafeInteger(number)) {
-      fail(at(key), key + " debe ser un número entero");
-      return 0;
+      failContinuable(at(key), key + " debe ser un número entero");
+      return (long) number;
     }
     return (long) number;
   }
@@ -162,8 +172,8 @@ public final class ConfigReader {
   public int option(String key, Collection<Integer> options, String message) {
     long number = safeInteger(key);
     if (number < Integer.MIN_VALUE || number > Integer.MAX_VALUE || !options.contains((int) number)) {
-      fail(at(key), message);
-      return options.iterator().next();
+      failContinuable(at(key), message);
+      return (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, number));
     }
     return (int) number;
   }
@@ -211,10 +221,11 @@ public final class ConfigReader {
   public List<Integer> generations(String key) {
     var node = required(key);
     if (node == MISSING) return allGenerations();
-    if (!node.isArray() || node.size() < 1) {
+    if (!node.isArray()) {
       fail(at(key), key + " debe ser una lista con al menos una generación");
       return allGenerations();
     }
+    if (node.size() < 1) failContinuable(at(key), key + " debe ser una lista con al menos una generación");
     var generations = new TreeSet<Integer>();
     for (int index = 0; index < node.size(); index++) {
       generations.add(integerAt(node.get(index), at(key, index), key, FIRST_GENERATION, LAST_GENERATION));
@@ -236,11 +247,21 @@ public final class ConfigReader {
   }
 
   /**
-   * Fallo de tipo o de valor de {@code key} que el motor comprueba a mano: lanza como {@link #invalidAt}, o al recoger
-   * lo anota y vuelve, y el motor sigue con un valor centinela.
+   * Fallo de tipo o de valor de {@code key} que el motor comprueba a mano y que en Zod aborta el campo
+   * ({@code invalid_type}, {@code invalid_value}, {@code invalid_union}): lanza como {@link #invalidAt}, o al recoger lo
+   * anota y vuelve, y el motor sigue con un valor centinela.
    */
   public void reject(String key, String detail) {
     fail(at(key), detail);
+  }
+
+  /**
+   * Como {@link #reject}, para un issue que Zod deja continuar ({@code too_small}, {@code too_big},
+   * {@code invalid_format} o un {@code refine} del campo): al recoger, el motor sigue con el valor real y las reglas
+   * entre campos todavía cuentan.
+   */
+  public void rejectContinuable(String key, String detail) {
+    failContinuable(at(key), detail);
   }
 
   private int integerAt(JsonNode value, List<Object> issuePath, String key, int min, int max) {
@@ -248,8 +269,8 @@ public final class ConfigReader {
     double number = wholeNumber(value, issuePath, key);
     if (Double.isNaN(number)) return min;
     if (number < min || number > max) {
-      fail(issuePath, key + " debe estar entre " + min + " y " + max);
-      return min;
+      failContinuable(issuePath, key + " debe estar entre " + min + " y " + max);
+      return (int) number;
     }
     return (int) number;
   }
@@ -271,11 +292,26 @@ public final class ConfigReader {
     return number;
   }
 
-  /** Lanza fuera de {@link #collectIssues}; dentro, anota el issue (si el lector no está silenciado) y vuelve. */
+  /**
+   * Issue que aborta su campo en Zod: lanza fuera de {@link #collectIssues}; dentro, lo anota (si el lector no está
+   * silenciado) y vuelve, y ya no cuentan las reglas entre campos.
+   */
   private void fail(List<Object> issuePath, String detail) {
+    record(issuePath, detail, true);
+  }
+
+  /** Issue continuable de Zod ({@code too_small}/{@code too_big}…): las reglas entre campos siguen contando. */
+  private void failContinuable(List<Object> issuePath, String detail) {
+    record(issuePath, detail, false);
+  }
+
+  private void record(List<Object> issuePath, String detail, boolean aborts) {
     var exception = exception(issuePath, detail);
     if (!COLLECTING.isBound()) throw exception;
-    if (!muted) COLLECTING.get().add(issuePath, exception.getMessage());
+    if (muted) return;
+    var issues = COLLECTING.get();
+    issues.add(issuePath, exception.getMessage());
+    if (aborts) issues.aborted = true;
   }
 
   private ConfigValidationException exception(List<Object> issuePath, String detail) {
@@ -304,6 +340,8 @@ public final class ConfigReader {
   private static final class Issues {
     private final List<ConfigIssue> list = new ArrayList<>();
     private final Set<List<Object>> paths = new HashSet<>();
+    /** Algún issue que en Zod aborta: a partir de él, los {@code superRefine} del objeto no corren. */
+    private boolean aborted;
 
     void add(List<Object> issuePath, String message) {
       if (paths.add(List.copyOf(issuePath))) list.add(new ConfigIssue(issuePath, message));

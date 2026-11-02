@@ -86,8 +86,10 @@ public record TcgHigherLowerConfig(
       return new ArrayList<>(items);
     }
     for (var item : value.values()) {
-      if (!item.isString() || item.getStringValue().isEmpty()) {
+      if (!item.isString()) {
         config.reject(key, key + " solo admite textos no vacíos");
+      } else if (item.getStringValue().isEmpty()) {
+        config.rejectContinuable(key, key + " solo admite textos no vacíos");
       } else {
         items.add(item.getStringValue());
       }
@@ -100,9 +102,13 @@ public record TcgHigherLowerConfig(
   private static String price(ConfigReader config, String key) {
     var value = config.required(key);
     if (value.isNull()) return null;
-    if (!value.isString() || !PRICE.matcher(value.getStringValue()).matches()) {
+    if (!value.isString()) {
       config.reject(key, key + ": Introduce un precio válido");
       return null;
+    }
+    if (!PRICE.matcher(value.getStringValue()).matches()) {
+      // invalid_format es continuable: Zod sigue y su superRefine compara este precio (y lanza; ver ConfigReader).
+      config.rejectContinuable(key, key + ": Introduce un precio válido");
     }
     return value.getStringValue();
   }
