@@ -54,6 +54,38 @@ cd e2e && npx playwright test tests/sala.spec.ts   # un solo spec
 `VITE_REALTIME=java` y el project se llama `chromium-java`. Como la web arrancada se reutiliza
 (`reuseExistingServer`), para la pasada Java no puede haber ya una web con el transporte de Node en el puerto.
 
+### Un test por minijuego: `juegos.spec.ts`
+
+```sh
+npm run test:e2e -- juegos        # los 28 minijuegos con Socket.IO (Node)
+npm run test:e2e:java -- juegos   # los mismos con el /ws de Java
+```
+
+Lee los ids de `backend/src/main/resources/games/registry.json` y genera un test por juego: abre
+`max(3, minPlayers)` invitados, el host crea la sala, los demás se unen por código, el host elige el
+juego por su nombre del manifest, los invitados se marcan listos y el host pulsa «Empezar partida».
+Después comprueba que todos salen del lobby y pintan la pantalla de juego, que cada página abrió el
+WebSocket del transporte de la pasada (`/ws` en `chromium-java`, `/socket.io/` en `chromium`), que
+nunca sale «Este minijuego todavía no está disponible en el servidor Java.», que no hay errores de
+consola y que a 1280×720 no hay scroll horizontal y `measureLayout` está vacío. En `whos-that-pokemon`,
+`zoomed-pokemon`, `shiny-vote` y `pokemon-cry-quiz` exige además que la primera respuesta a
+`/api/rooms/*/games/*/rounds/*/options/*/(sprite|audio)` sea 200 con `image/png` o `audio/*`.
+
+- **Saltos**: `tcg-higher-lower` (sin cartas TCG) y `pokemon-palette-guess` (sin `metadata.palette` en
+  la BD) se saltan **solo** si el lobby muestra el literal de no disponibilidad del servidor; el motivo
+  queda en el skip. Con los datos cargados se prueban como los demás.
+- **Capturas**: un juego de cada lote (`type-duel`, `poke-taboo`, `most-likely-to`, `learnset-guess`,
+  `whos-that-pokemon`, `who-is-who-pokemon`, `pokemon-bingo`, `sketchmon`) se guarda como
+  `screenshots/juego-<id>-<ancho>x<alto>.png` a los tres tamaños, antes de la aserción de encaje.
+- **Encaje**: hoy la mayoría de pantallas de juego no pasan `measureLayout` a 1280×720 (etiquetas de
+  `ServerTimer` y similares a `text-[10px]`, iniciales de `Avatar` `xs` a 9 px y la cabecera fija
+  sobre contenido desplazado). Mientras se arreglan, la comparación Node/Java se hace con
+  `PU_LAYOUT_LOG` (ver abajo), que anota esos problemas sin cortar el test.
+- **Detalle por juego**: el spec deja anotaciones (recurso comprobado, título visible, encaje a
+  1920×1080 y 390×844). `npm run` se come `--reporter`, así que para verlas lánzalo desde `e2e/`:
+  `PLAYWRIGHT_JSON_OUTPUT_FILE=juegos.json npx playwright test juegos --reporter=list,json`
+  (con `VITE_REALTIME=java` delante para la pasada Java).
+
 `playwright.config.ts` hace lo siguiente por ti:
 
 - Carga `../.env` con `process.loadEnvFile` (sin `.env`, usa el entorno del shell).
