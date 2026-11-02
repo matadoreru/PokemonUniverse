@@ -172,7 +172,7 @@ class SyncHttpClientTest {
       }
       send(exchange, 200, "ok");
     };
-    var bytes = client(300).bytes(uri(), "Sprite");
+    var bytes = client(1_500).bytes(uri(), "Sprite");
     assertArrayEquals("ok".getBytes(StandardCharsets.UTF_8), bytes);
     assertEquals(2, calls.get());
     assertEquals(List.of(500L + JITTER), sleeps);

@@ -130,6 +130,9 @@ class DataSyncStartupTest {
     assertEquals("POKEAPI:INITIAL", calls.getFirst());
     assertTrue(scheduler.running());
     assertEquals(1, timers.size());
+    // La inicial de TCG va en segundo plano: se espera a que empiece antes de apagar (si no, stop() la descarta).
+    var deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(10);
+    while (calls.size() < 2 && System.nanoTime() < deadline) Thread.sleep(10);
     startup.stop();
     assertFalse(scheduler.running());
     assertEquals(List.of("POKEAPI:INITIAL", "TCGDEX:INITIAL"), calls);

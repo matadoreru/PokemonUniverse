@@ -474,6 +474,16 @@ class DataSyncServiceTest {
     assertEquals(expected, items.getFirst());
   }
 
+  /** La forma JSON de {@code AdminDataSyncItem}: claves en orden y nulos presentes pese a la inclusión global. */
+  @Test
+  void overviewItemsSerializeWithNullsAndInNodeKeyOrder() throws IOException {
+    var text = json.writeValueAsString(service().overview().getFirst());
+    assertEquals("{\"source\":\"POKEAPI\",\"status\":\"NOT_READY\",\"ready\":false,\"lastSyncAt\":null,"
+        + "\"lastAttemptAt\":null,\"lastFullSyncAt\":null,\"durationMs\":null,\"recordsProcessed\":0,\"inserted\":0,"
+        + "\"updated\":0,\"skipped\":0,\"recordsAvailable\":0,\"error\":null,"
+        + "\"nextSyncAt\":\"2026-11-03T05:00:00.000Z\"}", text);
+  }
+
   @Test
   void overviewDerivesTheStatusFromTheLatestRunAndTheState() throws Exception {
     var service = service();
