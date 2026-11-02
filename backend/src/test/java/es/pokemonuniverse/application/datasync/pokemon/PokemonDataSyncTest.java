@@ -1,0 +1,162 @@
+package es.pokemonuniverse.application.datasync.pokemon;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import es.pokemonuniverse.application.datasync.DataSyncMode;
+import es.pokemonuniverse.application.datasync.DataSyncSource;
+import es.pokemonuniverse.application.datasync.SyncResult;
+import io.micronaut.jdbc.DataSourceResolver;
+import io.micronaut.json.JsonMapper;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import jakarta.inject.Inject;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import javax.sql.DataSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+/**
+ * {@code PokemonDataSync.run} ({@code pokemon-data-sync.ts}) contra Postgres real y PokéAPI grabada. El estado final de
+ * una ejecución completa se compara con {@code expected-run.json}: Node ejecutando {@code syncPokemonData},
+ * {@code backfillNormalizedData} y {@code syncMissingPokemonPalettes} sobre las mismas respuestas.
+ */
+@MicronautTest(transactional = false)
+class PokemonDataSyncTest {
+
+  private static final String SPRITES = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
+
+  @Inject PokemonCatalogStore store;
+  @Inject JsonMapper json;
+  @Inject DataSource dataSource;
+  @Inject DataSourceResolver resolver;
+
+  private PokeApiFixtureServer server;
+  private PokemonPaletteSync palettes;
+  private PokemonDataSync sync;
+
+  @BeforeEach
+  void setUp() throws Exception {
+    clearCatalog();
+    server = new PokeApiFixtureServer();
+    var http = PokemonCatalogSeederTest.http(json);
+    var seeder = new PokemonCatalogSeeder(store, http, server.urls(), System::currentTimeMillis);
+    palettes = new PokemonPaletteSync(store, http, server.spriteBase(), System::currentTimeMillis);
+    sync = new PokemonDataSync(store, seeder, palettes, http, server.urls(), PokemonCatalogSeederTest.LIMITS,
+        System::currentTimeMillis);
+  }
+
+  @AfterEach
+  void tearDown() throws Exception {
+    server.close();
+    clearCatalog();
+  }
+
+  private void clearCatalog() throws SQLException {
+    try (var connection = resolver.resolve(dataSource).getConnection()) {
+      CatalogTables.clear(connection);
+    }
+  }
+
+  private Map<String, Object> dump() throws Exception {
+    try (var connection = resolver.resolve(dataSource).getConnection()) {
+      return CatalogTables.dump(connection);
+    }
+  }
+
+  private void insertDefault(String id, int dex, String sprite, String metadata) throws SQLException {
+    try (var connection = resolver.resolve(dataSource).getConnection();
+        var statement = connection.prepareStatement("INSERT INTO \"Pokemon\" (\"id\", \"nationalDexNumber\", \"name\","
+            + " \"generation\", \"isDefault\", \"sprite\", \"abilities\", \"types\", \"metadata\", \"updatedAt\")"
+            + " VALUES (?, ?, ?, 1, true, ?, '{}', '{}', CAST(? AS jsonb), ?)")) {
+      statement.setString(1, id);
+      statement.setInt(2, dex);
+      statement.setString(3, id);
+      statement.setString(4, sprite);
+      statement.setString(5, metadata);
+      statement.setTimestamp(6, Timestamp.from(Instant.now()));
+      statement.executeUpdate();
+    }
+  }
+
+  private Object details(SyncResult result) {
+    return CatalogTables.plain(result.details());
+  }
+
+  private static Object palettesDetails(int processed, int updated, int skipped, int failed) {
+    return Map.of("palettes", Map.of("processed", (double) processed, "updated", (double) updated,
+        "skipped", (double) skipped, "failed", (double) failed));
+  }
+
+  @Test
+  void theAdapterIsThePokeApiSource() {
+    assertEquals(DataSyncSource.POKEAPI, sync.source());
+  }
+
+  @Test
+  void aFullRunOnAnEmptyDatabaseEndsExactlyLikeNode() throws Exception {
+    var result = sync.run(DataSyncMode.FULL);
+    assertEquals(List.of(4, 4, 0, 0), List.of(result.processed(), result.inserted(), result.updated(), result.skipped()));
+    assertEquals("4", result.datasetVersion());
+    var expected = ExtractorsTest.read("/datasync/pokeapi/expected-run.json");
+    assertEquals(Map.of("palettes", CatalogTables.plain(expected.get("palettes"))), details(result));
+    var tables = CatalogTables.expected(expected.get("tables"));
+    var actual = dump();
+    for (var table : tables.keySet()) assertEquals(tables.get(table), actual.get(table), table);
+    assertEquals(3, sync.recordsAvailable());
+    assertEquals(3, palettes.persisted());
+  }
+
+  /** El upsert forzado de Node sustituye {@code metadata} entera: las paletas se recalculan y el estado converge. */
+  @Test
+  void aSecondFullRunConvergesToTheSameRows() throws Exception {
+    sync.run(DataSyncMode.FULL);
+    var once = dump();
+    var result = sync.run(DataSyncMode.FULL);
+    assertEquals(List.of(4, 0, 4, 0), List.of(result.processed(), result.inserted(), result.updated(), result.skipped()));
+    assertEquals(palettesDetails(3, 3, 0, 0), details(result));
+    assertEquals(once, dump());
+  }
+
+  @Test
+  void anIncrementalRunWithEnoughPalettesAndNoNewSpeciesIsSkippedWithoutDownloads() throws Exception {
+    for (int i = 1; i <= 100; i++) {
+      var sprite = SPRITES + i + ".png";
+      insertDefault("p" + i, i, sprite, "{\"palette\":[\"#183048\",\"#d86048\",\"#f0c030\"],"
+          + "\"paletteWeights\":[0.5,0.3,0.2],\"paletteVersion\":3,\"paletteSpriteUrl\":\"" + sprite + "\"}");
+    }
+    server.override("/api/v2/pokemon-species?limit=1", PokeApiFixtureServer.Canned.json("{\"count\":100}"));
+    var result = sync.run(DataSyncMode.INCREMENTAL);
+    assertEquals(List.of(0, 0, 0, 100), List.of(result.processed(), result.inserted(), result.updated(), result.skipped()));
+    assertEquals("100", result.datasetVersion());
+    assertEquals(Map.of("changeDetected", false, "paletteCount", 100.0), details(result));
+    assertEquals(List.of("/api/v2/pokemon-species?limit=1"), server.requests());
+  }
+
+  @Test
+  void anIncrementalRunBelowThePaletteMinimumSyncsWithoutAskingTheRemoteCount() throws Exception {
+    sync.run(DataSyncMode.FULL);
+    server.clearRequests();
+    var result = sync.run(DataSyncMode.INCREMENTAL);
+    // Menos de 100 paletas: no se pregunta el recuento remoto; catálogo completo y paletas vigentes: nada que bajar.
+    assertEquals(List.of(), server.requests());
+    assertEquals(List.of(4, 0, 4, 4), List.of(result.processed(), result.inserted(), result.updated(), result.skipped()));
+    assertEquals(palettesDetails(3, 0, 3, 0), details(result));
+  }
+
+  /** Un sprite de un host no confiable o que no se puede descargar cuenta como fallido sin abortar la ejecución. */
+  @Test
+  void untrustedOrBrokenSpritesCountAsFailedWithoutAborting() throws Exception {
+    insertDefault("evil", 9_999, "http://example.com/evil.png", "null");
+    insertDefault("missing", 9_998, SPRITES + "9998.png", "{}");
+    var result = sync.run(DataSyncMode.FULL);
+    assertEquals(palettesDetails(5, 3, 0, 2), details(result));
+    assertTrue(server.requests().contains("/raw/PokeAPI/sprites/master/sprites/pokemon/9998.png"));
+    assertTrue(server.requests().stream().noneMatch(path -> path.contains("evil")));
+    assertEquals(3, palettes.persisted());
+  }
+}

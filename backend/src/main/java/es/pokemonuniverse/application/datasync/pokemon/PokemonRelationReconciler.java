@@ -4,17 +4,94 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
-/** {@code pokemon-relation-reconciler.ts}. */
+/**
+ * {@code pokemon-relation-reconciler.ts}: reconcilia las relaciones ordenadas y únicas de un Pokémon (habilidades,
+ * tipos, recursos gestionados y estadísticas) con la proyección remota exacta. Se ejecuta dentro de una transacción
+ * ({@link PokemonCatalogStore#backfillPokemon}) para que borrados y sustituciones se deshagan juntos si algo falla.
+ */
 public final class PokemonRelationReconciler {
 
   private static final Locale SPANISH = Locale.forLanguageTag("es");
+  /** {@code MANAGED_ASSET_KINDS}: solo estos tipos de recurso se borran o sustituyen. */
+  public static final List<String> MANAGED_ASSET_KINDS =
+      List.of("SPRITE", "SHINY_SPRITE", "ARTWORK", "HOME_ARTWORK", "CRY_LATEST", "CRY_LEGACY");
 
   public record DesiredAbility(String abilityId, String name, int slot, boolean isHidden) {}
 
+  public record DesiredType(String typeId, int slot) {}
+
+  public record DesiredAsset(String kind, String url, boolean isPrimary) {}
+
+  public record DesiredStat(String stat, int baseValue, int effort) {}
+
+  public record Input(String pokemonId, List<DesiredAbility> abilities, List<DesiredType> types,
+      List<DesiredStat> stats, List<DesiredAsset> assets) {}
+
   private PokemonRelationReconciler() {}
+
+  /** {@code reconcilePokemonRelations}. Lanza {@code Duplicate <etiqueta>: <valor>} ante huecos o claves repetidos. */
+  public static void reconcile(PokemonRelationStore tx, Input input) {
+    assertUnique(input.abilities(), DesiredAbility::slot, "ability slot");
+    assertUnique(input.abilities(), DesiredAbility::abilityId, "Pokémon ability");
+    assertUnique(input.types(), DesiredType::slot, "type slot");
+    assertUnique(input.types(), DesiredType::typeId, "Pokémon type");
+    assertUnique(input.assets(), DesiredAsset::kind, "managed asset kind");
+    assertUnique(input.stats(), DesiredStat::stat, "stat");
+    var pokemonId = input.pokemonId();
+
+    for (var desired : input.abilities()) tx.upsertAbility(desired.abilityId(), desired.name());
+    Map<Integer, String> abilityAtSlot = new HashMap<>();
+    for (var desired : input.abilities()) abilityAtSlot.put(desired.slot(), desired.abilityId());
+    var obsoleteAbilities = tx.abilitySlots(pokemonId).stream()
+        .filter(item -> !Objects.equals(abilityAtSlot.get(item.slot()), item.id()))
+        .map(PokemonRelationStore.Slot::id).toList();
+    if (!obsoleteAbilities.isEmpty()) tx.deleteAbilities(pokemonId, obsoleteAbilities);
+    for (var desired : input.abilities()) {
+      tx.upsertPokemonAbility(pokemonId, desired.abilityId(), desired.slot(), desired.isHidden());
+    }
+
+    for (var desired : input.types()) tx.ensureType(desired.typeId());
+    Map<Integer, String> typeAtSlot = new HashMap<>();
+    for (var desired : input.types()) typeAtSlot.put(desired.slot(), desired.typeId());
+    var obsoleteTypes = tx.typeSlots(pokemonId).stream()
+        .filter(item -> !Objects.equals(typeAtSlot.get(item.slot()), item.id()))
+        .map(PokemonRelationStore.Slot::id).toList();
+    if (!obsoleteTypes.isEmpty()) tx.deleteTypes(pokemonId, obsoleteTypes);
+    for (var desired : input.types()) tx.upsertTypeAssignment(pokemonId, desired.typeId(), desired.slot());
+
+    Map<String, String> desiredKinds = new HashMap<>();
+    for (var desired : input.assets()) desiredKinds.put(desired.kind(), desired.url());
+    var obsoleteAssets = tx.managedAssets(pokemonId, MANAGED_ASSET_KINDS).stream()
+        .filter(item -> !Objects.equals(desiredKinds.get(item.kind()), item.url()))
+        .map(PokemonRelationStore.Asset::id).toList();
+    if (!obsoleteAssets.isEmpty()) tx.deleteAssets(obsoleteAssets);
+    for (var desired : input.assets()) {
+      tx.upsertAsset(desired.kind().toLowerCase(Locale.ROOT) + ":" + pokemonId, pokemonId, desired.kind(),
+          desired.url(), desired.isPrimary());
+    }
+
+    var desiredStats = new LinkedHashSet<String>();
+    for (var desired : input.stats()) desiredStats.add(desired.stat());
+    tx.deleteStatsExcept(pokemonId, List.copyOf(desiredStats));
+    for (var desired : input.stats()) tx.upsertStat(pokemonId, desired.stat(), desired.baseValue(), desired.effort());
+  }
+
+  private static <T> void assertUnique(List<T> items, Function<T, Object> key, String label) {
+    var seen = new HashSet<>();
+    for (var item : items) {
+      var value = key.apply(item);
+      if (!seen.add(value)) throw new IllegalStateException("Duplicate " + label + ": " + value);
+    }
+  }
 
   /**
    * {@code fallbackAbilityId}: minúsculas {@code es}, NFD, sin U+0300–U+036F, cada racha fuera de {@code [a-z0-9]}

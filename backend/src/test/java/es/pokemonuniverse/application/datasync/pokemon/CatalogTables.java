@@ -3,6 +3,9 @@ package es.pokemonuniverse.application.datasync.pokemon;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -60,11 +63,21 @@ final class CatalogTables {
     return result;
   }
 
+  /**
+   * Objeto Java plano para comparar por valor. Los números no enteros se redondean a 15 cifras significativas: Prisma
+   * persiste los {@code float} de un {@code Json} con ~16 cifras ({@code 0.14191852825229961} se guarda como
+   * {@code 0.1419185282522996}), mientras que Java guarda la representación exacta más corta del {@code double}; los
+   * valores calculados son idénticos ({@code PaletteExtractorTest} los compara sin redondeo).
+   */
   static Object plain(JsonNode node) {
     if (node.isNull()) return null;
     if (node.isString()) return node.getStringValue();
     if (node.isBoolean()) return node.getBooleanValue();
-    if (node.isNumber()) return node.getNumberValue().doubleValue();
+    if (node.isNumber()) {
+      double value = node.getNumberValue().doubleValue();
+      if (value == Math.rint(value)) return value;
+      return new BigDecimal(Double.toString(value)).round(new MathContext(15, RoundingMode.HALF_EVEN)).doubleValue();
+    }
     if (node.isArray()) {
       var list = new ArrayList<Object>();
       node.values().forEach(value -> list.add(plain(value)));

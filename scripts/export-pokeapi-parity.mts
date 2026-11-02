@@ -96,8 +96,9 @@ async function dump(prisma: { $queryRawUnsafe<T>(sql: string): Promise<T> }): Pr
   const minus = spec.excludedColumns.map((column) => ` - '${column}'`).join('');
   const result: Record<string, unknown[]> = {};
   for (const { table, orderBy } of spec.tables) {
-    const rows = await prisma.$queryRawUnsafe<Array<{ row: unknown }>>(`SELECT to_jsonb(t)${minus} AS row FROM "${table}" t ORDER BY ${orderBy}`);
-    result[table] = rows.map((entry) => entry.row);
+    // Como texto y JSON.parse (igual que la prueba Java): el decodificador de Prisma acorta algunos numeric de jsonb.
+    const rows = await prisma.$queryRawUnsafe<Array<{ row: string }>>(`SELECT CAST(to_jsonb(t)${minus} AS text) AS row FROM "${table}" t ORDER BY ${orderBy}`);
+    result[table] = rows.map((entry) => JSON.parse(entry.row));
   }
   return result;
 }

@@ -88,6 +88,9 @@ pu:
     hour: ${DATA_SYNC_HOUR:6}
     minute: ${DATA_SYNC_MINUTE:0}
     time-zone: ${DATA_SYNC_TIMEZONE:Europe/Madrid}
+    # PokéAPI y origen de los sprites (raw.githubusercontent.com); solo las pruebas los cambian.
+    pokeapi-base-url: ${POKEAPI_BASE_URL:`https://pokeapi.co/api/v2`}
+    sprite-base-url: ${POKEAPI_SPRITE_BASE_URL:`https://raw.githubusercontent.com`}
   ws:
     # Ping a cada sesión de /ws (pingInterval de Socket.IO); 0 lo desactiva. El proxy debe tolerar más que esto.
     heartbeat-seconds: ${WS_HEARTBEAT_SECONDS:25}

@@ -117,12 +117,22 @@ public class PuConfig {
     private final int minute;
     private final ZoneId zone;
 
+    private final String pokeapiBaseUrl;
+    private final String spriteBaseUrl;
+
+    /**
+     * {@code pokeapiBaseUrl}: base de PokéAPI ({@code https://pokeapi.co/api/v2}, fija en Node). {@code spriteBaseUrl}:
+     * origen desde el que se descargan los sprites cuya URL guardada es {@code https://raw.githubusercontent.com/…}
+     * (en producción el mismo; las pruebas lo apuntan a las respuestas grabadas).
+     */
     @ConfigurationInject
     public DataSync(boolean enabled, @Min(0) @Max(23) int hour, @Min(0) @Max(59) int minute,
-        @NotBlank String timeZone) {
+        @NotBlank String timeZone, @NotBlank String pokeapiBaseUrl, @NotBlank String spriteBaseUrl) {
       this.enabled = enabled;
       this.hour = hour;
       this.minute = minute;
+      this.pokeapiBaseUrl = pokeapiBaseUrl;
+      this.spriteBaseUrl = spriteBaseUrl;
       try {
         this.zone = ZoneId.of(timeZone);
       } catch (DateTimeException e) {
@@ -144,6 +154,14 @@ public class PuConfig {
 
     public ZoneId zone() {
       return zone;
+    }
+
+    public String pokeapiBaseUrl() {
+      return pokeapiBaseUrl;
+    }
+
+    public String spriteBaseUrl() {
+      return spriteBaseUrl;
     }
   }
 }

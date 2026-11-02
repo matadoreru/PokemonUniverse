@@ -184,6 +184,19 @@ buscador desplaza la página (Bingo); además, 8 juegos no muestran el título d
   - El script de exportación dorada no fija `LANG=en_US.UTF-8`; si CI difiere en una comparación de textos, fijarlo
     ahí. La imagen `node:22-alpine` sin versión fija puede cambiar de ICU respecto a `icu4j` 78.3.
 
+- Sincronización de Pokémon en Java (2C, `application/datasync/pokemon`; apagada con `pu.data-sync.enabled=false`):
+  - Atajo INCREMENTAL portado con su defecto: con ≥ 100 paletas se compara `pokemon-species?limit=1`.count con el
+    total de filas de `Pokemon` (formas incluidas), que ya lo supera en cuanto hay formas; una especie nueva no se
+    detecta hasta un FULL (o hasta que falten paletas). Corregirlo en los dos lados a la vez.
+  - El sembrador usa `SyncHttpClient` (backoff `500·2^(n-1)` + jitter, timeout 30 s, 16 MiB) en lugar del `fetchJson`
+    propio de `seed.ts` (`intento·400` ms, sin timeout); conserva el literal `PokéAPI returned <status> for <label>`.
+    Las transacciones no fijan los timeouts de 30 s/120 s de Prisma.
+  - Prisma guarda los `float` de un `Json` con ~16 cifras (`paletteWeights` `0.14191852825229961` →
+    `0.1419185282522996`); Java guarda el `double` exacto. Diferencia en la 17.ª cifra, sin efecto en el juego.
+  - `PaletteExtractor` lee con ImageIO/`getRGB`: idéntico a sharp en los sprites de PokéAPI (PNG de 8 bits) y en las
+    reducciones fijadas; un PNG de 16 bits o en gris podría diferir de los bytes crudos de sharp.
+  - `seed.ts` sigue siendo también un CLI de Node (`POKEMON_SYNC=true`); Java solo tiene el adaptador.
+
 ## Métricas de CI
 
 Pendientes. Antes (medido, `docker.yml`): ≈ 8:15 por push. Después: solo estimaciones en `DEPLOY.md`; completar con la
