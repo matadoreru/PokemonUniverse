@@ -137,31 +137,35 @@ public final class PokemonConnectionsTypes {
 
   /**
    * {@code PokemonConnectionsStats}: ocho contadores contiguos, que se derivan de {@link #EMPTY} con métodos con
-   * nombre. El orden de {@link #toMap()} es el de {@code emptyPokemonConnectionsStats()}.
+   * nombre sobre el {@link Builder} (nunca por posición). El orden de {@link #toMap()} es el de
+   * {@code emptyPokemonConnectionsStats()}.
    */
   public record PokemonConnectionsStats(int roundsPlayed, int groupsFound, int boardsSolved, int mistakes,
       int nearMisses, int podiumFinishes, long solveTimeTotalMs, long bestSolveTimeMs) {
 
     /** {@code emptyPokemonConnectionsStats()}. */
-    static final PokemonConnectionsStats EMPTY = new PokemonConnectionsStats(0, 0, 0, 0, 0, 0, 0, 0);
+    static final PokemonConnectionsStats EMPTY = builder().build();
 
     /** Un grupo acertado. */
     PokemonConnectionsStats afterGroupFound() {
-      return new PokemonConnectionsStats(roundsPlayed, groupsFound + 1, boardsSolved, mistakes, nearMisses,
-          podiumFinishes, solveTimeTotalMs, bestSolveTimeMs);
+      return toBuilder().groupsFound(groupsFound + 1).build();
     }
 
     /** Un intento fallido, a una del grupo o no. */
     PokemonConnectionsStats afterMistake(boolean nearMiss) {
-      return new PokemonConnectionsStats(roundsPlayed, groupsFound, boardsSolved, mistakes + 1,
-          nearMisses + (nearMiss ? 1 : 0), podiumFinishes, solveTimeTotalMs, bestSolveTimeMs);
+      return toBuilder().mistakes(mistakes + 1).nearMisses(nearMisses + (nearMiss ? 1 : 0)).build();
     }
 
     /** El cierre de ronda de {@code finishRound}; {@code elapsedMs} es 0 si no completó el tablero. */
     PokemonConnectionsStats afterRound(boolean solved, boolean podium, long elapsedMs) {
       long best = elapsedMs > 0 && (bestSolveTimeMs == 0 || elapsedMs < bestSolveTimeMs) ? elapsedMs : bestSolveTimeMs;
-      return new PokemonConnectionsStats(roundsPlayed + 1, groupsFound, boardsSolved + (solved ? 1 : 0), mistakes,
-          nearMisses, podiumFinishes + (podium ? 1 : 0), solveTimeTotalMs + elapsedMs, best);
+      return toBuilder()
+          .roundsPlayed(roundsPlayed + 1)
+          .boardsSolved(boardsSolved + (solved ? 1 : 0))
+          .podiumFinishes(podiumFinishes + (podium ? 1 : 0))
+          .solveTimeTotalMs(solveTimeTotalMs + elapsedMs)
+          .bestSolveTimeMs(best)
+          .build();
     }
 
     Map<String, Number> toMap() {
@@ -175,6 +179,57 @@ public final class PokemonConnectionsTypes {
       mapped.put("solveTimeTotalMs", solveTimeTotalMs);
       mapped.put("bestSolveTimeMs", bestSolveTimeMs);
       return mapped;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public Builder toBuilder() {
+      return builder()
+          .roundsPlayed(roundsPlayed)
+          .groupsFound(groupsFound)
+          .boardsSolved(boardsSolved)
+          .mistakes(mistakes)
+          .nearMisses(nearMisses)
+          .podiumFinishes(podiumFinishes)
+          .solveTimeTotalMs(solveTimeTotalMs)
+          .bestSolveTimeMs(bestSolveTimeMs);
+    }
+
+    /** Setters con nombre: el constructor posicional no se usa fuera de {@link #build()}. */
+    public static final class Builder {
+      private int roundsPlayed;
+      private int groupsFound;
+      private int boardsSolved;
+      private int mistakes;
+      private int nearMisses;
+      private int podiumFinishes;
+      private long solveTimeTotalMs;
+      private long bestSolveTimeMs;
+
+      private Builder() {}
+
+      public Builder roundsPlayed(int value) { roundsPlayed = value; return this; }
+
+      public Builder groupsFound(int value) { groupsFound = value; return this; }
+
+      public Builder boardsSolved(int value) { boardsSolved = value; return this; }
+
+      public Builder mistakes(int value) { mistakes = value; return this; }
+
+      public Builder nearMisses(int value) { nearMisses = value; return this; }
+
+      public Builder podiumFinishes(int value) { podiumFinishes = value; return this; }
+
+      public Builder solveTimeTotalMs(long value) { solveTimeTotalMs = value; return this; }
+
+      public Builder bestSolveTimeMs(long value) { bestSolveTimeMs = value; return this; }
+
+      public PokemonConnectionsStats build() {
+        return new PokemonConnectionsStats(roundsPlayed, groupsFound, boardsSolved, mistakes, nearMisses,
+            podiumFinishes, solveTimeTotalMs, bestSolveTimeMs);
+      }
     }
   }
 

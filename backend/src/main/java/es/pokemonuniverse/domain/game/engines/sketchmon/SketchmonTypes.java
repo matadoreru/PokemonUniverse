@@ -200,7 +200,7 @@ public final class SketchmonTypes {
 
   /**
    * {@code SketchmonGalleryEntry}: las claves de {@link SketchmonRoundResult} y después {@code roundNumber} y
-   * {@code lapNumber}. Fuera de este record solo se construye con {@link #of}.
+   * {@code lapNumber}. Se construye con {@link #of} sobre el {@link Builder}, nunca por posición.
    */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -223,15 +223,89 @@ public final class SketchmonTypes {
 
     /** {@code { ...lastRound, roundNumber, lapNumber }}. */
     static SketchmonGalleryEntry of(SketchmonRoundResult round, int roundNumber, int lapNumber) {
-      return new SketchmonGalleryEntry(round.reason(), round.pokemon(), round.drawerId(), round.winnerId(),
-          round.elapsedMs(), round.guesserPoints(), round.drawerPoints(), round.winnerAttemptCount(), round.drawing(),
-          roundNumber, lapNumber);
+      return builder()
+          .reason(round.reason())
+          .pokemon(round.pokemon())
+          .drawerId(round.drawerId())
+          .winnerId(round.winnerId())
+          .elapsedMs(round.elapsedMs())
+          .guesserPoints(round.guesserPoints())
+          .drawerPoints(round.drawerPoints())
+          .winnerAttemptCount(round.winnerAttemptCount())
+          .drawing(round.drawing())
+          .roundNumber(roundNumber)
+          .lapNumber(lapNumber)
+          .build();
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public Builder toBuilder() {
+      return builder()
+          .reason(reason)
+          .pokemon(pokemon)
+          .drawerId(drawerId)
+          .winnerId(winnerId)
+          .elapsedMs(elapsedMs)
+          .guesserPoints(guesserPoints)
+          .drawerPoints(drawerPoints)
+          .winnerAttemptCount(winnerAttemptCount)
+          .drawing(drawing)
+          .roundNumber(roundNumber)
+          .lapNumber(lapNumber);
+    }
+
+    /** Setters con nombre: el constructor posicional no se usa fuera de {@link #build()}. */
+    public static final class Builder {
+      private SketchmonRoundReason reason;
+      private SketchmonPokemonReveal pokemon;
+      private String drawerId;
+      private String winnerId;
+      private long elapsedMs;
+      private int guesserPoints;
+      private int drawerPoints;
+      private Integer winnerAttemptCount;
+      private List<SketchmonStroke> drawing = List.of();
+      private int roundNumber;
+      private int lapNumber;
+
+      private Builder() {}
+
+      public Builder reason(SketchmonRoundReason value) { reason = value; return this; }
+
+      public Builder pokemon(SketchmonPokemonReveal value) { pokemon = value; return this; }
+
+      public Builder drawerId(String value) { drawerId = value; return this; }
+
+      public Builder winnerId(@Nullable String value) { winnerId = value; return this; }
+
+      public Builder elapsedMs(long value) { elapsedMs = value; return this; }
+
+      public Builder guesserPoints(int value) { guesserPoints = value; return this; }
+
+      public Builder drawerPoints(int value) { drawerPoints = value; return this; }
+
+      public Builder winnerAttemptCount(@Nullable Integer value) { winnerAttemptCount = value; return this; }
+
+      public Builder drawing(List<SketchmonStroke> value) { drawing = value; return this; }
+
+      public Builder roundNumber(int value) { roundNumber = value; return this; }
+
+      public Builder lapNumber(int value) { lapNumber = value; return this; }
+
+      public SketchmonGalleryEntry build() {
+        return new SketchmonGalleryEntry(Objects.requireNonNull(reason, "reason"),
+            Objects.requireNonNull(pokemon, "pokemon"), Objects.requireNonNull(drawerId, "drawerId"), winnerId,
+            elapsedMs, guesserPoints, drawerPoints, winnerAttemptCount, drawing, roundNumber, lapNumber);
+      }
     }
   }
 
   /**
-   * {@code SketchmonPlayerStats}. Nueve contadores contiguos: fuera de este record solo se construye con {@link #ZERO}
-   * y los métodos con nombre.
+   * {@code SketchmonPlayerStats}. Nueve contadores contiguos: se construye con {@link #ZERO} y los métodos con
+   * nombre sobre el {@link Builder}, nunca por posición.
    */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -239,26 +313,31 @@ public final class SketchmonTypes {
       int drawingRounds, int drawingSuccesses, int drawingFailures, int pointsFromGuessing, int pointsFromDrawing) {
 
     /** {@code emptySketchmonStats()}. */
-    static final SketchmonPlayerStats ZERO = new SketchmonPlayerStats(0, 0, 0, 0, 0, 0, 0, 0, 0);
+    static final SketchmonPlayerStats ZERO = builder().build();
 
     /** Un intento de adivinar, acertado o no. */
     SketchmonPlayerStats afterAttempt() {
-      return new SketchmonPlayerStats(guessedPokemon, firstTry, totalAttempts + 1, firstCorrectResponses,
-          drawingRounds, drawingSuccesses, drawingFailures, pointsFromGuessing, pointsFromDrawing);
+      return toBuilder().totalAttempts(totalAttempts + 1).build();
     }
 
     /** Acierto de quien adivina; {@code firstAttempt} si fue su primer intento de la ronda. */
     SketchmonPlayerStats afterGuess(boolean firstAttempt, int points) {
-      return new SketchmonPlayerStats(guessedPokemon + 1, firstTry + (firstAttempt ? 1 : 0), totalAttempts,
-          firstCorrectResponses + 1, drawingRounds, drawingSuccesses, drawingFailures, pointsFromGuessing + points,
-          pointsFromDrawing);
+      return toBuilder()
+          .guessedPokemon(guessedPokemon + 1)
+          .firstTry(firstTry + (firstAttempt ? 1 : 0))
+          .firstCorrectResponses(firstCorrectResponses + 1)
+          .pointsFromGuessing(pointsFromGuessing + points)
+          .build();
     }
 
     /** Ronda dibujada: adivinada (con sus puntos) o no; una ronda cancelada o saltada es un fallo sin puntos. */
     SketchmonPlayerStats afterDrawing(boolean guessed, int points) {
-      return new SketchmonPlayerStats(guessedPokemon, firstTry, totalAttempts, firstCorrectResponses,
-          drawingRounds + 1, drawingSuccesses + (guessed ? 1 : 0), drawingFailures + (guessed ? 0 : 1),
-          pointsFromGuessing, pointsFromDrawing + points);
+      return toBuilder()
+          .drawingRounds(drawingRounds + 1)
+          .drawingSuccesses(drawingSuccesses + (guessed ? 1 : 0))
+          .drawingFailures(drawingFailures + (guessed ? 0 : 1))
+          .pointsFromDrawing(pointsFromDrawing + points)
+          .build();
     }
 
     /** {@code { ...entry.stats }} con las claves de TS, en su orden. */
@@ -274,6 +353,61 @@ public final class SketchmonTypes {
       mapped.put("pointsFromGuessing", pointsFromGuessing);
       mapped.put("pointsFromDrawing", pointsFromDrawing);
       return mapped;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public Builder toBuilder() {
+      return builder()
+          .guessedPokemon(guessedPokemon)
+          .firstTry(firstTry)
+          .totalAttempts(totalAttempts)
+          .firstCorrectResponses(firstCorrectResponses)
+          .drawingRounds(drawingRounds)
+          .drawingSuccesses(drawingSuccesses)
+          .drawingFailures(drawingFailures)
+          .pointsFromGuessing(pointsFromGuessing)
+          .pointsFromDrawing(pointsFromDrawing);
+    }
+
+    /** Setters con nombre: el constructor posicional no se usa fuera de {@link #build()}. */
+    public static final class Builder {
+      private int guessedPokemon;
+      private int firstTry;
+      private int totalAttempts;
+      private int firstCorrectResponses;
+      private int drawingRounds;
+      private int drawingSuccesses;
+      private int drawingFailures;
+      private int pointsFromGuessing;
+      private int pointsFromDrawing;
+
+      private Builder() {}
+
+      public Builder guessedPokemon(int value) { guessedPokemon = value; return this; }
+
+      public Builder firstTry(int value) { firstTry = value; return this; }
+
+      public Builder totalAttempts(int value) { totalAttempts = value; return this; }
+
+      public Builder firstCorrectResponses(int value) { firstCorrectResponses = value; return this; }
+
+      public Builder drawingRounds(int value) { drawingRounds = value; return this; }
+
+      public Builder drawingSuccesses(int value) { drawingSuccesses = value; return this; }
+
+      public Builder drawingFailures(int value) { drawingFailures = value; return this; }
+
+      public Builder pointsFromGuessing(int value) { pointsFromGuessing = value; return this; }
+
+      public Builder pointsFromDrawing(int value) { pointsFromDrawing = value; return this; }
+
+      public SketchmonPlayerStats build() {
+        return new SketchmonPlayerStats(guessedPokemon, firstTry, totalAttempts, firstCorrectResponses, drawingRounds,
+            drawingSuccesses, drawingFailures, pointsFromGuessing, pointsFromDrawing);
+      }
     }
   }
 
