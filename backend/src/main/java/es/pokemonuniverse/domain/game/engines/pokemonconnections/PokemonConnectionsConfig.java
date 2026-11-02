@@ -1,13 +1,10 @@
 package es.pokemonuniverse.domain.game.engines.pokemonconnections;
 
-import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
-import es.pokemonuniverse.domain.json.JsNumbers;
+import es.pokemonuniverse.domain.game.engine.infra.ConfigReader;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Configuración normalizada ({@code pokemonConnectionsConfigSchema} de {@code pokemon-connections/config.ts});
@@ -16,10 +13,6 @@ import java.util.TreeSet;
 @Serdeable
 public record PokemonConnectionsConfig(List<Integer> generations, int groupSize, int pokemonCount,
     int mistakesAllowed, int roundSeconds, int rounds) {
-
-  /** {@code GENERATIONS} de {@code pokemon/types.ts}. */
-  static final int FIRST_GENERATION = 1;
-  static final int LAST_GENERATION = 9;
 
   private static final Set<String> KEYS =
       Set.of("generations", "groupSize", "pokemonCount", "mistakesAllowed", "roundSeconds", "rounds");
@@ -30,8 +23,7 @@ public record PokemonConnectionsConfig(List<Integer> generations, int groupSize,
 
   /** {@code defaultPokemonConnectionsConfig}. */
   public static PokemonConnectionsConfig defaults() {
-    var generations = new ArrayList<Integer>();
-    for (int generation = FIRST_GENERATION; generation <= LAST_GENERATION; generation++) generations.add(generation);
+    var generations = ConfigReader.allGenerations();
     return builder().generations(generations).groupSize(4).pokemonCount(16).mistakesAllowed(4).roundSeconds(120)
         .rounds(5).build();
   }
@@ -74,47 +66,19 @@ public record PokemonConnectionsConfig(List<Integer> generations, int groupSize,
    * ({@code superRefine}). Los enteros admiten {@code 16.0} (JS tiene un único tipo numérico) y rechazan {@code 16.5}.
    */
   public static PokemonConnectionsConfig parse(JsonNode raw) {
-    if (raw == null || !raw.isObject()) throw invalid("la configuración debe ser un objeto");
-    for (var entry : raw.entries()) {
-      if (!KEYS.contains(entry.getKey())) throw invalid("clave desconocida " + entry.getKey());
-    }
-    var generationsNode = required(raw, "generations");
-    if (!generationsNode.isArray() || generationsNode.size() < 1) {
-      throw invalid("generations debe ser una lista con al menos una generación");
-    }
-    var generations = new TreeSet<Integer>();
-    for (var value : generationsNode.values()) {
-      generations.add(integer(value, "generations", FIRST_GENERATION, LAST_GENERATION));
-    }
-    int groupSize = integer(required(raw, "groupSize"), "groupSize", 3, 5);
-    int pokemonCount = integer(required(raw, "pokemonCount"), "pokemonCount", 9, 25);
-    int mistakesAllowed = integer(required(raw, "mistakesAllowed"), "mistakesAllowed", 1, 10);
-    int roundSeconds = integer(required(raw, "roundSeconds"), "roundSeconds", 30, 300);
-    int rounds = integer(required(raw, "rounds"), "rounds", 1, 20);
+    var config = ConfigReader.of(raw, "Pokémon Connections");
+    config.strict(KEYS);
+    var generations = config.generations("generations");
+    int groupSize = config.integer("groupSize", 3, 5);
+    int pokemonCount = config.integer("pokemonCount", 9, 25);
+    int mistakesAllowed = config.integer("mistakesAllowed", 1, 10);
+    int roundSeconds = config.integer("roundSeconds", 30, 300);
+    int rounds = config.integer("rounds", 1, 20);
     int groupCount = pokemonCount / groupSize;
     if (pokemonCount % groupSize != 0 || groupCount < 3 || groupCount > 5) {
-      throw invalid("El tablero debe contener entre 3 y 5 grupos completos");
+      throw config.invalid("El tablero debe contener entre 3 y 5 grupos completos");
     }
-    return builder().generations(new ArrayList<>(generations)).groupSize(groupSize).pokemonCount(pokemonCount)
+    return builder().generations(generations).groupSize(groupSize).pokemonCount(pokemonCount)
         .mistakesAllowed(mistakesAllowed).roundSeconds(roundSeconds).rounds(rounds).build();
-  }
-
-  private static JsonNode required(JsonNode raw, String key) {
-    var value = raw.get(key);
-    if (value == null) throw invalid("falta " + key);
-    return value;
-  }
-
-  /** {@code z.number().int().min(min).max(max)}; {@code .int()} es {@code Number.isSafeInteger} en Zod 4. */
-  private static int integer(JsonNode value, String key, int min, int max) {
-    if (!value.isNumber()) throw invalid(key + " debe ser un número entero");
-    double number = value.getDoubleValue();
-    if (!JsNumbers.isSafeInteger(number)) throw invalid(key + " debe ser un número entero");
-    if (number < min || number > max) throw invalid(key + " debe estar entre " + min + " y " + max);
-    return (int) number;
-  }
-
-  private static ConfigValidationException invalid(String detail) {
-    return new ConfigValidationException("Configuración de Pokémon Connections no válida: " + detail + ".");
   }
 }
