@@ -1,0 +1,4182 @@
+{
+  "engineId": "pokemon-team-auction",
+  "scenario": "bidding-errors-timeouts",
+  "seed": 1201,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "bidSeconds": 20,
+    "initialBudget": 10,
+    "includeForms": false
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 1500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 11
+      },
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 2
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 2
+      },
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 4
+      },
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 4500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 6
+      },
+      "now": 5000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 5500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 6000
+    },
+    {
+      "kind": "timeout",
+      "now": 25999
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 2
+      },
+      "now": 26000
+    },
+    {
+      "kind": "timeout",
+      "now": 26000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 5
+      },
+      "now": 27000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 9
+      },
+      "now": 28000
+    },
+    {
+      "kind": "timeout",
+      "now": 48000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 49000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 50000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 51000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 2
+      },
+      "now": 52000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 4
+      },
+      "now": 53000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 54000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 55000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 10,
+      "includeForms": false
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",null,null,0,0,-1,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "roundEndsAt": null,
+        "gameId": "pokemon-team-auction",
+        "phase": "GAME_STARTING",
+        "lotNumber": 0,
+        "totalLots": 18,
+        "currentPokemon": null,
+        "currentBid": null,
+        "minimumBid": 1,
+        "currentBidderId": null,
+        "currentTurnPlayerId": null,
+        "turnOrder": [],
+        "passedPlayerIds": [],
+        "bidHistory": [],
+        "lotHistory": [],
+        "participants": {
+          "p1": {
+            "coins": 10,
+            "team": [],
+            "playerId": "p1"
+          },
+          "p2": {
+            "coins": 10,
+            "team": [],
+            "playerId": "p2"
+          },
+          "p3": {
+            "coins": 10,
+            "team": [],
+            "playerId": "p3"
+          }
+        },
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 10,
+          "team": []
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 10,
+          "team": []
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 10,
+          "team": []
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",null,null,0,0,0,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "roundEndsAt": 21000,
+        "gameId": "pokemon-team-auction",
+        "phase": "ROUND_ACTIVE",
+        "lotNumber": 1,
+        "totalLots": 18,
+        "currentPokemon": {
+          "id": "chansey",
+          "name": "Chansey",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+          "baseStatTotal": 450,
+          "legendaryStatus": "NORMAL"
+        },
+        "currentBid": null,
+        "minimumBid": 1,
+        "currentBidderId": null,
+        "currentTurnPlayerId": "p3",
+        "turnOrder": [
+          "p3",
+          "p1",
+          "p2"
+        ],
+        "passedPlayerIds": [],
+        "bidHistory": [],
+        "lotHistory": [],
+        "participants": {
+          "p1": {
+            "coins": 10,
+            "team": [],
+            "playerId": "p1"
+          },
+          "p2": {
+            "coins": 10,
+            "team": [],
+            "playerId": "p2"
+          },
+          "p3": {
+            "coins": 10,
+            "team": [],
+            "playerId": "p3"
+          }
+        },
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 10,
+          "team": []
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 10,
+          "team": []
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canRaise": true,
+          "canPass": true,
+          "minimumBid": 1,
+          "coins": 10,
+          "team": []
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "No puedes participar en esta subasta.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,0,0,0,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 21000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 1,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "chansey",
+              "name": "Chansey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "baseStatTotal": 450,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p3",
+            "turnOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [],
+            "lotHistory": [],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No es tu turno.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,0,0,0,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 21000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 1,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "chansey",
+              "name": "Chansey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "baseStatTotal": 450,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p3",
+            "turnOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [],
+            "lotHistory": [],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No tienes suficientes monedas para esa puja.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,0,0,0,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 21000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 1,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "chansey",
+              "name": "Chansey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "baseStatTotal": 450,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p3",
+            "turnOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [],
+            "lotHistory": [],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 23000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,1,1,0,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 23000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 1,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "chansey",
+              "name": "Chansey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "baseStatTotal": 450,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": 2,
+            "minimumBid": 3,
+            "currentBidderId": "p3",
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              }
+            ],
+            "lotHistory": [],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 3,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 3,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 3,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La puja mínima es 3.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 23000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,1,1,0,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 23000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 1,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "chansey",
+              "name": "Chansey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "baseStatTotal": 450,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": 2,
+            "minimumBid": 3,
+            "currentBidderId": "p3",
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              }
+            ],
+            "lotHistory": [],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 3,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 3,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 3,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,2,2,0,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 24000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 1,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "chansey",
+              "name": "Chansey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "baseStatTotal": 450,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p1",
+            "currentTurnPlayerId": "p2",
+            "turnOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              }
+            ],
+            "lotHistory": [],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 5,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 5,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 5,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 24500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,3,0,0,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 24500,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 1,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "chansey",
+              "name": "Chansey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "baseStatTotal": 450,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p1",
+            "currentTurnPlayerId": "p3",
+            "turnOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "passedPlayerIds": [
+              "p2"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 5,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 5,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 5,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 25000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,4,1,0,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 25000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 1,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "chansey",
+              "name": "Chansey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "baseStatTotal": 450,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": 6,
+            "minimumBid": 7,
+            "currentBidderId": "p3",
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "passedPlayerIds": [
+              "p2"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              }
+            ],
+            "lotHistory": [],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 7,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 7,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 7,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 25500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,5,0,1,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 25500,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 2,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "moltres",
+              "name": "Moltres",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+              "baseStatTotal": 580,
+              "legendaryStatus": "LEGENDARY"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p2",
+            "turnOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 4,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 450
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 4,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,6,1,1,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 26000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 2,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "moltres",
+              "name": "Moltres",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+              "baseStatTotal": 580,
+              "legendaryStatus": "LEGENDARY"
+            },
+            "currentBid": 1,
+            "minimumBid": 2,
+            "currentBidderId": "p2",
+            "currentTurnPlayerId": "p3",
+            "turnOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 4,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 450
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 2,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 2,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 2,
+              "coins": 4,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,6,1,1,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 26000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 2,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "moltres",
+              "name": "Moltres",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+              "baseStatTotal": 580,
+              "legendaryStatus": "LEGENDARY"
+            },
+            "currentBid": 1,
+            "minimumBid": 2,
+            "currentBidderId": "p2",
+            "currentTurnPlayerId": "p3",
+            "turnOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 4,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 450
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 2,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 2,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 2,
+              "coins": 4,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo de puja ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,6,1,1,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 26000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 2,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "moltres",
+              "name": "Moltres",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+              "baseStatTotal": 580,
+              "legendaryStatus": "LEGENDARY"
+            },
+            "currentBid": 1,
+            "minimumBid": 2,
+            "currentBidderId": "p2",
+            "currentTurnPlayerId": "p3",
+            "turnOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 4,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 450
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 2,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 2,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 2,
+              "coins": 4,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 46000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,7,2,1,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 46000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 2,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "moltres",
+              "name": "Moltres",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+              "baseStatTotal": 580,
+              "legendaryStatus": "LEGENDARY"
+            },
+            "currentBid": 1,
+            "minimumBid": 2,
+            "currentBidderId": "p2",
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "passedPlayerIds": [
+              "p3"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 4,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 450
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 2,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 2,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 2,
+              "coins": 4,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 47000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,8,0,1,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 47000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 2,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "moltres",
+              "name": "Moltres",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+              "baseStatTotal": 580,
+              "legendaryStatus": "LEGENDARY"
+            },
+            "currentBid": 5,
+            "minimumBid": 6,
+            "currentBidderId": "p1",
+            "currentTurnPlayerId": "p2",
+            "turnOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "passedPlayerIds": [
+              "p3"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 5
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 4,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 450
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 6,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 6,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 6,
+              "coins": 4,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 48000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,9,2,1,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 48000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 2,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "moltres",
+              "name": "Moltres",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+              "baseStatTotal": 580,
+              "legendaryStatus": "LEGENDARY"
+            },
+            "currentBid": 9,
+            "minimumBid": 10,
+            "currentBidderId": "p2",
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "passedPlayerIds": [
+              "p3"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 5
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 9
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 4,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 450
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 10,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 10,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 10,
+              "coins": 4,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 68000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,10,0,2,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 68000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 3,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png",
+              "baseStatTotal": 300,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p2",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 5
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 9
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                },
+                "winnerId": "p2",
+                "bid": 9
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 1,
+                "team": [
+                  {
+                    "id": "moltres",
+                    "name": "Moltres",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                    "baseStatTotal": 580,
+                    "legendaryStatus": "LEGENDARY"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 4,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 580,
+              "p3": 450
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 1,
+              "team": [
+                {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 4,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 69000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,11,1,2,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 69000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 3,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png",
+              "baseStatTotal": 300,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "passedPlayerIds": [
+              "p2"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 5
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 9
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                },
+                "winnerId": "p2",
+                "bid": 9
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 1,
+                "team": [
+                  {
+                    "id": "moltres",
+                    "name": "Moltres",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                    "baseStatTotal": 580,
+                    "legendaryStatus": "LEGENDARY"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 4,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 580,
+              "p3": 450
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 1,
+              "team": [
+                {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 4,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 70000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,12,2,2,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 70000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 3,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "bellsprout",
+              "name": "Bellsprout",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png",
+              "baseStatTotal": 300,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p3",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "passedPlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 5
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 9
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                },
+                "winnerId": "p2",
+                "bid": 9
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 1,
+                "team": [
+                  {
+                    "id": "moltres",
+                    "name": "Moltres",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                    "baseStatTotal": 580,
+                    "legendaryStatus": "LEGENDARY"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 4,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 580,
+              "p3": 450
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 1,
+              "team": [
+                {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 4,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 71000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,13,0,3,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 71000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 4,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "machamp",
+              "name": "Machamp",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+              "baseStatTotal": 505,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 5
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 9
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                },
+                "winnerId": "p2",
+                "bid": 9
+              },
+              {
+                "lotNumber": 3,
+                "pokemon": {
+                  "id": "bellsprout",
+                  "name": "Bellsprout",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png",
+                  "baseStatTotal": 300,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 1,
+                "team": [
+                  {
+                    "id": "moltres",
+                    "name": "Moltres",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                    "baseStatTotal": 580,
+                    "legendaryStatus": "LEGENDARY"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 4,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 580,
+              "p3": 450
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 1,
+              "team": [
+                {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 4,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 72000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,14,1,3,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 72000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 4,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "machamp",
+              "name": "Machamp",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+              "baseStatTotal": 505,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": 2,
+            "minimumBid": 3,
+            "currentBidderId": "p1",
+            "currentTurnPlayerId": "p3",
+            "turnOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 5
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 9
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 2
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                },
+                "winnerId": "p2",
+                "bid": 9
+              },
+              {
+                "lotNumber": 3,
+                "pokemon": {
+                  "id": "bellsprout",
+                  "name": "Bellsprout",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png",
+                  "baseStatTotal": 300,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 1,
+                "team": [
+                  {
+                    "id": "moltres",
+                    "name": "Moltres",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                    "baseStatTotal": 580,
+                    "legendaryStatus": "LEGENDARY"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 4,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 580,
+              "p3": 450
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 3,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 3,
+              "coins": 1,
+              "team": [
+                {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 3,
+              "coins": 4,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 73000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,16,0,3,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 73000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 4,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "machamp",
+              "name": "Machamp",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+              "baseStatTotal": 505,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p3",
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "passedPlayerIds": [
+              "p2"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 5
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 9
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p2",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                },
+                "winnerId": "p2",
+                "bid": 9
+              },
+              {
+                "lotNumber": 3,
+                "pokemon": {
+                  "id": "bellsprout",
+                  "name": "Bellsprout",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png",
+                  "baseStatTotal": 300,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 1,
+                "team": [
+                  {
+                    "id": "moltres",
+                    "name": "Moltres",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                    "baseStatTotal": 580,
+                    "legendaryStatus": "LEGENDARY"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 4,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 580,
+              "p3": 450
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 5,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 5,
+              "coins": 1,
+              "team": [
+                {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 5,
+              "coins": 4,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 74000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,18,1,4,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 74000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 5,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "arbok",
+              "name": "Arbok",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png",
+              "baseStatTotal": 448,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "passedPlayerIds": [
+              "p3"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 5
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 9
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 5,
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                },
+                "winnerId": "p2",
+                "bid": 9
+              },
+              {
+                "lotNumber": 3,
+                "pokemon": {
+                  "id": "bellsprout",
+                  "name": "Bellsprout",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png",
+                  "baseStatTotal": 300,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 4,
+                "pokemon": {
+                  "id": "machamp",
+                  "name": "Machamp",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+                  "baseStatTotal": 505,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 4
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 1,
+                "team": [
+                  {
+                    "id": "moltres",
+                    "name": "Moltres",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                    "baseStatTotal": 580,
+                    "legendaryStatus": "LEGENDARY"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 0,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  },
+                  {
+                    "id": "machamp",
+                    "name": "Machamp",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+                    "baseStatTotal": 505,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 580,
+              "p3": 955
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 1,
+              "team": [
+                {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                {
+                  "id": "machamp",
+                  "name": "Machamp",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+                  "baseStatTotal": 505,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 75000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,20,0,5,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 75000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 6,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "electabuzz",
+              "name": "Electabuzz",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png",
+              "baseStatTotal": 490,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 6
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 5
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 9
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 5,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 5,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 5,
+                "playerId": "p2",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 6
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                },
+                "winnerId": "p2",
+                "bid": 9
+              },
+              {
+                "lotNumber": 3,
+                "pokemon": {
+                  "id": "bellsprout",
+                  "name": "Bellsprout",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png",
+                  "baseStatTotal": 300,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 4,
+                "pokemon": {
+                  "id": "machamp",
+                  "name": "Machamp",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+                  "baseStatTotal": 505,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 4
+              },
+              {
+                "lotNumber": 5,
+                "pokemon": {
+                  "id": "arbok",
+                  "name": "Arbok",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png",
+                  "baseStatTotal": 448,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p1",
+                "bid": 1
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 9,
+                "team": [
+                  {
+                    "id": "arbok",
+                    "name": "Arbok",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png",
+                    "baseStatTotal": 448,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 1,
+                "team": [
+                  {
+                    "id": "moltres",
+                    "name": "Moltres",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                    "baseStatTotal": 580,
+                    "legendaryStatus": "LEGENDARY"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 0,
+                "team": [
+                  {
+                    "id": "chansey",
+                    "name": "Chansey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                    "baseStatTotal": 450,
+                    "legendaryStatus": "NORMAL"
+                  },
+                  {
+                    "id": "machamp",
+                    "name": "Machamp",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+                    "baseStatTotal": 505,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 448,
+              "p2": 580,
+              "p3": 955
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 9,
+              "team": [
+                {
+                  "id": "arbok",
+                  "name": "Arbok",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png",
+                  "baseStatTotal": 448,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 1,
+              "team": [
+                {
+                  "id": "moltres",
+                  "name": "Moltres",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": [
+                {
+                  "id": "chansey",
+                  "name": "Chansey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                  "baseStatTotal": 450,
+                  "legendaryStatus": "NORMAL"
+                },
+                {
+                  "id": "machamp",
+                  "name": "Machamp",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png",
+                  "baseStatTotal": 505,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      }
+    ]
+  }
+}

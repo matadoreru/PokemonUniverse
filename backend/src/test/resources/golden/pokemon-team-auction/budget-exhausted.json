@@ -1,0 +1,1268 @@
+{
+  "engineId": "pokemon-team-auction",
+  "scenario": "budget-exhausted",
+  "seed": 1304,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "bidSeconds": 20,
+    "initialBudget": 1,
+    "includeForms": false
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 5000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 1,
+      "includeForms": false
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",null,null,0,0,-1,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "roundEndsAt": null,
+        "gameId": "pokemon-team-auction",
+        "phase": "GAME_STARTING",
+        "lotNumber": 0,
+        "totalLots": 18,
+        "currentPokemon": null,
+        "currentBid": null,
+        "minimumBid": 1,
+        "currentBidderId": null,
+        "currentTurnPlayerId": null,
+        "turnOrder": [],
+        "passedPlayerIds": [],
+        "bidHistory": [],
+        "lotHistory": [],
+        "participants": {
+          "p1": {
+            "coins": 1,
+            "team": [],
+            "playerId": "p1"
+          },
+          "p2": {
+            "coins": 1,
+            "team": [],
+            "playerId": "p2"
+          },
+          "p3": {
+            "coins": 1,
+            "team": [],
+            "playerId": "p3"
+          }
+        },
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 1,
+          "team": []
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 1,
+          "team": []
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 1,
+          "team": []
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",null,null,0,0,0,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "roundEndsAt": 21000,
+        "gameId": "pokemon-team-auction",
+        "phase": "ROUND_ACTIVE",
+        "lotNumber": 1,
+        "totalLots": 18,
+        "currentPokemon": {
+          "id": "celebi",
+          "name": "Celebi",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png",
+          "baseStatTotal": 600,
+          "legendaryStatus": "MYTHICAL"
+        },
+        "currentBid": null,
+        "minimumBid": 1,
+        "currentBidderId": null,
+        "currentTurnPlayerId": "p2",
+        "turnOrder": [
+          "p2",
+          "p1",
+          "p3"
+        ],
+        "passedPlayerIds": [],
+        "bidHistory": [],
+        "lotHistory": [],
+        "participants": {
+          "p1": {
+            "coins": 1,
+            "team": [],
+            "playerId": "p1"
+          },
+          "p2": {
+            "coins": 1,
+            "team": [],
+            "playerId": "p2"
+          },
+          "p3": {
+            "coins": 1,
+            "team": [],
+            "playerId": "p3"
+          }
+        },
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 1,
+          "team": []
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canRaise": true,
+          "canPass": true,
+          "minimumBid": 1,
+          "coins": 1,
+          "team": []
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 1,
+          "team": []
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,3,1,1,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 22000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 2,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "porygon",
+              "name": "Porygon",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png",
+              "baseStatTotal": 395,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "passedPlayerIds": [
+              "p2"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "celebi",
+                  "name": "Celebi",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png",
+                  "baseStatTotal": 600,
+                  "legendaryStatus": "MYTHICAL"
+                },
+                "winnerId": "p2",
+                "bid": 1
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 1,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 0,
+                "team": [
+                  {
+                    "id": "celebi",
+                    "name": "Celebi",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png",
+                    "baseStatTotal": 600,
+                    "legendaryStatus": "MYTHICAL"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 1,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 600,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 1,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": [
+                {
+                  "id": "celebi",
+                  "name": "Celebi",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png",
+                  "baseStatTotal": 600,
+                  "legendaryStatus": "MYTHICAL"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 1,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 23000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,4,2,1,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 23000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 2,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "porygon",
+              "name": "Porygon",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png",
+              "baseStatTotal": 395,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p3",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "passedPlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "celebi",
+                  "name": "Celebi",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png",
+                  "baseStatTotal": 600,
+                  "legendaryStatus": "MYTHICAL"
+                },
+                "winnerId": "p2",
+                "bid": 1
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 1,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 0,
+                "team": [
+                  {
+                    "id": "celebi",
+                    "name": "Celebi",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png",
+                    "baseStatTotal": 600,
+                    "legendaryStatus": "MYTHICAL"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 1,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 600,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 1,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": [
+                {
+                  "id": "celebi",
+                  "name": "Celebi",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png",
+                  "baseStatTotal": 600,
+                  "legendaryStatus": "MYTHICAL"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 1,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,7,2,2,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 24000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 3,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "koffing",
+              "name": "Koffing",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png",
+              "baseStatTotal": 340,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p3",
+              "p2",
+              "p1"
+            ],
+            "passedPlayerIds": [
+              "p3",
+              "p2"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "celebi",
+                  "name": "Celebi",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png",
+                  "baseStatTotal": 600,
+                  "legendaryStatus": "MYTHICAL"
+                },
+                "winnerId": "p2",
+                "bid": 1
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "porygon",
+                  "name": "Porygon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png",
+                  "baseStatTotal": 395,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 1
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 1,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 0,
+                "team": [
+                  {
+                    "id": "celebi",
+                    "name": "Celebi",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png",
+                    "baseStatTotal": 600,
+                    "legendaryStatus": "MYTHICAL"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 0,
+                "team": [
+                  {
+                    "id": "porygon",
+                    "name": "Porygon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png",
+                    "baseStatTotal": 395,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 600,
+              "p3": 395
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 1,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": [
+                {
+                  "id": "celebi",
+                  "name": "Celebi",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png",
+                  "baseStatTotal": 600,
+                  "legendaryStatus": "MYTHICAL"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": [
+                {
+                  "id": "porygon",
+                  "name": "Porygon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png",
+                  "baseStatTotal": 395,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",null,null,23,1,17,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": null,
+            "gameId": "pokemon-team-auction",
+            "phase": "GAME_RESULTS",
+            "lotNumber": 18,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "sneasel",
+              "name": "Sneasel",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+              "baseStatTotal": 430,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": null,
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 5,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 6,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 7,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 8,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 9,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 10,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 11,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 12,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 13,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 14,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 15,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 16,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 17,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 18,
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "celebi",
+                  "name": "Celebi",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png",
+                  "baseStatTotal": 600,
+                  "legendaryStatus": "MYTHICAL"
+                },
+                "winnerId": "p2",
+                "bid": 1
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "porygon",
+                  "name": "Porygon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png",
+                  "baseStatTotal": 395,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p3",
+                "bid": 1
+              },
+              {
+                "lotNumber": 3,
+                "pokemon": {
+                  "id": "koffing",
+                  "name": "Koffing",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png",
+                  "baseStatTotal": 340,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p1",
+                "bid": 1
+              },
+              {
+                "lotNumber": 4,
+                "pokemon": {
+                  "id": "marowak",
+                  "name": "Marowak",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/105.png",
+                  "baseStatTotal": 425,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 5,
+                "pokemon": {
+                  "id": "mewtwo",
+                  "name": "Mewtwo",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png",
+                  "baseStatTotal": 680,
+                  "legendaryStatus": "LEGENDARY"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 6,
+                "pokemon": {
+                  "id": "slowbro",
+                  "name": "Slowbro",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png",
+                  "baseStatTotal": 490,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 7,
+                "pokemon": {
+                  "id": "corsola",
+                  "name": "Corsola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/222.png",
+                  "baseStatTotal": 410,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 8,
+                "pokemon": {
+                  "id": "kabutops",
+                  "name": "Kabutops",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/141.png",
+                  "baseStatTotal": 495,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 9,
+                "pokemon": {
+                  "id": "mr-mime",
+                  "name": "Mr Mime",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/122.png",
+                  "baseStatTotal": 460,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 10,
+                "pokemon": {
+                  "id": "entei",
+                  "name": "Entei",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png",
+                  "baseStatTotal": 580,
+                  "legendaryStatus": "LEGENDARY"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 11,
+                "pokemon": {
+                  "id": "oddish",
+                  "name": "Oddish",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png",
+                  "baseStatTotal": 320,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 12,
+                "pokemon": {
+                  "id": "togetic",
+                  "name": "Togetic",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/176.png",
+                  "baseStatTotal": 405,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 13,
+                "pokemon": {
+                  "id": "lickitung",
+                  "name": "Lickitung",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/108.png",
+                  "baseStatTotal": 385,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 14,
+                "pokemon": {
+                  "id": "golduck",
+                  "name": "Golduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png",
+                  "baseStatTotal": 500,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 15,
+                "pokemon": {
+                  "id": "noctowl",
+                  "name": "Noctowl",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/164.png",
+                  "baseStatTotal": 452,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 16,
+                "pokemon": {
+                  "id": "pineco",
+                  "name": "Pineco",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png",
+                  "baseStatTotal": 290,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 17,
+                "pokemon": {
+                  "id": "abra",
+                  "name": "Abra",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                  "baseStatTotal": 310,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 18,
+                "pokemon": {
+                  "id": "sneasel",
+                  "name": "Sneasel",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "baseStatTotal": 430,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 0,
+                "team": [
+                  {
+                    "id": "koffing",
+                    "name": "Koffing",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png",
+                    "baseStatTotal": 340,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 0,
+                "team": [
+                  {
+                    "id": "celebi",
+                    "name": "Celebi",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png",
+                    "baseStatTotal": 600,
+                    "legendaryStatus": "MYTHICAL"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 0,
+                "team": [
+                  {
+                    "id": "porygon",
+                    "name": "Porygon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png",
+                    "baseStatTotal": 395,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 340,
+              "p2": 600,
+              "p3": 395
+            },
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 600,
+                  "won": true,
+                  "stats": {
+                    "pokemonWon": 1,
+                    "bstTotal": 600,
+                    "coinsRemaining": 0,
+                    "legendaryCount": 0,
+                    "mythicalCount": 1,
+                    "lotsWon": 1,
+                    "unownedLots": 15
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 395,
+                  "won": false,
+                  "stats": {
+                    "pokemonWon": 1,
+                    "bstTotal": 395,
+                    "coinsRemaining": 0,
+                    "legendaryCount": 0,
+                    "mythicalCount": 0,
+                    "lotsWon": 1,
+                    "unownedLots": 15
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 340,
+                  "won": false,
+                  "stats": {
+                    "pokemonWon": 1,
+                    "bstTotal": 340,
+                    "coinsRemaining": 0,
+                    "legendaryCount": 0,
+                    "mythicalCount": 0,
+                    "lotsWon": 1,
+                    "unownedLots": 15
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": [
+                {
+                  "id": "koffing",
+                  "name": "Koffing",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png",
+                  "baseStatTotal": 340,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": [
+                {
+                  "id": "celebi",
+                  "name": "Celebi",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png",
+                  "baseStatTotal": 600,
+                  "legendaryStatus": "MYTHICAL"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": [
+                {
+                  "id": "porygon",
+                  "name": "Porygon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png",
+                  "baseStatTotal": 395,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p2",
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 600,
+          "won": true,
+          "stats": {
+            "pokemonWon": 1,
+            "bstTotal": 600,
+            "coinsRemaining": 0,
+            "legendaryCount": 0,
+            "mythicalCount": 1,
+            "lotsWon": 1,
+            "unownedLots": 15
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 2,
+          "points": 395,
+          "won": false,
+          "stats": {
+            "pokemonWon": 1,
+            "bstTotal": 395,
+            "coinsRemaining": 0,
+            "legendaryCount": 0,
+            "mythicalCount": 0,
+            "lotsWon": 1,
+            "unownedLots": 15
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 3,
+          "points": 340,
+          "won": false,
+          "stats": {
+            "pokemonWon": 1,
+            "bstTotal": 340,
+            "coinsRemaining": 0,
+            "legendaryCount": 0,
+            "mythicalCount": 0,
+            "lotsWon": 1,
+            "unownedLots": 15
+          }
+        }
+      ]
+    }
+  }
+}

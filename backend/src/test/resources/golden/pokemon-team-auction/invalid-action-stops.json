@@ -1,0 +1,277 @@
+{
+  "engineId": "pokemon-team-auction",
+  "scenario": "invalid-action-stops",
+  "seed": 1204,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "bidSeconds": 120,
+    "initialBudget": 1,
+    "includeForms": false
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1.5
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 4000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 120,
+      "initialBudget": 1,
+      "includeForms": false
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",null,null,0,0,-1,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "roundEndsAt": null,
+        "gameId": "pokemon-team-auction",
+        "phase": "GAME_STARTING",
+        "lotNumber": 0,
+        "totalLots": 12,
+        "currentPokemon": null,
+        "currentBid": null,
+        "minimumBid": 1,
+        "currentBidderId": null,
+        "currentTurnPlayerId": null,
+        "turnOrder": [],
+        "passedPlayerIds": [],
+        "bidHistory": [],
+        "lotHistory": [],
+        "participants": {
+          "p1": {
+            "coins": 1,
+            "team": [],
+            "playerId": "p1"
+          },
+          "p2": {
+            "coins": 1,
+            "team": [],
+            "playerId": "p2"
+          }
+        },
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 1,
+          "team": []
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 1,
+          "team": []
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 121000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",null,null,0,0,0,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "roundEndsAt": 121000,
+        "gameId": "pokemon-team-auction",
+        "phase": "ROUND_ACTIVE",
+        "lotNumber": 1,
+        "totalLots": 12,
+        "currentPokemon": {
+          "id": "blastoise",
+          "name": "Blastoise",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
+          "baseStatTotal": 530,
+          "legendaryStatus": "NORMAL"
+        },
+        "currentBid": null,
+        "minimumBid": 1,
+        "currentBidderId": null,
+        "currentTurnPlayerId": "p1",
+        "turnOrder": [
+          "p1",
+          "p2"
+        ],
+        "passedPlayerIds": [],
+        "bidHistory": [],
+        "lotHistory": [],
+        "participants": {
+          "p1": {
+            "coins": 1,
+            "team": [],
+            "playerId": "p1"
+          },
+          "p2": {
+            "coins": 1,
+            "team": [],
+            "playerId": "p2"
+          }
+        },
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canRaise": true,
+          "canPass": true,
+          "minimumBid": 1,
+          "coins": 1,
+          "team": []
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 1,
+          "team": []
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 122000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,1,1,0,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 122000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 1,
+            "totalLots": 12,
+            "currentPokemon": {
+              "id": "blastoise",
+              "name": "Blastoise",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
+              "baseStatTotal": 530,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p2",
+            "turnOrder": [
+              "p1",
+              "p2"
+            ],
+            "passedPlayerIds": [
+              "p1"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [],
+            "participants": {
+              "p1": {
+                "coins": 1,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 1,
+                "team": [],
+                "playerId": "p2"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 1,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 1,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 1
+}

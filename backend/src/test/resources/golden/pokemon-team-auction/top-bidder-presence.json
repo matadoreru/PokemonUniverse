@@ -1,0 +1,2912 @@
+{
+  "engineId": "pokemon-team-auction",
+  "scenario": "top-bidder-presence",
+  "seed": 1202,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "bidSeconds": 20,
+    "initialBudget": 10,
+    "includeForms": false
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 3
+      },
+      "now": 2000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 4
+      },
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 5000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 6000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 8000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 2
+      },
+      "now": 9000
+    },
+    {
+      "kind": "timeout",
+      "now": 29000
+    },
+    {
+      "kind": "timeout",
+      "now": 49000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 50000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 3
+      },
+      "now": 51000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 52000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 10,
+      "includeForms": false
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",null,null,0,0,-1,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "roundEndsAt": null,
+        "gameId": "pokemon-team-auction",
+        "phase": "GAME_STARTING",
+        "lotNumber": 0,
+        "totalLots": 18,
+        "currentPokemon": null,
+        "currentBid": null,
+        "minimumBid": 1,
+        "currentBidderId": null,
+        "currentTurnPlayerId": null,
+        "turnOrder": [],
+        "passedPlayerIds": [],
+        "bidHistory": [],
+        "lotHistory": [],
+        "participants": {
+          "p1": {
+            "coins": 10,
+            "team": [],
+            "playerId": "p1"
+          },
+          "p2": {
+            "coins": 10,
+            "team": [],
+            "playerId": "p2"
+          },
+          "p3": {
+            "coins": 10,
+            "team": [],
+            "playerId": "p3"
+          }
+        },
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 10,
+          "team": []
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 10,
+          "team": []
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 10,
+          "team": []
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",null,null,0,0,0,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "roundEndsAt": 21000,
+        "gameId": "pokemon-team-auction",
+        "phase": "ROUND_ACTIVE",
+        "lotNumber": 1,
+        "totalLots": 18,
+        "currentPokemon": {
+          "id": "jolteon",
+          "name": "Jolteon",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+          "baseStatTotal": 525,
+          "legendaryStatus": "NORMAL"
+        },
+        "currentBid": null,
+        "minimumBid": 1,
+        "currentBidderId": null,
+        "currentTurnPlayerId": "p2",
+        "turnOrder": [
+          "p2",
+          "p1",
+          "p3"
+        ],
+        "passedPlayerIds": [],
+        "bidHistory": [],
+        "lotHistory": [],
+        "participants": {
+          "p1": {
+            "coins": 10,
+            "team": [],
+            "playerId": "p1"
+          },
+          "p2": {
+            "coins": 10,
+            "team": [],
+            "playerId": "p2"
+          },
+          "p3": {
+            "coins": 10,
+            "team": [],
+            "playerId": "p3"
+          }
+        },
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 10,
+          "team": []
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canRaise": true,
+          "canPass": true,
+          "minimumBid": 1,
+          "coins": 10,
+          "team": []
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "minimumBid": 1,
+          "coins": 10,
+          "team": []
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,1,1,0,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 22000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 1,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "jolteon",
+              "name": "Jolteon",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+              "baseStatTotal": 525,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": 3,
+            "minimumBid": 4,
+            "currentBidderId": "p2",
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              }
+            ],
+            "lotHistory": [],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 4,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 4,
+              "coins": 10,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 4,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,1,1,0,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 22000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 1,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "jolteon",
+              "name": "Jolteon",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+              "baseStatTotal": 525,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": 3,
+            "minimumBid": 4,
+            "currentBidderId": "p2",
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              }
+            ],
+            "lotHistory": [],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 4,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 4,
+              "coins": 0,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 4,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No puedes participar en esta subasta.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,1,1,0,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 22000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 1,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "jolteon",
+              "name": "Jolteon",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+              "baseStatTotal": 525,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": 3,
+            "minimumBid": 4,
+            "currentBidderId": "p2",
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              }
+            ],
+            "lotHistory": [],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 4,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 4,
+              "coins": 0,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 4,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 24000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,2,2,0,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 24000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 1,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "jolteon",
+              "name": "Jolteon",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+              "baseStatTotal": 525,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": 3,
+            "minimumBid": 4,
+            "currentBidderId": "p2",
+            "currentTurnPlayerId": "p3",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "passedPlayerIds": [
+              "p1"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 4,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 4,
+              "coins": 0,
+              "team": []
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 4,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 25000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,4,1,1,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 25000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 2,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "dragonair",
+              "name": "Dragonair",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+              "baseStatTotal": 420,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p2",
+              "p1",
+              "p3"
+            ],
+            "passedPlayerIds": [
+              "p2"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p2",
+                "bid": 3
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 7,
+                "team": [
+                  {
+                    "id": "jolteon",
+                    "name": "Jolteon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                    "baseStatTotal": 525,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 525,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": []
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,8,2,2,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 26000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 3,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "horsea",
+              "name": "Horsea",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png",
+              "baseStatTotal": 295,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p3",
+              "p2",
+              "p1"
+            ],
+            "passedPlayerIds": [
+              "p3",
+              "p2"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p2",
+                "bid": 3
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p1",
+                "bid": 1
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 9,
+                "team": [
+                  {
+                    "id": "dragonair",
+                    "name": "Dragonair",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                    "baseStatTotal": 420,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 7,
+                "team": [
+                  {
+                    "id": "jolteon",
+                    "name": "Jolteon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                    "baseStatTotal": 525,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 420,
+              "p2": 525,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 9,
+              "team": [
+                {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p2": {
+              "role": "SPECTATOR",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": []
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,8,2,2,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 26000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 3,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "horsea",
+              "name": "Horsea",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png",
+              "baseStatTotal": 295,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p3",
+              "p2",
+              "p1"
+            ],
+            "passedPlayerIds": [
+              "p3",
+              "p2"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p2",
+                "bid": 3
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p1",
+                "bid": 1
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 9,
+                "team": [
+                  {
+                    "id": "dragonair",
+                    "name": "Dragonair",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                    "baseStatTotal": 420,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 7,
+                "team": [
+                  {
+                    "id": "jolteon",
+                    "name": "Jolteon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                    "baseStatTotal": 525,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 420,
+              "p2": 525,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 9,
+              "team": [
+                {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 7,
+              "team": [
+                {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 28000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,9,0,3,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 28000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 4,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "kakuna",
+              "name": "Kakuna",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+              "baseStatTotal": 205,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p2",
+            "turnOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p2",
+                "bid": 3
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p1",
+                "bid": 1
+              },
+              {
+                "lotNumber": 3,
+                "pokemon": {
+                  "id": "horsea",
+                  "name": "Horsea",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png",
+                  "baseStatTotal": 295,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 9,
+                "team": [
+                  {
+                    "id": "dragonair",
+                    "name": "Dragonair",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                    "baseStatTotal": 420,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 7,
+                "team": [
+                  {
+                    "id": "jolteon",
+                    "name": "Jolteon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                    "baseStatTotal": 525,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 420,
+              "p2": 525,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 9,
+              "team": [
+                {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 7,
+              "team": [
+                {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 29000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,10,1,3,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 29000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 4,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "kakuna",
+              "name": "Kakuna",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+              "baseStatTotal": 205,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": 2,
+            "minimumBid": 3,
+            "currentBidderId": "p2",
+            "currentTurnPlayerId": "p3",
+            "turnOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p2",
+                "bid": 3
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p1",
+                "bid": 1
+              },
+              {
+                "lotNumber": 3,
+                "pokemon": {
+                  "id": "horsea",
+                  "name": "Horsea",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png",
+                  "baseStatTotal": 295,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 9,
+                "team": [
+                  {
+                    "id": "dragonair",
+                    "name": "Dragonair",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                    "baseStatTotal": 420,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 7,
+                "team": [
+                  {
+                    "id": "jolteon",
+                    "name": "Jolteon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                    "baseStatTotal": 525,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 420,
+              "p2": 525,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 3,
+              "coins": 9,
+              "team": [
+                {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 3,
+              "coins": 7,
+              "team": [
+                {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 3,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,11,2,3,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 49000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 4,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "kakuna",
+              "name": "Kakuna",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+              "baseStatTotal": 205,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": 2,
+            "minimumBid": 3,
+            "currentBidderId": "p2",
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "passedPlayerIds": [
+              "p3"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p2",
+                "bid": 3
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p1",
+                "bid": 1
+              },
+              {
+                "lotNumber": 3,
+                "pokemon": {
+                  "id": "horsea",
+                  "name": "Horsea",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png",
+                  "baseStatTotal": 295,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 9,
+                "team": [
+                  {
+                    "id": "dragonair",
+                    "name": "Dragonair",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                    "baseStatTotal": 420,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 7,
+                "team": [
+                  {
+                    "id": "jolteon",
+                    "name": "Jolteon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                    "baseStatTotal": 525,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 420,
+              "p2": 525,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 3,
+              "coins": 9,
+              "team": [
+                {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 3,
+              "coins": 7,
+              "team": [
+                {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 3,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 69000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,12,0,4,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 69000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 5,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "pidgey",
+              "name": "Pidgey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
+              "baseStatTotal": 251,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p3",
+            "turnOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p2",
+                "bid": 3
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p1",
+                "bid": 1
+              },
+              {
+                "lotNumber": 3,
+                "pokemon": {
+                  "id": "horsea",
+                  "name": "Horsea",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png",
+                  "baseStatTotal": 295,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 4,
+                "pokemon": {
+                  "id": "kakuna",
+                  "name": "Kakuna",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+                  "baseStatTotal": 205,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p2",
+                "bid": 2
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 9,
+                "team": [
+                  {
+                    "id": "dragonair",
+                    "name": "Dragonair",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                    "baseStatTotal": 420,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 5,
+                "team": [
+                  {
+                    "id": "jolteon",
+                    "name": "Jolteon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                    "baseStatTotal": 525,
+                    "legendaryStatus": "NORMAL"
+                  },
+                  {
+                    "id": "kakuna",
+                    "name": "Kakuna",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+                    "baseStatTotal": 205,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 420,
+              "p2": 730,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 9,
+              "team": [
+                {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 5,
+              "team": [
+                {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                },
+                {
+                  "id": "kakuna",
+                  "name": "Kakuna",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+                  "baseStatTotal": 205,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 10,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 70000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,13,1,4,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 70000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 5,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "pidgey",
+              "name": "Pidgey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
+              "baseStatTotal": 251,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "passedPlayerIds": [
+              "p3"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 5,
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p2",
+                "bid": 3
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p1",
+                "bid": 1
+              },
+              {
+                "lotNumber": 3,
+                "pokemon": {
+                  "id": "horsea",
+                  "name": "Horsea",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png",
+                  "baseStatTotal": 295,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 4,
+                "pokemon": {
+                  "id": "kakuna",
+                  "name": "Kakuna",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+                  "baseStatTotal": 205,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p2",
+                "bid": 2
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 9,
+                "team": [
+                  {
+                    "id": "dragonair",
+                    "name": "Dragonair",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                    "baseStatTotal": 420,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 5,
+                "team": [
+                  {
+                    "id": "jolteon",
+                    "name": "Jolteon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                    "baseStatTotal": 525,
+                    "legendaryStatus": "NORMAL"
+                  },
+                  {
+                    "id": "kakuna",
+                    "name": "Kakuna",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+                    "baseStatTotal": 205,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 420,
+              "p2": 730,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 9,
+              "team": [
+                {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 5,
+              "team": [
+                {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                },
+                {
+                  "id": "kakuna",
+                  "name": "Kakuna",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+                  "baseStatTotal": 205,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 71000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,14,2,4,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 71000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 5,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "pidgey",
+              "name": "Pidgey",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
+              "baseStatTotal": 251,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": 3,
+            "minimumBid": 4,
+            "currentBidderId": "p1",
+            "currentTurnPlayerId": "p2",
+            "turnOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "passedPlayerIds": [
+              "p3"
+            ],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 5,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 5,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 3
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p2",
+                "bid": 3
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p1",
+                "bid": 1
+              },
+              {
+                "lotNumber": 3,
+                "pokemon": {
+                  "id": "horsea",
+                  "name": "Horsea",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png",
+                  "baseStatTotal": 295,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 4,
+                "pokemon": {
+                  "id": "kakuna",
+                  "name": "Kakuna",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+                  "baseStatTotal": 205,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p2",
+                "bid": 2
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 9,
+                "team": [
+                  {
+                    "id": "dragonair",
+                    "name": "Dragonair",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                    "baseStatTotal": 420,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 5,
+                "team": [
+                  {
+                    "id": "jolteon",
+                    "name": "Jolteon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                    "baseStatTotal": 525,
+                    "legendaryStatus": "NORMAL"
+                  },
+                  {
+                    "id": "kakuna",
+                    "name": "Kakuna",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+                    "baseStatTotal": 205,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 420,
+              "p2": 730,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 4,
+              "coins": 9,
+              "team": [
+                {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 4,
+              "coins": 5,
+              "team": [
+                {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                },
+                {
+                  "id": "kakuna",
+                  "name": "Kakuna",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+                  "baseStatTotal": 205,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 4,
+              "coins": 0,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 72000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,15,0,5,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "roundEndsAt": 72000,
+            "gameId": "pokemon-team-auction",
+            "phase": "ROUND_ACTIVE",
+            "lotNumber": 6,
+            "totalLots": 18,
+            "currentPokemon": {
+              "id": "eevee",
+              "name": "Eevee",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png",
+              "baseStatTotal": 325,
+              "legendaryStatus": "NORMAL"
+            },
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "currentTurnPlayerId": "p1",
+            "turnOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "passedPlayerIds": [],
+            "bidHistory": [
+              {
+                "lotNumber": 1,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 1,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "lotNumber": 2,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 3,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 4,
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 5,
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "lotNumber": 5,
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "lotNumber": 5,
+                "playerId": "p2",
+                "type": "PASS"
+              }
+            ],
+            "lotHistory": [
+              {
+                "lotNumber": 1,
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p2",
+                "bid": 3
+              },
+              {
+                "lotNumber": 2,
+                "pokemon": {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p1",
+                "bid": 1
+              },
+              {
+                "lotNumber": 3,
+                "pokemon": {
+                  "id": "horsea",
+                  "name": "Horsea",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png",
+                  "baseStatTotal": 295,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": null,
+                "bid": 0
+              },
+              {
+                "lotNumber": 4,
+                "pokemon": {
+                  "id": "kakuna",
+                  "name": "Kakuna",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+                  "baseStatTotal": 205,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p2",
+                "bid": 2
+              },
+              {
+                "lotNumber": 5,
+                "pokemon": {
+                  "id": "pidgey",
+                  "name": "Pidgey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
+                  "baseStatTotal": 251,
+                  "legendaryStatus": "NORMAL"
+                },
+                "winnerId": "p1",
+                "bid": 3
+              }
+            ],
+            "participants": {
+              "p1": {
+                "coins": 6,
+                "team": [
+                  {
+                    "id": "dragonair",
+                    "name": "Dragonair",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                    "baseStatTotal": 420,
+                    "legendaryStatus": "NORMAL"
+                  },
+                  {
+                    "id": "pidgey",
+                    "name": "Pidgey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
+                    "baseStatTotal": 251,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p1"
+              },
+              "p2": {
+                "coins": 5,
+                "team": [
+                  {
+                    "id": "jolteon",
+                    "name": "Jolteon",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                    "baseStatTotal": 525,
+                    "legendaryStatus": "NORMAL"
+                  },
+                  {
+                    "id": "kakuna",
+                    "name": "Kakuna",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+                    "baseStatTotal": 205,
+                    "legendaryStatus": "NORMAL"
+                  }
+                ],
+                "playerId": "p2"
+              },
+              "p3": {
+                "coins": 10,
+                "team": [],
+                "playerId": "p3"
+              }
+            },
+            "scores": {
+              "p1": 671,
+              "p2": 730,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "minimumBid": 1,
+              "coins": 6,
+              "team": [
+                {
+                  "id": "dragonair",
+                  "name": "Dragonair",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
+                  "baseStatTotal": 420,
+                  "legendaryStatus": "NORMAL"
+                },
+                {
+                  "id": "pidgey",
+                  "name": "Pidgey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
+                  "baseStatTotal": 251,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 5,
+              "team": [
+                {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "baseStatTotal": 525,
+                  "legendaryStatus": "NORMAL"
+                },
+                {
+                  "id": "kakuna",
+                  "name": "Kakuna",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+                  "baseStatTotal": 205,
+                  "legendaryStatus": "NORMAL"
+                }
+              ]
+            },
+            "p3": {
+              "role": "SPECTATOR",
+              "canRaise": false,
+              "canPass": false,
+              "minimumBid": 1,
+              "coins": 0,
+              "team": []
+            }
+          },
+          "finished": false
+        }
+      }
+    ]
+  }
+}

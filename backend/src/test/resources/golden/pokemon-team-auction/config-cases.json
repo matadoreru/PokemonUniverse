@@ -1,0 +1,308 @@
+[
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 10,
+      "includeForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 10,
+      "includeForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        9
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 10,
+      "includeForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        9
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 10,
+      "includeForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 0,
+      "initialBudget": 1,
+      "includeForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 0,
+      "initialBudget": 1,
+      "includeForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 120,
+      "initialBudget": 100,
+      "includeForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 120,
+      "initialBudget": 100,
+      "includeForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "initialBudget": 10,
+      "includeForms": true
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 10,
+      "includeForms": true
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 30,
+      "initialBudget": 10,
+      "includeForms": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 30,
+      "initialBudget": 10,
+      "includeForms": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": -1,
+      "initialBudget": 10,
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 121,
+      "initialBudget": 10,
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20.5,
+      "initialBudget": 10,
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": null,
+      "initialBudget": 10,
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 0,
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 101,
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 10.5,
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "initialBudget": "10",
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "bidSeconds": 20,
+      "initialBudget": 10,
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 10,
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 10,
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1.5
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 10,
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": 1,
+      "bidSeconds": 20,
+      "initialBudget": 10,
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 10,
+      "includeForms": "no"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 10,
+      "includeForms": false,
+      "unknownKey": "no se admite"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "includeForms": false
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "initialBudget": 10
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]
