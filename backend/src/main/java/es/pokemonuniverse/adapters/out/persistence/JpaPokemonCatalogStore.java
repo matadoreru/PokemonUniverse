@@ -18,9 +18,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -168,7 +169,9 @@ public class JpaPokemonCatalogStore implements PokemonCatalogStore {
         case null -> statement.setNull(i + 1, Types.VARCHAR);
         case Null typed -> statement.setNull(i + 1, typed.sqlType());
         case TextArray array -> statement.setArray(i + 1, connection.createArrayOf("text", array.values().toArray()));
-        case Instant instant -> statement.setTimestamp(i + 1, Timestamp.from(instant));
+        // Columnas timestamp(3) sin zona en UTC (Prisma): Timestamp.from usaría la zona de la JVM y
+        // hibernate.jdbc.time_zone no se aplica a los PreparedStatement crudos.
+        case Instant instant -> statement.setObject(i + 1, LocalDateTime.ofInstant(instant, ZoneOffset.UTC));
         default -> statement.setObject(i + 1, value);
       }
     }

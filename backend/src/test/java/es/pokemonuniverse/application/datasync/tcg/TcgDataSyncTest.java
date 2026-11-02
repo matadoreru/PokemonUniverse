@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.adapters.out.http.SyncHttpClient;
+import es.pokemonuniverse.adapters.out.persistence.NonUtcZone;
 import es.pokemonuniverse.application.datasync.DataSyncMode;
 import es.pokemonuniverse.application.datasync.DataSyncSource;
 import es.pokemonuniverse.application.datasync.SyncResult;
@@ -118,8 +119,18 @@ class TcgDataSyncTest {
     assertEquals(DataSyncSource.TCGDEX, sync.source());
   }
 
+  /**
+   * Con la JVM fuera de UTC ({@link NonUtcZone}): las fechas ({@code releaseDate} del volcado, {@code sourceUpdatedAt})
+   * deben quedar en UTC también en un CI que corra en UTC.
+   */
   @Test
   void anInitialRunEndsExactlyLikeNode() throws Exception {
+    try (var zone = NonUtcZone.pin()) {
+      initialRunEndsExactlyLikeNode();
+    }
+  }
+
+  private void initialRunEndsExactlyLikeNode() throws Exception {
     var expected = EXPECTED.get("initial");
     var result = sync.run(DataSyncMode.INITIAL);
     assertEquals(TcgFixtures.plain(expected.get("result")), result(result));

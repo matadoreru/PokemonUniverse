@@ -36,7 +36,8 @@ import org.hibernate.Session;
  * {@code create}/{@code update}, los {@code Json} a {@code jsonb}, {@code "updatedAt"} se escribe en cada inserción y
  * actualización y el {@code cuid()} del id de precio es un UUID (como {@code DataSyncRun}).
  *
- * <p>La lectura ordena por id (Node no ordena: el orden de las cartas no es observable de forma determinista).
+ * <p>La lectura ordena por id en orden de puntos de código ({@code COLLATE "C"}; Node no ordena: el orden de las cartas
+ * no es observable de forma determinista).
  */
 @Singleton
 @Requires(beans = DataSource.class)
@@ -49,13 +50,13 @@ public class JpaTcgCardRepository implements TcgCardRepository, TcgCatalogStore 
       FROM "TcgCard" c JOIN "TcgSet" s ON s."id" = c."setId"
       WHERE c."imageUrl" IS NOT NULL
         AND EXISTS (SELECT 1 FROM "TcgCardPrice" pr WHERE pr."cardId" = c."id" AND pr."market" IS NOT NULL)
-      ORDER BY c."id"
+      ORDER BY c."id" COLLATE "C"
       """;
   private static final String COMPARABLE_PRICES = """
       SELECT pr."cardId", pr."provider", pr."currency", pr."variant", pr."market", pr."observedAt"
       FROM "TcgCardPrice" pr JOIN "TcgCard" c ON c."id" = pr."cardId"
       WHERE pr."market" IS NOT NULL AND c."imageUrl" IS NOT NULL
-      ORDER BY pr."cardId", pr."id"
+      ORDER BY pr."cardId" COLLATE "C", pr."id" COLLATE "C"
       """;
   private static final String UPSERT_SET = """
       INSERT INTO "TcgSet" ("id", "name", "series", "logoUrl", "symbolUrl", "releaseDate", "cardCount", "metadata",
@@ -85,7 +86,7 @@ public class JpaTcgCardRepository implements TcgCardRepository, TcgCatalogStore 
         "metadata" = EXCLUDED."metadata", "observedAt" = EXCLUDED."observedAt"
       """;
   private static final String DEFAULT_POKEMON = """
-      SELECT "id" FROM "Pokemon" WHERE "nationalDexNumber" = ANY(?) AND "isDefault" ORDER BY "id"
+      SELECT "id" FROM "Pokemon" WHERE "nationalDexNumber" = ANY(?) AND "isDefault" ORDER BY "id" COLLATE "C"
       """;
 
   private final EntityManager entityManager;
@@ -205,7 +206,7 @@ public class JpaTcgCardRepository implements TcgCardRepository, TcgCatalogStore 
   @Override
   @Transactional
   public List<String> cardIds() {
-    return query("SELECT \"id\" FROM \"TcgCard\" ORDER BY \"id\"", row -> row.getString(1));
+    return query("SELECT \"id\" FROM \"TcgCard\" ORDER BY \"id\" COLLATE \"C\"", row -> row.getString(1));
   }
 
   @Override

@@ -206,10 +206,11 @@ buscador desplaza la página (Bingo); además, 8 juegos no muestran el título d
   - `PaletteExtractor` lee con ImageIO/`getRGB`: idéntico a sharp en los sprites de PokéAPI (PNG de 8 bits) y en las
     reducciones fijadas; un PNG de 16 bits o en gris podría diferir de los bytes crudos de sharp.
   - `seed.ts` sigue siendo también un CLI de Node (`POKEMON_SYNC=true`); Java solo tiene el adaptador.
-  - Las marcas de tiempo que `JpaPokemonCatalogStore` enlaza con `Timestamp.from(instant)` (`updatedAt`,
-    `createdAt`, `completedAt`…) se guardan en la zona de la JVM, no en UTC como Prisma (columnas `timestamp(3)` sin
-    zona); solo se nota si la JVM no corre en UTC (en desarrollo, Europe/Madrid). El adaptador TCG ya enlaza
-    `LocalDateTime` en UTC; corregir el de Pokémon igual.
+  - Las marcas de tiempo del JDBC crudo (`JpaPokemonCatalogStore`, `JpaTcgCardRepository`) se enlazan como
+    `LocalDateTime` en UTC: `Timestamp.from` las guardaba en la zona de la JVM (`hibernate.jdbc.time_zone` no se aplica
+    a los `PreparedStatement` crudos). Los parámetros de Hibernate (`JpaDataSyncRecords`, `JpaUserGameConfigStore`) ya
+    guardaban UTC; `UtcTimestampsTest` y `JpaUserGameConfigStoreTest` lo comprueban con la JVM en Europe/Madrid.
+    Las filas escritas antes de la corrección con la JVM fuera de UTC conservan el desfase (solo marcas de auditoría).
 
 - Catálogo TCG y sincronización con TCGdex en Java (2C, `application/tcg`, `application/datasync/tcg`):
   - `TCGDEX_BASE_URL` (`pu.data-sync.tcgdex-base-url`) solo existe para las pruebas y exige https (http solo hacia

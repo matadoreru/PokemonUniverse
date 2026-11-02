@@ -60,11 +60,16 @@ class JpaUserGameConfigStoreTest {
     assertTrue(!updated.getUpdatedAt().isBefore(created.getUpdatedAt()));
   }
 
-  /** Las columnas {@code TIMESTAMP(3)} sin zona guardan UTC, como Prisma: se lee el valor crudo, no vía Hibernate. */
+  /**
+   * Las columnas {@code TIMESTAMP(3)} sin zona guardan UTC, como Prisma, aunque la JVM corra en otra zona
+   * ({@link NonUtcZone}): se lee el valor crudo, no vía Hibernate.
+   */
   @Test
   void timestampsAreStoredInUtc() throws IOException, SQLException {
     var owner = user();
-    store.upsert(owner, "higher-lower", json("{\"rounds\":3}"));
+    try (var zone = NonUtcZone.pin()) {
+      store.upsert(owner, "higher-lower", json("{\"rounds\":3}"));
+    }
     try (var connection = resolver.resolve(dataSource).getConnection();
         var query = connection.prepareStatement("""
             SELECT EXTRACT(EPOCH FROM "createdAt"), EXTRACT(EPOCH FROM "updatedAt")
