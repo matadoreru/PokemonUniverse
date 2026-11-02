@@ -1,6 +1,7 @@
 package es.pokemonuniverse.application.rooms;
 
 import es.pokemonuniverse.application.time.Clock;
+import es.pokemonuniverse.application.validation.ZodIssues;
 import es.pokemonuniverse.domain.room.LiveRoom;
 import es.pokemonuniverse.domain.room.MemberRole;
 import es.pokemonuniverse.domain.room.PresenceStatus;
@@ -95,7 +96,7 @@ final class CursorRelay {
     var issues = new ZodIssues();
     if (raw == null || !raw.isObject()) {
       issues.rootNotObject(raw);
-      throw issues.toException();
+      throw new RoomException(issues.stringify());
     }
     var position = new LinkedHashMap<String, Object>();
     unit(raw, "x", true, position, issues);
@@ -122,7 +123,7 @@ final class CursorRelay {
       long anchors = List.of("pokemonId", "cardX", "cardY").stream().filter(position::containsKey).count();
       if (anchors != 0 && anchors != 3) issues.custom(List.of(), "El anclaje de carta está incompleto.");
     }
-    if (!issues.isEmpty()) throw issues.toException();
+    if (!issues.isEmpty()) throw new RoomException(issues.stringify());
     return position;
   }
 

@@ -1,4 +1,4 @@
-package es.pokemonuniverse.application.rooms;
+package es.pokemonuniverse.application.validation;
 
 import es.pokemonuniverse.domain.json.JsNumbers;
 import es.pokemonuniverse.domain.json.JsonTree;
@@ -9,26 +9,39 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Incidencias con la forma de Zod 4: el mensaje de un {@code ZodError} es {@code JSON.stringify(issues, null, 2)} y
- * Node lo devuelve tal cual en el ack. Solo cubre las incidencias que producen los esquemas de {@code room.ts}.
+ * Incidencias con la forma de Zod 4 (claves en el mismo orden). En el ack de las salas, el mensaje de un
+ * {@code ZodError} es {@code JSON.stringify(issues, null, 2)} y Node lo devuelve tal cual ({@link #stringify()}); en
+ * HTTP, el manejador global de Node responde {@code {error: <primer mensaje>, issues}} ({@link #list()}). Solo cubre
+ * las incidencias que producen los esquemas portados.
  */
-final class ZodIssues {
+public final class ZodIssues {
 
   private final List<Map<String, Object>> issues = new ArrayList<>();
 
-  boolean isEmpty() {
+  public boolean isEmpty() {
     return issues.isEmpty();
   }
 
-  int size() {
+  public int size() {
     return issues.size();
   }
 
-  RoomException toException() {
-    return new RoomException(stringify(issues));
+  /** {@code JSON.stringify(issues, null, 2)}. */
+  public String stringify() {
+    return stringify(issues);
   }
 
-  static String typeName(JsonNode node) {
+  /** Copia inmutable de las incidencias, en orden. */
+  public List<Map<String, Object>> list() {
+    return List.copyOf(issues);
+  }
+
+  /** Mensaje de la primera incidencia, como el {@code error} del manejador global de Node. */
+  public String firstMessage() {
+    return issues.isEmpty() ? "Invalid input" : (String) issues.getFirst().get("message");
+  }
+
+  public static String typeName(JsonNode node) {
     if (node == null) return "undefined";
     if (node.isNull()) return "null";
     if (node.isString()) return "string";
@@ -39,7 +52,7 @@ final class ZodIssues {
   }
 
   /** Objeto raíz que no es objeto: Zod pone {@code code} antes de {@code expected}. */
-  void rootNotObject(JsonNode node) {
+  public void rootNotObject(JsonNode node) {
     var issue = new LinkedHashMap<String, Object>();
     issue.put("code", "invalid_type");
     issue.put("expected", "object");
@@ -48,7 +61,7 @@ final class ZodIssues {
     issues.add(issue);
   }
 
-  void invalidType(String expected, JsonNode node, List<Object> path) {
+  public void invalidType(String expected, JsonNode node, List<Object> path) {
     var issue = new LinkedHashMap<String, Object>();
     issue.put("expected", expected);
     issue.put("code", "invalid_type");
@@ -57,7 +70,7 @@ final class ZodIssues {
     issues.add(issue);
   }
 
-  void notInteger(List<Object> path) {
+  public void notInteger(List<Object> path) {
     var issue = new LinkedHashMap<String, Object>();
     issue.put("expected", "int");
     issue.put("format", "safeint");
@@ -67,11 +80,11 @@ final class ZodIssues {
     issues.add(issue);
   }
 
-  void tooSmall(String origin, long minimum, List<Object> path, String message) {
+  public void tooSmall(String origin, long minimum, List<Object> path, String message) {
     bound("too_small", "minimum", origin, minimum, path, message);
   }
 
-  void tooBig(String origin, long maximum, List<Object> path, String message) {
+  public void tooBig(String origin, long maximum, List<Object> path, String message) {
     bound("too_big", "maximum", origin, maximum, path, message);
   }
 
@@ -86,7 +99,7 @@ final class ZodIssues {
     issues.add(issue);
   }
 
-  void invalidFormat(String format, String pattern, List<Object> path, String message) {
+  public void invalidFormat(String format, String pattern, List<Object> path, String message) {
     var issue = new LinkedHashMap<String, Object>();
     issue.put("origin", "string");
     issue.put("code", "invalid_format");
@@ -97,7 +110,7 @@ final class ZodIssues {
     issues.add(issue);
   }
 
-  void noDiscriminator(List<String> options) {
+  public void noDiscriminator(List<String> options) {
     var issue = new LinkedHashMap<String, Object>();
     issue.put("code", "invalid_union");
     issue.put("errors", List.of());
@@ -110,7 +123,7 @@ final class ZodIssues {
     issues.add(issue);
   }
 
-  void custom(List<Object> path, String message) {
+  public void custom(List<Object> path, String message) {
     var issue = new LinkedHashMap<String, Object>();
     issue.put("code", "custom");
     issue.put("path", path);
@@ -118,7 +131,7 @@ final class ZodIssues {
     issues.add(issue);
   }
 
-  void unrecognizedKeys(List<String> keys) {
+  public void unrecognizedKeys(List<String> keys) {
     var issue = new LinkedHashMap<String, Object>();
     issue.put("code", "unrecognized_keys");
     issue.put("keys", keys);
@@ -128,7 +141,7 @@ final class ZodIssues {
     issues.add(issue);
   }
 
-  void invalidValue(List<String> values) {
+  public void invalidValue(List<String> values) {
     var issue = new LinkedHashMap<String, Object>();
     issue.put("code", "invalid_value");
     issue.put("values", values);
@@ -139,7 +152,7 @@ final class ZodIssues {
   }
 
   /** {@code JSON.stringify(value, null, 2)} para cadenas, números, booleanos, listas y mapas. */
-  static String stringify(Object value) {
+  public static String stringify(Object value) {
     var out = new StringBuilder();
     write(value, out, "");
     return out.toString();

@@ -123,6 +123,42 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Listar mis categorías personalizadas */
+        get: operations["listCustomCategories"];
+        put?: never;
+        /** Crear una categoría personalizada */
+        post: operations["createCustomCategory"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/categories/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Borrar una categoría personalizada */
+        delete: operations["deleteCustomCategory"];
+        options?: never;
+        head?: never;
+        /** Editar o activar/desactivar una categoría personalizada */
+        patch: operations["updateCustomCategory"];
+        trace?: never;
+    };
     "/api/changelog": {
         parameters: {
             query?: never;
@@ -311,6 +347,10 @@ export interface components {
             createdAt: string;
             updatedAt: string;
         };
+        /** @description Solo documenta el cuerpo en OpenAPI; la validación la hace el servicio. */
+        CreateCustomCategoryRequest: {
+            text: string;
+        };
         /** @description Cuerpo estricto: una clave desconocida falla la deserialización (como `.strict()` de Zod). */
         CreateFeedbackRequest: {
             reference?: components["schemas"]["FeedbackReference"] | null;
@@ -318,6 +358,20 @@ export interface components {
             roomCode?: string | null;
             type: components["schemas"]["FeedbackType"];
             description: string;
+        };
+        "CustomCategoryController.CategoriesResponse": {
+            categories: components["schemas"]["CustomCategoryView"][];
+        };
+        "CustomCategoryController.CategoryResponse": {
+            category: components["schemas"]["CustomCategoryView"];
+        };
+        /** @description Vista pública de una categoría (`CustomCategoryView` de `packages/shared`); fechas ISO con milisegundos. */
+        CustomCategoryView: {
+            id: string;
+            text: string;
+            enabled: boolean;
+            createdAt: string;
+            updatedAt: string;
         };
         "FeedbackController.FeedbackResponse": {
             feedback: components["schemas"]["FeedbackItemResponse"];
@@ -502,6 +556,11 @@ export interface components {
             /** Format: email */
             email: string;
             password: string;
+        };
+        /** @description Solo documenta el cuerpo en OpenAPI; al menos uno de los dos campos. */
+        UpdateCustomCategoryRequest: {
+            text?: string | null;
+            enabled?: boolean | null;
         };
         /** @description Respuesta `{"user": ...}`; la clave se escribe siempre, también como `null`. */
         UserResponse: {
@@ -721,6 +780,186 @@ export interface operations {
                 };
             };
             /** @description Ya existe */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listCustomCategories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomCategoryController.CategoriesResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    createCustomCategory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["CreateCustomCategoryRequest"];
+            };
+        };
+        responses: {
+            /** @description Creada */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomCategoryController.CategoryResponse"];
+                };
+            };
+            /** @description Datos inválidos */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Duplicada */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    deleteCustomCategory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sin contenido */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description No encontrada */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    updateCustomCategory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateCustomCategoryRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomCategoryController.CategoryResponse"];
+                };
+            };
+            /** @description Datos inválidos */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description No encontrada */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Duplicada */
             409: {
                 headers: {
                     [name: string]: unknown;

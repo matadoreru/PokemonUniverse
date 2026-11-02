@@ -3,14 +3,18 @@ import react from '@vitejs/plugin-react';
 
 /**
  * Las claves con `^` son regex contra `req.url` (incluye la query) y Vite las evalúa en orden: las rutas del backend Java (:8080) van antes que `/api` (Node).
- * Con `VITE_REALTIME=java` las salas viven en Java, así que sus imágenes y gritos de ronda (`/api/rooms/…`) también.
+ * Con `VITE_REALTIME=java` las salas viven en Java, así que sus imágenes y gritos de ronda (`/api/rooms/…`) también, y
+ * las categorías personalizadas (`/api/categories`), cuya caché debe ser la del proceso que avisa a las salas.
  */
 export function proxyFor(realtime: string | undefined): Record<string, string | ProxyOptions> {
   return {
     '^/api/auth/(register|login|guest|logout|me|profile)(\\?.*)?$': 'http://localhost:8080',
     '^/api/auth/avatars/': 'http://localhost:8080',
     '^/api/(changelog|feedback|games|health|pokemon)(\\?.*)?$': 'http://localhost:8080',
-    ...(realtime === 'java' ? { '^/api/rooms/': 'http://localhost:8080' } : {}),
+    ...(realtime === 'java' ? {
+      '^/api/rooms/': 'http://localhost:8080',
+      '^/api/categories(/|\\?|$)': 'http://localhost:8080',
+    } : {}),
     '/api': 'http://localhost:3001',
     '/socket.io': { target: 'http://localhost:3001', ws: true },
     '/ws': { target: 'ws://localhost:8080', ws: true },

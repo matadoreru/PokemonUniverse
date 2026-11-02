@@ -1,15 +1,20 @@
 package es.pokemonuniverse.config;
 
+import es.pokemonuniverse.application.categories.CustomCategoryService;
 import es.pokemonuniverse.application.rooms.HostContentProvider;
 import es.pokemonuniverse.application.rooms.RoomSettings;
 import es.pokemonuniverse.application.rooms.UserGameConfigPreferences;
+import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
+import es.pokemonuniverse.domain.game.engine.WouldYouRatherPromptPair;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Secondary;
 import jakarta.inject.Singleton;
+import java.util.List;
 
 /**
- * Beans de sala de la etapa 2A: ajustes desde {@link PuConfig} y los puertos que la 2C sustituirá (preferencias de
- * configuración por usuario y contenido personal del host), vacíos y marcados {@code @Secondary}.
+ * Beans de sala: ajustes desde {@link PuConfig}, contenido personal del host (categorías de
+ * {@link CustomCategoryService}; los dilemas siguen vacíos hasta su tarea) y el puerto que la 2C aún sustituirá
+ * (preferencias de configuración por usuario), marcados {@code @Secondary} para que las pruebas los reemplacen.
  */
 @Factory
 public class RoomBeans {
@@ -27,7 +32,17 @@ public class RoomBeans {
 
   @Singleton
   @Secondary
-  HostContentProvider hostContentProvider() {
-    return HostContentProvider.EMPTY;
+  HostContentProvider hostContentProvider(CustomCategoryService categories) {
+    return new HostContentProvider() {
+      @Override
+      public List<SubjectiveCategory> customCategoriesForUser(String userId) {
+        return categories.enabled(userId);
+      }
+
+      @Override
+      public List<WouldYouRatherPromptPair> wouldYouRatherPromptsForUser(String userId) {
+        return HostContentProvider.EMPTY.wouldYouRatherPromptsForUser(userId);
+      }
+    };
   }
 }

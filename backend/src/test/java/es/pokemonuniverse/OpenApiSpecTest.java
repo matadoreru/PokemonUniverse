@@ -34,7 +34,8 @@ class OpenApiSpecTest {
       @SuppressWarnings("unchecked")
       Map<String, Object> paths = (Map<String, Object>) spec.get("paths");
       assertEquals(Set.of("/api/auth/register", "/api/auth/login", "/api/auth/guest", "/api/auth/logout",
-          "/api/auth/me", "/api/auth/profile", "/api/auth/avatars/{filename}", "/api/changelog", "/api/feedback",
+          "/api/auth/me", "/api/auth/profile", "/api/auth/avatars/{filename}", "/api/categories",
+          "/api/categories/{id}", "/api/changelog", "/api/feedback",
           "/api/games", "/api/health", "/api/pokemon",
           "/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/sprite",
           "/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/audio"), paths.keySet());

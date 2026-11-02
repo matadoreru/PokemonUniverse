@@ -74,8 +74,10 @@ buscador desplaza la página (Bingo); además, 8 juegos no muestran el título d
 - `PokemonAssetReference` lo escribe el data-sync (gritos y referencias que lee `JpaPokemonAudioCatalog`).
 - `replaceCatalog` tras el sync debe recargar también visuales y audio (`GameCatalogs`), no solo el catálogo Pokémon;
   hoy nadie lo llama en producción.
-- `HostContentProvider` respaldado por tablas (categorías personalizadas y pares de Would You Rather del host); hoy
-  `config/RoomBeans` devuelve `HostContentProvider.EMPTY`.
+- `HostContentProvider` respaldado por tablas: las categorías personalizadas ya salen de `CustomCategoryService`
+  (2C, `/api/categories` en Java solo con `VITE_REALTIME=java`); faltan los pares de Would You Rather del host.
+- `/api/categories` a Java en nginx en el corte 2D: mientras Node siga escribiendo la tabla, la caché Java solo ve
+  las filas escritas por Java (se carga al arrancar).
 
 ### Corte 2D: Java dueño de las salas
 

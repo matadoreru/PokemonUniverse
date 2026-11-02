@@ -1,5 +1,6 @@
 package es.pokemonuniverse.application.rooms;
 
+import es.pokemonuniverse.application.validation.ZodIssues;
 import es.pokemonuniverse.domain.room.GameSelectionMode;
 import es.pokemonuniverse.domain.room.RoomRole;
 import es.pokemonuniverse.domain.room.SessionMode;
@@ -40,12 +41,12 @@ public final class RoomCommandParsers {
     var issues = new ZodIssues();
     if (raw == null || !raw.isString()) {
       issues.invalidType("string", raw, List.of());
-      throw issues.toException();
+      throw new RoomException(issues.stringify());
     }
     var code = jsTrim(raw.getStringValue()).toUpperCase(Locale.ROOT);
     if (!ROOM_CODE.matcher(code).matches()) {
       issues.invalidFormat("regex", "/^[A-Z2-9]{6}$/", List.of(), "Invalid string: must match pattern /^[A-Z2-9]{6}$/");
-      throw issues.toException();
+      throw new RoomException(issues.stringify());
     }
     return code;
   }
@@ -79,7 +80,7 @@ public final class RoomCommandParsers {
     }
     var issues = new ZodIssues();
     issues.invalidValue(ASSIGNABLE_ROLES);
-    throw issues.toException();
+    throw new RoomException(issues.stringify());
   }
 
   /** {@code setGameSkipVoteRequestSchema} (estricto). */
@@ -87,13 +88,13 @@ public final class RoomCommandParsers {
     var issues = new ZodIssues();
     if (raw == null || !raw.isObject()) {
       issues.rootNotObject(raw);
-      throw issues.toException();
+      throw new RoomException(issues.stringify());
     }
     var id = uuid(raw.get("gameInstanceId"), "gameInstanceId", issues);
     var wants = raw.get("wantsToSkip");
     if (wants == null || !wants.isBoolean()) issues.invalidType("boolean", wants, List.of("wantsToSkip"));
     strict(raw, Set.of("gameInstanceId", "wantsToSkip"), issues);
-    if (!issues.isEmpty()) throw issues.toException();
+    if (!issues.isEmpty()) throw new RoomException(issues.stringify());
     return new SetGameSkipVoteRequest(id, wants.getBooleanValue());
   }
 
@@ -102,7 +103,7 @@ public final class RoomCommandParsers {
     var issues = new ZodIssues();
     if (raw == null || !raw.isObject()) {
       issues.rootNotObject(raw);
-      throw issues.toException();
+      throw new RoomException(issues.stringify());
     }
     var id = uuid(raw.get("gameInstanceId"), "gameInstanceId", issues);
     var epoch = raw.get("actionEpoch");
@@ -118,7 +119,7 @@ public final class RoomCommandParsers {
       issues.invalidType("nonoptional", null, List.of("action"));
     }
     strict(raw, Set.of("gameInstanceId", "actionEpoch", "action"), issues);
-    if (!issues.isEmpty()) throw issues.toException();
+    if (!issues.isEmpty()) throw new RoomException(issues.stringify());
     return new GameActionRequest(id, epoch.getStringValue(), action);
   }
 
@@ -139,12 +140,12 @@ public final class RoomCommandParsers {
   private static String discriminator(@Nullable JsonNode raw, List<String> options, ZodIssues issues) {
     if (raw == null || !raw.isObject()) {
       issues.rootNotObject(raw);
-      throw issues.toException();
+      throw new RoomException(issues.stringify());
     }
     var type = raw.get("type");
     if (type == null || !type.isString() || !options.contains(type.getStringValue())) {
       issues.noDiscriminator(options);
-      throw issues.toException();
+      throw new RoomException(issues.stringify());
     }
     return type.getStringValue();
   }
@@ -154,16 +155,16 @@ public final class RoomCommandParsers {
     var path = List.<Object>of(key);
     if (node == null || !node.isNumber()) {
       issues.invalidType("number", node, path);
-      throw issues.toException();
+      throw new RoomException(issues.stringify());
     }
     double value = node.getDoubleValue();
     if (value != Math.rint(value) || Math.abs(value) > 9_007_199_254_740_991d) {
       issues.notInteger(path);
-      throw issues.toException();
+      throw new RoomException(issues.stringify());
     }
     if (value < min) issues.tooSmall("number", min, path, "Too small: expected number to be >=" + min);
     if (value > max) issues.tooBig("number", max, path, "Too big: expected number to be <=" + max);
-    if (!issues.isEmpty()) throw issues.toException();
+    if (!issues.isEmpty()) throw new RoomException(issues.stringify());
     return (int) value;
   }
 
@@ -172,7 +173,7 @@ public final class RoomCommandParsers {
     var path = List.<Object>of("gameIds");
     if (node == null || !node.isArray()) {
       issues.invalidType("array", node, path);
-      throw issues.toException();
+      throw new RoomException(issues.stringify());
     }
     var ids = new ArrayList<String>();
     for (int i = 0; i < node.size(); i++) {
@@ -190,7 +191,7 @@ public final class RoomCommandParsers {
     if (issues.isEmpty() && new HashSet<>(ids).size() != ids.size()) {
       issues.custom(path, "Los minijuegos no pueden repetirse.");
     }
-    if (!issues.isEmpty()) throw issues.toException();
+    if (!issues.isEmpty()) throw new RoomException(issues.stringify());
     return ids;
   }
 

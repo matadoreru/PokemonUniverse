@@ -16,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.domain.game.engine.GameEngine;
+import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
+import es.pokemonuniverse.domain.game.engine.WouldYouRatherPromptPair;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
 import es.pokemonuniverse.domain.json.JsonTree;
@@ -247,6 +249,43 @@ class RoomCoordinatorTest {
     assertEquals("socket-host", kit.events.named("room:state").getLast().connectionId());
     assertEquals(new AvatarRef.Preset("trainer-aqua"), state.members().getFirst().avatar());
     assertTrue(serialize(state).contains("\"avatar\":{\"type\":\"PRESET\",\"value\":\"trainer-aqua\"}"));
+  }
+
+  @Test
+  @DisplayName("re-broadcasts room:state with the new custom category count only when the user hosts the room")
+  void rebroadcastsHostCategories() {
+    var categories = new LinkedHashMap<String, List<SubjectiveCategory>>();
+    var content = new HostContentProvider() {
+      @Override
+      public List<SubjectiveCategory> customCategoriesForUser(String userId) {
+        return categories.getOrDefault(userId, List.of());
+      }
+
+      @Override
+      public List<WouldYouRatherPromptPair> wouldYouRatherPromptsForUser(
+          String userId) {
+        return List.of();
+      }
+    };
+    var kit = new RoomTestKit(50_000, UserGameConfigPreferences.NO_OP, content, RoomTestKit.registry());
+    var host = user("host-user", "Host", "host@example.com");
+    var member = user("member-user", "Ana", "ana@example.com");
+    kit.room(8, host, member);
+    assertEquals(0, kit.events.lastStateFor("host-user").hostCustomCategoryCount());
+    kit.events.clear();
+
+    categories.put("host-user", List.of(new SubjectiveCategory("c1", "Uno"),
+        new SubjectiveCategory("c2", "Dos")));
+    kit.manager.updateHostCategories("host-user");
+    assertEquals(2, kit.events.named("room:state").size());
+    assertEquals(2, kit.events.lastStateFor("host-user").hostCustomCategoryCount());
+    assertEquals(2, kit.events.lastStateFor("member-user").hostCustomCategoryCount());
+
+    kit.events.clear();
+    categories.put("member-user", List.of(new SubjectiveCategory("c3", "Tres")));
+    kit.manager.updateHostCategories("member-user");
+    kit.manager.updateHostCategories("nobody");
+    assertTrue(kit.events.sent.isEmpty());
   }
 
   // --------------------------------------------------------------------------------------- roles y permisos
