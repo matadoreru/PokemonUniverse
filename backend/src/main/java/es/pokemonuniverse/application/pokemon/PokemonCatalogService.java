@@ -32,11 +32,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Catálogo público y de partidas: carga Pokémon, movimientos, movimientos por nivel y entradas de Pokédex como
- * {@code loadPokemonCatalog} de Node, aplica el filtro de formas del catálogo y cachea el resultado una hora.
+ * {@code loadPokemonCatalog} de Node, aplica el filtro de formas del catálogo y cachea el resultado una hora. La
+ * recarga al caducar es de un solo vuelo ({@link CatalogSnapshotCache}): las lecturas no toman cerrojo y N peticiones
+ * concurrentes al caducar comparten una única carga.
  */
 @Singleton
 public class PokemonCatalogService implements GameCatalogProvider {
@@ -52,15 +53,14 @@ public class PokemonCatalogService implements GameCatalogProvider {
   /** El cargador de Node etiqueta todas las entradas como españolas. */
   private static final String POKEDEX_LANGUAGE = "es";
 
-  private record Cached(InMemoryPokemonCatalog catalog, Instant loadedAt) {}
-
   private final PokemonRepository repository;
   private final MoveRepository moves;
   private final PokemonLevelUpMoveRepository learnsets;
   private final PokedexEntryRepository pokedexEntries;
   private final JpaPokemonAudioCatalog audio;
   private final Path artworkDir;
-  private final AtomicReference<Cached> cache = new AtomicReference<>();
+  private final CatalogSnapshotCache<InMemoryPokemonCatalog> cache =
+      new CatalogSnapshotCache<>(this::load, TTL, Instant::now);
 
   public PokemonCatalogService(PokemonRepository repository, MoveRepository moves,
       PokemonLevelUpMoveRepository learnsets, PokedexEntryRepository pokedexEntries, JpaPokemonAudioCatalog audio,
@@ -87,12 +87,7 @@ public class PokemonCatalogService implements GameCatalogProvider {
 
   /** Instantánea cacheada del catálogo para las partidas (mismo filtro y orden que {@code loadPokemonCatalog} de Node). */
   public InMemoryPokemonCatalog catalog() {
-    var current = cache.get();
-    if (current == null || current.loadedAt().plus(TTL).isBefore(Instant.now())) {
-      current = new Cached(load(), Instant.now());
-      cache.set(current);
-    }
-    return current.catalog();
+    return cache.get();
   }
 
   /**
@@ -108,7 +103,7 @@ public class PokemonCatalogService implements GameCatalogProvider {
 
   /** Descarta la caché; la siguiente consulta recarga desde la base de datos. */
   public void refresh() {
-    cache.set(null);
+    cache.invalidate();
   }
 
   private InMemoryPokemonCatalog load() {
