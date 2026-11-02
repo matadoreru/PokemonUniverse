@@ -1,0 +1,664 @@
+package es.pokemonuniverse.domain.game.engines.pokemonconnections;
+
+import static es.pokemonuniverse.domain.game.engine.infra.Immutables.frozenList;
+
+import es.pokemonuniverse.domain.game.engine.EngineException;
+import es.pokemonuniverse.domain.game.engine.GameContext;
+import es.pokemonuniverse.domain.game.engine.infra.Randoms;
+import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.ConnectionAnswerGroup;
+import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.ConnectionPokemon;
+import es.pokemonuniverse.domain.pokemon.Pokemon;
+import io.micronaut.core.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.DoubleSupplier;
+import java.util.function.Predicate;
+
+/**
+ * Traducción literal de {@code pokemon-connections/catalog.ts}: las categorías curadas
+ * ({@code connectionCategoryCatalog}) y las plantillas ({@code curatedTemplates}) en el mismo orden que el TS, las
+ * categorías dinámicas y la generación del puzle. El orden importa: alimenta {@code shuffled} y las rotaciones.
+ */
+public final class PokemonConnectionsCatalog {
+
+  /** {@code POKEMON_TYPES} de {@code pokemon/types.ts}, en su orden, con su etiqueta de {@code typeLabels}. */
+  private static final Map<String, String> TYPE_LABELS = orderedLabels(
+      "normal", "Normal", "fire", "Fuego", "water", "Agua", "electric", "Eléctrico", "grass", "Planta",
+      "ice", "Hielo", "fighting", "Lucha", "poison", "Veneno", "ground", "Tierra", "flying", "Volador",
+      "psychic", "Psíquico", "bug", "Bicho", "rock", "Roca", "ghost", "Fantasma", "dragon", "Dragón",
+      "dark", "Siniestro", "steel", "Acero", "fairy", "Hada");
+
+  /** {@code colorLabels}, en el orden de {@code Object.entries}. */
+  private static final Map<String, String> COLOR_LABELS = orderedLabels(
+      "black", "negro", "blue", "azul", "brown", "marrón", "gray", "gris", "green", "verde", "pink", "rosa",
+      "purple", "morado", "red", "rojo", "white", "blanco", "yellow", "amarillo");
+
+  private PokemonConnectionsCatalog() {}
+
+  /**
+   * {@code CategoryDefinition}: una lista fija de ids ({@code pokemonIds}) o un predicado ({@code matches}). Tres
+   * textos contiguos: se construye con {@link #category(String)}.
+   */
+  public record CategoryDefinition(String id, String label, String explanation, @Nullable List<String> pokemonIds,
+      @Nullable Predicate<Pokemon> matches) {
+
+    public CategoryDefinition {
+      pokemonIds = pokemonIds == null ? null : frozenList(pokemonIds);
+    }
+
+    /** {@code ids?.has(pokemon.id) || definition.matches?.(pokemon)}. */
+    boolean includes(Pokemon pokemon) {
+      return (pokemonIds != null && pokemonIds.contains(pokemon.id())) || (matches != null && matches.test(pokemon));
+    }
+  }
+
+  /** Setters con nombre para {@link CategoryDefinition}; {@code pokemonIds} o {@code matches} la terminan. */
+  static final class CategoryBuilder {
+    private final String id;
+    private String label;
+    private String explanation;
+
+    private CategoryBuilder(String id) {
+      this.id = Objects.requireNonNull(id, "id");
+    }
+
+    CategoryBuilder label(String value) { label = value; return this; }
+
+    CategoryBuilder explanation(String value) { explanation = value; return this; }
+
+    CategoryDefinition pokemonIds(String... ids) {
+      return new CategoryDefinition(id, Objects.requireNonNull(label, "label"),
+          Objects.requireNonNull(explanation, "explanation"), Arrays.asList(ids), null);
+    }
+
+    CategoryDefinition matches(Predicate<Pokemon> predicate) {
+      return new CategoryDefinition(id, Objects.requireNonNull(label, "label"),
+          Objects.requireNonNull(explanation, "explanation"), null, Objects.requireNonNull(predicate, "matches"));
+    }
+  }
+
+  static CategoryBuilder category(String id) {
+    return new CategoryBuilder(id);
+  }
+
+  /** {@code { categoryId, pokemonIds }} de una plantilla curada. */
+  public record TemplateGroup(String categoryId, List<String> pokemonIds) {
+
+    public TemplateGroup {
+      pokemonIds = frozenList(pokemonIds);
+    }
+  }
+
+  /** {@code CuratedTemplate}. */
+  public record CuratedTemplate(String id, List<TemplateGroup> groups) {
+
+    public CuratedTemplate {
+      groups = frozenList(groups);
+    }
+  }
+
+  private static TemplateGroup group(String categoryId, String... pokemonIds) {
+    return new TemplateGroup(categoryId, Arrays.asList(pokemonIds));
+  }
+
+  private static CuratedTemplate template(String id, TemplateGroup... groups) {
+    return new CuratedTemplate(id, Arrays.asList(groups));
+  }
+
+  /** {@code GeneratedConnectionsPuzzle}; {@code source} es {@code CURATED} o {@code DYNAMIC}. */
+  public record GeneratedConnectionsPuzzle(String key, String source, List<ConnectionAnswerGroup> groups) {
+
+    public GeneratedConnectionsPuzzle {
+      groups = frozenList(groups);
+    }
+  }
+
+  /** {@code connectionCategoryCatalog}. */
+  public static final List<CategoryDefinition> CONNECTION_CATEGORY_CATALOG = List.of(
+      category("eevee-family")
+          .label("Evoluciones de Eevee")
+          .explanation("Todas son evoluciones posibles de Eevee.")
+          .pokemonIds("vaporeon", "jolteon", "flareon", "espeon", "umbreon", "leafeon", "glaceon", "sylveon"),
+      category("fossils")
+          .label("Pokémon fósiles")
+          .explanation("Proceden de fósiles que pueden revivirse.")
+          .pokemonIds("omanyte", "kabuto", "aerodactyl", "lileep", "anorith", "cranidos", "shieldon", "tirtouga",
+              "archen", "tyrunt", "amaura", "dracozolt", "arctozolt", "dracovish", "arctovish"),
+      category("dogs")
+          .label("Pokémon con aspecto canino")
+          .explanation("Su diseño está inspirado en perros o cánidos.")
+          .pokemonIds("growlithe", "arcanine", "houndour", "houndoom", "electrike", "manectric", "lillipup", "herdier",
+              "stoutland", "rockruff", "lycanroc-midday", "yamper", "boltund", "fidough", "dachsbun", "greavard",
+              "houndstone", "mabosstiff"),
+      category("food")
+          .label("Relacionados con comida")
+          .explanation("Su diseño o concepto está relacionado con alimentos o bebidas.")
+          .pokemonIds("vanillite", "vanillish", "vanilluxe", "swirlix", "slurpuff", "applin", "flapple", "appletun",
+              "sinistea", "polteageist", "milcery", "alcremie", "smoliv", "dolliv", "arboliva", "fidough", "dachsbun",
+              "tatsugiri"),
+      category("cats")
+          .label("Pokémon con aspecto felino")
+          .explanation("Su diseño está inspirado en gatos o felinos.")
+          .pokemonIds("meowth", "persian", "skitty", "delcatty", "glameow", "purugly", "purrloin", "liepard", "litleo",
+              "pyroar", "espurr", "meowstic-male", "litten", "torracat", "incineroar", "sprigatito", "floragato",
+              "meowscarada"),
+      category("bears")
+          .label("Pokémon con aspecto de oso")
+          .explanation("Su diseño está inspirado en osos.")
+          .pokemonIds("teddiursa", "ursaring", "cubchoo", "beartic", "stufful", "bewear", "kubfu",
+              "urshifu-single-strike"),
+      category("baby")
+          .label("Pokémon bebé")
+          .explanation("Pertenecen al grupo oficial de Pokémon bebé.")
+          .pokemonIds("pichu", "cleffa", "igglybuff", "togepi", "tyrogue", "smoochum", "elekid", "magby", "azurill",
+              "wynaut", "budew", "chingling", "bonsly", "mime-jr", "happiny", "munchlax", "riolu", "mantyke", "toxel"),
+      category("pseudo-final")
+          .label("Pseudolegendarios finales")
+          .explanation("Son la fase final de una familia considerada pseudolegendaria.")
+          .pokemonIds("dragonite", "tyranitar", "salamence", "metagross", "garchomp", "hydreigon", "goodra", "kommo-o",
+              "dragapult", "baxcalibur"),
+      category("electric-rodents")
+          .label("Roedores eléctricos")
+          .explanation("Forman el grupo informal de roedores eléctricos de cada generación.")
+          .pokemonIds("pikachu", "raichu", "pichu", "plusle", "minun", "pachirisu", "emolga", "dedenne", "togedemaru",
+              "morpeko", "pawmi", "pawmo", "pawmot"),
+      category("artificial-objects")
+          .label("Objetos animados")
+          .explanation("Su diseño convierte un objeto cotidiano en Pokémon.")
+          .pokemonIds("magnemite", "magneton", "voltorb", "electrode", "klink", "klang", "klinklang", "litwick",
+              "lampent", "chandelure", "trubbish", "garbodor", "vanillite", "vanillish", "vanilluxe", "honedge",
+              "doublade", "aegislash-shield", "klefki", "sinistea", "polteageist"),
+      category("grass-partners")
+          .label("Compañeros iniciales de tipo Planta")
+          .explanation("Se pueden elegir como primer compañero de una región y empiezan con tipo Planta.")
+          .pokemonIds("bulbasaur", "chikorita", "treecko", "turtwig", "snivy", "chespin", "rowlet", "grookey",
+              "sprigatito"),
+      category("fire-partners")
+          .label("Compañeros iniciales de tipo Fuego")
+          .explanation("Se pueden elegir como primer compañero de una región y empiezan con tipo Fuego.")
+          .pokemonIds("charmander", "cyndaquil", "torchic", "chimchar", "tepig", "fennekin", "litten", "scorbunny",
+              "fuecoco"),
+      category("water-partners")
+          .label("Compañeros iniciales de tipo Agua")
+          .explanation("Se pueden elegir como primer compañero de una región y empiezan con tipo Agua.")
+          .pokemonIds("squirtle", "totodile", "mudkip", "piplup", "oshawott", "froakie", "popplio", "sobble", "quaxly"),
+      category("regional-birds")
+          .label("Aves de las primeras rutas")
+          .explanation("Pertenecen a familias de aves que aparecen al principio de sus regiones.")
+          .pokemonIds("pidgeot", "noctowl", "swellow", "staraptor", "unfezant", "talonflame", "toucannon",
+              "corviknight", "kilowattrel"),
+      category("trade-evolution")
+          .label("Evolucionan al intercambiarlos")
+          .explanation("Su método evolutivo clásico requiere un intercambio.")
+          .pokemonIds("kadabra", "machoke", "graveler", "haunter", "boldore", "gurdurr", "phantump", "pumpkaboo"),
+      category("branch-evolution")
+          .label("Tienen una evolución ramificada")
+          .explanation("Pueden evolucionar en especies diferentes según las condiciones.")
+          .pokemonIds("gloom", "poliwhirl", "slowpoke", "tyrogue", "wurmple", "snorunt", "clamperl", "kirlia"),
+      category("friendship-evolution")
+          .label("Evolucionan con amistad")
+          .explanation("Una amistad alta forma parte de su método de evolución.")
+          .pokemonIds("golbat", "chansey", "togetic", "azurill", "budew", "buneary", "riolu", "snom"),
+      category("stone-evolution")
+          .label("Evolucionan con una piedra")
+          .explanation("Necesitan una piedra evolutiva para alcanzar su siguiente fase.")
+          .pokemonIds("vulpix", "growlithe", "staryu", "gloom", "sunkern", "minccino", "helioptile", "charjabug"),
+      category("turtles")
+          .label("Pokémon con aspecto de tortuga")
+          .explanation("Su diseño está inspirado en tortugas terrestres o marinas.")
+          .pokemonIds("squirtle", "wartortle", "blastoise", "torkoal", "turtwig", "grotle", "torterra", "tirtouga",
+              "carracosta", "turtonator", "chewtle", "drednaw"),
+      category("snakes")
+          .label("Pokémon con aspecto de serpiente")
+          .explanation("Tienen un cuerpo y diseño inspirados en serpientes.")
+          .pokemonIds("ekans", "arbok", "onix", "steelix", "dunsparce", "seviper", "snivy", "servine", "serperior",
+              "silicobra", "sandaconda"),
+      category("monkeys")
+          .label("Pokémon con aspecto de simio")
+          .explanation("Su diseño está inspirado en monos u otros simios.")
+          .pokemonIds("mankey", "primeape", "aipom", "ambipom", "chimchar", "monferno", "infernape", "pansage",
+              "pansear", "panpour", "simisage", "simisear", "simipour", "oranguru", "passimian", "grookey", "thwackey",
+              "rillaboom"),
+      category("horses")
+          .label("Pokémon con aspecto equino")
+          .explanation("Su diseño está inspirado en caballos, cebras o asnos.")
+          .pokemonIds("ponyta", "rapidash", "blitzle", "zebstrika", "mudbray", "mudsdale", "glastrier", "spectrier"),
+      category("crustaceans")
+          .label("Pokémon crustáceos")
+          .explanation("Su diseño toma rasgos de cangrejos u otros crustáceos.")
+          .pokemonIds("krabby", "kingler", "corphish", "crawdaunt", "dwebble", "crustle", "clauncher", "clawitzer",
+              "crabrawler", "crabominable", "klawf"),
+      category("frogs")
+          .label("Pokémon con aspecto de rana")
+          .explanation("Su diseño está inspirado en ranas, sapos o renacuajos.")
+          .pokemonIds("poliwag", "poliwhirl", "poliwrath", "politoed", "croagunk", "toxicroak", "tympole", "palpitoad",
+              "seismitoad", "froakie", "frogadier", "greninja", "tadbulb", "bellibolt"),
+      category("rabbits")
+          .label("Pokémon con aspecto de conejo")
+          .explanation("Su diseño está inspirado en conejos o liebres.")
+          .pokemonIds("nidoran-f", "nidoran-m", "azumarill", "buneary", "lopunny", "bunnelby", "diggersby", "scorbunny",
+              "raboot", "cinderace"),
+      category("foxes")
+          .label("Pokémon con aspecto de zorro")
+          .explanation("Su diseño está inspirado en zorros.")
+          .pokemonIds("vulpix", "ninetales", "eevee", "flareon", "espeon", "umbreon", "fennekin", "braixen", "delphox",
+              "nickit", "thievul"),
+      category("bats")
+          .label("Pokémon con aspecto de murciélago")
+          .explanation("Su diseño está inspirado en murciélagos.")
+          .pokemonIds("zubat", "golbat", "crobat", "woobat", "swoobat", "noibat", "noivern"),
+      category("penguins")
+          .label("Pokémon con aspecto de pingüino")
+          .explanation("Su diseño está inspirado en pingüinos.")
+          .pokemonIds("piplup", "prinplup", "empoleon", "eiscue-ice"),
+      category("owls")
+          .label("Pokémon con aspecto de búho")
+          .explanation("Su diseño está inspirado en búhos o lechuzas.")
+          .pokemonIds("hoothoot", "noctowl", "rowlet", "dartrix", "decidueye"),
+      category("pigs")
+          .label("Pokémon con aspecto porcino")
+          .explanation("Su diseño está inspirado en cerdos o jabalíes.")
+          .pokemonIds("swinub", "piloswine", "spoink", "grumpig", "mamoswine", "tepig", "pignite", "emboar", "lechonk",
+              "oinkologne-male"),
+      category("elephants")
+          .label("Pokémon con aspecto de elefante")
+          .explanation("Su diseño está inspirado en elefantes.")
+          .pokemonIds("phanpy", "donphan", "cufant", "copperajah"),
+      category("sharks")
+          .label("Pokémon con aspecto de tiburón")
+          .explanation("Su diseño está inspirado en tiburones.")
+          .pokemonIds("carvanha", "sharpedo", "gible", "gabite", "garchomp"),
+      category("mushrooms")
+          .label("Pokémon con aspecto de hongo")
+          .explanation("Su diseño está inspirado en setas u hongos.")
+          .pokemonIds("paras", "parasect", "shroomish", "breloom", "foongus", "amoonguss", "morelull", "shiinotic",
+              "toedscool", "toedscruel"),
+      category("flowers")
+          .label("Pokémon con flores")
+          .explanation("Las flores son una parte central de su diseño.")
+          .pokemonIds("vileplume", "bellossom", "sunflora", "roselia", "roserade", "cherrim", "lilligant", "flabebe",
+              "floette", "florges", "comfey"),
+      category("musical")
+          .label("Relacionados con la música")
+          .explanation("Su diseño o comportamiento está ligado a instrumentos, canto o ritmo.")
+          .pokemonIds("jigglypuff", "ludicolo", "chimecho", "kricketune", "chatot", "meloetta-aria", "rillaboom",
+              "toxtricity-amped", "skeledirge"),
+      category("pokeball-lookalikes")
+          .label("Se parecen a Poké Balls")
+          .explanation("Su forma o patrón visual recuerda deliberadamente a una Poké Ball.")
+          .pokemonIds("voltorb", "electrode", "foongus", "amoonguss", "gimmighoul"),
+      category("multiple-heads")
+          .label("Tienen varias cabezas")
+          .explanation("Su diseño muestra dos o más cabezas claramente diferenciadas.")
+          .pokemonIds("dugtrio", "magneton", "doduo", "dodrio", "exeggcute", "exeggutor", "weezing", "combee",
+              "zweilous", "hydreigon"),
+      category("ancient-future-paradox")
+          .label("Pokémon Paradoja")
+          .explanation("Son especies Paradoja procedentes del pasado o del futuro.")
+          .pokemonIds("great-tusk", "scream-tail", "brute-bonnet", "flutter-mane", "slither-wing", "sandy-shocks",
+              "iron-treads", "iron-bundle", "iron-hands", "iron-jugulis", "iron-moth", "iron-thorns", "roaring-moon",
+              "iron-valiant", "walking-wake", "iron-leaves", "gouging-fire", "raging-bolt", "iron-boulder",
+              "iron-crown"),
+      category("ultra-beasts")
+          .label("Ultraentes")
+          .explanation("Pertenecen al grupo oficial de los Ultraentes.")
+          .pokemonIds("nihilego", "buzzwole", "pheromosa", "xurkitree", "celesteela", "kartana", "guzzlord", "poipole",
+              "naganadel", "stakataka", "blacephalon"),
+      category("regi-family")
+          .label("Familia de los Regis")
+          .explanation("Forman parte del grupo de gigantes legendarios conocidos como Regis.")
+          .pokemonIds("regirock", "regice", "registeel", "regigigas", "regieleki", "regidrago"),
+      category("rodents")
+          .label("Pokémon con aspecto de roedor")
+          .explanation("Su diseño está inspirado en ratones, ratas, ardillas u otros roedores.")
+          .pokemonIds("rattata", "raticate", "pikachu", "raichu", "sandshrew", "sandslash", "sentret", "furret",
+              "marill", "plusle", "minun", "bidoof", "bibarel", "pachirisu", "emolga", "dedenne", "togedemaru",
+              "skwovet", "greedent", "morpeko", "pawmi", "pawmo", "pawmot", "tandemaus", "maushold-family-of-four"),
+      category("spiders")
+          .label("Pokémon con aspecto de araña")
+          .explanation("Su diseño está inspirado en arañas u otros arácnidos similares.")
+          .pokemonIds("spinarak", "ariados", "joltik", "galvantula", "dewpider", "araquanid", "tarountula", "spidops"),
+      category("butterflies-moths")
+          .label("Mariposas y polillas")
+          .explanation("Su diseño adulto está inspirado en mariposas o polillas.")
+          .pokemonIds("butterfree", "venomoth", "beautifly", "dustox", "mothim", "volcarona", "vivillon", "frosmoth"),
+      category("fish")
+          .label("Pokémon con aspecto de pez")
+          .explanation("Su diseño está inspirado principalmente en peces.")
+          .pokemonIds("magikarp", "goldeen", "seaking", "remoraid", "carvanha", "feebas", "relicanth", "luvdisc",
+              "finneon", "lumineon", "basculin-red-striped", "wishiwashi-solo", "bruxish", "arrokuda", "barraskewda",
+              "veluza"),
+      category("sheep-goats")
+          .label("Ovejas y cabras")
+          .explanation("Su diseño está inspirado en ovejas, carneros o cabras.")
+          .pokemonIds("mareep", "flaaffy", "ampharos", "skiddo", "gogoat", "wooloo", "dubwool"),
+      category("ducks")
+          .label("Pokémon con aspecto de pato")
+          .explanation("Su diseño está inspirado en patos u otras aves acuáticas afines.")
+          .pokemonIds("psyduck", "golduck", "farfetchd", "ducklett", "swanna", "quaxly", "quaxwell", "quaquaval"),
+      category("legendary-birds")
+          .label("Aves legendarias de Kanto")
+          .explanation("Forman el trío de aves legendarias descubierto en Kanto.")
+          .pokemonIds("articuno", "zapdos", "moltres"),
+      category("legendary-beasts")
+          .label("Bestias legendarias de Johto")
+          .explanation("Forman el trío de bestias legendarias de Johto.")
+          .pokemonIds("raikou", "entei", "suicune"),
+      category("weather-trio")
+          .label("Trío meteorológico de Hoenn")
+          .explanation("Kyogre, Groudon y Rayquaza forman el trío legendario asociado al clima de Hoenn.")
+          .pokemonIds("kyogre", "groudon", "rayquaza"),
+      category("lake-guardians")
+          .label("Guardianes del lago")
+          .explanation("Uxie, Mesprit y Azelf forman el trío de los lagos de Sinnoh.")
+          .pokemonIds("uxie", "mesprit", "azelf"),
+      category("creation-trio")
+          .label("Trío de la creación")
+          .explanation("Dialga, Palkia y Giratina forman el trío de la creación de Sinnoh.")
+          .pokemonIds("dialga", "palkia", "giratina-altered"),
+      category("swords-of-justice")
+          .label("Espadachines Místicos")
+          .explanation("Pertenecen al grupo legendario de los Espadachines Místicos.")
+          .pokemonIds("cobalion", "terrakion", "virizion", "keldeo-ordinary"),
+      category("forces-of-nature")
+          .label("Fuerzas de la Naturaleza")
+          .explanation("Pertenecen al grupo legendario de las Fuerzas de la Naturaleza.")
+          .pokemonIds("tornadus-incarnate", "thundurus-incarnate", "landorus-incarnate", "enamorus-incarnate"),
+      category("tapu-guardians")
+          .label("Guardianes de las islas de Alola")
+          .explanation("Son las cuatro deidades guardianas de las islas de Alola.")
+          .pokemonIds("tapu-koko", "tapu-lele", "tapu-bulu", "tapu-fini"),
+      category("treasures-of-ruin")
+          .label("Tesoros de la Ruina")
+          .explanation("Pertenecen al cuarteto legendario de los Tesoros de la Ruina.")
+          .pokemonIds("wo-chien", "chien-pao", "ting-lu", "chi-yu"),
+      category("loyal-three-and-master")
+          .label("Séquito de Pecharunt")
+          .explanation("Okidogi, Munkidori y Fezandipiti recibieron sus cadenas de Pecharunt.")
+          .pokemonIds("okidogi", "munkidori", "fezandipiti", "pecharunt"),
+      category("mythical-balanced-stats")
+          .label("Singulares con 100 en cada estadística")
+          .explanation("Sus seis estadísticas base tienen exactamente 100 puntos.")
+          .pokemonIds("mew", "celebi", "jirachi", "manaphy", "shaymin-land"));
+
+  /** {@code curatedTemplates}. */
+  static final List<CuratedTemplate> CURATED_TEMPLATES = List.of(
+      template("classic-connections",
+          group("eevee-family", "vaporeon", "jolteon", "flareon", "espeon"),
+          group("fossils", "omanyte", "kabuto", "aerodactyl", "lileep"),
+          group("dogs", "growlithe", "houndour", "electrike", "lillipup"),
+          group("food", "vanillite", "slurpuff", "appletun", "alcremie")),
+      template("companions-connections",
+          group("cats", "meowth", "skitty", "glameow", "purrloin"),
+          group("bears", "teddiursa", "cubchoo", "stufful", "kubfu"),
+          group("baby", "pichu", "togepi", "riolu", "toxel"),
+          group("pseudo-final", "dragonite", "tyranitar", "metagross", "garchomp")),
+      template("first-partners-connections",
+          group("grass-partners", "bulbasaur", "chikorita", "treecko", "turtwig"),
+          group("fire-partners", "charmander", "cyndaquil", "torchic", "chimchar"),
+          group("water-partners", "squirtle", "totodile", "mudkip", "piplup"),
+          group("regional-birds", "pidgeot", "noctowl", "swellow", "staraptor")),
+      template("evolution-methods-connections",
+          group("trade-evolution", "kadabra", "machoke", "graveler", "haunter"),
+          group("branch-evolution", "poliwhirl", "slowpoke", "snorunt", "kirlia"),
+          group("friendship-evolution", "golbat", "chansey", "buneary", "riolu"),
+          group("stone-evolution", "vulpix", "growlithe", "staryu", "sunkern")),
+      template("animal-shapes-connections",
+          group("turtles", "squirtle", "torkoal", "carracosta", "chewtle"),
+          group("snakes", "ekans", "dunsparce", "seviper", "silicobra"),
+          group("monkeys", "mankey", "aipom", "pansage", "grookey"),
+          group("horses", "ponyta", "blitzle", "mudbray", "spectrier")),
+      template("nature-connections",
+          group("crustaceans", "krabby", "corphish", "dwebble", "klawf"),
+          group("frogs", "politoed", "croagunk", "greninja", "bellibolt"),
+          group("mythical-balanced-stats", "mew", "celebi", "jirachi", "manaphy"),
+          group("electric-rodents", "plusle", "pachirisu", "dedenne", "togedemaru")),
+      template("legendary-groups-connections",
+          group("swords-of-justice", "cobalion", "terrakion", "virizion", "keldeo-ordinary"),
+          group("forces-of-nature", "tornadus-incarnate", "thundurus-incarnate", "landorus-incarnate",
+              "enamorus-incarnate"),
+          group("tapu-guardians", "tapu-koko", "tapu-lele", "tapu-bulu", "tapu-fini"),
+          group("treasures-of-ruin", "wo-chien", "chien-pao", "ting-lu", "chi-yu")),
+      template("wildlife-connections",
+          group("spiders", "spinarak", "joltik", "dewpider", "tarountula"),
+          group("butterflies-moths", "butterfree", "beautifly", "mothim", "vivillon"),
+          group("sheep-goats", "mareep", "skiddo", "wooloo", "dubwool"),
+          group("ducks", "psyduck", "farfetchd", "ducklett", "quaxly")));
+
+  private static Map<String, String> orderedLabels(String... keysAndLabels) {
+    var labels = new LinkedHashMap<String, String>();
+    for (int index = 0; index < keysAndLabels.length; index += 2) {
+      labels.put(keysAndLabels[index], keysAndLabels[index + 1]);
+    }
+    return Collections.unmodifiableMap(labels);
+  }
+
+  /** {@code rotate}: {@code values} desde {@code offset % length}, dando la vuelta. */
+  static <T> List<T> rotate(List<T> values, int offset) {
+    if (values.isEmpty()) return List.of();
+    int start = offset % values.size();
+    var result = new ArrayList<T>(values.subList(start, values.size()));
+    result.addAll(values.subList(0, start));
+    return result;
+  }
+
+  /**
+   * {@code resolvedCategoryDefinitions}: las curadas y después las dinámicas (tipos, colores, evolución, rareza,
+   * número de tipos, estadísticas y, si el pool trae más de una generación, la generación de debut), sin repetir id.
+   */
+  static List<CategoryDefinition> resolvedCategoryDefinitions(List<Pokemon> pool) {
+    var availableGenerations = new HashSet<Integer>();
+    for (var pokemon : pool) availableGenerations.add(pokemon.generation());
+    var dynamic = new ArrayList<CategoryDefinition>();
+    TYPE_LABELS.forEach((type, label) -> dynamic.add(category("type-" + type)
+        .label("Comparten el tipo " + label)
+        .explanation("Todos incluyen el tipo " + label + " entre sus tipos.")
+        .matches(pokemon -> pokemon.types().contains(type))));
+    COLOR_LABELS.forEach((color, label) -> dynamic.add(category("color-" + color)
+        .label("Color oficial " + label)
+        .explanation("La Pokédex clasifica oficialmente su color como " + label + ".")
+        .matches(pokemon -> color.equals(pokemon.color()))));
+    dynamic.add(category("evolution-first")
+        .label("Primera fase evolutiva")
+        .explanation("Ocupan la primera fase de una familia con varias etapas.")
+        .matches(pokemon -> Objects.equals(pokemon.evolutionStage(), 1) && stageCount(pokemon) > 1));
+    dynamic.add(category("evolution-final")
+        .label("Evoluciones finales")
+        .explanation("Ocupan la última fase de su familia evolutiva.")
+        .matches(pokemon -> stageCount(pokemon) > 1
+            && Objects.equals(pokemon.evolutionStage(), pokemon.evolutionStageCount())));
+    dynamic.add(category("single-stage")
+        .label("Sin evoluciones")
+        .explanation("No evolucionan ni proceden de otro Pokémon.")
+        .matches(pokemon -> stageCount(pokemon) == 1));
+    dynamic.add(category("legendary")
+        .label("Pokémon legendarios")
+        .explanation("Tienen la clasificación oficial de Pokémon legendario.")
+        .matches(pokemon -> "LEGENDARY".equals(pokemon.legendaryStatus())));
+    dynamic.add(category("mythical")
+        .label("Pokémon singulares")
+        .explanation("Tienen la clasificación oficial de Pokémon singular.")
+        .matches(pokemon -> "MYTHICAL".equals(pokemon.legendaryStatus())));
+    dynamic.add(category("ordinary")
+        .label("No son legendarios ni singulares")
+        .explanation("Tienen la clasificación oficial de Pokémon común.")
+        .matches(pokemon -> "NORMAL".equals(pokemon.legendaryStatus())));
+    dynamic.add(category("single-type")
+        .label("Tienen un único tipo")
+        .explanation("Solo poseen un tipo elemental en su forma mostrada.")
+        .matches(pokemon -> pokemon.types().size() == 1));
+    dynamic.add(category("dual-type")
+        .label("Tienen dos tipos")
+        .explanation("Poseen exactamente dos tipos elementales en su forma mostrada.")
+        .matches(pokemon -> pokemon.types().size() == 2));
+    dynamic.add(category("bst-600-plus")
+        .label("Suma de estadísticas de 600 o más")
+        .explanation("La suma de sus seis estadísticas base alcanza al menos 600 puntos.")
+        .matches(pokemon -> pokemon.baseStatTotal() >= 600));
+    dynamic.add(category("speed-100-plus")
+        .label("Velocidad base de 100 o más")
+        .explanation("Su estadística base de Velocidad alcanza al menos 100 puntos.")
+        .matches(pokemon -> pokemon.speed() >= 100));
+    dynamic.add(category("same-defenses")
+        .label("Defensas base idénticas")
+        .explanation("Su Defensa y su Defensa Especial tienen exactamente el mismo valor base.")
+        .matches(pokemon -> pokemon.defense() == pokemon.specialDefense()));
+    if (availableGenerations.size() > 1) {
+      for (int generation = 1; generation <= 9; generation++) {
+        int debut = generation;
+        dynamic.add(category("generation-" + generation)
+            .label("Debutaron en la generación " + generation)
+            .explanation("Todos aparecieron por primera vez en la generación " + generation + ".")
+            .matches(pokemon -> pokemon.generation() == debut));
+      }
+    }
+    // [...catalog, ...dynamic].filter(primera aparición de cada id).
+    var byId = new LinkedHashMap<String, CategoryDefinition>();
+    for (var definition : CONNECTION_CATEGORY_CATALOG) byId.putIfAbsent(definition.id(), definition);
+    for (var definition : dynamic) byId.putIfAbsent(definition.id(), definition);
+    return List.copyOf(byId.values());
+  }
+
+  /** {@code pokemon.evolutionStageCount ?? 1}. */
+  private static int stageCount(Pokemon pokemon) {
+    return pokemon.evolutionStageCount() == null ? 1 : pokemon.evolutionStageCount();
+  }
+
+  static List<Pokemon> membersFor(CategoryDefinition definition, List<Pokemon> pool) {
+    return pool.stream().filter(definition::includes).toList();
+  }
+
+  private static ConnectionAnswerGroup answerGroup(CategoryDefinition definition, List<Pokemon> pokemon, int index) {
+    return ConnectionAnswerGroup.of(definition, index, pokemon.stream().map(ConnectionPokemon::of).toList());
+  }
+
+  /** {@code curatedCandidates}: cada plantilla (o cada rotación, si sobran grupos) cuyos Pokémon estén en el pool. */
+  static List<GeneratedConnectionsPuzzle> curatedCandidates(List<Pokemon> pool, int groupCount) {
+    var byId = new HashMap<String, Pokemon>();
+    for (var pokemon : pool) byId.put(pokemon.id(), pokemon);
+    var definitions = new HashMap<String, CategoryDefinition>();
+    for (var definition : CONNECTION_CATEGORY_CATALOG) definitions.put(definition.id(), definition);
+    var result = new ArrayList<GeneratedConnectionsPuzzle>();
+    for (var template : CURATED_TEMPLATES) {
+      int size = template.groups().size();
+      int offsets = size == groupCount ? 1 : size > groupCount ? size : 0;
+      for (int offset = 0; offset < offsets; offset++) {
+        var chosen = rotate(template.groups(), offset).subList(0, Math.min(groupCount, size));
+        var groups = new ArrayList<ConnectionAnswerGroup>();
+        boolean resolved = true;
+        for (var group : chosen) {
+          var definition = definitions.get(group.categoryId());
+          var pokemon = group.pokemonIds().stream().map(byId::get).toList();
+          if (definition == null || pokemon.contains(null)) {
+            resolved = false;
+            break;
+          }
+          groups.add(answerGroup(definition, pokemon, groups.size()));
+        }
+        if (!resolved) continue;
+        var key = template.id() + "-" + String.join("-", chosen.stream().map(TemplateGroup::categoryId).toList());
+        result.add(new GeneratedConnectionsPuzzle(key, "CURATED", groups));
+      }
+    }
+    return result;
+  }
+
+  private record Candidate(CategoryDefinition definition, List<Pokemon> members) {}
+
+  /**
+   * {@code dynamicPuzzle}: baraja los miembros de cada categoría (también los de las que luego no llegan a
+   * {@code groupSize}), después las candidatas no excluidas y las excluidas, y prueba rotaciones sin consumir azar.
+   */
+  private static @Nullable GeneratedConnectionsPuzzle dynamicPuzzle(List<Pokemon> pool, int groupSize, int groupCount,
+      DoubleSupplier random, Set<String> excludedCategoryIds, Set<String> usedPuzzleKeys) {
+    var candidates = new ArrayList<Candidate>();
+    for (var definition : resolvedCategoryDefinitions(pool)) {
+      var members = Randoms.shuffled(membersFor(definition, pool), random);
+      if (members.size() >= groupSize) candidates.add(new Candidate(definition, members));
+    }
+    var randomized = new ArrayList<Candidate>(Randoms.shuffled(candidates.stream()
+        .filter(candidate -> !excludedCategoryIds.contains(candidate.definition().id())).toList(), random));
+    randomized.addAll(Randoms.shuffled(candidates.stream()
+        .filter(candidate -> excludedCategoryIds.contains(candidate.definition().id())).toList(), random));
+    for (int attempt = 0; attempt < Math.max(1, randomized.size() * 4); attempt += 1) {
+      var used = new HashSet<String>();
+      var groups = new ArrayList<ConnectionAnswerGroup>();
+      for (var candidate : rotate(randomized, attempt)) {
+        var available = rotate(candidate.members(), attempt + groups.size()).stream()
+            .filter(pokemon -> !used.contains(pokemon.id()))
+            .toList();
+        if (available.size() < groupSize) continue;
+        var selected = available.subList(0, groupSize);
+        selected.forEach(pokemon -> used.add(pokemon.id()));
+        groups.add(answerGroup(candidate.definition(), selected, groups.size()));
+        if (groups.size() == groupCount) {
+          // .sort() de JS sin comparador: orden de unidades UTF-16, el de String.compareTo.
+          var signature = String.join("|", groups.stream()
+              .map(group -> group.categoryId() + ":" + String.join(",",
+                  group.pokemon().stream().map(ConnectionPokemon::id).sorted().toList()))
+              .sorted()
+              .toList());
+          var puzzle = new GeneratedConnectionsPuzzle("dynamic-" + signature, "DYNAMIC", groups);
+          if (!usedPuzzleKeys.contains(puzzle.key())) return puzzle;
+          break;
+        }
+      }
+    }
+    return null;
+  }
+
+  /** Opciones de {@code generateConnectionsPuzzle}. */
+  record PuzzleOptions(int groupSize, int pokemonCount, List<Integer> generations, List<String> usedPuzzleKeys,
+      List<String> excludedCategoryIds) {}
+
+  /**
+   * {@code generateConnectionsPuzzle}: una extracción decide si se prefiere una plantilla curada (solo con grupos de 4
+   * y tableros de 12 o 16); si no, un puzle dinámico y, como último recurso, una curada ya vista.
+   */
+  static GeneratedConnectionsPuzzle generateConnectionsPuzzle(GameContext context, PuzzleOptions options) {
+    var pool = context.pokemon().forGenerations(options.generations()).stream()
+        .filter(pokemon -> pokemon.isDefault() && pokemon.sprite() != null && !pokemon.sprite().isEmpty())
+        .toList();
+    if (options.pokemonCount() % options.groupSize() != 0) {
+      throw new EngineException("El tamaño del tablero no forma grupos completos.");
+    }
+    int groupCount = options.pokemonCount() / options.groupSize();
+    Set<String> used = new HashSet<>(options.usedPuzzleKeys());
+    Set<String> excludedCategoryIds = new HashSet<>(options.excludedCategoryIds());
+    var random = context.random();
+    boolean preferCurated = random.getAsDouble() < 0.5;
+    List<GeneratedConnectionsPuzzle> curatedFallback = List.of();
+    if (options.groupSize() == 4 && (options.pokemonCount() == 12 || options.pokemonCount() == 16)) {
+      var curated = curatedCandidates(pool, groupCount);
+      var fresh = curated.stream().filter(puzzle -> !used.contains(puzzle.key())).toList();
+      var candidates = fresh.stream()
+          .filter(puzzle -> puzzle.groups().stream()
+              .noneMatch(group -> excludedCategoryIds.contains(group.categoryId())))
+          .toList();
+      if (preferCurated && !candidates.isEmpty()) {
+        return candidates.get((int) Math.floor(random.getAsDouble() * candidates.size()));
+      }
+      curatedFallback = !fresh.isEmpty() ? fresh : curated;
+    }
+    var generated = dynamicPuzzle(pool, options.groupSize(), groupCount, random, excludedCategoryIds, used);
+    if (generated != null) return generated;
+    if (!curatedFallback.isEmpty()) {
+      return curatedFallback.get((int) Math.floor(random.getAsDouble() * curatedFallback.size()));
+    }
+    throw new EngineException("No se puede construir un puzle válido con estas generaciones y tamaño. Amplía las "
+        + "generaciones o reduce el tablero.");
+  }
+
+  /** {@code shuffledConnectionsBoard}: los Pokémon de todos los grupos, barajados. */
+  static List<ConnectionPokemon> shuffledConnectionsBoard(List<ConnectionAnswerGroup> groups, DoubleSupplier random) {
+    return Randoms.shuffled(groups.stream().flatMap(group -> group.pokemon().stream()).toList(), random);
+  }
+}

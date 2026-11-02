@@ -13,6 +13,7 @@ import { pokedexEntryGuessScenarios } from './pokedex-entry-guess.js';
 import { pokedexDistanceScenarios } from './pokedex-distance.js';
 import { pokemonBingoScenarios } from './pokemon-bingo.js';
 import { pokemonBluffAuctionScenarios } from './pokemon-bluff-auction.js';
+import { pokemonConnectionsScenarios } from './pokemon-connections.js';
 import { pokemonTeamAuctionScenarios } from './pokemon-team-auction.js';
 import { pokemonRedFlagScenarios } from './pokemon-red-flag.js';
 import { pokemonCryQuizScenarios } from './pokemon-cry-quiz.js';
@@ -61,4 +62,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'pokemon-bingo': pokemonBingoScenarios,
   'pokemon-team-auction': pokemonTeamAuctionScenarios,
   'pokemon-bluff-auction': pokemonBluffAuctionScenarios,
+  'pokemon-connections': pokemonConnectionsScenarios,
 };
