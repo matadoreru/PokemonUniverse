@@ -22,6 +22,7 @@ import { pokemonPaletteGuessScenarios } from './pokemon-palette-guess.js';
 import { pokemonTriviaScenarios } from './pokemon-trivia.js';
 import { secretRankingScenarios } from './secret-ranking.js';
 import { shinyVoteScenarios } from './shiny-vote.js';
+import { sketchmonScenarios } from './sketchmon.js';
 import { tcgHigherLowerScenarios } from './tcg-higher-lower.js';
 import { typeChainScenarios } from './type-chain.js';
 import { typeDuelScenarios } from './type-duel.js';
@@ -65,4 +66,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'pokemon-bluff-auction': pokemonBluffAuctionScenarios,
   'pokemon-connections': pokemonConnectionsScenarios,
   'pokemon-impostor': pokemonImpostorScenarios,
+  sketchmon: sketchmonScenarios,
 };

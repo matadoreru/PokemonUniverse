@@ -23,6 +23,7 @@ import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaEngine;
 import es.pokemonuniverse.domain.game.engines.poketaboo.PokeTabooEngine;
 import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingEngine;
 import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteEngine;
+import es.pokemonuniverse.domain.game.engines.sketchmon.SketchmonEngine;
 import es.pokemonuniverse.domain.game.engines.tcghigherlower.TcgHigherLowerEngine;
 import es.pokemonuniverse.domain.game.engines.typechain.TypeChainEngine;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelEngine;
@@ -106,6 +107,7 @@ public class ClasspathGameRegistryLoader {
     engines.put(PokemonConnectionsEngine.ID,
         new PokemonConnectionsEngine(manifest(manifests, PokemonConnectionsEngine.ID)));
     engines.put(PokemonImpostorEngine.ID, new PokemonImpostorEngine(manifest(manifests, PokemonImpostorEngine.ID)));
+    engines.put(SketchmonEngine.ID, new SketchmonEngine(manifest(manifests, SketchmonEngine.ID)));
     return engines;
   }
 

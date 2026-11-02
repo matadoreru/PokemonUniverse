@@ -1,0 +1,1709 @@
+{
+  "engineId": "sketchmon",
+  "scenario": "drawer-disconnects",
+  "seed": 1603,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "roundSeconds": 120,
+    "laps": 1,
+    "hintsEnabled": false,
+    "memoryPreviewEnabled": false,
+    "includeForms": false
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "DRAW_BATCH",
+        "operations": [
+          {
+            "kind": "START",
+            "stroke": {
+              "id": "x",
+              "tool": "PENCIL",
+              "color": "#e1a817",
+              "width": 5,
+              "points": [
+                {
+                  "x": 0,
+                  "y": 1
+                },
+                {
+                  "x": 1,
+                  "y": 0.984375
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 2500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "jolteon"
+      },
+      "now": 3200
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "DRAW_BATCH",
+        "operations": [
+          {
+            "kind": "START",
+            "stroke": {
+              "id": "y",
+              "tool": "PENCIL",
+              "color": "#27965c",
+              "width": 7,
+              "points": [
+                {
+                  "x": 0,
+                  "y": 1
+                },
+                {
+                  "x": 0.5,
+                  "y": 0.984375
+                },
+                {
+                  "x": 1,
+                  "y": 0.96875
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "now": 3600
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "JOLTEON"
+      },
+      "now": 3700
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "  Jólteon "
+      },
+      "now": 3800
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "jolteon"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 6000
+    },
+    {
+      "kind": "timeout",
+      "now": 9999
+    },
+    {
+      "kind": "timeout",
+      "now": 10000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "jolteon"
+      },
+      "now": 11000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 120,
+      "laps": 1,
+      "hintsEnabled": false,
+      "memoryPreviewEnabled": false,
+      "includeForms": false
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "sketchmon",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "lapNumber": 1,
+        "totalLaps": 1,
+        "drawerId": null,
+        "nextDrawerId": "p1",
+        "drawerOrder": [
+          "p1",
+          "p3",
+          "p2"
+        ],
+        "strokes": [],
+        "visibleHints": [],
+        "attempts": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "gallery": [],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "GUESSER",
+          "canGuess": false,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        },
+        "p2": {
+          "role": "GUESSER",
+          "canGuess": false,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        },
+        "p3": {
+          "role": "GUESSER",
+          "canGuess": false,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 121000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "sketchmon",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "lapNumber": 1,
+        "totalLaps": 1,
+        "drawerId": "p1",
+        "nextDrawerId": "p3",
+        "drawerOrder": [
+          "p1",
+          "p3",
+          "p2"
+        ],
+        "strokes": [],
+        "visibleHints": [],
+        "attempts": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 121000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "gallery": [],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "DRAWER",
+          "canDraw": true,
+          "secretPokemon": {
+            "name": "Chansey",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+            "previewEndsAt": null,
+            "types": [
+              "normal"
+            ]
+          }
+        },
+        "p2": {
+          "role": "GUESSER",
+          "canGuess": true,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        },
+        "p3": {
+          "role": "GUESSER",
+          "canGuess": true,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "drawerId": "p1",
+            "nextDrawerId": "p3",
+            "drawerOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "x",
+                "tool": "PENCIL",
+                "color": "#e1a817",
+                "width": 5,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.984375
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Chansey",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                "previewEndsAt": null,
+                "types": [
+                  "normal"
+                ]
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "drawerId": "p1",
+            "nextDrawerId": "p3",
+            "drawerOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "x",
+                "tool": "PENCIL",
+                "color": "#e1a817",
+                "width": 5,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.984375
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "pikachu",
+                  "name": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+                },
+                "attemptedAt": 2500
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Chansey",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+                "previewEndsAt": null,
+                "types": [
+                  "normal"
+                ]
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": 3250,
+              "attemptCount": 1
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 123000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,3000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "drawerId": "p3",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "strokes": [],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 3000,
+            "roundEndsAt": 123000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Jolteon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                "previewEndsAt": null,
+                "types": [
+                  "electric"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Estás observando esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 123000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,3000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "drawerId": "p3",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "strokes": [],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 3000,
+            "roundEndsAt": 123000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Jolteon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                "previewEndsAt": null,
+                "types": [
+                  "electric"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 123000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,3000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "drawerId": "p3",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "strokes": [],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 3000,
+            "roundEndsAt": 123000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Jolteon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                "previewEndsAt": null,
+                "types": [
+                  "electric"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 123000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,3000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "drawerId": "p3",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "y",
+                "tool": "PENCIL",
+                "color": "#27965c",
+                "width": 7,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 0.984375
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.96875
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 3000,
+            "roundEndsAt": 123000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Jolteon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                "previewEndsAt": null,
+                "types": [
+                  "electric"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon no pertenece al pool configurado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 123000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,3000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "drawerId": "p3",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "y",
+                "tool": "PENCIL",
+                "color": "#27965c",
+                "width": 7,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 0.984375
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.96875
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 3000,
+            "roundEndsAt": 123000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Jolteon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                "previewEndsAt": null,
+                "types": [
+                  "electric"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon no pertenece al pool configurado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 123000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,3000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "drawerId": "p3",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "y",
+                "tool": "PENCIL",
+                "color": "#27965c",
+                "width": 7,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 0.984375
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.96875
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 3000,
+            "roundEndsAt": 123000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Jolteon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                "previewEndsAt": null,
+                "types": [
+                  "electric"
+                ]
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 10000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,3000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "drawerId": "p3",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "y",
+                "tool": "PENCIL",
+                "color": "#27965c",
+                "width": 7,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 0.984375
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.96875
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 5,
+              "p2": 0,
+              "p3": 3
+            },
+            "roundStartedAt": 3000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 10000,
+            "lastRound": {
+              "reason": "GUESSED",
+              "pokemon": {
+                "id": "jolteon",
+                "name": "Jolteon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                "generation": 1,
+                "types": [
+                  "electric"
+                ]
+              },
+              "drawerId": "p3",
+              "winnerId": "p1",
+              "elapsedMs": 1000,
+              "guesserPoints": 5,
+              "drawerPoints": 3,
+              "winnerAttemptCount": 1,
+              "drawing": [
+                {
+                  "id": "y",
+                  "tool": "PENCIL",
+                  "color": "#27965c",
+                  "width": 7,
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 1
+                    },
+                    {
+                      "x": 0.5,
+                      "y": 0.984375
+                    },
+                    {
+                      "x": 1,
+                      "y": 0.96875
+                    }
+                  ]
+                }
+              ]
+            },
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 1
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 10000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,3000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "drawerId": "p3",
+            "nextDrawerId": null,
+            "drawerOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "y",
+                "tool": "PENCIL",
+                "color": "#27965c",
+                "width": 7,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 0.984375
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.96875
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 5,
+              "p2": 0,
+              "p3": 3
+            },
+            "roundStartedAt": 3000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 10000,
+            "lastRound": {
+              "reason": "GUESSED",
+              "pokemon": {
+                "id": "jolteon",
+                "name": "Jolteon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                "generation": 1,
+                "types": [
+                  "electric"
+                ]
+              },
+              "drawerId": "p3",
+              "winnerId": "p1",
+              "elapsedMs": 1000,
+              "guesserPoints": 5,
+              "drawerPoints": 3,
+              "winnerAttemptCount": 1,
+              "drawing": [
+                {
+                  "id": "y",
+                  "tool": "PENCIL",
+                  "color": "#27965c",
+                  "width": 7,
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 1
+                    },
+                    {
+                      "x": 0.5,
+                      "y": 0.984375
+                    },
+                    {
+                      "x": 1,
+                      "y": 0.96875
+                    }
+                  ]
+                }
+              ]
+            },
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 1
+            },
+            "p2": {
+              "role": "SPECTATOR"
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 10000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,3000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "drawerId": "p3",
+            "nextDrawerId": null,
+            "drawerOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "y",
+                "tool": "PENCIL",
+                "color": "#27965c",
+                "width": 7,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 0.984375
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.96875
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 5,
+              "p2": 0,
+              "p3": 3
+            },
+            "roundStartedAt": 3000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 10000,
+            "lastRound": {
+              "reason": "GUESSED",
+              "pokemon": {
+                "id": "jolteon",
+                "name": "Jolteon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                "generation": 1,
+                "types": [
+                  "electric"
+                ]
+              },
+              "drawerId": "p3",
+              "winnerId": "p1",
+              "elapsedMs": 1000,
+              "guesserPoints": 5,
+              "drawerPoints": 3,
+              "winnerAttemptCount": 1,
+              "drawing": [
+                {
+                  "id": "y",
+                  "tool": "PENCIL",
+                  "color": "#27965c",
+                  "width": 7,
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 1
+                    },
+                    {
+                      "x": 0.5,
+                      "y": 0.984375
+                    },
+                    {
+                      "x": 1,
+                      "y": 0.96875
+                    }
+                  ]
+                }
+              ]
+            },
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 1
+            },
+            "p2": {
+              "role": "SPECTATOR"
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "drawerId": null,
+            "nextDrawerId": null,
+            "drawerOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "strokes": [],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 5,
+              "p2": 0,
+              "p3": 3
+            },
+            "roundStartedAt": null,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "gallery": [
+              {
+                "reason": "GUESSED",
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "generation": 1,
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "drawerId": "p3",
+                "winnerId": "p1",
+                "elapsedMs": 1000,
+                "guesserPoints": 5,
+                "drawerPoints": 3,
+                "winnerAttemptCount": 1,
+                "drawing": [
+                  {
+                    "id": "y",
+                    "tool": "PENCIL",
+                    "color": "#27965c",
+                    "width": 7,
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 1
+                      },
+                      {
+                        "x": 0.5,
+                        "y": 0.984375
+                      },
+                      {
+                        "x": 1,
+                        "y": 0.96875
+                      }
+                    ]
+                  }
+                ],
+                "roundNumber": 2,
+                "lapNumber": 1
+              }
+            ],
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 5,
+                  "won": true,
+                  "stats": {
+                    "guessedPokemon": 1,
+                    "firstTry": 1,
+                    "totalAttempts": 1,
+                    "firstCorrectResponses": 1,
+                    "drawingRounds": 1,
+                    "drawingSuccesses": 0,
+                    "drawingFailures": 1,
+                    "pointsFromGuessing": 5,
+                    "pointsFromDrawing": 0
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "guessedPokemon": 0,
+                    "firstTry": 0,
+                    "totalAttempts": 0,
+                    "firstCorrectResponses": 0,
+                    "drawingRounds": 1,
+                    "drawingSuccesses": 1,
+                    "drawingFailures": 0,
+                    "pointsFromGuessing": 0,
+                    "pointsFromDrawing": 3
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "guessedPokemon": 0,
+                    "firstTry": 0,
+                    "totalAttempts": 1,
+                    "firstCorrectResponses": 0,
+                    "drawingRounds": 1,
+                    "drawingSuccesses": 0,
+                    "drawingFailures": 1,
+                    "pointsFromGuessing": 0,
+                    "pointsFromDrawing": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 1
+            },
+            "p2": {
+              "role": "SPECTATOR"
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No hay una ronda activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "lapNumber": 1,
+            "totalLaps": 1,
+            "drawerId": null,
+            "nextDrawerId": null,
+            "drawerOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "strokes": [],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 5,
+              "p2": 0,
+              "p3": 3
+            },
+            "roundStartedAt": null,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "gallery": [
+              {
+                "reason": "GUESSED",
+                "pokemon": {
+                  "id": "jolteon",
+                  "name": "Jolteon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+                  "generation": 1,
+                  "types": [
+                    "electric"
+                  ]
+                },
+                "drawerId": "p3",
+                "winnerId": "p1",
+                "elapsedMs": 1000,
+                "guesserPoints": 5,
+                "drawerPoints": 3,
+                "winnerAttemptCount": 1,
+                "drawing": [
+                  {
+                    "id": "y",
+                    "tool": "PENCIL",
+                    "color": "#27965c",
+                    "width": 7,
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 1
+                      },
+                      {
+                        "x": 0.5,
+                        "y": 0.984375
+                      },
+                      {
+                        "x": 1,
+                        "y": 0.96875
+                      }
+                    ]
+                  }
+                ],
+                "roundNumber": 2,
+                "lapNumber": 1
+              }
+            ],
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 5,
+                  "won": true,
+                  "stats": {
+                    "guessedPokemon": 1,
+                    "firstTry": 1,
+                    "totalAttempts": 1,
+                    "firstCorrectResponses": 1,
+                    "drawingRounds": 1,
+                    "drawingSuccesses": 0,
+                    "drawingFailures": 1,
+                    "pointsFromGuessing": 5,
+                    "pointsFromDrawing": 0
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "guessedPokemon": 0,
+                    "firstTry": 0,
+                    "totalAttempts": 0,
+                    "firstCorrectResponses": 0,
+                    "drawingRounds": 1,
+                    "drawingSuccesses": 1,
+                    "drawingFailures": 0,
+                    "pointsFromGuessing": 0,
+                    "pointsFromDrawing": 3
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "guessedPokemon": 0,
+                    "firstTry": 0,
+                    "totalAttempts": 1,
+                    "firstCorrectResponses": 0,
+                    "drawingRounds": 1,
+                    "drawingSuccesses": 0,
+                    "drawingFailures": 1,
+                    "pointsFromGuessing": 0,
+                    "pointsFromDrawing": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 1
+            },
+            "p2": {
+              "role": "SPECTATOR"
+            },
+            "p3": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 5,
+          "won": true,
+          "stats": {
+            "guessedPokemon": 1,
+            "firstTry": 1,
+            "totalAttempts": 1,
+            "firstCorrectResponses": 1,
+            "drawingRounds": 1,
+            "drawingSuccesses": 0,
+            "drawingFailures": 1,
+            "pointsFromGuessing": 5,
+            "pointsFromDrawing": 0
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 2,
+          "points": 3,
+          "won": false,
+          "stats": {
+            "guessedPokemon": 0,
+            "firstTry": 0,
+            "totalAttempts": 0,
+            "firstCorrectResponses": 0,
+            "drawingRounds": 1,
+            "drawingSuccesses": 1,
+            "drawingFailures": 0,
+            "pointsFromGuessing": 0,
+            "pointsFromDrawing": 3
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "guessedPokemon": 0,
+            "firstTry": 0,
+            "totalAttempts": 1,
+            "firstCorrectResponses": 0,
+            "drawingRounds": 1,
+            "drawingSuccesses": 0,
+            "drawingFailures": 1,
+            "pointsFromGuessing": 0,
+            "pointsFromDrawing": 0
+          }
+        }
+      ]
+    }
+  }
+}

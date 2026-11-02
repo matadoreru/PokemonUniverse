@@ -1,0 +1,2659 @@
+{
+  "engineId": "sketchmon",
+  "scenario": "hints-preview-laps",
+  "seed": 1614,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "generations": [
+      2,
+      1,
+      2
+    ],
+    "roundSeconds": 90,
+    "laps": 2,
+    "hintsEnabled": true,
+    "memoryPreviewEnabled": true,
+    "includeForms": true
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "DRAW_BATCH",
+        "operations": [
+          {
+            "kind": "START",
+            "stroke": {
+              "id": "a1",
+              "tool": "PENCIL",
+              "color": "#84cc16",
+              "width": 12,
+              "points": [
+                {
+                  "x": 0,
+                  "y": 1
+                },
+                {
+                  "x": 0.5,
+                  "y": 0.984375
+                },
+                {
+                  "x": 1,
+                  "y": 0.96875
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "now": 2000
+    },
+    {
+      "kind": "timeout",
+      "now": 3999
+    },
+    {
+      "kind": "timeout",
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "growlithe"
+      },
+      "now": 20000
+    },
+    {
+      "kind": "timeout",
+      "now": 31000
+    },
+    {
+      "kind": "timeout",
+      "now": 51000
+    },
+    {
+      "kind": "timeout",
+      "now": 71000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "arcanine"
+      },
+      "now": 75000
+    },
+    {
+      "kind": "timeout",
+      "now": 81000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "DRAW_BATCH",
+        "operations": [
+          {
+            "kind": "START",
+            "stroke": {
+              "id": "b1",
+              "tool": "ERASER",
+              "color": "#7b8496",
+              "width": 20,
+              "points": [
+                {
+                  "x": 0,
+                  "y": 1
+                },
+                {
+                  "x": 1,
+                  "y": 0.984375
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "now": 82000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        }
+      ],
+      "now": 83000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "dunsparce"
+      },
+      "now": 83500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        }
+      ],
+      "now": 84000
+    },
+    {
+      "kind": "timeout",
+      "now": 170999
+    },
+    {
+      "kind": "timeout",
+      "now": 171000
+    },
+    {
+      "kind": "timeout",
+      "now": 177000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "DRAW_BATCH",
+        "operations": [
+          {
+            "kind": "START",
+            "stroke": {
+              "id": "c1",
+              "tool": "FILL",
+              "color": "#d946ef",
+              "width": 2,
+              "points": [
+                {
+                  "x": 0.5,
+                  "y": 0.5
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "now": 177500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        }
+      ],
+      "now": 178000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "DRAW_BATCH",
+        "operations": [
+          {
+            "kind": "START",
+            "stroke": {
+              "id": "d1",
+              "tool": "PENCIL",
+              "color": "#10a6c3",
+              "width": 3,
+              "points": [
+                {
+                  "x": 0,
+                  "y": 1
+                },
+                {
+                  "x": 1,
+                  "y": 0.984375
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "now": 179000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        }
+      ],
+      "now": 180000
+    },
+    {
+      "kind": "timeout",
+      "now": 208000
+    },
+    {
+      "kind": "timeout",
+      "now": 228000
+    },
+    {
+      "kind": "timeout",
+      "now": 248000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "sandshrew-alola"
+      },
+      "now": 250000
+    },
+    {
+      "kind": "timeout",
+      "now": 256000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 90,
+      "laps": 2,
+      "hintsEnabled": true,
+      "memoryPreviewEnabled": true,
+      "includeForms": true
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "sketchmon",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 4,
+        "lapNumber": 1,
+        "totalLaps": 2,
+        "drawerId": null,
+        "nextDrawerId": "p1",
+        "drawerOrder": [
+          "p1",
+          "p2"
+        ],
+        "strokes": [],
+        "visibleHints": [],
+        "attempts": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "gallery": [],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "GUESSER",
+          "canGuess": false,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        },
+        "p2": {
+          "role": "GUESSER",
+          "canGuess": false,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 4000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "sketchmon",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 4,
+        "lapNumber": 1,
+        "totalLaps": 2,
+        "drawerId": "p1",
+        "nextDrawerId": "p2",
+        "drawerOrder": [
+          "p1",
+          "p2"
+        ],
+        "strokes": [],
+        "visibleHints": [],
+        "attempts": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 91000,
+        "nextTransitionAt": 4000,
+        "lastRound": null,
+        "gallery": [],
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "DRAWER",
+          "canDraw": true,
+          "secretPokemon": {
+            "name": "Arcanine",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png",
+            "previewEndsAt": 4000,
+            "types": []
+          }
+        },
+        "p2": {
+          "role": "GUESSER",
+          "canGuess": true,
+          "cooldownUntil": null,
+          "attemptCount": 0
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 4000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p1",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "a1",
+                "tool": "PENCIL",
+                "color": "#84cc16",
+                "width": 12,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 0.984375
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.96875
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": 4000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Arcanine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png",
+                "previewEndsAt": 4000,
+                "types": []
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 4000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p1",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "a1",
+                "tool": "PENCIL",
+                "color": "#84cc16",
+                "width": 12,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 0.984375
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.96875
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": 4000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Arcanine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png",
+                "previewEndsAt": 4000,
+                "types": []
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p1",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "a1",
+                "tool": "PENCIL",
+                "color": "#84cc16",
+                "width": 12,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 0.984375
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.96875
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": 31000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Arcanine",
+                "sprite": null,
+                "previewEndsAt": 4000,
+                "types": []
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p1",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "a1",
+                "tool": "PENCIL",
+                "color": "#84cc16",
+                "width": 12,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 0.984375
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.96875
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "growlithe",
+                  "name": "Growlithe",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png"
+                },
+                "attemptedAt": 20000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": 31000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Arcanine",
+                "sprite": null,
+                "previewEndsAt": 4000,
+                "types": []
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": 20750,
+              "attemptCount": 1
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 51000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p1",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "a1",
+                "tool": "PENCIL",
+                "color": "#84cc16",
+                "width": 12,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 0.984375
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.96875
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "generation": 1
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "growlithe",
+                  "name": "Growlithe",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png"
+                },
+                "attemptedAt": 20000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": 51000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Arcanine",
+                "sprite": null,
+                "previewEndsAt": 4000,
+                "types": []
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": 20750,
+              "attemptCount": 1
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 71000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p1",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "a1",
+                "tool": "PENCIL",
+                "color": "#84cc16",
+                "width": 12,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 0.984375
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.96875
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "generation": 1
+              },
+              {
+                "kind": "TYPES",
+                "types": [
+                  "fire"
+                ]
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "growlithe",
+                  "name": "Growlithe",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png"
+                },
+                "attemptedAt": 20000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": 71000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Arcanine",
+                "sprite": null,
+                "previewEndsAt": 4000,
+                "types": []
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": 20750,
+              "attemptCount": 1
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 91000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p1",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "a1",
+                "tool": "PENCIL",
+                "color": "#84cc16",
+                "width": 12,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 0.984375
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.96875
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "generation": 1
+              },
+              {
+                "kind": "TYPES",
+                "types": [
+                  "fire"
+                ]
+              },
+              {
+                "kind": "EVOLUTION",
+                "text": "Evolución final"
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "growlithe",
+                  "name": "Growlithe",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png"
+                },
+                "attemptedAt": 20000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Arcanine",
+                "sprite": null,
+                "previewEndsAt": 4000,
+                "types": []
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": 20750,
+              "attemptCount": 1
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 81000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p1",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "a1",
+                "tool": "PENCIL",
+                "color": "#84cc16",
+                "width": 12,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 0.5,
+                    "y": 0.984375
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.96875
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "generation": 1
+              },
+              {
+                "kind": "TYPES",
+                "types": [
+                  "fire"
+                ]
+              },
+              {
+                "kind": "EVOLUTION",
+                "text": "Evolución final"
+              }
+            ],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "growlithe",
+                  "name": "Growlithe",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png"
+                },
+                "attemptedAt": 20000
+              }
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 81000,
+            "lastRound": {
+              "reason": "GUESSED",
+              "pokemon": {
+                "id": "arcanine",
+                "name": "Arcanine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png",
+                "generation": 1,
+                "types": [
+                  "fire"
+                ]
+              },
+              "drawerId": "p1",
+              "winnerId": "p2",
+              "elapsedMs": 74000,
+              "guesserPoints": 2,
+              "drawerPoints": 3,
+              "winnerAttemptCount": 2,
+              "drawing": [
+                {
+                  "id": "a1",
+                  "tool": "PENCIL",
+                  "color": "#84cc16",
+                  "width": 12,
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 1
+                    },
+                    {
+                      "x": 0.5,
+                      "y": 0.984375
+                    },
+                    {
+                      "x": 1,
+                      "y": 0.96875
+                    }
+                  ]
+                }
+              ]
+            },
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": 20750,
+              "attemptCount": 2
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 84000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,81000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p2",
+            "nextDrawerId": "p1",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 81000,
+            "roundEndsAt": 171000,
+            "nextTransitionAt": 84000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png",
+                "previewEndsAt": 84000,
+                "types": []
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 84000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,81000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p2",
+            "nextDrawerId": "p1",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "b1",
+                "tool": "ERASER",
+                "color": "#7b8496",
+                "width": 20,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.984375
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 81000,
+            "roundEndsAt": 171000,
+            "nextTransitionAt": 84000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png",
+                "previewEndsAt": 84000,
+                "types": []
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 84000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,81000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p2",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "b1",
+                "tool": "ERASER",
+                "color": "#7b8496",
+                "width": 20,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.984375
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 81000,
+            "roundEndsAt": 171000,
+            "nextTransitionAt": 84000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png",
+                "previewEndsAt": 84000,
+                "types": []
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Estás observando esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 84000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,81000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p2",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "b1",
+                "tool": "ERASER",
+                "color": "#7b8496",
+                "width": 20,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.984375
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 81000,
+            "roundEndsAt": 171000,
+            "nextTransitionAt": 84000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png",
+                "previewEndsAt": 84000,
+                "types": []
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 84000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,81000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p2",
+            "nextDrawerId": "p1",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "b1",
+                "tool": "ERASER",
+                "color": "#7b8496",
+                "width": 20,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.984375
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 81000,
+            "roundEndsAt": 171000,
+            "nextTransitionAt": 84000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Dunsparce",
+                "sprite": null,
+                "previewEndsAt": 84000,
+                "types": []
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 171000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,81000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p2",
+            "nextDrawerId": "p1",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "b1",
+                "tool": "ERASER",
+                "color": "#7b8496",
+                "width": 20,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.984375
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "generation": 2
+              },
+              {
+                "kind": "TYPES",
+                "types": [
+                  "normal"
+                ]
+              },
+              {
+                "kind": "EVOLUTION",
+                "text": "Primera etapa evolutiva"
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 81000,
+            "roundEndsAt": 171000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Dunsparce",
+                "sprite": null,
+                "previewEndsAt": 84000,
+                "types": []
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 177000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,81000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 4,
+            "lapNumber": 1,
+            "totalLaps": 2,
+            "drawerId": "p2",
+            "nextDrawerId": "p1",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "b1",
+                "tool": "ERASER",
+                "color": "#7b8496",
+                "width": 20,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.984375
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "generation": 2
+              },
+              {
+                "kind": "TYPES",
+                "types": [
+                  "normal"
+                ]
+              },
+              {
+                "kind": "EVOLUTION",
+                "text": "Primera etapa evolutiva"
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 81000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 177000,
+            "lastRound": {
+              "reason": "TIMEOUT",
+              "pokemon": {
+                "id": "dunsparce",
+                "name": "Dunsparce",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png",
+                "generation": 2,
+                "types": [
+                  "normal"
+                ]
+              },
+              "drawerId": "p2",
+              "winnerId": null,
+              "elapsedMs": 90000,
+              "guesserPoints": 0,
+              "drawerPoints": 0,
+              "winnerAttemptCount": null,
+              "drawing": [
+                {
+                  "id": "b1",
+                  "tool": "ERASER",
+                  "color": "#7b8496",
+                  "width": 20,
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 1
+                    },
+                    {
+                      "x": 1,
+                      "y": 0.984375
+                    }
+                  ]
+                }
+              ]
+            },
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 180000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,177000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "drawerId": "p1",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 177000,
+            "roundEndsAt": 267000,
+            "nextTransitionAt": 180000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+                "previewEndsAt": 180000,
+                "types": []
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 180000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,177000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "drawerId": "p1",
+            "nextDrawerId": "p2",
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "c1",
+                "tool": "FILL",
+                "color": "#d946ef",
+                "width": 2,
+                "points": [
+                  {
+                    "x": 0.5,
+                    "y": 0.5
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 177000,
+            "roundEndsAt": 267000,
+            "nextTransitionAt": 180000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Magikarp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+                "previewEndsAt": 180000,
+                "types": []
+              }
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 181000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,178000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "drawerId": "p2",
+            "nextDrawerId": null,
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 178000,
+            "roundEndsAt": 268000,
+            "nextTransitionAt": 181000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Sandshrew de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10101.png",
+                "previewEndsAt": 181000,
+                "types": []
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 181000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,178000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "drawerId": "p2",
+            "nextDrawerId": null,
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "d1",
+                "tool": "PENCIL",
+                "color": "#10a6c3",
+                "width": 3,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.984375
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 178000,
+            "roundEndsAt": 268000,
+            "nextTransitionAt": 181000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "SPECTATOR"
+            },
+            "p2": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Sandshrew de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10101.png",
+                "previewEndsAt": 181000,
+                "types": []
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 181000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,178000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "drawerId": "p2",
+            "nextDrawerId": null,
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "d1",
+                "tool": "PENCIL",
+                "color": "#10a6c3",
+                "width": 3,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.984375
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 178000,
+            "roundEndsAt": 268000,
+            "nextTransitionAt": 181000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Sandshrew de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10101.png",
+                "previewEndsAt": 181000,
+                "types": []
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 228000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,178000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "drawerId": "p2",
+            "nextDrawerId": null,
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "d1",
+                "tool": "PENCIL",
+                "color": "#10a6c3",
+                "width": 3,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.984375
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "generation": 1
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 178000,
+            "roundEndsAt": 268000,
+            "nextTransitionAt": 228000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Sandshrew de Alola",
+                "sprite": null,
+                "previewEndsAt": 181000,
+                "types": []
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 248000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,178000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "drawerId": "p2",
+            "nextDrawerId": null,
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "d1",
+                "tool": "PENCIL",
+                "color": "#10a6c3",
+                "width": 3,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.984375
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "generation": 1
+              },
+              {
+                "kind": "TYPES",
+                "types": [
+                  "ice",
+                  "steel"
+                ]
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 178000,
+            "roundEndsAt": 268000,
+            "nextTransitionAt": 248000,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Sandshrew de Alola",
+                "sprite": null,
+                "previewEndsAt": 181000,
+                "types": []
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 268000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,178000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "drawerId": "p2",
+            "nextDrawerId": null,
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "d1",
+                "tool": "PENCIL",
+                "color": "#10a6c3",
+                "width": 3,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.984375
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "generation": 1
+              },
+              {
+                "kind": "TYPES",
+                "types": [
+                  "ice",
+                  "steel"
+                ]
+              },
+              {
+                "kind": "EVOLUTION",
+                "text": "Evolución desconocida"
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 3,
+              "p2": 2
+            },
+            "roundStartedAt": 178000,
+            "roundEndsAt": 268000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": true,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            },
+            "p2": {
+              "role": "DRAWER",
+              "canDraw": true,
+              "secretPokemon": {
+                "name": "Sandshrew de Alola",
+                "sprite": null,
+                "previewEndsAt": 181000,
+                "types": []
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 256000,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,178000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "drawerId": "p2",
+            "nextDrawerId": null,
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [
+              {
+                "id": "d1",
+                "tool": "PENCIL",
+                "color": "#10a6c3",
+                "width": 3,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1
+                  },
+                  {
+                    "x": 1,
+                    "y": 0.984375
+                  }
+                ]
+              }
+            ],
+            "visibleHints": [
+              {
+                "kind": "GENERATION",
+                "generation": 1
+              },
+              {
+                "kind": "TYPES",
+                "types": [
+                  "ice",
+                  "steel"
+                ]
+              },
+              {
+                "kind": "EVOLUTION",
+                "text": "Evolución desconocida"
+              }
+            ],
+            "attempts": [],
+            "scores": {
+              "p1": 5,
+              "p2": 5
+            },
+            "roundStartedAt": 178000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 256000,
+            "lastRound": {
+              "reason": "GUESSED",
+              "pokemon": {
+                "id": "sandshrew-alola",
+                "name": "Sandshrew de Alola",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10101.png",
+                "generation": 1,
+                "types": [
+                  "ice",
+                  "steel"
+                ]
+              },
+              "drawerId": "p2",
+              "winnerId": "p1",
+              "elapsedMs": 72000,
+              "guesserPoints": 2,
+              "drawerPoints": 3,
+              "winnerAttemptCount": 1,
+              "drawing": [
+                {
+                  "id": "d1",
+                  "tool": "PENCIL",
+                  "color": "#10a6c3",
+                  "width": 3,
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 1
+                    },
+                    {
+                      "x": 1,
+                      "y": 0.984375
+                    }
+                  ]
+                }
+              ]
+            },
+            "gallery": [],
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 1
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",4,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "sketchmon",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 4,
+            "lapNumber": 2,
+            "totalLaps": 2,
+            "drawerId": null,
+            "nextDrawerId": null,
+            "drawerOrder": [
+              "p1",
+              "p2"
+            ],
+            "strokes": [],
+            "visibleHints": [],
+            "attempts": [],
+            "scores": {
+              "p1": 5,
+              "p2": 5
+            },
+            "roundStartedAt": null,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "gallery": [
+              {
+                "reason": "GUESSED",
+                "pokemon": {
+                  "id": "arcanine",
+                  "name": "Arcanine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png",
+                  "generation": 1,
+                  "types": [
+                    "fire"
+                  ]
+                },
+                "drawerId": "p1",
+                "winnerId": "p2",
+                "elapsedMs": 74000,
+                "guesserPoints": 2,
+                "drawerPoints": 3,
+                "winnerAttemptCount": 2,
+                "drawing": [
+                  {
+                    "id": "a1",
+                    "tool": "PENCIL",
+                    "color": "#84cc16",
+                    "width": 12,
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 1
+                      },
+                      {
+                        "x": 0.5,
+                        "y": 0.984375
+                      },
+                      {
+                        "x": 1,
+                        "y": 0.96875
+                      }
+                    ]
+                  }
+                ],
+                "roundNumber": 1,
+                "lapNumber": 1
+              },
+              {
+                "reason": "TIMEOUT",
+                "pokemon": {
+                  "id": "dunsparce",
+                  "name": "Dunsparce",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/206.png",
+                  "generation": 2,
+                  "types": [
+                    "normal"
+                  ]
+                },
+                "drawerId": "p2",
+                "winnerId": null,
+                "elapsedMs": 90000,
+                "guesserPoints": 0,
+                "drawerPoints": 0,
+                "winnerAttemptCount": null,
+                "drawing": [
+                  {
+                    "id": "b1",
+                    "tool": "ERASER",
+                    "color": "#7b8496",
+                    "width": 20,
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 1
+                      },
+                      {
+                        "x": 1,
+                        "y": 0.984375
+                      }
+                    ]
+                  }
+                ],
+                "roundNumber": 2,
+                "lapNumber": 1
+              },
+              {
+                "reason": "GUESSED",
+                "pokemon": {
+                  "id": "sandshrew-alola",
+                  "name": "Sandshrew de Alola",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10101.png",
+                  "generation": 1,
+                  "types": [
+                    "ice",
+                    "steel"
+                  ]
+                },
+                "drawerId": "p2",
+                "winnerId": "p1",
+                "elapsedMs": 72000,
+                "guesserPoints": 2,
+                "drawerPoints": 3,
+                "winnerAttemptCount": 1,
+                "drawing": [
+                  {
+                    "id": "d1",
+                    "tool": "PENCIL",
+                    "color": "#10a6c3",
+                    "width": 3,
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 1
+                      },
+                      {
+                        "x": 1,
+                        "y": 0.984375
+                      }
+                    ]
+                  }
+                ],
+                "roundNumber": 4,
+                "lapNumber": 2
+              }
+            ],
+            "results": {
+              "winnerId": null,
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 5,
+                  "won": true,
+                  "stats": {
+                    "guessedPokemon": 1,
+                    "firstTry": 1,
+                    "totalAttempts": 1,
+                    "firstCorrectResponses": 1,
+                    "drawingRounds": 2,
+                    "drawingSuccesses": 1,
+                    "drawingFailures": 1,
+                    "pointsFromGuessing": 2,
+                    "pointsFromDrawing": 3
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 5,
+                  "won": true,
+                  "stats": {
+                    "guessedPokemon": 1,
+                    "firstTry": 0,
+                    "totalAttempts": 2,
+                    "firstCorrectResponses": 1,
+                    "drawingRounds": 2,
+                    "drawingSuccesses": 1,
+                    "drawingFailures": 1,
+                    "pointsFromGuessing": 2,
+                    "pointsFromDrawing": 3
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 1
+            },
+            "p2": {
+              "role": "GUESSER",
+              "canGuess": false,
+              "cooldownUntil": null,
+              "attemptCount": 0
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": null,
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 5,
+          "won": true,
+          "stats": {
+            "guessedPokemon": 1,
+            "firstTry": 1,
+            "totalAttempts": 1,
+            "firstCorrectResponses": 1,
+            "drawingRounds": 2,
+            "drawingSuccesses": 1,
+            "drawingFailures": 1,
+            "pointsFromGuessing": 2,
+            "pointsFromDrawing": 3
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 5,
+          "won": true,
+          "stats": {
+            "guessedPokemon": 1,
+            "firstTry": 0,
+            "totalAttempts": 2,
+            "firstCorrectResponses": 1,
+            "drawingRounds": 2,
+            "drawingSuccesses": 1,
+            "drawingFailures": 1,
+            "pointsFromGuessing": 2,
+            "pointsFromDrawing": 3
+          }
+        }
+      ]
+    }
+  }
+}

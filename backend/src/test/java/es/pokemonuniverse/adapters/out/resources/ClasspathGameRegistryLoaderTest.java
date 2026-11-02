@@ -33,11 +33,19 @@ class ClasspathGameRegistryLoaderTest {
     assertTrue(registry.isPorted("higher-lower"));
     assertTrue(registry.isPorted("pokedex-distance"));
     assertTrue(registry.isPorted("shiny-vote"));
-    assertFalse(registry.isPorted("sketchmon"));
-    assertTrue(registry.engine("sketchmon").isEmpty());
+    assertTrue(registry.isPorted("sketchmon"));
+    assertFalse(registry.isPorted("juego-inexistente"));
+    assertTrue(registry.engine("juego-inexistente").isEmpty());
     assertEquals(registry.get("higher-lower").orElseThrow(), registry.engine("higher-lower").orElseThrow().manifest());
     assertThrows(IllegalStateException.class, () -> new GameRegistry(List.of(), java.util.Map.of("higher-lower",
         registry.engine("higher-lower").orElseThrow())));
+  }
+
+  @Test
+  void everyManifestHasAPortedEngine() {
+    var notPorted = registry.list().stream().map(GameManifest::id).filter(id -> !registry.isPorted(id)).toList();
+    assertEquals(List.of(), notPorted);
+    assertEquals(28, registry.list().stream().filter(game -> registry.engine(game.id()).isPresent()).count());
   }
 
   @Test
