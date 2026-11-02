@@ -10,17 +10,17 @@ class JsStringsTest {
 
   @Test
   void trimsEcmaScriptWhitespaceAndLineTerminators() {
-    assertEquals("a b", JsStrings.trim(" ﻿\t a b  　 \n"));
-    assertEquals("", JsStrings.trim("   "));
+    assertEquals("a b", JsStrings.trim("\u00A0\uFEFF\t a b \u2028\u3000\u202F\n"));
+    assertEquals("", JsStrings.trim(" \u00A0 "));
     assertEquals("x", JsStrings.trim("x"));
   }
 
   @Test
   void keepsCharactersThatAreNotJsWhitespace() {
     // U+200B (espacio de anchura cero) y U+180E no son WhiteSpace en ECMAScript moderno.
-    assertEquals("​x᠎", JsStrings.trim("​x᠎"));
-    assertFalse(JsStrings.isJsWhitespace('​'));
-    assertTrue(JsStrings.isJsWhitespace(' '));
-    assertTrue(JsStrings.isJsWhitespace(' '));
+    assertEquals("\u200Bx\u180E", JsStrings.trim("\u200Bx\u180E"));
+    assertFalse(JsStrings.isJsWhitespace('\u200B'));
+    assertTrue(JsStrings.isJsWhitespace('\u2007'));
+    assertTrue(JsStrings.isJsWhitespace('\u1680'));
   }
 }

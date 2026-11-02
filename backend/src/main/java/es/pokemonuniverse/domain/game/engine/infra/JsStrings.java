@@ -25,7 +25,7 @@ public final class JsStrings {
   /** {@code WhiteSpace} o {@code LineTerminator} de ECMAScript (todos en el plano básico: basta con {@code char}). */
   public static boolean isJsWhitespace(char c) {
     return switch (c) {
-      case '\t', '\n', '\u000B', '\f', '\r', ' ', ' ', ' ', ' ', '﻿' -> true;
+      case '\t', '\n', '\u000B', '\f', '\r', ' ', '\u00A0', '\u2028', '\u2029', '\uFEFF' -> true;
       default -> Character.getType(c) == Character.SPACE_SEPARATOR;
     };
   }
