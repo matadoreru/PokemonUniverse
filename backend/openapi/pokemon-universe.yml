@@ -194,7 +194,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ApiError"
+                $ref: "#/components/schemas/ValidationErrorResponse"
         "401":
           description: Cuenta registrada requerida
           content:
@@ -222,6 +222,12 @@ paths:
       responses:
         "204":
           description: Sin contenido
+        "400":
+          description: Id demasiado largo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
         "401":
           description: Cuenta registrada requerida
           content:
@@ -262,7 +268,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ApiError"
+                $ref: "#/components/schemas/ValidationErrorResponse"
         "401":
           description: Cuenta registrada requerida
           content:
@@ -619,7 +625,7 @@ components:
           maxLength: 160
           minLength: 4
           type: string
-      description: Solo documenta el cuerpo en OpenAPI; la validación la hace el servicio.
+      description: "Estricto: una clave desconocida es un 400 `unrecognized_keys`."
     CreateFeedbackRequest:
       required:
       - description
@@ -1187,11 +1193,10 @@ components:
           maxLength: 160
           minLength: 4
           type: string
-          nullable: true
         enabled:
           type: boolean
-          nullable: true
-      description: Solo documenta el cuerpo en OpenAPI; al menos uno de los dos campos.
+      description: "Estricto: al menos uno de los dos campos, ninguno admite `null`\
+        \ y una clave desconocida es un 400 `unrecognized_keys`."
     UserResponse:
       required:
       - user
@@ -1208,3 +1213,39 @@ components:
       enum:
       - USER
       - ADMIN
+    ValidationErrorResponse:
+      required:
+      - error
+      - issues
+      type: object
+      properties:
+        error:
+          type: string
+        issues:
+          type: array
+          items:
+            $ref: "#/components/schemas/ZodIssue"
+      description: "400 con incidencias de Zod: `error` es el mensaje de la primera\
+        \ incidencia."
+    ZodIssue:
+      required:
+      - code
+      - message
+      - path
+      type: object
+      properties:
+        code:
+          type: string
+        path:
+          type: array
+          items:
+            oneOf:
+            - type: string
+            - type: integer
+              format: int32
+        message:
+          type: string
+      additionalProperties: true
+      description: "Incidencia de Zod 4: `code`, `path` y `message` siempre; el resto\
+        \ de claves depende del código (`expected`, `origin`, `minimum`, `maximum`,\
+        \ `inclusive`, `keys`, ...)."

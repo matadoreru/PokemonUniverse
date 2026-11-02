@@ -347,7 +347,7 @@ export interface components {
             createdAt: string;
             updatedAt: string;
         };
-        /** @description Solo documenta el cuerpo en OpenAPI; la validación la hace el servicio. */
+        /** @description Estricto: una clave desconocida es un 400 `unrecognized_keys`. */
         CreateCustomCategoryRequest: {
             text: string;
         };
@@ -557,10 +557,10 @@ export interface components {
             email: string;
             password: string;
         };
-        /** @description Solo documenta el cuerpo en OpenAPI; al menos uno de los dos campos. */
+        /** @description Estricto: al menos uno de los dos campos, ninguno admite `null` y una clave desconocida es un 400 `unrecognized_keys`. */
         UpdateCustomCategoryRequest: {
-            text?: string | null;
-            enabled?: boolean | null;
+            text?: string;
+            enabled?: boolean;
         };
         /** @description Respuesta `{"user": ...}`; la clave se escribe siempre, también como `null`. */
         UserResponse: {
@@ -568,6 +568,19 @@ export interface components {
         };
         /** @enum {string} */
         UserRole: "USER" | "ADMIN";
+        /** @description 400 con incidencias de Zod: `error` es el mensaje de la primera incidencia. */
+        ValidationErrorResponse: {
+            error: string;
+            issues: components["schemas"]["ZodIssue"][];
+        };
+        /** @description Incidencia de Zod 4: `code`, `path` y `message` siempre; el resto de claves depende del código (`expected`, `origin`, `minimum`, `maximum`, `inclusive`, `keys`, ...). */
+        ZodIssue: {
+            code: string;
+            path: (string | number)[];
+            message: string;
+        } & {
+            [key: string]: unknown;
+        };
     };
     responses: never;
     parameters: never;
@@ -847,7 +860,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiError"];
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
                 };
             };
             /** @description Cuenta registrada requerida */
@@ -887,6 +900,15 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Id demasiado largo */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
             };
             /** @description Cuenta registrada requerida */
             401: {
@@ -938,7 +960,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiError"];
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
                 };
             };
             /** @description Cuenta registrada requerida */

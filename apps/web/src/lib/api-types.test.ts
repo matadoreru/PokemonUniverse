@@ -26,4 +26,9 @@ describe('contrato OpenAPI generado', () => {
   it('la vista de categoría personalizada coincide con la de shared', () => {
     expectTypeOf<components['schemas']['CustomCategoryView']>().toEqualTypeOf<CustomCategoryView>();
   });
+  it('los 400 con incidencias de Zod se documentan con ValidationErrorResponse', () => {
+    expectTypeOf<components['schemas']['ZodIssue']['path']>().toEqualTypeOf<(string | number)[]>();
+    expectTypeOf<paths['/api/categories']['post']['responses'][400]['content']['application/json']>()
+      .toEqualTypeOf<components['schemas']['ValidationErrorResponse']>();
+  });
 });

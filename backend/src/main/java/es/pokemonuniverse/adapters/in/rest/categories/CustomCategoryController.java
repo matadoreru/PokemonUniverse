@@ -2,6 +2,7 @@ package es.pokemonuniverse.adapters.in.rest.categories;
 
 import es.pokemonuniverse.adapters.in.rest.ApiError;
 import es.pokemonuniverse.adapters.in.rest.ApiException;
+import es.pokemonuniverse.adapters.in.rest.ValidationErrorResponse;
 import es.pokemonuniverse.adapters.in.rest.identity.Identity;
 import es.pokemonuniverse.application.categories.CustomCategoryService;
 import es.pokemonuniverse.application.categories.CustomCategoryView;
@@ -30,6 +31,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -62,20 +64,20 @@ public class CustomCategoryController {
   @Operation(operationId = "createCustomCategory", summary = "Crear una categoría personalizada")
   @RequestBody(content = @Content(schema = @Schema(implementation = CreateCategoryBody.class)))
   @ApiResponse(responseCode = "201", description = "Creada", content = @Content(schema = @Schema(implementation = CategoryResponse.class)))
-  @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ApiError.class)))
+  @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class)))
   @ApiResponse(responseCode = "401", description = "Cuenta registrada requerida", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(responseCode = "409", description = "Duplicada", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Post
   public HttpResponse<CategoryResponse> create(@Parameter(hidden = true) @Nullable @Body JsonNode body,
       @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
     var userId = registered(current);
-    return HttpResponse.created(new CategoryResponse(service.create(userId, body)));
+    return HttpResponse.created(new CategoryResponse(service.create(userId, orEmpty(body))));
   }
 
   @Operation(operationId = "updateCustomCategory", summary = "Editar o activar/desactivar una categoría personalizada")
   @RequestBody(content = @Content(schema = @Schema(implementation = UpdateCategoryBody.class)))
   @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = CategoryResponse.class)))
-  @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ApiError.class)))
+  @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class)))
   @ApiResponse(responseCode = "401", description = "Cuenta registrada requerida", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(responseCode = "404", description = "No encontrada", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(responseCode = "409", description = "Duplicada", content = @Content(schema = @Schema(implementation = ApiError.class)))
@@ -83,11 +85,12 @@ public class CustomCategoryController {
   public CategoryResponse update(@PathVariable String id, @Parameter(hidden = true) @Nullable @Body JsonNode body,
       @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
     var userId = registered(current);
-    return new CategoryResponse(service.update(userId, validId(id), body));
+    return new CategoryResponse(service.update(userId, validId(id), orEmpty(body)));
   }
 
   @Operation(operationId = "deleteCustomCategory", summary = "Borrar una categoría personalizada")
   @ApiResponse(responseCode = "204", description = "Sin contenido")
+  @ApiResponse(responseCode = "400", description = "Id demasiado largo", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class)))
   @ApiResponse(responseCode = "401", description = "Cuenta registrada requerida", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @ApiResponse(responseCode = "404", description = "No encontrada", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Delete("/{id}")
@@ -101,6 +104,11 @@ public class CustomCategoryController {
     return current.filter(user -> user.kind() == AuthUser.Kind.USER)
         .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED))
         .id();
+  }
+
+  /** Sin cuerpo, Express deja {@code req.body = {}}: Zod valida un objeto vacío, no {@code undefined}. */
+  private static JsonNode orEmpty(@Nullable JsonNode body) {
+    return body == null ? JsonNode.createObjectNode(Map.of()) : body;
   }
 
   /** {@code z.string().min(1).max(128)} del router; un segmento vacío no llega a esta ruta. */
@@ -119,15 +127,23 @@ public class CustomCategoryController {
   @Serdeable
   public record CategoryResponse(CustomCategoryView category) {}
 
-  /** Solo documenta el cuerpo en OpenAPI; la validación la hace el servicio. */
+  /**
+   * Solo documenta el cuerpo en OpenAPI; la validación la hace el servicio. {@code additionalProperties = FALSE}
+   * declara la intención, pero micronaut-openapi 7.1 lo elimina al normalizar ({@code OpenApiNormalizeUtils}); por eso
+   * la descripción lo dice también.
+   */
   @Serdeable
-  @Schema(name = "CreateCustomCategoryRequest")
+  @Schema(name = "CreateCustomCategoryRequest", additionalProperties = Schema.AdditionalPropertiesValue.FALSE,
+      description = "Estricto: una clave desconocida es un 400 `unrecognized_keys`.")
   public record CreateCategoryBody(
       @Schema(requiredMode = Schema.RequiredMode.REQUIRED, minLength = 4, maxLength = 160) String text) {}
 
-  /** Solo documenta el cuerpo en OpenAPI; al menos uno de los dos campos. */
+  /** Solo documenta el cuerpo en OpenAPI (ver {@link CreateCategoryBody} sobre {@code additionalProperties}). */
   @Serdeable
-  @Schema(name = "UpdateCustomCategoryRequest")
-  public record UpdateCategoryBody(@Nullable @Schema(minLength = 4, maxLength = 160) String text,
-      @Nullable Boolean enabled) {}
+  @Schema(name = "UpdateCustomCategoryRequest", additionalProperties = Schema.AdditionalPropertiesValue.FALSE,
+      description = "Estricto: al menos uno de los dos campos, ninguno admite `null` y una clave desconocida es un 400 "
+          + "`unrecognized_keys`.")
+  public record UpdateCategoryBody(
+      @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, minLength = 4, maxLength = 160) String text,
+      @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED) Boolean enabled) {}
 }

@@ -190,6 +190,28 @@ class CustomCategoryControllerTest {
   }
 
   @Test
+  void missingBodyIsAnEmptyObjectLikeExpress() throws Exception {
+    var account = register();
+    var post = fails(HttpRequest.POST("/api/categories", ""), account.cookie());
+    assertEquals(HttpStatus.BAD_REQUEST, post.getStatus());
+    assertEquals("{\"error\":\"Invalid input: expected string, received undefined\",\"issues\":[{\"expected\":\"string\","
+        + "\"code\":\"invalid_type\",\"path\":[\"text\"],\"message\":\"Invalid input: expected string, received undefined\"}]}",
+        body(post));
+    var id = createdId(send(json(HttpRequest.POST("/api/categories", "{\"text\":\"Pokémon sin cuerpo\"}")),
+        account.cookie()));
+    var patch = fails(HttpRequest.PATCH("/api/categories/" + id, ""), account.cookie());
+    assertEquals("{\"error\":\"No hay cambios que guardar.\",\"issues\":[{\"code\":\"custom\",\"path\":[],"
+        + "\"message\":\"No hay cambios que guardar.\"}]}", body(patch));
+    // Fuera de paridad estricta: Node responde antes con el error de body-parser (strict). Java hoy:
+    // `null` se enlaza como cuerpo ausente; JSON roto es el 400 común; un valor no objeto pasa por Zod.
+    assertTrue(body(fails(json(HttpRequest.POST("/api/categories", "null")), account.cookie()))
+        .startsWith("{\"error\":\"Invalid input: expected string, received undefined\""));
+    assertEquals("{\"error\":\"Invalid JSON\"}", body(fails(json(HttpRequest.POST("/api/categories", "{x")), account.cookie())));
+    assertTrue(body(fails(json(HttpRequest.POST("/api/categories", "\"x\"")), account.cookie()))
+        .startsWith("{\"error\":\"Invalid input: expected object, received string\""));
+  }
+
+  @Test
   void duplicatesAndForeignIds() throws Exception {
     var owner = register();
     var other = register();

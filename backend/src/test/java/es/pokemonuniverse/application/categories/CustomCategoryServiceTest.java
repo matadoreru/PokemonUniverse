@@ -183,6 +183,7 @@ class CustomCategoryServiceTest {
 
   @Test
   void validatesCreateLikeZod() {
+    // Semántica Zod del servicio para null (undefined); por HTTP no se alcanza: el controlador pasa {} sin cuerpo.
     assertIssues("Invalid input: expected object, received undefined",
         "[{\"expected\":\"object\",\"code\":\"invalid_type\",\"path\":[],\"message\":\"Invalid input: expected object, received undefined\"}]",
         () -> service.create("u1", null));
