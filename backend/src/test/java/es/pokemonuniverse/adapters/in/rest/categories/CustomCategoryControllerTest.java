@@ -69,6 +69,8 @@ class CustomCategoryControllerTest {
   @Inject RoomCoordinator coordinator;
   @Inject RecordingEvents events;
   @Inject CustomCategoryService categories;
+  @Inject javax.sql.DataSource dataSource;
+  @Inject io.micronaut.jdbc.DataSourceResolver resolver;
 
   private record Account(String id, String cookie) {}
 
@@ -216,6 +218,32 @@ class CustomCategoryControllerTest {
     // La carga de arranque lee las filas de todos los usuarios desde la BD.
     categories.load();
     assertTrue(send(HttpRequest.GET("/api/categories"), account.cookie()).body().contains("\"text\":\"Charmander\""));
+  }
+
+  @Test
+  void readsRowsWrittenByPrismaWithUtcTimestampsAndBacksUpUpdates() throws Exception {
+    var account = register();
+    // Fila como la escribe Prisma (hora UTC en un timestamp(3) sin zona), fuera de la caché.
+    var rowId = "prisma-" + UUID.randomUUID();
+    try (var connection = resolver.resolve(dataSource).getConnection();
+        var insert = connection.prepareStatement("insert into \"CustomCategory\" (id, \"userId\", text, "
+            + "\"normalizedText\", enabled, \"createdAt\", \"updatedAt\") values (?, ?, 'Bulbasaur', 'bulbasaur', true, "
+            + "'2026-01-01 12:00:00.000', '2026-01-01 12:00:00.000')")) {
+      insert.setString(1, rowId);
+      insert.setString(2, account.id());
+      insert.executeUpdate();
+    }
+    var own = createdId(send(json(HttpRequest.POST("/api/categories", "{\"text\":\"Squirtle\"}")), account.cookie()));
+    // La caché no conoce "bulbasaur": el 409 lo da el índice único al actualizar.
+    var e = fails(json(HttpRequest.PATCH("/api/categories/" + own, "{\"text\":\"BULBASAUR\"}")), account.cookie());
+    assertEquals(HttpStatus.CONFLICT, e.getStatus());
+    assertEquals("{\"error\":\"Ya tienes una categoría igual o equivalente.\"}", body(e));
+    assertTrue(send(HttpRequest.GET("/api/categories"), account.cookie()).body().contains("\"text\":\"Squirtle\""));
+
+    categories.load();
+    var listed = send(HttpRequest.GET("/api/categories"), account.cookie()).body();
+    assertTrue(listed.startsWith("{\"categories\":[{\"id\":\"" + rowId + "\",\"text\":\"Bulbasaur\",\"enabled\":true,"
+        + "\"createdAt\":\"2026-01-01T12:00:00.000Z\",\"updatedAt\":\"2026-01-01T12:00:00.000Z\"}"), listed);
   }
 
   @Test
