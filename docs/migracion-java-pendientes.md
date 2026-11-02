@@ -113,15 +113,40 @@ buscador desplaza la página (Bingo); además, 8 juegos no muestran el título d
 - El login distingue por tiempo entre correo desconocido y contraseña errónea (igual que Node).
 - Un cuerpo mal formado de un anónimo en `POST /api/feedback` da 400 antes que 401 (Node comprueba la autenticación primero).
 - No se valida `nbf` del JWT (la comprobación de `jose` en Node sí).
-- Sin ejecución concurrente probada del caché del catálogo Pokémon (sin protección de carga única).
+- Caché del catálogo Pokémon: desde 2B la recarga horaria también carga movimientos, todas las filas de learnset y
+  todas las entradas de Pokédex por JPA, y Java ya sirve `/api/pokemon` en producción. La recarga es de un solo vuelo
+  (`CatalogSnapshotCache`, probado con lectores concurrentes en `PokemonCatalogServiceCacheTest`). Mejora opcional:
+  una proyección ligera solo para `/api/pokemon` que no cargue learnsets ni Pokédex.
 - El procesamiento incremental de anotaciones está desactivado para que el OpenAPI sea determinista; ralentiza la compilación.
 - CI: los pushes en cola esperan a un build nativo en curso (concurrencia serie); un push solo de documentación
   redespliega PRE con imágenes idénticas; volver a lanzar un Main antiguo reetiqueta el `:pre` actual; las listas de rutas de
   los filtros están duplicadas entre workflows.
 - Deuda de 2B (aplazada en las revisiones):
-  - Helpers de lectura de configuración duplicados en las clases `<Juego>Config` (candidato: un lector común en
-    `engine/infra`), y helpers pequeños repetidos entre motores (`takeRandom`, `formatEs`, comprobaciones de sprite,
-    `choosePrompt` y el pool de prompts).
+  - Helpers de lectura de configuración duplicados en las 28 clases `<Juego>Config` (~2 830 líneas, 4 variantes
+    equivalentes): consolidarlos en `engine/infra` antes de que 2C toque las configuraciones. También hay helpers
+    pequeños repetidos entre motores (`takeRandom`, `formatEs`, comprobaciones de sprite, `choosePrompt` y el pool de
+    prompts); `isUsableWhoPokemonSprite` duplica `isUsableZoomedSprite`, `GuessFromStatsPlayerStats` duplica
+    `PokemonPaletteStats` y los recuentos de lotes ganados y sin dueño están duplicados entre `PokemonTeamAuctionEngine`
+    y `PokemonTeamAuctionRules`.
+  - Records posicionales anteriores a la regla del builder, que siguen como deuda documentada (los de Pokémon
+    Connections y Sketchmon ya usan builder): `PokeTabooPublicState`, `WhoIsWhoPublicState`, las copias `ZERO`/`afterX()`
+    de `MostLikelyToStats`, `OneOfUsIsFakeStats`, `PokeTabooPlayerStats` y `TypeChainPlayerStats`,
+    `PokemonTriviaOptionDetails`, `PokeTabooSecretPokemon`, `GuessFromStatsPokemonReveal`, `TcgCardPublicView`, los
+    records posicionales que quedan en Bluff Auction y `PuzzleOptions`.
+  - Auditoría de `.int()` (revisión final): todos los campos enteros anteriores a la regla están acotados por el
+    `min`/`max` de Zod; no hay diferencia observable.
+  - Arnés dorado: el paso `asset` nunca comprueba la forma del resultado esperado. El literal de catálogo TCG nulo de
+    `tcg-higher-lower` solo tiene test unitario (el runner no puede grabar `checkAvailability`).
+  - Persistencia: `MoveEntity.names` no se defiende de un JSON que no sea objeto, y `PokemonEntity.setEvolution` es un
+    setter público que solo usan los tests.
+  - Cargador de assets: el test de 9 MiB no comprueba que se corte pronto, el test del límite de pendientes no detecta
+    más de 8 cargas a la vez, y el ejecutor estático del watchdog no se cierra nunca (es daemon; inofensivo).
+  - `/api/pokemon` omite también `paletteWeights` (Node solo omite `palette`): divergencia defendible.
+  - `domain/pokemon/conditions` importa `EngineException` del paquete de motores.
+  - Pokémon Connections: la vuelta del respaldo curado no tiene test y `PuzzleOptions` es posicional. En Pokémon
+    Impostor, la media rama «no es candidato» es inalcanzable. `SketchmonTypes` es largo (856 líneas con
+    los builders; candidato a partirse).
+  - E2E: `esperarCambio` pasa con un tic del temporizador, y las capturas cambian entre ejecuciones.
   - Formato de dobles enteros: Java emite `1.0` donde Node emite `1` (Sketchmon); igual por valor, distinto en texto. Los
     `configCases` con `x.0` se serializan como enteros, así que no prueban que Java acepte `20.0`.
   - El `cardsFor` del arnés no aplica la regla de producción «al menos 2 cartas o ninguna».
