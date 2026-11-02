@@ -9,6 +9,8 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.TimedGameState;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
+import es.pokemonuniverse.domain.pokemon.conditions.Condition;
+import es.pokemonuniverse.domain.pokemon.conditions.ConditionCell;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
@@ -18,130 +20,17 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Tipos de {@code pokemon-bingo/types.ts} y de {@code pokemon/conditions/types.ts}. Los {@code Record<string, …>} son
- * mapas inmutables con orden de inserción ({@code Immutables.frozenMap}); cada transición crea un estado nuevo con
- * {@code toBuilder()}.
+ * Tipos de {@code pokemon-bingo/types.ts}; las condiciones y las casillas son las compartidas de
+ * {@code domain/pokemon/conditions}. Los {@code Record<string, …>} son mapas inmutables con orden de inserción
+ * ({@code Immutables.frozenMap}); cada transición crea un estado nuevo con {@code toBuilder()}.
  */
 public final class PokemonBingoTypes {
 
   private PokemonBingoTypes() {}
 
-  /** {@code BingoComparisonOperator}, más el {@code RANGE} de las condiciones de Pokédex. */
-  public enum BingoOperator { GT, LT, RANGE }
-
-  /** {@code BingoEvolutionStatus}. */
-  public enum BingoEvolutionStatus { BASE, MIDDLE, FINAL, NONE }
-
-  /** {@code BingoDifficulty} de {@code pokemon/conditions/generator.ts}. */
-  public enum BingoDifficulty { EASY, MEDIUM, HARD }
-
-  /**
-   * {@code BingoCondition}: unión discriminada por {@code kind}. Cada variante es un record con {@code kind} primero y
-   * sus campos en el orden del literal TS; Serde serializa el tipo concreto, sin propiedad de tipo añadida.
-   */
-  public sealed interface BingoCondition {
-
-    String kind();
-
-    @Serdeable
-    @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Generation(String kind, int generation) implements BingoCondition {
-      Generation(int generation) { this("GENERATION", generation); }
-    }
-
-    /** {@code max} es el {@code max?:} de TS: solo existe en {@code RANGE}. */
-    @Serdeable
-    @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Dex(String kind, BingoOperator operator, int value,
-        @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Integer max) implements BingoCondition {
-      Dex(BingoOperator operator, int value) { this("DEX", operator, value, null); }
-
-      static Dex range(int value, int max) { return new Dex("DEX", BingoOperator.RANGE, value, max); }
-    }
-
-    @Serdeable
-    @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Type(String kind, String pokemonType) implements BingoCondition {
-      Type(String pokemonType) { this("TYPE", pokemonType); }
-    }
-
-    @Serdeable
-    @JsonInclude(JsonInclude.Include.ALWAYS)
-    record TypeCombination(String kind, List<String> pokemonTypes) implements BingoCondition {
-      public TypeCombination {
-        pokemonTypes = frozenList(pokemonTypes);
-      }
-
-      TypeCombination(List<String> pokemonTypes) { this("TYPE_COMBINATION", pokemonTypes); }
-    }
-
-    @Serdeable
-    @JsonInclude(JsonInclude.Include.ALWAYS)
-    record TypeCount(String kind, int count) implements BingoCondition {
-      TypeCount(int count) { this("TYPE_COUNT", count); }
-    }
-
-    /** {@code stat} es la clave de TS ({@code hp}, {@code specialAttack}, {@code baseStatTotal}…). */
-    @Serdeable
-    @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Stat(String kind, String stat, BingoOperator operator, int value) implements BingoCondition {
-      Stat(String stat, BingoOperator operator, int value) { this("STAT", stat, operator, value); }
-    }
-
-    /** {@code metric} es {@code heightDecimeters} o {@code weightHectograms}. */
-    @Serdeable
-    @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Physical(String kind, String metric, BingoOperator operator, int value) implements BingoCondition {
-      Physical(String metric, BingoOperator operator, int value) { this("PHYSICAL", metric, operator, value); }
-    }
-
-    @Serdeable
-    @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Evolution(String kind, BingoEvolutionStatus status) implements BingoCondition {
-      Evolution(BingoEvolutionStatus status) { this("EVOLUTION", status); }
-    }
-
-    /** {@code status} es un {@code PokemonLegendaryStatus} ({@code NORMAL}, {@code LEGENDARY}, {@code MYTHICAL}). */
-    @Serdeable
-    @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Legendary(String kind, String status) implements BingoCondition {
-      Legendary(String status) { this("LEGENDARY", status); }
-    }
-
-    @Serdeable
-    @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Color(String kind, String color) implements BingoCondition {
-      Color(String color) { this("COLOR", color); }
-    }
-
-    @Serdeable
-    @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Ability(String kind, String ability) implements BingoCondition {
-      Ability(String ability) { this("ABILITY", ability); }
-    }
-  }
-
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record BingoCell(String id, List<BingoCondition> conditions) {
-
-    public BingoCell {
-      conditions = frozenList(conditions);
-    }
-  }
-
-  /** {@code BingoConditionTemplate} de {@code pokemon/conditions/generator.ts}. */
-  public record BingoConditionTemplate(List<BingoCondition> conditions, String key, List<String> candidatePokemonIds,
-      BingoDifficulty difficulty) {
-
-    public BingoConditionTemplate {
-      conditions = frozenList(conditions);
-      candidatePokemonIds = frozenList(candidatePokemonIds);
-    }
-  }
-
   /** {@code GeneratedBingoBoard}. */
-  public record GeneratedBingoBoard(List<BingoCell> cells, Map<String, String> solutionPokemonIds, String signature) {
+  public record GeneratedBingoBoard(List<ConditionCell> cells, Map<String, String> solutionPokemonIds,
+      String signature) {
 
     public GeneratedBingoBoard {
       cells = frozenList(cells);
@@ -150,7 +39,7 @@ public final class PokemonBingoTypes {
   }
 
   /** {@code BingoBoardState}; {@code solutionPokemonIds} es un emparejamiento válido que solo ve el servidor. */
-  public record BingoBoardState(List<BingoCell> cells, Map<String, String> assignments,
+  public record BingoBoardState(List<ConditionCell> cells, Map<String, String> assignments,
       Map<String, String> solutionPokemonIds, long lastProgressAt) {
 
     public BingoBoardState {
@@ -293,7 +182,7 @@ public final class PokemonBingoTypes {
   /** {@code BingoPublicCell}: {@code { ...cell, assignment, possibleSolutions }}. */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record BingoPublicCell(String id, List<BingoCondition> conditions, @Nullable BingoPokemonView assignment,
+  public record BingoPublicCell(String id, List<Condition> conditions, @Nullable BingoPokemonView assignment,
       List<BingoPokemonView> possibleSolutions) {
 
     public BingoPublicCell {

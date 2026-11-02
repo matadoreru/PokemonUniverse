@@ -1,5 +1,7 @@
 package es.pokemonuniverse.domain.game;
 
+import static es.pokemonuniverse.domain.pokemon.conditions.ConditionGenerationOptions.BINGO_FAMILY_KEYS;
+
 import es.pokemonuniverse.domain.json.JsNumbers;
 import io.micronaut.json.tree.JsonNode;
 import java.util.List;
@@ -11,12 +13,6 @@ import java.util.Optional;
  * expresar por sí solo.
  */
 public final class GameConfigReadiness {
-
-  /** {@code BINGO_FAMILY_KEYS} de {@code pokemon/conditions/types.ts}. */
-  public static final List<String> BINGO_FAMILY_KEYS = List.of(
-      "generation", "dexNumber", "type", "typeCombination", "typeCount",
-      "hp", "attack", "defense", "specialAttack", "specialDefense", "speed", "baseStatTotal",
-      "height", "weight", "evolutionStage", "legendaryStatus", "color", "abilities");
 
   /** {@code POKEDDLE_CLUE_KEYS} de {@code pokeddle-race/config.ts}. */
   public static final List<String> POKEDDLE_CLUE_KEYS = List.of(

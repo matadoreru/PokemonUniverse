@@ -1,8 +1,10 @@
 package es.pokemonuniverse.domain.game.engines.pokemonbingo;
 
 import static es.pokemonuniverse.domain.game.engine.infra.Immutables.frozenMap;
+import static es.pokemonuniverse.domain.pokemon.conditions.ConditionGenerationOptions.BINGO_FAMILY_KEYS;
 
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
+import es.pokemonuniverse.domain.pokemon.conditions.ConditionGenerationOptions;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.ArrayList;
@@ -15,17 +17,11 @@ import java.util.TreeSet;
 /**
  * Configuración normalizada ({@code pokemonBingoConfigSchema} de {@code pokemon-bingo/config.ts}); la raíz es
  * estricta y {@code families} no: sus claves desconocidas se descartan. {@code families} conserva el orden de
- * {@link #BINGO_FAMILY_KEYS}, que es el de la salida de Zod.
+ * {@link ConditionGenerationOptions#BINGO_FAMILY_KEYS}, que es el de la salida de Zod.
  */
 @Serdeable
 public record PokemonBingoConfig(int width, int height, int durationSeconds, List<Integer> generations,
     int maxConditionsPerCell, Map<String, Boolean> families) {
-
-  /** {@code BINGO_FAMILY_KEYS} de {@code pokemon/conditions/types.ts}. */
-  public static final List<String> BINGO_FAMILY_KEYS = List.of(
-      "generation", "dexNumber", "type", "typeCombination", "typeCount",
-      "hp", "attack", "defense", "specialAttack", "specialDefense", "speed", "baseStatTotal",
-      "height", "weight", "evolutionStage", "legendaryStatus", "color", "abilities");
 
   /** {@code GENERATIONS} de {@code pokemon/types.ts}. */
   static final int FIRST_GENERATION = 1;
@@ -47,7 +43,10 @@ public record PokemonBingoConfig(int width, int height, int durationSeconds, Lis
     return Boolean.TRUE.equals(families.get(key));
   }
 
-  /** {@code activeBingoFamilies}: las familias activas en el orden de {@link #BINGO_FAMILY_KEYS}. */
+  /**
+   * {@code activeBingoFamilies}: las familias activas en el orden de
+   * {@link ConditionGenerationOptions#BINGO_FAMILY_KEYS}.
+   */
   public List<String> activeFamilies() {
     return BINGO_FAMILY_KEYS.stream().filter(this::family).toList();
   }

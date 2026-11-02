@@ -4,9 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.BingoConditionTemplate;
-import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.BingoDifficulty;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
+import es.pokemonuniverse.domain.pokemon.conditions.ConditionDifficulty;
+import es.pokemonuniverse.domain.pokemon.conditions.ConditionTemplate;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import java.util.List;
 import java.util.Map;
@@ -48,9 +48,9 @@ class PokemonBingoGeneratorTest {
     assertEquals(108, templates.stream().filter(template -> template.conditions().size() == 2).count());
     assertEquals(99, random.draws);
     assertEquals("GEN:1", templates.getFirst().key());
-    BingoConditionTemplate last = templates.getLast();
+    ConditionTemplate last = templates.getLast();
     assertEquals("STAT:attack:LT:76&STAT:specialDefense:LT:70", last.key());
-    assertEquals(BingoDifficulty.EASY, last.difficulty());
+    assertEquals(ConditionDifficulty.EASY, last.difficulty());
     assertEquals(56, last.candidatePokemonIds().size());
 
     var board = PokemonBingoGenerator.generateBingoBoard(templates, GEN1, 3, 3, random, Set.of(), 97);
@@ -85,7 +85,7 @@ class PokemonBingoGeneratorTest {
     var random = new ScriptedRandom();
     var templates = PokemonBingoGenerator.buildBingoConditionTemplates(tiny, config(1), random);
     assertEquals(List.of("GEN:1", "TYPE:grass", "TYPE:poison", "TYPES:grass+poison", "TYPE_COUNT:2"),
-        templates.stream().map(BingoConditionTemplate::key).toList());
+        templates.stream().map(ConditionTemplate::key).toList());
 
     var unsolvable = assertThrows(EngineException.class,
         () -> PokemonBingoGenerator.generateBingoBoard(templates, tiny, 2, 2, random, Set.of(), 0));

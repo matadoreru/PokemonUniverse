@@ -14,7 +14,6 @@ import es.pokemonuniverse.domain.game.engine.GameStanding;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.BingoBoardState;
-import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.BingoCell;
 import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.BingoPlayerStats;
 import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.BingoPokemonView;
 import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.BingoPrivateAttempt;
@@ -25,6 +24,8 @@ import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.Pok
 import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.PokemonBingoPublicState;
 import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.PokemonBingoState;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
+import es.pokemonuniverse.domain.pokemon.conditions.ConditionCell;
+import es.pokemonuniverse.domain.pokemon.conditions.ConditionRules;
 import io.micronaut.json.tree.JsonNode;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,7 +85,7 @@ public final class PokemonBingoEngine
     return state.toBuilder().phase(GamePhase.GAME_RESULTS).roundEndsAt(null).nextTransitionAt(null).build();
   }
 
-  private static Optional<BingoCell> findCell(BingoBoardState board, String cellId) {
+  private static Optional<ConditionCell> findCell(BingoBoardState board, String cellId) {
     return board.cells().stream().filter(cell -> cell.id().equals(cellId)).findFirst();
   }
 
@@ -196,7 +197,7 @@ public final class PokemonBingoEngine
           ? state.poolIds().stream()
               .map(id -> context.pokemon().byId(id)
                   .orElseThrow(() -> new EngineException("Pokémon desconocido: " + id)))
-              .filter(pokemon -> PokemonBingoRules.pokemonMatchesBingoCell(pokemon, cell))
+              .filter(pokemon -> ConditionRules.pokemonMatchesBingoCell(pokemon, cell))
               .limit(3)
               .map(BingoPokemonView::of)
               .toList()
@@ -299,7 +300,7 @@ public final class PokemonBingoEngine
         return GameActionResult.reject(state, "Movimiento inválido.");
       }
       var moved = pokemon.get();
-      if (!PokemonBingoRules.pokemonMatchesBingoCell(moved, target.get())) {
+      if (!ConditionRules.pokemonMatchesBingoCell(moved, target.get())) {
         var attempt = BingoPrivateAttempt.of(target.get().id(), moved, context.now(), false,
             "❌ " + moved.name() + " no cumple la casilla de destino.");
         return GameActionResult.accept(incorrectAttempt(state, playerId, attempt));
@@ -319,7 +320,7 @@ public final class PokemonBingoEngine
     }
     var chosen = pokemon.get();
     var target = cell.get();
-    if (!PokemonBingoRules.pokemonMatchesBingoCell(chosen, target)) {
+    if (!ConditionRules.pokemonMatchesBingoCell(chosen, target)) {
       var attempt = BingoPrivateAttempt.of(target.id(), chosen, context.now(), false,
           "❌ " + chosen.name() + " no cumple esta casilla.");
       return GameActionResult.accept(incorrectAttempt(state, playerId, attempt));
@@ -328,7 +329,7 @@ public final class PokemonBingoEngine
     if (existingCell.isPresent() && !existingCell.get().equals(target.id()) && !assign.moveExisting()) {
       var source = findCell(board, existingCell.get()).orElseThrow();
       return GameActionResult.reject(state, chosen.name() + " ya está usado en “"
-          + source.conditions().stream().map(PokemonBingoRules::describeBingoCondition)
+          + source.conditions().stream().map(ConditionRules::describeBingoCondition)
               .collect(Collectors.joining(" + "))
           + "”. Confirma para moverlo.");
     }

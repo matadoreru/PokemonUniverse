@@ -13,6 +13,7 @@ import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.PokemonBingoAction;
 import es.pokemonuniverse.domain.json.JsonTree;
+import es.pokemonuniverse.domain.pokemon.conditions.ConditionGenerationOptions;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
@@ -42,7 +43,7 @@ class PokemonBingoEngineTest {
   private static PokemonBingoConfig withFamilies(PokemonBingoConfig base, int width, int height,
       List<Integer> generations, String onlyFamily) {
     var families = new LinkedHashMap<String, Boolean>();
-    for (var key : PokemonBingoConfig.BINGO_FAMILY_KEYS) families.put(key, key.equals(onlyFamily));
+    for (var key : ConditionGenerationOptions.BINGO_FAMILY_KEYS) families.put(key, key.equals(onlyFamily));
     return new PokemonBingoConfig(width, height, base.durationSeconds(), generations, base.maxConditionsPerCell(),
         families);
   }
