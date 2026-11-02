@@ -3,16 +3,14 @@ package es.pokemonuniverse.domain.game.engines.pokemonbingo;
 import static es.pokemonuniverse.domain.game.engine.infra.Immutables.frozenMap;
 import static es.pokemonuniverse.domain.pokemon.conditions.ConditionGenerationOptions.BINGO_FAMILY_KEYS;
 
-import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
+import es.pokemonuniverse.domain.game.engine.infra.ConfigReader;
 import es.pokemonuniverse.domain.pokemon.conditions.ConditionGenerationOptions;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Configuración normalizada ({@code pokemonBingoConfigSchema} de {@code pokemon-bingo/config.ts}); la raíz es
@@ -22,10 +20,6 @@ import java.util.TreeSet;
 @Serdeable
 public record PokemonBingoConfig(int width, int height, int durationSeconds, List<Integer> generations,
     int maxConditionsPerCell, Map<String, Boolean> families) {
-
-  /** {@code GENERATIONS} de {@code pokemon/types.ts}. */
-  static final int FIRST_GENERATION = 1;
-  static final int LAST_GENERATION = 9;
 
   private static final Set<String> KEYS =
       Set.of("width", "height", "durationSeconds", "generations", "maxConditionsPerCell", "families");
@@ -53,8 +47,7 @@ public record PokemonBingoConfig(int width, int height, int durationSeconds, Lis
 
   /** {@code defaultPokemonBingoConfig}. */
   public static PokemonBingoConfig defaults() {
-    var generations = new ArrayList<Integer>();
-    for (int generation = FIRST_GENERATION; generation <= LAST_GENERATION; generation++) generations.add(generation);
+    var generations = ConfigReader.allGenerations();
     var families = new LinkedHashMap<String, Boolean>();
     for (var key : BINGO_FAMILY_KEYS) families.put(key, !DEFAULT_OFF.contains(key));
     return new PokemonBingoConfig(3, 3, 120, generations, 1, families);
@@ -66,57 +59,32 @@ public record PokemonBingoConfig(int width, int height, int durationSeconds, Lis
    * numérico) y rechazan {@code 3.5}.
    */
   public static PokemonBingoConfig parse(JsonNode raw) {
-    if (raw == null || !raw.isObject()) throw invalid("la configuración debe ser un objeto");
-    for (var entry : raw.entries()) {
-      if (!KEYS.contains(entry.getKey())) throw invalid("clave desconocida " + entry.getKey());
-    }
-    int width = integer(required(raw, "width"), "width", 2, 6);
-    int height = integer(required(raw, "height"), "height", 2, 6);
-    int durationSeconds = integer(required(raw, "durationSeconds"), "durationSeconds", 60, 300);
-    var generationsNode = required(raw, "generations");
-    if (!generationsNode.isArray() || generationsNode.size() < 1) {
-      throw invalid("generations debe ser una lista con al menos una generación");
-    }
-    var generations = new TreeSet<Integer>();
-    for (var value : generationsNode.values()) {
-      generations.add(integer(value, "generations", FIRST_GENERATION, LAST_GENERATION));
-    }
-    var maxNode = required(raw, "maxConditionsPerCell");
+    var config = ConfigReader.of(raw, "Pokémon Bingo");
+    config.strict(KEYS);
+    int width = config.integer("width", 2, 6);
+    int height = config.integer("height", 2, 6);
+    int durationSeconds = config.integer("durationSeconds", 60, 300);
+    var generations = config.generations("generations");
+    var maxNode = config.required("maxConditionsPerCell");
     if (!maxNode.isNumber() || (maxNode.getDoubleValue() != 1 && maxNode.getDoubleValue() != 2)) {
-      throw invalid("maxConditionsPerCell debe ser 1 o 2");
+      throw config.invalid("maxConditionsPerCell debe ser 1 o 2");
     }
-    return new PokemonBingoConfig(width, height, durationSeconds, new ArrayList<>(generations),
-        (int) maxNode.getDoubleValue(), families(required(raw, "families")));
+    return new PokemonBingoConfig(width, height, durationSeconds, generations,
+        (int) maxNode.getDoubleValue(), families(config, config.required("families")));
   }
 
-  /** {@code bingoFamiliesSchema}: objeto no estricto con un booleano por familia. */
-  private static Map<String, Boolean> families(JsonNode value) {
-    if (!value.isObject()) throw invalid("families debe ser un objeto");
+  /**
+   * {@code bingoFamiliesSchema}: objeto no estricto con un booleano por familia. Se queda local porque una familia
+   * ausente da {@code families.<clave> debe ser booleano}, no el {@code falta <clave>} del lector común.
+   */
+  private static Map<String, Boolean> families(ConfigReader config, JsonNode value) {
+    if (!value.isObject()) throw config.invalid("families debe ser un objeto");
     var families = new LinkedHashMap<String, Boolean>();
     for (var key : BINGO_FAMILY_KEYS) {
       var flag = value.get(key);
-      if (flag == null || !flag.isBoolean()) throw invalid("families." + key + " debe ser booleano");
+      if (flag == null || !flag.isBoolean()) throw config.invalid("families." + key + " debe ser booleano");
       families.put(key, flag.getBooleanValue());
     }
     return families;
-  }
-
-  private static JsonNode required(JsonNode raw, String key) {
-    var value = raw.get(key);
-    if (value == null) throw invalid("falta " + key);
-    return value;
-  }
-
-  /** {@code z.number().int().min(min).max(max)}. */
-  private static int integer(JsonNode value, String key, int min, int max) {
-    if (!value.isNumber()) throw invalid(key + " debe ser un número entero");
-    double number = value.getDoubleValue();
-    if (number != Math.rint(number) || Double.isInfinite(number)) throw invalid(key + " debe ser un número entero");
-    if (number < min || number > max) throw invalid(key + " debe estar entre " + min + " y " + max);
-    return (int) number;
-  }
-
-  private static ConfigValidationException invalid(String detail) {
-    return new ConfigValidationException("Configuración de Pokémon Bingo no válida: " + detail + ".");
   }
 }

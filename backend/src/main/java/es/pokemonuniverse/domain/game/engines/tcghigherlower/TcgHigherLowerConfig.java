@@ -1,8 +1,8 @@
 package es.pokemonuniverse.domain.game.engines.tcghigherlower;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
+import es.pokemonuniverse.domain.game.engine.infra.ConfigReader;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 /**
@@ -29,10 +28,6 @@ public record TcgHigherLowerConfig(
     int rounds,
     int roundSeconds) {
 
-  /** {@code GENERATIONS} de {@code pokemon/types.ts}. */
-  static final int FIRST_GENERATION = 1;
-  static final int LAST_GENERATION = 9;
-
   /** {@code /^\d+(?:\.\d+)?$/}: {@code \d} es ASCII en JS (sin bandera {@code u}) y en Java. */
   private static final Pattern PRICE = Pattern.compile("\\d+(?:\\.\\d+)?");
 
@@ -44,8 +39,7 @@ public record TcgHigherLowerConfig(
 
   /** {@code defaultTcgHigherLowerConfig}. */
   public static TcgHigherLowerConfig defaults() {
-    var generations = new ArrayList<Integer>();
-    for (int generation = FIRST_GENERATION; generation <= LAST_GENERATION; generation++) generations.add(generation);
+    var generations = ConfigReader.allGenerations();
     return new TcgHigherLowerConfig(generations, List.of(), List.of(), null, null, true, 10, 15);
   }
 
@@ -67,42 +61,31 @@ public record TcgHigherLowerConfig(
    * {@code minPrice <= maxPrice}. Los enteros admiten {@code 10.0} y rechazan {@code 10.5}.
    */
   public static TcgHigherLowerConfig parse(JsonNode raw) {
-    if (raw == null || !raw.isObject()) throw invalid("la configuración debe ser un objeto");
-    var generationsNode = required(raw, "generations");
-    if (!generationsNode.isArray() || generationsNode.size() < 1) {
-      throw invalid("generations debe ser una lista con al menos una generación");
-    }
-    var generations = new TreeSet<Integer>();
-    for (var value : generationsNode.values()) {
-      generations.add(integer(value, "generations", FIRST_GENERATION, LAST_GENERATION));
-    }
-    var setIds = distinctStrings(required(raw, "setIds"), "setIds");
-    var rarities = distinctStrings(required(raw, "rarities"), "rarities");
-    var minPrice = price(required(raw, "minPrice"), "minPrice");
-    var maxPrice = price(required(raw, "maxPrice"), "maxPrice");
-    var showRarity = required(raw, "showRarity");
-    if (!showRarity.isBoolean()) throw invalid("showRarity debe ser booleano");
-    int rounds = integer(required(raw, "rounds"), "rounds", 5, 50);
-    int roundSeconds = integer(required(raw, "roundSeconds"), "roundSeconds", 5, 60);
+    var config = ConfigReader.of(raw, "Higher or Lower: Cartas");
+    var generations = config.generations("generations");
+    var setIds = distinctStrings(config, "setIds");
+    var rarities = distinctStrings(config, "rarities");
+    var minPrice = price(config, "minPrice");
+    var maxPrice = price(config, "maxPrice");
+    boolean showRarity = config.bool("showRarity");
+    int rounds = config.integer("rounds", 5, 50);
+    int roundSeconds = config.integer("roundSeconds", 5, 60);
     if (minPrice != null && maxPrice != null && compareTcgPrices(minPrice, maxPrice) > 0) {
-      throw invalid("El precio máximo debe ser igual o mayor que el mínimo.");
+      throw config.invalid("El precio máximo debe ser igual o mayor que el mínimo");
     }
-    return new TcgHigherLowerConfig(new ArrayList<>(generations), setIds, rarities, minPrice, maxPrice,
-        showRarity.getBooleanValue(), rounds, roundSeconds);
-  }
-
-  private static JsonNode required(JsonNode raw, String key) {
-    var value = raw.get(key);
-    if (value == null) throw invalid("falta " + key);
-    return value;
+    return new TcgHigherLowerConfig(generations, setIds, rarities, minPrice, maxPrice, showRarity, rounds,
+        roundSeconds);
   }
 
   /** {@code z.array(z.string().min(1)).transform(dedup)}. */
-  private static List<String> distinctStrings(JsonNode value, String key) {
-    if (!value.isArray()) throw invalid(key + " debe ser una lista");
+  private static List<String> distinctStrings(ConfigReader config, String key) {
+    var value = config.required(key);
+    if (!value.isArray()) throw config.invalid(key + " debe ser una lista");
     var items = new LinkedHashSet<String>();
     for (var item : value.values()) {
-      if (!item.isString() || item.getStringValue().isEmpty()) throw invalid(key + " solo admite textos no vacíos");
+      if (!item.isString() || item.getStringValue().isEmpty()) {
+        throw config.invalid(key + " solo admite textos no vacíos");
+      }
       items.add(item.getStringValue());
     }
     return new ArrayList<>(items);
@@ -110,25 +93,12 @@ public record TcgHigherLowerConfig(
 
   /** {@code optionalPriceSchema}: decimal no negativo como texto, o {@code null}. */
   @Nullable
-  private static String price(JsonNode value, String key) {
+  private static String price(ConfigReader config, String key) {
+    var value = config.required(key);
     if (value.isNull()) return null;
     if (!value.isString() || !PRICE.matcher(value.getStringValue()).matches()) {
-      throw invalid(key + ": Introduce un precio válido.");
+      throw config.invalid(key + ": Introduce un precio válido");
     }
     return value.getStringValue();
-  }
-
-  /** {@code z.number().int().min(min).max(max)}. */
-  private static int integer(JsonNode value, String key, int min, int max) {
-    if (!value.isNumber()) throw invalid(key + " debe ser un número entero");
-    double number = value.getDoubleValue();
-    if (number != Math.rint(number) || Double.isInfinite(number)) throw invalid(key + " debe ser un número entero");
-    if (number < min || number > max) throw invalid(key + " debe estar entre " + min + " y " + max);
-    return (int) number;
-  }
-
-  private static ConfigValidationException invalid(String detail) {
-    return new ConfigValidationException("Configuración de Higher or Lower: Cartas no válida: " + detail
-        + (detail.endsWith(".") ? "" : "."));
   }
 }
