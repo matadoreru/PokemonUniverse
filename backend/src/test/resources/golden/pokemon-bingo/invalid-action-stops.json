@@ -1,0 +1,562 @@
+{
+  "engineId": "pokemon-bingo",
+  "scenario": "invalid-action-stops",
+  "seed": 705,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    }
+  ],
+  "config": {
+    "width": 2,
+    "height": 2,
+    "durationSeconds": 120,
+    "generations": [
+      1
+    ],
+    "maxConditionsPerCell": 1,
+    "families": {
+      "generation": true,
+      "dexNumber": true,
+      "type": true,
+      "typeCombination": true,
+      "typeCount": true,
+      "hp": true,
+      "attack": true,
+      "defense": true,
+      "specialAttack": true,
+      "specialDefense": true,
+      "speed": true,
+      "baseStatTotal": false,
+      "height": true,
+      "weight": true,
+      "evolutionStage": true,
+      "legendaryStatus": false,
+      "color": false,
+      "abilities": false
+    }
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "REMOVE_POKEMON",
+        "cellId": "cell-1"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "REMOVE_POKEMON",
+        "cellId": ""
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "REMOVE_POKEMON",
+        "cellId": "cell-1"
+      },
+      "now": 4000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "width": 2,
+      "height": 2,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",null,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-bingo",
+        "phase": "GAME_STARTING",
+        "width": 2,
+        "height": 2,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "winnerId": null,
+        "bingoAt": null,
+        "boards": {
+          "p1": {
+            "playerId": "p1",
+            "completed": 0,
+            "total": 4,
+            "lastProgressAt": 1000,
+            "cells": [
+              {
+                "id": "cell-1",
+                "conditions": [
+                  {
+                    "kind": "TYPE",
+                    "pokemonType": "dragon"
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-2",
+                "conditions": [
+                  {
+                    "kind": "STAT",
+                    "stat": "speed",
+                    "operator": "GT",
+                    "value": 85
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-3",
+                "conditions": [
+                  {
+                    "kind": "TYPE_COUNT",
+                    "count": 2
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-4",
+                "conditions": [
+                  {
+                    "kind": "STAT",
+                    "stat": "hp",
+                    "operator": "GT",
+                    "value": 81
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              }
+            ]
+          },
+          "p2": {
+            "playerId": "p2",
+            "completed": 0,
+            "total": 4,
+            "lastProgressAt": 1000,
+            "cells": [
+              {
+                "id": "cell-1",
+                "conditions": [
+                  {
+                    "kind": "TYPE_COMBINATION",
+                    "pokemonTypes": [
+                      "fire",
+                      "flying"
+                    ]
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-2",
+                "conditions": [
+                  {
+                    "kind": "STAT",
+                    "stat": "attack",
+                    "operator": "LT",
+                    "value": 64
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-3",
+                "conditions": [
+                  {
+                    "kind": "STAT",
+                    "stat": "defense",
+                    "operator": "LT",
+                    "value": 75
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-4",
+                "conditions": [
+                  {
+                    "kind": "TYPE",
+                    "pokemonType": "ground"
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              }
+            ]
+          }
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canAct": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canAct": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 121000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",null,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-bingo",
+        "phase": "ROUND_ACTIVE",
+        "width": 2,
+        "height": 2,
+        "roundEndsAt": 121000,
+        "nextTransitionAt": null,
+        "winnerId": null,
+        "bingoAt": null,
+        "boards": {
+          "p1": {
+            "playerId": "p1",
+            "completed": 0,
+            "total": 4,
+            "lastProgressAt": 1000,
+            "cells": [
+              {
+                "id": "cell-1",
+                "conditions": [
+                  {
+                    "kind": "TYPE",
+                    "pokemonType": "dragon"
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-2",
+                "conditions": [
+                  {
+                    "kind": "STAT",
+                    "stat": "speed",
+                    "operator": "GT",
+                    "value": 85
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-3",
+                "conditions": [
+                  {
+                    "kind": "TYPE_COUNT",
+                    "count": 2
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-4",
+                "conditions": [
+                  {
+                    "kind": "STAT",
+                    "stat": "hp",
+                    "operator": "GT",
+                    "value": 81
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              }
+            ]
+          },
+          "p2": {
+            "playerId": "p2",
+            "completed": 0,
+            "total": 4,
+            "lastProgressAt": 1000,
+            "cells": [
+              {
+                "id": "cell-1",
+                "conditions": [
+                  {
+                    "kind": "TYPE_COMBINATION",
+                    "pokemonTypes": [
+                      "fire",
+                      "flying"
+                    ]
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-2",
+                "conditions": [
+                  {
+                    "kind": "STAT",
+                    "stat": "attack",
+                    "operator": "LT",
+                    "value": 64
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-3",
+                "conditions": [
+                  {
+                    "kind": "STAT",
+                    "stat": "defense",
+                    "operator": "LT",
+                    "value": 75
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-4",
+                "conditions": [
+                  {
+                    "kind": "TYPE",
+                    "pokemonType": "ground"
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              }
+            ]
+          }
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canAct": true,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        },
+        "p2": {
+          "canAct": true,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "La casilla ya está vacía.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bingo",
+            "phase": "ROUND_ACTIVE",
+            "width": 2,
+            "height": 2,
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "winnerId": null,
+            "bingoAt": null,
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "completed": 0,
+                "total": 4,
+                "lastProgressAt": 1000,
+                "cells": [
+                  {
+                    "id": "cell-1",
+                    "conditions": [
+                      {
+                        "kind": "TYPE",
+                        "pokemonType": "dragon"
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-2",
+                    "conditions": [
+                      {
+                        "kind": "STAT",
+                        "stat": "speed",
+                        "operator": "GT",
+                        "value": 85
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-3",
+                    "conditions": [
+                      {
+                        "kind": "TYPE_COUNT",
+                        "count": 2
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-4",
+                    "conditions": [
+                      {
+                        "kind": "STAT",
+                        "stat": "hp",
+                        "operator": "GT",
+                        "value": 81
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  }
+                ]
+              },
+              "p2": {
+                "playerId": "p2",
+                "completed": 0,
+                "total": 4,
+                "lastProgressAt": 1000,
+                "cells": [
+                  {
+                    "id": "cell-1",
+                    "conditions": [
+                      {
+                        "kind": "TYPE_COMBINATION",
+                        "pokemonTypes": [
+                          "fire",
+                          "flying"
+                        ]
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-2",
+                    "conditions": [
+                      {
+                        "kind": "STAT",
+                        "stat": "attack",
+                        "operator": "LT",
+                        "value": 64
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-3",
+                    "conditions": [
+                      {
+                        "kind": "STAT",
+                        "stat": "defense",
+                        "operator": "LT",
+                        "value": 75
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-4",
+                    "conditions": [
+                      {
+                        "kind": "TYPE",
+                        "pokemonType": "ground"
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  }
+                ]
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAct": true,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canAct": true,
+              "cooldownUntil": null,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 1
+}

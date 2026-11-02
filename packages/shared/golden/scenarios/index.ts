@@ -11,6 +11,7 @@ import { pokeTabooScenarios } from './poke-taboo.js';
 import { pokeddleRaceScenarios } from './pokeddle-race.js';
 import { pokedexEntryGuessScenarios } from './pokedex-entry-guess.js';
 import { pokedexDistanceScenarios } from './pokedex-distance.js';
+import { pokemonBingoScenarios } from './pokemon-bingo.js';
 import { pokemonRedFlagScenarios } from './pokemon-red-flag.js';
 import { pokemonCryQuizScenarios } from './pokemon-cry-quiz.js';
 import { pokemonPaletteGuessScenarios } from './pokemon-palette-guess.js';
@@ -55,4 +56,5 @@ export const scenarios: Record<string, GoldenEngineEntry> = {
   'shiny-vote': shinyVoteScenarios,
   'tcg-higher-lower': tcgHigherLowerScenarios,
   'who-is-who-pokemon': whoIsWhoPokemonScenarios,
+  'pokemon-bingo': pokemonBingoScenarios,
 };

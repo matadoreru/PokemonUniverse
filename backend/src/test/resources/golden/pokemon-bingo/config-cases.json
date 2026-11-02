@@ -1,0 +1,1406 @@
+[
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "width": 2,
+      "height": 6,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "width": 2,
+      "height": 6,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "width": 6,
+      "height": 2,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "width": 6,
+      "height": 2,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 60,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 60,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 300,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 300,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        9,
+        1,
+        9,
+        3
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1,
+        3,
+        9
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 2,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 2,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "width": 4,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "width": 4,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false,
+        "extra": "se descarta"
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": true,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": true,
+        "color": true,
+        "abilities": true
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": true,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": true,
+        "color": true,
+        "abilities": true
+      }
+    }
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": false,
+        "dexNumber": false,
+        "type": false,
+        "typeCombination": false,
+        "typeCount": false,
+        "hp": false,
+        "attack": false,
+        "defense": false,
+        "specialAttack": false,
+        "specialDefense": false,
+        "speed": false,
+        "baseStatTotal": false,
+        "height": false,
+        "weight": false,
+        "evolutionStage": false,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": true,
+    "normalized": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": false,
+        "dexNumber": false,
+        "type": false,
+        "typeCombination": false,
+        "typeCount": false,
+        "hp": false,
+        "attack": false,
+        "defense": false,
+        "specialAttack": false,
+        "specialDefense": false,
+        "speed": false,
+        "baseStatTotal": false,
+        "height": false,
+        "weight": false,
+        "evolutionStage": false,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    }
+  },
+  {
+    "input": {
+      "width": 1,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 7,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 1,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 7,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 2.5,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 59,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 301,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        0
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        10
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1.5
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": 1,
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 0,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 3,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1.5,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": "1",
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": "false",
+        "abilities": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false
+      }
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": []
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": null
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": true,
+        "dexNumber": true,
+        "type": true,
+        "typeCombination": true,
+        "typeCount": true,
+        "hp": true,
+        "attack": true,
+        "defense": true,
+        "specialAttack": true,
+        "specialDefense": true,
+        "speed": true,
+        "baseStatTotal": false,
+        "height": true,
+        "weight": true,
+        "evolutionStage": true,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      },
+      "unknownKey": "no se admite"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "width": 3,
+      "height": 3,
+      "durationSeconds": 120,
+      "generations": [
+        1
+      ],
+      "maxConditionsPerCell": 1
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]

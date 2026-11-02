@@ -1,0 +1,1203 @@
+{
+  "engineId": "pokemon-bingo",
+  "scenario": "solo-bingo-reveal",
+  "seed": 704,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    }
+  ],
+  "config": {
+    "width": 2,
+    "height": 2,
+    "durationSeconds": 90,
+    "generations": [
+      2
+    ],
+    "maxConditionsPerCell": 1,
+    "families": {
+      "generation": false,
+      "dexNumber": false,
+      "type": false,
+      "typeCombination": false,
+      "typeCount": true,
+      "hp": false,
+      "attack": false,
+      "defense": false,
+      "specialAttack": false,
+      "specialDefense": false,
+      "speed": false,
+      "baseStatTotal": true,
+      "height": false,
+      "weight": false,
+      "evolutionStage": true,
+      "legendaryStatus": true,
+      "color": true,
+      "abilities": true,
+      "unknownFamily": true
+    }
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ASSIGN_POKEMON",
+        "cellId": "cell-4",
+        "pokemonId": "chikorita"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ASSIGN_POKEMON",
+        "cellId": "cell-2",
+        "pokemonId": "chikorita"
+      },
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ASSIGN_POKEMON",
+        "cellId": "cell-2",
+        "pokemonId": "cyndaquil"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ASSIGN_POKEMON",
+        "cellId": "cell-3",
+        "pokemonId": "meganium"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ASSIGN_POKEMON",
+        "cellId": "cell-1",
+        "pokemonId": "raikou"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "timeout",
+      "now": 12999
+    },
+    {
+      "kind": "timeout",
+      "now": 13000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SKIP_RESULTS"
+      },
+      "now": 13500
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "width": 2,
+      "height": 2,
+      "durationSeconds": 90,
+      "generations": [
+        2
+      ],
+      "maxConditionsPerCell": 1,
+      "families": {
+        "generation": false,
+        "dexNumber": false,
+        "type": false,
+        "typeCombination": false,
+        "typeCount": true,
+        "hp": false,
+        "attack": false,
+        "defense": false,
+        "specialAttack": false,
+        "specialDefense": false,
+        "speed": false,
+        "baseStatTotal": true,
+        "height": false,
+        "weight": false,
+        "evolutionStage": true,
+        "legendaryStatus": true,
+        "color": true,
+        "abilities": true
+      }
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",null,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-bingo",
+        "phase": "GAME_STARTING",
+        "width": 2,
+        "height": 2,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "winnerId": null,
+        "bingoAt": null,
+        "boards": {
+          "p1": {
+            "playerId": "p1",
+            "completed": 0,
+            "total": 4,
+            "lastProgressAt": 1000,
+            "cells": [
+              {
+                "id": "cell-1",
+                "conditions": [
+                  {
+                    "kind": "LEGENDARY",
+                    "status": "LEGENDARY"
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-2",
+                "conditions": [
+                  {
+                    "kind": "EVOLUTION",
+                    "status": "BASE"
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-3",
+                "conditions": [
+                  {
+                    "kind": "STAT",
+                    "stat": "baseStatTotal",
+                    "operator": "GT",
+                    "value": 465
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-4",
+                "conditions": [
+                  {
+                    "kind": "COLOR",
+                    "color": "green"
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              }
+            ]
+          }
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canAct": false,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 91000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",null,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-bingo",
+        "phase": "ROUND_ACTIVE",
+        "width": 2,
+        "height": 2,
+        "roundEndsAt": 91000,
+        "nextTransitionAt": null,
+        "winnerId": null,
+        "bingoAt": null,
+        "boards": {
+          "p1": {
+            "playerId": "p1",
+            "completed": 0,
+            "total": 4,
+            "lastProgressAt": 1000,
+            "cells": [
+              {
+                "id": "cell-1",
+                "conditions": [
+                  {
+                    "kind": "LEGENDARY",
+                    "status": "LEGENDARY"
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-2",
+                "conditions": [
+                  {
+                    "kind": "EVOLUTION",
+                    "status": "BASE"
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-3",
+                "conditions": [
+                  {
+                    "kind": "STAT",
+                    "stat": "baseStatTotal",
+                    "operator": "GT",
+                    "value": 465
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              },
+              {
+                "id": "cell-4",
+                "conditions": [
+                  {
+                    "kind": "COLOR",
+                    "color": "green"
+                  }
+                ],
+                "assignment": null,
+                "possibleSolutions": []
+              }
+            ]
+          }
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canAct": true,
+          "cooldownUntil": null,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 91000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bingo",
+            "phase": "ROUND_ACTIVE",
+            "width": 2,
+            "height": 2,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": null,
+            "winnerId": null,
+            "bingoAt": null,
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "completed": 1,
+                "total": 4,
+                "lastProgressAt": 2000,
+                "cells": [
+                  {
+                    "id": "cell-1",
+                    "conditions": [
+                      {
+                        "kind": "LEGENDARY",
+                        "status": "LEGENDARY"
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-2",
+                    "conditions": [
+                      {
+                        "kind": "EVOLUTION",
+                        "status": "BASE"
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-3",
+                    "conditions": [
+                      {
+                        "kind": "STAT",
+                        "stat": "baseStatTotal",
+                        "operator": "GT",
+                        "value": 465
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-4",
+                    "conditions": [
+                      {
+                        "kind": "COLOR",
+                        "color": "green"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "chikorita",
+                      "name": "Chikorita",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                    },
+                    "possibleSolutions": []
+                  }
+                ]
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAct": true,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "cellId": "cell-4",
+                "pokemonId": "chikorita",
+                "pokemonName": "Chikorita",
+                "attemptedAt": 2000,
+                "correct": true,
+                "message": "Chikorita colocado correctamente."
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Chikorita ya está usado en “Color principal: Green”. Confirma para moverlo.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 91000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bingo",
+            "phase": "ROUND_ACTIVE",
+            "width": 2,
+            "height": 2,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": null,
+            "winnerId": null,
+            "bingoAt": null,
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "completed": 1,
+                "total": 4,
+                "lastProgressAt": 2000,
+                "cells": [
+                  {
+                    "id": "cell-1",
+                    "conditions": [
+                      {
+                        "kind": "LEGENDARY",
+                        "status": "LEGENDARY"
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-2",
+                    "conditions": [
+                      {
+                        "kind": "EVOLUTION",
+                        "status": "BASE"
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-3",
+                    "conditions": [
+                      {
+                        "kind": "STAT",
+                        "stat": "baseStatTotal",
+                        "operator": "GT",
+                        "value": 465
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-4",
+                    "conditions": [
+                      {
+                        "kind": "COLOR",
+                        "color": "green"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "chikorita",
+                      "name": "Chikorita",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                    },
+                    "possibleSolutions": []
+                  }
+                ]
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAct": true,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "cellId": "cell-4",
+                "pokemonId": "chikorita",
+                "pokemonName": "Chikorita",
+                "attemptedAt": 2000,
+                "correct": true,
+                "message": "Chikorita colocado correctamente."
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 91000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bingo",
+            "phase": "ROUND_ACTIVE",
+            "width": 2,
+            "height": 2,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": null,
+            "winnerId": null,
+            "bingoAt": null,
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "completed": 2,
+                "total": 4,
+                "lastProgressAt": 3000,
+                "cells": [
+                  {
+                    "id": "cell-1",
+                    "conditions": [
+                      {
+                        "kind": "LEGENDARY",
+                        "status": "LEGENDARY"
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-2",
+                    "conditions": [
+                      {
+                        "kind": "EVOLUTION",
+                        "status": "BASE"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "cyndaquil",
+                      "name": "Cyndaquil",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/155.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-3",
+                    "conditions": [
+                      {
+                        "kind": "STAT",
+                        "stat": "baseStatTotal",
+                        "operator": "GT",
+                        "value": 465
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-4",
+                    "conditions": [
+                      {
+                        "kind": "COLOR",
+                        "color": "green"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "chikorita",
+                      "name": "Chikorita",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                    },
+                    "possibleSolutions": []
+                  }
+                ]
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAct": true,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "cellId": "cell-2",
+                "pokemonId": "cyndaquil",
+                "pokemonName": "Cyndaquil",
+                "attemptedAt": 3000,
+                "correct": true,
+                "message": "Cyndaquil colocado correctamente."
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 91000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",null,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bingo",
+            "phase": "ROUND_ACTIVE",
+            "width": 2,
+            "height": 2,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": null,
+            "winnerId": null,
+            "bingoAt": null,
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "completed": 3,
+                "total": 4,
+                "lastProgressAt": 4000,
+                "cells": [
+                  {
+                    "id": "cell-1",
+                    "conditions": [
+                      {
+                        "kind": "LEGENDARY",
+                        "status": "LEGENDARY"
+                      }
+                    ],
+                    "assignment": null,
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-2",
+                    "conditions": [
+                      {
+                        "kind": "EVOLUTION",
+                        "status": "BASE"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "cyndaquil",
+                      "name": "Cyndaquil",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/155.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-3",
+                    "conditions": [
+                      {
+                        "kind": "STAT",
+                        "stat": "baseStatTotal",
+                        "operator": "GT",
+                        "value": 465
+                      }
+                    ],
+                    "assignment": {
+                      "id": "meganium",
+                      "name": "Meganium",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-4",
+                    "conditions": [
+                      {
+                        "kind": "COLOR",
+                        "color": "green"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "chikorita",
+                      "name": "Chikorita",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                    },
+                    "possibleSolutions": []
+                  }
+                ]
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAct": true,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "cellId": "cell-3",
+                "pokemonId": "meganium",
+                "pokemonName": "Meganium",
+                "attemptedAt": 4000,
+                "correct": true,
+                "message": "Meganium colocado correctamente."
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 13000,
+            "actionEpoch": "[\"ROUND_RESULTS\",null,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bingo",
+            "phase": "ROUND_RESULTS",
+            "width": 2,
+            "height": 2,
+            "roundEndsAt": null,
+            "nextTransitionAt": 13000,
+            "winnerId": "p1",
+            "bingoAt": 5000,
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "completed": 4,
+                "total": 4,
+                "lastProgressAt": 5000,
+                "cells": [
+                  {
+                    "id": "cell-1",
+                    "conditions": [
+                      {
+                        "kind": "LEGENDARY",
+                        "status": "LEGENDARY"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "raikou",
+                      "name": "Raikou",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-2",
+                    "conditions": [
+                      {
+                        "kind": "EVOLUTION",
+                        "status": "BASE"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "cyndaquil",
+                      "name": "Cyndaquil",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/155.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-3",
+                    "conditions": [
+                      {
+                        "kind": "STAT",
+                        "stat": "baseStatTotal",
+                        "operator": "GT",
+                        "value": 465
+                      }
+                    ],
+                    "assignment": {
+                      "id": "meganium",
+                      "name": "Meganium",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-4",
+                    "conditions": [
+                      {
+                        "kind": "COLOR",
+                        "color": "green"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "chikorita",
+                      "name": "Chikorita",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                    },
+                    "possibleSolutions": []
+                  }
+                ]
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAct": false,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "cellId": "cell-1",
+                "pokemonId": "raikou",
+                "pokemonName": "Raikou",
+                "attemptedAt": 5000,
+                "correct": true,
+                "message": "Raikou colocado correctamente."
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 13000,
+            "actionEpoch": "[\"ROUND_RESULTS\",null,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bingo",
+            "phase": "ROUND_RESULTS",
+            "width": 2,
+            "height": 2,
+            "roundEndsAt": null,
+            "nextTransitionAt": 13000,
+            "winnerId": "p1",
+            "bingoAt": 5000,
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "completed": 4,
+                "total": 4,
+                "lastProgressAt": 5000,
+                "cells": [
+                  {
+                    "id": "cell-1",
+                    "conditions": [
+                      {
+                        "kind": "LEGENDARY",
+                        "status": "LEGENDARY"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "raikou",
+                      "name": "Raikou",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-2",
+                    "conditions": [
+                      {
+                        "kind": "EVOLUTION",
+                        "status": "BASE"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "cyndaquil",
+                      "name": "Cyndaquil",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/155.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-3",
+                    "conditions": [
+                      {
+                        "kind": "STAT",
+                        "stat": "baseStatTotal",
+                        "operator": "GT",
+                        "value": 465
+                      }
+                    ],
+                    "assignment": {
+                      "id": "meganium",
+                      "name": "Meganium",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-4",
+                    "conditions": [
+                      {
+                        "kind": "COLOR",
+                        "color": "green"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "chikorita",
+                      "name": "Chikorita",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                    },
+                    "possibleSolutions": []
+                  }
+                ]
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAct": false,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "cellId": "cell-1",
+                "pokemonId": "raikou",
+                "pokemonName": "Raikou",
+                "attemptedAt": 5000,
+                "correct": true,
+                "message": "Raikou colocado correctamente."
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",null,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bingo",
+            "phase": "GAME_RESULTS",
+            "width": 2,
+            "height": 2,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "winnerId": "p1",
+            "bingoAt": 5000,
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "completed": 4,
+                "total": 4,
+                "lastProgressAt": 5000,
+                "cells": [
+                  {
+                    "id": "cell-1",
+                    "conditions": [
+                      {
+                        "kind": "LEGENDARY",
+                        "status": "LEGENDARY"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "raikou",
+                      "name": "Raikou",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-2",
+                    "conditions": [
+                      {
+                        "kind": "EVOLUTION",
+                        "status": "BASE"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "cyndaquil",
+                      "name": "Cyndaquil",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/155.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-3",
+                    "conditions": [
+                      {
+                        "kind": "STAT",
+                        "stat": "baseStatTotal",
+                        "operator": "GT",
+                        "value": 465
+                      }
+                    ],
+                    "assignment": {
+                      "id": "meganium",
+                      "name": "Meganium",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-4",
+                    "conditions": [
+                      {
+                        "kind": "COLOR",
+                        "color": "green"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "chikorita",
+                      "name": "Chikorita",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                    },
+                    "possibleSolutions": []
+                  }
+                ]
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 2,
+                  "won": true,
+                  "stats": {
+                    "games": 1,
+                    "bingos": 1,
+                    "cellsCompleted": 4,
+                    "cellsTotal": 4,
+                    "correctAssignments": 4,
+                    "incorrectAttempts": 0,
+                    "bestBingoTimeMs": 4000
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canAct": false,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "cellId": "cell-1",
+                "pokemonId": "raikou",
+                "pokemonName": "Raikou",
+                "attemptedAt": 5000,
+                "correct": true,
+                "message": "Raikou colocado correctamente."
+              }
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El resultado todavía no se puede saltar.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",null,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bingo",
+            "phase": "GAME_RESULTS",
+            "width": 2,
+            "height": 2,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "winnerId": "p1",
+            "bingoAt": 5000,
+            "boards": {
+              "p1": {
+                "playerId": "p1",
+                "completed": 4,
+                "total": 4,
+                "lastProgressAt": 5000,
+                "cells": [
+                  {
+                    "id": "cell-1",
+                    "conditions": [
+                      {
+                        "kind": "LEGENDARY",
+                        "status": "LEGENDARY"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "raikou",
+                      "name": "Raikou",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-2",
+                    "conditions": [
+                      {
+                        "kind": "EVOLUTION",
+                        "status": "BASE"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "cyndaquil",
+                      "name": "Cyndaquil",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/155.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-3",
+                    "conditions": [
+                      {
+                        "kind": "STAT",
+                        "stat": "baseStatTotal",
+                        "operator": "GT",
+                        "value": 465
+                      }
+                    ],
+                    "assignment": {
+                      "id": "meganium",
+                      "name": "Meganium",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+                    },
+                    "possibleSolutions": []
+                  },
+                  {
+                    "id": "cell-4",
+                    "conditions": [
+                      {
+                        "kind": "COLOR",
+                        "color": "green"
+                      }
+                    ],
+                    "assignment": {
+                      "id": "chikorita",
+                      "name": "Chikorita",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                    },
+                    "possibleSolutions": []
+                  }
+                ]
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 2,
+                  "won": true,
+                  "stats": {
+                    "games": 1,
+                    "bingos": 1,
+                    "cellsCompleted": 4,
+                    "cellsTotal": 4,
+                    "correctAssignments": 4,
+                    "incorrectAttempts": 0,
+                    "bestBingoTimeMs": 4000
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canAct": false,
+              "cooldownUntil": 0,
+              "lastAttempt": {
+                "cellId": "cell-1",
+                "pokemonId": "raikou",
+                "pokemonName": "Raikou",
+                "attemptedAt": 5000,
+                "correct": true,
+                "message": "Raikou colocado correctamente."
+              }
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 2,
+          "won": true,
+          "stats": {
+            "games": 1,
+            "bingos": 1,
+            "cellsCompleted": 4,
+            "cellsTotal": 4,
+            "correctAssignments": 4,
+            "incorrectAttempts": 0,
+            "bestBingoTimeMs": 4000
+          }
+        }
+      ]
+    }
+  }
+}
