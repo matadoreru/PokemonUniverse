@@ -1,6 +1,7 @@
 package es.pokemonuniverse.domain.game.engines.pokemonbluffauction;
 
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
+import es.pokemonuniverse.domain.json.JsNumbers;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.ArrayList;
@@ -87,11 +88,11 @@ public record PokemonBluffAuctionConfig(List<Integer> generations, int bidSecond
     return (int) number;
   }
 
-  /** {@code z.number().int()}: un número finito sin parte decimal. */
+  /** {@code z.number().int()}: un entero seguro ({@code Number.isSafeInteger} en Zod 4). */
   private static double whole(JsonNode value, String key) {
     if (!value.isNumber()) throw invalid(key + " debe ser un número entero");
     double number = value.getDoubleValue();
-    if (number != Math.rint(number) || Double.isInfinite(number)) throw invalid(key + " debe ser un número entero");
+    if (!JsNumbers.isSafeInteger(number)) throw invalid(key + " debe ser un número entero");
     return number;
   }
 

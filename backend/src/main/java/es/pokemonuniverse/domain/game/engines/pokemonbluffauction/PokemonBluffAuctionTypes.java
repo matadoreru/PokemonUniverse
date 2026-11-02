@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.json.JsNumbers;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import es.pokemonuniverse.domain.pokemon.conditions.Condition;
 import io.micronaut.core.annotation.Nullable;
@@ -163,7 +164,8 @@ public final class PokemonBluffAuctionTypes {
 
   /**
    * {@code BluffAuctionRoundResult}; {@code reason} es {@code COMPLETED}, {@code TIMEOUT}, {@code IMPOSSIBLE} o
-   * {@code BIDDER_LEFT} y {@code validPokemonCount} solo se informa en las imposibles.
+   * {@code BIDDER_LEFT} y {@code validPokemonCount} solo se informa en las imposibles. Se construye con
+   * {@link #builder()}.
    */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -174,6 +176,52 @@ public final class PokemonBluffAuctionTypes {
     public BluffAuctionRoundResult {
       attempts = frozenList(attempts);
       pointsAwarded = frozenMap(pointsAwarded);
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    /** Setters con nombre: {@link #build()} exige los campos no nulos. */
+    public static final class Builder {
+      private String bidderId;
+      private int bid;
+      private boolean success;
+      private String reason;
+      private BluffAuctionConditionView condition;
+      private List<BluffAuctionAttempt> attempts = List.of();
+      private int correctCount;
+      private int incorrectCount;
+      private Integer validPokemonCount;
+      private Map<String, Integer> pointsAwarded = Map.of();
+
+      private Builder() {}
+
+      public Builder bidderId(String value) { bidderId = value; return this; }
+
+      public Builder bid(int value) { bid = value; return this; }
+
+      public Builder success(boolean value) { success = value; return this; }
+
+      public Builder reason(String value) { reason = value; return this; }
+
+      public Builder condition(BluffAuctionConditionView value) { condition = value; return this; }
+
+      public Builder attempts(List<BluffAuctionAttempt> value) { attempts = value; return this; }
+
+      public Builder correctCount(int value) { correctCount = value; return this; }
+
+      public Builder incorrectCount(int value) { incorrectCount = value; return this; }
+
+      public Builder validPokemonCount(@Nullable Integer value) { validPokemonCount = value; return this; }
+
+      public Builder pointsAwarded(Map<String, Integer> value) { pointsAwarded = value; return this; }
+
+      public BluffAuctionRoundResult build() {
+        return new BluffAuctionRoundResult(Objects.requireNonNull(bidderId, "bidderId"), bid, success,
+            Objects.requireNonNull(reason, "reason"), Objects.requireNonNull(condition, "condition"), attempts,
+            correctCount, incorrectCount, validPokemonCount, pointsAwarded);
+      }
     }
   }
 
@@ -334,6 +382,7 @@ public final class PokemonBluffAuctionTypes {
     }
   }
 
+  /** Proyección pública; se construye con {@link #builder()} para no confundir contadores contiguos. */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record PokemonBluffAuctionPublicState(
@@ -371,6 +420,99 @@ public final class PokemonBluffAuctionTypes {
       attempts = frozenList(attempts);
       scores = frozenMap(scores);
     }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    /** Setters con nombre: {@link #build()} exige los campos no nulos. */
+    public static final class Builder {
+      private String gameId;
+      private GamePhase phase;
+      private int roundNumber;
+      private int totalRounds;
+      private List<String> playerIds = List.of();
+      private BluffAuctionConditionView condition;
+      private List<String> bidOrder = List.of();
+      private String currentTurnPlayerId;
+      private List<String> passedPlayerIds = List.of();
+      private Integer currentBid;
+      private int minimumBid;
+      private String currentBidderId;
+      private List<BluffAuctionBidEvent> bidHistory = List.of();
+      private int maxBid;
+      private String bidderId;
+      private Integer targetBid;
+      private List<BluffAuctionAttempt> attempts = List.of();
+      private int correctCount;
+      private int incorrectCount;
+      private int remainingCount;
+      private Map<String, Integer> scores = Map.of();
+      private Long roundEndsAt;
+      private Long nextTransitionAt;
+      private BluffAuctionRoundResult lastRound;
+      private GameResults results;
+
+      private Builder() {}
+
+      public Builder gameId(String value) { gameId = value; return this; }
+
+      public Builder phase(GamePhase value) { phase = value; return this; }
+
+      public Builder roundNumber(int value) { roundNumber = value; return this; }
+
+      public Builder totalRounds(int value) { totalRounds = value; return this; }
+
+      public Builder playerIds(List<String> value) { playerIds = value; return this; }
+
+      public Builder condition(@Nullable BluffAuctionConditionView value) { condition = value; return this; }
+
+      public Builder bidOrder(List<String> value) { bidOrder = value; return this; }
+
+      public Builder currentTurnPlayerId(@Nullable String value) { currentTurnPlayerId = value; return this; }
+
+      public Builder passedPlayerIds(List<String> value) { passedPlayerIds = value; return this; }
+
+      public Builder currentBid(@Nullable Integer value) { currentBid = value; return this; }
+
+      public Builder minimumBid(int value) { minimumBid = value; return this; }
+
+      public Builder currentBidderId(@Nullable String value) { currentBidderId = value; return this; }
+
+      public Builder bidHistory(List<BluffAuctionBidEvent> value) { bidHistory = value; return this; }
+
+      public Builder maxBid(int value) { maxBid = value; return this; }
+
+      public Builder bidderId(@Nullable String value) { bidderId = value; return this; }
+
+      public Builder targetBid(@Nullable Integer value) { targetBid = value; return this; }
+
+      public Builder attempts(List<BluffAuctionAttempt> value) { attempts = value; return this; }
+
+      public Builder correctCount(int value) { correctCount = value; return this; }
+
+      public Builder incorrectCount(int value) { incorrectCount = value; return this; }
+
+      public Builder remainingCount(int value) { remainingCount = value; return this; }
+
+      public Builder scores(Map<String, Integer> value) { scores = value; return this; }
+
+      public Builder roundEndsAt(@Nullable Long value) { roundEndsAt = value; return this; }
+
+      public Builder nextTransitionAt(@Nullable Long value) { nextTransitionAt = value; return this; }
+
+      public Builder lastRound(@Nullable BluffAuctionRoundResult value) { lastRound = value; return this; }
+
+      public Builder results(@Nullable GameResults value) { results = value; return this; }
+
+      public PokemonBluffAuctionPublicState build() {
+        return new PokemonBluffAuctionPublicState(Objects.requireNonNull(gameId, "gameId"),
+            Objects.requireNonNull(phase, "phase"), roundNumber, totalRounds, playerIds, condition, bidOrder,
+            currentTurnPlayerId, passedPlayerIds, currentBid, minimumBid, currentBidderId, bidHistory, maxBid, bidderId,
+            targetBid, attempts, correctCount, incorrectCount, remainingCount, scores, roundEndsAt, nextTransitionAt,
+            lastRound, results);
+      }
+    }
   }
 
   /** {@code PokemonBluffAuctionPlayerState}: un espectador nunca puede actuar. */
@@ -385,12 +527,12 @@ public final class PokemonBluffAuctionTypes {
 
   /**
    * {@code pokemonBluffAuctionActionSchema}: unión discriminada por {@code type}, cada variante estricta.
-   * {@code amount} es un entero {@code >= 1} sin máximo en el esquema (se guarda como {@code double} para que un
-   * entero enorme llegue al rechazo de la puja máxima); {@code pokemonId} mide 1–96 unidades UTF-16.
+   * {@code amount} es un entero seguro ({@code .int()} de Zod 4 = {@code Number.isSafeInteger}) {@code >= 1}, que
+   * cabe en un {@code long}; {@code pokemonId} mide 1–96 unidades UTF-16.
    */
   public sealed interface PokemonBluffAuctionAction {
 
-    record RaiseBid(double amount) implements PokemonBluffAuctionAction {}
+    record RaiseBid(long amount) implements PokemonBluffAuctionAction {}
 
     record PassBid() implements PokemonBluffAuctionAction {}
 
@@ -406,8 +548,8 @@ public final class PokemonBluffAuctionTypes {
           var amount = raw.get("amount");
           if (amount == null || !amount.isNumber()) throw invalid();
           double value = amount.getDoubleValue();
-          if (value != Math.rint(value) || Double.isInfinite(value) || value < 1) throw invalid();
-          yield new RaiseBid(value);
+          if (!JsNumbers.isSafeInteger(value) || value < 1) throw invalid();
+          yield new RaiseBid((long) value);
         }
         case "PASS_BID" -> {
           strict(raw, Set.of("type"));

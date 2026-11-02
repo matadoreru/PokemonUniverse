@@ -182,10 +182,18 @@ public final class PokemonBluffAuctionEngine implements GameEngine<PokemonBluffA
           .afterRound(success, playerId.equals(bidderId), bid, reason.equals("IMPOSSIBLE")));
     }
     var condition = Objects.requireNonNull(state.condition(), "condition");
-    var lastRound = new BluffAuctionRoundResult(bidderId, bid, success, reason,
-        new BluffAuctionConditionView(condition.description(), condition.clauses()), state.attempts(),
-        state.correctCount(), state.incorrectCount(),
-        reason.equals("IMPOSSIBLE") ? Integer.valueOf(state.validPokemonIds().size()) : null, pointsAwarded);
+    var lastRound = BluffAuctionRoundResult.builder()
+        .bidderId(bidderId)
+        .bid(bid)
+        .success(success)
+        .reason(reason)
+        .condition(new BluffAuctionConditionView(condition.description(), condition.clauses()))
+        .attempts(state.attempts())
+        .correctCount(state.correctCount())
+        .incorrectCount(state.incorrectCount())
+        .validPokemonCount(reason.equals("IMPOSSIBLE") ? Integer.valueOf(state.validPokemonIds().size()) : null)
+        .pointsAwarded(pointsAwarded)
+        .build();
     return state.toBuilder()
         .phase(GamePhase.ROUND_RESULTS)
         .scores(scores)
@@ -422,14 +430,35 @@ public final class PokemonBluffAuctionEngine implements GameEngine<PokemonBluffA
     var condition = state.condition() == null ? null
         : new BluffAuctionConditionView(state.condition().description(), state.condition().clauses());
     int remaining = Math.max(0, (state.targetBid() == null ? 0 : state.targetBid()) - state.correctCount());
-    return new PokemonBluffAuctionPublicState(ID, state.phase(), state.roundNumber(), state.config().rounds(),
-        state.playerIds(), condition, state.bidOrder(), currentTurnPlayerId(state), state.passedPlayerIds(),
-        state.currentBid(), (state.currentBid() == null ? 0 : state.currentBid()) + 1, state.currentBidderId(),
-        state.bidHistory(), state.poolIds().size(), state.bidderId(), state.targetBid(), state.attempts(),
-        state.correctCount(), state.incorrectCount(), remaining, state.scores(), state.roundEndsAt(),
-        state.nextTransitionAt(), state.phase() == GamePhase.ROUND_RESULTS ? state.lastRound() : null,
-        state.phase() == GamePhase.GAME_RESULTS ? PokemonBluffAuctionRules.buildPokemonBluffAuctionResults(state)
-            : null);
+    int currentBid = state.currentBid() == null ? 0 : state.currentBid();
+    return PokemonBluffAuctionPublicState.builder()
+        .gameId(ID)
+        .phase(state.phase())
+        .roundNumber(state.roundNumber())
+        .totalRounds(state.config().rounds())
+        .playerIds(state.playerIds())
+        .condition(condition)
+        .bidOrder(state.bidOrder())
+        .currentTurnPlayerId(currentTurnPlayerId(state))
+        .passedPlayerIds(state.passedPlayerIds())
+        .currentBid(state.currentBid())
+        .minimumBid(currentBid + 1)
+        .currentBidderId(state.currentBidderId())
+        .bidHistory(state.bidHistory())
+        .maxBid(state.poolIds().size())
+        .bidderId(state.bidderId())
+        .targetBid(state.targetBid())
+        .attempts(state.attempts())
+        .correctCount(state.correctCount())
+        .incorrectCount(state.incorrectCount())
+        .remainingCount(remaining)
+        .scores(state.scores())
+        .roundEndsAt(state.roundEndsAt())
+        .nextTransitionAt(state.nextTransitionAt())
+        .lastRound(state.phase() == GamePhase.ROUND_RESULTS ? state.lastRound() : null)
+        .results(state.phase() == GamePhase.GAME_RESULTS
+            ? PokemonBluffAuctionRules.buildPokemonBluffAuctionResults(state) : null)
+        .build();
   }
 
   @Override

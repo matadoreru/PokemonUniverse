@@ -80,7 +80,8 @@ class PokemonBluffAuctionEngineTest {
     assertEquals(new PokemonBluffAuctionConfig(List.of(1, 2), 0, 30, 10), parsed);
     for (var invalid : List.of("{\"generations\":[1],\"demonstrationSeconds\":30.5,\"rounds\":10}",
         "{\"generations\":[1],\"demonstrationSeconds\":1e20,\"rounds\":10}",
-        "{\"generations\":[1],\"demonstrationSeconds\":30,\"rounds\":-5}")) {
+        "{\"generations\":[1],\"demonstrationSeconds\":30,\"rounds\":-5}",
+        "{\"generations\":[1],\"bidSeconds\":9007199254740992,\"demonstrationSeconds\":30,\"rounds\":10}")) {
       assertThrows(ConfigValidationException.class, () -> engine.parseConfig(json(invalid)), invalid);
     }
   }
@@ -90,14 +91,15 @@ class PokemonBluffAuctionEngineTest {
     var raise = assertInstanceOf(PokemonBluffAuctionAction.RaiseBid.class,
         engine.parseAction(json("{\"type\":\"RAISE_BID\",\"amount\":3.0}")));
     assertEquals(3, raise.amount());
-    // z.number().int().min(1) no tiene máximo: un entero enorme valida y lo rechaza la puja máxima.
-    assertEquals(1e20, assertInstanceOf(PokemonBluffAuctionAction.RaiseBid.class,
-        engine.parseAction(json("{\"type\":\"RAISE_BID\",\"amount\":1e20}"))).amount());
+    // .int() de Zod 4 es Number.isSafeInteger: 2^53 - 1 valida (y lo rechaza la puja máxima); 2^53 y 1e20 no.
+    assertEquals(9_007_199_254_740_991L, assertInstanceOf(PokemonBluffAuctionAction.RaiseBid.class,
+        engine.parseAction(json("{\"type\":\"RAISE_BID\",\"amount\":9007199254740991}"))).amount());
     assertInstanceOf(PokemonBluffAuctionAction.PassBid.class, engine.parseAction(json("{\"type\":\"PASS_BID\"}")));
     var id96 = "p".repeat(96);
     assertEquals(new PokemonBluffAuctionAction.SubmitPokemon(id96),
         engine.parseAction(json("{\"type\":\"SUBMIT_POKEMON\",\"pokemonId\":\"" + id96 + "\"}")));
     for (var invalid : List.of("{\"type\":\"RAISE_BID\",\"amount\":0}", "{\"type\":\"RAISE_BID\",\"amount\":1.5}",
+        "{\"type\":\"RAISE_BID\",\"amount\":9007199254740992}", "{\"type\":\"RAISE_BID\",\"amount\":1e20}",
         "{\"type\":\"RAISE_BID\",\"amount\":\"2\"}", "{\"type\":\"RAISE_BID\"}",
         "{\"type\":\"RAISE_BID\",\"amount\":2,\"extra\":true}", "{\"type\":\"PASS_BID\",\"amount\":1}",
         "{\"type\":\"SUBMIT_POKEMON\",\"pokemonId\":\"\"}",
@@ -135,6 +137,27 @@ class PokemonBluffAuctionEngineTest {
     var result = engine.handleAction(passed, turn, new PokemonBluffAuctionAction.PassBid(), context);
     assertFalse(result.accepted());
     assertEquals("Ya has pasado esta ronda.", result.error());
+  }
+
+  @Test
+  void theTopBidderDemonstratesWhenEveryoneHasPassed() {
+    // Inalcanzable en juego: settleIfOneRemains cierra con un activo. Con todos pasados, demuestra currentBidderId.
+    var context = context(2);
+    var started = engine.start(engine.createInitialState(config(List.of(1)), context), context);
+    var handBuilt = started.toBuilder()
+        .bidOrder(List.of("p1", "p2"))
+        .turnIndex(1)
+        .passedPlayerIds(List.of("p1"))
+        .currentBid(2)
+        .currentBidderId("p1")
+        .build();
+    var offline = context.withPlayers(List.of(new GamePlayer("p1", "Player 1"),
+        new GamePlayer("p2", "Player 2", false, null)));
+    var settled = engine.handlePresenceChange(handBuilt, offline);
+    assertEquals(GamePhase.POKEMON_SEARCH, settled.phase());
+    assertEquals("p1", settled.bidderId());
+    assertEquals(2, settled.targetBid());
+    assertEquals(List.of("p1", "p2"), settled.passedPlayerIds());
   }
 
   @Test
