@@ -9,7 +9,7 @@ export function proxyFor(realtime: string | undefined): Record<string, string | 
   return {
     '^/api/auth/(register|login|guest|logout|me|profile)(\\?.*)?$': 'http://localhost:8080',
     '^/api/auth/avatars/': 'http://localhost:8080',
-    '^/api/(changelog|feedback|games|pokemon)(\\?.*)?$': 'http://localhost:8080',
+    '^/api/(changelog|feedback|games|health|pokemon)(\\?.*)?$': 'http://localhost:8080',
     ...(realtime === 'java' ? { '^/api/rooms/': 'http://localhost:8080' } : {}),
     '/api': 'http://localhost:3001',
     '/socket.io': { target: 'http://localhost:3001', ws: true },

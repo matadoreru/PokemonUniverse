@@ -210,6 +210,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GamesController.GamesResponse"
+  /api/health:
+    get:
+      tags:
+      - health
+      summary: Estado del servicio
+      operationId: getHealth
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
   /api/pokemon:
     get:
       tags:
@@ -697,6 +710,30 @@ components:
           type: string
           nullable: true
           x-pattern-message: El avatar no es válido
+    HealthResponse:
+      required:
+      - commit
+      - database
+      - schemaVersion
+      - status
+      - timestamp
+      - uptimeSeconds
+      type: object
+      properties:
+        status:
+          type: string
+        database:
+          type: string
+        schemaVersion:
+          type: string
+        uptimeSeconds:
+          type: integer
+          format: int64
+        commit:
+          type: string
+        timestamp:
+          type: string
+      description: El orden de los componentes es el del JSON de Node.
     LoginRequest:
       required:
       - email

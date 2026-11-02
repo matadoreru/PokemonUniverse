@@ -174,6 +174,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Estado del servicio */
+        get: operations["getHealth"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/pokemon": {
         parameters: {
             query?: never;
@@ -369,6 +386,16 @@ export interface components {
         GuestRequest: {
             displayName: string;
             avatarPresetId?: string | null;
+        };
+        /** @description El orden de los componentes es el del JSON de Node. */
+        HealthResponse: {
+            status: string;
+            database: string;
+            schemaVersion: string;
+            /** Format: int64 */
+            uptimeSeconds: number;
+            commit: string;
+            timestamp: string;
         };
         LoginRequest: {
             /** Format: email */
@@ -782,6 +809,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GamesController.GamesResponse"];
+                };
+            };
+        };
+    };
+    getHealth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HealthResponse"];
                 };
             };
         };

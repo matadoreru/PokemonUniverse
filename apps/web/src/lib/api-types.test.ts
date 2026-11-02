@@ -5,15 +5,15 @@ import type { ChangelogResponse, FeedbackCreateResponse, MeResponse } from './ap
 
 const ROUTES = [
   '/api/auth/avatars/{filename}', '/api/auth/guest', '/api/auth/login', '/api/auth/logout', '/api/auth/me',
-  '/api/auth/profile', '/api/auth/register', '/api/changelog', '/api/feedback', '/api/games', '/api/pokemon',
+  '/api/auth/profile', '/api/auth/register', '/api/changelog', '/api/feedback', '/api/games', '/api/health', '/api/pokemon',
   '/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/audio',
   '/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/sprite',
 ] as const satisfies readonly (keyof paths)[];
 
 describe('contrato OpenAPI generado', () => {
-  it('expone exactamente las 13 rutas del backend Java', () => {
+  it('expone exactamente las 14 rutas del backend Java', () => {
     expectTypeOf<keyof paths>().toEqualTypeOf<typeof ROUTES[number]>();
-    expect(ROUTES).toHaveLength(13);
+    expect(ROUTES).toHaveLength(14);
   });
   it('el usuario compartido es asignable al contrato generado', () => {
     expectTypeOf<AuthUser>().toMatchTypeOf<NonNullable<MeResponse['user']>>();

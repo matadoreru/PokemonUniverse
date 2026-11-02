@@ -17,4 +17,14 @@ describe('proxyFor', () => {
       expect(proxy['/api']).toBe('http://localhost:3001');
     }
   });
+
+  it('routes /api/health to the Java backend in every mode', () => {
+    for (const realtime of [undefined, 'node', 'java']) {
+      const proxy = proxyFor(realtime);
+      const key = Object.keys(proxy).find((k) => new RegExp(k).test('/api/health'));
+      expect(key).not.toBe('/api');
+      expect(proxy[key as string]).toBe('http://localhost:8080');
+      expect(Object.keys(proxy).indexOf(key as string)).toBeLessThan(Object.keys(proxy).indexOf('/api'));
+    }
+  });
 });
