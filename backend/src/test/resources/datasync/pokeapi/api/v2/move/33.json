@@ -1,0 +1,99 @@
+{
+ "id": 33,
+ "name": "tackle",
+ "names": [
+  {
+   "name": "たいあたり",
+   "language": {
+    "name": "ja-hrkt",
+    "url": "https://pokeapi.co/api/v2/language/1/"
+   }
+  },
+  {
+   "name": "몸통박치기",
+   "language": {
+    "name": "ko",
+    "url": "https://pokeapi.co/api/v2/language/3/"
+   }
+  },
+  {
+   "name": "撞擊",
+   "language": {
+    "name": "zh-hant",
+    "url": "https://pokeapi.co/api/v2/language/4/"
+   }
+  },
+  {
+   "name": "Charge",
+   "language": {
+    "name": "fr",
+    "url": "https://pokeapi.co/api/v2/language/5/"
+   }
+  },
+  {
+   "name": "Tackle",
+   "language": {
+    "name": "de",
+    "url": "https://pokeapi.co/api/v2/language/6/"
+   }
+  },
+  {
+   "name": "Placaje",
+   "language": {
+    "name": "es",
+    "url": "https://pokeapi.co/api/v2/language/7/"
+   }
+  },
+  {
+   "name": "Azione",
+   "language": {
+    "name": "it",
+    "url": "https://pokeapi.co/api/v2/language/8/"
+   }
+  },
+  {
+   "name": "Tackle",
+   "language": {
+    "name": "en",
+    "url": "https://pokeapi.co/api/v2/language/9/"
+   }
+  },
+  {
+   "name": "たいあたり",
+   "language": {
+    "name": "ja",
+    "url": "https://pokeapi.co/api/v2/language/11/"
+   }
+  },
+  {
+   "name": "撞击",
+   "language": {
+    "name": "zh-hans",
+    "url": "https://pokeapi.co/api/v2/language/12/"
+   }
+  },
+  {
+   "name": "Tacleada",
+   "language": {
+    "name": "es-419",
+    "url": "https://pokeapi.co/api/v2/language/14/"
+   }
+  }
+ ],
+ "type": {
+  "name": "normal",
+  "url": "https://pokeapi.co/api/v2/type/1/"
+ },
+ "damage_class": {
+  "name": "physical",
+  "url": "https://pokeapi.co/api/v2/move-damage-class/2/"
+ },
+ "power": 40,
+ "accuracy": 100,
+ "pp": 35,
+ "priority": 0,
+ "generation": {
+  "name": "generation-i",
+  "url": "https://pokeapi.co/api/v2/generation/1/"
+ }
+}

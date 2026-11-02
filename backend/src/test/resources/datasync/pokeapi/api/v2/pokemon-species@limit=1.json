@@ -1,0 +1,11 @@
+{
+ "count": 1025,
+ "next": "https://pokeapi.co/api/v2/pokemon-species?offset=1&limit=1",
+ "previous": null,
+ "results": [
+  {
+   "name": "bulbasaur",
+   "url": "https://pokeapi.co/api/v2/pokemon-species/1/"
+  }
+ ]
+}

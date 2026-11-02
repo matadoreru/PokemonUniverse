@@ -1,0 +1,83 @@
+{
+ "id": 5,
+ "name": "sturdy",
+ "names": [
+  {
+   "name": "がんじょう",
+   "language": {
+    "name": "ja-hrkt",
+    "url": "https://pokeapi.co/api/v2/language/1/"
+   }
+  },
+  {
+   "name": "옹골참",
+   "language": {
+    "name": "ko",
+    "url": "https://pokeapi.co/api/v2/language/3/"
+   }
+  },
+  {
+   "name": "結實",
+   "language": {
+    "name": "zh-hant",
+    "url": "https://pokeapi.co/api/v2/language/4/"
+   }
+  },
+  {
+   "name": "Fermeté",
+   "language": {
+    "name": "fr",
+    "url": "https://pokeapi.co/api/v2/language/5/"
+   }
+  },
+  {
+   "name": "Robustheit",
+   "language": {
+    "name": "de",
+    "url": "https://pokeapi.co/api/v2/language/6/"
+   }
+  },
+  {
+   "name": "Robustez",
+   "language": {
+    "name": "es",
+    "url": "https://pokeapi.co/api/v2/language/7/"
+   }
+  },
+  {
+   "name": "Vigore",
+   "language": {
+    "name": "it",
+    "url": "https://pokeapi.co/api/v2/language/8/"
+   }
+  },
+  {
+   "name": "Sturdy",
+   "language": {
+    "name": "en",
+    "url": "https://pokeapi.co/api/v2/language/9/"
+   }
+  },
+  {
+   "name": "がんじょう",
+   "language": {
+    "name": "ja",
+    "url": "https://pokeapi.co/api/v2/language/11/"
+   }
+  },
+  {
+   "name": "结实",
+   "language": {
+    "name": "zh-hans",
+    "url": "https://pokeapi.co/api/v2/language/12/"
+   }
+  },
+  {
+   "name": "Robustez",
+   "language": {
+    "name": "es-419",
+    "url": "https://pokeapi.co/api/v2/language/14/"
+   }
+  }
+ ]
+}

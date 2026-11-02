@@ -1,0 +1,83 @@
+{
+ "id": 69,
+ "name": "rock-head",
+ "names": [
+  {
+   "name": "いしあたま",
+   "language": {
+    "name": "ja-hrkt",
+    "url": "https://pokeapi.co/api/v2/language/1/"
+   }
+  },
+  {
+   "name": "돌머리",
+   "language": {
+    "name": "ko",
+    "url": "https://pokeapi.co/api/v2/language/3/"
+   }
+  },
+  {
+   "name": "堅硬腦袋",
+   "language": {
+    "name": "zh-hant",
+    "url": "https://pokeapi.co/api/v2/language/4/"
+   }
+  },
+  {
+   "name": "Tête de Roc",
+   "language": {
+    "name": "fr",
+    "url": "https://pokeapi.co/api/v2/language/5/"
+   }
+  },
+  {
+   "name": "Steinhaupt",
+   "language": {
+    "name": "de",
+    "url": "https://pokeapi.co/api/v2/language/6/"
+   }
+  },
+  {
+   "name": "Cabeza Roca",
+   "language": {
+    "name": "es",
+    "url": "https://pokeapi.co/api/v2/language/7/"
+   }
+  },
+  {
+   "name": "Testadura",
+   "language": {
+    "name": "it",
+    "url": "https://pokeapi.co/api/v2/language/8/"
+   }
+  },
+  {
+   "name": "Rock Head",
+   "language": {
+    "name": "en",
+    "url": "https://pokeapi.co/api/v2/language/9/"
+   }
+  },
+  {
+   "name": "いしあたま",
+   "language": {
+    "name": "ja",
+    "url": "https://pokeapi.co/api/v2/language/11/"
+   }
+  },
+  {
+   "name": "坚硬脑袋",
+   "language": {
+    "name": "zh-hans",
+    "url": "https://pokeapi.co/api/v2/language/12/"
+   }
+  },
+  {
+   "name": "Cabeza Roca",
+   "language": {
+    "name": "es-419",
+    "url": "https://pokeapi.co/api/v2/language/14/"
+   }
+  }
+ ]
+}

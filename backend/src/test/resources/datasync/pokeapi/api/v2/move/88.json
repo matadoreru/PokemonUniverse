@@ -1,0 +1,99 @@
+{
+ "id": 88,
+ "name": "rock-throw",
+ "names": [
+  {
+   "name": "いわおとし",
+   "language": {
+    "name": "ja-hrkt",
+    "url": "https://pokeapi.co/api/v2/language/1/"
+   }
+  },
+  {
+   "name": "돌떨구기",
+   "language": {
+    "name": "ko",
+    "url": "https://pokeapi.co/api/v2/language/3/"
+   }
+  },
+  {
+   "name": "落石",
+   "language": {
+    "name": "zh-hant",
+    "url": "https://pokeapi.co/api/v2/language/4/"
+   }
+  },
+  {
+   "name": "Jet-Pierres",
+   "language": {
+    "name": "fr",
+    "url": "https://pokeapi.co/api/v2/language/5/"
+   }
+  },
+  {
+   "name": "Steinwurf",
+   "language": {
+    "name": "de",
+    "url": "https://pokeapi.co/api/v2/language/6/"
+   }
+  },
+  {
+   "name": "Lanzarrocas",
+   "language": {
+    "name": "es",
+    "url": "https://pokeapi.co/api/v2/language/7/"
+   }
+  },
+  {
+   "name": "Sassata",
+   "language": {
+    "name": "it",
+    "url": "https://pokeapi.co/api/v2/language/8/"
+   }
+  },
+  {
+   "name": "Rock Throw",
+   "language": {
+    "name": "en",
+    "url": "https://pokeapi.co/api/v2/language/9/"
+   }
+  },
+  {
+   "name": "いわおとし",
+   "language": {
+    "name": "ja",
+    "url": "https://pokeapi.co/api/v2/language/11/"
+   }
+  },
+  {
+   "name": "落石",
+   "language": {
+    "name": "zh-hans",
+    "url": "https://pokeapi.co/api/v2/language/12/"
+   }
+  },
+  {
+   "name": "Lanzarrocas",
+   "language": {
+    "name": "es-419",
+    "url": "https://pokeapi.co/api/v2/language/14/"
+   }
+  }
+ ],
+ "type": {
+  "name": "rock",
+  "url": "https://pokeapi.co/api/v2/type/6/"
+ },
+ "damage_class": {
+  "name": "physical",
+  "url": "https://pokeapi.co/api/v2/move-damage-class/2/"
+ },
+ "power": 50,
+ "accuracy": 90,
+ "pp": 15,
+ "priority": 0,
+ "generation": {
+  "name": "generation-i",
+  "url": "https://pokeapi.co/api/v2/generation/1/"
+ }
+}

@@ -1,0 +1,83 @@
+{
+ "id": 42,
+ "name": "magnet-pull",
+ "names": [
+  {
+   "name": "じりょく",
+   "language": {
+    "name": "ja-hrkt",
+    "url": "https://pokeapi.co/api/v2/language/1/"
+   }
+  },
+  {
+   "name": "자력",
+   "language": {
+    "name": "ko",
+    "url": "https://pokeapi.co/api/v2/language/3/"
+   }
+  },
+  {
+   "name": "磁力",
+   "language": {
+    "name": "zh-hant",
+    "url": "https://pokeapi.co/api/v2/language/4/"
+   }
+  },
+  {
+   "name": "Magnépiège",
+   "language": {
+    "name": "fr",
+    "url": "https://pokeapi.co/api/v2/language/5/"
+   }
+  },
+  {
+   "name": "Magnetfalle",
+   "language": {
+    "name": "de",
+    "url": "https://pokeapi.co/api/v2/language/6/"
+   }
+  },
+  {
+   "name": "Imán",
+   "language": {
+    "name": "es",
+    "url": "https://pokeapi.co/api/v2/language/7/"
+   }
+  },
+  {
+   "name": "Magnetismo",
+   "language": {
+    "name": "it",
+    "url": "https://pokeapi.co/api/v2/language/8/"
+   }
+  },
+  {
+   "name": "Magnet Pull",
+   "language": {
+    "name": "en",
+    "url": "https://pokeapi.co/api/v2/language/9/"
+   }
+  },
+  {
+   "name": "じりょく",
+   "language": {
+    "name": "ja",
+    "url": "https://pokeapi.co/api/v2/language/11/"
+   }
+  },
+  {
+   "name": "磁力",
+   "language": {
+    "name": "zh-hans",
+    "url": "https://pokeapi.co/api/v2/language/12/"
+   }
+  },
+  {
+   "name": "Imán",
+   "language": {
+    "name": "es-419",
+    "url": "https://pokeapi.co/api/v2/language/14/"
+   }
+  }
+ ]
+}

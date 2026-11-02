@@ -1,0 +1,99 @@
+{
+ "id": 397,
+ "name": "rock-polish",
+ "names": [
+  {
+   "name": "ロックカット",
+   "language": {
+    "name": "ja-hrkt",
+    "url": "https://pokeapi.co/api/v2/language/1/"
+   }
+  },
+  {
+   "name": "록커트",
+   "language": {
+    "name": "ko",
+    "url": "https://pokeapi.co/api/v2/language/3/"
+   }
+  },
+  {
+   "name": "岩石打磨",
+   "language": {
+    "name": "zh-hant",
+    "url": "https://pokeapi.co/api/v2/language/4/"
+   }
+  },
+  {
+   "name": "Poliroche",
+   "language": {
+    "name": "fr",
+    "url": "https://pokeapi.co/api/v2/language/5/"
+   }
+  },
+  {
+   "name": "Steinpolitur",
+   "language": {
+    "name": "de",
+    "url": "https://pokeapi.co/api/v2/language/6/"
+   }
+  },
+  {
+   "name": "Pulimento",
+   "language": {
+    "name": "es",
+    "url": "https://pokeapi.co/api/v2/language/7/"
+   }
+  },
+  {
+   "name": "Lucidatura",
+   "language": {
+    "name": "it",
+    "url": "https://pokeapi.co/api/v2/language/8/"
+   }
+  },
+  {
+   "name": "Rock Polish",
+   "language": {
+    "name": "en",
+    "url": "https://pokeapi.co/api/v2/language/9/"
+   }
+  },
+  {
+   "name": "ロックカット",
+   "language": {
+    "name": "ja",
+    "url": "https://pokeapi.co/api/v2/language/11/"
+   }
+  },
+  {
+   "name": "岩石打磨",
+   "language": {
+    "name": "zh-hans",
+    "url": "https://pokeapi.co/api/v2/language/12/"
+   }
+  },
+  {
+   "name": "Pulimento",
+   "language": {
+    "name": "es-419",
+    "url": "https://pokeapi.co/api/v2/language/14/"
+   }
+  }
+ ],
+ "type": {
+  "name": "rock",
+  "url": "https://pokeapi.co/api/v2/type/6/"
+ },
+ "damage_class": {
+  "name": "status",
+  "url": "https://pokeapi.co/api/v2/move-damage-class/1/"
+ },
+ "power": null,
+ "accuracy": null,
+ "pp": 20,
+ "priority": 0,
+ "generation": {
+  "name": "generation-iv",
+  "url": "https://pokeapi.co/api/v2/generation/4/"
+ }
+}

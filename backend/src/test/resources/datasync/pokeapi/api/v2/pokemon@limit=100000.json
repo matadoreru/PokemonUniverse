@@ -1,0 +1,31 @@
+{
+ "count": 6,
+ "next": null,
+ "previous": null,
+ "results": [
+  {
+   "name": "geodude",
+   "url": "https://pokeapi.co/api/v2/pokemon/74/"
+  },
+  {
+   "name": "graveler",
+   "url": "https://pokeapi.co/api/v2/pokemon/75/"
+  },
+  {
+   "name": "golem",
+   "url": "https://pokeapi.co/api/v2/pokemon/76/"
+  },
+  {
+   "name": "pikachu-rock-star",
+   "url": "https://pokeapi.co/api/v2/pokemon/10080/"
+  },
+  {
+   "name": "raticate-totem-alola",
+   "url": "https://pokeapi.co/api/v2/pokemon/10093/"
+  },
+  {
+   "name": "geodude-alola",
+   "url": "https://pokeapi.co/api/v2/pokemon/10109/"
+  }
+ ]
+}

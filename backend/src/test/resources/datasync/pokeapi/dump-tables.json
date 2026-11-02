@@ -1,0 +1,71 @@
+{
+  "excludedColumns": [
+    "updatedAt",
+    "createdAt",
+    "sourceUpdatedAt",
+    "completedAt"
+  ],
+  "tables": [
+    {
+      "table": "Pokemon",
+      "orderBy": "\"id\" COLLATE \"C\""
+    },
+    {
+      "table": "PokemonGeneration",
+      "orderBy": "\"id\""
+    },
+    {
+      "table": "PokemonSpecies",
+      "orderBy": "\"id\""
+    },
+    {
+      "table": "PokemonPokedexNumber",
+      "orderBy": "\"speciesId\", \"pokedex\" COLLATE \"C\""
+    },
+    {
+      "table": "PokemonStat",
+      "orderBy": "\"pokemonId\" COLLATE \"C\", \"stat\" COLLATE \"C\""
+    },
+    {
+      "table": "PokemonType",
+      "orderBy": "\"id\" COLLATE \"C\""
+    },
+    {
+      "table": "PokemonTypeAssignment",
+      "orderBy": "\"pokemonId\" COLLATE \"C\", \"slot\""
+    },
+    {
+      "table": "Ability",
+      "orderBy": "\"id\" COLLATE \"C\""
+    },
+    {
+      "table": "PokemonAbility",
+      "orderBy": "\"pokemonId\" COLLATE \"C\", \"slot\""
+    },
+    {
+      "table": "PokemonEvolution",
+      "orderBy": "\"id\" COLLATE \"C\""
+    },
+    {
+      "table": "PokemonCatalogSync",
+      "orderBy": "\"key\" COLLATE \"C\""
+    },
+    {
+      "table": "PokemonAssetReference",
+      "orderBy": "\"id\" COLLATE \"C\""
+    },
+    {
+      "table": "Move",
+      "orderBy": "\"id\" COLLATE \"C\""
+    },
+    {
+      "table": "PokemonLevelUpMove",
+      "orderBy": "\"pokemonId\" COLLATE \"C\", \"moveId\" COLLATE \"C\", \"referenceGeneration\", \"level\""
+    },
+    {
+      "table": "PokedexEntry",
+      "orderBy": "\"id\" COLLATE \"C\""
+    }
+  ],
+  "note": "Volcado compartido por el generador Node (scripts/export-pokeapi-parity.mts) y PokemonCatalogSeederTest: to_jsonb de cada fila sin las columnas excluidas, en este orden."
+}
