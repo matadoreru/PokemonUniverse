@@ -46,7 +46,9 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
  *       literal de dimensiones. Una bomba de descompresión se rechaza sin reservar su ráster.</li>
  *   <li>La decodificación submuestrea a un lado corto de al menos 512 px: la memoria queda acotada y el reescalado
  *       final a 256 px conserva calidad.</li>
- *   <li>Como {@code failOn: 'warning'}, un aviso del lector (JPEG truncado...) invalida la imagen.</li>
+ *   <li>Como {@code failOn: 'warning'}, un aviso de datos corruptos del lector (los de libjpeg: «Corrupt JPEG data…»,
+ *       «Truncated File…») invalida la imagen. Los avisos de perfil de color de TwelveMonkeys (CMYK sin ICC) son
+ *       informativos: sharp acepta esas imágenes.</li>
  *   <li>Orientación EXIF solo en JPEG, leída con {@code imageio-metadata} de TwelveMonkeys (ya en el classpath por
  *       {@code imageio-jpeg}); los EXIF de PNG/WebP son raros en fotos de móvil y se ignoran.</li>
  * </ul>
@@ -92,7 +94,9 @@ public class AvatarImageProcessor implements AvatarImageEncoder {
     if (format == null || !format.contentType.equals(declaredContentType)) throw invalid();
     ImageReader reader = newReader(format);
     var warned = new AtomicBoolean();
-    reader.addIIOReadWarningListener((IIOReadWarningListener) (source, warning) -> warned.set(true));
+    reader.addIIOReadWarningListener((IIOReadWarningListener) (source, warning) -> {
+      if (!isColourProfileNotice(warning)) warned.set(true);
+    });
     try (ImageInputStream input = new MemoryCacheImageInputStream(new ByteArrayInputStream(contents))) {
       reader.setInput(input, true, true);
       int width;
@@ -145,6 +149,12 @@ public class AvatarImageProcessor implements AvatarImageEncoder {
       if (candidate.getClass().getName().startsWith(packagePrefix)) return candidate;
     }
     throw new IllegalStateException("Sin lector " + packagePrefix + " para " + formatName);
+  }
+
+  /** Aviso informativo sobre el perfil de color (p. ej. «No embedded ICC color profile…» de un JPEG CMYK). */
+  static boolean isColourProfileNotice(String warning) {
+    var text = warning == null ? "" : warning.toLowerCase(Locale.ROOT);
+    return text.contains("icc") || text.contains("color profile") || text.contains("colour profile");
   }
 
   private static AvatarValidationException invalid() {

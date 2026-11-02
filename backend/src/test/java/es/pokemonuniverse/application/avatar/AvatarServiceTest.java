@@ -145,6 +145,17 @@ class AvatarServiceTest {
     rejects(INVALID, () -> service().processAndStore(TestImages.encode(TestImages.halves(80, 80, Color.RED, Color.BLUE), "gif"), "image/gif"));
     byte[] jpeg = TestImages.encode(TestImages.halves(300, 200, Color.RED, Color.BLUE), "jpeg");
     rejects(INVALID, () -> service().processAndStore(Arrays.copyOf(jpeg, jpeg.length / 2), "image/jpeg"));
+    // «Corrupt JPEG data: 3 extraneous bytes before marker 0xda» de libjpeg: sharp con failOn 'warning' también falla.
+    int sos = indexOf(jpeg, (byte) 0xFF, (byte) 0xDA);
+    byte[] extraneous = new byte[jpeg.length + 3];
+    System.arraycopy(jpeg, 0, extraneous, 0, sos);
+    System.arraycopy(jpeg, sos, extraneous, sos + 3, jpeg.length - sos);
+    rejects(INVALID, () -> service().processAndStore(extraneous, "image/jpeg"));
+  }
+
+  private static int indexOf(byte[] data, byte first, byte second) {
+    for (int i = 0; i + 1 < data.length; i++) if (data[i] == first && data[i + 1] == second) return i;
+    throw new IllegalArgumentException("marcador ausente");
   }
 
   @Test
