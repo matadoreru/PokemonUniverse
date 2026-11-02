@@ -1,20 +1,29 @@
 package es.pokemonuniverse.application.datasync.pokemon;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import es.pokemonuniverse.adapters.out.http.SyncHttpClient;
 import es.pokemonuniverse.application.datasync.DataSyncMode;
+import es.pokemonuniverse.application.datasync.DataSyncRecords;
+import es.pokemonuniverse.application.datasync.DataSyncService;
 import es.pokemonuniverse.application.datasync.DataSyncSource;
 import es.pokemonuniverse.application.datasync.SyncResult;
 import io.micronaut.jdbc.DataSourceResolver;
 import io.micronaut.json.JsonMapper;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
+import java.net.http.HttpClient;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +43,7 @@ class PokemonDataSyncTest {
   @Inject JsonMapper json;
   @Inject DataSource dataSource;
   @Inject DataSourceResolver resolver;
+  @Inject DataSyncRecords records;
 
   private PokeApiFixtureServer server;
   private PokemonPaletteSync palettes;
@@ -158,5 +168,44 @@ class PokemonDataSyncTest {
     assertTrue(server.requests().contains("/raw/PokeAPI/sprites/master/sprites/pokemon/9998.png"));
     assertTrue(server.requests().stream().noneMatch(path -> path.contains("evil")));
     assertEquals(3, palettes.persisted());
+  }
+
+  /**
+   * Review Focus 2 de extremo a extremo (caracterización, no TDD): PokéAPI responde 429 con {@code Retry-After} a una
+   * especie; el cliente espera lo indicado entre los 4 intentos, el adaptador real falla con el literal de Node y la
+   * ejecución del {@link DataSyncService} queda FAILED con ese mensaje, sin escribir el catálogo.
+   */
+  @Test
+  void aPersistent429WithRetryAfterLeavesTheRunFailedAndTheCatalogUntouched() throws Exception {
+    try (var connection = resolver.resolve(dataSource).getConnection(); var statement = connection.createStatement()) {
+      // Tablas propias del data-sync: DataSyncServiceTest y DataSyncStartupTest también las vacían.
+      statement.executeUpdate("DELETE FROM \"DataSyncRun\"");
+      statement.executeUpdate("DELETE FROM \"DataSyncState\"");
+    }
+    server.override("/api/v2/pokemon-species/75", PokeApiFixtureServer.Canned.status(429).withHeader("Retry-After", "2"));
+    var sleeps = Collections.synchronizedList(new ArrayList<Long>());
+    var http = new SyncHttpClient(json, System::currentTimeMillis, HttpClient.newHttpClient(),
+        SyncHttpClient.Options.DEFAULTS, sleeps::add, () -> 0);
+    var seeder = new PokemonCatalogSeeder(store, http, server.urls(), System::currentTimeMillis);
+    var adapter = new PokemonDataSync(store, seeder, new PokemonPaletteSync(store, http, server.spriteBase(),
+        System::currentTimeMillis), http, server.urls(), PokemonCatalogSeederTest.LIMITS, System::currentTimeMillis);
+    var service = new DataSyncService(records, List.of(adapter), null, System::currentTimeMillis, Instant::now,
+        Executors.newVirtualThreadPerTaskExecutor());
+    try {
+      var error = assertThrows(ExecutionException.class,
+          () -> service.start(DataSyncSource.POKEAPI, DataSyncMode.FULL).get());
+      assertEquals("PokéAPI returned 429 for species 75", error.getCause().getMessage());
+    } finally {
+      service.stop();
+    }
+    assertEquals(List.of(2_000L, 2_000L, 2_000L), sleeps);
+    assertEquals(4, server.requests().stream().filter("/api/v2/pokemon-species/75"::equals).count());
+    try (var connection = resolver.resolve(dataSource).getConnection(); var statement = connection.createStatement();
+        var set = statement.executeQuery("SELECT \"status\"::text, \"error\" FROM \"DataSyncRun\"")) {
+      assertTrue(set.next());
+      assertEquals("FAILED", set.getString(1));
+      assertEquals("PokéAPI returned 429 for species 75", set.getString(2));
+    }
+    dump().values().forEach(rows -> assertTrue(((List<?>) rows).isEmpty()));
   }
 }

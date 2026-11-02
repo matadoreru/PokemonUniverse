@@ -9,6 +9,7 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,13 +25,19 @@ final class PokeApiFixtureServer implements AutoCloseable {
   private static final String ROOT = "/datasync/pokeapi";
 
   /** Respuesta sustituida para una ruta (con su query). */
-  record Canned(int status, byte[] body, String contentType) {
+  record Canned(int status, byte[] body, String contentType, Map<String, String> headers) {
     static Canned json(String body) {
-      return new Canned(200, body.getBytes(StandardCharsets.UTF_8), "application/json");
+      return new Canned(200, body.getBytes(StandardCharsets.UTF_8), "application/json", Map.of());
     }
 
     static Canned status(int status) {
-      return new Canned(status, new byte[0], "text/plain");
+      return new Canned(status, new byte[0], "text/plain", Map.of());
+    }
+
+    Canned withHeader(String name, String value) {
+      var all = new HashMap<>(headers);
+      all.put(name, value);
+      return new Canned(status, body, contentType, Map.copyOf(all));
     }
   }
 
@@ -78,6 +85,7 @@ final class PokeApiFixtureServer implements AutoCloseable {
     try (exchange) {
       var override = overrides.get(key);
       if (override != null) {
+        override.headers().forEach((name, value) -> exchange.getResponseHeaders().set(name, value));
         respond(exchange, override.status(), override.body(), override.contentType());
         return;
       }
