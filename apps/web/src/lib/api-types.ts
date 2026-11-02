@@ -278,6 +278,59 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/would-you-rather-prompts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Listar mis dilemas de Would You Rather */
+        get: operations["listWouldYouRatherPrompts"];
+        put?: never;
+        /** Crear un dilema de Would You Rather */
+        post: operations["createWouldYouRatherPrompt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/would-you-rather-prompts/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Importar dilemas desde JSON (todo o nada) */
+        post: operations["importWouldYouRatherPrompts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/would-you-rather-prompts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Borrar un dilema */
+        delete: operations["deleteWouldYouRatherPrompt"];
+        options?: never;
+        head?: never;
+        /** Editar o activar/desactivar un dilema */
+        patch: operations["updateWouldYouRatherPrompt"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -358,6 +411,11 @@ export interface components {
             roomCode?: string | null;
             type: components["schemas"]["FeedbackType"];
             description: string;
+        };
+        /** @description Estricto: una clave desconocida es un 400 `unrecognized_keys`. Las opciones se recortan y deben ser distintas (comparación base de `es`). */
+        CreateWouldYouRatherPromptRequest: {
+            optionA: string;
+            optionB: string;
         };
         "CustomCategoryController.CategoriesResponse": {
             categories: components["schemas"]["CustomCategoryView"][];
@@ -450,6 +508,12 @@ export interface components {
             uptimeSeconds: number;
             commit: string;
             timestamp: string;
+        };
+        /** @description Estricto en ambos niveles; `version` es el literal 1 y se importan de 1 a 100 dilemas, todos o ninguno. */
+        ImportWouldYouRatherPromptsRequest: {
+            /** Format: int32 */
+            version: number;
+            prompts: components["schemas"]["CreateWouldYouRatherPromptRequest"][];
         };
         LoginRequest: {
             /** Format: email */
@@ -562,6 +626,12 @@ export interface components {
             text?: string;
             enabled?: boolean;
         };
+        /** @description Estricto: al menos uno de los tres campos, ninguno admite `null` y una clave desconocida es un 400 `unrecognized_keys`. */
+        UpdateWouldYouRatherPromptRequest: {
+            optionA?: string;
+            optionB?: string;
+            enabled?: boolean;
+        };
         /** @description Respuesta `{"user": ...}`; la clave se escribe siempre, también como `null`. */
         UserResponse: {
             user: components["schemas"]["AuthUser"] | null;
@@ -572,6 +642,21 @@ export interface components {
         ValidationErrorResponse: {
             error: string;
             issues: components["schemas"]["ZodIssue"][];
+        };
+        "WouldYouRatherPromptController.PromptResponse": {
+            prompt: components["schemas"]["WouldYouRatherPromptView"];
+        };
+        "WouldYouRatherPromptController.PromptsResponse": {
+            prompts: components["schemas"]["WouldYouRatherPromptView"][];
+        };
+        /** @description Vista pública de un dilema (`CustomWouldYouRatherPromptView` de `packages/shared`); fechas ISO con milisegundos. */
+        WouldYouRatherPromptView: {
+            id: string;
+            optionA: string;
+            optionB: string;
+            enabled: boolean;
+            createdAt: string;
+            updatedAt: string;
         };
         /** @description Incidencia de Zod 4: `code`, `path` y `message` siempre; el resto de claves depende del código (`expected`, `origin`, `minimum`, `maximum`, `inclusive`, `keys`, ...). */
         ZodIssue: {
@@ -1197,6 +1282,246 @@ export interface operations {
             };
             /** @description Demasiados recursos en curso */
             503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listWouldYouRatherPrompts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WouldYouRatherPromptController.PromptsResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    createWouldYouRatherPrompt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["CreateWouldYouRatherPromptRequest"];
+            };
+        };
+        responses: {
+            /** @description Creado */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WouldYouRatherPromptController.PromptResponse"];
+                };
+            };
+            /** @description Datos inválidos u opciones iguales tras normalizar */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"] | components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Pareja duplicada */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    importWouldYouRatherPrompts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ImportWouldYouRatherPromptsRequest"];
+            };
+        };
+        responses: {
+            /** @description Importados */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WouldYouRatherPromptController.PromptsResponse"];
+                };
+            };
+            /** @description Datos inválidos */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Parejas duplicadas en el JSON o ya existentes */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    deleteWouldYouRatherPrompt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sin contenido */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Id demasiado largo */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description No encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    updateWouldYouRatherPrompt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateWouldYouRatherPromptRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WouldYouRatherPromptController.PromptResponse"];
+                };
+            };
+            /** @description Datos inválidos u opciones iguales tras normalizar */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"] | components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description No encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Pareja duplicada */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };

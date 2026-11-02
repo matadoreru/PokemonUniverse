@@ -2,6 +2,7 @@ package es.pokemonuniverse.config;
 
 import es.pokemonuniverse.application.categories.CustomCategoryService;
 import es.pokemonuniverse.application.rooms.RoomCoordinator;
+import es.pokemonuniverse.application.wouldyourather.WouldYouRatherPromptService;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.BeanCreatedEvent;
 import io.micronaut.context.event.BeanCreatedEventListener;
@@ -11,16 +12,19 @@ import jakarta.inject.Singleton;
 import javax.sql.DataSource;
 
 /**
- * Contenido personal del host ({@code index.ts} de Node): la caché de categorías se carga al arrancar y cada cambio de
- * un usuario reemite {@code room:state} si es host de su sala ({@code customCategories.onChanged(uid =>
- * rooms.updateHostCategories(uid))}). Sin {@link DataSource} (contextos de prueba sin BD) no hay nada que cargar.
+ * Contenido personal del host ({@code index.ts} de Node): las cachés de categorías y de dilemas se cargan al arrancar
+ * y cada cambio de un usuario reemite {@code room:state} si es host de su sala ({@code customCategories.onChanged(uid =>
+ * rooms.updateHostCategories(uid))} y {@code wouldYouRatherPrompts.onChanged(uid =>
+ * rooms.updateHostWouldYouRatherPrompts(uid))}). Sin {@link DataSource} (contextos de prueba sin BD) no hay nada que
+ * cargar.
  */
 public final class HostContentWiring {
 
   private HostContentWiring() {}
 
   /**
-   * Carga la caché de todos los usuarios al arrancar, como el {@code await customCategories.load()} de Node. Con
+   * Carga las cachés de todos los usuarios al arrancar, como los {@code await customCategories.load()} y
+   * {@code await wouldYouRatherPrompts.load()} de Node. Con
    * {@link StartupEvent} corre después de los beans {@code @Context} (comprobación de la URL JDBC y del esquema de
    * Prisma) y antes de que el servidor HTTP acepte peticiones.
    */
@@ -29,14 +33,17 @@ public final class HostContentWiring {
   public static class CacheLoader {
 
     private final CustomCategoryService categories;
+    private final WouldYouRatherPromptService prompts;
 
-    public CacheLoader(CustomCategoryService categories) {
+    public CacheLoader(CustomCategoryService categories, WouldYouRatherPromptService prompts) {
       this.categories = categories;
+      this.prompts = prompts;
     }
 
     @EventListener
     void load(StartupEvent event) {
       categories.load();
+      prompts.load();
     }
   }
 
@@ -49,15 +56,18 @@ public final class HostContentWiring {
   public static class CoordinatorSubscription implements BeanCreatedEventListener<RoomCoordinator> {
 
     private final CustomCategoryService categories;
+    private final WouldYouRatherPromptService prompts;
 
-    public CoordinatorSubscription(CustomCategoryService categories) {
+    public CoordinatorSubscription(CustomCategoryService categories, WouldYouRatherPromptService prompts) {
       this.categories = categories;
+      this.prompts = prompts;
     }
 
     @Override
     public RoomCoordinator onCreated(BeanCreatedEvent<RoomCoordinator> event) {
       var coordinator = event.getBean();
       categories.onChanged(coordinator::updateHostCategories);
+      prompts.onChanged(coordinator::updateHostWouldYouRatherPrompts);
       return coordinator;
     }
   }

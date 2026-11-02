@@ -288,6 +288,41 @@ class RoomCoordinatorTest {
     assertTrue(kit.events.sent.isEmpty());
   }
 
+  @Test
+  @DisplayName("re-broadcasts room:state with the new Would You Rather prompt count only when the user hosts the room")
+  void rebroadcastsHostWouldYouRatherPrompts() {
+    var prompts = new LinkedHashMap<String, List<WouldYouRatherPromptPair>>();
+    var content = new HostContentProvider() {
+      @Override
+      public List<SubjectiveCategory> customCategoriesForUser(String userId) {
+        return List.of();
+      }
+
+      @Override
+      public List<WouldYouRatherPromptPair> wouldYouRatherPromptsForUser(String userId) {
+        return prompts.getOrDefault(userId, List.of());
+      }
+    };
+    var kit = new RoomTestKit(50_000, UserGameConfigPreferences.NO_OP, content, RoomTestKit.registry());
+    var host = user("host-user", "Host", "host@example.com");
+    var member = user("member-user", "Ana", "ana@example.com");
+    kit.room(8, host, member);
+    assertEquals(0, kit.events.lastStateFor("host-user").hostWouldYouRatherPromptCount());
+    kit.events.clear();
+
+    prompts.put("host-user", List.of(new WouldYouRatherPromptPair("w1", "Vivir con Gengar", "Viajar con Magikarp")));
+    kit.manager.updateHostWouldYouRatherPrompts("host-user");
+    assertEquals(2, kit.events.named("room:state").size());
+    assertEquals(1, kit.events.lastStateFor("host-user").hostWouldYouRatherPromptCount());
+    assertEquals(1, kit.events.lastStateFor("member-user").hostWouldYouRatherPromptCount());
+
+    kit.events.clear();
+    prompts.put("member-user", List.of(new WouldYouRatherPromptPair("w2", "Elegir a Eevee", "Elegir a Mew")));
+    kit.manager.updateHostWouldYouRatherPrompts("member-user");
+    kit.manager.updateHostWouldYouRatherPrompts("nobody");
+    assertTrue(kit.events.sent.isEmpty());
+  }
+
   // --------------------------------------------------------------------------------------- roles y permisos
 
   @Test

@@ -38,7 +38,9 @@ class OpenApiSpecTest {
           "/api/categories/{id}", "/api/changelog", "/api/feedback",
           "/api/games", "/api/health", "/api/pokemon",
           "/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/sprite",
-          "/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/audio"), paths.keySet());
+          "/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/audio",
+          "/api/would-you-rather-prompts", "/api/would-you-rather-prompts/import",
+          "/api/would-you-rather-prompts/{id}"), paths.keySet());
     }
   }
 

@@ -471,6 +471,180 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+  /api/would-you-rather-prompts:
+    get:
+      tags:
+      - would-you-rather-prompts
+      summary: Listar mis dilemas de Would You Rather
+      operationId: listWouldYouRatherPrompts
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WouldYouRatherPromptController.PromptsResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    post:
+      tags:
+      - would-you-rather-prompts
+      summary: Crear un dilema de Would You Rather
+      operationId: createWouldYouRatherPrompt
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWouldYouRatherPromptRequest"
+      responses:
+        "201":
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WouldYouRatherPromptController.PromptResponse"
+        "400":
+          description: Datos inválidos u opciones iguales tras normalizar
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/ValidationErrorResponse"
+                - $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Pareja duplicada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/would-you-rather-prompts/import:
+    post:
+      tags:
+      - would-you-rather-prompts
+      summary: Importar dilemas desde JSON (todo o nada)
+      operationId: importWouldYouRatherPrompts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportWouldYouRatherPromptsRequest"
+      responses:
+        "201":
+          description: Importados
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WouldYouRatherPromptController.PromptsResponse"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Parejas duplicadas en el JSON o ya existentes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/would-you-rather-prompts/{id}:
+    delete:
+      tags:
+      - would-you-rather-prompts
+      summary: Borrar un dilema
+      operationId: deleteWouldYouRatherPrompt
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Sin contenido
+        "400":
+          description: Id demasiado largo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    patch:
+      tags:
+      - would-you-rather-prompts
+      summary: Editar o activar/desactivar un dilema
+      operationId: updateWouldYouRatherPrompt
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateWouldYouRatherPromptRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WouldYouRatherPromptController.PromptResponse"
+        "400":
+          description: Datos inválidos u opciones iguales tras normalizar
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: "#/components/schemas/ValidationErrorResponse"
+                - $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Pareja duplicada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
 components:
   schemas:
     ApiError:
@@ -656,6 +830,22 @@ components:
           x-not-null-message: Describe el feedback con al menos 10 caracteres.
       description: "Cuerpo estricto: una clave desconocida falla la deserializació\
         n (como `.strict()` de Zod)."
+    CreateWouldYouRatherPromptRequest:
+      required:
+      - optionA
+      - optionB
+      type: object
+      properties:
+        optionA:
+          maxLength: 180
+          minLength: 4
+          type: string
+        optionB:
+          maxLength: 180
+          minLength: 4
+          type: string
+      description: "Estricto: una clave desconocida es un 400 `unrecognized_keys`.\
+        \ Las opciones se recortan y deben ser distintas (comparación base de `es`)."
     CustomCategoryController.CategoriesResponse:
       required:
       - categories
@@ -915,6 +1105,25 @@ components:
         timestamp:
           type: string
       description: El orden de los componentes es el del JSON de Node.
+    ImportWouldYouRatherPromptsRequest:
+      required:
+      - prompts
+      - version
+      type: object
+      properties:
+        version:
+          maximum: 1
+          minimum: 1
+          type: integer
+          format: int32
+        prompts:
+          maxItems: 100
+          minItems: 1
+          type: array
+          items:
+            $ref: "#/components/schemas/CreateWouldYouRatherPromptRequest"
+      description: "Estricto en ambos niveles; `version` es el literal 1 y se importan\
+        \ de 1 a 100 dilemas, todos o ninguno."
     LoginRequest:
       required:
       - email
@@ -1197,6 +1406,21 @@ components:
           type: boolean
       description: "Estricto: al menos uno de los dos campos, ninguno admite `null`\
         \ y una clave desconocida es un 400 `unrecognized_keys`."
+    UpdateWouldYouRatherPromptRequest:
+      type: object
+      properties:
+        optionA:
+          maxLength: 180
+          minLength: 4
+          type: string
+        optionB:
+          maxLength: 180
+          minLength: 4
+          type: string
+        enabled:
+          type: boolean
+      description: "Estricto: al menos uno de los tres campos, ninguno admite `null`\
+        \ y una clave desconocida es un 400 `unrecognized_keys`."
     UserResponse:
       required:
       - user
@@ -1227,6 +1451,46 @@ components:
             $ref: "#/components/schemas/ZodIssue"
       description: "400 con incidencias de Zod: `error` es el mensaje de la primera\
         \ incidencia."
+    WouldYouRatherPromptController.PromptResponse:
+      required:
+      - prompt
+      type: object
+      properties:
+        prompt:
+          $ref: "#/components/schemas/WouldYouRatherPromptView"
+    WouldYouRatherPromptController.PromptsResponse:
+      required:
+      - prompts
+      type: object
+      properties:
+        prompts:
+          type: array
+          items:
+            $ref: "#/components/schemas/WouldYouRatherPromptView"
+    WouldYouRatherPromptView:
+      required:
+      - createdAt
+      - enabled
+      - id
+      - optionA
+      - optionB
+      - updatedAt
+      type: object
+      properties:
+        id:
+          type: string
+        optionA:
+          type: string
+        optionB:
+          type: string
+        enabled:
+          type: boolean
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      description: Vista pública de un dilema (`CustomWouldYouRatherPromptView` de
+        `packages/shared`); fechas ISO con milisegundos.
     ZodIssue:
       required:
       - code

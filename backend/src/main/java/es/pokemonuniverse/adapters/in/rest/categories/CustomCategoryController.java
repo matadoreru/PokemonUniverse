@@ -1,17 +1,17 @@
 package es.pokemonuniverse.adapters.in.rest.categories;
 
+import static es.pokemonuniverse.adapters.in.rest.UserContentRequests.orEmpty;
+import static es.pokemonuniverse.adapters.in.rest.UserContentRequests.registeredUserId;
+import static es.pokemonuniverse.adapters.in.rest.UserContentRequests.validId;
+
 import es.pokemonuniverse.adapters.in.rest.ApiError;
-import es.pokemonuniverse.adapters.in.rest.ApiException;
 import es.pokemonuniverse.adapters.in.rest.ValidationErrorResponse;
 import es.pokemonuniverse.adapters.in.rest.identity.Identity;
 import es.pokemonuniverse.application.categories.CustomCategoryService;
 import es.pokemonuniverse.application.categories.CustomCategoryView;
-import es.pokemonuniverse.application.errors.InvalidInputException;
-import es.pokemonuniverse.application.validation.ZodIssues;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpResponse;
-import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Delete;
@@ -31,7 +31,6 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -44,9 +43,6 @@ import java.util.Optional;
 @ExecuteOn(TaskExecutors.BLOCKING)
 public class CustomCategoryController {
 
-  private static final String REGISTERED_REQUIRED = "Registered account required";
-  private static final int MAX_ID_LENGTH = 128;
-
   private final CustomCategoryService service;
 
   public CustomCategoryController(CustomCategoryService service) {
@@ -58,7 +54,7 @@ public class CustomCategoryController {
   @ApiResponse(responseCode = "401", description = "Cuenta registrada requerida", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Get
   public CategoriesResponse list(@Parameter(hidden = true) @Identity Optional<AuthUser> current) {
-    return new CategoriesResponse(service.list(registered(current)));
+    return new CategoriesResponse(service.list(registeredUserId(current)));
   }
 
   @Operation(operationId = "createCustomCategory", summary = "Crear una categoría personalizada")
@@ -70,7 +66,7 @@ public class CustomCategoryController {
   @Post
   public HttpResponse<CategoryResponse> create(@Parameter(hidden = true) @Nullable @Body JsonNode body,
       @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
-    var userId = registered(current);
+    var userId = registeredUserId(current);
     return HttpResponse.created(new CategoryResponse(service.create(userId, orEmpty(body))));
   }
 
@@ -84,7 +80,7 @@ public class CustomCategoryController {
   @Patch("/{id}")
   public CategoryResponse update(@PathVariable String id, @Parameter(hidden = true) @Nullable @Body JsonNode body,
       @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
-    var userId = registered(current);
+    var userId = registeredUserId(current);
     return new CategoryResponse(service.update(userId, validId(id), orEmpty(body)));
   }
 
@@ -95,30 +91,9 @@ public class CustomCategoryController {
   @ApiResponse(responseCode = "404", description = "No encontrada", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Delete("/{id}")
   public HttpResponse<Void> delete(@PathVariable String id, @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
-    var userId = registered(current);
+    var userId = registeredUserId(current);
     service.delete(userId, validId(id));
     return HttpResponse.noContent();
-  }
-
-  private static String registered(Optional<AuthUser> current) {
-    return current.filter(user -> user.kind() == AuthUser.Kind.USER)
-        .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED))
-        .id();
-  }
-
-  /** Sin cuerpo, Express deja {@code req.body = {}}: Zod valida un objeto vacío, no {@code undefined}. */
-  private static JsonNode orEmpty(@Nullable JsonNode body) {
-    return body == null ? JsonNode.createObjectNode(Map.of()) : body;
-  }
-
-  /** {@code z.string().min(1).max(128)} del router; un segmento vacío no llega a esta ruta. */
-  private static String validId(String id) {
-    if (id.length() > MAX_ID_LENGTH) {
-      var issues = new ZodIssues();
-      issues.tooBig("string", MAX_ID_LENGTH, List.of(), "Too big: expected string to have <=128 characters");
-      throw new InvalidInputException(issues);
-    }
-    return id;
   }
 
   @Serdeable

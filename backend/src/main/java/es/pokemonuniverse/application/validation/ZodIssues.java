@@ -132,10 +132,15 @@ public final class ZodIssues {
   }
 
   public void unrecognizedKeys(List<String> keys) {
+    unrecognizedKeys(keys, List.of());
+  }
+
+  /** Claves desconocidas de un objeto anidado (p. ej. {@code ['prompts', 1]}). */
+  public void unrecognizedKeys(List<String> keys, List<Object> path) {
     var issue = new LinkedHashMap<String, Object>();
     issue.put("code", "unrecognized_keys");
     issue.put("keys", keys);
-    issue.put("path", List.of());
+    issue.put("path", path);
     issue.put("message", (keys.size() == 1 ? "Unrecognized key: " : "Unrecognized keys: ")
         + String.join(", ", keys.stream().map(JsonTree::quote).toList()));
     issues.add(issue);
@@ -148,6 +153,16 @@ public final class ZodIssues {
     issue.put("path", List.of());
     issue.put("message", "Invalid option: expected one of "
         + String.join("|", values.stream().map(JsonTree::quote).toList()));
+    issues.add(issue);
+  }
+
+  /** {@code z.literal(value)} no satisfecho: {@code values} lleva el valor sin comillas si es un número. */
+  public void invalidLiteral(Object value, List<Object> path) {
+    var issue = new LinkedHashMap<String, Object>();
+    issue.put("code", "invalid_value");
+    issue.put("values", List.of(value));
+    issue.put("path", path);
+    issue.put("message", "Invalid input: expected " + stringify(value));
     issues.add(issue);
   }
 

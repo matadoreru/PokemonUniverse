@@ -344,8 +344,12 @@ public class RoomCoordinator {
     });
   }
 
+  /** Reemite {@code room:state} si {@code userId} es host de su sala: el recuento de dilemas del host ha cambiado. */
   public void updateHostWouldYouRatherPrompts(String userId) {
-    updateHostCategories(userId);
+    inOptionalRoom(userId, room -> {
+      if (room != null && room.hostId.equals(userId)) broadcast(room);
+      return null;
+    });
   }
 
   public void leave(String playerId) {
