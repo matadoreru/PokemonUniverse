@@ -1,0 +1,5897 @@
+{
+  "engineId": "pokemon-bluff-auction",
+  "scenario": "bidding-errors",
+  "seed": 1301,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "bidSeconds": 20,
+    "demonstrationSeconds": 30,
+    "rounds": 5
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 1500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "pidgey"
+      },
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 152
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 2
+      },
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 2
+      },
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 3
+      },
+      "now": 4500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 4
+      },
+      "now": 6000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 8000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "pidgey"
+      },
+      "now": 8500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "missingno"
+      },
+      "now": 9000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "chikorita"
+      },
+      "now": 9500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "raichu-alola"
+      },
+      "now": 9700
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "bulbasaur"
+      },
+      "now": 10000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "bulbasaur"
+      },
+      "now": 10500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "pidgey"
+      },
+      "now": 11000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "zubat"
+      },
+      "now": 11500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "spearow"
+      },
+      "now": 12000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "doduo"
+      },
+      "now": 12500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 13000
+    },
+    {
+      "kind": "timeout",
+      "now": 15000
+    },
+    {
+      "kind": "timeout",
+      "now": 17500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 37500
+    },
+    {
+      "kind": "timeout",
+      "now": 37500
+    },
+    {
+      "kind": "timeout",
+      "now": 57500
+    },
+    {
+      "kind": "timeout",
+      "now": 80000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "bulbasaur"
+      },
+      "now": 86000
+    },
+    {
+      "kind": "timeout",
+      "now": 91000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 151
+      },
+      "now": 92000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 93000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 94000
+    },
+    {
+      "kind": "timeout",
+      "now": 99000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 2
+      },
+      "now": 100000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 3
+      },
+      "now": 101000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 102000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 103000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "venusaur"
+      },
+      "now": 104000
+    },
+    {
+      "kind": "timeout",
+      "now": 138000
+    },
+    {
+      "kind": "timeout",
+      "now": 143000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 144000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 145000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "PASS_BID"
+      },
+      "now": 146000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_POKEMON",
+        "pokemonId": "scyther"
+      },
+      "now": 147000
+    },
+    {
+      "kind": "timeout",
+      "now": 152000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "RAISE_BID",
+        "amount": 1
+      },
+      "now": 153000
+    },
+    {
+      "kind": "timeout",
+      "now": 200000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 5
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,0,0,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-bluff-auction",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 5,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "condition": null,
+        "bidOrder": [],
+        "currentTurnPlayerId": null,
+        "passedPlayerIds": [],
+        "currentBid": null,
+        "minimumBid": 1,
+        "currentBidderId": null,
+        "bidHistory": [],
+        "maxBid": 151,
+        "bidderId": null,
+        "targetBid": null,
+        "attempts": [],
+        "correctCount": 0,
+        "incorrectCount": 0,
+        "remainingCount": 0,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "canSubmitPokemon": false
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "canSubmitPokemon": false
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "canSubmitPokemon": false
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,0,0,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-bluff-auction",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 5,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "condition": {
+          "description": "Tipo Volador + BST < 350",
+          "clauses": [
+            "Tipo Volador",
+            "BST < 350"
+          ]
+        },
+        "bidOrder": [
+          "p2",
+          "p3",
+          "p1"
+        ],
+        "currentTurnPlayerId": "p2",
+        "passedPlayerIds": [],
+        "currentBid": null,
+        "minimumBid": 1,
+        "currentBidderId": null,
+        "bidHistory": [],
+        "maxBid": 151,
+        "bidderId": null,
+        "targetBid": null,
+        "attempts": [],
+        "correctCount": 0,
+        "incorrectCount": 0,
+        "remainingCount": 0,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 21000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "canSubmitPokemon": false
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canRaise": true,
+          "canPass": true,
+          "canSubmitPokemon": false
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canRaise": false,
+          "canPass": false,
+          "canSubmitPokemon": false
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "No puedes actuar ahora.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,0,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p2",
+            "passedPlayerIds": [],
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "bidHistory": [],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No es tu turno.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,0,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p2",
+            "passedPlayerIds": [],
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "bidHistory": [],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Solo el apostador puede demostrar la apuesta.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,0,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p2",
+            "passedPlayerIds": [],
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "bidHistory": [],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La puja máxima es 151.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,0,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p2",
+            "passedPlayerIds": [],
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "bidHistory": [],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 23500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,1,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p3",
+            "passedPlayerIds": [],
+            "currentBid": 2,
+            "minimumBid": 3,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 23500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La puja mínima es 3.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 23500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,1,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p3",
+            "passedPlayerIds": [],
+            "currentBid": 2,
+            "minimumBid": 3,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 23500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 24500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,2,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p1",
+            "passedPlayerIds": [],
+            "currentBid": 3,
+            "minimumBid": 4,
+            "currentBidderId": "p3",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 24500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 25000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,3,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p2",
+            "passedPlayerIds": [
+              "p1"
+            ],
+            "currentBid": 3,
+            "minimumBid": 4,
+            "currentBidderId": "p3",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 25000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,4,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p3",
+            "passedPlayerIds": [
+              "p1"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 26000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,null,5,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 4,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 4,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La subasta ya ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,null,5,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 4,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 4,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Solo el apostador puede demostrar la apuesta.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,null,5,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 4,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 4,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon no pertenece al pool de especies configurado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,null,5,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 4,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 4,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon no pertenece al pool de especies configurado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,null,5,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 4,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 4,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon no pertenece al pool de especies configurado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,null,5,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 4,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 4,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 34000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,null,5,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 4,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "INCORRECT",
+                "submittedAt": 10000
+              }
+            ],
+            "correctCount": 0,
+            "incorrectCount": 1,
+            "remainingCount": 4,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 34000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 34000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,null,5,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 4,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "INCORRECT",
+                "submittedAt": 10000
+              },
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "DUPLICATE",
+                "submittedAt": 10500
+              }
+            ],
+            "correctCount": 0,
+            "incorrectCount": 1,
+            "remainingCount": 4,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 34000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 39000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,null,5,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 4,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "INCORRECT",
+                "submittedAt": 10000
+              },
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "DUPLICATE",
+                "submittedAt": 10500
+              },
+              {
+                "pokemon": {
+                  "id": "pidgey",
+                  "name": "Pidgey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 11000
+              }
+            ],
+            "correctCount": 1,
+            "incorrectCount": 1,
+            "remainingCount": 3,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 39000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 44000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,null,5,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 4,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "INCORRECT",
+                "submittedAt": 10000
+              },
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "DUPLICATE",
+                "submittedAt": 10500
+              },
+              {
+                "pokemon": {
+                  "id": "pidgey",
+                  "name": "Pidgey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 11000
+              },
+              {
+                "pokemon": {
+                  "id": "zubat",
+                  "name": "Zubat",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 11500
+              }
+            ],
+            "correctCount": 2,
+            "incorrectCount": 1,
+            "remainingCount": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 44000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 49000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,null,5,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 4,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "INCORRECT",
+                "submittedAt": 10000
+              },
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "DUPLICATE",
+                "submittedAt": 10500
+              },
+              {
+                "pokemon": {
+                  "id": "pidgey",
+                  "name": "Pidgey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 11000
+              },
+              {
+                "pokemon": {
+                  "id": "zubat",
+                  "name": "Zubat",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 11500
+              },
+              {
+                "pokemon": {
+                  "id": "spearow",
+                  "name": "Spearow",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/21.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 12000
+              }
+            ],
+            "correctCount": 3,
+            "incorrectCount": 1,
+            "remainingCount": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 49000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 17500,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,5,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 4,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "INCORRECT",
+                "submittedAt": 10000
+              },
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "DUPLICATE",
+                "submittedAt": 10500
+              },
+              {
+                "pokemon": {
+                  "id": "pidgey",
+                  "name": "Pidgey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 11000
+              },
+              {
+                "pokemon": {
+                  "id": "zubat",
+                  "name": "Zubat",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 11500
+              },
+              {
+                "pokemon": {
+                  "id": "spearow",
+                  "name": "Spearow",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/21.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 12000
+              },
+              {
+                "pokemon": {
+                  "id": "doduo",
+                  "name": "Doduo",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 12500
+              }
+            ],
+            "correctCount": 4,
+            "incorrectCount": 1,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 17500,
+            "lastRound": {
+              "bidderId": "p2",
+              "bid": 4,
+              "success": true,
+              "reason": "COMPLETED",
+              "condition": {
+                "description": "Tipo Volador + BST < 350",
+                "clauses": [
+                  "Tipo Volador",
+                  "BST < 350"
+                ]
+              },
+              "attempts": [
+                {
+                  "pokemon": {
+                    "id": "bulbasaur",
+                    "name": "Bulbasaur",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                  },
+                  "result": "INCORRECT",
+                  "submittedAt": 10000
+                },
+                {
+                  "pokemon": {
+                    "id": "bulbasaur",
+                    "name": "Bulbasaur",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                  },
+                  "result": "DUPLICATE",
+                  "submittedAt": 10500
+                },
+                {
+                  "pokemon": {
+                    "id": "pidgey",
+                    "name": "Pidgey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png"
+                  },
+                  "result": "CORRECT",
+                  "submittedAt": 11000
+                },
+                {
+                  "pokemon": {
+                    "id": "zubat",
+                    "name": "Zubat",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+                  },
+                  "result": "CORRECT",
+                  "submittedAt": 11500
+                },
+                {
+                  "pokemon": {
+                    "id": "spearow",
+                    "name": "Spearow",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/21.png"
+                  },
+                  "result": "CORRECT",
+                  "submittedAt": 12000
+                },
+                {
+                  "pokemon": {
+                    "id": "doduo",
+                    "name": "Doduo",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
+                  },
+                  "result": "CORRECT",
+                  "submittedAt": 12500
+                }
+              ],
+              "correctCount": 4,
+              "incorrectCount": 1,
+              "validPokemonCount": null,
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 5,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La subasta ya ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 17500,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,5,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 4,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "INCORRECT",
+                "submittedAt": 10000
+              },
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "DUPLICATE",
+                "submittedAt": 10500
+              },
+              {
+                "pokemon": {
+                  "id": "pidgey",
+                  "name": "Pidgey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 11000
+              },
+              {
+                "pokemon": {
+                  "id": "zubat",
+                  "name": "Zubat",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 11500
+              },
+              {
+                "pokemon": {
+                  "id": "spearow",
+                  "name": "Spearow",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/21.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 12000
+              },
+              {
+                "pokemon": {
+                  "id": "doduo",
+                  "name": "Doduo",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 12500
+              }
+            ],
+            "correctCount": 4,
+            "incorrectCount": 1,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 17500,
+            "lastRound": {
+              "bidderId": "p2",
+              "bid": 4,
+              "success": true,
+              "reason": "COMPLETED",
+              "condition": {
+                "description": "Tipo Volador + BST < 350",
+                "clauses": [
+                  "Tipo Volador",
+                  "BST < 350"
+                ]
+              },
+              "attempts": [
+                {
+                  "pokemon": {
+                    "id": "bulbasaur",
+                    "name": "Bulbasaur",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                  },
+                  "result": "INCORRECT",
+                  "submittedAt": 10000
+                },
+                {
+                  "pokemon": {
+                    "id": "bulbasaur",
+                    "name": "Bulbasaur",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                  },
+                  "result": "DUPLICATE",
+                  "submittedAt": 10500
+                },
+                {
+                  "pokemon": {
+                    "id": "pidgey",
+                    "name": "Pidgey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png"
+                  },
+                  "result": "CORRECT",
+                  "submittedAt": 11000
+                },
+                {
+                  "pokemon": {
+                    "id": "zubat",
+                    "name": "Zubat",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+                  },
+                  "result": "CORRECT",
+                  "submittedAt": 11500
+                },
+                {
+                  "pokemon": {
+                    "id": "spearow",
+                    "name": "Spearow",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/21.png"
+                  },
+                  "result": "CORRECT",
+                  "submittedAt": 12000
+                },
+                {
+                  "pokemon": {
+                    "id": "doduo",
+                    "name": "Doduo",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
+                  },
+                  "result": "CORRECT",
+                  "submittedAt": 12500
+                }
+              ],
+              "correctCount": 4,
+              "incorrectCount": 1,
+              "validPokemonCount": null,
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 5,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 17500,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,5,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Volador + BST < 350",
+              "clauses": [
+                "Tipo Volador",
+                "BST < 350"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "currentBid": 4,
+            "minimumBid": 5,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 4
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 4,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "INCORRECT",
+                "submittedAt": 10000
+              },
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "DUPLICATE",
+                "submittedAt": 10500
+              },
+              {
+                "pokemon": {
+                  "id": "pidgey",
+                  "name": "Pidgey",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 11000
+              },
+              {
+                "pokemon": {
+                  "id": "zubat",
+                  "name": "Zubat",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 11500
+              },
+              {
+                "pokemon": {
+                  "id": "spearow",
+                  "name": "Spearow",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/21.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 12000
+              },
+              {
+                "pokemon": {
+                  "id": "doduo",
+                  "name": "Doduo",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 12500
+              }
+            ],
+            "correctCount": 4,
+            "incorrectCount": 1,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 17500,
+            "lastRound": {
+              "bidderId": "p2",
+              "bid": 4,
+              "success": true,
+              "reason": "COMPLETED",
+              "condition": {
+                "description": "Tipo Volador + BST < 350",
+                "clauses": [
+                  "Tipo Volador",
+                  "BST < 350"
+                ]
+              },
+              "attempts": [
+                {
+                  "pokemon": {
+                    "id": "bulbasaur",
+                    "name": "Bulbasaur",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                  },
+                  "result": "INCORRECT",
+                  "submittedAt": 10000
+                },
+                {
+                  "pokemon": {
+                    "id": "bulbasaur",
+                    "name": "Bulbasaur",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                  },
+                  "result": "DUPLICATE",
+                  "submittedAt": 10500
+                },
+                {
+                  "pokemon": {
+                    "id": "pidgey",
+                    "name": "Pidgey",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png"
+                  },
+                  "result": "CORRECT",
+                  "submittedAt": 11000
+                },
+                {
+                  "pokemon": {
+                    "id": "zubat",
+                    "name": "Zubat",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+                  },
+                  "result": "CORRECT",
+                  "submittedAt": 11500
+                },
+                {
+                  "pokemon": {
+                    "id": "spearow",
+                    "name": "Spearow",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/21.png"
+                  },
+                  "result": "CORRECT",
+                  "submittedAt": 12000
+                },
+                {
+                  "pokemon": {
+                    "id": "doduo",
+                    "name": "Doduo",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
+                  },
+                  "result": "CORRECT",
+                  "submittedAt": 12500
+                }
+              ],
+              "correctCount": 4,
+              "incorrectCount": 1,
+              "validPokemonCount": null,
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 5,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 37500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,0,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Normal + Velocidad > 85",
+              "clauses": [
+                "Tipo Normal",
+                "Velocidad > 85"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p2",
+            "passedPlayerIds": [],
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "bidHistory": [],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundEndsAt": 37500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 37500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,0,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Normal + Velocidad > 85",
+              "clauses": [
+                "Tipo Normal",
+                "Velocidad > 85"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p2",
+            "passedPlayerIds": [],
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "bidHistory": [],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundEndsAt": 37500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 57500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,1,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Normal + Velocidad > 85",
+              "clauses": [
+                "Tipo Normal",
+                "Velocidad > 85"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p3",
+            "passedPlayerIds": [
+              "p2"
+            ],
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundEndsAt": 57500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 87500,
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,null,2,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 2,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Normal + Velocidad > 85",
+              "clauses": [
+                "Tipo Normal",
+                "Velocidad > 85"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "currentBid": 1,
+            "minimumBid": 2,
+            "currentBidderId": "p1",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p1",
+            "targetBid": 1,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundEndsAt": 87500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 87500,
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,null,2,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 2,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Normal + Velocidad > 85",
+              "clauses": [
+                "Tipo Normal",
+                "Velocidad > 85"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "currentBid": 1,
+            "minimumBid": 2,
+            "currentBidderId": "p1",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p1",
+            "targetBid": 1,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundEndsAt": 87500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 91000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,2,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Normal + Velocidad > 85",
+              "clauses": [
+                "Tipo Normal",
+                "Velocidad > 85"
+              ]
+            },
+            "bidOrder": [
+              "p2",
+              "p3",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "currentBid": 1,
+            "minimumBid": 2,
+            "currentBidderId": "p1",
+            "bidHistory": [
+              {
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p1",
+            "targetBid": 1,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                },
+                "result": "INCORRECT",
+                "submittedAt": 86000
+              }
+            ],
+            "correctCount": 0,
+            "incorrectCount": 1,
+            "remainingCount": 1,
+            "scores": {
+              "p1": 0,
+              "p2": 7,
+              "p3": 2
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 91000,
+            "lastRound": {
+              "bidderId": "p1",
+              "bid": 1,
+              "success": false,
+              "reason": "TIMEOUT",
+              "condition": {
+                "description": "Tipo Normal + Velocidad > 85",
+                "clauses": [
+                  "Tipo Normal",
+                  "Velocidad > 85"
+                ]
+              },
+              "attempts": [
+                {
+                  "pokemon": {
+                    "id": "bulbasaur",
+                    "name": "Bulbasaur",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                  },
+                  "result": "INCORRECT",
+                  "submittedAt": 86000
+                }
+              ],
+              "correctCount": 0,
+              "incorrectCount": 1,
+              "validPokemonCount": null,
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 2,
+                "p3": 2
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 111000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,0,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Hielo + BST > 405",
+              "clauses": [
+                "Tipo Hielo",
+                "BST > 405"
+              ]
+            },
+            "bidOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "currentTurnPlayerId": "p1",
+            "passedPlayerIds": [],
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "bidHistory": [],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 7,
+              "p3": 2
+            },
+            "roundEndsAt": 111000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 112000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,1,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Hielo + BST > 405",
+              "clauses": [
+                "Tipo Hielo",
+                "BST > 405"
+              ]
+            },
+            "bidOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "currentTurnPlayerId": "p3",
+            "passedPlayerIds": [],
+            "currentBid": 151,
+            "minimumBid": 152,
+            "currentBidderId": "p1",
+            "bidHistory": [
+              {
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 151
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 7,
+              "p3": 2
+            },
+            "roundEndsAt": 112000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 113000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,2,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Hielo + BST > 405",
+              "clauses": [
+                "Tipo Hielo",
+                "BST > 405"
+              ]
+            },
+            "bidOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "currentTurnPlayerId": "p2",
+            "passedPlayerIds": [
+              "p3"
+            ],
+            "currentBid": 151,
+            "minimumBid": 152,
+            "currentBidderId": "p1",
+            "bidHistory": [
+              {
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 151
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 7,
+              "p3": 2
+            },
+            "roundEndsAt": 113000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 99000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,3,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Hielo + BST > 405",
+              "clauses": [
+                "Tipo Hielo",
+                "BST > 405"
+              ]
+            },
+            "bidOrder": [
+              "p1",
+              "p3",
+              "p2"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p3",
+              "p2"
+            ],
+            "currentBid": 151,
+            "minimumBid": 152,
+            "currentBidderId": "p1",
+            "bidHistory": [
+              {
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 151
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p2",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p1",
+            "targetBid": 151,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 151,
+            "scores": {
+              "p1": 0,
+              "p2": 9,
+              "p3": 4
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 99000,
+            "lastRound": {
+              "bidderId": "p1",
+              "bid": 151,
+              "success": false,
+              "reason": "IMPOSSIBLE",
+              "condition": {
+                "description": "Tipo Hielo + BST > 405",
+                "clauses": [
+                  "Tipo Hielo",
+                  "BST > 405"
+                ]
+              },
+              "attempts": [],
+              "correctCount": 0,
+              "incorrectCount": 0,
+              "validPokemonCount": 5,
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 2,
+                "p3": 2
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 119000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,null,0,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Defensa > 70",
+              "clauses": [
+                "Defensa > 70"
+              ]
+            },
+            "bidOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "currentTurnPlayerId": "p1",
+            "passedPlayerIds": [],
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "bidHistory": [],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 9,
+              "p3": 4
+            },
+            "roundEndsAt": 119000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 120000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,null,1,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Defensa > 70",
+              "clauses": [
+                "Defensa > 70"
+              ]
+            },
+            "bidOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "currentTurnPlayerId": "p2",
+            "passedPlayerIds": [],
+            "currentBid": 2,
+            "minimumBid": 3,
+            "currentBidderId": "p1",
+            "bidHistory": [
+              {
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 2
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 9,
+              "p3": 4
+            },
+            "roundEndsAt": 120000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 121000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,null,2,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Defensa > 70",
+              "clauses": [
+                "Defensa > 70"
+              ]
+            },
+            "bidOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "currentTurnPlayerId": "p3",
+            "passedPlayerIds": [],
+            "currentBid": 3,
+            "minimumBid": 4,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 9,
+              "p3": 4
+            },
+            "roundEndsAt": 121000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 122000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,null,3,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 4,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Defensa > 70",
+              "clauses": [
+                "Defensa > 70"
+              ]
+            },
+            "bidOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "currentTurnPlayerId": "p1",
+            "passedPlayerIds": [
+              "p3"
+            ],
+            "currentBid": 3,
+            "minimumBid": 4,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 0,
+              "p2": 9,
+              "p3": 4
+            },
+            "roundEndsAt": 122000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 133000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",4,null,4,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 4,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Defensa > 70",
+              "clauses": [
+                "Defensa > 70"
+              ]
+            },
+            "bidOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p3",
+              "p1"
+            ],
+            "currentBid": 3,
+            "minimumBid": 4,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 3,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 3,
+            "scores": {
+              "p1": 0,
+              "p2": 9,
+              "p3": 4
+            },
+            "roundEndsAt": 133000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 138000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",4,null,4,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 4,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Defensa > 70",
+              "clauses": [
+                "Defensa > 70"
+              ]
+            },
+            "bidOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p3",
+              "p1"
+            ],
+            "currentBid": 3,
+            "minimumBid": 4,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 3,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "venusaur",
+                  "name": "Venusaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 104000
+              }
+            ],
+            "correctCount": 1,
+            "incorrectCount": 0,
+            "remainingCount": 2,
+            "scores": {
+              "p1": 0,
+              "p2": 9,
+              "p3": 4
+            },
+            "roundEndsAt": 138000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 143000,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,null,4,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 4,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Defensa > 70",
+              "clauses": [
+                "Defensa > 70"
+              ]
+            },
+            "bidOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p3",
+              "p1"
+            ],
+            "currentBid": 3,
+            "minimumBid": 4,
+            "currentBidderId": "p2",
+            "bidHistory": [
+              {
+                "playerId": "p1",
+                "type": "BID",
+                "amount": 2
+              },
+              {
+                "playerId": "p2",
+                "type": "BID",
+                "amount": 3
+              },
+              {
+                "playerId": "p3",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p2",
+            "targetBid": 3,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "venusaur",
+                  "name": "Venusaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 104000
+              }
+            ],
+            "correctCount": 1,
+            "incorrectCount": 0,
+            "remainingCount": 2,
+            "scores": {
+              "p1": 2,
+              "p2": 9,
+              "p3": 6
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 143000,
+            "lastRound": {
+              "bidderId": "p2",
+              "bid": 3,
+              "success": false,
+              "reason": "TIMEOUT",
+              "condition": {
+                "description": "Defensa > 70",
+                "clauses": [
+                  "Defensa > 70"
+                ]
+              },
+              "attempts": [
+                {
+                  "pokemon": {
+                    "id": "venusaur",
+                    "name": "Venusaur",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
+                  },
+                  "result": "CORRECT",
+                  "submittedAt": 104000
+                }
+              ],
+              "correctCount": 1,
+              "incorrectCount": 0,
+              "validPokemonCount": null,
+              "pointsAwarded": {
+                "p1": 2,
+                "p2": 0,
+                "p3": 2
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 163000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",5,null,0,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 5,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Bicho + Velocidad > 72",
+              "clauses": [
+                "Tipo Bicho",
+                "Velocidad > 72"
+              ]
+            },
+            "bidOrder": [
+              "p3",
+              "p2",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p3",
+            "passedPlayerIds": [],
+            "currentBid": null,
+            "minimumBid": 1,
+            "currentBidderId": null,
+            "bidHistory": [],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 2,
+              "p2": 9,
+              "p3": 6
+            },
+            "roundEndsAt": 163000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 164000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",5,null,1,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 5,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Bicho + Velocidad > 72",
+              "clauses": [
+                "Tipo Bicho",
+                "Velocidad > 72"
+              ]
+            },
+            "bidOrder": [
+              "p3",
+              "p2",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p2",
+            "passedPlayerIds": [],
+            "currentBid": 1,
+            "minimumBid": 2,
+            "currentBidderId": "p3",
+            "bidHistory": [
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 1
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 2,
+              "p2": 9,
+              "p3": 6
+            },
+            "roundEndsAt": 164000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 165000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",5,null,2,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 5,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Bicho + Velocidad > 72",
+              "clauses": [
+                "Tipo Bicho",
+                "Velocidad > 72"
+              ]
+            },
+            "bidOrder": [
+              "p3",
+              "p2",
+              "p1"
+            ],
+            "currentTurnPlayerId": "p1",
+            "passedPlayerIds": [
+              "p2"
+            ],
+            "currentBid": 1,
+            "minimumBid": 2,
+            "currentBidderId": "p3",
+            "bidHistory": [
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "playerId": "p2",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": null,
+            "targetBid": null,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 2,
+              "p2": 9,
+              "p3": 6
+            },
+            "roundEndsAt": 165000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": true,
+              "canPass": true,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 176000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",5,null,3,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "POKEMON_SEARCH",
+            "roundNumber": 5,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Bicho + Velocidad > 72",
+              "clauses": [
+                "Tipo Bicho",
+                "Velocidad > 72"
+              ]
+            },
+            "bidOrder": [
+              "p3",
+              "p2",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "currentBid": 1,
+            "minimumBid": 2,
+            "currentBidderId": "p3",
+            "bidHistory": [
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p3",
+            "targetBid": 1,
+            "attempts": [],
+            "correctCount": 0,
+            "incorrectCount": 0,
+            "remainingCount": 1,
+            "scores": {
+              "p1": 2,
+              "p2": 9,
+              "p3": 6
+            },
+            "roundEndsAt": 176000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": true
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 152000,
+            "actionEpoch": "[\"ROUND_RESULTS\",5,null,3,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 5,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Bicho + Velocidad > 72",
+              "clauses": [
+                "Tipo Bicho",
+                "Velocidad > 72"
+              ]
+            },
+            "bidOrder": [
+              "p3",
+              "p2",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "currentBid": 1,
+            "minimumBid": 2,
+            "currentBidderId": "p3",
+            "bidHistory": [
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p3",
+            "targetBid": 1,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "scyther",
+                  "name": "Scyther",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 147000
+              }
+            ],
+            "correctCount": 1,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 2,
+              "p2": 9,
+              "p3": 11
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 152000,
+            "lastRound": {
+              "bidderId": "p3",
+              "bid": 1,
+              "success": true,
+              "reason": "COMPLETED",
+              "condition": {
+                "description": "Tipo Bicho + Velocidad > 72",
+                "clauses": [
+                  "Tipo Bicho",
+                  "Velocidad > 72"
+                ]
+              },
+              "attempts": [
+                {
+                  "pokemon": {
+                    "id": "scyther",
+                    "name": "Scyther",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                  },
+                  "result": "CORRECT",
+                  "submittedAt": 147000
+                }
+              ],
+              "correctCount": 1,
+              "incorrectCount": 0,
+              "validPokemonCount": null,
+              "pointsAwarded": {
+                "p1": 0,
+                "p2": 0,
+                "p3": 5
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",5,null,3,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 5,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Bicho + Velocidad > 72",
+              "clauses": [
+                "Tipo Bicho",
+                "Velocidad > 72"
+              ]
+            },
+            "bidOrder": [
+              "p3",
+              "p2",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "currentBid": 1,
+            "minimumBid": 2,
+            "currentBidderId": "p3",
+            "bidHistory": [
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p3",
+            "targetBid": 1,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "scyther",
+                  "name": "Scyther",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 147000
+              }
+            ],
+            "correctCount": 1,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 2,
+              "p2": 9,
+              "p3": 11
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": {
+              "winnerId": "p3",
+              "standings": [
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 11,
+                  "won": true,
+                  "stats": {
+                    "roundsWon": 4,
+                    "bidderRounds": 1,
+                    "completedBids": 1,
+                    "failedBids": 0,
+                    "correctPokemon": 1,
+                    "incorrectPokemon": 0,
+                    "highestCompletedBid": 1,
+                    "highestAttemptedBid": 1,
+                    "impossibleBids": 0
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 9,
+                  "won": false,
+                  "stats": {
+                    "roundsWon": 3,
+                    "bidderRounds": 2,
+                    "completedBids": 1,
+                    "failedBids": 1,
+                    "correctPokemon": 5,
+                    "incorrectPokemon": 1,
+                    "highestCompletedBid": 4,
+                    "highestAttemptedBid": 4,
+                    "impossibleBids": 0
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "roundsWon": 1,
+                    "bidderRounds": 2,
+                    "completedBids": 0,
+                    "failedBids": 2,
+                    "correctPokemon": 0,
+                    "incorrectPokemon": 1,
+                    "highestCompletedBid": 0,
+                    "highestAttemptedBid": 151,
+                    "impossibleBids": 1
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La subasta ya ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",5,null,3,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 5,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Bicho + Velocidad > 72",
+              "clauses": [
+                "Tipo Bicho",
+                "Velocidad > 72"
+              ]
+            },
+            "bidOrder": [
+              "p3",
+              "p2",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "currentBid": 1,
+            "minimumBid": 2,
+            "currentBidderId": "p3",
+            "bidHistory": [
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p3",
+            "targetBid": 1,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "scyther",
+                  "name": "Scyther",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 147000
+              }
+            ],
+            "correctCount": 1,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 2,
+              "p2": 9,
+              "p3": 11
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": {
+              "winnerId": "p3",
+              "standings": [
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 11,
+                  "won": true,
+                  "stats": {
+                    "roundsWon": 4,
+                    "bidderRounds": 1,
+                    "completedBids": 1,
+                    "failedBids": 0,
+                    "correctPokemon": 1,
+                    "incorrectPokemon": 0,
+                    "highestCompletedBid": 1,
+                    "highestAttemptedBid": 1,
+                    "impossibleBids": 0
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 9,
+                  "won": false,
+                  "stats": {
+                    "roundsWon": 3,
+                    "bidderRounds": 2,
+                    "completedBids": 1,
+                    "failedBids": 1,
+                    "correctPokemon": 5,
+                    "incorrectPokemon": 1,
+                    "highestCompletedBid": 4,
+                    "highestAttemptedBid": 4,
+                    "impossibleBids": 0
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "roundsWon": 1,
+                    "bidderRounds": 2,
+                    "completedBids": 0,
+                    "failedBids": 2,
+                    "correctPokemon": 0,
+                    "incorrectPokemon": 1,
+                    "highestCompletedBid": 0,
+                    "highestAttemptedBid": 151,
+                    "impossibleBids": 1
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",5,null,3,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-bluff-auction",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 5,
+            "totalRounds": 5,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "condition": {
+              "description": "Tipo Bicho + Velocidad > 72",
+              "clauses": [
+                "Tipo Bicho",
+                "Velocidad > 72"
+              ]
+            },
+            "bidOrder": [
+              "p3",
+              "p2",
+              "p1"
+            ],
+            "currentTurnPlayerId": null,
+            "passedPlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "currentBid": 1,
+            "minimumBid": 2,
+            "currentBidderId": "p3",
+            "bidHistory": [
+              {
+                "playerId": "p3",
+                "type": "BID",
+                "amount": 1
+              },
+              {
+                "playerId": "p2",
+                "type": "PASS"
+              },
+              {
+                "playerId": "p1",
+                "type": "PASS"
+              }
+            ],
+            "maxBid": 151,
+            "bidderId": "p3",
+            "targetBid": 1,
+            "attempts": [
+              {
+                "pokemon": {
+                  "id": "scyther",
+                  "name": "Scyther",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+                },
+                "result": "CORRECT",
+                "submittedAt": 147000
+              }
+            ],
+            "correctCount": 1,
+            "incorrectCount": 0,
+            "remainingCount": 0,
+            "scores": {
+              "p1": 2,
+              "p2": 9,
+              "p3": 11
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": {
+              "winnerId": "p3",
+              "standings": [
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 11,
+                  "won": true,
+                  "stats": {
+                    "roundsWon": 4,
+                    "bidderRounds": 1,
+                    "completedBids": 1,
+                    "failedBids": 0,
+                    "correctPokemon": 1,
+                    "incorrectPokemon": 0,
+                    "highestCompletedBid": 1,
+                    "highestAttemptedBid": 1,
+                    "impossibleBids": 0
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 9,
+                  "won": false,
+                  "stats": {
+                    "roundsWon": 3,
+                    "bidderRounds": 2,
+                    "completedBids": 1,
+                    "failedBids": 1,
+                    "correctPokemon": 5,
+                    "incorrectPokemon": 1,
+                    "highestCompletedBid": 4,
+                    "highestAttemptedBid": 4,
+                    "impossibleBids": 0
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "roundsWon": 1,
+                    "bidderRounds": 2,
+                    "completedBids": 0,
+                    "failedBids": 2,
+                    "correctPokemon": 0,
+                    "incorrectPokemon": 1,
+                    "highestCompletedBid": 0,
+                    "highestAttemptedBid": 151,
+                    "impossibleBids": 1
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canRaise": false,
+              "canPass": false,
+              "canSubmitPokemon": false
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p3",
+      "standings": [
+        {
+          "playerId": "p3",
+          "position": 1,
+          "points": 11,
+          "won": true,
+          "stats": {
+            "roundsWon": 4,
+            "bidderRounds": 1,
+            "completedBids": 1,
+            "failedBids": 0,
+            "correctPokemon": 1,
+            "incorrectPokemon": 0,
+            "highestCompletedBid": 1,
+            "highestAttemptedBid": 1,
+            "impossibleBids": 0
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 9,
+          "won": false,
+          "stats": {
+            "roundsWon": 3,
+            "bidderRounds": 2,
+            "completedBids": 1,
+            "failedBids": 1,
+            "correctPokemon": 5,
+            "incorrectPokemon": 1,
+            "highestCompletedBid": 4,
+            "highestAttemptedBid": 4,
+            "impossibleBids": 0
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 3,
+          "points": 2,
+          "won": false,
+          "stats": {
+            "roundsWon": 1,
+            "bidderRounds": 2,
+            "completedBids": 0,
+            "failedBids": 2,
+            "correctPokemon": 0,
+            "incorrectPokemon": 1,
+            "highestCompletedBid": 0,
+            "highestAttemptedBid": 151,
+            "impossibleBids": 1
+          }
+        }
+      ]
+    }
+  }
+}

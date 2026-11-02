@@ -1,0 +1,377 @@
+[
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        9
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        9
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 0,
+      "demonstrationSeconds": 20,
+      "rounds": 5
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 0,
+      "demonstrationSeconds": 20,
+      "rounds": 5
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 120,
+      "demonstrationSeconds": 45,
+      "rounds": 15
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 120,
+      "demonstrationSeconds": 45,
+      "rounds": 15
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 60,
+      "rounds": 20
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 60,
+      "rounds": 20
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": -1,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 121,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20.5,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": null,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": "20",
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 25,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30.5,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 0,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": "30",
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 0
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 7
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 25
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 10.5
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": null
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        0
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1.5
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": 1,
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 10,
+      "unknownKey": "no se admite"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "bidSeconds": 20,
+      "demonstrationSeconds": 30,
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": [],
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  },
+  {
+    "input": "ronda",
+    "valid": false
+  }
+]

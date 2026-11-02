@@ -14,6 +14,8 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
 - `<Juego>Rules`: el port de `rules.ts`.
 - `<Juego>Engine`: el port de `server.ts`. Recibe en el constructor el `GameManifest` de `games/registry.json`; el
   manifiesto no se duplica a mano.
+- Las condiciones de `pokemon/conditions/*` (tipos, reglas y generador) están en `domain/pokemon/conditions/`, que
+  comparten Pokémon Bingo y Pokémon Bluff Auction; cada juego pasa sus familias en `ConditionGenerationOptions`.
 
 ## Convenciones
 
