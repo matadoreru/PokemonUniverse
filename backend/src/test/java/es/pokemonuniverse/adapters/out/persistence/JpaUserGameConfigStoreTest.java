@@ -5,14 +5,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.application.gameconfigs.StoredUserGameConfig;
 import es.pokemonuniverse.domain.json.JsonTree;
+import io.micronaut.jdbc.DataSourceResolver;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
 
 /** {@code PrismaUserGameConfigRepository} contra Postgres real: upsert por {@code (userId, gameId)} y lectura cruda. */
@@ -23,6 +26,8 @@ class JpaUserGameConfigStoreTest {
   @Inject UserGameConfigRepository repository;
   @Inject UserRepository users;
   @Inject ObjectMapper mapper;
+  @Inject DataSource dataSource;
+  @Inject DataSourceResolver resolver;
 
   private String user() {
     var tag = UUID.randomUUID().toString().substring(0, 8);
@@ -53,6 +58,25 @@ class JpaUserGameConfigStoreTest {
     assertEquals(created.getId(), updated.getId());
     assertEquals(created.getCreatedAt(), updated.getCreatedAt());
     assertTrue(!updated.getUpdatedAt().isBefore(created.getUpdatedAt()));
+  }
+
+  /** Las columnas {@code TIMESTAMP(3)} sin zona guardan UTC, como Prisma: se lee el valor crudo, no vía Hibernate. */
+  @Test
+  void timestampsAreStoredInUtc() throws IOException, SQLException {
+    var owner = user();
+    store.upsert(owner, "higher-lower", json("{\"rounds\":3}"));
+    try (var connection = resolver.resolve(dataSource).getConnection();
+        var query = connection.prepareStatement("""
+            SELECT EXTRACT(EPOCH FROM "createdAt"), EXTRACT(EPOCH FROM "updatedAt")
+            FROM "UserGameConfig" WHERE "userId" = ?""")) {
+      query.setString(1, owner);
+      try (var rows = query.executeQuery()) {
+        assertTrue(rows.next());
+        long now = System.currentTimeMillis() / 1000;
+        assertTrue(Math.abs(rows.getDouble(1) - now) < 60, "createdAt " + rows.getDouble(1) + " vs " + now);
+        assertTrue(Math.abs(rows.getDouble(2) - now) < 60, "updatedAt " + rows.getDouble(2) + " vs " + now);
+      }
+    }
   }
 
   @Test

@@ -141,8 +141,12 @@ public class UserGameConfigService implements UserGameConfigPreferences {
     awaitWrites().join();
   }
 
+  /** {@code @PreDestroy}: como {@link #flush()}, con tope de espera; lo que llegue después se escribe al momento. */
   @PreDestroy
   void close() {
+    synchronized (lock) {
+      closed = true;
+    }
     try {
       awaitWrites().get(SHUTDOWN_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     } catch (TimeoutException e) {
@@ -158,7 +162,6 @@ public class UserGameConfigService implements UserGameConfigPreferences {
   private CompletableFuture<Void> awaitWrites() {
     List<CompletableFuture<Void>> inFlight;
     synchronized (lock) {
-      closed = true;
       for (var timer : timers.values()) timer.cancel.run();
       timers.clear();
       for (var key : List.copyOf(pending.keySet())) persist(key);

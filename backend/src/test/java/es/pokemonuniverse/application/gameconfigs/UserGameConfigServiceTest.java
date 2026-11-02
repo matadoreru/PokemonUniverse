@@ -153,6 +153,16 @@ class UserGameConfigServiceTest {
   }
 
   @Test
+  void savesAfterAFlushAreStillDebounced() {
+    service.flush();
+    service.save("u1", "higher-lower", higherLower(8));
+    assertEquals(List.of(), store.writes);
+    scheduler.advance(250);
+    assertEquals(List.of("u1:higher-lower:8"), store.writes);
+  }
+
+  /** Única espera real (200 ms): comprobar que {@code flush()} sigue bloqueado mientras la escritura está retenida. */
+  @Test
   void flushWaitsForWritesAlreadyInFlight() throws Exception {
     executor.direct = false;
     service.save("u1", "higher-lower", higherLower(2));
