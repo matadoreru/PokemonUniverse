@@ -93,6 +93,45 @@ class PokemonCatalogServiceCacheTest {
     assertEquals(3, loads.get());
   }
 
+  @Test
+  void replaceInstallsTheValueWithoutLoadingAndRestartsTheTtl() {
+    var cache = new CatalogSnapshotCache<>(() -> new Object[] {loads.incrementAndGet()}, PokemonCatalogService.TTL,
+        clock::get);
+    cache.get();
+    clock.set(T0.plusSeconds(60));
+    var replacement = new Object[] {"nuevo"};
+    cache.replace(replacement);
+    assertSame(replacement, cache.get());
+    clock.set(T0.plusSeconds(60).plus(PokemonCatalogService.TTL));
+    assertSame(replacement, cache.get());
+    assertEquals(1, loads.get());
+  }
+
+  /** Una recarga por caducidad que empezó antes de {@code replace} no pisa el catálogo recién instalado. */
+  @Test
+  void aLoadInFlightDoesNotOverwriteAReplacement() throws Exception {
+    var loaderEntered = new CountDownLatch(1);
+    var releaseLoader = new CountDownLatch(1);
+    var cache = new CatalogSnapshotCache<Object>(() -> {
+      if (loads.incrementAndGet() > 1) {
+        loaderEntered.countDown();
+        await(releaseLoader);
+      }
+      return new Object();
+    }, PokemonCatalogService.TTL, clock::get);
+    cache.get();
+    clock.set(T0.plus(PokemonCatalogService.TTL).plusSeconds(1));
+    var reader = Thread.ofPlatform().start(cache::get);
+    assertTrue(loaderEntered.await(5, TimeUnit.SECONDS), "la recarga no empezó");
+    var replacement = new Object();
+    var writer = Thread.ofPlatform().start(() -> cache.replace(replacement));
+    releaseLoader.countDown();
+    reader.join(5_000);
+    writer.join(5_000);
+    assertSame(replacement, cache.get());
+    assertEquals(2, loads.get());
+  }
+
   private static void await(CountDownLatch latch) {
     try {
       if (!latch.await(5, TimeUnit.SECONDS)) throw new IllegalStateException("el test no liberó la carga");

@@ -43,6 +43,18 @@ final class CatalogSnapshotCache<T> {
     }
   }
 
+  /**
+   * Instala {@code value} como instantánea vigente (cargada fuera, p. ej. tras una sincronización) y reinicia su
+   * caducidad. Toma el cerrojo de recarga: una recarga en vuelo termina antes y no pisa el valor nuevo.
+   */
+  void replace(T value) {
+    Objects.requireNonNull(value, "value");
+    synchronized (refill) {
+      generation.incrementAndGet();
+      current = new Entry<>(value, now.get());
+    }
+  }
+
   /** Descarta la instantánea; la siguiente lectura recarga. */
   void invalidate() {
     generation.incrementAndGet();

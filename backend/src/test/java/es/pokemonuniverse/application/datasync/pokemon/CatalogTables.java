@@ -17,7 +17,7 @@ import java.util.Map;
  * Volcado de las tablas del catálogo con el mismo SQL que el generador Node ({@code dump-tables.json}) y limpieza
  * entre pruebas (otras pruebas comparten la BD de Testcontainers).
  */
-final class CatalogTables {
+public final class CatalogTables {
 
   static final JsonNode SPEC = ExtractorsTest.read("/datasync/pokeapi/dump-tables.json");
   private static final ObjectMapper JSON = ObjectMapper.getDefault();
@@ -31,7 +31,7 @@ final class CatalogTables {
   }
 
   /** Vacía las 15 tablas del catálogo (y lo que dependa de ellas) en la BD de pruebas. */
-  static void clear(Connection connection) throws SQLException {
+  public static void clear(Connection connection) throws SQLException {
     var quoted = names().stream().map(name -> "\"" + name + "\"").toList();
     try (var statement = connection.createStatement()) {
       statement.execute("TRUNCATE " + String.join(", ", quoted) + " CASCADE");

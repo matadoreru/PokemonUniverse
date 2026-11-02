@@ -12,6 +12,7 @@ import es.pokemonuniverse.adapters.out.persistence.PokemonRepository;
 import es.pokemonuniverse.adapters.out.storage.FilesystemArtworkCatalog;
 import es.pokemonuniverse.application.rooms.GameCatalogProvider;
 import es.pokemonuniverse.application.rooms.GameCatalogs;
+import es.pokemonuniverse.domain.pokemon.InMemoryPokemonAudioCatalog;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.domain.pokemon.LearnsetEntry;
 import es.pokemonuniverse.domain.pokemon.Move;
@@ -31,6 +32,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
@@ -97,8 +101,38 @@ public class PokemonCatalogService implements GameCatalogProvider {
   @Override
   public GameCatalogs loadPokemonCatalog() {
     var pokemon = catalog();
-    var ids = pokemon.all().stream().map(Pokemon::id).collect(Collectors.toUnmodifiableSet());
-    return new GameCatalogs(pokemon, new FilesystemArtworkCatalog(artworkDir, ids), audio.load());
+    return new GameCatalogs(pokemon, new FilesystemArtworkCatalog(artworkDir, ids(pokemon)), audio.load());
+  }
+
+  /**
+   * Recarga tras una sincronización POKEAPI completada ({@code index.ts}): catálogo y gritos en paralelo desde la base
+   * de datos (sin pasar por la caché), después los artworks contra los ids nuevos. Solo si las tres cargas terminan
+   * se instala el catálogo en la caché ({@code registerPokemonRepository}: {@code /api/pokemon} lo ve ya) y se
+   * devuelven los catálogos para {@code replaceCatalog}; si algo falla, la excepción sale antes y todo sigue con los
+   * catálogos anteriores.
+   */
+  public GameCatalogs reloadGameCatalogs() {
+    try (var executor = Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("catalog-reload-", 0).factory())) {
+      var pokemonLoad = CompletableFuture.supplyAsync(this::load, executor);
+      var audioLoad = CompletableFuture.supplyAsync(audio::load, executor);
+      InMemoryPokemonCatalog pokemon;
+      InMemoryPokemonAudioCatalog sounds;
+      try {
+        pokemon = pokemonLoad.join();
+        sounds = audioLoad.join();
+      } catch (CompletionException e) {
+        if (e.getCause() instanceof RuntimeException cause) throw cause;
+        if (e.getCause() instanceof Error cause) throw cause;
+        throw e;
+      }
+      var visuals = new FilesystemArtworkCatalog(artworkDir, ids(pokemon));
+      cache.replace(pokemon);
+      return new GameCatalogs(pokemon, visuals, sounds);
+    }
+  }
+
+  private static Set<String> ids(InMemoryPokemonCatalog pokemon) {
+    return pokemon.all().stream().map(Pokemon::id).collect(Collectors.toUnmodifiableSet());
   }
 
   /** Descarta la caché; la siguiente consulta recarga desde la base de datos. */

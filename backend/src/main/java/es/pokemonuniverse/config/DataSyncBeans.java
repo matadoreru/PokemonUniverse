@@ -8,8 +8,11 @@ import es.pokemonuniverse.application.datasync.DataSyncMode;
 import es.pokemonuniverse.application.datasync.NextScheduledSync;
 import es.pokemonuniverse.application.datasync.DataSyncSource;
 import es.pokemonuniverse.application.datasync.PokemonPaletteCount;
+import es.pokemonuniverse.application.pokemon.PokemonCatalogService;
+import es.pokemonuniverse.application.rooms.RoomCoordinator;
 import es.pokemonuniverse.application.tcg.CachedTcgCardCatalog;
 import es.pokemonuniverse.application.time.Clock;
+import io.micronaut.context.BeanProvider;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
@@ -25,7 +28,10 @@ import javax.sql.DataSource;
  * estén portados) y el planificador con el horario de {@code pu.data-sync}. Existen aunque el data-sync esté apagado
  * (el resumen de administración funciona); solo {@link DataSyncStartup} los pone en marcha. El oyente
  * {@code onCompleted(TCGDEX) → tcgCards.refresh()} se registra al crear el servicio, antes de que nada pueda lanzar una
- * sincronización (incluida la inicial de TCG).
+ * sincronización (incluida la inicial de TCG). Igual el de {@code onCompleted(POKEAPI)}: recarga catálogo, gritos y
+ * artworks y los pasa a las salas ({@code rooms.replaceCatalog}, nueva {@code catalogVersion}); las partidas en curso
+ * conservan los suyos. El coordinador se pide al dispararse (no se construye junto al servicio). Si la recarga falla,
+ * el servicio registra el error y salas y {@code /api/pokemon} siguen con los catálogos anteriores.
  */
 @Factory
 @Requires(beans = DataSource.class)
@@ -34,7 +40,8 @@ public class DataSyncBeans {
   @Singleton
   @Bean(preDestroy = "stop")
   DataSyncService dataSyncService(DataSyncRecords records, List<DataSyncAdapter> adapters,
-      @Nullable PokemonPaletteCount palettes, @Nullable CachedTcgCardCatalog tcgCards, Clock clock,
+      @Nullable PokemonPaletteCount palettes, @Nullable CachedTcgCardCatalog tcgCards,
+      @Nullable PokemonCatalogService pokemonCatalog, BeanProvider<RoomCoordinator> rooms, Clock clock,
       PuConfig.DataSync config) {
     var service = new DataSyncService(records, adapters, palettes, clock,
         () -> NextScheduledSync.after(Instant.ofEpochMilli(clock.now()), config.hour(), config.minute(), config.zone()),
@@ -42,6 +49,11 @@ public class DataSyncBeans {
     if (tcgCards != null) {
       service.onCompleted(source -> {
         if (source == DataSyncSource.TCGDEX) tcgCards.refresh();
+      });
+    }
+    if (pokemonCatalog != null) {
+      service.onCompleted(source -> {
+        if (source == DataSyncSource.POKEAPI) rooms.get().replaceCatalog(pokemonCatalog.reloadGameCatalogs());
       });
     }
     return service;

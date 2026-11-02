@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
  * ({@code /api/v2/pokemon/74} → {@code api/v2/pokemon/74.json}, {@code ?limit=1} → {@code @limit=1.json}) y de
  * {@code raw.githubusercontent.com} bajo {@code /raw}. Registra cada petición y admite respuestas sustituidas por ruta.
  */
-final class PokeApiFixtureServer implements AutoCloseable {
+public final class PokeApiFixtureServer implements AutoCloseable {
 
   private static final String ROOT = "/datasync/pokeapi";
 
@@ -45,22 +45,22 @@ final class PokeApiFixtureServer implements AutoCloseable {
   private final List<String> requests = Collections.synchronizedList(new ArrayList<>());
   private final Map<String, Canned> overrides = new ConcurrentHashMap<>();
 
-  PokeApiFixtureServer() throws IOException {
+  public PokeApiFixtureServer() throws IOException {
     server = HttpServer.create(new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0);
     server.createContext("/", this::handle);
     server.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
     server.start();
   }
 
-  String origin() {
+  public String origin() {
     return "http://127.0.0.1:" + server.getAddress().getPort();
   }
 
-  PokeApiUrls urls() {
+  public PokeApiUrls urls() {
     return new PokeApiUrls(origin() + "/api/v2");
   }
 
-  String spriteBase() {
+  public String spriteBase() {
     return origin() + "/raw";
   }
 
