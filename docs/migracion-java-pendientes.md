@@ -32,6 +32,9 @@ derivados de él, métricas, logs JSON, límites de peticiones, imagen JVM en Co
 4. Administración.
 5. Escrituras de categorías personalizadas, pares de Would You Rather y avatares (subida) (hechas en 2C; solo se enrutan a
    Java con `VITE_REALTIME=java` hasta 2D).
+   Cambio de comportamiento de 2B: con TwelveMonkeys en el classpath, el proxy de assets (`ImageTransforms.decode`) y el
+   catálogo de artworks decodifican fuentes WebP (antes «Unsupported»), más cerca de sharp; el lector WebP nativo de
+   `webp-imageio` se retira del registro al arrancar (`config/ImageIoReaders`) y la libwebp solo codifica avatares.
 6. `/api/tcg/*`. Desviación consciente de la especificación (§0 lo situaba en la etapa 1): el plan lo aplazó porque depende del ciclo de vida de la caché del catálogo TCG que refresca data-sync; mientras tanto lo sigue sirviendo Node.
 7. Proxy de assets de las rondas (hecho en 2B; producción lo sigue sirviendo Node hasta 2D).
 8. WebSocket: el transporte `/ws` de Java existe desde 2A (mismos 21 eventos cliente→servidor y 7 servidor→cliente que
