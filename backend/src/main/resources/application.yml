@@ -81,6 +81,13 @@ pu:
     # Salas en Java (/ws). Apagadas en producción durante la etapa 2A: /ws cierra con 4403 sin tocar el coordinador.
     # Activas en dev y test; el corte 2D pone ROOMS_ENABLED=true en compose.
     enabled: ${ROOMS_ENABLED:false}
+  data-sync:
+    # Sincronización con PokéAPI y TCGdex. Apagada mientras Node sea el dueño (etapa 2C): con false no corre el
+    # planificador, ni la sincronización inicial, ni se marcan como fallidas las ejecuciones de otro proceso.
+    enabled: ${DATA_SYNC_ENABLED:false}
+    hour: ${DATA_SYNC_HOUR:6}
+    minute: ${DATA_SYNC_MINUTE:0}
+    time-zone: ${DATA_SYNC_TIMEZONE:Europe/Madrid}
   ws:
     # Ping a cada sesión de /ws (pingInterval de Socket.IO); 0 lo desactiva. El proxy debe tolerar más que esto.
     heartbeat-seconds: ${WS_HEARTBEAT_SECONDS:25}

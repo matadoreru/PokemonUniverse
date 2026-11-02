@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.time.DateTimeException;
+import java.time.ZoneId;
 
 /** Configuración tipada del servicio (prefijo {@code pu}); validada al arrancar. */
 @Context
@@ -101,6 +103,47 @@ public class PuConfig {
 
     public boolean cookieSecure() {
       return cookieSecure;
+    }
+  }
+
+  /**
+   * {@code pu.data-sync.*} ({@code DATA_SYNC_*} de Node). Apagado por defecto: mientras Node siga sincronizando la misma
+   * BD, Java no programa nada, no lanza sincronizaciones iniciales ni toca las ejecuciones de otro proceso.
+   */
+  @ConfigurationProperties("data-sync")
+  public static class DataSync {
+    private final boolean enabled;
+    private final int hour;
+    private final int minute;
+    private final ZoneId zone;
+
+    @ConfigurationInject
+    public DataSync(boolean enabled, @Min(0) @Max(23) int hour, @Min(0) @Max(59) int minute,
+        @NotBlank String timeZone) {
+      this.enabled = enabled;
+      this.hour = hour;
+      this.minute = minute;
+      try {
+        this.zone = ZoneId.of(timeZone);
+      } catch (DateTimeException e) {
+        throw new IllegalArgumentException("pu.data-sync.timeZone is not a valid time zone: " + timeZone, e);
+      }
+    }
+
+    public boolean enabled() {
+      return enabled;
+    }
+
+    public int hour() {
+      return hour;
+    }
+
+    public int minute() {
+      return minute;
+    }
+
+    public ZoneId zone() {
+      return zone;
     }
   }
 }

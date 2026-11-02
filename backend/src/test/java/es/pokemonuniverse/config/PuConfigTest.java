@@ -69,4 +69,30 @@ class PuConfigTest {
       assertFalse(cfg.rateLimitActive(ctx.getEnvironment()));
     }
   }
+
+  /** {@code DATA_SYNC_*}: apagado por defecto (un solo dueño de los efectos compartidos) y horario de Node. */
+  @Test
+  void dataSyncIsDisabledByDefaultWithTheNodeSchedule() {
+    String secret = "x".repeat(40);
+    try (var ctx = ApplicationContext.run(props(secret, false), "test")) {
+      var cfg = ctx.getBean(PuConfig.DataSync.class);
+      assertFalse(cfg.enabled());
+      org.junit.jupiter.api.Assertions.assertEquals(6, cfg.hour());
+      org.junit.jupiter.api.Assertions.assertEquals(0, cfg.minute());
+      org.junit.jupiter.api.Assertions.assertEquals(java.time.ZoneId.of("Europe/Madrid"), cfg.zone());
+    }
+  }
+
+  @Test
+  void dataSyncScheduleIsBounded() {
+    String secret = "x".repeat(40);
+    for (var entry : Map.<String, Object>of("pu.data-sync.hour", 24, "pu.data-sync.minute", 60,
+        "pu.data-sync.time-zone", "Marte/Olympus").entrySet()) {
+      var invalid = new java.util.HashMap<String, Object>(props(secret, false));
+      invalid.put(entry.getKey(), entry.getValue());
+      var ex = assertThrows(Exception.class,
+          () -> ApplicationContext.run(invalid, "test").getBean(PuConfig.DataSync.class));
+      assertTrue(chain(ex).contains(entry.getKey().substring("pu.data-sync.".length()).replace("-z", "Z")), chain(ex));
+    }
+  }
 }
