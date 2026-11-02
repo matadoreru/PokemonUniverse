@@ -71,7 +71,7 @@ public record TcgHigherLowerConfig(
     int rounds = config.integer("rounds", 5, 50);
     int roundSeconds = config.integer("roundSeconds", 5, 60);
     if (minPrice != null && maxPrice != null && compareTcgPrices(minPrice, maxPrice) > 0) {
-      throw config.invalid("El precio máximo debe ser igual o mayor que el mínimo");
+      throw config.invalidAt("maxPrice", "El precio máximo debe ser igual o mayor que el mínimo");
     }
     return new TcgHigherLowerConfig(generations, setIds, rarities, minPrice, maxPrice, showRarity, rounds,
         roundSeconds);
@@ -80,13 +80,17 @@ public record TcgHigherLowerConfig(
   /** {@code z.array(z.string().min(1)).transform(dedup)}. */
   private static List<String> distinctStrings(ConfigReader config, String key) {
     var value = config.required(key);
-    if (!value.isArray()) throw config.invalid(key + " debe ser una lista");
     var items = new LinkedHashSet<String>();
+    if (!value.isArray()) {
+      config.reject(key, key + " debe ser una lista");
+      return new ArrayList<>(items);
+    }
     for (var item : value.values()) {
       if (!item.isString() || item.getStringValue().isEmpty()) {
-        throw config.invalid(key + " solo admite textos no vacíos");
+        config.reject(key, key + " solo admite textos no vacíos");
+      } else {
+        items.add(item.getStringValue());
       }
-      items.add(item.getStringValue());
     }
     return new ArrayList<>(items);
   }
@@ -97,7 +101,8 @@ public record TcgHigherLowerConfig(
     var value = config.required(key);
     if (value.isNull()) return null;
     if (!value.isString() || !PRICE.matcher(value.getStringValue()).matches()) {
-      throw config.invalid(key + ": Introduce un precio válido");
+      config.reject(key, key + ": Introduce un precio válido");
+      return null;
     }
     return value.getStringValue();
   }

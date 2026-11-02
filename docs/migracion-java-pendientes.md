@@ -135,6 +135,13 @@ buscador desplaza la página (Bingo); además, 8 juegos no muestran el título d
     igualaría el primer mensaje de Node para valores fuera de `int` (divergencia anterior a 2C, sin cambiar). Los
     `parse` de acciones de `<Juego>Types` siguen con su `strict`/`invalid()` propios (un único mensaje
     «Acción de … no válida.»).
+  - 2C (configuraciones por usuario): `ConfigValidationException.path()` lleva la ruta Zod del primer issue y
+    `GameEngine.configIssues` (modo «recoger todo» de `ConfigReader`) da todos los issues con su ruta para
+    `StoredGameConfigMigration`. Los helpers locales anteriores informan su ruta (`reject`/`invalidAt`), así que ningún
+    motor cae a la raíz. Diferencias con Zod: una ruta guarda solo su primer issue; los elementos de listas que recorre
+    el motor (no `generations`) llevan la ruta de la lista sin índice; y una regla entre campos (`superRefine`) solo
+    cuenta si antes no falló nada, de modo que la migración la repara en la pasada siguiente. Contrastado con el
+    `migrateStoredGameConfig` de Node en `backend/src/test/resources/gameconfigs/migration-cases.json` (1 389 casos).
   - Helpers pequeños repetidos entre motores (`takeRandom`, `formatEs`, comprobaciones de sprite, `choosePrompt` y el
     pool de prompts); `isUsableWhoPokemonSprite` duplica `isUsableZoomedSprite`, `GuessFromStatsPlayerStats` duplica
     `PokemonPaletteStats` y los recuentos de lotes ganados y sin dueño están duplicados entre

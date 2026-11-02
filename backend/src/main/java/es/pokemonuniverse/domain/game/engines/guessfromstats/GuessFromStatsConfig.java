@@ -102,8 +102,8 @@ public record GuessFromStatsConfig(
     var stats = GuessFromStatsFields.parse(config.object("stats"));
     boolean hintsEnabled = config.bool("hintsEnabled");
     var hints = GuessFromStatsHints.parse(config.object("hints"));
-    if (stats.enabledCount() < 2) throw config.invalid("Selecciona al menos 2 estadísticas");
-    if (hintsEnabled && !hints.any()) throw config.invalid("Selecciona al menos una pista adicional");
+    if (stats.enabledCount() < 2) throw config.invalidAt("stats", "Selecciona al menos 2 estadísticas");
+    if (hintsEnabled && !hints.any()) throw config.invalidAt("hints", "Selecciona al menos una pista adicional");
     return new GuessFromStatsConfig(generations, roundSeconds, rounds, stats, hintsEnabled, hints);
   }
 }

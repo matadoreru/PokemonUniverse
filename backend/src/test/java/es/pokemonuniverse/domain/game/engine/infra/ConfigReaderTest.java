@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import es.pokemonuniverse.domain.game.engine.ConfigIssue;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import io.micronaut.json.tree.JsonNode;
 import java.util.LinkedHashMap;
@@ -169,5 +170,110 @@ class ConfigReaderTest {
   void invalidBuildsThePrefixedException() {
     assertEquals("Configuración de Prueba no válida: Selecciona al menos 2 estadísticas.",
         reader("x", number(1)).invalid("Selecciona al menos 2 estadísticas").getMessage());
+  }
+
+  // ------------------------------------------------------------------ modo que recoge todos los issues (collectIssues)
+
+  private static JsonNode text(String value) {
+    return JsonNode.createStringNode(value);
+  }
+
+  private static JsonNode array(JsonNode... values) {
+    return JsonNode.createArrayNode(List.of(values));
+  }
+
+  private static List<List<Object>> paths(List<ConfigIssue> issues) {
+    return issues.stream().map(ConfigIssue::path).toList();
+  }
+
+  @Test
+  void firstErrorCarriesItsZodPath() {
+    var raw = object(Map.of("hints", object(Map.of("types", number(1)))));
+    var error = assertThrows(ConfigValidationException.class,
+        () -> ConfigReader.of(raw, "Prueba").object("hints").bool("types"));
+    assertEquals(List.of("hints", "types"), error.path());
+    var generations = assertThrows(ConfigValidationException.class,
+        () -> reader("generations", array(number(1), number(12))).generations("generations"));
+    assertEquals(List.of("generations", 1), generations.path());
+    assertEquals(List.of(), assertThrows(ConfigValidationException.class,
+        () -> ConfigReader.of(text("x"), "Prueba")).path());
+    assertEquals(List.of(), assertThrows(ConfigValidationException.class,
+        () -> reader("a", number(1)).strict(Set.of())).path());
+  }
+
+  @Test
+  void collectsEveryIssueWithItsPathInReadingOrder() {
+    var entries = new LinkedHashMap<String, JsonNode>();
+    entries.put("rounds", text("diez"));
+    entries.put("visible", JsonNode.createBooleanNode(true));
+    entries.put("hints", object(Map.of("types", number(1))));
+    entries.put("generations", array(number(1), number(12), text("z")));
+    entries.put("mode", text("OTRO"));
+    var issues = ConfigReader.collectIssues(() -> {
+      var config = ConfigReader.of(object(entries), "Prueba");
+      config.integer("rounds", 1, 5);
+      config.bool("visible");
+      config.object("hints").bool("types");
+      config.generations("generations");
+      config.enumValue("mode", Mode.class);
+      config.bool("missing");
+    });
+    assertEquals(List.of(List.of("rounds"), List.of("hints", "types"), List.of("generations", 1),
+        List.of("generations", 2), List.of("mode"), List.of("missing")), paths(issues));
+    assertEquals("Configuración de Prueba no válida: rounds debe ser un número entero.", issues.getFirst().message());
+    assertEquals("Configuración de Prueba no válida: falta missing.", issues.getLast().message());
+  }
+
+  @Test
+  void validInputCollectsNothing() {
+    assertEquals(List.of(), ConfigReader.collectIssues(() -> reader("rounds", number(3)).integer("rounds", 1, 5)));
+  }
+
+  @Test
+  void aBrokenObjectIsOneIssueAndItsFieldsAreNotRead() {
+    var issues = ConfigReader.collectIssues(() -> {
+      var hints = reader("hints", number(1)).object("hints");
+      hints.bool("types");
+      hints.strict(Set.of());
+      hints.reject("weight", "hints.weight no vale");
+    });
+    assertEquals(List.of(List.of("hints")), paths(issues));
+  }
+
+  @Test
+  void rejectRecordsAndContinuesWhileCollectingAndThrowsOtherwise() {
+    var issues = ConfigReader.collectIssues(() -> {
+      var config = reader("a", number(1));
+      config.reject("a", "a no vale");
+      config.reject("b", "b no vale");
+    });
+    assertEquals(List.of(List.of("a"), List.of("b")), paths(issues));
+    var error = assertThrows(ConfigValidationException.class, () -> reader("a", number(1)).reject("a", "a no vale"));
+    assertEquals("Configuración de Prueba no válida: a no vale.", error.getMessage());
+    assertEquals(List.of("a"), error.path());
+  }
+
+  @Test
+  void aThrownRuleCountsOnlyWhenNothingFailedBefore() {
+    assertEquals(List.of(new ConfigIssue(List.of("maxPrice"), "Configuración de Prueba no válida: precio.")),
+        ConfigReader.collectIssues(() -> {
+          throw reader("maxPrice", number(1)).invalidAt("maxPrice", "precio");
+        }));
+    // Con un issue previo, la regla entre campos ya no se evalúa (Zod no la corre sobre una entrada rota).
+    assertEquals(List.of(List.of("rounds")), paths(ConfigReader.collectIssues(() -> {
+      var config = reader("rounds", text("x"));
+      config.integer("rounds", 1, 5);
+      throw config.invalidAt("maxPrice", "precio");
+    })));
+  }
+
+  @Test
+  void onlyTheFirstIssueOfAPathIsKept() {
+    var issues = ConfigReader.collectIssues(() -> {
+      var config = reader("roundSeconds", text("x"));
+      config.option("roundSeconds", List.of(30, 60), "El tiempo no vale");
+    });
+    assertEquals(List.of(new ConfigIssue(List.of("roundSeconds"),
+        "Configuración de Prueba no válida: roundSeconds debe ser un número entero.")), issues);
   }
 }

@@ -59,16 +59,17 @@ public record PokemonTriviaConfig(
     var difficulty = config.enumValue("difficulty", PokemonTriviaDifficulty.class);
     var typesNode = config.required("questionTypes");
     int maxTypes = PokemonTriviaQuestionType.values().length;
-    if (!typesNode.isArray() || typesNode.size() < 1 || typesNode.size() > maxTypes) {
-      throw config.invalid("questionTypes debe tener entre 1 y " + maxTypes + " tipos");
-    }
     var questionTypes = new ArrayList<PokemonTriviaQuestionType>();
-    for (var value : typesNode.values()) {
-      questionTypes.add(config.enumValue(value, "questionTypes", PokemonTriviaQuestionType.class));
+    if (!typesNode.isArray() || typesNode.size() < 1 || typesNode.size() > maxTypes) {
+      config.reject("questionTypes", "questionTypes debe tener entre 1 y " + maxTypes + " tipos");
+    } else {
+      for (var value : typesNode.values()) {
+        questionTypes.add(config.enumValue(value, "questionTypes", PokemonTriviaQuestionType.class));
+      }
     }
     if (questionTypes.size() == 1 && questionTypes.getFirst() == PokemonTriviaQuestionType.GENERATION
         && generations.size() < 2) {
-      throw config.invalid("Las preguntas de generación necesitan al menos dos generaciones");
+      throw config.invalidAt("generations", "Las preguntas de generación necesitan al menos dos generaciones");
     }
     return new PokemonTriviaConfig(generations, roundSeconds, rounds, optionCount, difficulty, questionTypes);
   }

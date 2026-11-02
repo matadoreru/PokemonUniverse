@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.pokemonpaletteguess;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import es.pokemonuniverse.domain.game.engine.infra.ConfigReader;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
@@ -11,8 +12,11 @@ import java.util.Set;
 /**
  * Configuración normalizada ({@code pokemonPaletteGuessConfigSchema} de {@code pokemon-palette-guess/config.ts}). El
  * esquema es {@code .strict()}: una clave desconocida invalida la configuración.
+ * {@code hintKinds: []} se serializa siempre: con la inclusión {@code NON_EMPTY} de serde desaparecería y el árbol
+ * guardado ya no pasaría su propio {@code parse}.
  */
 @Serdeable
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public record PokemonPaletteGuessConfig(
     List<Integer> generations,
     int roundSeconds,
@@ -52,10 +56,13 @@ public record PokemonPaletteGuessConfig(
     int paletteSize = config.integer("paletteSize", 5, 8);
     boolean hintsEnabled = config.bool("hintsEnabled");
     var kindsNode = config.required("hintKinds");
-    if (!kindsNode.isArray()) throw config.invalid("hintKinds debe ser una lista");
     var hintKinds = new LinkedHashSet<PokemonPaletteHintKind>();
-    for (var value : kindsNode.values()) {
-      hintKinds.add(config.enumValue(value, "hintKinds", PokemonPaletteHintKind.class));
+    if (!kindsNode.isArray()) {
+      config.reject("hintKinds", "hintKinds debe ser una lista");
+    } else {
+      for (var value : kindsNode.values()) {
+        hintKinds.add(config.enumValue(value, "hintKinds", PokemonPaletteHintKind.class));
+      }
     }
     return new PokemonPaletteGuessConfig(generations, roundSeconds, rounds, paletteSize, hintsEnabled,
         new ArrayList<>(hintKinds));

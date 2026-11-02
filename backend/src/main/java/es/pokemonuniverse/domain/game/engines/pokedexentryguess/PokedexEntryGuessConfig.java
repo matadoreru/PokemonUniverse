@@ -65,7 +65,7 @@ public record PokedexEntryGuessConfig(
     int rounds = config.integer("rounds", 1, 20);
     boolean hintsEnabled = config.bool("hintsEnabled");
     var hints = PokedexEntryHintConfig.parse(config.object("hints"));
-    if (hintsEnabled && !hints.any()) throw config.invalid("Selecciona al menos una pista adicional");
+    if (hintsEnabled && !hints.any()) throw config.invalidAt("hints", "Selecciona al menos una pista adicional");
     return new PokedexEntryGuessConfig(generations, roundSeconds, rounds, hintsEnabled, hints);
   }
 }

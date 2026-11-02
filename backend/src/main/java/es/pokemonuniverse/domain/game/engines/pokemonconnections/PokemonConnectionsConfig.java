@@ -76,7 +76,7 @@ public record PokemonConnectionsConfig(List<Integer> generations, int groupSize,
     int rounds = config.integer("rounds", 1, 20);
     int groupCount = pokemonCount / groupSize;
     if (pokemonCount % groupSize != 0 || groupCount < 3 || groupCount > 5) {
-      throw config.invalid("El tablero debe contener entre 3 y 5 grupos completos");
+      throw config.invalidAt("pokemonCount", "El tablero debe contener entre 3 y 5 grupos completos");
     }
     return builder().generations(generations).groupSize(groupSize).pokemonCount(pokemonCount)
         .mistakesAllowed(mistakesAllowed).roundSeconds(roundSeconds).rounds(rounds).build();

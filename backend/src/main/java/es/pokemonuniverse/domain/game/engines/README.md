@@ -13,8 +13,10 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
   da `strict`, `integer`, `safeInteger`, `option`, `bool`, `enumValue`, `generations` y `object` (objeto anidado), y
   `allGenerations()` para los valores por defecto. Falla en el primer error con
   `Configuración de <juego> no válida: <detalle>.`, que la sala muestra tal cual. Las reglas propias del esquema
-  (`superRefine`) lanzan `config.invalid(detalle)` sin punto final. Un helper local solo se justifica si su mensaje
-  difiere del común, y se comenta por qué.
+  (`superRefine`) lanzan `config.invalidAt("<clave del issue de Zod>", detalle)` (o `config.invalid(detalle)` si
+  el issue va en la raíz) sin punto final. Un helper local solo se justifica si su mensaje difiere del común, y se
+  comenta por qué; sus fallos de tipo usan `config.reject(clave, detalle)` y siguen con un valor centinela, para que
+  `GameEngine.configIssues` (la migración de configuraciones guardadas) los recoja todos con su ruta.
 - `<Juego>Types`: los records de `types.ts` con los mismos nombres, más la acción con su `parse(JsonNode)`, que es
   estricto si el esquema TS lo es.
 - `<Juego>Rules`: el port de `rules.ts`.

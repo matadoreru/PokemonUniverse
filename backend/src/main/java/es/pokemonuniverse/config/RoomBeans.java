@@ -1,6 +1,7 @@
 package es.pokemonuniverse.config;
 
 import es.pokemonuniverse.application.categories.CustomCategoryService;
+import es.pokemonuniverse.application.gameconfigs.UserGameConfigService;
 import es.pokemonuniverse.application.rooms.HostContentProvider;
 import es.pokemonuniverse.application.rooms.RoomSettings;
 import es.pokemonuniverse.application.rooms.UserGameConfigPreferences;
@@ -14,8 +15,10 @@ import java.util.List;
 
 /**
  * Beans de sala: ajustes desde {@link PuConfig}, contenido personal del host (categorías de
- * {@link CustomCategoryService} y dilemas de {@link WouldYouRatherPromptService}) y el puerto que la 2C aún sustituirá
- * (preferencias de configuración por usuario), marcados {@code @Secondary} para que las pruebas los reemplacen.
+ * {@link CustomCategoryService} y dilemas de {@link WouldYouRatherPromptService}) y las preferencias de configuración
+ * por usuario, marcados {@code @Secondary} para que las pruebas los reemplacen. Con BD, las preferencias son
+ * {@link UserGameConfigService} (tabla {@code UserGameConfig}); {@link UserGameConfigPreferences#NO_OP} solo queda
+ * para los contextos sin {@code DataSource}.
  */
 @Factory
 public class RoomBeans {
@@ -25,6 +28,7 @@ public class RoomBeans {
     return new RoomSettings(config.roomMaxPlayers(), config.reconnectGraceMs());
   }
 
+  /** Sin BD no hay {@link UserGameConfigService}: ni se lee ni se guarda nada. */
   @Singleton
   @Secondary
   UserGameConfigPreferences userGameConfigPreferences() {

@@ -66,25 +66,31 @@ public record PokemonBingoConfig(int width, int height, int durationSeconds, Lis
     int durationSeconds = config.integer("durationSeconds", 60, 300);
     var generations = config.generations("generations");
     var maxNode = config.required("maxConditionsPerCell");
+    int maxConditionsPerCell = 1;
     if (!maxNode.isNumber() || (maxNode.getDoubleValue() != 1 && maxNode.getDoubleValue() != 2)) {
-      throw config.invalid("maxConditionsPerCell debe ser 1 o 2");
+      config.reject("maxConditionsPerCell", "maxConditionsPerCell debe ser 1 o 2");
+    } else {
+      maxConditionsPerCell = (int) maxNode.getDoubleValue();
     }
-    return new PokemonBingoConfig(width, height, durationSeconds, generations,
-        (int) maxNode.getDoubleValue(), families(config, config.required("families")));
+    return new PokemonBingoConfig(width, height, durationSeconds, generations, maxConditionsPerCell,
+        families(config.object("families")));
   }
 
   /**
    * {@code bingoFamiliesSchema}: objeto no estricto con un booleano por familia. Se queda local porque una familia
    * ausente da {@code families.<clave> debe ser booleano}, no el {@code falta <clave>} del lector común.
    */
-  private static Map<String, Boolean> families(ConfigReader config, JsonNode value) {
-    if (!value.isObject()) throw config.invalid("families debe ser un objeto");
-    var families = new LinkedHashMap<String, Boolean>();
+  private static Map<String, Boolean> families(ConfigReader families) {
+    var flags = new LinkedHashMap<String, Boolean>();
     for (var key : BINGO_FAMILY_KEYS) {
-      var flag = value.get(key);
-      if (flag == null || !flag.isBoolean()) throw config.invalid("families." + key + " debe ser booleano");
-      families.put(key, flag.getBooleanValue());
+      var flag = families.get(key);
+      if (flag == null || !flag.isBoolean()) {
+        families.reject(key, "families." + key + " debe ser booleano");
+        flags.put(key, false);
+      } else {
+        flags.put(key, flag.getBooleanValue());
+      }
     }
-    return families;
+    return flags;
   }
 }

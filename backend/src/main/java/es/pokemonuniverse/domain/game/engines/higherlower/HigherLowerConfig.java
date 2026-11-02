@@ -48,12 +48,13 @@ public record HigherLowerConfig(
     var config = ConfigReader.of(raw, "Higher or Lower");
     var generations = config.generations("generations");
     var categoriesNode = config.required("categories");
-    if (!categoriesNode.isArray() || categoriesNode.size() < 1) {
-      throw config.invalid("categories debe ser una lista con al menos una categoría");
-    }
     var categories = new LinkedHashSet<HigherLowerCategory>();
-    for (var value : categoriesNode.values()) {
-      categories.add(config.enumValue(value, "categories", HigherLowerCategory.class));
+    if (!categoriesNode.isArray() || categoriesNode.size() < 1) {
+      config.reject("categories", "categories debe ser una lista con al menos una categoría");
+    } else {
+      for (var value : categoriesNode.values()) {
+        categories.add(config.enumValue(value, "categories", HigherLowerCategory.class));
+      }
     }
     boolean showPreviousValue = config.bool("showPreviousValue");
     return new HigherLowerConfig(

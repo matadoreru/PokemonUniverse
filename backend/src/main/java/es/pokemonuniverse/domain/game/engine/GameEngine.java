@@ -1,7 +1,9 @@
 package es.pokemonuniverse.domain.game.engine;
 
 import es.pokemonuniverse.domain.game.GameManifest;
+import es.pokemonuniverse.domain.game.engine.infra.ConfigReader;
 import io.micronaut.json.tree.JsonNode;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -22,6 +24,14 @@ public interface GameEngine<C, S, A, P> {
 
   /** Valida y normaliza como {@code configSchema.parse}; lanza {@link ConfigValidationException}. */
   C parseConfig(JsonNode raw);
+
+  /**
+   * Todos los issues de {@link #parseConfig} con su ruta Zod (el {@code safeParse(raw).error.issues}); vacío si es
+   * válida. Ver {@link ConfigReader#collectIssues} para lo que difiere de Zod.
+   */
+  default List<ConfigIssue> configIssues(JsonNode raw) {
+    return ConfigReader.collectIssues(() -> parseConfig(raw));
+  }
 
   /** Valida como {@code actionSchema.parse}; lanza {@link ConfigValidationException}. */
   A parseAction(JsonNode raw);

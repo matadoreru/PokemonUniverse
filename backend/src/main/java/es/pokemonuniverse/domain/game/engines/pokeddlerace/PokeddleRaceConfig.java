@@ -64,8 +64,12 @@ public record PokeddleRaceConfig(List<Integer> generations, int roundSeconds, in
     var clues = new LinkedHashMap<String, Boolean>();
     for (var key : CLUE_KEYS) {
       var value = cluesNode.required(key);
-      if (!value.isBoolean()) throw config.invalid("clues." + key + " debe ser booleano");
-      clues.put(key, value.getBooleanValue());
+      if (!value.isBoolean()) {
+        cluesNode.reject(key, "clues." + key + " debe ser booleano");
+        clues.put(key, false);
+      } else {
+        clues.put(key, value.getBooleanValue());
+      }
     }
     return new PokeddleRaceConfig(generations, roundSeconds, maxRounds, clues);
   }

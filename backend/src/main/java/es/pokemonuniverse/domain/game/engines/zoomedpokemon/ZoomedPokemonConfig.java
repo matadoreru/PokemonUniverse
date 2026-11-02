@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.zoomedpokemon;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import es.pokemonuniverse.domain.game.engine.infra.ConfigReader;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
@@ -11,8 +12,11 @@ import java.util.Set;
 /**
  * Configuración normalizada ({@code zoomedPokemonConfigSchema} de {@code zoomed-pokemon/config.ts}). El esquema es
  * {@code .strict()}: una clave desconocida invalida la configuración.
+ * {@code hintKinds: []} se serializa siempre: con la inclusión {@code NON_EMPTY} de serde desaparecería y el árbol
+ * guardado ya no pasaría su propio {@code parse}.
  */
 @Serdeable
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public record ZoomedPokemonConfig(
     List<Integer> generations,
     ImageMode imageMode,
@@ -57,9 +61,12 @@ public record ZoomedPokemonConfig(
     int rounds = config.integer("rounds", 1, 20);
     boolean hintsEnabled = config.bool("hintsEnabled");
     var hintKindsNode = config.required("hintKinds");
-    if (!hintKindsNode.isArray()) throw config.invalid("hintKinds debe ser una lista");
     var hintKinds = new LinkedHashSet<HintKind>();
-    for (var value : hintKindsNode.values()) hintKinds.add(enumValue(config, value, HintKind.class, "hintKinds"));
+    if (!hintKindsNode.isArray()) {
+      config.reject("hintKinds", "hintKinds debe ser una lista");
+    } else {
+      for (var value : hintKindsNode.values()) hintKinds.add(enumValue(config, value, HintKind.class, "hintKinds"));
+    }
     boolean includeForms = config.bool("includeForms");
     return new ZoomedPokemonConfig(generations, imageMode, roundSeconds, rounds, hintsEnabled,
         new ArrayList<>(hintKinds), includeForms);
@@ -72,6 +79,7 @@ public record ZoomedPokemonConfig(
         if (constant.name().equals(value.getStringValue())) return constant;
       }
     }
-    throw config.invalid(key + " no admite ese valor");
+    config.reject(key, key + " no admite ese valor");
+    return type.getEnumConstants()[0];
   }
 }
