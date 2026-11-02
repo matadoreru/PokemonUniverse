@@ -1,0 +1,4846 @@
+{
+  "engineId": "pokemon-impostor",
+  "scenario": "guess-and-presence",
+  "seed": 1502,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    },
+    {
+      "id": "p4",
+      "displayName": "Dani"
+    },
+    {
+      "id": "p5",
+      "displayName": "Eva"
+    }
+  ],
+  "config": {
+    "generations": [
+      2,
+      1,
+      2
+    ],
+    "impostorCount": 2,
+    "clueSeconds": 120,
+    "voteSeconds": 90
+  },
+  "steps": [
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        },
+        {
+          "id": "p4",
+          "displayName": "Dani"
+        },
+        {
+          "id": "p5",
+          "displayName": "Eva"
+        },
+        {
+          "id": "p9",
+          "displayName": "Intruso"
+        }
+      ],
+      "now": 2000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        },
+        {
+          "id": "p4",
+          "displayName": "Dani",
+          "connected": false
+        },
+        {
+          "id": "p5",
+          "displayName": "Eva",
+          "connected": false
+        },
+        {
+          "id": "p9",
+          "displayName": "Intruso"
+        }
+      ],
+      "now": 5000
+    },
+    {
+      "kind": "timeout",
+      "now": 6000
+    },
+    {
+      "kind": "action",
+      "playerId": "p5",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "weedle"
+      },
+      "now": 6500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_CLUE",
+        "text": "Gusano"
+      },
+      "now": 6600
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        },
+        {
+          "id": "p4",
+          "displayName": "Dani",
+          "connected": false
+        },
+        {
+          "id": "p5",
+          "displayName": "Eva",
+          "connected": false
+        },
+        {
+          "id": "p9",
+          "displayName": "Intruso"
+        }
+      ],
+      "now": 7000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        },
+        {
+          "id": "p4",
+          "displayName": "Dani"
+        },
+        {
+          "id": "p5",
+          "displayName": "Eva"
+        },
+        {
+          "id": "p9",
+          "displayName": "Intruso"
+        }
+      ],
+      "now": 8000
+    },
+    {
+      "kind": "timeout",
+      "now": 9000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_CLUE",
+        "text": "Bicho"
+      },
+      "now": 10000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        },
+        {
+          "id": "p4",
+          "displayName": "Dani"
+        },
+        {
+          "id": "p5",
+          "displayName": "Eva"
+        },
+        {
+          "id": "p9",
+          "displayName": "Intruso"
+        }
+      ],
+      "now": 11000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        },
+        {
+          "id": "p4",
+          "displayName": "Dani"
+        },
+        {
+          "id": "p5",
+          "displayName": "Eva"
+        },
+        {
+          "id": "p9",
+          "displayName": "Intruso"
+        }
+      ],
+      "now": 12000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE",
+        "targetId": "p4"
+      },
+      "now": 12500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE",
+        "targetId": "p4"
+      },
+      "now": 13000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE",
+        "targetId": "p4"
+      },
+      "now": 13500
+    },
+    {
+      "kind": "action",
+      "playerId": "p5",
+      "action": {
+        "type": "VOTE",
+        "targetId": "p1"
+      },
+      "now": 14000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        },
+        {
+          "id": "p4",
+          "displayName": "Dani",
+          "connected": false
+        },
+        {
+          "id": "p5",
+          "displayName": "Eva"
+        },
+        {
+          "id": "p9",
+          "displayName": "Intruso"
+        }
+      ],
+      "now": 15000
+    },
+    {
+      "kind": "timeout",
+      "now": 18000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        },
+        {
+          "id": "p4",
+          "displayName": "Dani"
+        },
+        {
+          "id": "p5",
+          "displayName": "Eva",
+          "connected": false
+        },
+        {
+          "id": "p9",
+          "displayName": "Intruso"
+        }
+      ],
+      "now": 20000
+    },
+    {
+      "kind": "timeout",
+      "now": 22000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        },
+        {
+          "id": "p4",
+          "displayName": "Dani"
+        },
+        {
+          "id": "p5",
+          "displayName": "Eva"
+        },
+        {
+          "id": "p9",
+          "displayName": "Intruso"
+        }
+      ],
+      "now": 22500
+    },
+    {
+      "kind": "action",
+      "playerId": "p5",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "weedle"
+      },
+      "now": 23000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE",
+        "targetId": "p5"
+      },
+      "now": 23500
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "impostorCount": 2,
+      "clueSeconds": 120,
+      "voteSeconds": 90
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,0,null,0,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-impostor",
+        "phase": "GAME_STARTING",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3",
+          "p4",
+          "p5"
+        ],
+        "aliveIds": [
+          "p1",
+          "p2",
+          "p3",
+          "p4",
+          "p5"
+        ],
+        "eliminatedIds": [],
+        "spectatorIds": [],
+        "roundNumber": 0,
+        "clues": {},
+        "clueOrder": [],
+        "currentClueTurnIndex": 0,
+        "currentCluePlayerId": null,
+        "cluePendingIds": [],
+        "voteCompletedIds": [],
+        "voteCandidateIds": [],
+        "votingRound": 0,
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastVoteResult": null,
+        "eliminationReveal": null,
+        "winnerTeam": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "INNOCENT",
+          "secretPokemon": {
+            "name": "Weedle",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+          },
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        },
+        "p2": {
+          "role": "INNOCENT",
+          "secretPokemon": {
+            "name": "Weedle",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+          },
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        },
+        "p3": {
+          "role": "INNOCENT",
+          "secretPokemon": {
+            "name": "Weedle",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+          },
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        },
+        "p4": {
+          "role": "IMPOSTOR",
+          "secretPokemon": null,
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        },
+        "p5": {
+          "role": "IMPOSTOR",
+          "secretPokemon": null,
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROLE_REVEAL",
+        "nextDeadline": 6000,
+        "actionEpoch": "[\"ROLE_REVEAL\",0,1000,null,0,null,0,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-impostor",
+        "phase": "ROLE_REVEAL",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3",
+          "p4",
+          "p5"
+        ],
+        "aliveIds": [
+          "p1",
+          "p2",
+          "p3",
+          "p4",
+          "p5"
+        ],
+        "eliminatedIds": [],
+        "spectatorIds": [],
+        "roundNumber": 0,
+        "clues": {},
+        "clueOrder": [],
+        "currentClueTurnIndex": 0,
+        "currentCluePlayerId": null,
+        "cluePendingIds": [],
+        "voteCompletedIds": [],
+        "voteCandidateIds": [],
+        "votingRound": 0,
+        "roundStartedAt": 1000,
+        "roundEndsAt": null,
+        "nextTransitionAt": 6000,
+        "lastVoteResult": null,
+        "eliminationReveal": null,
+        "winnerTeam": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "INNOCENT",
+          "secretPokemon": {
+            "name": "Weedle",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+          },
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        },
+        "p2": {
+          "role": "INNOCENT",
+          "secretPokemon": {
+            "name": "Weedle",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+          },
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        },
+        "p3": {
+          "role": "INNOCENT",
+          "secretPokemon": {
+            "name": "Weedle",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+          },
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        },
+        "p4": {
+          "role": "IMPOSTOR",
+          "secretPokemon": null,
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        },
+        "p5": {
+          "role": "IMPOSTOR",
+          "secretPokemon": null,
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROLE_REVEAL",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROLE_REVEAL\",0,1000,null,0,null,0,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "ROLE_REVEAL",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 0,
+            "clues": {},
+            "clueOrder": [],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [],
+            "votingRound": 0,
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 6000,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROLE_REVEAL",
+            "nextDeadline": 6000,
+            "actionEpoch": "[\"ROLE_REVEAL\",0,1000,null,0,null,0,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "ROLE_REVEAL",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 0,
+            "clues": {},
+            "clueOrder": [],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [],
+            "votingRound": 0,
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 6000,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CLUE_PHASE",
+            "nextDeadline": null,
+            "actionEpoch": "[\"CLUE_PHASE\",1,6000,null,0,null,0,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "CLUE_PHASE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {}
+            },
+            "clueOrder": [],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 6000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No estás conectado como participante.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CLUE_PHASE",
+            "nextDeadline": null,
+            "actionEpoch": "[\"CLUE_PHASE\",1,6000,null,0,null,0,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "CLUE_PHASE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {}
+            },
+            "clueOrder": [],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 6000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No estás conectado como participante.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CLUE_PHASE",
+            "nextDeadline": null,
+            "actionEpoch": "[\"CLUE_PHASE\",1,6000,null,0,null,0,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "CLUE_PHASE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {}
+            },
+            "clueOrder": [],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 6000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CLUE_PHASE",
+            "nextDeadline": 127000,
+            "actionEpoch": "[\"CLUE_PHASE\",1,7000,null,0,null,0,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "CLUE_PHASE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {}
+            },
+            "clueOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": "p3",
+            "cluePendingIds": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 7000,
+            "roundEndsAt": 127000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": true,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CLUE_PHASE",
+            "nextDeadline": 127000,
+            "actionEpoch": "[\"CLUE_PHASE\",1,7000,null,0,null,0,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "CLUE_PHASE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {}
+            },
+            "clueOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": "p3",
+            "cluePendingIds": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 7000,
+            "roundEndsAt": 127000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": true,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": true,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": true,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CLUE_PHASE",
+            "nextDeadline": 127000,
+            "actionEpoch": "[\"CLUE_PHASE\",1,7000,null,0,null,0,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "CLUE_PHASE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {}
+            },
+            "clueOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": "p3",
+            "cluePendingIds": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 7000,
+            "roundEndsAt": 127000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": true,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": true,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": true,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CLUE_PHASE",
+            "nextDeadline": 130000,
+            "actionEpoch": "[\"CLUE_PHASE\",1,10000,null,1,null,0,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "CLUE_PHASE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {
+                "p3": {
+                  "text": "Bicho",
+                  "submittedAt": 10000,
+                  "status": "SUBMITTED"
+                }
+              }
+            },
+            "clueOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "currentClueTurnIndex": 1,
+            "currentCluePlayerId": "p1",
+            "cluePendingIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 10000,
+            "roundEndsAt": 130000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": true,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": "Bicho",
+                "submittedAt": 10000,
+                "status": "SUBMITTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": true,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": true,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 101000,
+            "actionEpoch": "[\"VOTING\",1,11000,null,3,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "VOTING",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {
+                "p3": {
+                  "text": "Bicho",
+                  "submittedAt": 10000,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                }
+              }
+            },
+            "clueOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "currentClueTurnIndex": 3,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 1,
+            "roundStartedAt": 11000,
+            "roundEndsAt": 101000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": "Bicho",
+                "submittedAt": 10000,
+                "status": "SUBMITTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 101000,
+            "actionEpoch": "[\"VOTING\",1,11000,null,3,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "VOTING",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {
+                "p3": {
+                  "text": "Bicho",
+                  "submittedAt": 10000,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                }
+              }
+            },
+            "clueOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "currentClueTurnIndex": 3,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 1,
+            "roundStartedAt": 11000,
+            "roundEndsAt": 101000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": "Bicho",
+                "submittedAt": 10000,
+                "status": "SUBMITTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 101000,
+            "actionEpoch": "[\"VOTING\",1,11000,null,3,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "VOTING",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {
+                "p3": {
+                  "text": "Bicho",
+                  "submittedAt": 10000,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                }
+              }
+            },
+            "clueOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "currentClueTurnIndex": 3,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [
+              "p1"
+            ],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 1,
+            "roundStartedAt": 11000,
+            "roundEndsAt": 101000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 12500
+              }
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": "Bicho",
+                "submittedAt": 10000,
+                "status": "SUBMITTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 101000,
+            "actionEpoch": "[\"VOTING\",1,11000,null,3,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "VOTING",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {
+                "p3": {
+                  "text": "Bicho",
+                  "submittedAt": 10000,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                }
+              }
+            },
+            "clueOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "currentClueTurnIndex": 3,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [
+              "p1",
+              "p2"
+            ],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 1,
+            "roundStartedAt": 11000,
+            "roundEndsAt": 101000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 12500
+              }
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 13000
+              }
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": "Bicho",
+                "submittedAt": 10000,
+                "status": "SUBMITTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 101000,
+            "actionEpoch": "[\"VOTING\",1,11000,null,3,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "VOTING",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {
+                "p3": {
+                  "text": "Bicho",
+                  "submittedAt": 10000,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                }
+              }
+            },
+            "clueOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "currentClueTurnIndex": 3,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 1,
+            "roundStartedAt": 11000,
+            "roundEndsAt": 101000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 12500
+              }
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 13000
+              }
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": "Bicho",
+                "submittedAt": 10000,
+                "status": "SUBMITTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 13500
+              }
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 101000,
+            "actionEpoch": "[\"VOTING\",1,11000,null,3,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "VOTING",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {
+                "p3": {
+                  "text": "Bicho",
+                  "submittedAt": 10000,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                }
+              }
+            },
+            "clueOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "currentClueTurnIndex": 3,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p5"
+            ],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 1,
+            "roundStartedAt": 11000,
+            "roundEndsAt": 101000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 12500
+              }
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 13000
+              }
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": "Bicho",
+                "submittedAt": 10000,
+                "status": "SUBMITTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 13500
+              }
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": true,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p1",
+                "votedAt": 14000
+              }
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTE_RESULTS",
+            "nextDeadline": 18000,
+            "actionEpoch": "[\"VOTE_RESULTS\",1,11000,null,3,null,1,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "VOTE_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {
+                "p3": {
+                  "text": "Bicho",
+                  "submittedAt": 10000,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                }
+              }
+            },
+            "clueOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "currentClueTurnIndex": 3,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 1,
+            "roundStartedAt": 11000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 18000,
+            "lastVoteResult": {
+              "kind": "ELIMINATION",
+              "votes": {
+                "p1": {
+                  "targetId": "p4",
+                  "votedAt": 12500
+                },
+                "p2": {
+                  "targetId": "p4",
+                  "votedAt": 13000
+                },
+                "p3": {
+                  "targetId": "p4",
+                  "votedAt": 13500
+                },
+                "p5": {
+                  "targetId": "p1",
+                  "votedAt": 14000
+                }
+              },
+              "tallies": {
+                "p1": 1,
+                "p2": 0,
+                "p3": 0,
+                "p4": 3,
+                "p5": 0
+              },
+              "tiedIds": [],
+              "eliminatedId": "p4"
+            },
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 12500
+              }
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 13000
+              }
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": "Bicho",
+                "submittedAt": 10000,
+                "status": "SUBMITTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 13500
+              }
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p1",
+                "votedAt": 14000
+              }
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ELIMINATION",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"ELIMINATION\",1,11000,null,3,null,1,null]",
+            "spectatorIds": [
+              "p4"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "ELIMINATION",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p5"
+            ],
+            "eliminatedIds": [
+              "p4"
+            ],
+            "spectatorIds": [
+              "p4"
+            ],
+            "roundNumber": 1,
+            "clues": {
+              "1": {
+                "p3": {
+                  "text": "Bicho",
+                  "submittedAt": 10000,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                }
+              }
+            },
+            "clueOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "currentClueTurnIndex": 3,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 1,
+            "roundStartedAt": 11000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 22000,
+            "lastVoteResult": {
+              "kind": "ELIMINATION",
+              "votes": {
+                "p1": {
+                  "targetId": "p4",
+                  "votedAt": 12500
+                },
+                "p2": {
+                  "targetId": "p4",
+                  "votedAt": 13000
+                },
+                "p3": {
+                  "targetId": "p4",
+                  "votedAt": 13500
+                },
+                "p5": {
+                  "targetId": "p1",
+                  "votedAt": 14000
+                }
+              },
+              "tallies": {
+                "p1": 1,
+                "p2": 0,
+                "p3": 0,
+                "p4": 3,
+                "p5": 0
+              },
+              "tiedIds": [],
+              "eliminatedId": "p4"
+            },
+            "eliminationReveal": {
+              "playerId": "p4",
+              "role": "IMPOSTOR"
+            },
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 12500
+              }
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 13000
+              }
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": "Bicho",
+                "submittedAt": 10000,
+                "status": "SUBMITTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 13500
+              }
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p1",
+                "votedAt": 14000
+              }
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ELIMINATION",
+            "nextDeadline": 22000,
+            "actionEpoch": "[\"ELIMINATION\",1,11000,null,3,null,1,null]",
+            "spectatorIds": [
+              "p4"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "ELIMINATION",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p5"
+            ],
+            "eliminatedIds": [
+              "p4"
+            ],
+            "spectatorIds": [
+              "p4"
+            ],
+            "roundNumber": 1,
+            "clues": {
+              "1": {
+                "p3": {
+                  "text": "Bicho",
+                  "submittedAt": 10000,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                }
+              }
+            },
+            "clueOrder": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "currentClueTurnIndex": 3,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 1,
+            "roundStartedAt": 11000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 22000,
+            "lastVoteResult": {
+              "kind": "ELIMINATION",
+              "votes": {
+                "p1": {
+                  "targetId": "p4",
+                  "votedAt": 12500
+                },
+                "p2": {
+                  "targetId": "p4",
+                  "votedAt": 13000
+                },
+                "p3": {
+                  "targetId": "p4",
+                  "votedAt": 13500
+                },
+                "p5": {
+                  "targetId": "p1",
+                  "votedAt": 14000
+                }
+              },
+              "tallies": {
+                "p1": 1,
+                "p2": 0,
+                "p3": 0,
+                "p4": 3,
+                "p5": 0
+              },
+              "tiedIds": [],
+              "eliminatedId": "p4"
+            },
+            "eliminationReveal": {
+              "playerId": "p4",
+              "role": "IMPOSTOR"
+            },
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 12500
+              }
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "DISCONNECTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 13000
+              }
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": "Bicho",
+                "submittedAt": 10000,
+                "status": "SUBMITTED"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p4",
+                "votedAt": 13500
+              }
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": {
+                "targetId": "p1",
+                "votedAt": 14000
+              }
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CLUE_PHASE",
+            "nextDeadline": 142000,
+            "actionEpoch": "[\"CLUE_PHASE\",2,22000,null,0,null,0,null]",
+            "spectatorIds": [
+              "p4"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "CLUE_PHASE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p5"
+            ],
+            "eliminatedIds": [
+              "p4"
+            ],
+            "spectatorIds": [
+              "p4"
+            ],
+            "roundNumber": 2,
+            "clues": {
+              "1": {
+                "p3": {
+                  "text": "Bicho",
+                  "submittedAt": 10000,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                }
+              },
+              "2": {}
+            },
+            "clueOrder": [
+              "p1",
+              "p3"
+            ],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": "p1",
+            "cluePendingIds": [
+              "p1",
+              "p3"
+            ],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p5"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 22000,
+            "roundEndsAt": 142000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": true,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CLUE_PHASE",
+            "nextDeadline": 142000,
+            "actionEpoch": "[\"CLUE_PHASE\",2,22000,null,0,null,0,null]",
+            "spectatorIds": [
+              "p4"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "CLUE_PHASE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p5"
+            ],
+            "eliminatedIds": [
+              "p4"
+            ],
+            "spectatorIds": [
+              "p4"
+            ],
+            "roundNumber": 2,
+            "clues": {
+              "1": {
+                "p3": {
+                  "text": "Bicho",
+                  "submittedAt": 10000,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                }
+              },
+              "2": {}
+            },
+            "clueOrder": [
+              "p1",
+              "p3"
+            ],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": "p1",
+            "cluePendingIds": [
+              "p1",
+              "p3"
+            ],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p5"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 22000,
+            "roundEndsAt": 142000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": true,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": true,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",2,22000,null,0,null,0,null]",
+            "spectatorIds": [
+              "p4"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "GAME_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p5"
+            ],
+            "eliminatedIds": [
+              "p4"
+            ],
+            "spectatorIds": [
+              "p4"
+            ],
+            "roundNumber": 2,
+            "clues": {
+              "1": {
+                "p3": {
+                  "text": "Bicho",
+                  "submittedAt": 10000,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                }
+              },
+              "2": {}
+            },
+            "clueOrder": [
+              "p1",
+              "p3"
+            ],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p5"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 22000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": "IMPOSTORS",
+            "results": {
+              "winnerId": null,
+              "standings": [
+                {
+                  "playerId": "p4",
+                  "position": 1,
+                  "points": 1,
+                  "won": true,
+                  "stats": {
+                    "cluesSubmitted": 0,
+                    "votesCast": 0,
+                    "wasImpostor": 1,
+                    "survived": 0,
+                    "playedAsInnocent": 0,
+                    "wonAsInnocent": 0,
+                    "playedAsImpostor": 1,
+                    "wonAsImpostor": 1,
+                    "pokemonGuessed": 0
+                  }
+                },
+                {
+                  "playerId": "p5",
+                  "position": 1,
+                  "points": 1,
+                  "won": true,
+                  "stats": {
+                    "cluesSubmitted": 0,
+                    "votesCast": 1,
+                    "wasImpostor": 1,
+                    "survived": 1,
+                    "playedAsInnocent": 0,
+                    "wonAsInnocent": 0,
+                    "playedAsImpostor": 1,
+                    "wonAsImpostor": 1,
+                    "pokemonGuessed": 1
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "cluesSubmitted": 0,
+                    "votesCast": 1,
+                    "wasImpostor": 0,
+                    "survived": 1,
+                    "playedAsInnocent": 1,
+                    "wonAsInnocent": 0,
+                    "playedAsImpostor": 0,
+                    "wonAsImpostor": 0,
+                    "pokemonGuessed": 0
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "cluesSubmitted": 0,
+                    "votesCast": 1,
+                    "wasImpostor": 0,
+                    "survived": 1,
+                    "playedAsInnocent": 1,
+                    "wonAsInnocent": 0,
+                    "playedAsImpostor": 0,
+                    "wonAsImpostor": 0,
+                    "pokemonGuessed": 0
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "cluesSubmitted": 1,
+                    "votesCast": 1,
+                    "wasImpostor": 0,
+                    "survived": 1,
+                    "playedAsInnocent": 1,
+                    "wonAsInnocent": 0,
+                    "playedAsImpostor": 0,
+                    "wonAsImpostor": 0,
+                    "pokemonGuessed": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": true,
+              "guessCorrect": true,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No estamos en la fase de votación.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",2,22000,null,0,null,0,null]",
+            "spectatorIds": [
+              "p4"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "GAME_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p5"
+            ],
+            "eliminatedIds": [
+              "p4"
+            ],
+            "spectatorIds": [
+              "p4"
+            ],
+            "roundNumber": 2,
+            "clues": {
+              "1": {
+                "p3": {
+                  "text": "Bicho",
+                  "submittedAt": 10000,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "DISCONNECTED"
+                }
+              },
+              "2": {}
+            },
+            "clueOrder": [
+              "p1",
+              "p3"
+            ],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p5"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 22000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": "IMPOSTORS",
+            "results": {
+              "winnerId": null,
+              "standings": [
+                {
+                  "playerId": "p4",
+                  "position": 1,
+                  "points": 1,
+                  "won": true,
+                  "stats": {
+                    "cluesSubmitted": 0,
+                    "votesCast": 0,
+                    "wasImpostor": 1,
+                    "survived": 0,
+                    "playedAsInnocent": 0,
+                    "wonAsInnocent": 0,
+                    "playedAsImpostor": 1,
+                    "wonAsImpostor": 1,
+                    "pokemonGuessed": 0
+                  }
+                },
+                {
+                  "playerId": "p5",
+                  "position": 1,
+                  "points": 1,
+                  "won": true,
+                  "stats": {
+                    "cluesSubmitted": 0,
+                    "votesCast": 1,
+                    "wasImpostor": 1,
+                    "survived": 1,
+                    "playedAsInnocent": 0,
+                    "wonAsInnocent": 0,
+                    "playedAsImpostor": 1,
+                    "wonAsImpostor": 1,
+                    "pokemonGuessed": 1
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "cluesSubmitted": 0,
+                    "votesCast": 1,
+                    "wasImpostor": 0,
+                    "survived": 1,
+                    "playedAsInnocent": 1,
+                    "wonAsInnocent": 0,
+                    "playedAsImpostor": 0,
+                    "wonAsImpostor": 0,
+                    "pokemonGuessed": 0
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "cluesSubmitted": 0,
+                    "votesCast": 1,
+                    "wasImpostor": 0,
+                    "survived": 1,
+                    "playedAsInnocent": 1,
+                    "wonAsInnocent": 0,
+                    "playedAsImpostor": 0,
+                    "wonAsImpostor": 0,
+                    "pokemonGuessed": 0
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "cluesSubmitted": 1,
+                    "votesCast": 1,
+                    "wasImpostor": 0,
+                    "survived": 1,
+                    "playedAsInnocent": 1,
+                    "wonAsInnocent": 0,
+                    "playedAsImpostor": 0,
+                    "wonAsImpostor": 0,
+                    "pokemonGuessed": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": true,
+              "guessCorrect": true,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "IMPOSTOR"
+              },
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": null,
+      "standings": [
+        {
+          "playerId": "p4",
+          "position": 1,
+          "points": 1,
+          "won": true,
+          "stats": {
+            "cluesSubmitted": 0,
+            "votesCast": 0,
+            "wasImpostor": 1,
+            "survived": 0,
+            "playedAsInnocent": 0,
+            "wonAsInnocent": 0,
+            "playedAsImpostor": 1,
+            "wonAsImpostor": 1,
+            "pokemonGuessed": 0
+          }
+        },
+        {
+          "playerId": "p5",
+          "position": 1,
+          "points": 1,
+          "won": true,
+          "stats": {
+            "cluesSubmitted": 0,
+            "votesCast": 1,
+            "wasImpostor": 1,
+            "survived": 1,
+            "playedAsInnocent": 0,
+            "wonAsInnocent": 0,
+            "playedAsImpostor": 1,
+            "wonAsImpostor": 1,
+            "pokemonGuessed": 1
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 2,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "cluesSubmitted": 0,
+            "votesCast": 1,
+            "wasImpostor": 0,
+            "survived": 1,
+            "playedAsInnocent": 1,
+            "wonAsInnocent": 0,
+            "playedAsImpostor": 0,
+            "wonAsImpostor": 0,
+            "pokemonGuessed": 0
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "cluesSubmitted": 0,
+            "votesCast": 1,
+            "wasImpostor": 0,
+            "survived": 1,
+            "playedAsInnocent": 1,
+            "wonAsInnocent": 0,
+            "playedAsImpostor": 0,
+            "wonAsImpostor": 0,
+            "pokemonGuessed": 0
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 2,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "cluesSubmitted": 1,
+            "votesCast": 1,
+            "wasImpostor": 0,
+            "survived": 1,
+            "playedAsInnocent": 1,
+            "wonAsInnocent": 0,
+            "playedAsImpostor": 0,
+            "wonAsImpostor": 0,
+            "pokemonGuessed": 0
+          }
+        }
+      ]
+    }
+  }
+}

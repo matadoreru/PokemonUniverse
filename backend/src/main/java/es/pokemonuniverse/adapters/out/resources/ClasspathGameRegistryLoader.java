@@ -15,6 +15,7 @@ import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoEngine;
 import es.pokemonuniverse.domain.game.engines.pokemonbluffauction.PokemonBluffAuctionEngine;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsEngine;
 import es.pokemonuniverse.domain.game.engines.pokemoncryquiz.PokemonCryQuizEngine;
+import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorEngine;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessEngine;
 import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagEngine;
 import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuctionEngine;
@@ -104,6 +105,7 @@ public class ClasspathGameRegistryLoader {
         new PokemonBluffAuctionEngine(manifest(manifests, PokemonBluffAuctionEngine.ID)));
     engines.put(PokemonConnectionsEngine.ID,
         new PokemonConnectionsEngine(manifest(manifests, PokemonConnectionsEngine.ID)));
+    engines.put(PokemonImpostorEngine.ID, new PokemonImpostorEngine(manifest(manifests, PokemonImpostorEngine.ID)));
     return engines;
   }
 

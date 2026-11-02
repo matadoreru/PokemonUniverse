@@ -1,0 +1,348 @@
+{
+  "engineId": "pokemon-impostor",
+  "scenario": "invalid-action-stops",
+  "seed": 1511,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "impostorCount": 1,
+    "clueSeconds": 10,
+    "voteSeconds": 10
+  },
+  "steps": [
+    {
+      "kind": "timeout",
+      "now": 6000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_CLUE",
+        "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_CLUE",
+        "text": "Fantasma"
+      },
+      "now": 8000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "impostorCount": 1,
+      "clueSeconds": 10,
+      "voteSeconds": 10
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,0,null,0,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-impostor",
+        "phase": "GAME_STARTING",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "aliveIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "eliminatedIds": [],
+        "spectatorIds": [],
+        "roundNumber": 0,
+        "clues": {},
+        "clueOrder": [],
+        "currentClueTurnIndex": 0,
+        "currentCluePlayerId": null,
+        "cluePendingIds": [],
+        "voteCompletedIds": [],
+        "voteCandidateIds": [],
+        "votingRound": 0,
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastVoteResult": null,
+        "eliminationReveal": null,
+        "winnerTeam": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "INNOCENT",
+          "secretPokemon": {
+            "name": "Gengar",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+          },
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        },
+        "p2": {
+          "role": "INNOCENT",
+          "secretPokemon": {
+            "name": "Gengar",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+          },
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        },
+        "p3": {
+          "role": "IMPOSTOR",
+          "secretPokemon": null,
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROLE_REVEAL",
+        "nextDeadline": 6000,
+        "actionEpoch": "[\"ROLE_REVEAL\",0,1000,null,0,null,0,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokemon-impostor",
+        "phase": "ROLE_REVEAL",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "aliveIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "eliminatedIds": [],
+        "spectatorIds": [],
+        "roundNumber": 0,
+        "clues": {},
+        "clueOrder": [],
+        "currentClueTurnIndex": 0,
+        "currentCluePlayerId": null,
+        "cluePendingIds": [],
+        "voteCompletedIds": [],
+        "voteCandidateIds": [],
+        "votingRound": 0,
+        "roundStartedAt": 1000,
+        "roundEndsAt": null,
+        "nextTransitionAt": 6000,
+        "lastVoteResult": null,
+        "eliminationReveal": null,
+        "winnerTeam": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "INNOCENT",
+          "secretPokemon": {
+            "name": "Gengar",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+          },
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        },
+        "p2": {
+          "role": "INNOCENT",
+          "secretPokemon": {
+            "name": "Gengar",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+          },
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        },
+        "p3": {
+          "role": "IMPOSTOR",
+          "secretPokemon": null,
+          "revealedRoles": null,
+          "alive": true,
+          "canSubmitClue": false,
+          "ownClue": null,
+          "canGuessPokemon": false,
+          "guessUsed": false,
+          "guessCorrect": null,
+          "canVote": false,
+          "ownVote": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CLUE_PHASE",
+            "nextDeadline": 16000,
+            "actionEpoch": "[\"CLUE_PHASE\",1,6000,null,0,null,0,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "CLUE_PHASE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {}
+            },
+            "clueOrder": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": "p1",
+            "cluePendingIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 6000,
+            "roundEndsAt": 16000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": true,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Gengar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": true,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 1
+}
