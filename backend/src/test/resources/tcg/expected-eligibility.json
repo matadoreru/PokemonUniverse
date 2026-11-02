@@ -1,0 +1,596 @@
+{
+ "empty": {
+  "error": "Invalid input: expected array, received undefined",
+  "issues": [
+   {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+     "generations"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+   },
+   {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+     "setIds"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+   },
+   {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+     "rarities"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+   },
+   {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+     "minPrice"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+   },
+   {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+     "maxPrice"
+    ],
+    "message": "Invalid input: expected string, received undefined"
+   },
+   {
+    "expected": "boolean",
+    "code": "invalid_type",
+    "path": [
+     "showRarity"
+    ],
+    "message": "Invalid input: expected boolean, received undefined"
+   },
+   {
+    "expected": "number",
+    "code": "invalid_type",
+    "path": [
+     "rounds"
+    ],
+    "message": "Invalid input: expected number, received undefined"
+   },
+   {
+    "expected": "number",
+    "code": "invalid_type",
+    "path": [
+     "roundSeconds"
+    ],
+    "message": "Invalid input: expected number, received undefined"
+   }
+  ]
+ },
+ "array": {
+  "error": "Invalid input: expected object, received array",
+  "issues": [
+   {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [],
+    "message": "Invalid input: expected object, received array"
+   }
+  ]
+ },
+ "null": {
+  "error": "Invalid input: expected object, received null",
+  "issues": [
+   {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [],
+    "message": "Invalid input: expected object, received null"
+   }
+  ]
+ },
+ "string": {
+  "error": "Invalid input: expected object, received string",
+  "issues": [
+   {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [],
+    "message": "Invalid input: expected object, received string"
+   }
+  ]
+ },
+ "valid": {
+  "data": {
+   "generations": [
+    1
+   ],
+   "setIds": [],
+   "rarities": [],
+   "minPrice": null,
+   "maxPrice": null,
+   "showRarity": true,
+   "rounds": 10,
+   "roundSeconds": 15
+  }
+ },
+ "validDedup": {
+  "data": {
+   "generations": [
+    1,
+    3
+   ],
+   "setIds": [
+    "a"
+   ],
+   "rarities": [
+    "Common"
+   ],
+   "minPrice": null,
+   "maxPrice": null,
+   "showRarity": true,
+   "rounds": 10,
+   "roundSeconds": 15
+  }
+ },
+ "unknownKey": {
+  "data": {
+   "generations": [
+    1
+   ],
+   "setIds": [],
+   "rarities": [],
+   "minPrice": null,
+   "maxPrice": null,
+   "showRarity": true,
+   "rounds": 10,
+   "roundSeconds": 15
+  }
+ },
+ "maxBelowMin": {
+  "error": "El precio máximo debe ser igual o mayor que el mínimo.",
+  "issues": [
+   {
+    "code": "custom",
+    "path": [
+     "maxPrice"
+    ],
+    "message": "El precio máximo debe ser igual o mayor que el mínimo."
+   }
+  ]
+ },
+ "maxEqualsMin": {
+  "data": {
+   "generations": [
+    1
+   ],
+   "setIds": [],
+   "rarities": [],
+   "minPrice": "1.10",
+   "maxPrice": "01.1",
+   "showRarity": true,
+   "rounds": 10,
+   "roundSeconds": 15
+  }
+ },
+ "badMin": {
+  "error": "Introduce un precio válido.",
+  "issues": [
+   {
+    "origin": "string",
+    "code": "invalid_format",
+    "format": "regex",
+    "pattern": "/^\\d+(?:\\.\\d+)?$/",
+    "path": [
+     "minPrice"
+    ],
+    "message": "Introduce un precio válido."
+   }
+  ]
+ },
+ "badMax": {
+  "error": "Introduce un precio válido.",
+  "issues": [
+   {
+    "origin": "string",
+    "code": "invalid_format",
+    "format": "regex",
+    "pattern": "/^\\d+(?:\\.\\d+)?$/",
+    "path": [
+     "maxPrice"
+    ],
+    "message": "Introduce un precio válido."
+   }
+  ]
+ },
+ "badMinWithMax": {
+  "throws": "Invalid canonical TCG price"
+ },
+ "badMaxWithMin": {
+  "throws": "Invalid canonical TCG price"
+ },
+ "numericPrice": {
+  "error": "Invalid input: expected string, received number",
+  "issues": [
+   {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+     "minPrice"
+    ],
+    "message": "Invalid input: expected string, received number"
+   }
+  ]
+ },
+ "generationsEmpty": {
+  "error": "Too small: expected array to have >=1 items",
+  "issues": [
+   {
+    "origin": "array",
+    "code": "too_small",
+    "minimum": 1,
+    "inclusive": true,
+    "path": [
+     "generations"
+    ],
+    "message": "Too small: expected array to have >=1 items"
+   }
+  ]
+ },
+ "generationsNotArray": {
+  "error": "Invalid input: expected array, received number",
+  "issues": [
+   {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+     "generations"
+    ],
+    "message": "Invalid input: expected array, received number"
+   }
+  ]
+ },
+ "generationsBad": {
+  "error": "Too small: expected number to be >=1",
+  "issues": [
+   {
+    "origin": "number",
+    "code": "too_small",
+    "minimum": 1,
+    "inclusive": true,
+    "path": [
+     "generations",
+     0
+    ],
+    "message": "Too small: expected number to be >=1"
+   },
+   {
+    "origin": "number",
+    "code": "too_big",
+    "maximum": 9,
+    "inclusive": true,
+    "path": [
+     "generations",
+     1
+    ],
+    "message": "Too big: expected number to be <=9"
+   },
+   {
+    "expected": "int",
+    "format": "safeint",
+    "code": "invalid_type",
+    "path": [
+     "generations",
+     2
+    ],
+    "message": "Invalid input: expected int, received number"
+   },
+   {
+    "expected": "number",
+    "code": "invalid_type",
+    "path": [
+     "generations",
+     3
+    ],
+    "message": "Invalid input: expected number, received string"
+   }
+  ]
+ },
+ "generationsRangeThenRefine": {
+  "error": "Too big: expected number to be <=9",
+  "issues": [
+   {
+    "origin": "number",
+    "code": "too_big",
+    "maximum": 9,
+    "inclusive": true,
+    "path": [
+     "generations",
+     0
+    ],
+    "message": "Too big: expected number to be <=9"
+   },
+   {
+    "code": "custom",
+    "path": [
+     "maxPrice"
+    ],
+    "message": "El precio máximo debe ser igual o mayor que el mínimo."
+   }
+  ]
+ },
+ "generationsFractionStopsRefine": {
+  "error": "Invalid input: expected int, received number",
+  "issues": [
+   {
+    "expected": "int",
+    "format": "safeint",
+    "code": "invalid_type",
+    "path": [
+     "generations",
+     0
+    ],
+    "message": "Invalid input: expected int, received number"
+   }
+  ]
+ },
+ "generationsEmptyThenRefine": {
+  "error": "Too small: expected array to have >=1 items",
+  "issues": [
+   {
+    "origin": "array",
+    "code": "too_small",
+    "minimum": 1,
+    "inclusive": true,
+    "path": [
+     "generations"
+    ],
+    "message": "Too small: expected array to have >=1 items"
+   },
+   {
+    "code": "custom",
+    "path": [
+     "maxPrice"
+    ],
+    "message": "El precio máximo debe ser igual o mayor que el mínimo."
+   }
+  ]
+ },
+ "setEmptyThenRefine": {
+  "error": "Too small: expected string to have >=1 characters",
+  "issues": [
+   {
+    "origin": "string",
+    "code": "too_small",
+    "minimum": 1,
+    "inclusive": true,
+    "path": [
+     "setIds",
+     0
+    ],
+    "message": "Too small: expected string to have >=1 characters"
+   },
+   {
+    "code": "custom",
+    "path": [
+     "maxPrice"
+    ],
+    "message": "El precio máximo debe ser igual o mayor que el mínimo."
+   }
+  ]
+ },
+ "setsBad": {
+  "error": "Too small: expected string to have >=1 characters",
+  "issues": [
+   {
+    "origin": "string",
+    "code": "too_small",
+    "minimum": 1,
+    "inclusive": true,
+    "path": [
+     "setIds",
+     0
+    ],
+    "message": "Too small: expected string to have >=1 characters"
+   },
+   {
+    "expected": "string",
+    "code": "invalid_type",
+    "path": [
+     "setIds",
+     1
+    ],
+    "message": "Invalid input: expected string, received number"
+   },
+   {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+     "rarities"
+    ],
+    "message": "Invalid input: expected array, received string"
+   }
+  ]
+ },
+ "roundsBounds": {
+  "error": "Too small: expected number to be >=5",
+  "issues": [
+   {
+    "origin": "number",
+    "code": "too_small",
+    "minimum": 5,
+    "inclusive": true,
+    "path": [
+     "rounds"
+    ],
+    "message": "Too small: expected number to be >=5"
+   },
+   {
+    "origin": "number",
+    "code": "too_big",
+    "maximum": 60,
+    "inclusive": true,
+    "path": [
+     "roundSeconds"
+    ],
+    "message": "Too big: expected number to be <=60"
+   }
+  ]
+ },
+ "roundsFraction": {
+  "error": "Invalid input: expected int, received number",
+  "issues": [
+   {
+    "expected": "int",
+    "format": "safeint",
+    "code": "invalid_type",
+    "path": [
+     "rounds"
+    ],
+    "message": "Invalid input: expected int, received number"
+   }
+  ]
+ },
+ "roundsFractionLow": {
+  "error": "Invalid input: expected int, received number",
+  "issues": [
+   {
+    "expected": "int",
+    "format": "safeint",
+    "code": "invalid_type",
+    "path": [
+     "rounds"
+    ],
+    "message": "Invalid input: expected int, received number"
+   }
+  ]
+ },
+ "roundsHuge": {
+  "error": "Too big: expected int to be <=9007199254740991",
+  "issues": [
+   {
+    "code": "too_big",
+    "maximum": 9007199254740991,
+    "note": "Integers must be within the safe integer range.",
+    "origin": "int",
+    "inclusive": true,
+    "path": [
+     "rounds"
+    ],
+    "message": "Too big: expected int to be <=9007199254740991"
+   },
+   {
+    "origin": "number",
+    "code": "too_big",
+    "maximum": 50,
+    "inclusive": true,
+    "path": [
+     "rounds"
+    ],
+    "message": "Too big: expected number to be <=50"
+   }
+  ]
+ },
+ "roundsNegativeHuge": {
+  "error": "Too small: expected int to be >=-9007199254740991",
+  "issues": [
+   {
+    "code": "too_small",
+    "minimum": -9007199254740991,
+    "note": "Integers must be within the safe integer range.",
+    "origin": "int",
+    "inclusive": true,
+    "path": [
+     "rounds"
+    ],
+    "message": "Too small: expected int to be >=-9007199254740991"
+   },
+   {
+    "origin": "number",
+    "code": "too_small",
+    "minimum": 5,
+    "inclusive": true,
+    "path": [
+     "rounds"
+    ],
+    "message": "Too small: expected number to be >=5"
+   }
+  ]
+ },
+ "roundsString": {
+  "error": "Invalid input: expected number, received string",
+  "issues": [
+   {
+    "expected": "number",
+    "code": "invalid_type",
+    "path": [
+     "rounds"
+    ],
+    "message": "Invalid input: expected number, received string"
+   }
+  ]
+ },
+ "roundsWholeFloat": {
+  "data": {
+   "generations": [
+    1
+   ],
+   "setIds": [],
+   "rarities": [],
+   "minPrice": null,
+   "maxPrice": null,
+   "showRarity": true,
+   "rounds": 10,
+   "roundSeconds": 15
+  }
+ },
+ "roundsLowThenRefine": {
+  "error": "Too small: expected number to be >=5",
+  "issues": [
+   {
+    "origin": "number",
+    "code": "too_small",
+    "minimum": 5,
+    "inclusive": true,
+    "path": [
+     "rounds"
+    ],
+    "message": "Too small: expected number to be >=5"
+   },
+   {
+    "code": "custom",
+    "path": [
+     "maxPrice"
+    ],
+    "message": "El precio máximo debe ser igual o mayor que el mínimo."
+   }
+  ]
+ },
+ "showRarityString": {
+  "error": "Invalid input: expected boolean, received string",
+  "issues": [
+   {
+    "expected": "boolean",
+    "code": "invalid_type",
+    "path": [
+     "showRarity"
+    ],
+    "message": "Invalid input: expected boolean, received string"
+   }
+  ]
+ },
+ "showRarityThenRefine": {
+  "error": "Invalid input: expected boolean, received number",
+  "issues": [
+   {
+    "expected": "boolean",
+    "code": "invalid_type",
+    "path": [
+     "showRarity"
+    ],
+    "message": "Invalid input: expected boolean, received number"
+   }
+  ]
+ }
+}

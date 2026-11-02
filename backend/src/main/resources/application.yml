@@ -94,6 +94,8 @@ pu:
     # hacia loopback).
     pokeapi-base-url: ${POKEAPI_BASE_URL:`https://pokeapi.co/api/v2`}
     sprite-base-url: ${POKEAPI_SPRITE_BASE_URL:`https://raw.githubusercontent.com`}
+    # TCGdex (Node usa https://api.tcgdex.net/v2/en fijo); mismas reglas de origen.
+    tcgdex-base-url: ${TCGDEX_BASE_URL:`https://api.tcgdex.net/v2/en`}
   ws:
     # Ping a cada sesión de /ws (pingInterval de Socket.IO); 0 lo desactiva. El proxy debe tolerar más que esto.
     heartbeat-seconds: ${WS_HEARTBEAT_SECONDS:25}

@@ -76,7 +76,7 @@ class TcgHigherLowerEngineTest {
     }
   }
 
-  /** Producción Java hasta la etapa 2C: {@code context.tcgCards} es nulo y el mazo ({@code ?? []}) está vacío. */
+  /** Sin catálogo ({@code context.tcgCards} nulo, salas sin BD) el mazo ({@code ?? []}) está vacío. */
   @Test
   void withoutTcgCatalogTheGameIsUnavailable() {
     var context = context(null);

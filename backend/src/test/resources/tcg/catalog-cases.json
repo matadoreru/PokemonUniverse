@@ -1,0 +1,197 @@
+{
+ "gen1": {
+  "generations": [
+   1
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": null,
+  "maxPrice": null
+ },
+ "gen2": {
+  "generations": [
+   2
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": null,
+  "maxPrice": null
+ },
+ "gen1and2": {
+  "generations": [
+   1,
+   2
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": null,
+  "maxPrice": null
+ },
+ "gen1-min-1.10-max-1.1": {
+  "generations": [
+   1
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": "1.10",
+  "maxPrice": "1.1"
+ },
+ "gen1-min-1.1": {
+  "generations": [
+   1
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": "1.1",
+  "maxPrice": null
+ },
+ "gen1-max-1.10": {
+  "generations": [
+   1
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": null,
+  "maxPrice": "1.10"
+ },
+ "gen1-max-1.09": {
+  "generations": [
+   1
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": null,
+  "maxPrice": "1.09"
+ },
+ "gen1-min-12.5-max-12.50": {
+  "generations": [
+   1
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": "12.5",
+  "maxPrice": "12.50"
+ },
+ "gen1-min-0012": {
+  "generations": [
+   1,
+   2
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": "0012",
+  "maxPrice": null
+ },
+ "set-b": {
+  "generations": [
+   1,
+   2
+  ],
+  "setIds": [
+   "b"
+  ],
+  "rarities": [],
+  "minPrice": null,
+  "maxPrice": null
+ },
+ "set-missing": {
+  "generations": [
+   1,
+   2
+  ],
+  "setIds": [
+   "nope"
+  ],
+  "rarities": [],
+  "minPrice": null,
+  "maxPrice": null
+ },
+ "rarity-common": {
+  "generations": [
+   1,
+   2
+  ],
+  "setIds": [],
+  "rarities": [
+   "Common"
+  ],
+  "minPrice": null,
+  "maxPrice": null
+ },
+ "rarity-rare-set-a": {
+  "generations": [
+   1,
+   2
+  ],
+  "setIds": [
+   "a"
+  ],
+  "rarities": [
+   "Rare"
+  ],
+  "minPrice": null,
+  "maxPrice": null
+ },
+ "gen4-other-lanes": {
+  "generations": [
+   4
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": null,
+  "maxPrice": null
+ },
+ "gen4-min-1": {
+  "generations": [
+   4
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": "1",
+  "maxPrice": null
+ },
+ "gen4-min-5": {
+  "generations": [
+   4
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": "5",
+  "maxPrice": null
+ },
+ "gen5-single-card-lanes": {
+  "generations": [
+   5
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": null,
+  "maxPrice": null
+ },
+ "gen9-empty": {
+  "generations": [
+   9
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": null,
+  "maxPrice": null
+ },
+ "all": {
+  "generations": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "setIds": [],
+  "rarities": [],
+  "minPrice": null,
+  "maxPrice": null
+ }
+}

@@ -1,0 +1,37 @@
+{
+ "category": "Trainer",
+ "id": "sv01-198",
+ "illustrator": "Ken Sugimori",
+ "localId": "198",
+ "name": "Professor's Research",
+ "rarity": "Uncommon",
+ "set": {
+  "cardCount": {
+   "official": 102,
+   "total": 102
+  },
+  "id": "sv01",
+  "name": "set"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": true,
+  "normal": true,
+  "reverse": false,
+  "wPromo": false
+ },
+ "updated": "2025-08-18T19:41:34+02:00",
+ "pricing": {
+  "cardmarket": {
+   "updated": "2025-08-05T00:42:15.000Z",
+   "idProduct": 273699,
+   "avg": 0.2,
+   "low": 0.1,
+   "trend": 0.2,
+   "avg1": 0.2,
+   "avg7": 0.2,
+   "avg30": 0.2,
+   "unit": "EUR"
+  }
+ }
+}

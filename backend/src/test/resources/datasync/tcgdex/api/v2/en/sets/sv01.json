@@ -1,0 +1,42 @@
+{
+ "cardCount": {
+  "official": 198
+ },
+ "cards": [
+  {
+   "id": "sv01-001",
+   "localId": "001",
+   "name": "Sprigatito",
+   "image": "https://assets.tcgdex.net/en/x/sv01-001"
+  },
+  {
+   "id": "sv01-025",
+   "localId": "025",
+   "name": "Pikachu ex",
+   "image": "https://assets.tcgdex.net/en/x/sv01-025"
+  },
+  {
+   "id": "sv01-198",
+   "localId": "198",
+   "name": "Professor's Research",
+   "image": "https://assets.tcgdex.net/en/x/sv01-198"
+  },
+  {
+   "id": "sv01-200",
+   "localId": "200",
+   "name": "Unknown Pokémon",
+   "image": "https://assets.tcgdex.net/en/x/sv01-200"
+  },
+  {
+   "id": "base1-4",
+   "localId": "4",
+   "name": "Charizard",
+   "image": "https://assets.tcgdex.net/en/x/base1-4"
+  }
+ ],
+ "id": "sv01",
+ "name": "Écarlate et Violet",
+ "releaseDate": "2023-03-31",
+ "series": "Scarlet & Violet",
+ "symbol": "https://assets.tcgdex.net/en/univ/sv/sv01/symbol"
+}

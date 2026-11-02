@@ -1,5 +1,5 @@
 import { describe, expect, expectTypeOf, it } from 'vitest';
-import type { AuthUser, ChangelogEntry, CustomCategoryView, CustomWouldYouRatherPromptView, FeedbackItem } from '@pokemon-universe/shared/public';
+import type { AuthUser, ChangelogEntry, CustomCategoryView, CustomWouldYouRatherPromptView, FeedbackItem, TcgFilterOptions } from '@pokemon-universe/shared/public';
 import type { components, paths } from './api-types';
 import type { ChangelogResponse, FeedbackCreateResponse, MeResponse } from './api-contract';
 
@@ -10,13 +10,20 @@ const ROUTES = [
   '/api/feedback', '/api/games', '/api/health', '/api/pokemon',
   '/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/audio',
   '/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/sprite',
+  '/api/tcg/eligibility', '/api/tcg/options',
   '/api/would-you-rather-prompts', '/api/would-you-rather-prompts/import', '/api/would-you-rather-prompts/{id}',
 ] as const satisfies readonly (keyof paths)[];
 
 describe('contrato OpenAPI generado', () => {
-  it('expone exactamente las 23 rutas del backend Java', () => {
+  it('expone exactamente las 25 rutas del backend Java', () => {
     expectTypeOf<keyof paths>().toEqualTypeOf<typeof ROUTES[number]>();
-    expect(ROUTES).toHaveLength(23);
+    expect(ROUTES).toHaveLength(25);
+  });
+  it('las opciones TCG coinciden con las de shared y la elegibilidad valida con incidencias de Zod', () => {
+    expectTypeOf<paths['/api/tcg/options']['get']['responses'][200]['content']['application/json']>().toEqualTypeOf<TcgFilterOptions>();
+    expectTypeOf<paths['/api/tcg/eligibility']['post']['responses'][200]['content']['application/json']>().toEqualTypeOf<{ cardCount: number }>();
+    expectTypeOf<paths['/api/tcg/eligibility']['post']['responses'][400]['content']['application/json']>()
+      .toEqualTypeOf<components['schemas']['ValidationErrorResponse']>();
   });
   it('las escrituras de avatar devuelven el usuario y el preset valida con incidencias de Zod', () => {
     type UserResponse = paths['/api/auth/me']['get']['responses'][200]['content']['application/json'];

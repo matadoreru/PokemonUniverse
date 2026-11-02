@@ -45,6 +45,7 @@ import es.pokemonuniverse.domain.room.RoomTimer;
 import es.pokemonuniverse.domain.room.SessionGameSummary;
 import es.pokemonuniverse.domain.room.SessionMode;
 import es.pokemonuniverse.domain.room.SessionParticipant;
+import es.pokemonuniverse.domain.tcg.TcgCardCatalog;
 import es.pokemonuniverse.domain.time.IsoTimestamps;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.JsonMapper;
@@ -114,15 +115,30 @@ public class RoomCoordinator {
   private final RoomSchedulers schedulers;
   private final RoomSettings settings;
   private final GameAssetService assets;
+  private final @Nullable TcgCardCatalog tcgCards;
   private final Map<String, JsonNode> defaultConfigs = new LinkedHashMap<>();
   /** Motores portados con los tipos borrados, uno por juego. */
   private final Map<String, ErasedEngine> engines = new LinkedHashMap<>();
 
-  @Inject
   public RoomCoordinator(GameRegistry registry, JsonMapper json, RoomEvents events, RoomAuditSink audit,
       GameResultsPersister results, UserGameConfigPreferences userGameConfigs, HostContentProvider hostContent,
       Clock clock, RandomSource random, RoomSchedulers schedulers, RoomSettings settings,
       GameCatalogProvider catalog, GameAssetService assets) {
+    this(registry, json, events, audit, results, userGameConfigs, hostContent, clock, random, schedulers, settings,
+        catalog, assets, null);
+  }
+
+  /**
+   * {@code tcgCards}: el catálogo TCG en memoria que comparten todas las salas (no se fija por partida: Node pasa la
+   * misma instancia, cuyo {@code refresh} sustituye la lista). Sin BD no hay catálogo y {@code tcg-higher-lower}
+   * responde con su literal de no disponibilidad.
+   */
+  @Inject
+  public RoomCoordinator(GameRegistry registry, JsonMapper json, RoomEvents events, RoomAuditSink audit,
+      GameResultsPersister results, UserGameConfigPreferences userGameConfigs, HostContentProvider hostContent,
+      Clock clock, RandomSource random, RoomSchedulers schedulers, RoomSettings settings,
+      GameCatalogProvider catalog, GameAssetService assets, @Nullable TcgCardCatalog tcgCards) {
+    this.tcgCards = tcgCards;
     this.registry = registry;
     this.json = json;
     this.events = events;
@@ -1184,6 +1200,7 @@ public class RoomCoordinator {
     return GameContext.builder(catalog.pokemon(), random::next)
         .pokemonVisuals(catalog.visuals())
         .pokemonAudio(catalog.audio())
+        .tcgCards(tcgCards)
         .preloadImage(assets::preload);
   }
 

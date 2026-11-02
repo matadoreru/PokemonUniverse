@@ -346,6 +346,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/tcg/eligibility": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cartas TCG que cumplen una configuración de Higher or Lower: Cartas */
+        post: operations["tcgEligibility"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tcg/options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Opciones de filtro del catálogo TCG */
+        get: operations["tcgOptions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/would-you-rather-prompts": {
         parameters: {
             query?: never;
@@ -693,6 +727,49 @@ export interface components {
             /** Format: email */
             email: string;
             password: string;
+        };
+        "TcgCardCatalog.FilterOptions": {
+            ready: boolean;
+            /** Format: int32 */
+            cardCount: number;
+            generations: components["schemas"]["TcgCardCatalog.GenerationOption"][];
+            sets: components["schemas"]["TcgCardCatalog.SetOption"][];
+            rarities: components["schemas"]["TcgCardCatalog.RarityOption"][];
+        };
+        "TcgCardCatalog.GenerationOption": {
+            /** Format: int32 */
+            value: number;
+            /** Format: int32 */
+            cardCount: number;
+        };
+        "TcgCardCatalog.RarityOption": {
+            value: string;
+            /** Format: int32 */
+            cardCount: number;
+        };
+        "TcgCardCatalog.SetOption": {
+            id: string;
+            name: string;
+            /** Format: int32 */
+            cardCount: number;
+        };
+        /** @description `{cardCount}`: cartas de `cardsFor(config)`. */
+        "TcgController.EligibilityResponse": {
+            /** Format: int32 */
+            cardCount: number;
+        };
+        /** @description Configuración completa de Higher or Lower: Cartas; las claves desconocidas se ignoran. */
+        TcgHigherLowerConfigBody: {
+            generations: number[];
+            setIds: string[];
+            rarities: string[];
+            minPrice: string | null;
+            maxPrice: string | null;
+            showRarity: boolean;
+            /** Format: int32 */
+            rounds: number;
+            /** Format: int32 */
+            roundSeconds: number;
         };
         /** @description Estricto: al menos uno de los dos campos, ninguno admite `null` y una clave desconocida es un 400 `unrecognized_keys`. */
         UpdateCustomCategoryRequest: {
@@ -1580,6 +1657,77 @@ export interface operations {
             };
             /** @description Demasiados recursos en curso */
             503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    tcgEligibility: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["TcgHigherLowerConfigBody"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TcgController.EligibilityResponse"];
+                };
+            };
+            /** @description Configuración inválida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Catálogo todavía no disponible o precio no canónico */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    tcgOptions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TcgCardCatalog.FilterOptions"];
+                };
+            };
+            /** @description Catálogo todavía no disponible */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };

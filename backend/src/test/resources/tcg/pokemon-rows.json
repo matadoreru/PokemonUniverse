@@ -1,0 +1,8 @@
+[
+ {"id": "charizard", "nationalDexNumber": 6, "generation": 1, "isDefault": true},
+ {"id": "blastoise", "nationalDexNumber": 9, "generation": 1, "isDefault": true},
+ {"id": "pikachu", "nationalDexNumber": 25, "generation": 1, "isDefault": true},
+ {"id": "pikachu-alola-cap", "nationalDexNumber": 25, "generation": 7, "isDefault": false},
+ {"id": "alakazam", "nationalDexNumber": 65, "generation": 1, "isDefault": true},
+ {"id": "sprigatito", "nationalDexNumber": 906, "generation": 9, "isDefault": true}
+]

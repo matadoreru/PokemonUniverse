@@ -1,0 +1,28 @@
+{
+ "category": "Pokemon",
+ "id": "sv01-200",
+ "illustrator": "Ken Sugimori",
+ "localId": "200",
+ "name": "Unknown Pokémon",
+ "rarity": "Illustration rare",
+ "set": {
+  "cardCount": {
+   "official": 102,
+   "total": 102
+  },
+  "id": "sv01",
+  "name": "set"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": true,
+  "normal": true,
+  "reverse": false,
+  "wPromo": false
+ },
+ "updated": "2025-08-18T19:41:34+02:00",
+ "image": "https://assets.tcgdex.net/en/x/sv01-200",
+ "dexId": [
+  9999
+ ]
+}

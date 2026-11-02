@@ -35,8 +35,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Traducción literal de {@code tcg-higher-lower/server.ts}. Sin {@code context.tcgCards} (las salas Java hasta la
- * etapa 2C) el mazo está vacío: {@link #checkAvailability} devuelve el literal y {@link #createInitialState} lanza.
+ * Traducción literal de {@code tcg-higher-lower/server.ts}. Sin {@code context.tcgCards} (salas sin BD) o sin cartas
+ * comparables el mazo está vacío: {@link #checkAvailability} devuelve el literal y {@link #createInitialState} lanza.
  */
 public final class TcgHigherLowerEngine
     implements GameEngine<TcgHigherLowerConfig, TcgHigherLowerState, TcgHigherLowerAction, TcgHigherLowerPublicState> {

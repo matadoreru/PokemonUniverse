@@ -1,0 +1,8 @@
+{
+  "tables": [
+    {"table": "TcgSet", "orderBy": "\"id\" COLLATE \"C\"", "exclude": ["createdAt", "updatedAt", "sourceUpdatedAt"]},
+    {"table": "TcgCard", "orderBy": "\"id\" COLLATE \"C\"", "exclude": ["createdAt", "updatedAt", "sourceUpdatedAt"]},
+    {"table": "TcgCardPokemon", "orderBy": "\"cardId\" COLLATE \"C\", \"pokemonId\" COLLATE \"C\"", "exclude": []},
+    {"table": "TcgCardPrice", "orderBy": "\"cardId\" COLLATE \"C\", \"provider\" COLLATE \"C\", \"currency\" COLLATE \"C\", \"variant\" COLLATE \"C\"", "exclude": ["id", "observedAt"]}
+  ]
+}

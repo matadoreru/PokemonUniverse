@@ -1,0 +1,36 @@
+{
+ "category": "Pokemon",
+ "id": "base1-99",
+ "illustrator": "Ken Sugimori",
+ "localId": "99",
+ "name": "Missing set",
+ "rarity": "Common",
+ "set": {
+  "name": "Sin id"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": true,
+  "normal": true,
+  "reverse": false,
+  "wPromo": false
+ },
+ "updated": "2025-08-18T19:41:34+02:00",
+ "image": "https://assets.tcgdex.net/en/x/base1-99",
+ "dexId": [
+  25
+ ],
+ "pricing": {
+  "cardmarket": {
+   "updated": "2025-08-05T00:42:15.000Z",
+   "idProduct": 273699,
+   "avg": 5,
+   "low": 1,
+   "trend": 5,
+   "avg1": 5,
+   "avg7": 5,
+   "avg30": 5,
+   "unit": "EUR"
+  }
+ }
+}

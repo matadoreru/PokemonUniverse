@@ -1,0 +1,57 @@
+{
+ "category": "Pokemon",
+ "id": "base1-1",
+ "illustrator": "Ken Sugimori",
+ "localId": "1",
+ "name": "Alakazam",
+ "rarity": "Rare Holo",
+ "set": {
+  "cardCount": {
+   "official": 102,
+   "total": 102
+  },
+  "id": "base1",
+  "name": "set"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": true,
+  "normal": true,
+  "reverse": false,
+  "wPromo": false
+ },
+ "updated": "2025-08-18T19:41:34+02:00",
+ "image": "https://assets.tcgdex.net/en/x/base1-1",
+ "dexId": [
+  65
+ ],
+ "hp": 80,
+ "pricing": {
+  "cardmarket": {
+   "updated": "2025-08-05T00:42:15.000Z",
+   "idProduct": 273699,
+   "avg": 25.4,
+   "low": 10,
+   "trend": 24.12345,
+   "avg1": 25.4,
+   "avg7": 25.4,
+   "avg30": 25.4,
+   "unit": "EUR",
+   "avg-holo": 40,
+   "low-holo": 30,
+   "trend-holo": 41
+  },
+  "tcgplayer": {
+   "updated": "2025-08-04T20:05:22.000Z",
+   "unit": "USD",
+   "holofoil": {
+    "productId": 42382,
+    "lowPrice": 20,
+    "midPrice": 29,
+    "highPrice": 99.99,
+    "marketPrice": 30.5,
+    "directLowPrice": null
+   }
+  }
+ }
+}

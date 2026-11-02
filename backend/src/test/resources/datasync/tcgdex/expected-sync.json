@@ -1,0 +1,2368 @@
+{
+ "initial": {
+  "result": {
+   "processed": 9,
+   "inserted": 8,
+   "updated": 0,
+   "skipped": 1,
+   "datasetVersion": "8",
+   "details": {
+    "pricesRefreshed": false
+   }
+  },
+  "requests": [
+   "/v2/en/sets",
+   "/v2/en/sets/base1",
+   "/v2/en/sets/sv01",
+   "/v2/en/cards/base1-1",
+   "/v2/en/cards/base1-2",
+   "/v2/en/cards/base1-4",
+   "/v2/en/cards/base1-58",
+   "/v2/en/cards/base1-99",
+   "/v2/en/cards/sv01-001",
+   "/v2/en/cards/sv01-025",
+   "/v2/en/cards/sv01-198",
+   "/v2/en/cards/sv01-200"
+  ],
+  "tables": {
+   "TcgSet": [
+    {
+     "id": "base1",
+     "name": "Base Set",
+     "series": "Base",
+     "logoUrl": "https://assets.tcgdex.net/en/base/base1/logo",
+     "metadata": {
+      "id": "base1",
+      "logo": "https://assets.tcgdex.net/en/base/base1/logo",
+      "name": "Base Set",
+      "cards": [
+       {
+        "id": "base1-1",
+        "name": "Alakazam",
+        "image": "https://assets.tcgdex.net/en/x/base1-1",
+        "localId": "1"
+       },
+       {
+        "id": "base1-2",
+        "name": "Blastoise",
+        "image": "https://assets.tcgdex.net/en/x/base1-2",
+        "localId": "2"
+       },
+       {
+        "id": "base1-4",
+        "name": "Charizard",
+        "image": "https://assets.tcgdex.net/en/x/base1-4",
+        "localId": "4"
+       },
+       {
+        "id": "base1-58",
+        "name": "Pikachu",
+        "image": "https://assets.tcgdex.net/en/x/base1-58",
+        "localId": "58"
+       },
+       {
+        "id": "base1-99",
+        "name": "Missing set",
+        "image": "https://assets.tcgdex.net/en/x/base1-99",
+        "localId": "99"
+       }
+      ],
+      "legal": {
+       "expanded": false,
+       "standard": false
+      },
+      "series": {
+       "id": "base",
+       "name": "Base"
+      },
+      "symbol": "https://assets.tcgdex.net/en/univ/base/base1/symbol",
+      "cardCount": {
+       "holo": 16,
+       "total": 102,
+       "normal": 86,
+       "firstEd": 0,
+       "reverse": 0,
+       "official": 102
+      },
+      "releaseDate": "1999-01-09"
+     },
+     "cardCount": 102,
+     "symbolUrl": "https://assets.tcgdex.net/en/univ/base/base1/symbol",
+     "releaseDate": "1999-01-09T00:00:00"
+    },
+    {
+     "id": "sv01",
+     "name": "Écarlate et Violet",
+     "series": "Scarlet & Violet",
+     "logoUrl": null,
+     "metadata": {
+      "id": "sv01",
+      "name": "Écarlate et Violet",
+      "cards": [
+       {
+        "id": "sv01-001",
+        "name": "Sprigatito",
+        "image": "https://assets.tcgdex.net/en/x/sv01-001",
+        "localId": "001"
+       },
+       {
+        "id": "sv01-025",
+        "name": "Pikachu ex",
+        "image": "https://assets.tcgdex.net/en/x/sv01-025",
+        "localId": "025"
+       },
+       {
+        "id": "sv01-198",
+        "name": "Professor's Research",
+        "image": "https://assets.tcgdex.net/en/x/sv01-198",
+        "localId": "198"
+       },
+       {
+        "id": "sv01-200",
+        "name": "Unknown Pokémon",
+        "image": "https://assets.tcgdex.net/en/x/sv01-200",
+        "localId": "200"
+       },
+       {
+        "id": "base1-4",
+        "name": "Charizard",
+        "image": "https://assets.tcgdex.net/en/x/base1-4",
+        "localId": "4"
+       }
+      ],
+      "series": "Scarlet & Violet",
+      "symbol": "https://assets.tcgdex.net/en/univ/sv/sv01/symbol",
+      "cardCount": {
+       "official": 198
+      },
+      "releaseDate": "2023-03-31"
+     },
+     "cardCount": 198,
+     "symbolUrl": "https://assets.tcgdex.net/en/univ/sv/sv01/symbol",
+     "releaseDate": "2023-03-31T00:00:00"
+    }
+   ],
+   "TcgCard": [
+    {
+     "hp": 80,
+     "id": "base1-1",
+     "name": "Alakazam",
+     "setId": "base1",
+     "rarity": "Rare Holo",
+     "localId": "1",
+     "category": "Pokemon",
+     "imageUrl": "https://assets.tcgdex.net/en/x/base1-1/high.webp",
+     "metadata": {
+      "hp": 80,
+      "id": "base1-1",
+      "set": {
+       "id": "base1",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Alakazam",
+      "dexId": [
+       65
+      ],
+      "image": "https://assets.tcgdex.net/en/x/base1-1",
+      "rarity": "Rare Holo",
+      "localId": "1",
+      "pricing": {
+       "tcgplayer": {
+        "unit": "USD",
+        "updated": "2025-08-04T20:05:22.000Z",
+        "holofoil": {
+         "lowPrice": 20,
+         "midPrice": 29,
+         "highPrice": 99.99,
+         "productId": 42382,
+         "marketPrice": 30.5,
+         "directLowPrice": null
+        }
+       },
+       "cardmarket": {
+        "avg": 25.4,
+        "low": 10,
+        "avg1": 25.4,
+        "avg7": 25.4,
+        "unit": "EUR",
+        "avg30": 25.4,
+        "trend": 24.12345,
+        "updated": "2025-08-05T00:42:15.000Z",
+        "avg-holo": 40,
+        "low-holo": 30,
+        "idProduct": 273699,
+        "trend-holo": 41
+       }
+      },
+      "updated": "2025-08-18T19:41:34+02:00",
+      "category": "Pokemon",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Ken Sugimori"
+     },
+     "illustrator": "Ken Sugimori"
+    },
+    {
+     "hp": 100,
+     "id": "base1-2",
+     "name": "Blastoise",
+     "setId": "base1",
+     "rarity": "Rare Holo",
+     "localId": "2",
+     "category": "Pokemon",
+     "imageUrl": "https://assets.tcgdex.net/en/x/base1-2/high.webp",
+     "metadata": {
+      "hp": 100,
+      "id": "base1-2",
+      "set": {
+       "id": "base1",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Blastoise",
+      "dexId": [
+       9
+      ],
+      "image": "https://assets.tcgdex.net/en/x/base1-2",
+      "rarity": "Rare Holo",
+      "localId": "2",
+      "pricing": {
+       "tcgplayer": {
+        "unit": "USD",
+        "normal": {
+         "lowPrice": 1,
+         "midPrice": 2,
+         "highPrice": 3,
+         "productId": 42382,
+         "marketPrice": 2.1,
+         "directLowPrice": null
+        },
+        "updated": "2025-08-04T20:05:22.000Z"
+       },
+       "cardmarket": {
+        "avg": 1.1,
+        "low": 0.5,
+        "avg1": 1.1,
+        "avg7": 1.1,
+        "unit": "EUR",
+        "avg30": 1.1,
+        "trend": 1.00005,
+        "updated": "2025-08-05T00:42:15.000Z",
+        "idProduct": 273699
+       }
+      },
+      "updated": "2025-08-18T19:41:34+02:00",
+      "category": "Pokemon",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Ken Sugimori"
+     },
+     "illustrator": "Ken Sugimori"
+    },
+    {
+     "hp": 120,
+     "id": "base1-4",
+     "name": "Charizard",
+     "setId": "base1",
+     "rarity": "Rare Holo",
+     "localId": "4",
+     "category": "Pokemon",
+     "imageUrl": "https://assets.tcgdex.net/en/x/base1-4/high.webp",
+     "metadata": {
+      "hp": 120,
+      "id": "base1-4",
+      "set": {
+       "id": "base1",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Charizard",
+      "dexId": [
+       6
+      ],
+      "image": "https://assets.tcgdex.net/en/x/base1-4",
+      "rarity": "Rare Holo",
+      "localId": "4",
+      "pricing": {
+       "tcgplayer": {
+        "unit": "USD",
+        "updated": "2025-08-04T20:05:22.000Z",
+        "holofoil": {
+         "lowPrice": 300,
+         "midPrice": 410,
+         "highPrice": 900,
+         "productId": 42382,
+         "marketPrice": 420.25,
+         "directLowPrice": null
+        }
+       },
+       "cardmarket": {
+        "avg": 350.5,
+        "low": 200,
+        "avg1": 350.5,
+        "avg7": 350.5,
+        "unit": "EUR",
+        "avg30": 350.5,
+        "trend": 380.1,
+        "updated": "2025-08-05T00:42:15.000Z",
+        "avg-holo": 400,
+        "low-holo": 300,
+        "idProduct": 273699,
+        "trend-holo": 410
+       }
+      },
+      "updated": "2025-08-18T19:41:34+02:00",
+      "category": "Pokemon",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Mitsuhiro Arita"
+     },
+     "illustrator": "Mitsuhiro Arita"
+    },
+    {
+     "hp": 40,
+     "id": "base1-58",
+     "name": "Pikachu",
+     "setId": "base1",
+     "rarity": "Common",
+     "localId": "58",
+     "category": "Pokemon",
+     "imageUrl": "https://assets.tcgdex.net/en/base/base1/58/high.PNG",
+     "metadata": {
+      "hp": 40,
+      "id": "base1-58",
+      "set": {
+       "id": "base1",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Pikachu",
+      "dexId": [
+       25
+      ],
+      "image": "https://assets.tcgdex.net/en/base/base1/58/high.PNG",
+      "rarity": "Common",
+      "localId": "58",
+      "pricing": {
+       "tcgplayer": {
+        "unit": "USD",
+        "normal": {
+         "lowPrice": 1,
+         "productId": 42382,
+         "marketPrice": 2,
+         "directLowPrice": null
+        },
+        "updated": "2025-08-04T20:05:22.000Z",
+        "reverse-holofoil": {
+         "productId": 42382,
+         "directLowPrice": null
+        }
+       },
+       "cardmarket": {
+        "avg": 1.1,
+        "low": 0.1,
+        "avg1": 1.1,
+        "avg7": 1.1,
+        "avg30": 1.1,
+        "trend": 1.2,
+        "updated": "2025-08-05T00:42:15.000Z",
+        "idProduct": 273699
+       }
+      },
+      "updated": "2025-08-18T19:41:34+02:00",
+      "category": "Pokemon",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Ken Sugimori"
+     },
+     "illustrator": "Ken Sugimori"
+    },
+    {
+     "hp": 70,
+     "id": "sv01-001",
+     "name": "Sprigatito",
+     "setId": "sv01",
+     "rarity": "Common",
+     "localId": "001",
+     "category": "Pokemon",
+     "imageUrl": "https://assets.tcgdex.net/en/x/sv01-001/high.webp",
+     "metadata": {
+      "hp": 70,
+      "id": "sv01-001",
+      "set": {
+       "id": "sv01",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Sprigatito",
+      "dexId": [
+       906
+      ],
+      "image": "https://assets.tcgdex.net/en/x/sv01-001",
+      "rarity": "Common",
+      "localId": "001",
+      "pricing": {
+       "tcgplayer": {
+        "unit": "USD",
+        "normal": {
+         "lowPrice": 0.05,
+         "midPrice": 0.12,
+         "highPrice": 2,
+         "productId": 42382,
+         "marketPrice": 0.1,
+         "directLowPrice": null
+        },
+        "updated": "2025-08-04T20:05:22.000Z",
+        "reverse-holofoil": {
+         "lowPrice": 0.1,
+         "productId": 42382,
+         "marketPrice": 0.25,
+         "directLowPrice": null
+        }
+       },
+       "cardmarket": {
+        "avg": 0.05,
+        "low": 0.02,
+        "avg1": 0.05,
+        "avg7": 0.05,
+        "unit": "EUR",
+        "avg30": 0.05,
+        "trend": 0.06,
+        "updated": "2025-08-05T00:42:15.000Z",
+        "idProduct": 273699
+       }
+      },
+      "updated": "2025-03-01T10:00:00Z",
+      "category": "Pokemon",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Ken Sugimori"
+     },
+     "illustrator": "Ken Sugimori"
+    },
+    {
+     "hp": 200,
+     "id": "sv01-025",
+     "name": "Pikachu ex",
+     "setId": "sv01",
+     "rarity": "Double rare",
+     "localId": "025",
+     "category": "Pokemon",
+     "imageUrl": "https://assets.tcgdex.net/en/x/sv01-025/high.webp",
+     "metadata": {
+      "hp": 200,
+      "id": "sv01-025",
+      "set": {
+       "id": "sv01",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Pikachu ex",
+      "dexId": [
+       25,
+       9999
+      ],
+      "image": "https://assets.tcgdex.net/en/x/sv01-025",
+      "rarity": "Double rare",
+      "localId": "025",
+      "pricing": {
+       "other": {
+        "unit": "JPY",
+        "empty": {
+         "productId": 1
+        },
+        "normal": {
+         "marketPrice": 500
+        },
+        "updated": "x"
+       },
+       "cardmarket": {
+        "avg": 3.5,
+        "low": 2,
+        "avg1": 3.5,
+        "avg7": 3.5,
+        "unit": "EUR",
+        "avg30": 3.5,
+        "trend": 3.4,
+        "updated": "2025-08-05T00:42:15.000Z",
+        "avg-holo": 5,
+        "low-holo": 4,
+        "idProduct": 273699,
+        "trend-holo": 6
+       }
+      },
+      "category": "Pokemon",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Ken Sugimori"
+     },
+     "illustrator": "Ken Sugimori"
+    },
+    {
+     "hp": null,
+     "id": "sv01-198",
+     "name": "Professor's Research",
+     "setId": "sv01",
+     "rarity": "Uncommon",
+     "localId": "198",
+     "category": "Trainer",
+     "imageUrl": null,
+     "metadata": {
+      "id": "sv01-198",
+      "set": {
+       "id": "sv01",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Professor's Research",
+      "rarity": "Uncommon",
+      "localId": "198",
+      "pricing": {
+       "cardmarket": {
+        "avg": 0.2,
+        "low": 0.1,
+        "avg1": 0.2,
+        "avg7": 0.2,
+        "unit": "EUR",
+        "avg30": 0.2,
+        "trend": 0.2,
+        "updated": "2025-08-05T00:42:15.000Z",
+        "idProduct": 273699
+       }
+      },
+      "updated": "2025-08-18T19:41:34+02:00",
+      "category": "Trainer",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Ken Sugimori"
+     },
+     "illustrator": "Ken Sugimori"
+    },
+    {
+     "hp": null,
+     "id": "sv01-200",
+     "name": "Unknown Pokémon",
+     "setId": "sv01",
+     "rarity": "Illustration rare",
+     "localId": "200",
+     "category": "Pokemon",
+     "imageUrl": "https://assets.tcgdex.net/en/x/sv01-200/high.webp",
+     "metadata": {
+      "id": "sv01-200",
+      "set": {
+       "id": "sv01",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Unknown Pokémon",
+      "dexId": [
+       9999
+      ],
+      "image": "https://assets.tcgdex.net/en/x/sv01-200",
+      "rarity": "Illustration rare",
+      "localId": "200",
+      "updated": "2025-08-18T19:41:34+02:00",
+      "category": "Pokemon",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Ken Sugimori"
+     },
+     "illustrator": "Ken Sugimori"
+    }
+   ],
+   "TcgCardPokemon": [
+    {
+     "cardId": "base1-1",
+     "pokemonId": "alakazam"
+    },
+    {
+     "cardId": "base1-2",
+     "pokemonId": "blastoise"
+    },
+    {
+     "cardId": "base1-4",
+     "pokemonId": "charizard"
+    },
+    {
+     "cardId": "base1-58",
+     "pokemonId": "pikachu"
+    },
+    {
+     "cardId": "sv01-001",
+     "pokemonId": "sprigatito"
+    },
+    {
+     "cardId": "sv01-025",
+     "pokemonId": "pikachu"
+    }
+   ],
+   "TcgCardPrice": [
+    {
+     "low": 30,
+     "mid": null,
+     "high": null,
+     "trend": 41,
+     "cardId": "base1-1",
+     "market": 40,
+     "variant": "holo",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 25.4,
+      "low": 10,
+      "avg1": 25.4,
+      "avg7": 25.4,
+      "unit": "EUR",
+      "avg30": 25.4,
+      "trend": 24.12345,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "avg-holo": 40,
+      "low-holo": 30,
+      "idProduct": 273699,
+      "trend-holo": 41
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 10,
+     "mid": null,
+     "high": null,
+     "trend": 24.1235,
+     "cardId": "base1-1",
+     "market": 25.4,
+     "variant": "standard",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 25.4,
+      "low": 10,
+      "avg1": 25.4,
+      "avg7": 25.4,
+      "unit": "EUR",
+      "avg30": 25.4,
+      "trend": 24.12345,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "avg-holo": 40,
+      "low-holo": 30,
+      "idProduct": 273699,
+      "trend-holo": 41
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 20,
+     "mid": 29,
+     "high": 99.99,
+     "trend": null,
+     "cardId": "base1-1",
+     "market": 30.5,
+     "variant": "holofoil",
+     "currency": "USD",
+     "metadata": {
+      "lowPrice": 20,
+      "midPrice": 29,
+      "highPrice": 99.99,
+      "productId": 42382,
+      "marketPrice": 30.5,
+      "directLowPrice": null
+     },
+     "provider": "tcgplayer"
+    },
+    {
+     "low": 0.5,
+     "mid": null,
+     "high": null,
+     "trend": 1.0001,
+     "cardId": "base1-2",
+     "market": 1.1,
+     "variant": "standard",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 1.1,
+      "low": 0.5,
+      "avg1": 1.1,
+      "avg7": 1.1,
+      "unit": "EUR",
+      "avg30": 1.1,
+      "trend": 1.00005,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "idProduct": 273699
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 1,
+     "mid": 2,
+     "high": 3,
+     "trend": null,
+     "cardId": "base1-2",
+     "market": 2.1,
+     "variant": "normal",
+     "currency": "USD",
+     "metadata": {
+      "lowPrice": 1,
+      "midPrice": 2,
+      "highPrice": 3,
+      "productId": 42382,
+      "marketPrice": 2.1,
+      "directLowPrice": null
+     },
+     "provider": "tcgplayer"
+    },
+    {
+     "low": 300,
+     "mid": null,
+     "high": null,
+     "trend": 410,
+     "cardId": "base1-4",
+     "market": 400,
+     "variant": "holo",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 350.5,
+      "low": 200,
+      "avg1": 350.5,
+      "avg7": 350.5,
+      "unit": "EUR",
+      "avg30": 350.5,
+      "trend": 380.1,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "avg-holo": 400,
+      "low-holo": 300,
+      "idProduct": 273699,
+      "trend-holo": 410
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 200,
+     "mid": null,
+     "high": null,
+     "trend": 380.1,
+     "cardId": "base1-4",
+     "market": 350.5,
+     "variant": "standard",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 350.5,
+      "low": 200,
+      "avg1": 350.5,
+      "avg7": 350.5,
+      "unit": "EUR",
+      "avg30": 350.5,
+      "trend": 380.1,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "avg-holo": 400,
+      "low-holo": 300,
+      "idProduct": 273699,
+      "trend-holo": 410
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 300,
+     "mid": 410,
+     "high": 900,
+     "trend": null,
+     "cardId": "base1-4",
+     "market": 420.25,
+     "variant": "holofoil",
+     "currency": "USD",
+     "metadata": {
+      "lowPrice": 300,
+      "midPrice": 410,
+      "highPrice": 900,
+      "productId": 42382,
+      "marketPrice": 420.25,
+      "directLowPrice": null
+     },
+     "provider": "tcgplayer"
+    },
+    {
+     "low": 0.1,
+     "mid": null,
+     "high": null,
+     "trend": 1.2,
+     "cardId": "base1-58",
+     "market": 1.1,
+     "variant": "standard",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 1.1,
+      "low": 0.1,
+      "avg1": 1.1,
+      "avg7": 1.1,
+      "avg30": 1.1,
+      "trend": 1.2,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "idProduct": 273699
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 1,
+     "mid": null,
+     "high": null,
+     "trend": null,
+     "cardId": "base1-58",
+     "market": 2,
+     "variant": "normal",
+     "currency": "USD",
+     "metadata": {
+      "lowPrice": 1,
+      "productId": 42382,
+      "marketPrice": 2,
+      "directLowPrice": null
+     },
+     "provider": "tcgplayer"
+    },
+    {
+     "low": 0.02,
+     "mid": null,
+     "high": null,
+     "trend": 0.06,
+     "cardId": "sv01-001",
+     "market": 0.05,
+     "variant": "standard",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 0.05,
+      "low": 0.02,
+      "avg1": 0.05,
+      "avg7": 0.05,
+      "unit": "EUR",
+      "avg30": 0.05,
+      "trend": 0.06,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "idProduct": 273699
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 0.05,
+     "mid": 0.12,
+     "high": 2,
+     "trend": null,
+     "cardId": "sv01-001",
+     "market": 0.1,
+     "variant": "normal",
+     "currency": "USD",
+     "metadata": {
+      "lowPrice": 0.05,
+      "midPrice": 0.12,
+      "highPrice": 2,
+      "productId": 42382,
+      "marketPrice": 0.1,
+      "directLowPrice": null
+     },
+     "provider": "tcgplayer"
+    },
+    {
+     "low": 0.1,
+     "mid": null,
+     "high": null,
+     "trend": null,
+     "cardId": "sv01-001",
+     "market": 0.25,
+     "variant": "reverse-holofoil",
+     "currency": "USD",
+     "metadata": {
+      "lowPrice": 0.1,
+      "productId": 42382,
+      "marketPrice": 0.25,
+      "directLowPrice": null
+     },
+     "provider": "tcgplayer"
+    },
+    {
+     "low": 4,
+     "mid": null,
+     "high": null,
+     "trend": 6,
+     "cardId": "sv01-025",
+     "market": 5,
+     "variant": "holo",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 3.5,
+      "low": 2,
+      "avg1": 3.5,
+      "avg7": 3.5,
+      "unit": "EUR",
+      "avg30": 3.5,
+      "trend": 3.4,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "avg-holo": 5,
+      "low-holo": 4,
+      "idProduct": 273699,
+      "trend-holo": 6
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 2,
+     "mid": null,
+     "high": null,
+     "trend": 3.4,
+     "cardId": "sv01-025",
+     "market": 3.5,
+     "variant": "standard",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 3.5,
+      "low": 2,
+      "avg1": 3.5,
+      "avg7": 3.5,
+      "unit": "EUR",
+      "avg30": 3.5,
+      "trend": 3.4,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "avg-holo": 5,
+      "low-holo": 4,
+      "idProduct": 273699,
+      "trend-holo": 6
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": null,
+     "mid": null,
+     "high": null,
+     "trend": null,
+     "cardId": "sv01-025",
+     "market": 500,
+     "variant": "normal",
+     "currency": "JPY",
+     "metadata": {
+      "marketPrice": 500
+     },
+     "provider": "other"
+    },
+    {
+     "low": 0.1,
+     "mid": null,
+     "high": null,
+     "trend": 0.2,
+     "cardId": "sv01-198",
+     "market": 0.2,
+     "variant": "standard",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 0.2,
+      "low": 0.1,
+      "avg1": 0.2,
+      "avg7": 0.2,
+      "unit": "EUR",
+      "avg30": 0.2,
+      "trend": 0.2,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "idProduct": 273699
+     },
+     "provider": "cardmarket"
+    }
+   ]
+  }
+ },
+ "catalog": {
+  "loaded": [
+   {
+    "id": "base1-1",
+    "localId": "1",
+    "name": "Alakazam",
+    "rarity": "Rare Holo",
+    "imageUrl": "https://assets.tcgdex.net/en/x/base1-1/high.webp",
+    "set": {
+     "id": "base1",
+     "name": "Base Set"
+    },
+    "prices": [
+     {
+      "provider": "cardmarket",
+      "currency": "EUR",
+      "variant": "holo",
+      "market": "40"
+     },
+     {
+      "provider": "cardmarket",
+      "currency": "EUR",
+      "variant": "standard",
+      "market": "25.4"
+     },
+     {
+      "provider": "tcgplayer",
+      "currency": "USD",
+      "variant": "holofoil",
+      "market": "30.5"
+     }
+    ],
+    "pokemonGenerations": [
+     1
+    ]
+   },
+   {
+    "id": "base1-2",
+    "localId": "2",
+    "name": "Blastoise",
+    "rarity": "Rare Holo",
+    "imageUrl": "https://assets.tcgdex.net/en/x/base1-2/high.webp",
+    "set": {
+     "id": "base1",
+     "name": "Base Set"
+    },
+    "prices": [
+     {
+      "provider": "cardmarket",
+      "currency": "EUR",
+      "variant": "standard",
+      "market": "1.1"
+     },
+     {
+      "provider": "tcgplayer",
+      "currency": "USD",
+      "variant": "normal",
+      "market": "2.1"
+     }
+    ],
+    "pokemonGenerations": [
+     1
+    ]
+   },
+   {
+    "id": "base1-4",
+    "localId": "4",
+    "name": "Charizard",
+    "rarity": "Rare Holo",
+    "imageUrl": "https://assets.tcgdex.net/en/x/base1-4/high.webp",
+    "set": {
+     "id": "base1",
+     "name": "Base Set"
+    },
+    "prices": [
+     {
+      "provider": "cardmarket",
+      "currency": "EUR",
+      "variant": "holo",
+      "market": "400"
+     },
+     {
+      "provider": "cardmarket",
+      "currency": "EUR",
+      "variant": "standard",
+      "market": "350.5"
+     },
+     {
+      "provider": "tcgplayer",
+      "currency": "USD",
+      "variant": "holofoil",
+      "market": "420.25"
+     }
+    ],
+    "pokemonGenerations": [
+     1
+    ]
+   },
+   {
+    "id": "base1-58",
+    "localId": "58",
+    "name": "Pikachu",
+    "rarity": "Common",
+    "imageUrl": "https://assets.tcgdex.net/en/base/base1/58/high.PNG",
+    "set": {
+     "id": "base1",
+     "name": "Base Set"
+    },
+    "prices": [
+     {
+      "provider": "cardmarket",
+      "currency": "EUR",
+      "variant": "standard",
+      "market": "1.1"
+     },
+     {
+      "provider": "tcgplayer",
+      "currency": "USD",
+      "variant": "normal",
+      "market": "2"
+     }
+    ],
+    "pokemonGenerations": [
+     1
+    ]
+   },
+   {
+    "id": "sv01-001",
+    "localId": "001",
+    "name": "Sprigatito",
+    "rarity": "Common",
+    "imageUrl": "https://assets.tcgdex.net/en/x/sv01-001/high.webp",
+    "set": {
+     "id": "sv01",
+     "name": "Écarlate et Violet"
+    },
+    "prices": [
+     {
+      "provider": "cardmarket",
+      "currency": "EUR",
+      "variant": "standard",
+      "market": "0.05"
+     },
+     {
+      "provider": "tcgplayer",
+      "currency": "USD",
+      "variant": "normal",
+      "market": "0.1"
+     },
+     {
+      "provider": "tcgplayer",
+      "currency": "USD",
+      "variant": "reverse-holofoil",
+      "market": "0.25"
+     }
+    ],
+    "pokemonGenerations": [
+     9
+    ]
+   },
+   {
+    "id": "sv01-025",
+    "localId": "025",
+    "name": "Pikachu ex",
+    "rarity": "Double rare",
+    "imageUrl": "https://assets.tcgdex.net/en/x/sv01-025/high.webp",
+    "set": {
+     "id": "sv01",
+     "name": "Écarlate et Violet"
+    },
+    "prices": [
+     {
+      "provider": "cardmarket",
+      "currency": "EUR",
+      "variant": "holo",
+      "market": "5"
+     },
+     {
+      "provider": "cardmarket",
+      "currency": "EUR",
+      "variant": "standard",
+      "market": "3.5"
+     },
+     {
+      "provider": "other",
+      "currency": "JPY",
+      "variant": "normal",
+      "market": "500"
+     }
+    ],
+    "pokemonGenerations": [
+     1
+    ]
+   }
+  ],
+  "options": {
+   "ready": true,
+   "cardCount": 6,
+   "generations": [
+    {
+     "value": 1,
+     "cardCount": 5
+    },
+    {
+     "value": 9,
+     "cardCount": 1
+    }
+   ],
+   "sets": [
+    {
+     "id": "base1",
+     "name": "Base Set",
+     "cardCount": 4
+    },
+    {
+     "id": "sv01",
+     "name": "Écarlate et Violet",
+     "cardCount": 2
+    }
+   ],
+   "rarities": [
+    {
+     "value": "Common",
+     "cardCount": 2
+    },
+    {
+     "value": "Double rare",
+     "cardCount": 1
+    },
+    {
+     "value": "Rare Holo",
+     "cardCount": 3
+    }
+   ]
+  },
+  "allGenerations": [
+   {
+    "id": "base1-1",
+    "name": "Alakazam",
+    "localId": "1",
+    "setId": "base1",
+    "setName": "Base Set",
+    "rarity": "Rare Holo",
+    "imageUrl": "https://assets.tcgdex.net/en/x/base1-1/high.webp",
+    "price": "25.4",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "base1-2",
+    "name": "Blastoise",
+    "localId": "2",
+    "setId": "base1",
+    "setName": "Base Set",
+    "rarity": "Rare Holo",
+    "imageUrl": "https://assets.tcgdex.net/en/x/base1-2/high.webp",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "base1-4",
+    "name": "Charizard",
+    "localId": "4",
+    "setId": "base1",
+    "setName": "Base Set",
+    "rarity": "Rare Holo",
+    "imageUrl": "https://assets.tcgdex.net/en/x/base1-4/high.webp",
+    "price": "350.5",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "base1-58",
+    "name": "Pikachu",
+    "localId": "58",
+    "setId": "base1",
+    "setName": "Base Set",
+    "rarity": "Common",
+    "imageUrl": "https://assets.tcgdex.net/en/base/base1/58/high.PNG",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "sv01-001",
+    "name": "Sprigatito",
+    "localId": "001",
+    "setId": "sv01",
+    "setName": "Écarlate et Violet",
+    "rarity": "Common",
+    "imageUrl": "https://assets.tcgdex.net/en/x/sv01-001/high.webp",
+    "price": "0.05",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "sv01-025",
+    "name": "Pikachu ex",
+    "localId": "025",
+    "setId": "sv01",
+    "setName": "Écarlate et Violet",
+    "rarity": "Double rare",
+    "imageUrl": "https://assets.tcgdex.net/en/x/sv01-025/high.webp",
+    "price": "3.5",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   }
+  ]
+ },
+ "priceRefresh": {
+  "result": {
+   "processed": 8,
+   "inserted": 0,
+   "updated": 8,
+   "skipped": 0,
+   "datasetVersion": "8",
+   "details": {
+    "pricesRefreshed": true
+   }
+  },
+  "requests": [
+   "/v2/en/cards/base1-1",
+   "/v2/en/cards/base1-2",
+   "/v2/en/cards/base1-4",
+   "/v2/en/cards/base1-58",
+   "/v2/en/cards/sv01-001",
+   "/v2/en/cards/sv01-025",
+   "/v2/en/cards/sv01-198",
+   "/v2/en/cards/sv01-200"
+  ],
+  "tables": {
+   "TcgSet": [
+    {
+     "id": "base1",
+     "name": "Base Set",
+     "series": "Base",
+     "logoUrl": "https://assets.tcgdex.net/en/base/base1/logo",
+     "metadata": {
+      "id": "base1",
+      "logo": "https://assets.tcgdex.net/en/base/base1/logo",
+      "name": "Base Set",
+      "cards": [
+       {
+        "id": "base1-1",
+        "name": "Alakazam",
+        "image": "https://assets.tcgdex.net/en/x/base1-1",
+        "localId": "1"
+       },
+       {
+        "id": "base1-2",
+        "name": "Blastoise",
+        "image": "https://assets.tcgdex.net/en/x/base1-2",
+        "localId": "2"
+       },
+       {
+        "id": "base1-4",
+        "name": "Charizard",
+        "image": "https://assets.tcgdex.net/en/x/base1-4",
+        "localId": "4"
+       },
+       {
+        "id": "base1-58",
+        "name": "Pikachu",
+        "image": "https://assets.tcgdex.net/en/x/base1-58",
+        "localId": "58"
+       },
+       {
+        "id": "base1-99",
+        "name": "Missing set",
+        "image": "https://assets.tcgdex.net/en/x/base1-99",
+        "localId": "99"
+       }
+      ],
+      "legal": {
+       "expanded": false,
+       "standard": false
+      },
+      "series": {
+       "id": "base",
+       "name": "Base"
+      },
+      "symbol": "https://assets.tcgdex.net/en/univ/base/base1/symbol",
+      "cardCount": {
+       "holo": 16,
+       "total": 102,
+       "normal": 86,
+       "firstEd": 0,
+       "reverse": 0,
+       "official": 102
+      },
+      "releaseDate": "1999-01-09"
+     },
+     "cardCount": 102,
+     "symbolUrl": "https://assets.tcgdex.net/en/univ/base/base1/symbol",
+     "releaseDate": "1999-01-09T00:00:00"
+    },
+    {
+     "id": "sv01",
+     "name": "Écarlate et Violet",
+     "series": "Scarlet & Violet",
+     "logoUrl": null,
+     "metadata": {
+      "id": "sv01",
+      "name": "Écarlate et Violet",
+      "cards": [
+       {
+        "id": "sv01-001",
+        "name": "Sprigatito",
+        "image": "https://assets.tcgdex.net/en/x/sv01-001",
+        "localId": "001"
+       },
+       {
+        "id": "sv01-025",
+        "name": "Pikachu ex",
+        "image": "https://assets.tcgdex.net/en/x/sv01-025",
+        "localId": "025"
+       },
+       {
+        "id": "sv01-198",
+        "name": "Professor's Research",
+        "image": "https://assets.tcgdex.net/en/x/sv01-198",
+        "localId": "198"
+       },
+       {
+        "id": "sv01-200",
+        "name": "Unknown Pokémon",
+        "image": "https://assets.tcgdex.net/en/x/sv01-200",
+        "localId": "200"
+       },
+       {
+        "id": "base1-4",
+        "name": "Charizard",
+        "image": "https://assets.tcgdex.net/en/x/base1-4",
+        "localId": "4"
+       }
+      ],
+      "series": "Scarlet & Violet",
+      "symbol": "https://assets.tcgdex.net/en/univ/sv/sv01/symbol",
+      "cardCount": {
+       "official": 198
+      },
+      "releaseDate": "2023-03-31"
+     },
+     "cardCount": 198,
+     "symbolUrl": "https://assets.tcgdex.net/en/univ/sv/sv01/symbol",
+     "releaseDate": "2023-03-31T00:00:00"
+    }
+   ],
+   "TcgCard": [
+    {
+     "hp": 80,
+     "id": "base1-1",
+     "name": "Alakazam",
+     "setId": "base1",
+     "rarity": "Rare Holo",
+     "localId": "1",
+     "category": "Pokemon",
+     "imageUrl": "https://assets.tcgdex.net/en/x/base1-1/high.webp",
+     "metadata": {
+      "hp": 80,
+      "id": "base1-1",
+      "set": {
+       "id": "base1",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Alakazam",
+      "dexId": [
+       65
+      ],
+      "image": "https://assets.tcgdex.net/en/x/base1-1",
+      "rarity": "Rare Holo",
+      "localId": "1",
+      "pricing": {
+       "tcgplayer": {
+        "unit": "USD",
+        "updated": "2025-08-04T20:05:22.000Z",
+        "holofoil": {
+         "lowPrice": 20,
+         "midPrice": 29,
+         "highPrice": 99.99,
+         "productId": 42382,
+         "marketPrice": 30.5,
+         "directLowPrice": null
+        }
+       },
+       "cardmarket": {
+        "avg": 25.4,
+        "low": 10,
+        "avg1": 25.4,
+        "avg7": 25.4,
+        "unit": "EUR",
+        "avg30": 25.4,
+        "trend": 24.12345,
+        "updated": "2025-08-05T00:42:15.000Z",
+        "avg-holo": 40,
+        "low-holo": 30,
+        "idProduct": 273699,
+        "trend-holo": 41
+       }
+      },
+      "updated": "2025-08-18T19:41:34+02:00",
+      "category": "Pokemon",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Ken Sugimori"
+     },
+     "illustrator": "Ken Sugimori"
+    },
+    {
+     "hp": 100,
+     "id": "base1-2",
+     "name": "Blastoise",
+     "setId": "base1",
+     "rarity": "Rare Holo",
+     "localId": "2",
+     "category": "Pokemon",
+     "imageUrl": "https://assets.tcgdex.net/en/x/base1-2/high.webp",
+     "metadata": {
+      "hp": 100,
+      "id": "base1-2",
+      "set": {
+       "id": "base1",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Blastoise",
+      "dexId": [
+       9
+      ],
+      "image": "https://assets.tcgdex.net/en/x/base1-2",
+      "rarity": "Rare Holo",
+      "localId": "2",
+      "pricing": {
+       "tcgplayer": {
+        "unit": "USD",
+        "normal": {
+         "lowPrice": 1,
+         "midPrice": 2,
+         "highPrice": 3,
+         "productId": 42382,
+         "marketPrice": 2.1,
+         "directLowPrice": null
+        },
+        "updated": "2025-08-04T20:05:22.000Z"
+       },
+       "cardmarket": {
+        "avg": 1.1,
+        "low": 0.5,
+        "avg1": 1.1,
+        "avg7": 1.1,
+        "unit": "EUR",
+        "avg30": 1.1,
+        "trend": 1.00005,
+        "updated": "2025-08-05T00:42:15.000Z",
+        "idProduct": 273699
+       }
+      },
+      "updated": "2025-08-18T19:41:34+02:00",
+      "category": "Pokemon",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Ken Sugimori"
+     },
+     "illustrator": "Ken Sugimori"
+    },
+    {
+     "hp": 120,
+     "id": "base1-4",
+     "name": "Charizard",
+     "setId": "base1",
+     "rarity": "Rare Holo",
+     "localId": "4",
+     "category": "Pokemon",
+     "imageUrl": "https://assets.tcgdex.net/en/x/base1-4/high.webp",
+     "metadata": {
+      "hp": 120,
+      "id": "base1-4",
+      "set": {
+       "id": "base1",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Charizard",
+      "dexId": [
+       6
+      ],
+      "image": "https://assets.tcgdex.net/en/x/base1-4",
+      "rarity": "Rare Holo",
+      "localId": "4",
+      "pricing": {
+       "tcgplayer": {
+        "unit": "USD",
+        "updated": "2025-08-04T20:05:22.000Z",
+        "holofoil": {
+         "lowPrice": 300,
+         "midPrice": 410,
+         "highPrice": 900,
+         "productId": 42382,
+         "marketPrice": 420.25,
+         "directLowPrice": null
+        }
+       },
+       "cardmarket": {
+        "avg": 350.5,
+        "low": 200,
+        "avg1": 350.5,
+        "avg7": 350.5,
+        "unit": "EUR",
+        "avg30": 350.5,
+        "trend": 380.1,
+        "updated": "2025-08-05T00:42:15.000Z",
+        "avg-holo": 400,
+        "low-holo": 300,
+        "idProduct": 273699,
+        "trend-holo": 410
+       }
+      },
+      "updated": "2025-08-18T19:41:34+02:00",
+      "category": "Pokemon",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Mitsuhiro Arita"
+     },
+     "illustrator": "Mitsuhiro Arita"
+    },
+    {
+     "hp": 40,
+     "id": "base1-58",
+     "name": "Pikachu",
+     "setId": "base1",
+     "rarity": "Common",
+     "localId": "58",
+     "category": "Pokemon",
+     "imageUrl": "https://assets.tcgdex.net/en/base/base1/58/high.PNG",
+     "metadata": {
+      "hp": 40,
+      "id": "base1-58",
+      "set": {
+       "id": "base1",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Pikachu",
+      "dexId": [
+       25
+      ],
+      "image": "https://assets.tcgdex.net/en/base/base1/58/high.PNG",
+      "rarity": "Common",
+      "localId": "58",
+      "pricing": {
+       "tcgplayer": {
+        "unit": "USD",
+        "normal": {
+         "lowPrice": 1,
+         "productId": 42382,
+         "marketPrice": 2,
+         "directLowPrice": null
+        },
+        "updated": "2025-08-04T20:05:22.000Z",
+        "reverse-holofoil": {
+         "productId": 42382,
+         "directLowPrice": null
+        }
+       },
+       "cardmarket": {
+        "avg": 1.1,
+        "low": 0.1,
+        "avg1": 1.1,
+        "avg7": 1.1,
+        "avg30": 1.1,
+        "trend": 1.2,
+        "updated": "2025-08-05T00:42:15.000Z",
+        "idProduct": 273699
+       }
+      },
+      "updated": "2025-08-18T19:41:34+02:00",
+      "category": "Pokemon",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Ken Sugimori"
+     },
+     "illustrator": "Ken Sugimori"
+    },
+    {
+     "hp": 70,
+     "id": "sv01-001",
+     "name": "Sprigatito",
+     "setId": "sv01",
+     "rarity": "Common",
+     "localId": "001",
+     "category": "Pokemon",
+     "imageUrl": "https://assets.tcgdex.net/en/x/sv01-001/high.webp",
+     "metadata": {
+      "hp": 70,
+      "id": "sv01-001",
+      "set": {
+       "id": "sv01",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Sprigatito",
+      "dexId": [
+       906
+      ],
+      "image": "https://assets.tcgdex.net/en/x/sv01-001",
+      "rarity": "Common",
+      "localId": "001",
+      "pricing": {
+       "tcgplayer": {
+        "unit": "USD",
+        "normal": {
+         "lowPrice": 0.05,
+         "midPrice": 0.12,
+         "highPrice": 2,
+         "productId": 42382,
+         "marketPrice": 0.1,
+         "directLowPrice": null
+        },
+        "updated": "2025-08-04T20:05:22.000Z",
+        "reverse-holofoil": {
+         "lowPrice": 0.1,
+         "productId": 42382,
+         "marketPrice": 0.25,
+         "directLowPrice": null
+        }
+       },
+       "cardmarket": {
+        "avg": 0.05,
+        "low": 0.02,
+        "avg1": 0.05,
+        "avg7": 0.05,
+        "unit": "EUR",
+        "avg30": 0.05,
+        "trend": 0.06,
+        "updated": "2025-08-05T00:42:15.000Z",
+        "idProduct": 273699
+       }
+      },
+      "updated": "2025-03-01T10:00:00Z",
+      "category": "Pokemon",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Ken Sugimori"
+     },
+     "illustrator": "Ken Sugimori"
+    },
+    {
+     "hp": 200,
+     "id": "sv01-025",
+     "name": "Pikachu ex",
+     "setId": "sv01",
+     "rarity": "Double rare",
+     "localId": "025",
+     "category": "Pokemon",
+     "imageUrl": "https://assets.tcgdex.net/en/x/sv01-025/high.webp",
+     "metadata": {
+      "hp": 200,
+      "id": "sv01-025",
+      "set": {
+       "id": "sv01",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Pikachu ex",
+      "dexId": [
+       25,
+       9999
+      ],
+      "image": "https://assets.tcgdex.net/en/x/sv01-025",
+      "rarity": "Double rare",
+      "localId": "025",
+      "pricing": {
+       "other": {
+        "unit": "JPY",
+        "empty": {
+         "productId": 1
+        },
+        "normal": {
+         "marketPrice": 500
+        },
+        "updated": "x"
+       },
+       "cardmarket": {
+        "avg": 3.5,
+        "low": 2,
+        "avg1": 3.5,
+        "avg7": 3.5,
+        "unit": "EUR",
+        "avg30": 3.5,
+        "trend": 3.4,
+        "updated": "2025-08-05T00:42:15.000Z",
+        "avg-holo": 5,
+        "low-holo": 4,
+        "idProduct": 273699,
+        "trend-holo": 6
+       }
+      },
+      "category": "Pokemon",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Ken Sugimori"
+     },
+     "illustrator": "Ken Sugimori"
+    },
+    {
+     "hp": null,
+     "id": "sv01-198",
+     "name": "Professor's Research",
+     "setId": "sv01",
+     "rarity": "Uncommon",
+     "localId": "198",
+     "category": "Trainer",
+     "imageUrl": null,
+     "metadata": {
+      "id": "sv01-198",
+      "set": {
+       "id": "sv01",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Professor's Research",
+      "rarity": "Uncommon",
+      "localId": "198",
+      "pricing": {
+       "cardmarket": {
+        "avg": 0.2,
+        "low": 0.1,
+        "avg1": 0.2,
+        "avg7": 0.2,
+        "unit": "EUR",
+        "avg30": 0.2,
+        "trend": 0.2,
+        "updated": "2025-08-05T00:42:15.000Z",
+        "idProduct": 273699
+       }
+      },
+      "updated": "2025-08-18T19:41:34+02:00",
+      "category": "Trainer",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Ken Sugimori"
+     },
+     "illustrator": "Ken Sugimori"
+    },
+    {
+     "hp": null,
+     "id": "sv01-200",
+     "name": "Unknown Pokémon",
+     "setId": "sv01",
+     "rarity": "Illustration rare",
+     "localId": "200",
+     "category": "Pokemon",
+     "imageUrl": "https://assets.tcgdex.net/en/x/sv01-200/high.webp",
+     "metadata": {
+      "id": "sv01-200",
+      "set": {
+       "id": "sv01",
+       "name": "set",
+       "cardCount": {
+        "total": 102,
+        "official": 102
+       }
+      },
+      "name": "Unknown Pokémon",
+      "dexId": [
+       9999
+      ],
+      "image": "https://assets.tcgdex.net/en/x/sv01-200",
+      "rarity": "Illustration rare",
+      "localId": "200",
+      "updated": "2025-08-18T19:41:34+02:00",
+      "category": "Pokemon",
+      "variants": {
+       "holo": true,
+       "normal": true,
+       "wPromo": false,
+       "reverse": false,
+       "firstEdition": false
+      },
+      "illustrator": "Ken Sugimori"
+     },
+     "illustrator": "Ken Sugimori"
+    }
+   ],
+   "TcgCardPokemon": [
+    {
+     "cardId": "base1-1",
+     "pokemonId": "alakazam"
+    },
+    {
+     "cardId": "base1-2",
+     "pokemonId": "blastoise"
+    },
+    {
+     "cardId": "base1-4",
+     "pokemonId": "charizard"
+    },
+    {
+     "cardId": "base1-58",
+     "pokemonId": "pikachu"
+    },
+    {
+     "cardId": "sv01-001",
+     "pokemonId": "sprigatito"
+    },
+    {
+     "cardId": "sv01-025",
+     "pokemonId": "pikachu"
+    }
+   ],
+   "TcgCardPrice": [
+    {
+     "low": 30,
+     "mid": null,
+     "high": null,
+     "trend": 41,
+     "cardId": "base1-1",
+     "market": 40,
+     "variant": "holo",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 25.4,
+      "low": 10,
+      "avg1": 25.4,
+      "avg7": 25.4,
+      "unit": "EUR",
+      "avg30": 25.4,
+      "trend": 24.12345,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "avg-holo": 40,
+      "low-holo": 30,
+      "idProduct": 273699,
+      "trend-holo": 41
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 10,
+     "mid": null,
+     "high": null,
+     "trend": 24.1235,
+     "cardId": "base1-1",
+     "market": 25.4,
+     "variant": "standard",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 25.4,
+      "low": 10,
+      "avg1": 25.4,
+      "avg7": 25.4,
+      "unit": "EUR",
+      "avg30": 25.4,
+      "trend": 24.12345,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "avg-holo": 40,
+      "low-holo": 30,
+      "idProduct": 273699,
+      "trend-holo": 41
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 20,
+     "mid": 29,
+     "high": 99.99,
+     "trend": null,
+     "cardId": "base1-1",
+     "market": 30.5,
+     "variant": "holofoil",
+     "currency": "USD",
+     "metadata": {
+      "lowPrice": 20,
+      "midPrice": 29,
+      "highPrice": 99.99,
+      "productId": 42382,
+      "marketPrice": 30.5,
+      "directLowPrice": null
+     },
+     "provider": "tcgplayer"
+    },
+    {
+     "low": 0.5,
+     "mid": null,
+     "high": null,
+     "trend": 1.0001,
+     "cardId": "base1-2",
+     "market": 1.1,
+     "variant": "standard",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 1.1,
+      "low": 0.5,
+      "avg1": 1.1,
+      "avg7": 1.1,
+      "unit": "EUR",
+      "avg30": 1.1,
+      "trend": 1.00005,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "idProduct": 273699
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 1,
+     "mid": 2,
+     "high": 3,
+     "trend": null,
+     "cardId": "base1-2",
+     "market": 2.1,
+     "variant": "normal",
+     "currency": "USD",
+     "metadata": {
+      "lowPrice": 1,
+      "midPrice": 2,
+      "highPrice": 3,
+      "productId": 42382,
+      "marketPrice": 2.1,
+      "directLowPrice": null
+     },
+     "provider": "tcgplayer"
+    },
+    {
+     "low": 300,
+     "mid": null,
+     "high": null,
+     "trend": 410,
+     "cardId": "base1-4",
+     "market": 400,
+     "variant": "holo",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 360,
+      "low": 200,
+      "avg1": 350.5,
+      "avg7": 350.5,
+      "unit": "EUR",
+      "avg30": 350.5,
+      "trend": 380.1,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "avg-holo": 400,
+      "low-holo": 300,
+      "idProduct": 273699,
+      "trend-holo": 410
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 200,
+     "mid": null,
+     "high": null,
+     "trend": 380.1,
+     "cardId": "base1-4",
+     "market": 360,
+     "variant": "standard",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 360,
+      "low": 200,
+      "avg1": 350.5,
+      "avg7": 350.5,
+      "unit": "EUR",
+      "avg30": 350.5,
+      "trend": 380.1,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "avg-holo": 400,
+      "low-holo": 300,
+      "idProduct": 273699,
+      "trend-holo": 410
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 300,
+     "mid": 410,
+     "high": 900,
+     "trend": null,
+     "cardId": "base1-4",
+     "market": 430.5,
+     "variant": "holofoil",
+     "currency": "USD",
+     "metadata": {
+      "lowPrice": 300,
+      "midPrice": 410,
+      "highPrice": 900,
+      "productId": 42382,
+      "marketPrice": 430.5,
+      "directLowPrice": null
+     },
+     "provider": "tcgplayer"
+    },
+    {
+     "low": 0.1,
+     "mid": null,
+     "high": null,
+     "trend": 1.2,
+     "cardId": "base1-58",
+     "market": 1.1,
+     "variant": "standard",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 1.1,
+      "low": 0.1,
+      "avg1": 1.1,
+      "avg7": 1.1,
+      "avg30": 1.1,
+      "trend": 1.2,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "idProduct": 273699
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 1,
+     "mid": null,
+     "high": null,
+     "trend": null,
+     "cardId": "base1-58",
+     "market": 2,
+     "variant": "normal",
+     "currency": "USD",
+     "metadata": {
+      "lowPrice": 1,
+      "productId": 42382,
+      "marketPrice": 2,
+      "directLowPrice": null
+     },
+     "provider": "tcgplayer"
+    },
+    {
+     "low": 0.02,
+     "mid": null,
+     "high": null,
+     "trend": 0.06,
+     "cardId": "sv01-001",
+     "market": 0.07,
+     "variant": "standard",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 0.07,
+      "low": 0.02,
+      "avg1": 0.05,
+      "avg7": 0.05,
+      "unit": "EUR",
+      "avg30": 0.05,
+      "trend": 0.06,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "idProduct": 273699
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 0.05,
+     "mid": 0.12,
+     "high": 2,
+     "trend": null,
+     "cardId": "sv01-001",
+     "market": null,
+     "variant": "normal",
+     "currency": "USD",
+     "metadata": {
+      "lowPrice": 0.05,
+      "midPrice": 0.12,
+      "highPrice": 2,
+      "productId": 42382,
+      "marketPrice": null,
+      "directLowPrice": null
+     },
+     "provider": "tcgplayer"
+    },
+    {
+     "low": 0.1,
+     "mid": null,
+     "high": null,
+     "trend": null,
+     "cardId": "sv01-001",
+     "market": 0.25,
+     "variant": "reverse-holofoil",
+     "currency": "USD",
+     "metadata": {
+      "lowPrice": 0.1,
+      "productId": 42382,
+      "marketPrice": 0.25,
+      "directLowPrice": null
+     },
+     "provider": "tcgplayer"
+    },
+    {
+     "low": 4,
+     "mid": null,
+     "high": null,
+     "trend": 6,
+     "cardId": "sv01-025",
+     "market": 5,
+     "variant": "holo",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 3.5,
+      "low": 2,
+      "avg1": 3.5,
+      "avg7": 3.5,
+      "unit": "EUR",
+      "avg30": 3.5,
+      "trend": 3.4,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "avg-holo": 5,
+      "low-holo": 4,
+      "idProduct": 273699,
+      "trend-holo": 6
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": 2,
+     "mid": null,
+     "high": null,
+     "trend": 3.4,
+     "cardId": "sv01-025",
+     "market": 3.5,
+     "variant": "standard",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 3.5,
+      "low": 2,
+      "avg1": 3.5,
+      "avg7": 3.5,
+      "unit": "EUR",
+      "avg30": 3.5,
+      "trend": 3.4,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "avg-holo": 5,
+      "low-holo": 4,
+      "idProduct": 273699,
+      "trend-holo": 6
+     },
+     "provider": "cardmarket"
+    },
+    {
+     "low": null,
+     "mid": null,
+     "high": null,
+     "trend": null,
+     "cardId": "sv01-025",
+     "market": 500,
+     "variant": "normal",
+     "currency": "JPY",
+     "metadata": {
+      "marketPrice": 500
+     },
+     "provider": "other"
+    },
+    {
+     "low": 0.1,
+     "mid": null,
+     "high": null,
+     "trend": 0.2,
+     "cardId": "sv01-198",
+     "market": 0.2,
+     "variant": "standard",
+     "currency": "EUR",
+     "metadata": {
+      "avg": 0.2,
+      "low": 0.1,
+      "avg1": 0.2,
+      "avg7": 0.2,
+      "unit": "EUR",
+      "avg30": 0.2,
+      "trend": 0.2,
+      "updated": "2025-08-05T00:42:15.000Z",
+      "idProduct": 273699
+     },
+     "provider": "cardmarket"
+    }
+   ]
+  }
+ }
+}

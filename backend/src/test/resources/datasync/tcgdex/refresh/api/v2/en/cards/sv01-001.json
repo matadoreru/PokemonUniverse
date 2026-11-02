@@ -1,0 +1,60 @@
+{
+ "category": "Pokemon",
+ "id": "sv01-001",
+ "illustrator": "Ken Sugimori",
+ "localId": "001",
+ "name": "Sprigatito",
+ "rarity": "Common",
+ "set": {
+  "cardCount": {
+   "official": 102,
+   "total": 102
+  },
+  "id": "sv01",
+  "name": "set"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": true,
+  "normal": true,
+  "reverse": false,
+  "wPromo": false
+ },
+ "updated": "2025-03-01T10:00:00Z",
+ "image": "https://assets.tcgdex.net/en/x/sv01-001",
+ "dexId": [
+  906
+ ],
+ "hp": 70,
+ "pricing": {
+  "cardmarket": {
+   "updated": "2025-08-05T00:42:15.000Z",
+   "idProduct": 273699,
+   "avg": 0.07,
+   "low": 0.02,
+   "trend": 0.06,
+   "avg1": 0.05,
+   "avg7": 0.05,
+   "avg30": 0.05,
+   "unit": "EUR"
+  },
+  "tcgplayer": {
+   "updated": "2025-08-04T20:05:22.000Z",
+   "unit": "USD",
+   "normal": {
+    "productId": 42382,
+    "lowPrice": 0.05,
+    "midPrice": 0.12,
+    "highPrice": 2,
+    "marketPrice": null,
+    "directLowPrice": null
+   },
+   "reverse-holofoil": {
+    "productId": 42382,
+    "lowPrice": 0.1,
+    "marketPrice": 0.25,
+    "directLowPrice": null
+   }
+  }
+ }
+}

@@ -1,0 +1,55 @@
+{
+ "category": "Pokemon",
+ "id": "sv01-025",
+ "illustrator": "Ken Sugimori",
+ "localId": "025",
+ "name": "Pikachu ex",
+ "rarity": "Double rare",
+ "set": {
+  "cardCount": {
+   "official": 102,
+   "total": 102
+  },
+  "id": "sv01",
+  "name": "set"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": true,
+  "normal": true,
+  "reverse": false,
+  "wPromo": false
+ },
+ "image": "https://assets.tcgdex.net/en/x/sv01-025",
+ "dexId": [
+  25,
+  9999
+ ],
+ "hp": 200,
+ "pricing": {
+  "cardmarket": {
+   "updated": "2025-08-05T00:42:15.000Z",
+   "idProduct": 273699,
+   "avg": 3.5,
+   "low": 2,
+   "trend": 3.4,
+   "avg1": 3.5,
+   "avg7": 3.5,
+   "avg30": 3.5,
+   "unit": "EUR",
+   "avg-holo": 5,
+   "low-holo": 4,
+   "trend-holo": 6
+  },
+  "other": {
+   "unit": "JPY",
+   "updated": "x",
+   "normal": {
+    "marketPrice": 500
+   },
+   "empty": {
+    "productId": 1
+   }
+  }
+ }
+}

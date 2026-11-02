@@ -1,5 +1,6 @@
 package es.pokemonuniverse.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -96,12 +97,13 @@ class PuConfigTest {
     }
   }
 
-  /** PokéAPI y sprites solo por https; http únicamente hacia loopback (servidor de fixtures de las pruebas). */
+  /** PokéAPI, sprites y TCGdex solo por https; http únicamente hacia loopback (servidor de fixtures de las pruebas). */
   @Test
   void dataSyncSourcesMustBeHttpsOrLoopback() {
     String secret = "x".repeat(40);
     for (var entry : Map.<String, Object>of("pu.data-sync.pokeapi-base-url", "http://pokeapi.co/api/v2",
-        "pu.data-sync.sprite-base-url", "ftp://raw.githubusercontent.com").entrySet()) {
+        "pu.data-sync.sprite-base-url", "ftp://raw.githubusercontent.com",
+        "pu.data-sync.tcgdex-base-url", "http://api.tcgdex.net/v2/en").entrySet()) {
       var invalid = new java.util.HashMap<String, Object>(props(secret, false));
       invalid.put(entry.getKey(), entry.getValue());
       var ex = assertThrows(Exception.class,
@@ -111,8 +113,10 @@ class PuConfigTest {
     var loopback = new java.util.HashMap<String, Object>(props(secret, false));
     loopback.put("pu.data-sync.pokeapi-base-url", "http://127.0.0.1:8099/api/v2");
     loopback.put("pu.data-sync.sprite-base-url", "http://localhost:8099/raw");
+    loopback.put("pu.data-sync.tcgdex-base-url", "http://127.0.0.1:8099/v2/en");
     try (var ctx = ApplicationContext.run(loopback, "test")) {
       assertTrue(ctx.getBean(PuConfig.DataSync.class).pokeapiBaseUrl().startsWith("http://127.0.0.1"));
+      assertEquals("http://127.0.0.1:8099/v2/en", ctx.getBean(PuConfig.DataSync.class).tcgdexBaseUrl());
     }
   }
 

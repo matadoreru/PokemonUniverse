@@ -1,0 +1,54 @@
+{
+ "category": "Pokemon",
+ "id": "base1-2",
+ "illustrator": "Ken Sugimori",
+ "localId": "2",
+ "name": "Blastoise",
+ "rarity": "Rare Holo",
+ "set": {
+  "cardCount": {
+   "official": 102,
+   "total": 102
+  },
+  "id": "base1",
+  "name": "set"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": true,
+  "normal": true,
+  "reverse": false,
+  "wPromo": false
+ },
+ "updated": "2025-08-18T19:41:34+02:00",
+ "image": "https://assets.tcgdex.net/en/x/base1-2",
+ "dexId": [
+  9
+ ],
+ "hp": 100,
+ "pricing": {
+  "cardmarket": {
+   "updated": "2025-08-05T00:42:15.000Z",
+   "idProduct": 273699,
+   "avg": 1.1,
+   "low": 0.5,
+   "trend": 1.00005,
+   "avg1": 1.1,
+   "avg7": 1.1,
+   "avg30": 1.1,
+   "unit": "EUR"
+  },
+  "tcgplayer": {
+   "updated": "2025-08-04T20:05:22.000Z",
+   "unit": "USD",
+   "normal": {
+    "productId": 42382,
+    "lowPrice": 1,
+    "midPrice": 2,
+    "highPrice": 3,
+    "marketPrice": 2.1,
+    "directLowPrice": null
+   }
+  }
+ }
+}

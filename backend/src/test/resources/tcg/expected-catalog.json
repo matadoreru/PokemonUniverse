@@ -1,0 +1,548 @@
+{
+ "cardsFor": {
+  "gen1": [
+   {
+    "id": "a-1",
+    "name": "Bulbasaur",
+    "localId": "1",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/a-1.webp",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "a-2",
+    "name": "Ivysaur",
+    "localId": "2",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Common",
+    "imageUrl": "https://img.test/a-2.webp",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "a-3",
+    "name": "Venusaur",
+    "localId": "3",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/a-3.webp",
+    "price": "12.5",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   }
+  ],
+  "gen2": [
+   {
+    "id": "a-3",
+    "name": "Venusaur",
+    "localId": "3",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/a-3.webp",
+    "price": "12.5",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "b-3",
+    "name": "Meganium",
+    "localId": "3",
+    "setId": "b",
+    "setName": "base",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/b-3.webp",
+    "price": "7",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   }
+  ],
+  "gen1and2": [
+   {
+    "id": "a-1",
+    "name": "Bulbasaur",
+    "localId": "1",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/a-1.webp",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "a-2",
+    "name": "Ivysaur",
+    "localId": "2",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Common",
+    "imageUrl": "https://img.test/a-2.webp",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "a-3",
+    "name": "Venusaur",
+    "localId": "3",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/a-3.webp",
+    "price": "12.5",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "b-3",
+    "name": "Meganium",
+    "localId": "3",
+    "setId": "b",
+    "setName": "base",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/b-3.webp",
+    "price": "7",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   }
+  ],
+  "gen1-min-1.10-max-1.1": [
+   {
+    "id": "a-1",
+    "name": "Bulbasaur",
+    "localId": "1",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/a-1.webp",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "a-2",
+    "name": "Ivysaur",
+    "localId": "2",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Common",
+    "imageUrl": "https://img.test/a-2.webp",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   }
+  ],
+  "gen1-min-1.1": [
+   {
+    "id": "a-1",
+    "name": "Bulbasaur",
+    "localId": "1",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/a-1.webp",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "a-2",
+    "name": "Ivysaur",
+    "localId": "2",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Common",
+    "imageUrl": "https://img.test/a-2.webp",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "a-3",
+    "name": "Venusaur",
+    "localId": "3",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/a-3.webp",
+    "price": "12.5",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   }
+  ],
+  "gen1-max-1.10": [
+   {
+    "id": "a-1",
+    "name": "Bulbasaur",
+    "localId": "1",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/a-1.webp",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "a-2",
+    "name": "Ivysaur",
+    "localId": "2",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Common",
+    "imageUrl": "https://img.test/a-2.webp",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   }
+  ],
+  "gen1-max-1.09": [],
+  "gen1-min-12.5-max-12.50": [],
+  "gen1-min-0012": [],
+  "set-b": [
+   {
+    "id": "b-1",
+    "name": "Chikorita",
+    "localId": "1",
+    "setId": "b",
+    "setName": "base",
+    "rarity": "Common",
+    "imageUrl": "https://img.test/b-1.webp",
+    "price": "0.5",
+    "currency": "USD",
+    "provider": "tcgplayer",
+    "variant": "normal"
+   },
+   {
+    "id": "b-2",
+    "name": "Bayleef",
+    "localId": "2",
+    "setId": "b",
+    "setName": "base",
+    "rarity": null,
+    "imageUrl": "https://img.test/b-2.webp",
+    "price": "0.75",
+    "currency": "USD",
+    "provider": "tcgplayer",
+    "variant": "normal"
+   },
+   {
+    "id": "b-3",
+    "name": "Meganium",
+    "localId": "3",
+    "setId": "b",
+    "setName": "base",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/b-3.webp",
+    "price": "8",
+    "currency": "USD",
+    "provider": "tcgplayer",
+    "variant": "normal"
+   }
+  ],
+  "set-missing": [],
+  "rarity-common": [
+   {
+    "id": "a-2",
+    "name": "Ivysaur",
+    "localId": "2",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Common",
+    "imageUrl": "https://img.test/a-2.webp",
+    "price": "3",
+    "currency": "USD",
+    "provider": "tcgplayer",
+    "variant": "normal"
+   },
+   {
+    "id": "b-1",
+    "name": "Chikorita",
+    "localId": "1",
+    "setId": "b",
+    "setName": "base",
+    "rarity": "Common",
+    "imageUrl": "https://img.test/b-1.webp",
+    "price": "0.5",
+    "currency": "USD",
+    "provider": "tcgplayer",
+    "variant": "normal"
+   }
+  ],
+  "rarity-rare-set-a": [
+   {
+    "id": "a-1",
+    "name": "Bulbasaur",
+    "localId": "1",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/a-1.webp",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "a-3",
+    "name": "Venusaur",
+    "localId": "3",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/a-3.webp",
+    "price": "12.5",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   }
+  ],
+  "gen4-other-lanes": [
+   {
+    "id": "z-2",
+    "name": "Pikachu",
+    "localId": "2",
+    "setId": "z",
+    "setName": "Zeta",
+    "rarity": "Abeto",
+    "imageUrl": "https://img.test/z-2.webp",
+    "price": "4",
+    "currency": "EUR",
+    "provider": "Cardmarket",
+    "variant": "Standard"
+   },
+   {
+    "id": "z-3",
+    "name": "Raichu",
+    "localId": "3",
+    "setId": "z",
+    "setName": "Zeta",
+    "rarity": "abeto",
+    "imageUrl": "https://img.test/z-3.webp",
+    "price": "5",
+    "currency": "EUR",
+    "provider": "Cardmarket",
+    "variant": "Standard"
+   }
+  ],
+  "gen4-min-1": [
+   {
+    "id": "z-2",
+    "name": "Pikachu",
+    "localId": "2",
+    "setId": "z",
+    "setName": "Zeta",
+    "rarity": "Abeto",
+    "imageUrl": "https://img.test/z-2.webp",
+    "price": "4",
+    "currency": "EUR",
+    "provider": "Cardmarket",
+    "variant": "Standard"
+   },
+   {
+    "id": "z-3",
+    "name": "Raichu",
+    "localId": "3",
+    "setId": "z",
+    "setName": "Zeta",
+    "rarity": "abeto",
+    "imageUrl": "https://img.test/z-3.webp",
+    "price": "5",
+    "currency": "EUR",
+    "provider": "Cardmarket",
+    "variant": "Standard"
+   }
+  ],
+  "gen4-min-5": [
+   {
+    "id": "z-1",
+    "name": "Pichu",
+    "localId": "1",
+    "setId": "z",
+    "setName": "Zeta",
+    "rarity": "ábaco",
+    "imageUrl": "https://img.test/z-1.webp",
+    "price": "500",
+    "currency": "JPY",
+    "provider": "other",
+    "variant": "normal"
+   },
+   {
+    "id": "z-2",
+    "name": "Pikachu",
+    "localId": "2",
+    "setId": "z",
+    "setName": "Zeta",
+    "rarity": "Abeto",
+    "imageUrl": "https://img.test/z-2.webp",
+    "price": "500.5",
+    "currency": "JPY",
+    "provider": "other",
+    "variant": "normal"
+   }
+  ],
+  "gen5-single-card-lanes": [],
+  "gen9-empty": [],
+  "all": [
+   {
+    "id": "a-1",
+    "name": "Bulbasaur",
+    "localId": "1",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/a-1.webp",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "a-2",
+    "name": "Ivysaur",
+    "localId": "2",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Common",
+    "imageUrl": "https://img.test/a-2.webp",
+    "price": "1.1",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "a-3",
+    "name": "Venusaur",
+    "localId": "3",
+    "setId": "a",
+    "setName": "Écarlate",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/a-3.webp",
+    "price": "12.5",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "b-3",
+    "name": "Meganium",
+    "localId": "3",
+    "setId": "b",
+    "setName": "base",
+    "rarity": "Rare",
+    "imageUrl": "https://img.test/b-3.webp",
+    "price": "7",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   },
+   {
+    "id": "y-1",
+    "name": "Victini",
+    "localId": "1",
+    "setId": "y",
+    "setName": "ábside",
+    "rarity": "Promo",
+    "imageUrl": "https://img.test/y-1.webp",
+    "price": "3",
+    "currency": "EUR",
+    "provider": "cardmarket",
+    "variant": "standard"
+   }
+  ]
+ },
+ "options": {
+  "ready": true,
+  "cardCount": 11,
+  "generations": [
+   {
+    "value": 1,
+    "cardCount": 3
+   },
+   {
+    "value": 2,
+    "cardCount": 4
+   },
+   {
+    "value": 4,
+    "cardCount": 3
+   },
+   {
+    "value": 5,
+    "cardCount": 2
+   }
+  ],
+  "sets": [
+   {
+    "id": "y",
+    "name": "ábside",
+    "cardCount": 2
+   },
+   {
+    "id": "b",
+    "name": "base",
+    "cardCount": 3
+   },
+   {
+    "id": "a",
+    "name": "Écarlate",
+    "cardCount": 3
+   },
+   {
+    "id": "z",
+    "name": "Zeta",
+    "cardCount": 3
+   }
+  ],
+  "rarities": [
+   {
+    "value": "ábaco",
+    "cardCount": 1
+   },
+   {
+    "value": "abeto",
+    "cardCount": 1
+   },
+   {
+    "value": "Abeto",
+    "cardCount": 1
+   },
+   {
+    "value": "Common",
+    "cardCount": 2
+   },
+   {
+    "value": "Promo",
+    "cardCount": 2
+   },
+   {
+    "value": "Rare",
+    "cardCount": 3
+   }
+  ]
+ }
+}

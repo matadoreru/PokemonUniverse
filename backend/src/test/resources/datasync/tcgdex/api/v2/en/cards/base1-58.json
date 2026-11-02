@@ -1,0 +1,55 @@
+{
+ "category": "Pokemon",
+ "id": "base1-58",
+ "illustrator": "Ken Sugimori",
+ "localId": "58",
+ "name": "Pikachu",
+ "rarity": "Common",
+ "set": {
+  "cardCount": {
+   "official": 102,
+   "total": 102
+  },
+  "id": "base1",
+  "name": "set"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": true,
+  "normal": true,
+  "reverse": false,
+  "wPromo": false
+ },
+ "updated": "2025-08-18T19:41:34+02:00",
+ "image": "https://assets.tcgdex.net/en/base/base1/58/high.PNG",
+ "dexId": [
+  25
+ ],
+ "hp": 40,
+ "pricing": {
+  "cardmarket": {
+   "updated": "2025-08-05T00:42:15.000Z",
+   "idProduct": 273699,
+   "avg": 1.1,
+   "low": 0.1,
+   "trend": 1.2,
+   "avg1": 1.1,
+   "avg7": 1.1,
+   "avg30": 1.1
+  },
+  "tcgplayer": {
+   "updated": "2025-08-04T20:05:22.000Z",
+   "unit": "USD",
+   "normal": {
+    "productId": 42382,
+    "lowPrice": 1,
+    "marketPrice": 2,
+    "directLowPrice": null
+   },
+   "reverse-holofoil": {
+    "productId": 42382,
+    "directLowPrice": null
+   }
+  }
+ }
+}

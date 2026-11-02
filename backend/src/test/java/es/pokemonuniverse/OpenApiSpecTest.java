@@ -40,6 +40,7 @@ class OpenApiSpecTest {
           "/api/games", "/api/health", "/api/pokemon",
           "/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/sprite",
           "/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/audio",
+          "/api/tcg/options", "/api/tcg/eligibility",
           "/api/would-you-rather-prompts", "/api/would-you-rather-prompts/import",
           "/api/would-you-rather-prompts/{id}"), paths.keySet());
     }

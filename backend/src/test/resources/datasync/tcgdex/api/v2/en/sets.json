@@ -1,0 +1,20 @@
+[
+ {
+  "id": "base1",
+  "name": "Base Set",
+  "logo": "https://assets.tcgdex.net/en/base/base1/logo",
+  "cardCount": {
+   "total": 102,
+   "official": 102
+  }
+ },
+ {
+  "id": "sv01",
+  "name": "Écarlate et Violet",
+  "logo": "https://assets.tcgdex.net/en/sv/sv01/logo",
+  "cardCount": {
+   "total": 258,
+   "official": 198
+  }
+ }
+]

@@ -88,6 +88,20 @@ public final class ZodIssues {
     bound("too_big", "maximum", origin, maximum, path, message);
   }
 
+  /** Entero fuera del rango seguro en {@code z.number().int()}: incidencia continuable con su {@code note}. */
+  public void unsafeInteger(boolean tooBig, List<Object> path) {
+    long limit = tooBig ? 9_007_199_254_740_991L : -9_007_199_254_740_991L;
+    var issue = new LinkedHashMap<String, Object>();
+    issue.put("code", tooBig ? "too_big" : "too_small");
+    issue.put(tooBig ? "maximum" : "minimum", limit);
+    issue.put("note", "Integers must be within the safe integer range.");
+    issue.put("origin", "int");
+    issue.put("inclusive", true);
+    issue.put("path", path);
+    issue.put("message", (tooBig ? "Too big: expected int to be <=" : "Too small: expected int to be >=") + limit);
+    issues.add(issue);
+  }
+
   private void bound(String code, String key, String origin, long value, List<Object> path, String message) {
     var issue = new LinkedHashMap<String, Object>();
     issue.put("origin", origin);

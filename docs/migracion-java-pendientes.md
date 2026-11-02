@@ -35,7 +35,9 @@ derivados de él, métricas, logs JSON, límites de peticiones, imagen JVM en Co
    Cambio de comportamiento de 2B: con TwelveMonkeys en el classpath, el proxy de assets (`ImageTransforms.decode`) y el
    catálogo de artworks decodifican fuentes WebP (antes «Unsupported»), más cerca de sharp; el lector WebP nativo de
    `webp-imageio` se retira del registro al arrancar (`config/ImageIoReaders`) y la libwebp solo codifica avatares.
-6. `/api/tcg/*`. Desviación consciente de la especificación (§0 lo situaba en la etapa 1): el plan lo aplazó porque depende del ciclo de vida de la caché del catálogo TCG que refresca data-sync; mientras tanto lo sigue sirviendo Node.
+6. `/api/tcg/*` (hecho en 2C con el catálogo TCG y el adaptador TCGdex; solo se enruta a Java con
+   `VITE_REALTIME=java` hasta 2D). Desviación consciente de la especificación (§0 lo situaba en la etapa 1): dependía del
+   ciclo de vida de la caché del catálogo TCG que refresca data-sync.
 7. Proxy de assets de las rondas (hecho en 2B; producción lo sigue sirviendo Node hasta 2D).
 8. WebSocket: el transporte `/ws` de Java existe desde 2A (mismos 21 eventos cliente→servidor y 7 servidor→cliente que
    Socket.IO); 2D lo convierte en el transporte por defecto y retira Socket.IO.
@@ -70,9 +72,9 @@ buscador desplaza la página (Bingo); además, 8 juegos no muestran el título d
 
 ### 2C: lo que necesita
 
-- Catálogo TCG real (`TcgCardCatalog` JPA, port de `comparable-price.ts` y `CachedTcgCardCatalog`): hasta entonces
-  las salas Java pasan `tcgCards = null` y `tcg-higher-lower` no se puede lanzar. El filtro por generaciones lo cubren
-  sus tests (el `cardsFor` del arnés lo ignora en los dos lados).
+- Catálogo TCG real (hecho en 2C: `CachedTcgCardCatalog` sobre `JpaTcgCardRepository`; las salas Java ya lanzan
+  `tcg-higher-lower` si hay cartas). El filtro por generaciones lo cubren sus tests (el `cardsFor` del arnés lo ignora
+  en los dos lados).
 - Paletas calculadas por el data-sync: la BD local no tiene `metadata.palette` y `pokemon-palette-guess` no se puede
   lanzar (en las fixtures llegan por `catalogPatch`).
 - `PokemonAssetReference` lo escribe el data-sync (gritos y referencias que lee `JpaPokemonAudioCatalog`).
@@ -81,6 +83,9 @@ buscador desplaza la página (Bingo); además, 8 juegos no muestran el título d
 - `HostContentProvider` respaldado por tablas: las categorías personalizadas ya salen de `CustomCategoryService`
   y los pares de Would You Rather de `WouldYouRatherPromptService` (2C, `/api/categories` y
   `/api/would-you-rather-prompts` en Java solo con `VITE_REALTIME=java`).
+- `/api/tcg/` a Java en nginx en el corte 2D: mientras Node sea el dueño de las sincronizaciones
+  (`BACKEND_DATA_SYNC_ENABLED=false`), el catálogo TCG en memoria de Java solo se recarga al arrancar y no vería los
+  precios que escriba Node; con el data-sync Java encendido se recarga tras cada TCGDEX completada.
 - `/api/categories` y `/api/would-you-rather-prompts` a Java en nginx en el corte 2D: mientras Node siga escribiendo
   las tablas, las cachés Java solo ven las filas escritas por Java (se cargan al arrancar).
 
@@ -201,6 +206,21 @@ buscador desplaza la página (Bingo); además, 8 juegos no muestran el título d
   - `PaletteExtractor` lee con ImageIO/`getRGB`: idéntico a sharp en los sprites de PokéAPI (PNG de 8 bits) y en las
     reducciones fijadas; un PNG de 16 bits o en gris podría diferir de los bytes crudos de sharp.
   - `seed.ts` sigue siendo también un CLI de Node (`POKEMON_SYNC=true`); Java solo tiene el adaptador.
+  - Las marcas de tiempo que `JpaPokemonCatalogStore` enlaza con `Timestamp.from(instant)` (`updatedAt`,
+    `createdAt`, `completedAt`…) se guardan en la zona de la JVM, no en UTC como Prisma (columnas `timestamp(3)` sin
+    zona); solo se nota si la JVM no corre en UTC (en desarrollo, Europe/Madrid). El adaptador TCG ya enlaza
+    `LocalDateTime` en UTC; corregir el de Pokémon igual.
+
+- Catálogo TCG y sincronización con TCGdex en Java (2C, `application/tcg`, `application/datasync/tcg`):
+  - `TCGDEX_BASE_URL` (`pu.data-sync.tcgdex-base-url`) solo existe para las pruebas y exige https (http solo hacia
+    loopback), como PokéAPI.
+  - `validImage` usa `java.net.URI` (esquema `https` sin distinguir mayúsculas y con host) en lugar del `new URL` de
+    WHATWG: difieren en casos límite (`https:foo`, espacios sin escapar), que TCGdex no produce.
+  - `loadComparableCards` ordena por id (Node no ordena: el orden del mazo no era determinista).
+  - Una carta con un campo de tipo inesperado (`localId` numérico, `hp` decimal, fecha inválida) hace fallar la
+    ejecución como el upsert de Prisma, pero con otro mensaje. Los precios de una carta se escriben en una sola
+    transacción (Node hace un upsert por precio).
+  - Las peticiones de un lote de 20 cartas son concurrentes (como `Promise.all`): su orden de llegada no es fijo.
 
 ## Métricas de CI
 

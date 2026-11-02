@@ -1,0 +1,55 @@
+{
+ "cardCount": {
+  "firstEd": 0,
+  "holo": 16,
+  "normal": 86,
+  "official": 102,
+  "reverse": 0,
+  "total": 102
+ },
+ "cards": [
+  {
+   "id": "base1-1",
+   "localId": "1",
+   "name": "Alakazam",
+   "image": "https://assets.tcgdex.net/en/x/base1-1"
+  },
+  {
+   "id": "base1-2",
+   "localId": "2",
+   "name": "Blastoise",
+   "image": "https://assets.tcgdex.net/en/x/base1-2"
+  },
+  {
+   "id": "base1-4",
+   "localId": "4",
+   "name": "Charizard",
+   "image": "https://assets.tcgdex.net/en/x/base1-4"
+  },
+  {
+   "id": "base1-58",
+   "localId": "58",
+   "name": "Pikachu",
+   "image": "https://assets.tcgdex.net/en/x/base1-58"
+  },
+  {
+   "id": "base1-99",
+   "localId": "99",
+   "name": "Missing set",
+   "image": "https://assets.tcgdex.net/en/x/base1-99"
+  }
+ ],
+ "id": "base1",
+ "logo": "https://assets.tcgdex.net/en/base/base1/logo",
+ "name": "Base Set",
+ "releaseDate": "1999-01-09",
+ "series": {
+  "id": "base",
+  "name": "Base"
+ },
+ "symbol": "https://assets.tcgdex.net/en/univ/base/base1/symbol",
+ "legal": {
+  "expanded": false,
+  "standard": false
+ }
+}

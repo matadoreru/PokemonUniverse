@@ -1,0 +1,518 @@
+[
+ {
+  "id": "a-1",
+  "localId": "1",
+  "name": "Bulbasaur",
+  "rarity": "Rare",
+  "imageUrl": "https://img.test/a-1.webp",
+  "set": {
+   "id": "a",
+   "name": "Écarlate"
+  },
+  "pokemonGenerations": [
+   1
+  ],
+  "prices": [
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": "1.10",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "tcgplayer",
+    "currency": "USD",
+    "variant": "normal",
+    "market": "2",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "a-2",
+  "localId": "2",
+  "name": "Ivysaur",
+  "rarity": "Common",
+  "imageUrl": "https://img.test/a-2.webp",
+  "set": {
+   "id": "a",
+   "name": "Écarlate"
+  },
+  "pokemonGenerations": [
+   1
+  ],
+  "prices": [
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": "1.1",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "tcgplayer",
+    "currency": "USD",
+    "variant": "normal",
+    "market": "3",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "a-3",
+  "localId": "3",
+  "name": "Venusaur",
+  "rarity": "Rare",
+  "imageUrl": "https://img.test/a-3.webp",
+  "set": {
+   "id": "a",
+   "name": "Écarlate"
+  },
+  "pokemonGenerations": [
+   1,
+   2
+  ],
+  "prices": [
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": "12.5000",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "tcgplayer",
+    "currency": "USD",
+    "variant": "normal",
+    "market": "15",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "b-1",
+  "localId": "1",
+  "name": "Chikorita",
+  "rarity": "Common",
+  "imageUrl": "https://img.test/b-1.webp",
+  "set": {
+   "id": "b",
+   "name": "base"
+  },
+  "pokemonGenerations": [
+   2
+  ],
+  "prices": [
+   {
+    "provider": "tcgplayer",
+    "currency": "USD",
+    "variant": "normal",
+    "market": "0.5",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "tcgplayer",
+    "currency": "USD",
+    "variant": "holofoil",
+    "market": "9",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "b-2",
+  "localId": "2",
+  "name": "Bayleef",
+  "rarity": null,
+  "imageUrl": "https://img.test/b-2.webp",
+  "set": {
+   "id": "b",
+   "name": "base"
+  },
+  "pokemonGenerations": [
+   2
+  ],
+  "prices": [
+   {
+    "provider": "tcgplayer",
+    "currency": "USD",
+    "variant": "normal",
+    "market": "0.75",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "holo",
+    "market": "4",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "b-3",
+  "localId": "3",
+  "name": "Meganium",
+  "rarity": "Rare",
+  "imageUrl": "https://img.test/b-3.webp",
+  "set": {
+   "id": "b",
+   "name": "base"
+  },
+  "pokemonGenerations": [
+   2
+  ],
+  "prices": [
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": "1",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": "7.00",
+    "observedAt": "2026-03-01T00:00:00.000Z"
+   },
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": "-1",
+    "observedAt": "2026-04-01T00:00:00.000Z"
+   },
+   {
+    "provider": "tcgplayer",
+    "currency": "USD",
+    "variant": "normal",
+    "market": "8",
+    "observedAt": "2026-02-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "z-1",
+  "localId": "1",
+  "name": "Pichu",
+  "rarity": "ábaco",
+  "imageUrl": "https://img.test/z-1.webp",
+  "set": {
+   "id": "z",
+   "name": "Zeta"
+  },
+  "pokemonGenerations": [
+   4
+  ],
+  "prices": [
+   {
+    "provider": "other",
+    "currency": "JPY",
+    "variant": "normal",
+    "market": "500",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "other",
+    "currency": "EUR",
+    "variant": "alpha",
+    "market": "1",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "other",
+    "currency": "eur",
+    "variant": "x",
+    "market": "3",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": " ",
+    "currency": "USD",
+    "variant": "normal",
+    "market": "2",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "tcgplayer",
+    "currency": "USD",
+    "variant": " ",
+    "market": "2",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": "1e3",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": null,
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "z-2",
+  "localId": "2",
+  "name": "Pikachu",
+  "rarity": "Abeto",
+  "imageUrl": "https://img.test/z-2.webp",
+  "set": {
+   "id": "z",
+   "name": "Zeta"
+  },
+  "pokemonGenerations": [
+   4
+  ],
+  "prices": [
+   {
+    "provider": "other",
+    "currency": "JPY",
+    "variant": "normal",
+    "market": "0500.50",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "other",
+    "currency": "EUR",
+    "variant": "alpha",
+    "market": "2",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "Cardmarket",
+    "currency": "EUR",
+    "variant": "Standard",
+    "market": "4",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "z-3",
+  "localId": "3",
+  "name": "Raichu",
+  "rarity": "abeto",
+  "imageUrl": "https://img.test/z-3.webp",
+  "set": {
+   "id": "z",
+   "name": "Zeta"
+  },
+  "pokemonGenerations": [
+   4
+  ],
+  "prices": [
+   {
+    "provider": "Cardmarket",
+    "currency": "EUR",
+    "variant": "Standard",
+    "market": "5",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "other",
+    "currency": "JPY",
+    "variant": "normal",
+    "market": "0",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "y-1",
+  "localId": "1",
+  "name": "Victini",
+  "rarity": "Promo",
+  "imageUrl": "https://img.test/y-1.webp",
+  "set": {
+   "id": "y",
+   "name": "ábside"
+  },
+  "pokemonGenerations": [
+   5
+  ],
+  "prices": [
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": "3",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "y-2",
+  "localId": "2",
+  "name": "Snivy",
+  "rarity": "Promo",
+  "imageUrl": "https://img.test/y-2.webp",
+  "set": {
+   "id": "y",
+   "name": "ábside"
+  },
+  "pokemonGenerations": [
+   5
+  ],
+  "prices": [
+   {
+    "provider": "tcgplayer",
+    "currency": "USD",
+    "variant": "normal",
+    "market": "4",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "t-1",
+  "localId": "1",
+  "name": "Professor",
+  "rarity": "Uncommon",
+  "imageUrl": "https://img.test/t-1.webp",
+  "set": {
+   "id": "a",
+   "name": "Écarlate"
+  },
+  "pokemonGenerations": [],
+  "prices": [
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": "2",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   },
+   {
+    "provider": "tcgplayer",
+    "currency": "USD",
+    "variant": "normal",
+    "market": "2",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "n-1",
+  "localId": "  ",
+  "name": "Blank",
+  "rarity": "Rare",
+  "imageUrl": "https://img.test/n-1.webp",
+  "set": {
+   "id": "a",
+   "name": "Écarlate"
+  },
+  "pokemonGenerations": [
+   1
+  ],
+  "prices": [
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": "1",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "n-2",
+  "localId": "2",
+  "name": "Http",
+  "rarity": "Rare",
+  "imageUrl": "http://img.test/x.webp",
+  "set": {
+   "id": "a",
+   "name": "Écarlate"
+  },
+  "pokemonGenerations": [
+   1
+  ],
+  "prices": [
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": "1",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "n-3",
+  "localId": "3",
+  "name": "NoImage",
+  "rarity": "Rare",
+  "imageUrl": null,
+  "set": {
+   "id": "a",
+   "name": "Écarlate"
+  },
+  "pokemonGenerations": [
+   1
+  ],
+  "prices": [
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": "1",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "n-4",
+  "localId": "4",
+  "name": "BadUrl",
+  "rarity": "Rare",
+  "imageUrl": "not a url",
+  "set": {
+   "id": "a",
+   "name": "Écarlate"
+  },
+  "pokemonGenerations": [
+   1
+  ],
+  "prices": [
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": "1",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ },
+ {
+  "id": "n-5",
+  "localId": "5",
+  "name": "NoSetName",
+  "rarity": "Rare",
+  "imageUrl": "https://img.test/n-5.webp",
+  "set": {
+   "id": "q",
+   "name": " "
+  },
+  "pokemonGenerations": [
+   1
+  ],
+  "prices": [
+   {
+    "provider": "cardmarket",
+    "currency": "EUR",
+    "variant": "standard",
+    "market": "1",
+    "observedAt": "2026-01-01T00:00:00.000Z"
+   }
+  ]
+ }
+]

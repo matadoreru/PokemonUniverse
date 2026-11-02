@@ -654,6 +654,55 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+  /api/tcg/eligibility:
+    post:
+      tags:
+      - tcg
+      summary: "Cartas TCG que cumplen una configuración de Higher or Lower: Cartas"
+      operationId: tcgEligibility
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TcgHigherLowerConfigBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TcgController.EligibilityResponse"
+        "400":
+          description: Configuración inválida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "500":
+          description: Catálogo todavía no disponible o precio no canónico
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/tcg/options:
+    get:
+      tags:
+      - tcg
+      summary: Opciones de filtro del catálogo TCG
+      operationId: tcgOptions
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TcgCardCatalog.FilterOptions"
+        "500":
+          description: Catálogo todavía no disponible
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/would-you-rather-prompts:
     get:
       tags:
@@ -1591,6 +1640,130 @@ components:
           type: string
           x-size-message: La contraseña debe tener entre 10 y 128 caracteres
           x-not-null-message: La contraseña es obligatoria
+    TcgCardCatalog.FilterOptions:
+      required:
+      - cardCount
+      - generations
+      - rarities
+      - ready
+      - sets
+      type: object
+      properties:
+        ready:
+          type: boolean
+        cardCount:
+          type: integer
+          format: int32
+        generations:
+          type: array
+          items:
+            $ref: "#/components/schemas/TcgCardCatalog.GenerationOption"
+        sets:
+          type: array
+          items:
+            $ref: "#/components/schemas/TcgCardCatalog.SetOption"
+        rarities:
+          type: array
+          items:
+            $ref: "#/components/schemas/TcgCardCatalog.RarityOption"
+    TcgCardCatalog.GenerationOption:
+      required:
+      - cardCount
+      - value
+      type: object
+      properties:
+        value:
+          type: integer
+          format: int32
+        cardCount:
+          type: integer
+          format: int32
+    TcgCardCatalog.RarityOption:
+      required:
+      - cardCount
+      - value
+      type: object
+      properties:
+        value:
+          type: string
+        cardCount:
+          type: integer
+          format: int32
+    TcgCardCatalog.SetOption:
+      required:
+      - cardCount
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        cardCount:
+          type: integer
+          format: int32
+    TcgController.EligibilityResponse:
+      required:
+      - cardCount
+      type: object
+      properties:
+        cardCount:
+          type: integer
+          format: int32
+      description: "`{cardCount}`: cartas de `cardsFor(config)`."
+    TcgHigherLowerConfigBody:
+      required:
+      - generations
+      - maxPrice
+      - minPrice
+      - rarities
+      - roundSeconds
+      - rounds
+      - setIds
+      - showRarity
+      type: object
+      properties:
+        generations:
+          minItems: 1
+          type: array
+          items:
+            maximum: 9
+            minimum: 1
+            type: integer
+            format: int32
+        setIds:
+          type: array
+          items:
+            minLength: 1
+            type: string
+        rarities:
+          type: array
+          items:
+            minLength: 1
+            type: string
+        minPrice:
+          pattern: ^\d+(?:\.\d+)?$
+          type: string
+          nullable: true
+        maxPrice:
+          pattern: ^\d+(?:\.\d+)?$
+          type: string
+          nullable: true
+        showRarity:
+          type: boolean
+        rounds:
+          maximum: 50
+          minimum: 5
+          type: integer
+          format: int32
+        roundSeconds:
+          maximum: 60
+          minimum: 5
+          type: integer
+          format: int32
+      description: "Configuración completa de Higher or Lower: Cartas; las claves\
+        \ desconocidas se ignoran."
     UpdateCustomCategoryRequest:
       type: object
       properties:

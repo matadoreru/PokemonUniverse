@@ -1,0 +1,57 @@
+{
+ "category": "Pokemon",
+ "id": "base1-4",
+ "illustrator": "Mitsuhiro Arita",
+ "localId": "4",
+ "name": "Charizard renamed",
+ "rarity": "Rare Holo",
+ "set": {
+  "cardCount": {
+   "official": 102,
+   "total": 102
+  },
+  "id": "base1",
+  "name": "set"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": true,
+  "normal": true,
+  "reverse": false,
+  "wPromo": false
+ },
+ "updated": "2025-08-18T19:41:34+02:00",
+ "image": "https://assets.tcgdex.net/en/x/base1-4",
+ "dexId": [
+  6
+ ],
+ "hp": 120,
+ "pricing": {
+  "cardmarket": {
+   "updated": "2025-08-05T00:42:15.000Z",
+   "idProduct": 273699,
+   "avg": 360,
+   "low": 200,
+   "trend": 380.1,
+   "avg1": 350.5,
+   "avg7": 350.5,
+   "avg30": 350.5,
+   "unit": "EUR",
+   "avg-holo": 400,
+   "low-holo": 300,
+   "trend-holo": 410
+  },
+  "tcgplayer": {
+   "updated": "2025-08-04T20:05:22.000Z",
+   "unit": "USD",
+   "holofoil": {
+    "productId": 42382,
+    "lowPrice": 300,
+    "midPrice": 410,
+    "highPrice": 900,
+    "marketPrice": 430.5,
+    "directLowPrice": null
+   }
+  }
+ }
+}

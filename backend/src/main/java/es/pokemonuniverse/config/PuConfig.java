@@ -119,20 +119,24 @@ public class PuConfig {
 
     private final String pokeapiBaseUrl;
     private final String spriteBaseUrl;
+    private final String tcgdexBaseUrl;
 
     /**
      * {@code pokeapiBaseUrl}: base de PokéAPI ({@code https://pokeapi.co/api/v2}, fija en Node). {@code spriteBaseUrl}:
      * origen desde el que se descargan los sprites cuya URL guardada es {@code https://raw.githubusercontent.com/…}
-     * (en producción el mismo; las pruebas lo apuntan a las respuestas grabadas).
+     * (en producción el mismo; las pruebas lo apuntan a las respuestas grabadas). {@code tcgdexBaseUrl}: base de TCGdex
+     * ({@code https://api.tcgdex.net/v2/en}, fija en Node).
      */
     @ConfigurationInject
     public DataSync(boolean enabled, @Min(0) @Max(23) int hour, @Min(0) @Max(59) int minute,
-        @NotBlank String timeZone, @NotBlank String pokeapiBaseUrl, @NotBlank String spriteBaseUrl) {
+        @NotBlank String timeZone, @NotBlank String pokeapiBaseUrl, @NotBlank String spriteBaseUrl,
+        @NotBlank String tcgdexBaseUrl) {
       this.enabled = enabled;
       this.hour = hour;
       this.minute = minute;
       this.pokeapiBaseUrl = requireSecureSource("pokeapiBaseUrl", pokeapiBaseUrl);
       this.spriteBaseUrl = requireSecureSource("spriteBaseUrl", spriteBaseUrl);
+      this.tcgdexBaseUrl = requireSecureSource("tcgdexBaseUrl", tcgdexBaseUrl);
       try {
         this.zone = ZoneId.of(timeZone);
       } catch (DateTimeException e) {
@@ -179,6 +183,10 @@ public class PuConfig {
 
     public String spriteBaseUrl() {
       return spriteBaseUrl;
+    }
+
+    public String tcgdexBaseUrl() {
+      return tcgdexBaseUrl;
     }
   }
 }
