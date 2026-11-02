@@ -49,7 +49,7 @@ class DataSyncServiceTest {
   private final AtomicLong now = new AtomicLong(T0.toEpochMilli());
 
   /** Adaptador falso: {@code run} delega en una función y puede bloquearse hasta {@link #release}. */
-  private final class FakeAdapter implements DataSyncAdapter {
+  private class FakeAdapter implements DataSyncAdapter {
     final DataSyncSource source;
     final List<DataSyncMode> modes = Collections.synchronizedList(new ArrayList<>());
     final CountDownLatch entered = new CountDownLatch(1);
@@ -109,6 +109,65 @@ class DataSyncServiceTest {
 
   private DataSyncService service() {
     return service(pokemon, tcg);
+  }
+
+  /** Decorador del almacén real que falla en la operación indicada. */
+  private final class FaultyRecords implements DataSyncRecords {
+    volatile String failOn = "";
+
+    private void maybeFail(String operation) {
+      if (failOn.equals(operation)) throw new IllegalStateException(operation + " roto");
+    }
+
+    @Override
+    public int failInterrupted(Instant at, String error) {
+      return records.failInterrupted(at, error);
+    }
+
+    @Override
+    public String createRun(DataSyncSource source, DataSyncMode mode, Instant startedAt) {
+      return records.createRun(source, mode, startedAt);
+    }
+
+    @Override
+    public void markAttempt(DataSyncSource source, Instant attemptedAt) {
+      maybeFail("markAttempt");
+      records.markAttempt(source, attemptedAt);
+    }
+
+    @Override
+    public void complete(String runId, DataSyncSource source, DataSyncMode mode, Instant startedAt,
+        Instant completedAt, int durationMs, SyncResult result, long recordsAvailable) {
+      maybeFail("complete");
+      records.complete(runId, source, mode, startedAt, completedAt, durationMs, result, recordsAvailable);
+    }
+
+    @Override
+    public void fail(String runId, DataSyncSource source, Instant startedAt, Instant completedAt, int durationMs,
+        String error) {
+      maybeFail("fail");
+      records.fail(runId, source, startedAt, completedAt, durationMs, error);
+    }
+
+    @Override
+    public void recordAvailable(DataSyncSource source, long recordsAvailable) {
+      records.recordAvailable(source, recordsAvailable);
+    }
+
+    @Override
+    public List<StoredState> states() {
+      return records.states();
+    }
+
+    @Override
+    public List<StoredRun> recentRuns(int limit) {
+      return records.recentRuns(limit);
+    }
+  }
+
+  private DataSyncService service(DataSyncRecords store) {
+    return new DataSyncService(store, List.of(pokemon, tcg), () -> palettes, now::get, () -> NEXT,
+        Executors.newVirtualThreadPerTaskExecutor());
   }
 
   private static <T> T await(CompletableFuture<T> future) throws Exception {
@@ -257,6 +316,64 @@ class DataSyncServiceTest {
   }
 
   @Test
+  void aFailureRecordingTheAttemptStillEndsTheRunAsFailed() throws Exception {
+    var store = new FaultyRecords();
+    store.failOn = "markAttempt";
+    var service = service(store);
+    var error = failure(service.start(DataSyncSource.POKEAPI, DataSyncMode.FULL));
+    assertEquals("markAttempt roto", error.getMessage());
+    assertEquals(List.of(), pokemon.modes);
+    assertFalse(service.isRunning());
+    var run = runs().getFirst();
+    assertEquals("FAILED", run.get("status"));
+    assertEquals("markAttempt roto", run.get("error"));
+    assertEquals("markAttempt roto", state(DataSyncSource.POKEAPI).get("lastError"));
+  }
+
+  @Test
+  void aFailureCountingRecordsAfterASuccessfulRunEndsTheRunAsFailed() throws Exception {
+    var counting = new FakeAdapter(DataSyncSource.POKEAPI) {
+      @Override
+      public long recordsAvailable() {
+        throw new IllegalStateException("recuento roto");
+      }
+    };
+    var service = service(counting, tcg);
+    var error = failure(service.start(DataSyncSource.POKEAPI, DataSyncMode.FULL));
+    assertEquals("recuento roto", error.getMessage());
+    assertEquals(List.of(DataSyncMode.FULL), counting.modes);
+    assertEquals("FAILED", runs().getFirst().get("status"));
+    assertEquals("recuento roto", state(DataSyncSource.POKEAPI).get("lastError"));
+    assertNull(state(DataSyncSource.POKEAPI).get("lastSuccessAt"));
+  }
+
+  @Test
+  void aFailurePersistingTheCompletionEndsTheRunAsFailed() throws Exception {
+    var store = new FaultyRecords();
+    store.failOn = "complete";
+    var error = failure(service(store).start(DataSyncSource.POKEAPI, DataSyncMode.FULL));
+    assertEquals("complete roto", error.getMessage());
+    assertEquals("FAILED", runs().getFirst().get("status"));
+    assertEquals("complete roto", runs().getFirst().get("error"));
+    assertEquals("complete roto", state(DataSyncSource.POKEAPI).get("lastError"));
+  }
+
+  @Test
+  void aFailurePersistingTheFailureKeepsTheOriginalErrorAndSuppressesTheSecond() throws Exception {
+    var store = new FaultyRecords();
+    store.failOn = "fail";
+    pokemon.behaviour = mode -> {
+      throw new IllegalStateException("PokéAPI caída");
+    };
+    var service = service(store);
+    var error = failure(service.start(DataSyncSource.POKEAPI, DataSyncMode.FULL));
+    assertEquals("PokéAPI caída", error.getMessage());
+    assertEquals(1, error.getSuppressed().length);
+    assertEquals("fail roto", error.getSuppressed()[0].getMessage());
+    assertFalse(service.isRunning());
+  }
+
+  @Test
   void aSourceWithoutAdapterFailsWithoutWritingARun() throws Exception {
     var error = failure(service(pokemon).start(DataSyncSource.TCGDEX, DataSyncMode.INITIAL));
     assertEquals("No sync adapter registered for TCGDEX", error.getMessage());
@@ -278,6 +395,37 @@ class DataSyncServiceTest {
     pokemon.release.countDown();
     await(first);
     assertFalse(service.isRunning(DataSyncSource.POKEAPI));
+    assertEquals(1, runs().size());
+  }
+
+  /** Dos hilos a la vez sobre el mismo origen: exactamente uno arranca y el otro recibe el 409. */
+  @Test
+  void concurrentStartsOfTheSameSourceAdmitExactlyOne() throws Exception {
+    pokemon.blocking();
+    var service = service();
+    var gate = new CountDownLatch(1);
+    var outcomes = Collections.synchronizedList(new ArrayList<Object>());
+    var threads = new ArrayList<Thread>();
+    for (int i = 0; i < 2; i++) {
+      threads.add(Thread.ofVirtual().start(() -> {
+        try {
+          gate.await();
+          outcomes.add(service.start(DataSyncSource.POKEAPI, DataSyncMode.FULL));
+        } catch (SyncAlreadyRunningException e) {
+          outcomes.add(e.getMessage());
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        }
+      }));
+    }
+    gate.countDown();
+    for (var thread : threads) thread.join(10_000);
+    assertEquals(2, outcomes.size());
+    var started = outcomes.stream().filter(CompletableFuture.class::isInstance).toList();
+    assertEquals(1, started.size());
+    assertTrue(outcomes.contains("POKEAPI ya se está sincronizando"));
+    pokemon.release.countDown();
+    await((CompletableFuture<?>) started.getFirst());
     assertEquals(1, runs().size());
   }
 
@@ -363,6 +511,21 @@ class DataSyncServiceTest {
     };
     failure(service.start(DataSyncSource.POKEAPI, DataSyncMode.FULL));
     assertEquals(3, calls.size());
+  }
+
+  /** Un {@code Error} de un oyente tampoco convierte en FAILED una ejecución ya COMPLETED. */
+  @Test
+  void anErrorThrownByAListenerIsSwallowedToo() throws Exception {
+    var calls = Collections.synchronizedList(new ArrayList<String>());
+    var service = service();
+    service.onCompleted(source -> {
+      throw new AssertionError("oyente roto");
+    });
+    service.onCompleted(source -> calls.add("after:" + source));
+    assertNotNull(await(service.start(DataSyncSource.POKEAPI, DataSyncMode.FULL)));
+    assertEquals(List.of("after:POKEAPI"), calls);
+    assertEquals("COMPLETED", runs().getFirst().get("status"));
+    assertNull(runs().getFirst().get("error"));
   }
 
   // --- recuperación y arranque -----------------------------------------------------------------------------------

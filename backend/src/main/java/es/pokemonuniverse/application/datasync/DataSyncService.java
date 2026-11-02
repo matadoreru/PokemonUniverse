@@ -156,11 +156,14 @@ public class DataSyncService {
     var adapter = requireAdapter(DataSyncSource.TCGDEX);
     var task = CompletableFuture.runAsync(() -> {
       var count = adapter.recordsAvailable();
+      CompletableFuture<SyncResult> initial = null;
+      // Comprobación del apagado y arranque atómicos: un stop() intermedio no se registra como fallo de TCG.
       synchronized (lock) {
         if (stopping) return;
+        if (count == 0) initial = start(DataSyncSource.TCGDEX, DataSyncMode.INITIAL);
       }
-      if (count == 0) {
-        start(DataSyncSource.TCGDEX, DataSyncMode.INITIAL).join();
+      if (initial != null) {
+        initial.join();
         return;
       }
       records.recordAvailable(DataSyncSource.TCGDEX, count);
@@ -239,8 +242,9 @@ public class DataSyncService {
     var startedAt = now();
     var runId = records.createRun(source, mode, startedAt);
     LOG.info("[DataSync] sync started source={} mode={}", source, mode);
-    records.markAttempt(source, startedAt);
+    // Desde aquí la fila existe en RUNNING: cualquier fallo (también al registrar el intento) la cierra en FAILED.
     try {
+      records.markAttempt(source, startedAt);
       var result = adapter.run(mode);
       var completedAt = now();
       var durationMs = duration(startedAt, completedAt);
@@ -248,21 +252,36 @@ public class DataSyncService {
       records.complete(runId, source, mode, startedAt, completedAt, durationMs, result, available);
       LOG.info("[DataSync] sync completed source={} inserted={} updated={} skipped={} durationMs={}", source,
           result.inserted(), result.updated(), result.skipped(), durationMs);
-      for (var listener : listeners) {
-        try {
-          listener.accept(source);
-        } catch (RuntimeException e) {
-          LOG.error("[DataSync] post-sync refresh failed source={}", source, e);
-        }
-      }
+      notifyCompleted(source);
       return result;
     } catch (Throwable error) {
       var completedAt = now();
       var durationMs = duration(startedAt, completedAt);
       var message = error.getMessage() != null ? error.getMessage() : error.toString();
-      records.fail(runId, source, startedAt, completedAt, durationMs, message);
       LOG.error("[DataSync] sync failed source={} durationMs={} error={}", source, durationMs, message);
+      try {
+        records.fail(runId, source, startedAt, completedAt, durationMs, message);
+      } catch (Throwable persistence) {
+        // Se conserva el error original; el de persistencia viaja como suprimido.
+        error.addSuppressed(persistence);
+      }
       throw error;
+    }
+  }
+
+  /**
+   * Oyentes en orden; sus errores se registran y se ignoran, como en Node (la ejecución ya está COMPLETED). Solo
+   * escapan los errores de la máquina virtual (memoria agotada, pila desbordada...).
+   */
+  private void notifyCompleted(DataSyncSource source) {
+    for (var listener : listeners) {
+      try {
+        listener.accept(source);
+      } catch (VirtualMachineError fatal) {
+        throw fatal;
+      } catch (Exception | Error e) {
+        LOG.error("[DataSync] post-sync refresh failed source={}", source, e);
+      }
     }
   }
 
