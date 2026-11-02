@@ -122,9 +122,11 @@ buscador desplaza la página (Bingo); además, 8 juegos no muestran el título d
   redespliega PRE con imágenes idénticas; volver a lanzar un Main antiguo reetiqueta el `:pre` actual; las listas de rutas de
   los filtros están duplicadas entre workflows.
 - Deuda de 2B (aplazada en las revisiones):
-  - Helpers de lectura de configuración duplicados en las 28 clases `<Juego>Config` (~2 830 líneas, 4 variantes
-    equivalentes): consolidarlos en `engine/infra` antes de que 2C toque las configuraciones. También hay helpers
-    pequeños repetidos entre motores (`takeRandom`, `formatEs`, comprobaciones de sprite, `choosePrompt` y el pool de
+  - Resuelto en 2C: los helpers de lectura de configuración de las 28 clases `<Juego>Config` están en
+    `engine/infra/ConfigReader` (de 2 830 a 1 678 líneas). Quedan locales, por su mensaje propio, las familias de
+    Pokémon Bingo, `maxConditionsPerCell`, el enum de Zoomed Pokémon y las listas de texto y precios de TCG Higher or
+    Lower. Los `parse` de acciones de `<Juego>Types` siguen con su `strict`/`invalid()` propios (un único mensaje
+    «Acción de … no válida.»). También hay helpers pequeños repetidos entre motores (`takeRandom`, `formatEs`, comprobaciones de sprite, `choosePrompt` y el pool de
     prompts); `isUsableWhoPokemonSprite` duplica `isUsableZoomedSprite`, `GuessFromStatsPlayerStats` duplica
     `PokemonPaletteStats` y los recuentos de lotes ganados y sin dueño están duplicados entre `PokemonTeamAuctionEngine`
     y `PokemonTeamAuctionRules`.

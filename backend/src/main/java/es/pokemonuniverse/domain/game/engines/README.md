@@ -9,6 +9,12 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
   se ignoran salvo si el esquema es `.strict()`. Hay que aplicar las mismas transformaciones (dedup, orden). Se
   replica `.int().min().max()` de cada campo, con los mismos límites. Un entero acepta `10.0` y rechaza `10.5`. Un
   fallo lanza `ConfigValidationException`.
+- **Config: usar `ConfigReader`** (`engine/infra`). `ConfigReader.of(raw, "<nombre visible>")` comprueba el objeto y
+  da `strict`, `integer`, `safeInteger`, `option`, `bool`, `enumValue`, `generations` y `object` (objeto anidado), y
+  `allGenerations()` para los valores por defecto. Falla en el primer error con
+  `Configuración de <juego> no válida: <detalle>.`, que la sala muestra tal cual. Las reglas propias del esquema
+  (`superRefine`) lanzan `config.invalid(detalle)` sin punto final. Un helper local solo se justifica si su mensaje
+  difiere del común, y se comenta por qué.
 - `<Juego>Types`: los records de `types.ts` con los mismos nombres, más la acción con su `parse(JsonNode)`, que es
   estricto si el esquema TS lo es.
 - `<Juego>Rules`: el port de `rules.ts`.
