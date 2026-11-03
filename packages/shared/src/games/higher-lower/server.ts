@@ -1,6 +1,6 @@
 import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
-import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, PRESENCE_GRACE_MS } from '../contracts.js';
 import { advanceTimedRound, resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultHigherLowerConfig, higherLowerConfigSchema, type HigherLowerConfig } from './config.js';
 import { buildHigherLowerResults, higherLowerAnswer, HIGHER_LOWER_POINTS, pokemonCategoryValue, selectPokemonByDifficulty, speedBonus, streakBonus } from './rules.js';
@@ -10,6 +10,7 @@ const REVEAL_MS = 3_000;
 const manifest = {
   id: 'higher-lower', name: 'Higher or Lower', icon: '📈',
   description: 'Acierta si la stat de dos Pokémon es mayor, menor o igual.', minPlayers: 1,
+  presenceGraceMs: PRESENCE_GRACE_MS,
   profileStats: {
     metrics: [
       { key: 'correct', label: 'Respuestas correctas', aggregation: 'SUM' },

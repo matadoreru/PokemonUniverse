@@ -974,6 +974,8 @@ export interface components {
             minPlayers: number;
             /** Format: int32 */
             maxPlayers?: number | null;
+            /** Format: int32 */
+            presenceGraceMs?: number | null;
             profileStats: components["schemas"]["GameManifest.ProfileStatsDefinition"];
             defaultConfig: {
                 [key: string]: Record<string, never>;

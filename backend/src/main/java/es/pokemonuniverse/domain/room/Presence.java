@@ -13,6 +13,7 @@ public final class Presence {
     RoomTimer.cancel(member.disconnectTimer);
     member.identity = identity;
     member.disconnectTimer = null;
+    member.presenceGraceTimer = RoomTimer.cancel(member.presenceGraceTimer);
     member.connected = true;
     member.presence = PresenceStatus.CONNECTED;
     member.connectionId = connectionId;
@@ -27,6 +28,7 @@ public final class Presence {
   public static void markLeft(RoomMember member) {
     RoomTimer.cancel(member.disconnectTimer);
     member.disconnectTimer = null;
+    member.presenceGraceTimer = RoomTimer.cancel(member.presenceGraceTimer);
     member.connected = false;
     member.presence = PresenceStatus.LEFT;
     member.connectionId = null;

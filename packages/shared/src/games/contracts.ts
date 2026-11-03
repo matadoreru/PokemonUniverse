@@ -111,6 +111,9 @@ export interface GameActionResult<TState> {
   error?: string;
 }
 
+/** Gracia de presencia (§8.3) de los minijuegos que la declaran en su manifiesto. */
+export const PRESENCE_GRACE_MS = 10_000;
+
 export interface MiniGameManifest {
   id: string;
   name: string;
@@ -122,6 +125,8 @@ export interface MiniGameManifest {
   recommended?: boolean;
   minPlayers: number;
   maxPlayers?: number;
+  /** Ms durante los que una desconexión no llega al motor; nunca alarga un plazo. */
+  presenceGraceMs?: number;
   profileStats: ProfileStatsDefinition;
 }
 

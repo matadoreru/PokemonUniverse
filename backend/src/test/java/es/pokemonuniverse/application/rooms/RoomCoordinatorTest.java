@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,6 +26,7 @@ import es.pokemonuniverse.domain.pokemon.InMemoryPokemonAudioCatalog;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.domain.room.GameFinishReason;
 import es.pokemonuniverse.domain.room.GameSelectionMode;
+import es.pokemonuniverse.domain.room.LiveRoom;
 import es.pokemonuniverse.domain.room.MemberRole;
 import es.pokemonuniverse.domain.room.PresenceStatus;
 import es.pokemonuniverse.domain.room.RoomPhase;
@@ -236,6 +238,173 @@ class RoomCoordinatorTest {
     assertEquals(MemberRole.SPECTATOR, room.members.get("carlos").role);
     assertMessage("Not in a room",
         () -> kit.manager.action("carlos", json("{\"type\":\"SELECT_POKEMON\",\"pokemonId\":\"venusaur\"}")));
+  }
+
+  // ------------------------------------------------------------------------------ gracia de presencia por juego
+
+  /** Pokédex Distance oculto con {@code p1} (host), {@code p2} y {@code p3} ya en la primera ronda. */
+  private static LiveRoom distanceRound(RoomTestKit kit, int roundSeconds) {
+    var room = kit.room(8, guest("p1", "Uno"), guest("p2", "Dos"), guest("p3", "Tres"));
+    kit.manager.updateConfig("p1", json("{\"generations\":[1],\"roundSeconds\":" + roundSeconds
+        + ",\"selectionVisibility\":\"HIDDEN\"}"));
+    kit.startReady(room, "p1");
+    assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
+    return room;
+  }
+
+  private static void select(RoomTestKit kit, String playerId, String pokemonId) {
+    kit.manager.action(playerId, json("{\"type\":\"SELECT_POKEMON\",\"pokemonId\":\"" + pokemonId + "\"}"));
+  }
+
+  @Test
+  @DisplayName("a disconnect shorter than the presence grace keeps the player in the round")
+  void presenceGraceKeepsAShortDisconnectInTheRound() {
+    var kit = new RoomTestKit();
+    var room = distanceRound(kit, 20);
+    kit.manager.disconnect("p3", "socket-p3");
+    select(kit, "p1", "bulbasaur");
+    select(kit, "p2", "charmander");
+    assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
+    kit.time.advance(5_000);
+    assertTrue(kit.manager.connect(guest("p3", "Tres"), "socket-p3-b"));
+    assertNull(room.members.get("p3").presenceGraceTimer);
+    select(kit, "p3", "squirtle");
+    var lastRound = kit.publicGame(room, "p1").get("lastRound");
+    assertNotNull(lastRound);
+    assertNotEquals("NO_RESPONSE", lastRound.get("reason").getStringValue());
+    assertTrue(JsonTree.equal(json("[\"p1\"]"), lastRound.get("eliminatedIds")));
+  }
+
+  @Test
+  @DisplayName("the engine sees the disconnect exactly when the presence grace expires")
+  void presenceGraceExpiresAndTheEngineSeesTheDisconnect() {
+    var kit = new RoomTestKit();
+    var room = distanceRound(kit, 60);
+    kit.manager.disconnect("p3", "socket-p3");
+    assertTrue(kit.manager.context(room).isPlayerRequired("p3"));
+    select(kit, "p1", "bulbasaur");
+    select(kit, "p2", "charmander");
+    kit.time.advance(9_999);
+    assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
+    kit.time.advance(1);
+    assertEquals(RoomPhase.ROUND_RESULTS, room.phase);
+    var lastRound = kit.publicGame(room, "p1").get("lastRound");
+    assertEquals("NO_RESPONSE", lastRound.get("reason").getStringValue());
+    assertTrue(JsonTree.equal(json("[\"p3\"]"), lastRound.get("eliminatedIds")));
+    assertFalse(kit.manager.context(room).isPlayerRequired("p3"));
+    assertNull(room.members.get("p3").presenceGraceTimer);
+  }
+
+  @Test
+  @DisplayName("the presence grace never extends the round deadline")
+  void presenceGraceNeverExtendsTheRound() {
+    var kit = new RoomTestKit();
+    var room = distanceRound(kit, 20);
+    long roundEndsAt = kit.publicGame(room, "p1").get("roundEndsAt").getLongValue();
+    kit.time.advance(15_000);
+    kit.manager.disconnect("p3", "socket-p3");
+    select(kit, "p1", "bulbasaur");
+    select(kit, "p2", "charmander");
+    kit.time.advance(roundEndsAt - kit.time.now() - 1);
+    assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
+    kit.time.advance(1 + RoomCoordinator.DEADLINE_TOLERANCE_MS);
+    assertEquals(RoomPhase.ROUND_RESULTS, room.phase);
+    assertTrue(kit.time.now() < room.members.get("p3").disconnectedAt + 10_000);
+    var lastRound = kit.publicGame(room, "p1").get("lastRound");
+    assertEquals("NO_RESPONSE", lastRound.get("reason").getStringValue());
+    assertTrue(JsonTree.equal(json("[\"p3\"]"), lastRound.get("eliminatedIds")));
+  }
+
+  @Test
+  @DisplayName("a shorter reconnect grace ends the presence grace when the player leaves")
+  void presenceGraceEndsEarlyWhenThePlayerLeaves() {
+    var kit = new RoomTestKit(new RoomSettings(8, 5_000));
+    var room = distanceRound(kit, 60);
+    kit.manager.disconnect("p3", "socket-p3");
+    select(kit, "p1", "bulbasaur");
+    select(kit, "p2", "charmander");
+    kit.time.advance(4_999);
+    assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
+    kit.time.advance(1);
+    assertEquals(PresenceStatus.LEFT, room.members.get("p3").presence);
+    assertNull(room.members.get("p3").presenceGraceTimer);
+    assertEquals(RoomPhase.ROUND_RESULTS, room.phase);
+    var lastRound = kit.publicGame(room, "p1").get("lastRound");
+    assertEquals("NO_RESPONSE", lastRound.get("reason").getStringValue());
+    assertTrue(JsonTree.equal(json("[\"p3\"]"), lastRound.get("eliminatedIds")));
+    var broadcasts = kit.events.named("room:state").size();
+    kit.time.advance(5_000);
+    assertEquals(broadcasts, kit.events.named("room:state").size());
+  }
+
+  @Test
+  @DisplayName("games without a presence grace see a disconnect immediately")
+  void gamesWithoutGraceSeeDisconnectsImmediately() {
+    var kit = new RoomTestKit("whos-that-pokemon");
+    var room = kit.room(8, guest("p1", "Uno"), guest("p2", "Dos"), guest("p3", "Tres"));
+    kit.manager.selectGame("p1", "whos-that-pokemon");
+    kit.startReady(room, "p1");
+    assertNotNull(room.game);
+    kit.manager.disconnect("p3", "socket-p3");
+    assertFalse(kit.manager.context(room).isPlayerRequired("p3"));
+    assertNull(room.members.get("p3").presenceGraceTimer);
+  }
+
+  @Test
+  @DisplayName("each player has their own presence grace")
+  void presenceGraceIsPerPlayer() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("p1", "Uno"), guest("p2", "Dos"), guest("p3", "Tres"), guest("p4", "Cuatro"));
+    kit.manager.updateConfig("p1", json("{\"generations\":[1],\"roundSeconds\":60,\"selectionVisibility\":\"HIDDEN\"}"));
+    kit.startReady(room, "p1");
+    kit.manager.disconnect("p3", "socket-p3");
+    kit.time.advance(4_000);
+    kit.manager.disconnect("p4", "socket-p4");
+    select(kit, "p1", "bulbasaur");
+    select(kit, "p2", "charmander");
+    kit.time.advance(6_000);
+    assertFalse(kit.manager.context(room).isPlayerRequired("p3"));
+    assertTrue(kit.manager.context(room).isPlayerRequired("p4"));
+    assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
+    kit.time.advance(4_000);
+    assertEquals(RoomPhase.ROUND_RESULTS, room.phase);
+    var lastRound = kit.publicGame(room, "p1").get("lastRound");
+    assertEquals("NO_RESPONSE", lastRound.get("reason").getStringValue());
+    assertTrue(JsonTree.equal(json("[\"p3\",\"p4\"]"), lastRound.get("eliminatedIds")));
+  }
+
+  @Test
+  @DisplayName("ending the game during a presence grace cancels the pending grace timer")
+  void gameEndCancelsPresenceGrace() {
+    var fixture = activeSkipFixture(3, 10);
+    var kit = fixture.kit();
+    var room = fixture.room();
+    var game = room.game;
+    fixture.setVote("skip-p3", true);
+    kit.manager.disconnect("skip-p3", "skip-socket-3");
+    var member = room.members.get("skip-p3");
+    assertNotNull(member.presenceGraceTimer);
+    fixture.setVote("skip-p1", true);
+    fixture.setVote("skip-p2", true);
+    assertNotNull(game.finishReason);
+    assertNull(member.presenceGraceTimer);
+    assertTrue(member.disconnectTimer != null);
+  }
+
+  @Test
+  @DisplayName("a disconnect from an earlier game never grants grace in the next one")
+  void presenceGraceDoesNotLeakIntoTheNextGame() {
+    var fixture = activeSkipFixture(3, 10);
+    var kit = fixture.kit();
+    var room = fixture.room();
+    var first = room.game;
+    fixture.setVote("skip-p3", true);
+    kit.manager.disconnect("skip-p3", "skip-socket-3");
+    fixture.setVote("skip-p1", true);
+    fixture.setVote("skip-p2", true);
+    assertNotSame(first, room.game);
+    assertNotNull(room.game);
+    assertFalse(kit.manager.context(room).isPlayerRequired("skip-p3"));
   }
 
   @Test
@@ -1579,7 +1748,8 @@ class RoomCoordinatorTest {
     var fixture = activeSkipFixture(2, 10);
     var kit = fixture.kit();
     kit.manager.disconnect("skip-p2", "skip-socket-2");
-    assertEquals(2, kit.time.activeTimers());
+    // Plazo de la ronda, gracia de reconexión y gracia de presencia de higher-lower.
+    assertEquals(3, kit.time.activeTimers());
     kit.manager.stop();
     assertEquals(0, kit.time.activeTimers());
     assertFalse(kit.manager.connect(fixture.people().get(1), "late"));

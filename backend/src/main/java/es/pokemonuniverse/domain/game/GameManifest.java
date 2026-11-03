@@ -18,6 +18,8 @@ public record GameManifest(
     @Nullable Boolean recommended,
     int minPlayers,
     @Nullable Integer maxPlayers,
+    /** Ms durante los que una desconexión no llega al motor; nunca alarga un plazo. */
+    @Nullable Integer presenceGraceMs,
     ProfileStatsDefinition profileStats,
     Map<String, Object> defaultConfig) {
 

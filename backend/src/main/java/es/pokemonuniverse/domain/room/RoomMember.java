@@ -17,6 +17,10 @@ public final class RoomMember {
   public int sessionPoints;
   public final long joinedAt;
   public @Nullable RoomTimer disconnectTimer;
+  /** Instante de la última desconexión temporal; abre la gracia de presencia del juego en curso. */
+  public long disconnectedAt;
+  /** Vence la gracia de presencia del manifiesto: entonces el motor ve la desconexión. */
+  public @Nullable RoomTimer presenceGraceTimer;
 
   public RoomMember(AuthUser identity, @Nullable String connectionId, MemberRole role, RoomRole roomRole, long joinedAt) {
     this.identity = identity;

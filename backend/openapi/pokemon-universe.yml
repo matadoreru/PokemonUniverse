@@ -2322,6 +2322,10 @@ components:
           type: integer
           format: int32
           nullable: true
+        presenceGraceMs:
+          type: integer
+          format: int32
+          nullable: true
         profileStats:
           $ref: "#/components/schemas/GameManifest.ProfileStatsDefinition"
         defaultConfig:

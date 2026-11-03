@@ -5,6 +5,7 @@
     "icon": "🎯",
     "description": "Elige un Pokémon cuyo número esté lo más cerca posible del objetivo.",
     "minPlayers": 2,
+    "presenceGraceMs": 10000,
     "profileStats": {
       "metrics": [
         {
@@ -47,6 +48,7 @@
     "icon": "✨",
     "description": "Encuentra el shiny verdadero entre varios candidatos.",
     "minPlayers": 1,
+    "presenceGraceMs": 10000,
     "profileStats": {
       "metrics": [
         {
@@ -108,6 +110,7 @@
     "icon": "🕵️",
     "description": "Da pistas, detecta a quienes no conocen el Pokémon y expulsa a los impostores.",
     "minPlayers": 3,
+    "presenceGraceMs": 10000,
     "profileStats": {
       "metrics": [
         {
@@ -185,6 +188,7 @@
     "icon": "📈",
     "description": "Acierta si la stat de dos Pokémon es mayor, menor o igual.",
     "minPlayers": 1,
+    "presenceGraceMs": 10000,
     "profileStats": {
       "metrics": [
         {
@@ -257,6 +261,7 @@
     "icon": "⚔️",
     "description": "Elige un tipo en secreto y corre contra otro entrenador para encontrar la combinación exacta.",
     "minPlayers": 2,
+    "presenceGraceMs": 10000,
     "profileStats": {
       "metrics": [
         {
@@ -331,6 +336,7 @@
     "icon": "📚",
     "description": "Descubre el Pokémon mientras se revela progresivamente su learnset por nivel.",
     "minPlayers": 2,
+    "presenceGraceMs": 10000,
     "profileStats": {
       "metrics": [
         {

@@ -178,7 +178,10 @@ public class RoomCoordinator {
     for (var room : store.list()) {
       locked(room, () -> {
         room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
-        for (var member : room.members.values()) member.disconnectTimer = RoomTimer.cancel(member.disconnectTimer);
+        for (var member : room.members.values()) {
+          member.disconnectTimer = RoomTimer.cancel(member.disconnectTimer);
+          member.presenceGraceTimer = RoomTimer.cancel(member.presenceGraceTimer);
+        }
         return null;
       });
     }
@@ -375,13 +378,35 @@ public class RoomCoordinator {
     });
   }
 
-  /** Cierre de la conexión {@code connectionId}: abre la gracia de reconexión si es la conexión vigente. */
+  /**
+   * Cierre de la conexión {@code connectionId}: abre la gracia de reconexión si es la conexión vigente. Si la partida
+   * viva declara {@code presenceGraceMs}, el motor sigue viendo al jugador conectado hasta que vence esa gracia; su
+   * temporizador aplica entonces el cambio de presencia (antes, si la gracia de reconexión vence primero).
+   */
   public void disconnect(String playerId, String connectionId) {
     if (stopping) return;
     inOptionalRoom(playerId, room -> {
       var member = room == null ? null : room.members.get(playerId);
       if (room == null || member == null || !Objects.equals(member.connectionId, connectionId)) return null;
       clearWhoIsWhoCursor(room, playerId);
+      // La gracia se fija antes del primer applyPresenceChange: ese contexto ya debe ver al jugador conectado.
+      member.disconnectedAt = clock.now();
+      member.presenceGraceTimer = RoomTimer.cancel(member.presenceGraceTimer);
+      var game = room.game;
+      var graceMs = livePresenceGraceMs(room);
+      if (game != null && graceMs != null) {
+        var graceTimer = new RoomTimer();
+        member.presenceGraceTimer = graceTimer;
+        graceTimer.bind(schedulers.schedule(graceMs, () -> timerCallback(room, () -> {
+          if (room.members.get(playerId) != member || member.presenceGraceTimer != graceTimer
+              || member.presence != PresenceStatus.TEMPORARILY_DISCONNECTED || room.game != game
+              || game.finishReason != null) {
+            return;
+          }
+          member.presenceGraceTimer = null;
+          applyPresenceChange(room);
+        })));
+      }
       Presence.markTemporarilyDisconnected(member);
       applyPresenceChange(room);
       var timer = new RoomTimer();
@@ -722,6 +747,7 @@ public class RoomCoordinator {
     var resultId = random.uuid();
     var auditReady = track(audit.gameStarted(new GameStarted(resultId, room.historyId, room.code, module.id(),
         players.size(), configTree, context.now())), null);
+    cancelPresenceGraces(room);
     room.game = new GameRuntime(catalog, resultId, module.id(), players.stream().map(GamePlayer::id).toList(), engine,
         config, configTree, state, context.now(), auditReady);
     resetWhoIsWhoCursors(room);
@@ -822,7 +848,31 @@ public class RoomCoordinator {
     if (room.game != game || game.finishReason != null) return false;
     game.finishReason = reason;
     room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
+    cancelPresenceGraces(room);
     return true;
+  }
+
+  /** La gracia de presencia pertenece a una partida: al terminar, ninguna llega a la siguiente. */
+  private static void cancelPresenceGraces(LiveRoom room) {
+    for (var member : room.members.values()) member.presenceGraceTimer = RoomTimer.cancel(member.presenceGraceTimer);
+  }
+
+  /** {@code presenceGraceMs} del manifiesto de la partida viva; {@code null} sin partida viva o sin gracia. */
+  private @Nullable Integer livePresenceGraceMs(LiveRoom room) {
+    var game = room.game;
+    if (game == null || game.finishReason != null) return null;
+    var graceMs = registry.get(game.gameId).map(GameManifest::presenceGraceMs).orElse(null);
+    return graceMs != null && graceMs > 0 ? graceMs : null;
+  }
+
+  /**
+   * El jugador se desconectó durante la partida viva y su gracia de presencia no ha vencido: el motor aún lo ve
+   * conectado. Exige además su temporizador pendiente, así una desconexión anterior a la partida nunca da gracia.
+   */
+  boolean withinPresenceGrace(LiveRoom room, RoomMember member, long now) {
+    var graceMs = livePresenceGraceMs(room);
+    return graceMs != null && member.presence == PresenceStatus.TEMPORARILY_DISCONNECTED
+        && member.presenceGraceTimer != null && now < member.disconnectedAt + graceMs;
   }
 
   private boolean skipGame(LiveRoom room, GameRuntime game) {
@@ -1083,6 +1133,7 @@ public class RoomCoordinator {
       }
       room.sessionParticipants = participants;
     }
+    cancelPresenceGraces(room);
     room.game = null;
     room.nextGameVote = null;
     room.phase = RoomPhase.LOBBY;
@@ -1119,6 +1170,7 @@ public class RoomCoordinator {
     if (SessionMode.isComplete(room.sessionMode, room.gamesPlayed,
         room.sessionParticipants.values().stream().map(participant -> participant.sessionPoints).toList())) {
       room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
+      cancelPresenceGraces(room);
       room.game = null;
       room.nextGameVote = null;
       room.phase = RoomPhase.SESSION_RESULTS;
@@ -1186,12 +1238,14 @@ public class RoomCoordinator {
   }
 
   private GameContext context(LiveRoom room, GameCatalogSnapshot catalog) {
+    long now = clock.now();
     var players = room.members.values().stream().map(member -> new GamePlayer(member.identity.id(),
-        member.identity.displayName(), member.presence == PresenceStatus.CONNECTED,
+        member.identity.displayName(),
+        member.presence == PresenceStatus.CONNECTED || withinPresenceGrace(room, member, now),
         member.role == MemberRole.PLAYER && member.presence != PresenceStatus.LEFT)).toList();
     return contextBuilder(catalog)
         .players(players)
-        .now(clock.now())
+        .now(now)
         .roomCode(room.code)
         .hostId(room.hostId)
         .hostCustomCategories(hostCustomCategories(room))

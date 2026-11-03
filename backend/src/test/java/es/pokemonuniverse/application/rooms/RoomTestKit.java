@@ -54,11 +54,21 @@ final class RoomTestKit {
   }
 
   RoomTestKit(long start, UserGameConfigPreferences preferences, HostContentProvider host, GameRegistry registry) {
+    this(start, preferences, host, registry, RoomSettings.DEFAULTS);
+  }
+
+  /** Con otra {@link RoomSettings}, p. ej. una gracia de reconexión más corta que la de presencia. */
+  RoomTestKit(RoomSettings settings, String... fakeGames) {
+    this(50_000, UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, registry(fakeGames), settings);
+  }
+
+  RoomTestKit(long start, UserGameConfigPreferences preferences, HostContentProvider host, GameRegistry registry,
+      RoomSettings settings) {
     this.time = new ManualTime(start);
     this.random = new SeededRandom(42);
     this.registry = registry;
     this.manager = new RoomCoordinator(registry, MAPPER, events, audit, persister, preferences, host, time, random,
-        time, RoomSettings.DEFAULTS, () -> GameCatalogs.of(CATALOG), ASSETS);
+        time, settings, () -> GameCatalogs.of(CATALOG), ASSETS);
   }
 
   static GameRegistry registry(String... fakeGames) {
