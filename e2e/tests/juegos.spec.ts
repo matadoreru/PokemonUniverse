@@ -774,6 +774,15 @@ test('pokedex-distance: acierto exacto con cut-in', async ({ browser }) => {
     const { host, invitados, jugadores } = sala;
     const [invitado] = invitados as [Jugador];
     await seleccionarJuego(host.page, 'Pokédex Distance');
+    // 60 s por ronda: el reloj del host se detiene, pero el plazo del servidor sigue y el invitado no elige; así la
+    // ronda no cierra (y se lleva la banda) mientras se capturan los tres tamaños y el claro.
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    const tiempo = host.page.getByRole('slider', { name: 'Tiempo por ronda' });
+    await tiempo.focus();
+    await tiempo.press('End');
+    await tiempo.blur();
+    await expect(tiempo).toHaveValue('60');
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     // Reloj controlado en el host: la banda dura 1,6 s y se detiene el tiempo mientras se captura.
     await host.page.clock.install();
     await iniciarPartida(host.page, [invitado.page]);
