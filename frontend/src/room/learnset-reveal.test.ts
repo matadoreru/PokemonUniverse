@@ -15,4 +15,14 @@ describe('revealedLearnsetFlags', () => {
     expect(revealedLearnsetFlags(learnset, [hint('growl', 20)])).toEqual([false, false, true]);
     expect(revealedLearnsetFlags(learnset, [hint('growl', 1), hint('tackle', 5)])).toEqual([true, true, false]);
   });
+
+  it('does not depend on the order of the revealed moves', () => {
+    const learnset = [hint('growl', null), hint('tackle', null), hint('growl', null)];
+    expect(revealedLearnsetFlags(learnset, [hint('tackle', null), hint('growl', null)])).toEqual([true, true, false]);
+  });
+
+  it('ignores revealed entries that are not in the learnset', () => {
+    const learnset = [hint('growl', 1), hint('tackle', 5)];
+    expect(revealedLearnsetFlags(learnset, [hint('ember', 7), hint('tackle', 5)])).toEqual([false, true]);
+  });
 });
