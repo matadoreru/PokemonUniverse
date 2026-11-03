@@ -5,7 +5,7 @@
  */
 import { execFileSync } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
-import { expect, type Browser, type BrowserContext, type Page } from '@playwright/test';
+import { expect, type Browser, type BrowserContext, type Page, type WebSocket } from '@playwright/test';
 import { measureLayout } from './layout.js';
 
 /** Tamaños de las capturas de revisión: dos de escritorio y un móvil. */
@@ -73,16 +73,17 @@ export async function checkLayout(page: Page, name: string, screenshot = false):
 
 /**
  * Espera a las fuentes, exige que no haya scroll horizontal, guarda opcionalmente
- * `e2e/screenshots/<name>-<w>x<h>.png` y devuelve lo que encuentra `measureLayout` sin fallar.
+ * `e2e/screenshots/<name>-<w>x<h>.png` (de página completa con `fullPage`; el nombre lleva el tamaño de la vista) y
+ * devuelve lo que encuentra `measureLayout` sin fallar.
  */
-export async function layoutProblems(page: Page, name: string, screenshot: boolean): Promise<{ id: string; problems: string[] }> {
+export async function layoutProblems(page: Page, name: string, screenshot: boolean, fullPage = false): Promise<{ id: string; problems: string[] }> {
   const vp = page.viewportSize();
   if (!vp) throw new Error('layoutProblems: la página no tiene viewport');
   const id = `${name}-${vp.width}x${vp.height}`;
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
   await page.waitForTimeout(250);
   await expectNoHorizontalScroll(page, id);
-  if (screenshot) await page.screenshot({ path: `screenshots/${id}.png`, animations: 'disabled' });
+  if (screenshot) await page.screenshot({ path: `screenshots/${id}.png`, animations: 'disabled', fullPage });
   const m = await measureLayout(page);
   const problems = [
     ...m.small.map((x) => `< 12 px: ${x}`),
@@ -140,6 +141,8 @@ export interface Jugador {
   name: string;
   /** URLs de los WebSocket que ha abierto la página (el `/ws` de Java o el HMR de Vite). */
   websockets: string[];
+  /** Los mismos WebSocket, para escuchar sus tramas desde el test. */
+  sockets: WebSocket[];
 }
 
 /** Sala con `n` jugadores: el primero es el host y el resto se ha unido por código. */
@@ -163,8 +166,8 @@ export async function crearSalaConJugadores(browser: Browser, n: number, viewpor
     for (let i = 0; i < n; i++) {
       const context = await browser.newContext({ viewport });
       const page = await context.newPage();
-      const jugador: Jugador = { context, page, errors: collectErrors(page), name: uniqueName(i === 0 ? 'Host' : `Inv${i}`), websockets: [] };
-      page.on('websocket', (ws) => jugador.websockets.push(ws.url()));
+      const jugador: Jugador = { context, page, errors: collectErrors(page), name: uniqueName(i === 0 ? 'Host' : `Inv${i}`), websockets: [], sockets: [] };
+      page.on('websocket', (ws) => { jugador.websockets.push(ws.url()); jugador.sockets.push(ws); });
       jugadores.push(jugador);
       await loginAsGuest(page, jugador.name);
     }

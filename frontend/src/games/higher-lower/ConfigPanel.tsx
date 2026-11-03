@@ -45,7 +45,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
         <span className="label">Categorías</span>
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {HIGHER_LOWER_CATEGORIES.map((category) => (
-            <button type="button" key={category} onClick={() => toggleCategory(category)} className={`rounded-xl border px-3 py-2 text-left font-extrabold ${value.categories.includes(category) ? 'border-electric bg-electric text-night' : 'border-ink/10 bg-surface-raised text-ink/65'}`}>
+            <button type="button" key={category} aria-pressed={value.categories.includes(category)} onClick={() => toggleCategory(category)} className={`toggle-option text-left ${value.categories.includes(category) ? 'border-electric bg-electric text-night' : ''}`}>
               {categoryLabels[category]}
             </button>
           ))}
@@ -64,7 +64,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
                 key={difficulty}
                 onClick={() => void onChange({ ...value, difficulty })}
                 aria-pressed={selected}
-                className={`rounded-xl border px-3 py-3 text-left transition ${selected ? 'border-berry bg-berry text-white' : 'border-ink/10 bg-surface-raised text-ink hover:border-berry/45'}`}
+                className={`toggle-option py-3 text-left ${selected ? 'border-berry bg-berry text-white' : 'text-ink'}`}
               >
                 <span className="block font-extrabold">{copy.label}</span>
                 <span className={`mt-1 block text-xs font-semibold ${selected ? 'text-white/80' : 'text-ink/65'}`}>{copy.description}</span>
@@ -81,7 +81,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
           <span className="label">Mostrar el valor del anterior Pokemon</span>
           <div className="grid grid-cols-2 gap-2">
             {([[true, 'Sí'], [false, 'No']] as const).map(([choice, label]) => (
-              <button type="button" key={String(choice)} onClick={() => void onChange({ ...value, showPreviousValue: choice })} className={`rounded-xl border py-2 font-bold ${value.showPreviousValue === choice ? 'border-berry bg-berry text-white' : 'border-ink/10 bg-surface-raised'}`}>
+              <button type="button" key={String(choice)} aria-pressed={value.showPreviousValue === choice} onClick={() => void onChange({ ...value, showPreviousValue: choice })} className={`toggle-option ${value.showPreviousValue === choice ? 'border-berry bg-berry text-white' : 'text-ink'}`}>
                 {label}
               </button>
             ))}
@@ -91,7 +91,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
           <span className="label">Mostrar votaciones de los otros jugadores</span>
           <div className="grid grid-cols-2 gap-2">
             {HIGHER_LOWER_VISIBILITIES.map((visibility) => (
-              <button type="button" key={visibility} onClick={() => void onChange({ ...value, answerVisibility: visibility })} className={`rounded-xl border py-2 font-bold ${value.answerVisibility === visibility ? 'border-leaf bg-leaf text-night' : 'border-ink/10 bg-surface-raised'}`}>
+              <button type="button" key={visibility} aria-pressed={value.answerVisibility === visibility} onClick={() => void onChange({ ...value, answerVisibility: visibility })} className={`toggle-option ${value.answerVisibility === visibility ? 'border-leaf bg-leaf text-night' : 'text-ink'}`}>
                 {higherLowerVisibilityLabels[visibility]}
               </button>
             ))}

@@ -38,8 +38,8 @@ export function ShinyGameSidebar({ game, members, selfId, feedbackUrl }: {
           const vote = game.votes[id];
           const correct = reveal && vote?.optionId === game.correctOptionId;
           return <div key={id} className={`flex min-h-11 items-center gap-2 rounded-xl px-2.5 py-2 ${id === selfId ? 'bg-aqua/[.08]' : 'bg-ink/[.03]'}`}>
-            <Avatar name={memberName(member, id)} avatar={member?.avatar} presence={member?.presence} size="xs" />
-            <strong className="min-w-0 flex-1 truncate text-sm">{memberName(member, id)}{id === selfId && <span className="ml-1 text-xs font-black text-aqua">TÚ</span>}</strong>
+            <Avatar name={memberName(member, id)} avatar={member?.avatar} presence={member?.presence} size="sm" />
+            <strong className="min-w-0 flex-1 truncate text-sm" title={memberName(member, id)}>{memberName(member, id)}{id === selfId && <span className="ml-1 text-xs font-black text-aqua">TÚ</span>}</strong>
             {member?.role === 'SPECTATOR' ? <Eye size={15} className="text-ink/45" aria-label="Espectador" /> : !hasVoted ? <span className="inline-flex items-center gap-1 text-xs font-bold text-ink/50"><CircleDashed size={14} />Pendiente</span> : reveal && vote ? <span className={`inline-flex items-center gap-1 text-xs font-black ${correct ? 'text-leaf' : 'text-berry'}`}>{correct ? <Check size={14} /> : <X size={14} />}{vote.optionId}</span> : <span className="inline-flex items-center gap-1 text-xs font-black text-leaf"><Check size={14} />Votó</span>}
           </div>;
         })}</div>
@@ -57,7 +57,7 @@ export function ShinyGameSidebar({ game, members, selfId, feedbackUrl }: {
           const position = tied ? ranking.findIndex((candidateId) => (game.scores[candidateId] ?? 0) === (game.scores[id] ?? 0)) + 1 : index + 1;
           return <li key={id} className={`grid min-h-10 grid-cols-[1.5rem_auto_minmax(0,1fr)_auto] items-center gap-2 rounded-xl px-2 py-1.5 ${id === selfId ? 'bg-aqua/[.08]' : 'bg-ink/[.03]'}`} aria-current={id === selfId ? 'true' : undefined}>
             <span className="text-center font-display text-sm font-bold text-ink/55" title={tied ? 'Empate' : undefined}>{position}</span>
-            <Avatar name={memberName(member, id)} avatar={member?.avatar} size="xs" />
+            <Avatar name={memberName(member, id)} avatar={member?.avatar} size="sm" />
             <strong className="truncate text-sm">{memberName(member, id)}</strong>
             <strong className={`tabular-nums text-right text-sm text-berry ${reveal ? 'shiny-score-update' : ''}`}>{game.scores[id] ?? 0}<span className="ml-1 text-xs text-ink/45">pts</span></strong>
           </li>;

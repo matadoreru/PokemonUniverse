@@ -52,7 +52,7 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
             <Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} size="md" />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5 font-extrabold">
-                <span className="truncate">{member.displayName}</span>
+                <span className="truncate" title={member.displayName}>{member.displayName}</span>
                 {member.id === selfId && <span className="text-xs text-ink/55">(tú)</span>}
                 {!member.connected && <WifiOff size={14} className="shrink-0 text-electric" aria-hidden="true" />}
               </div>

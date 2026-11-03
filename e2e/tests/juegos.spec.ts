@@ -6,7 +6,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page, type Response } from '@playwright/test';
-import { crearSalaConJugadores, iniciarPartida, layoutProblems, seleccionarJuego, SIZES, type SalaConJugadores } from '../src/helpers.js';
+import { crearSalaConJugadores, iniciarPartida, layoutProblems, psql, seleccionarJuego, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
 
 interface Manifest {
   id: string;
@@ -33,6 +33,9 @@ const UNAVAILABLE: Record<string, RegExp> = {
 /** WebSocket de la sala (`frontend/src/lib/socket.ts`): siempre el `/ws` de Java, nunca Socket.IO. */
 const JAVA_WS = /^wss?:\/\/[^/]+\/ws$/;
 const SOCKET_IO = /\/socket\.io\//;
+
+/** Estado de un jugador de Pokédex Distance que ya ha elegido con las elecciones ocultas (`pokedex-distance-selection.ts`). */
+const DISTANCE_PICKED = '✓ Ya ha elegido';
 
 /** Lo que el backend Java dice de un juego sin motor portado: nunca debe salir. */
 const NOT_PORTED = 'Este minijuego todavía no está disponible en el servidor Java.';
@@ -155,13 +158,14 @@ for (const manifest of registry) {
  * Capturas de revisión de una pantalla a los tres tamaños, con `measureLayout` vacío en todos. Si se pasa `sigue`,
  * después de cada captura se comprueba que sigue visible: una fase que avanza sola no debe fotografiar la siguiente.
  * Con `claro`, añade `<nombre>-claro` (a 1280×720 o al tamaño dado) cambiando el tema en caliente (como hace el selector de tema).
+ * Con `completa`, el PNG es de página completa (para paneles más altos que la vista; el medidor ya mide toda la página).
  */
-async function capturarTamanos(page: Page, nombre: string, { sigue, claro = false }: { sigue?: Locator; claro?: boolean | { w: number; h: number } } = {}): Promise<void> {
+async function capturarTamanos(page: Page, nombre: string, { sigue, claro = false, completa = false }: { sigue?: Locator; claro?: boolean | { w: number; h: number }; completa?: boolean } = {}): Promise<void> {
   const comprobar = async () => { if (sigue) await expect(sigue, `${nombre}: la fase sigue en pantalla`).toBeVisible({ timeout: 1_000 }); };
   for (const { w, h } of SIZES) {
     await page.setViewportSize({ width: w, height: h });
     await page.waitForFunction(() => [...document.images].every((img) => img.complete), undefined, { timeout: 3_000 }).catch(() => undefined);
-    const { id, problems } = await layoutProblems(page, nombre, true);
+    const { id, problems } = await layoutProblems(page, nombre, true, completa);
     await comprobar();
     expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
   }
@@ -169,7 +173,7 @@ async function capturarTamanos(page: Page, nombre: string, { sigue, claro = fals
     const { w, h } = claro === true ? SIZES[0] : claro;
     await page.setViewportSize({ width: w, height: h });
     const previo = await page.evaluate(() => { const actual = document.documentElement.dataset.theme ?? 'dark'; document.documentElement.dataset.theme = 'light'; return actual; });
-    const { id, problems } = await layoutProblems(page, `${nombre}-claro`, true);
+    const { id, problems } = await layoutProblems(page, `${nombre}-claro`, true, completa);
     await page.evaluate((tema) => { document.documentElement.dataset.theme = tema; }, previo);
     await comprobar();
     expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
@@ -368,7 +372,8 @@ test('pokedex-distance: elección de los rivales oculta y panel de visibilidad',
     await expect(aviso).toBeVisible();
     // Desde arriba, como el resto de capturas del lobby: con la página desplazada la cabecera fija solapa las pestañas.
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'lobby-config-pokedex-distance', { claro: { w: 1920, h: 1080 } });
+    // Página completa: a 390×844 el grupo «Elecciones de los rivales» queda bajo las generaciones.
+    await capturarTamanos(host.page, 'lobby-config-pokedex-distance', { claro: { w: 1920, h: 1080 }, completa: true });
     await ocultas.click();
     await expect(ocultas).toHaveAttribute('aria-pressed', 'true');
     await expect(aviso).toHaveCount(0);
@@ -388,6 +393,290 @@ test('pokedex-distance: elección de los rivales oculta y panel de visibilidad',
     await expect(host.page.getByRole('heading', { name: 'En la ronda' })).toBeVisible();
     await host.page.evaluate(() => window.scrollTo(0, 0));
     await capturarTamanos(host.page, 'juego-pokedex-distance-oculta', { sigue: yaHaElegido, claro: true });
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+/** Respuesta del catálogo del buscador (`GET /api/pokemon/selector`): solo id, nombre y sprite opaco. */
+const SELECTOR_PATH = '/api/pokemon/selector';
+const esSelector = (r: Response) => new URL(r.url()).pathname === SELECTOR_PATH && r.status() === 200;
+
+/** Elige un Pokémon con el buscador de Pokédex Distance (o de cualquier juego con el buscador por defecto). */
+async function elegirPokemon(page: Page, nombre: string): Promise<void> {
+  await page.getByRole('textbox', { name: 'Buscar Pokémon' }).fill(nombre, { timeout: 20_000 });
+  await page.getByRole('button', { name: nombre, exact: true }).click({ timeout: 10_000 });
+}
+
+/** Capturas de una fase que dura poco: lo que mida `measureLayout` se anota en vez de hacer fallar el test. */
+async function capturarAnotando(page: Page, nombre: string, sigue: Locator, sizes: readonly { w: number; h: number }[] = SIZES): Promise<void> {
+  for (const { w, h } of sizes) {
+    await page.setViewportSize({ width: w, height: h });
+    const { id, problems } = await layoutProblems(page, nombre, true);
+    await expect(sigue, `${id}: la fase sigue en pantalla`).toBeVisible({ timeout: 1_000 });
+    if (problems.length) test.info().annotations.push({ type: 'encaje', description: `${id}: ${problems.join(' · ')}` });
+  }
+  await page.setViewportSize({ width: 1280, height: 720 });
+}
+
+test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const [segundo, tercero] = invitados as [Jugador, Jugador];
+    await seleccionarJuego(host.page, 'Pokédex Distance');
+    // 60 s por ronda: caben las dos elecciones, las capturas y la recarga del tercero.
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    const tiempo = host.page.getByRole('slider', { name: 'Tiempo por ronda' });
+    await tiempo.focus();
+    await tiempo.press('End');
+    await tiempo.blur();
+    await expect(tiempo).toHaveValue('60');
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+
+    // Red: el catálogo del buscador no lleva datos de respuesta y nadie pide el antiguo `/api/pokemon`.
+    const antiguas: string[] = [];
+    for (const { page } of jugadores) page.on('request', (r) => { if (new URL(r.url()).pathname === '/api/pokemon') antiguas.push(r.url()); });
+    const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<Record<string, unknown>> };
+    expect(catalogo.length, 'entradas del catálogo').toBeGreaterThan(0);
+    for (const entrada of catalogo) {
+      expect(Object.keys(entrada).sort(), `claves de ${String(entrada.id)}`).toEqual(['id', 'name', 'sprite']);
+      expect(String(entrada.sprite), `sprite de ${String(entrada.id)}`).not.toContain('sprites/pokemon/');
+    }
+
+    const buscador = (page: Page) => page.getByRole('textbox', { name: 'Buscar Pokémon' });
+    for (const { page } of jugadores) await expect(buscador(page)).toBeVisible({ timeout: 20_000 });
+    // Eligen primero los otros dos: al caerse el tercero sería el único que falta y, sin la gracia, la ronda se
+    // cerraría en ese momento con él «sin respuesta».
+    await elegirPokemon(host.page, 'Pikachu');
+    await elegirPokemon(segundo.page, 'Bulbasaur');
+    for (const { page } of jugadores) {
+      await expect(page.getByText(DISTANCE_PICKED, { exact: true }), 'host y segundo ya han elegido').toHaveCount(2, { timeout: 10_000 });
+      await expect(page.getByText(/^→ /), 'ningún rival muestra su Pokémon').toHaveCount(0);
+    }
+    const enLaRonda = host.page.getByRole('heading', { name: 'En la ronda' });
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-pokedex-distance-ronda-oculta', { sigue: enLaRonda, claro: true });
+
+    // El tercero recarga: la app le ofrece «Volver a la sala» y vuelve al buscador antes de que venza la gracia de 10 s,
+    // con la ronda aún abierta.
+    const inicio = Date.now();
+    await tercero.page.reload();
+    await tercero.page.getByRole('button', { name: 'Volver a la sala' }).click({ timeout: 8_000 });
+    await expect(buscador(tercero.page)).toBeVisible({ timeout: 8_000 });
+    expect(Date.now() - inicio, 'vuelta al buscador tras recargar (ms)').toBeLessThan(10_000);
+    await expect(tercero.page.getByText('Estás observando')).toHaveCount(0);
+    await expect(host.page.getByText('Resultado de la ronda')).toHaveCount(0);
+    await expect(enLaRonda).toBeVisible();
+    await expect(tercero.page.getByText(DISTANCE_PICKED, { exact: true })).toHaveCount(2);
+    await elegirPokemon(tercero.page, 'Charmander');
+
+    await expect(host.page.getByText('Resultado de la ronda')).toBeVisible({ timeout: 15_000 });
+    await expect(host.page.getByRole('heading', { name: '⏱️ Tiempo agotado' })).toHaveCount(0);
+    const tarjeta = host.page.locator('article').filter({ hasText: tercero.name });
+    await expect(tarjeta).toContainText('Charmander');
+    await expect(tarjeta).not.toContainText('Sin respuesta');
+    expect(antiguas, 'peticiones a /api/pokemon').toEqual([]);
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+test('pokedex-distance: empate forzado tras tres desempates', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const sala = await crearSalaConJugadores(browser, 2);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const [invitado] = invitados as [Jugador];
+    await seleccionarJuego(host.page, 'Pokédex Distance');
+    await iniciarPartida(host.page, [invitado.page]);
+    // Con las elecciones ocultas no hay bloqueo: los dos eligen el mismo Pokémon, siempre a la misma distancia.
+    // Ronda inicial y tres desempates; en el tercero cae quien eligió el último (el invitado).
+    const titulo = (texto: string) => host.page.getByRole('heading', { name: texto });
+    for (let ronda = 0; ronda < 4; ronda++) {
+      for (const { page } of jugadores) await expect(page.getByRole('textbox', { name: 'Buscar Pokémon' })).toBeVisible({ timeout: 20_000 });
+      await elegirPokemon(host.page, 'Pikachu');
+      await expect(invitado.page.getByText(DISTANCE_PICKED, { exact: true })).toHaveCount(1, { timeout: 10_000 });
+      await elegirPokemon(invitado.page, 'Pikachu');
+      if (ronda < 3) await expect(titulo('⚔️ Empate en la peor distancia')).toBeVisible({ timeout: 15_000 });
+    }
+    const forzado = titulo('⚔️ Empate tras 3 desempates');
+    await expect(forzado).toBeVisible({ timeout: 15_000 });
+    await expect(host.page.getByText('Cae quien eligió último; si eligieron a la vez, caen todos.')).toBeVisible();
+    await expect(host.page.locator('article').filter({ hasText: invitado.name })).toContainText('Eliminado');
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarAnotando(host.page, 'juego-pokedex-distance-empate-forzado', forzado);
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+test('shiny-vote: votos al revelar', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const sala = await crearSalaConJugadores(browser, 2);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const [invitado] = invitados as [Jugador];
+    await seleccionarJuego(host.page, 'Shiny Quiz');
+    await iniciarPartida(host.page, [invitado.page]);
+    const opcionA = (page: Page) => page.locator('[data-shiny-option="A"]');
+    for (const { page } of jugadores) await expect(opcionA(page)).toBeEnabled({ timeout: 20_000 });
+    const votantes = (page: Page) => page.locator('[data-testid^="shiny-voters-"]');
+
+    // El host vota: el invitado ve que ha votado, pero ninguna carta muestra votantes hasta el revelado.
+    await opcionA(host.page).click();
+    await host.page.getByRole('button', { name: 'Confirmar voto' }).click();
+    await expect(host.page.getByText('Voto confirmado:')).toBeVisible({ timeout: 10_000 });
+    await expect(invitado.page.getByText('Votó', { exact: true })).toHaveCount(1, { timeout: 10_000 });
+    for (const { page } of jugadores) await expect(votantes(page)).toHaveCount(0);
+    await expect(invitado.page.getByText('Votos al revelar')).toBeVisible();
+    await invitado.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(invitado.page, 'juego-shiny-vote-votos-al-revelar', { sigue: invitado.page.getByRole('button', { name: 'Confirmar voto' }), claro: true });
+
+    // Vota el invitado: la ronda se revela y aparecen los votantes en las cartas.
+    await opcionA(invitado.page).click();
+    await invitado.page.getByRole('button', { name: 'Confirmar voto' }).click();
+    for (const { page } of jugadores) await expect(votantes(page).first()).toBeVisible({ timeout: 10_000 });
+    await expect(votantes(host.page).filter({ hasText: '2 votos' })).toHaveCount(1);
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+test('higher-lower: panel de visibilidad', async ({ browser }) => {
+  const sala = await crearSalaConJugadores(browser, 2);
+  try {
+    const { host, jugadores } = sala;
+    const page = host.page;
+    await seleccionarJuego(page, 'Higher or Lower');
+    await page.getByRole('tab', { name: 'Configuración' }).click();
+    const alRevelar = page.getByRole('button', { name: 'Al revelar', exact: true });
+    const enDirecto = page.getByRole('button', { name: 'En directo', exact: true });
+    const aviso = page.getByText('Permite copiar: los demás ven tu elección al momento.');
+    await expect(alRevelar).toHaveAttribute('aria-pressed', 'true');
+    await expect(enDirecto).toHaveAttribute('aria-pressed', 'false');
+    await expect(aviso).toHaveCount(0);
+    // El grupo de visibilidad queda bajo las categorías y la dificultad: captura de página completa desde arriba (con la
+    // página desplazada, la cabecera fija taparía las categorías y el medidor lo cuenta como solape).
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(page, 'lobby-config-higher-lower', { claro: { w: 1920, h: 1080 }, completa: true });
+
+    await enDirecto.click();
+    await expect(enDirecto).toHaveAttribute('aria-pressed', 'true');
+    await expect(aviso).toBeVisible();
+    // El aviso de copia a 390×844, donde el texto se parte en varias líneas.
+    await page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
+    await enDirecto.blur();
+    await page.evaluate(() => window.scrollTo(0, 0));
+    const { id, problems } = await layoutProblems(page, 'lobby-config-higher-lower-en-directo', true, true);
+    expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await alRevelar.click();
+    await expect(aviso).toHaveCount(0);
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+/** Estado público de Learnset Guess que llega por el `/ws` (solo lo que usa el test). */
+interface LearnsetVisible {
+  phase: string;
+  referenceGeneration: number;
+  visibleGroups: Array<{ level: number | null; moves: Array<{ moveId: string }> }>;
+}
+
+/** Busca en una trama del `/ws` el estado público de Learnset Guess. */
+function learnsetEnTrama(payload: string | Buffer): LearnsetVisible | null {
+  let frame: unknown;
+  try { frame = JSON.parse(String(payload)); } catch { return null; }
+  const pendientes: unknown[] = [frame];
+  while (pendientes.length) {
+    const actual = pendientes.pop();
+    if (!actual || typeof actual !== 'object') continue;
+    if ((actual as { gameId?: unknown }).gameId === 'learnset-guess' && Array.isArray((actual as { visibleGroups?: unknown }).visibleGroups)) return actual as LearnsetVisible;
+    pendientes.push(...Object.values(actual));
+  }
+  return null;
+}
+
+/**
+ * Candidatos a la respuesta de Learnset con los movimientos revelados: Pokémon de la BD local que aprenden, en la
+ * generación de referencia, exactamente los movimientos de cada nivel visible.
+ */
+function candidatosLearnset(estado: LearnsetVisible): string[] {
+  const grupos = estado.visibleGroups.filter((g) => g.level !== null && g.moves.length > 0);
+  const primero = grupos[0];
+  if (!primero) return [];
+  const filas = psql(
+    `SELECT "pokemonId", "moveId", level FROM "PokemonLevelUpMove" WHERE "referenceGeneration" = :'gen'::int AND "pokemonId" IN (
+       SELECT "pokemonId" FROM "PokemonLevelUpMove" WHERE "referenceGeneration" = :'gen'::int AND "moveId" = :'move' AND level = :'level'::int);`,
+    { gen: String(estado.referenceGeneration), move: primero.moves[0]!.moveId, level: String(primero.level) },
+  );
+  const porPokemon = new Map<string, Map<number, Set<string>>>();
+  for (const fila of filas.split('\n').filter(Boolean)) {
+    const [pokemonId, moveId, level] = fila.split('|') as [string, string, string];
+    const niveles = porPokemon.get(pokemonId) ?? new Map<number, Set<string>>();
+    const moves = niveles.get(Number(level)) ?? new Set<string>();
+    moves.add(moveId);
+    niveles.set(Number(level), moves);
+    porPokemon.set(pokemonId, niveles);
+  }
+  return [...porPokemon].filter(([, niveles]) => grupos.every((g) => {
+    const moves = niveles.get(g.level!);
+    return moves !== undefined && moves.size === new Set(g.moves.map((m) => m.moveId)).size && g.moves.every((m) => moves.has(m.moveId));
+  })).map(([pokemonId]) => pokemonId);
+}
+
+test('learnset-guess: último aviso a 390', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const sala = await crearSalaConJugadores(browser, 2);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const [invitado] = invitados as [Jugador];
+    await seleccionarJuego(host.page, 'Learnset Guess');
+    // El estado público de la ronda llega por el `/ws` del host; el catálogo del buscador da el nombre de cada id.
+    let estado: LearnsetVisible | null = null;
+    for (const ws of host.sockets.filter((s) => JAVA_WS.test(s.url()))) ws.on('framereceived', ({ payload }) => { estado = learnsetEnTrama(payload) ?? estado; });
+    const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
+    await iniciarPartida(host.page, [invitado.page]);
+    const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
+    const nombres = new Map(catalogo.map((p) => [p.id, p.name]));
+
+    const seleccion = host.page.getByRole('textbox', { name: 'Buscar Pokémon' });
+    await expect(seleccion).toBeVisible({ timeout: 20_000 });
+    await expect.poll(() => (estado as LearnsetVisible | null)?.visibleGroups.length ?? 0, { timeout: 10_000 }).toBeGreaterThan(0);
+    const candidatos = [...new Set(candidatosLearnset(estado!).map((id) => nombres.get(id)).filter((n): n is string => Boolean(n)))];
+    test.info().annotations.push({ type: 'learnset', description: `candidatos: ${candidatos.join(', ')}` });
+    expect(candidatos.length, 'candidatos a la respuesta').toBeGreaterThan(0);
+
+    // El host prueba los candidatos hasta acertar; con dos jugadores, su acierto deja al invitado como el último.
+    const acierto = host.page.getByRole('heading', { name: '¡Has acertado!' });
+    for (const nombre of candidatos.slice(0, 4)) {
+      await expect(host.page.getByText(/^Espera .*s para confirmar otro intento\.$/)).toHaveCount(0, { timeout: 10_000 });
+      await elegirPokemon(host.page, nombre);
+      const resultado = await Promise.race([
+        acierto.waitFor({ timeout: 5_000 }).then(() => true, () => false),
+        host.page.getByText(/^Espera .*s para confirmar otro intento\.$/).waitFor({ timeout: 5_000 }).then(() => false, () => false),
+      ]);
+      if (resultado || await acierto.isVisible()) break;
+    }
+    await expect(acierto).toBeVisible({ timeout: 5_000 });
+    const chip = invitado.page.getByRole('status').filter({ hasText: /¡Último aviso! Solo faltas tú: \d+ segundos?\./ });
+    await expect(chip).toBeVisible({ timeout: 5_000 });
+    await invitado.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
+    await invitado.page.getByRole('textbox', { name: 'Buscar Pokémon' }).blur();
+    // Desde arriba: el aviso ya cabe en la vista y así la cabecera fija no tapa contenido.
+    await invitado.page.evaluate(() => window.scrollTo(0, 0));
+    await expect(chip).toBeInViewport();
+    await capturarAnotando(invitado.page, 'juego-learnset-guess-ultimo-aviso', chip, [SIZES[2]]);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
