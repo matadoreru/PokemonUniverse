@@ -40,7 +40,7 @@ siendo un objetivo de primera.
 
 - **Armazón.** `Layout` y `RoomSessionLayout` son una rejilla de `100dvh`: placas de HUD arriba y contenido debajo.
   Todo hijo flex o grid lleva `min-h-0` (sin él aparece el scroll de página). `body` con el fondo `--band` y la
-  escena (§3.9).
+  escena (§3.6).
 - **Escritorio (≥1024 px, `lg`).**
   - Sin scroll de página a 1280×720 ni a 1920×1080. Lo comprueba el E2E (`scrollHeight ≤ innerHeight`).
   - Las listas largas se desplazan dentro de su `Panel`, con la barra de desplazamiento del sistema (§3.7).
