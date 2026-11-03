@@ -3,25 +3,27 @@
 The repository is split into four boundaries (the Java backend is described in its own section below):
 
 - `packages/shared`: transport schemas, public types, scoring, game registry and deterministic game engines. It has no Express, Socket.IO, React or database dependency.
-- `apps/server`: authentication, PostgreSQL persistence, the live-room coordinator and Socket.IO transport. The coordinator sends intentions to a registered game module and publishes only its public projection.
-- `backend`: Java REST service for a subset of the HTTP API (stage 1 of the migration); since stages 2A–2B it can also host rooms with all 28 engines, and since 2C it ports data-sync, the TCG catalog, custom content, avatar uploads, per-user game configs and the admin API. Rooms and the 2C routes are for development and E2E only until the 2D cutover.
+- `backend`: the Java server and, since the 2D cutover, the only one deployed. It serves the whole HTTP API, hosts rooms over the `/ws` WebSocket with all 28 engines, runs data-sync and owns the schema (Flyway). The coordinator sends intentions to a registered game module and publishes only its public projection.
+- `apps/server`: the Node server the Java backend was ported from. It is no longer built into an image or deployed; it stays as the test oracle (golden fixtures, catalog and parity scripts). Its Prisma schema is frozen and no longer migrates any database.
 - `frontend`: React screens and presentation. It never decides deadlines, winners, eliminations or whether a selection wins a race.
+
+The English sections from «Local data authority» on were written for the Node server. They still describe the design, because the Java backend ports it literally (same rules, projections, timers and limits); file names there point to the oracle in `apps/server`, and the Java counterparts are listed in the Spanish sections.
 
 ## Backend Java (etapa 1)
 
-`backend/` es un servicio Micronaut 5.1.5 (Java 25, Gradle 9.8.2) que convive con `apps/server` detrás del mismo origen. Es el primer paso de una migración por estrangulamiento; el diseño completo está en `docs/superpowers/specs/2026-10-31-separacion-frontend-backend-java-design.md` y lo que queda en `docs/migracion-java-pendientes.md`.
+`backend/` es un servicio Micronaut 5.1.5 (Java 25, Gradle 9.8.2). Empezó en la etapa 1 conviviendo con `apps/server` detrás del mismo origen (migración por estrangulamiento) y desde el corte 2D es el único servidor; el diseño completo está en `docs/superpowers/specs/2026-10-31-separacion-frontend-backend-java-design.md` y lo que queda en `docs/migracion-java-pendientes.md`.
 
-**Fronteras.** Java atiende solo REST sin estado de sala: no conoce salas, Socket.IO ni motores de juego. Node sigue siendo la autoridad de las partidas. Las dos aplicaciones leen y escriben el mismo PostgreSQL.
+**Fronteras.** Desde el corte 2D Java es la autoridad de las partidas y el único proceso que lee y escribe PostgreSQL en producción. En la etapa 1 solo atendía REST sin estado de sala y compartía la BD con Node; las secciones de cada etapa cuentan qué se añadió en cada una.
 
 **Rutas que nginx manda a Java.** Desde el corte 2D, todas: `location ^~ /api/` y `location = /ws` hacia `backend:8080` (`infra/nginx.conf`), igual que el proxy de Vite en desarrollo. `proxy_pass` sin URI reenvía la ruta sin normalizar; las variantes de `/api/admin` acaban en 401/403 o 404 (`AdminGateTest`). `/health` y `/prometheus` del backend no se enrutan desde nginx.
 
 **Capas.** `domain/` (reglas puras) y `application/` (casos de uso y puertos) no dependen de los adaptadores REST: los servicios lanzan los errores de `application/errors` (`BadRequestException`, `ConflictException`, `NotFoundException`, `UnauthorizedException`) y `ApplicationExceptionHandler` les pone el estado HTTP; el perfil se compone como `UserProfile` y el controlador lo convierte en `ProfileResponse`; `GameRegistry` es una clase pura y su bean lo crea `adapters/out/resources/ClasspathGameRegistryLoader` desde `games/registry.json`. Concesiones deliberadas de la etapa 1: los records de dominio que se serializan tal cual (`GameManifest`, `AuthUser`, `AvatarRef`, `Pokemon`) llevan anotaciones de Micronaut Serde (solo anotaciones, sin lógica del framework), y los servicios de aplicación usan directamente las entidades y repositorios de `adapters/out/persistence` porque no se definieron puertos de repositorio; se revisará al ampliar el backend.
 
-**Identidad compartida.** Java y Node firman y aceptan la misma cookie `pu_session` (JWT HS256 con `JWT_SECRET`, HttpOnly, SameSite). Las contraseñas se verifican con bcrypt (at.favre, estrategia de truncado a 72 bytes igual que bcryptjs), de modo que las cuentas existentes siguen entrando.
+**Identidad.** Java firma y acepta la misma cookie `pu_session` que emitía Node, así que las sesiones abiertas antes del corte siguen valiendo (JWT HS256 con `JWT_SECRET`, HttpOnly, SameSite). Las contraseñas se verifican con bcrypt (at.favre, estrategia de truncado a 72 bytes igual que bcryptjs), de modo que las cuentas existentes siguen entrando.
 
 **Esquema: Flyway, único dueño.** Desde el corte 2D el esquema lo crea y migra solo el backend Java. Al arrancar, `FlywayMigrations` (fuera de `test`, con baseline-on-migrate en la versión 1, validación y `clean` desactivado; en `test` la migración automática de Micronaut, sin baseline porque la BD de Test Resources parte vacía) aplica `backend/src/main/resources/db/migration/`: en una BD vacía, `V1__baseline.sql` crea el esquema completo; una BD creada por Prisma que ya tiene `flyway_schema_history` (producción desde la etapa 1) arranca sin cambios; una BD creada por Prisma sin historial se registra en baseline 1 sin ejecutar `V1`. `FlywayMigrationsTest` comprueba los tres casos, que `V1__baseline.sql` y las migraciones de `apps/server/prisma/migrations` dan el mismo `pg_dump --schema-only`, y que una BD vacía migrada hasta la última versión queda igual que una BD de Prisma en baseline 1 migrada hasta la última (con una migración de sonda solo de test, `db/testmigration/V9999__probe.sql`). Regla: **los cambios de esquema son migraciones Flyway `V2__…`**; nunca se edita una migración aplicada. El esquema Prisma queda congelado como modelo del oráculo Node (que puede dejar de funcionar ante cambios posteriores del esquema). `/api/health` informa en `schemaVersion` la última migración Flyway correcta («`1 baseline`», «`2 add x`»…; sin historial de Flyway, la de `_prisma_migrations`; si no hay ninguna, `unknown`). El backend usa Hibernate 7 vía Micronaut Data JPA con identificadores entrecomillados para coincidir con los nombres de Prisma.
 
-**Avatares.** El backend corre como uid/gid 1000, igual que el usuario `node`, y monta el mismo volumen de avatares: Node escribe los ficheros con modo 0600 y otro uid no podría servirlos ni borrarlos. Desde 2C Java también escribe avatares (`POST /api/auth/guest/custom-avatar`, `PUT /api/auth/profile/avatar/{preset,custom}`, `DELETE /api/auth/profile/avatar`), y desde el corte 2D se le enrutan en dev/E2E y en producción (nginx admite cuerpos de hasta 10 MB, el `max-request-size` de Micronaut). `AvatarImageProcessor` detecta el formato por los bytes (debe coincidir con el `Content-Type`), lee las dimensiones de la cabecera antes de decodificar (más de 4096² píxeles es «archivo no válido», un lado fuera de 64..4096 el literal de dimensiones), aplica la orientación EXIF de los JPEG, recorta `cover` a 256×256 y codifica WebP calidad 84. Lectura en Java puro (TwelveMonkeys JPEG/WebP, PNG del JDK); escritura con la libwebp nativa de `webp-imageio`, que la imagen Docker copia a `/app/native` (`java.library.path`) por si `/tmp` es `noexec`. El limitador de avatares (12 por 15 min por IP, un contador para las cuatro rutas) ignora `RATE_LIMIT_DISABLED` y corre después de `IdentityFilter`, porque en las rutas de perfil un 401 no cuenta. Cada cambio de un usuario registrado reemite `room:state` de su sala (`config/AvatarWiring` → `RoomCoordinator.updateIdentityAvatar`).
+**Avatares.** El backend corre como uid/gid 1000, igual que el usuario `node`, y monta el mismo volumen de avatares: los ficheros que escribió Node tienen modo 0600 y otro uid no podría servirlos ni borrarlos. Desde 2C Java también escribe avatares (`POST /api/auth/guest/custom-avatar`, `PUT /api/auth/profile/avatar/{preset,custom}`, `DELETE /api/auth/profile/avatar`), y desde el corte 2D se le enrutan en dev/E2E y en producción (nginx admite cuerpos de hasta 10 MB, el `max-request-size` de Micronaut). `AvatarImageProcessor` detecta el formato por los bytes (debe coincidir con el `Content-Type`), lee las dimensiones de la cabecera antes de decodificar (más de 4096² píxeles es «archivo no válido», un lado fuera de 64..4096 el literal de dimensiones), aplica la orientación EXIF de los JPEG, recorta `cover` a 256×256 y codifica WebP calidad 84. Lectura en Java puro (TwelveMonkeys JPEG/WebP, PNG del JDK); escritura con la libwebp nativa de `webp-imageio`, que la imagen Docker copia a `/app/native` (`java.library.path`) por si `/tmp` es `noexec`. El limitador de avatares (12 por 15 min por IP, un contador para las cuatro rutas) ignora `RATE_LIMIT_DISABLED` y corre después de `IdentityFilter`, porque en las rutas de perfil un 401 no cuenta. Cada cambio de un usuario registrado reemite `room:state` de su sala (`config/AvatarWiring` → `RoomCoordinator.updateIdentityAvatar`).
 
 **Contrato REST para la web.** El OpenAPI se genera al compilar (`backend/openapi/pokemon-universe.yml`, versionado). `verifyOpenApi` forma parte de `check` y falla si la copia versionada difiere; el procesamiento incremental de anotaciones está desactivado para que la salida sea determinista. La web genera sus tipos con `npm run api:types -w @pokemon-universe/web` (`frontend/src/lib/api-types.ts`). El registro de minijuegos se exporta de `shared` con `npm run registry:export` a `backend/src/main/resources/games/registry.json`; `npm test` ejecuta `check:registry` (y `check:api-types`) y falla si el fichero versionado está desactualizado. Los 400 de rutas que validan con esquemas Zod portados (`InvalidInputException`, p. ej. `/api/categories` y `/api/would-you-rather-prompts`) llevan las incidencias de Zod completas y se documentan con el esquema `ValidationErrorResponse` (`{error, issues: ZodIssue[]}`, `ZodIssue` = `{code, path: (string|integer)[], message}` más claves por código); el resto de 400 sigue con `ApiError` (en los dilemas, crear y editar documentan `oneOf` de ambos: «opciones iguales tras normalizar» lo lanza el servicio y no lleva `issues`, como en Node). micronaut-openapi 7.1 elimina `additionalProperties: false` al normalizar, así que los cuerpos estrictos lo indican en su descripción.
 
@@ -29,11 +31,11 @@ The repository is split into four boundaries (the Java backend is described in i
 
 ## Salas en Java (etapa 2A)
 
-Desde la etapa 2A el backend Java puede alojar salas completas (lobby, rotación, votación, resultados) con `application/rooms/RoomCoordinator`, port literal de `apps/server/src/rooms/manager.ts` con una sección crítica por sala. **Es solo para desarrollo y E2E: no es apto para producción hasta el corte 2D**, porque el cambio de transporte y de rutas es todo o nada (ver «Corte 2D» en `docs/migracion-java-pendientes.md`). En 2A había dos motores portados (`higher-lower` y `pokedex-distance`); desde 2B están los 28 (ver la sección siguiente). `RoomCoordinator.NOT_PORTED` («Este minijuego todavía no está disponible en el servidor Java.») se conserva como defensa ante un registro incompleto; `/api/games` y el perfil muestran los 28 manifests.
+Desde la etapa 2A el backend Java puede alojar salas completas (lobby, rotación, votación, resultados) con `application/rooms/RoomCoordinator`, port literal de `apps/server/src/rooms/manager.ts` con una sección crítica por sala. Hasta el corte 2D fue solo de desarrollo y E2E, porque el cambio de transporte y de rutas era todo o nada (ver «Corte 2D» en `docs/migracion-java-pendientes.md`); desde el corte es el coordinador de producción. En 2A había dos motores portados (`higher-lower` y `pokedex-distance`); desde 2B están los 28 (ver la sección siguiente). `RoomCoordinator.NOT_PORTED` («Este minijuego todavía no está disponible en el servidor Java.») se conserva como defensa ante un registro incompleto; `/api/games` y el perfil muestran los 28 manifests.
 
 **Transporte.** Desde el corte 2D la web usa siempre el WebSocket nativo contra `/ws` (`createRealtime()` de `frontend/src/lib/socket.ts`, cliente en `realtime-ws.ts`); el adaptador Socket.IO y la bandera `VITE_REALTIME` ya no existen. `RoomContext` solo conoce la interfaz `RealtimeClient`. En desarrollo el proxy de Vite manda todo `/api` a `http://localhost:8080` y `/ws` a `ws://localhost:8080`; en contenedores, nginx tiene `location = /ws` (coincidencia exacta) hacia `backend:8080`.
 
-**Interruptor del servidor.** `pu.rooms.enabled` (`ROOMS_ENABLED`, por defecto `false`; `true` en `application-dev.yml` y `application-test.yml`). Apagado, `@OnOpen` de `/ws` cierra la sesión con 4403 «Rooms disabled» antes de registrarla y el coordinador no llega a verla, así que en producción nadie puede abrir una sala Java aunque llegue a `/ws` sin la bandera de la web. Desde el corte 2D, `compose.yaml` lo fija a `true` (sin variable `PU_…`), igual que `INTERRUPT_STALE_ROOMS` (`pu.interrupt-stale-rooms`: al arrancar marca `INTERRUPTED`/`SERVER_STOPPED` las salas `ACTIVE` y las partidas `IN_PROGRESS` del proceso anterior) y `BACKEND_DATA_SYNC_ENABLED`; los tres siguen a `false` por defecto en el código para que pruebas y arranques sueltos no los enciendan (`config/ComposeStartupTest` arranca con el entorno de compose).
+**Interruptor del servidor.** `pu.rooms.enabled` (`ROOMS_ENABLED`, por defecto `false`; `true` en `application-dev.yml` y `application-test.yml`). Apagado, `@OnOpen` de `/ws` cierra la sesión con 4403 «Rooms disabled» antes de registrarla y el coordinador no llega a verla (así estuvo producción hasta el corte). Desde el corte 2D, `compose.yaml` lo fija a `true` (sin variable `PU_…`), igual que `INTERRUPT_STALE_ROOMS` (`pu.interrupt-stale-rooms`: al arrancar marca `INTERRUPTED`/`SERVER_STOPPED` las salas `ACTIVE` y las partidas `IN_PROGRESS` del proceso anterior) y `BACKEND_DATA_SYNC_ENABLED`; los tres siguen a `false` por defecto en el código para que pruebas y arranques sueltos no los enciendan (`config/ComposeStartupTest` arranca con el entorno de compose).
 
 **Protocolo `/ws`.** Identidad desde la cookie `pu_session` en el *handshake*; sin cookie o con una inválida el servidor completa el *upgrade* y cierra en `@OnOpen` con 4401 «Authentication required» (el navegador no puede leer un rechazo HTTP del *handshake*, sí un código de cierre). Mensajes JSON con sobre: el cliente envía `{id, event, payload}` y recibe `{id, ok, data | error}` como ack (también ante cualquier error inesperado); el servidor empuja eventos con los mismos nombres y payloads que `ClientToServerEvents`/`ServerToClientEvents` de Socket.IO, incluido `session:restored` en cada apertura de un miembro conocido. Cada conexión procesa sus mensajes en orden sobre hilos virtuales.
 
@@ -43,7 +45,7 @@ Desde la etapa 2A el backend Java puede alojar salas completas (lobby, rotación
 
 ## Motores y assets en Java (etapa 2B)
 
-Plan: `docs/superpowers/plans/2026-10-31-etapa-2b-motores.md`. Sigue siendo solo desarrollo y E2E hasta 2D.
+Plan: `docs/superpowers/plans/2026-10-31-etapa-2b-motores.md`. Solo desarrollo y E2E hasta el corte 2D; en producción desde entonces.
 
 **Motores (28/28).** Cada motor está en `backend/src/main/java/es/pokemonuniverse/domain/game/engines/<id sin guiones>/` y se registra en un único sitio, `portedEngines` de `adapters/out/resources/ClasspathGameRegistryLoader.java`, en el mismo commit que sus fixtures doradas. `GoldenRegistryConsistencyTest` falla si hay fixtures sin motor o motor sin fixtures, y `ClasspathGameRegistryLoaderTest` exige 28 motores portados. Las reglas de port (orden de claves, `Record<number, …>`, token de asset, `localeCompare`, `.int()`, `trim()`, `\p{Diacritic}`) están en `domain/game/engines/README.md`. Las condiciones compartidas por Bingo y Bluff Auction viven en `domain/pokemon/conditions/`.
 
@@ -64,9 +66,9 @@ Plan: `docs/superpowers/plans/2026-10-31-etapa-2b-motores.md`. Sigue siendo solo
 ## Datos y administración en Java (etapa 2C)
 
 Plan: `docs/superpowers/plans/2026-11-02-etapa-2c-datos-administracion.md`; pendientes, decisiones y lista del corte 2D en
-`docs/migracion-java-pendientes.md`. Producción solo gana `GET /api/health` (nginx `location = /api/health`); el resto
-se enruta a Java en dev/E2E (desde el corte 2D, todo `/api` en `proxyFor`), porque Node guarda en memoria lo mismo que
-Java cachea y cada proceso solo vería sus propias escrituras.
+`docs/migracion-java-pendientes.md`. Hasta el corte 2D producción solo ganó `GET /api/health`: Node guardaba en memoria
+lo mismo que Java cachea y cada proceso solo habría visto sus propias escrituras. Desde el corte todo `/api` va a Java
+en dev/E2E (`proxyFor`) y en producción (`location ^~ /api/`).
 
 **Qué hay y dónde.**
 - `domain/game/engine/infra/ConfigReader`: lector común de las 28 `<Juego>Config` (mismos mensajes que Zod; modo
@@ -87,16 +89,16 @@ Java cachea y cada proceso solo vería sus propias escrituras.
 - `/api/tcg/{options,eligibility}` (`adapters/in/rest/tcg/TcgController`) sobre `CachedTcgCardCatalog`.
 - `/api/admin/**` (`adapters/in/rest/admin/`), descrito abajo.
 
-**Arranque con las salas apagadas.** Las cargas de arranque que solo sirven a las salas Java dependen de
+**Arranque con las salas apagadas.** (Era el caso de producción hasta el corte 2D; hoy solo de arranques sueltos sin
+`ROOMS_ENABLED`.) Las cargas de arranque que solo sirven a las salas Java dependen de
 `pu.rooms.enabled=true` (`@Requires`): `config/UserGameConfigLoader` (migración y caché de `UserGameConfig`, que
 reescribe las filas que cambian), `HostContentWiring.CacheLoader` (cachés de categorías y dilemas) y
-`config/TcgCatalogStartup` (`CachedTcgCardCatalog.refresh()`). Con las salas apagadas (producción hasta 2D) Java ni lee
-ni escribe esas tablas al arrancar, así que no abre una ventana de escrituras perdidas contra los guardados de Node. Los
+`config/TcgCatalogStartup` (`CachedTcgCardCatalog.refresh()`). Con las salas apagadas Java ni lee ni escribe esas
+tablas al arrancar, así que no abría una ventana de escrituras perdidas contra los guardados de Node. Los
 servicios siguen existiendo, sin cargar: `GET /api/categories` y `GET /api/would-you-rather-prompts` devuelven solo lo
 que Java haya escrito desde que arrancó (normalmente `[]`), las mutaciones escriben en la BD (la unicidad sigue dando
 409) y `/api/tcg/*` responde 500 «El catálogo TCG todavía no está disponible.» hasta que una sincronización TCGDEX
-completada por Java lo recargue. Ninguna de esas rutas se enruta en nginx hasta 2D, que enciende las salas y con ellas
-estas cargas.
+completada por Java lo recargue. El corte 2D encendió las salas en compose y con ellas estas cargas.
 
 **Interruptor del data-sync.** `pu.data-sync.enabled` (`BACKEND_DATA_SYNC_ENABLED`, por defecto `false`; `true` en
 `compose.yaml` desde el corte 2D, apagado en dev salvo `npm run db:seed`) es una variable distinta del `DATA_SYNC_ENABLED` de Node para que un `.env` compartido no arranque dos sincronizadores sobre la
@@ -107,13 +109,27 @@ diferencia de Node, para no marcar como fallida una ejecución viva de Node) y l
 503. `POKEAPI_BASE_URL`, `POKEAPI_SPRITE_BASE_URL` y `TCGDEX_BASE_URL` solo existen para las pruebas (https; http solo
 hacia loopback).
 
-**Administración.** `/api/admin/**` (`adapters/in/rest/admin/`) porta `admin/routes.ts` y los routers admin de novedades y feedback; en dev/E2E va a Java (las salas activas son las del coordinador Java). `AdminGate` es un filtro de servidor (orden 200, tras `IdentityFilter` y el limitador): 401 sin cuenta registrada y 403 si el rol releído de la BD no es ADMIN, antes de validar nada, también en rutas inexistentes. Los controladores leen la query cruda (`AdminQueryParams` reproduce `z.coerce.number()` con `JsNumbers.fromString` y los arrays de `qs`), las búsquedas son `ILIKE '%…%'` sin escapar comodines, como Prisma (`JpaAdminRecords`, `JpaFeedbackSearch`), y `interruptedToday` cuenta desde la medianoche de la zona por defecto de la JVM (`TZ`, como el proceso Node). Con `pu.data-sync.enabled=false` las rutas de data-sync responden 503 aunque el servicio exista. `RoomStore.list()` sigue el orden de inserción, como el `Map` de Node.
+**Administración.** `/api/admin/**` (`adapters/in/rest/admin/`) porta `admin/routes.ts` y los routers admin de novedades y feedback; va a Java en dev/E2E y en producción (las salas activas son las del coordinador Java). `AdminGate` es un filtro de servidor (orden 200, tras `IdentityFilter` y el limitador): 401 sin cuenta registrada y 403 si el rol releído de la BD no es ADMIN, antes de validar nada, también en rutas inexistentes. Los controladores leen la query cruda (`AdminQueryParams` reproduce `z.coerce.number()` con `JsNumbers.fromString` y los arrays de `qs`), las búsquedas son `ILIKE '%…%'` sin escapar comodines, como Prisma (`JpaAdminRecords`, `JpaFeedbackSearch`), y `interruptedToday` cuenta desde la medianoche de la zona por defecto de la JVM (`TZ`, como el proceso Node). Con `pu.data-sync.enabled=false` las rutas de data-sync responden 503 aunque el servicio exista. `RoomStore.list()` sigue el orden de inserción, como el `Map` de Node.
 
 **Marcas de tiempo.** El JDBC crudo enlaza `LocalDateTime` en UTC y Hibernate usa `hibernate.jdbc.time_zone=UTC`, como
 Prisma (`timestamp(3)` sin zona en UTC), también con la JVM en otra zona.
 
 **E2E.** `e2e/tests/contenido-y-admin.spec.ts` recorre categorías, dilemas, avatar y panel admin contra
 Java (`npm run test:e2e -- contenido-y-admin`).
+
+## Corte 2D: Java, único servidor
+
+Plan: `docs/superpowers/plans/2026-11-03-etapa-2d-corte.md`. En un mismo despliegue:
+
+- **Web.** Habla solo con Java: sin `socket.io-client`, salas por `/ws` y HTTP por `/api` del mismo origen.
+- **nginx.** `location ^~ /api/` y `location = /ws` hacia `backend:8080`; `/api` sin barra da 404 y el resto es la SPA.
+- **Compose.** Sin servicio `server`: `backend` solo depende de `postgres` y fija `ROOMS_ENABLED`,
+  `INTERRUPT_STALE_ROOMS` y `BACKEND_DATA_SYNC_ENABLED` a `true` (solo el rollback del primer despliegue tras el corte
+  los apaga, con `PU_CUTOVER_ROLLBACK_JAVA=false`; ver `DEPLOY.md` §5). Los artworks van dentro de la imagen.
+- **Esquema.** Flyway es el único dueño (ver «Esquema» arriba); `_prisma_migrations` se conserva.
+- **CI y despliegue.** Sin imagen ni workflow de Node: el oráculo corre en el job `oracle` de `frontend.yml`.
+  `scripts/deploy.sh` para el contenedor Node del despliegue anterior antes de arrancar Java y lo borra cuando pasa
+  `scripts/smoke-check.sh`, de modo que Node y Java nunca sirven salas ni sincronizan a la vez.
 
 ## Local data authority
 

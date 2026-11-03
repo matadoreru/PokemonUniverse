@@ -50,26 +50,18 @@ Las salas admiten hasta 8 jugadores por defecto. Si alguien se desconecta, conse
 
 - **Monorepo** con npm workspaces y TypeScript estricto.
 - **`packages/shared`**: contratos Zod, tipos, puntuación y los motores deterministas de cada minijuego.
-- **`apps/server`**: Express, Socket.IO y Prisma sobre PostgreSQL. Es la autoridad de la partida: temporizadores, secretos y ganadores se deciden aquí.
+- **`backend`**: el servidor, en Java 25 con Micronaut, Gradle y PostgreSQL. Es la autoridad de la partida: temporizadores, secretos y ganadores se deciden aquí (ver abajo).
 - **`frontend`**: React 19, Vite y Tailwind. Solo muestra lo que el servidor le envía a cada jugador.
-- **`backend`**: backend Java 25 con Micronaut, Gradle y PostgreSQL (ver abajo).
+- **`apps/server`**: el antiguo servidor Node (Express, Socket.IO y Prisma). Desde el corte 2D ya no se despliega: queda como oráculo de pruebas (fixtures doradas y paridad de los motores y del catálogo).
 - **`e2e`**: pruebas end-to-end con Playwright.
 
-### Backend Java (etapa 1)
+### Backend Java
 
-El backend Java convive con Node detrás del mismo origen y ambos firman y aceptan la misma cookie `pu_session` con `JWT_SECRET`. En esta etapa Java atiende `POST /api/auth/{register,login,guest,logout}`, `GET /api/auth/{me,profile}`, `GET /api/auth/avatars/*`, `GET /api/changelog`, `POST /api/feedback`, `GET /api/games`, `GET /api/health` y `GET /api/pokemon`. En producción todo lo demás (salas, Socket.IO, administración, TCG, categorías, subida de avatares…) sigue en Node. En contenedores el reparto lo hace nginx; en desarrollo, desde el corte 2D, el proxy de Vite (`frontend/vite.config.ts`) manda ya todo `/api` y `/ws` a Java.
+Desde el corte 2D el backend Java es el único servidor: atiende toda la API HTTP (`/api`), las salas por un WebSocket propio en `/ws`, la sincronización con PokéAPI y TCGdex y el esquema de la BD (Flyway). En contenedores nginx manda `/api/` y `/ws` a `backend:8080`; en desarrollo lo hace el proxy de Vite (`frontend/vite.config.ts`). La sesión es la cookie `pu_session` (JWT firmado con `JWT_SECRET`), compatible con las sesiones emitidas por Node antes del corte.
 
-### Salas en Java (etapas 2A y 2B, solo desarrollo)
+Las salas las controla `pu.rooms.enabled` (`ROOMS_ENABLED`): encendido en `compose.yaml`, en el entorno `dev` que usan `npm run dev`/`npm run dev:backend` y en los tests; apagado (`/ws` cierra con 4403) solo en arranques sueltos sin esa configuración. Los 28 minijuegos están portados y verificados con fixtures doradas contra los motores TypeScript, y Java sirve también las imágenes y gritos de ronda (`/api/rooms/`), las categorías personalizadas, los dilemas de Would You Rather, los avatares, el catálogo TCG (`/api/tcg/`) y la administración (`/api/admin/`). **Higher or Lower: Cartas** (`tcg-higher-lower`) y **Adivina por la Paleta** (`pokemon-palette-guess`) necesitan cartas TCG y paletas en la BD, que trae el data-sync.
 
-El backend Java aloja las salas por un WebSocket propio en `/ws`. En el servidor lo controla `pu.rooms.enabled` (`ROOMS_ENABLED`): está activo en el entorno `dev` que usan `npm run dev`/`npm run dev:backend` y en los tests, y apagado por defecto en producción (`/ws` cierra con 4403) hasta el corte 2D. Desde el corte 2D la web usa siempre este `/ws` (la antigua bandera `VITE_REALTIME` ya no existe) y en desarrollo Vite manda todo `/api` y `/ws` a Java.
-
-Los 28 minijuegos están portados y verificados con fixtures doradas contra los motores TypeScript, y Java sirve también las imágenes y gritos de ronda (`/api/rooms/`). **Higher or Lower: Cartas** (`tcg-higher-lower`) y **Adivina por la Paleta** (`pokemon-palette-guess`) necesitan cartas TCG y paletas en la BD, que trae el data-sync (ver abajo). No es apto para producción hasta el corte 2D.
-
-### Datos y administración en Java (etapa 2C, solo desarrollo)
-
-Java sirve también las categorías personalizadas (`/api/categories`), los dilemas de Would You Rather (`/api/would-you-rather-prompts`), la subida y el borrado de avatares, el catálogo TCG (`/api/tcg/`) y la administración (`/api/admin/`). En desarrollo ya van a Java; en producción el corte 2D mueve nginx a la vez (lista en [docs/migracion-java-pendientes.md](docs/migracion-java-pendientes.md)).
-
-El data-sync de Java (PokéAPI y TCGdex) está apagado por defecto. Para cargar paletas y cartas en la BD local arranca el backend con `BACKEND_DATA_SYNC_ENABLED=true` (y deja `DATA_SYNC_ENABLED=false` en Node: nunca dos sincronizadores a la vez): al arrancar sincroniza PokéAPI si faltan paletas (≈ 1 min) y lanza la sincronización inicial de TCG si no hay cartas; un ADMIN puede repetirlas desde la pestaña «Datos» del panel.
+El data-sync (`BACKEND_DATA_SYNC_ENABLED`) está encendido en `compose.yaml` y apagado en desarrollo salvo con `npm run db:seed`, para no sincronizar en cada arranque. Encendido, al arrancar sincroniza PokéAPI si faltan Pokémon o paletas (minutos, antes de abrir el puerto) y lanza en segundo plano la sincronización inicial de TCG si no hay cartas; después repite cada día a `DATA_SYNC_HOUR`:`DATA_SYNC_MINUTE`. Un ADMIN puede relanzarlas desde la pestaña «Datos» del panel. Nunca lo enciendas a la vez que el `DATA_SYNC_ENABLED` del oráculo Node contra la misma BD.
 
 Los detalles de diseño están en [docs/architecture.md](docs/architecture.md).
 
@@ -87,9 +79,9 @@ npm run db:seed                               # backend con sincronización: cre
 npm run dev                                   # Java en :8080 y web en http://localhost:5173
 ```
 
-En el `.env` local quita la línea `VITE_API_URL`: la web usa el proxy de Vite. Pon también `DATA_SYNC_ENABLED=false` si no quieres sincronizar datos externos al arrancar. Esa variable solo la lee Node: el backend Java tiene su propio interruptor, `BACKEND_DATA_SYNC_ENABLED` (por defecto `false` hasta el corte 2D).
+Deja `VITE_API_URL` sin definir (`.env.example` ya no la trae): la web usa el proxy de Vite, que manda `/api` y `/ws` a :8080 en el mismo origen, y la cookie de sesión llega también al WebSocket. El data-sync de Java queda apagado (`BACKEND_DATA_SYNC_ENABLED` sin definir) salvo en `npm run db:seed`.
 
-El backend Java (`npm run dev:backend`, recarga en caliente con `./gradlew run -t`) toma del entorno `JWT_SECRET`, `COOKIE_SECURE`, `WEB_ORIGIN` y `RATE_LIMIT_DISABLED`; la conexión a la BD local está fijada en `backend/src/main/resources/application-dev.yml` y el puerto se fuerza a 8080 aunque el `.env` traiga `PORT=3001`. Los avatares de invitado los sube Node a `apps/server/.data/avatars` y Java los sirve desde ese mismo directorio (`pu.avatar-storage-dir` en `application-dev.yml`, `../apps/server/.data/avatars` relativo a `backend/`; `AVATAR_STORAGE_DIR` lo sustituye). Los artworks del modo Artwork los lee de `pu.artwork-dir` (`backend/assets/pokemon-artworks`, `assets/pokemon-artworks` relativo a `backend/` por defecto; la imagen los copia en `/app/pokemon-artworks`; `POKEMON_ARTWORK_DIR` lo sustituye).
+El backend Java (`npm run dev:backend`, recarga en caliente con `./gradlew run -t`) toma del entorno `JWT_SECRET`, `COOKIE_SECURE`, `WEB_ORIGIN` y `RATE_LIMIT_DISABLED`; la conexión a la BD local está fijada en `backend/src/main/resources/application-dev.yml` y el puerto se fuerza a 8080 aunque el `.env` traiga `PORT=3001`. Los avatares se guardan en `apps/server/.data/avatars` (`pu.avatar-storage-dir` en `application-dev.yml`, `../apps/server/.data/avatars` relativo a `backend/`, el mismo directorio que usaba Node; `AVATAR_STORAGE_DIR` lo sustituye). Los artworks del modo Artwork los lee de `pu.artwork-dir` (`backend/assets/pokemon-artworks`, `assets/pokemon-artworks` relativo a `backend/` por defecto; la imagen los copia en `/app/pokemon-artworks`; `POKEMON_ARTWORK_DIR` lo sustituye).
 
 Todo en contenedores con un solo comando:
 
@@ -106,7 +98,7 @@ El esquema es de Flyway: al arrancar, el backend Java aplica `backend/src/main/r
 | `npm run dev` | Backend Java y web en modo desarrollo (la web solo habla con Java). |
 | `npm run dev:backend` | Solo el backend Java en :8080, con recarga en caliente. |
 | `cd backend && ./gradlew check` | Pruebas, verificación de la especificación OpenAPI y demás comprobaciones del backend Java. |
-| `npm run build` | Compila shared, server y web. |
+| `npm run build` | Compila shared, el oráculo Node (server) y web. |
 | `npm test` | Pruebas unitarias con Vitest. |
 | `npm run test:e2e` | Pruebas end-to-end con Playwright contra el backend Java (salas por `/ws`). Ver [e2e/README.md](e2e/README.md). |
 | `npm run lint` | ESLint sin advertencias permitidas. |

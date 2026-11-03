@@ -8,11 +8,11 @@ import jakarta.inject.Singleton;
 
 /**
  * {@code await tcgCards.refresh()} del arranque de {@code index.ts}: solo con {@code pu.rooms.enabled=true} (lo leen
- * las salas Java y {@code /api/tcg/*}, que nginx no enruta a Java hasta 2D), con el data-sync encendido o apagado. Un
+ * las salas Java y {@code /api/tcg/*}), con el data-sync encendido o apagado. Un
  * fallo se propaga como en Node (donde aborta el arranque). Con las salas apagadas el catálogo queda sin cargar y
  * {@code /api/tcg/*} responde 500 «El catálogo TCG todavía no está disponible.» hasta que una sincronización TCGDEX
- * completada por Java lo recargue. Mientras Node sea el dueño de las sincronizaciones, este es el único momento en que
- * el catálogo Java se recarga (pendiente de 2D).
+ * completada por Java lo recargue. Con el data-sync apagado, este es el único momento en que el catálogo
+ * Java se recarga.
  */
 @Singleton
 @Requires(beans = CachedTcgCardCatalog.class)

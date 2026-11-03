@@ -9,24 +9,25 @@ de revisión y mide encaje y legibilidad. Las capturas se puntúan con la rúbri
 
 Requisitos: Node 22+, `podman` y `podman-compose`, y red (el seed descarga de PokéAPI).
 
-1. Crea `.env` en la raíz con el bloque "Desarrollo local sin Compose" de `.env.example`, **quitando
-   la línea `VITE_API_URL`** (todo pasa por el proxy de Vite; con ella el navegador va cross-origin y
-   la cookie de sesión no llega al socket) y con `DATA_SYNC_ENABLED=false`. El `.env` queda así:
+1. Crea `.env` en la raíz con el bloque "Desarrollo local sin Compose" de `.env.example`. Sin
+   `VITE_API_URL`: todo pasa por el proxy de Vite en el mismo origen, así que la cookie de sesión llega
+   también a `/ws` (Playwright pasa además `VITE_API_URL` vacía a la web). El data-sync de Java queda apagado: no
+   definas `BACKEND_DATA_SYNC_ENABLED` (solo `npm run db:seed` la enciende). El `.env` queda así:
 
    ```sh
-   NODE_ENV=development
-   PORT=3001
    WEB_ORIGIN=http://localhost:5173
-   DATABASE_URL=postgresql://pokemon:pokemon@localhost:5432/pokemon_universe?schema=public
    JWT_SECRET=replace-with-at-least-32-random-characters
    COOKIE_SECURE=false
    RATE_LIMIT_DISABLED=false
    ROOM_MAX_PLAYERS=8
    RECONNECT_GRACE_MS=30000
-   DATA_SYNC_ENABLED=false
+   DATA_SYNC_HOUR=6
+   DATA_SYNC_MINUTE=0
+   DATA_SYNC_TIMEZONE=Europe/Madrid
    ```
 
-   Sin `VITE_API_URL`. (`RATE_LIMIT_DISABLED` lo pone a `true` la configuración de Playwright.)
+   La BD local está fijada en `backend/src/main/resources/application-dev.yml` y Playwright fija
+   `PORT=8080` y `RATE_LIMIT_DISABLED=true` al backend que arranca.
 2. Desde la raíz del repositorio:
 
    ```sh

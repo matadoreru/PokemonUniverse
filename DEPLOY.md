@@ -134,8 +134,8 @@ PU_SECURE_COOKIE=true
 PU_WATCHTOWER_ENABLE=false
 ```
 
-Usa una contraseña hexadecimal: `DATABASE_URL` es una URL y otros caracteres necesitarían codificación porcentual.
-No publiques `5432`, `3001` ni `8080` en el router.
+Usa valores hexadecimales: no necesitan comillas ni escapes en `.env` ni en compose. No publiques `5432` ni `8080` en
+el router.
 
 ## 3. Primera instalación
 
@@ -168,6 +168,22 @@ PokéAPI lenta); un arranque sano pasa a healthy en el primer chequeo que respon
 tiene que superar `start_period` + `interval` × `retries` = 300 + 30 × 3 = 390 s más la descarga de imágenes: los 600 s
 de `PU_DEPLOY_WAIT_SECONDS` bastan; no lo bajes de 450 s.
 
+**Emergencia: PokéAPI caída con el catálogo vacío o incompleto.** El backend no abre el puerto hasta que termina esa
+sincronización inicial, y si PokéAPI falla el arranque aborta. Con el catálogo completo no consulta PokéAPI al
+arrancar y esto no aplica. Para arrancar igualmente, crea junto a `compose.yaml` un `compose.override.yaml` que apague
+el data-sync:
+
+```yaml
+services:
+  backend:
+    environment:
+      BACKEND_DATA_SYNC_ENABLED: "false"
+```
+
+`docker compose` (y `deploy.sh`, que lo llama sin `-f`) lo lee automáticamente. Apaga también la sincronización diaria
+y la de TCGdex, y los juegos no tendrán datos de Pokémon que falten. Bórralo en cuanto PokéAPI vuelva y reinicia
+`backend` (`docker compose up -d --wait backend`).
+
 En Cloudflare Tunnel configura el hostname público para enviar tráfico HTTP a `http://127.0.0.1:8080`. Las salas usan
 el WebSocket `/ws` del mismo origen, por lo que no necesitan otro túnel ni puerto. `PU_PUBLIC_ORIGIN` debe coincidir
 exactamente con el hostname HTTPS, sin barra final.
@@ -193,6 +209,14 @@ docker compose exec -T postgres psql -U pokemon -d pokemon_universe_restore_test
 docker compose exec -T postgres dropdb -U pokemon pokemon_universe_restore_test
 ```
 
+**Historiales de esquema.** La BD de producción conserva `_prisma_migrations`, la tabla de historial de Prisma: el corte
+2D no la borra (no hay `V2__` que lo haga) y `/api/health` la usa como respaldo de `schemaVersion` si falta la de
+Flyway. No la borres a mano. Al restaurar un dump sobre la BD que usa el backend, `flyway_schema_history` decide qué
+pasa en el siguiente arranque: si el dump la trae, Flyway sigue desde la versión registrada; si no la trae (un dump
+anterior a la etapa 1 o de solo algunas tablas), Flyway registra en silencio el esquema restaurado como versión 1
+(`baseline-on-migrate`), sin ejecutar `V1__baseline.sql` ni comprobar que coincide, y aplica encima las `V2__…`
+siguientes. Restaura solo dumps completos de este mismo esquema.
+
 ## 5. Desplegar y volver atrás
 
 Despliega un SHA que haya terminado correctamente en GitHub Actions:
@@ -216,18 +240,27 @@ el backend nuevo, para que Node no siga sirviendo salas ni sincronizando mientra
 el humo pasa. Si ese despliegue falla, Node y Java nunca quedan a la vez con salas o sincronización:
 
 1. Si el SHA anterior (el tag de la imagen `backend` que corría) está en el checkout del servidor (`deploy-ssh` hace
-   `git fetch` y despliega por SHA), el rollback levanta su propio `compose.yaml` (`git show SHA:compose.yaml`,
-   `--project-directory` el del despliegue) con `server`, `backend` y `web` de ese SHA: el stack anterior al corte
-   tal cual, con el `.env` de siempre.
-2. Si no (tag que no es un SHA o commit ausente), arranca de nuevo Node y restaura las imágenes `web` y `backend`
-   anteriores con el `compose.yaml` nuevo y `PU_CUTOVER_ROLLBACK_JAVA=false`, que apaga en Java salas,
-   interrupción de salas y sincronización. Esa variable es interna de `deploy.sh` (la fija a `true` en cada
-   despliegue): no la pongas en `.env`.
+   `git fetch` y despliega por SHA) y su `compose.yaml` define `server` y `backend`, el rollback levanta ese
+   `compose.yaml` (`git show SHA:compose.yaml`, `--project-directory` el del despliegue) con `server`, `backend` y
+   `web` de ese SHA: el stack anterior al corte tal cual, con el `.env` de siempre.
+2. Si no (tag que no es un SHA, commit ausente, un compose sin alguno de los dos servicios) o si ese `up` falla, arranca
+   de nuevo Node y restaura las imágenes `web` y `backend` anteriores con el `compose.yaml` nuevo y
+   `PU_CUTOVER_ROLLBACK_JAVA=false`, que apaga en Java salas, interrupción de salas y sincronización. Esa variable es
+   interna de `deploy.sh` (la fija a `true` en cada despliegue, aunque el `.env` diga otra cosa): no la pongas en
+   `.env`.
+
+El caso 2 es un estado de emergencia y `deploy.sh` lo avisa con un bloque «ATENCIÓN … redespliega el SHA anterior».
+No lo dejes así: un `docker compose up` a mano con el `compose.yaml` nuevo vuelve a encender salas, interrupción de
+salas y sincronización en Java (el valor por defecto de `PU_CUTOVER_ROLLBACK_JAVA` es `true`) con Node en marcha.
+Redespliega el SHA anterior desde su checkout (`git checkout --detach SHA && ./scripts/deploy.sh SHA`), que vuelve al
+stack anterior al corte con sus propios scripts.
 
 `scripts/test-deploy-rollback.sh` simula `deploy.sh` con `docker` y `git` falsos (y la configuración real de
-`docker compose config`) en seis escenarios, con y sin Node previo, y falla si algún `compose up` deja a Node en marcha
-con un interruptor de Java encendido. Una imagen web anterior al corte no arranca sin un contenedor `server` en la red
-(`host not found in upstream "server"`).
+`docker compose config`; un `up` de un servicio que el fichero no define falla, como en compose) en nueve escenarios:
+con y sin Node previo, compose anterior sin `backend`, `up` del compose anterior fallido y un `.env` con
+`PU_CUTOVER_ROLLBACK_JAVA=false`. Falla si algún `compose up` deja a Node en marcha con un interruptor de Java
+encendido, si un despliegue normal no enciende los tres, o si un rollback de emergencia no avisa. Una imagen web
+anterior al corte no arranca sin un contenedor `server` en la red (`host not found in upstream "server"`).
 
 En ese mismo despliegue compose recrea una vez el contenedor `postgres` (sin tocar el volumen): la imagen pasó de
 `postgres:17-alpine` a `docker.io/library/postgres:17-alpine` (nombre completo, para podman) y cambia el hash de su

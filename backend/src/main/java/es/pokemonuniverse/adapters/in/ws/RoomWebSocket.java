@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * y el coordinador toma ahí el lock de la sala. Un mensaje rechazado por el límite no llega a la cola.
  * Mensajes de más de {@value #MAX_FRAME_BYTES} bytes ({@code maxHttpBufferSize} de Node) cierran con 1009.
  *
- * <p>Con {@code pu.rooms.enabled=false} (producción hasta el corte 2D) toda conexión se cierra con 4403 al abrirse,
+ * <p>Con {@code pu.rooms.enabled=false} (producción hasta el corte 2D; hoy solo arranques sin esa configuración) toda conexión se cierra con 4403 al abrirse,
  * antes de registrar la sesión: el coordinador nunca la ve.
  */
 @ServerWebSocket("/ws")

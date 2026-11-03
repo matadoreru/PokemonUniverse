@@ -24,7 +24,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 /**
- * Con {@code pu.rooms.enabled=false} (producción hasta 2D) el arranque no toca las tablas de Node ni carga las cachés
+ * Con {@code pu.rooms.enabled=false} (producción hasta el corte 2D) el arranque no toca las tablas de Node ni carga las cachés
  * que solo usan las salas: ni migra {@code UserGameConfig}, ni carga categorías o dilemas, ni refresca el catálogo TCG.
  * Los datos se siembran desde el contexto de la prueba (salas encendidas) y después se arranca un segundo contexto con
  * las salas apagadas sobre la misma BD.

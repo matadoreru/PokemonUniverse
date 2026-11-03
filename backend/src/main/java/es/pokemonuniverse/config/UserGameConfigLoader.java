@@ -12,8 +12,8 @@ import jakarta.inject.Singleton;
  * ({@code userGameConfigs.flush()}) es el {@code @PreDestroy} del propio servicio.
  *
  * <p>Solo con {@code pu.rooms.enabled=true}: el único lector de la caché es el {@code create()} de las salas Java, y la
- * migración reescribe filas de {@code UserGameConfig}. Con las salas apagadas (producción hasta 2D) Java ni lee ni
- * escribe la tabla de Node al arrancar, para no abrir una ventana de escrituras perdidas contra sus guardados.
+ * migración reescribe filas de {@code UserGameConfig}. Con las salas apagadas (producción hasta el corte 2D) Java ni lee
+ * ni escribe la tabla al arrancar, para no abrir una ventana de escrituras perdidas contra los guardados de Node.
  */
 @Singleton
 @Requires(beans = UserGameConfigService.class)

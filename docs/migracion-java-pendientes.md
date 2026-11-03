@@ -1,8 +1,8 @@
-# Migración a Java: pendientes tras la etapa 1
+# Migración a Java: estado y pendientes
 
-Estado: etapa 1 implementada el 2026-10-31 en la rama `backend-java-etapa-1` (fusionada en `main` en local); 2A y 2B
-fusionadas en `main`; 2C implementada el 2026-11-03 en la rama `etapa-2c-datos-administracion` (pendiente de la
-decisión de integración). Diseño en
+Estado: **migración completada en local**. Etapa 1 implementada el 2026-10-31; 2A, 2B y 2C fusionadas en `main`; el
+corte 2D (Java único backend) implementado el 2026-11-03 en la rama `etapa-2d-corte`. Nada se ha subido ni desplegado:
+lo que queda está en [«Qué queda»](#qué-queda). Diseño en
 [`superpowers/specs/2026-10-31-separacion-frontend-backend-java-design.md`](superpowers/specs/2026-10-31-separacion-frontend-backend-java-design.md);
 estructura vigente en [`architecture.md`](architecture.md#backend-java-etapa-1).
 
@@ -18,7 +18,7 @@ derivados de él, métricas, logs JSON, límites de peticiones, imagen JVM en Co
 - Hecho: `npm run typecheck`, `npm run lint`, `npm test`, `./gradlew check`; pila Compose local con las rutas Java y la
   cookie aceptada por Node (informe de la tarea 15); E2E 12/12 en verde con el backend arrancado por Playwright (tarea 16).
 - **Sin ejecución real de CI.** Los workflows solo se han validado con actionlint. La primera subida a `main` los
-  ejercita y construye las tres imágenes (aún no hay Main verde). Hasta entonces los tiempos «después» de
+  ejercita y construye las imágenes (aún no hay Main verde; desde 2D son dos, web y backend). Hasta entonces los tiempos «después» de
   [`DEPLOY.md`](../DEPLOY.md) son estimaciones y hay que sustituirlos por los medidos.
 - Local: `e2e/playwright.config.ts` usa `reuseExistingServer`; si otro proceso ocupa el puerto 5173 (en esta máquina, el Vite
   de otro proyecto) Playwright lo reutiliza y las pruebas fallan o prueban otra aplicación. Se ejecutaron en el 5174.
@@ -28,23 +28,24 @@ derivados de él, métricas, logs JSON, límites de peticiones, imagen JVM en Co
 1. Salas, estado de sala y reconexión en Java.
 2. Los 28 motores de juego, cada uno con pruebas golden contra el comportamiento de los motores TypeScript (hecho en
    2A + 2B).
-3. `data-sync` (PokéAPI y TCGdex) y su planificador (hecho en 2C; apagado en Java con `BACKEND_DATA_SYNC_ENABLED=false`
-   hasta 2D).
-4. Administración (hecho en 2C; solo se enruta a Java con `VITE_REALTIME=java` hasta 2D).
-5. Escrituras de categorías personalizadas, pares de Would You Rather y avatares (subida) (hechas en 2C; solo se enrutan a
-   Java con `VITE_REALTIME=java` hasta 2D).
+3. `data-sync` (PokéAPI y TCGdex) y su planificador (hecho en 2C; encendido en compose desde 2D).
+4. Administración (hecho en 2C; enrutada a Java en producción desde 2D).
+5. Escrituras de categorías personalizadas, pares de Would You Rather y avatares (subida) (hechas en 2C; enrutadas a Java
+   en producción desde 2D).
    Cambio de comportamiento de 2B: con TwelveMonkeys en el classpath, el proxy de assets (`ImageTransforms.decode`) y el
    catálogo de artworks decodifican fuentes WebP (antes «Unsupported»), más cerca de sharp; el lector WebP nativo de
    `webp-imageio` se retira del registro al arrancar (`config/ImageIoReaders`) y la libwebp solo codifica avatares.
-6. `/api/tcg/*` (hecho en 2C con el catálogo TCG y el adaptador TCGdex; solo se enruta a Java con
-   `VITE_REALTIME=java` hasta 2D). Desviación consciente de la especificación (§0 lo situaba en la etapa 1): dependía del
+6. `/api/tcg/*` (hecho en 2C con el catálogo TCG y el adaptador TCGdex; enrutado a Java en producción desde 2D).
+   Desviación consciente de la especificación (§0 lo situaba en la etapa 1): dependía del
    ciclo de vida de la caché del catálogo TCG que refresca data-sync.
-7. Proxy de assets de las rondas (hecho en 2B; producción lo sigue sirviendo Node hasta 2D).
+7. Proxy de assets de las rondas (hecho en 2B; en producción desde 2D).
 8. WebSocket: el transporte `/ws` de Java existe desde 2A (mismos 21 eventos cliente→servidor y 7 servidor→cliente que
-   Socket.IO); 2D lo convierte en el transporte por defecto y retira Socket.IO.
-9. Mover `apps/web` a `frontend/` e incluir dentro `shared/public`.
-10. Retirar Node y `prisma migrate deploy`; Flyway pasa a ser el único dueño del esquema (entonces se permiten `V2__` y
-    posteriores) y se elimina la tabla `_prisma_migrations`.
+   Socket.IO); desde 2D es el único y Socket.IO está retirado de la web y de nginx.
+9. Mover la web a `frontend/` e incluir dentro `shared/public` (hecho en 2D).
+10. Retirar Node y `prisma migrate deploy`; Flyway pasa a ser el único dueño del esquema y se permiten `V2__` y
+    posteriores (hecho en 2D). **Corrección:** la tabla `_prisma_migrations` no se elimina. Se conserva porque no hay
+    `V2__` que la borre, es el respaldo de `schemaVersion` en `/api/health` y no estorba; una `V2__` futura puede
+    borrarla. Ver «Historiales de esquema» en [`DEPLOY.md`](../DEPLOY.md#4-backups).
 
 ### 2A: núcleo de salas (hecho el 2026-10-31)
 
@@ -103,7 +104,10 @@ Resuelto en la Tarea 2 de 2D: el aviso vive ahora en un hueco de la cabecera fij
 «Conectando» solo aparece tras 400 ms sin conexión (una conexión perdida se avisa al momento). `sala.spec.ts` fija los
 estados con un `/ws` simulado y comprueba que una entrada normal no muestra el aviso.
 
-#### Convivencia con Node hasta 2D
+#### Convivencia con Node hasta 2D (histórico)
+
+Así convivieron los dos servidores hasta el corte; desde 2D Node no se despliega y estas restricciones ya no aplican a
+producción, pero explican decisiones que siguen en el código (interruptores separados, cargas condicionadas a las salas).
 
 - **Rutas solo en Vite.** `infra/nginx.conf` solo ganó `/api/health`. Las demás rutas de 2C van a Java en desarrollo y
   E2E: desde la Tarea 2 de 2D, `proxyFor()` de `frontend/vite.config.ts` manda todo `/api` y `/ws` a `:8080` (ya no hay
@@ -171,10 +175,17 @@ estaba sembrado) y la TCGDEX INITIAL automática falló a los 21 s con `TCGdex s
 intentos (un 503 transitorio de TCGdex: la misma URL respondía 200 un minuto después). Relanzada desde
 `POST /api/admin/data-sync/tcg` con un ADMIN, la ejecución (`PRICE_REFRESH` sin cartas, que recorre los sets) completó
 en 7 min 29 s: 220 sets y 23 771 cartas, 18 986 con imagen y precio de mercado en `CachedTcgCardCatalog`, recargado al
-terminar. Con esos datos, `npm run test:e2e:java -- juegos` pasa 28/28: `tcg-higher-lower` y `pokemon-palette-guess`
+terminar. Con esos datos, `npm run test:e2e:java -- juegos` (hoy `npm run test:e2e -- juegos`) pasa 28/28: `tcg-higher-lower` y `pokemon-palette-guess`
 dejan de saltarse.
 
-### Corte 2D: Java dueño de las salas y de los datos
+### Corte 2D: Java dueño de las salas y de los datos (hecho el 2026-11-03)
+
+Implementado en la rama `etapa-2d-corte` (plan `superpowers/plans/2026-11-03-etapa-2d-corte.md`; resumen en
+[`architecture.md`](architecture.md#corte-2d-java-único-servidor)): la web habla solo con Java y se movió a `frontend/`;
+Flyway es el único dueño del esquema; compose sin Node, con salas, interrupción de salas y data-sync encendidos en el
+backend y los artworks en su imagen; nginx manda `/api/` y `/ws` a Java; CI sin imagen de Node (el oráculo corre en el
+job `oracle`); `deploy.sh` para Node antes de arrancar Java en el primer despliegue y tiene un rollback que nunca deja
+a los dos con salas o sincronización (`scripts/test-deploy-rollback.sh`).
 
 Lista de comprobación (todo junto, en un mismo despliegue):
 
@@ -206,8 +217,9 @@ Lista de comprobación (todo junto, en un mismo despliegue):
   el camino de producción (healthcheck y `--wait-timeout` del despliegue incluidos). (Tarea 4 de 2D:
   `config/ComposeStartupTest` con el entorno de compose y PokéAPI/TCGdex grabados; medida real de 107 s hasta la
   readiness y `start_period: 5m` en `DEPLOY.md`; `--wait-timeout` ≥ 450 s, hoy 600 s.)
-- [ ] `ClientAddress` toma el último salto de `X-Forwarded-For`: solo es fiable detrás de nginx, que lo fija. Exponer el
-  backend directamente, o añadir otro proxy a la cadena, lo invalida para los limitadores.
+- [x] `ClientAddress` toma el último salto de `X-Forwarded-For`: solo es fiable detrás de nginx, que lo fija. Exponer el
+  backend directamente, o añadir otro proxy a la cadena, lo invalida para los limitadores. (Se cumple: el backend no
+  publica puertos y nginx es el único salto; queda como restricción permanente, también en «Riesgos abiertos».)
 - [x] La ruta de humo de Node de `scripts/deploy.sh` (`/api/tcg/options`) pasa a Java: elegir otra ruta de Node o
   quitar la comprobación si Node se retira. (Tarea 5 de 2D: `scripts/smoke-check.sh` comprueba `/api/health`,
   `/api/games`, `/api/tcg/options` y el handshake de `/ws`, todo Java.)
@@ -219,11 +231,39 @@ Lista de comprobación (todo junto, en un mismo despliegue):
 - [x] Artworks: compose define `POKEMON_ARTWORK_DIR` (`/data/pokemon-artworks`) pero no monta nada; copiar los PNG a la
   imagen del backend o compartir un volumen con Node (que los lleva dentro de la suya). (Tarea 4 de 2D:
   `backend/assets/pokemon-artworks` → `/app/pokemon-artworks` en la imagen.)
-- [ ] Prueba de humo arm64 del codificador WebP: ejecutar una subida de avatar en la imagen `linux/arm64` (QEMU en CI o
-  máquina arm64); hoy solo se comprobó en amd64.
+- [x] Prueba de humo arm64 del codificador WebP: ejecutar una subida de avatar en la imagen `linux/arm64` (QEMU en CI o
+  máquina arm64); hoy solo se comprobó en amd64. (Tarea 5 de 2D: job `webp-arm64` de `backend.yml`, que codifica con
+  `WebpEncoderSmoke` en la imagen `linux/arm64` con `--read-only` y `/tmp` `noexec`. **Todavía no se ha ejecutado**:
+  corre en la primera ejecución real de CI.)
 - [ ] Imagen nativa: AWT (ImageIO), ICU4J, los SPI de TwelveMonkeys y `webp-imageio` (JNI con `System.load` y Kotlin
-  stdlib) necesitan metadatos; ver el riesgo «Imagen nativa». Sigue desplegándose la imagen JVM.
-- [ ] Repetir `contenido-y-admin.spec.ts` y `juegos.spec.ts` solo contra Java.
+  stdlib) necesitan metadatos; ver el riesgo «Imagen nativa». Sigue desplegándose la imagen JVM. (No bloquea el corte:
+  pasa a «Qué queda».)
+- [x] Repetir `contenido-y-admin.spec.ts` y `juegos.spec.ts` solo contra Java. (Tarea 6 de 2D: `npm run test:e2e`
+  completo y `juegos` 28/28 sobre el catálogo sincronizado de la BD local; ver «Verificación final».)
+
+#### Verificación final (2026-11-03)
+
+Rama `etapa-2d-corte`, sin servidores previos en 5173/8080 y con el catálogo ya sincronizado de la BD local:
+`cd backend && ./gradlew check` en verde (96 s); `npm run typecheck` (13 s), `npm run lint` (9 s) y `npm test`
+(13 s; 185 + 195 + 439 pruebas) en verde; `npm run test:e2e` 50/50 en 160 s, solo contra Java, con `juegos` 28/28 sin
+saltos (`tcg-higher-lower` y `pokemon-palette-guess` incluidos). `scripts/test-deploy-rollback.sh` (nueve escenarios)
+y `shellcheck` de los scripts de despliegue, limpios. Los `ws proxy socket error: ECONNRESET` del log de Vite son
+cierres de `/ws` al cerrar las páginas, sin fallos.
+
+## Qué queda
+
+1. **Imagen nativa.** Compila pero falla al arrancar (metadatos de Hibernate/ByteBuddy, AWT, ICU4J, TwelveMonkeys y
+   `webp-imageio`); el job `backend-native` es experimental y no bloqueante. Se despliega la imagen JVM.
+2. **Primer push y primera ejecución real de CI.** Los workflows solo se han validado con actionlint. La primera
+   ejecución de `main.yml` construye las dos imágenes, ejecuta por primera vez `webp-arm64` y el job `oracle`, y da los
+   tiempos reales que sustituyen a las estimaciones de `DEPLOY.md` (ver «Métricas de CI»).
+3. **Despliegue a PRE y a producción, a cargo del usuario.** El primer despliegue tras el corte para Node y arranca
+   Java con la BD de producción (Flyway sigue desde su `flyway_schema_history` si la tiene y, si no, registra el esquema
+   de Prisma en baseline 1); seguir
+   `DEPLOY.md` §5 («Primer despliegue tras el corte 2D») y programarlo entre sesiones. Tras un rollback de emergencia,
+   redesplegar el SHA anterior.
+4. **Deuda técnica.** La de «Deuda técnica conocida» más abajo; además, borrar `_prisma_migrations` con una `V2__` si
+   se quiere, y decidir cuándo retirar el oráculo Node (`apps/server`) cuando ya no hagan falta sus fixtures.
 
 ## Riesgos abiertos
 
@@ -311,8 +351,8 @@ Lista de comprobación (todo junto, en un mismo despliegue):
     ahí. La imagen `node:22-alpine` sin versión fija puede cambiar de ICU respecto a `icu4j` 78.3.
 
 - Sincronización de Pokémon en Java (2C, `application/datasync/pokemon`; apagada con `pu.data-sync.enabled=false`):
-  - Interruptor propio `BACKEND_DATA_SYNC_ENABLED` (no el `DATA_SYNC_ENABLED` de Node, que vale `true` en `.env`); en
-    el corte 2D se pone a `true` y Node deja de sincronizar. `POKEAPI_BASE_URL` y `POKEAPI_SPRITE_BASE_URL` solo
+  - Interruptor propio `BACKEND_DATA_SYNC_ENABLED` (no el `DATA_SYNC_ENABLED` de Node); el corte 2D lo puso a `true`
+    en compose y Node dejó de sincronizar. `POKEAPI_BASE_URL` y `POKEAPI_SPRITE_BASE_URL` solo
     existen para las pruebas y exigen https (http solo hacia loopback).
   - Sprites: se rechaza por la cabecera una imagen de más de 4096² píxeles (sharp admite 16383² por defecto) con el
     literal `Input image exceeds pixel limit`; cuenta como paleta fallida.
@@ -346,7 +386,7 @@ Lista de comprobación (todo junto, en un mismo despliegue):
 
 - Deuda de 2C (aplazada en las revisiones):
   - Persistencia del data-sync con un puerto y SQL nativo (`JpaPokemonCatalogStore`, `JpaTcgCardRepository`, sin una
-    entidad JPA por tabla Prisma): hasta 2D, cada cambio de esquema en Prisma obliga a revisar esas sentencias.
+    entidad JPA por tabla Prisma): cada migración `V2__…` que toque esas tablas obliga a revisar esas sentencias.
   - `ImageIoReaders` retira el lector WebP nativo de `webp-imageio`; una llamada a `ImageIO.scanForPlugins()` lo
     volvería a registrar (no la hay en `src/main`).
   - Configuración: `ConfigMessagesSnapshotTest` no detecta entradas de motores que ya no existen y su propiedad de
@@ -379,4 +419,5 @@ Lista de comprobación (todo junto, en un mismo despliegue):
 ## Métricas de CI
 
 Pendientes. Antes (medido, `docker.yml`): ≈ 8:15 por push. Después: solo estimaciones en `DEPLOY.md`; completar con la
-primera ejecución real de `main.yml` (frontend, node-server, backend, retag, deploy-pre y job nativo por separado).
+primera ejecución real de `main.yml` (frontend con su job `oracle`, backend con `webp-arm64`, retag, deploy-pre y job
+nativo por separado).
