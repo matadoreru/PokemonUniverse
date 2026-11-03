@@ -157,13 +157,13 @@
         "previousPokemon": {
           "id": "heracross",
           "name": "Heracross",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
+          "sprite": "/api/pokemon/heracross/sprite",
           "value": 80
         },
         "currentPokemon": {
           "id": "heracross",
           "name": "Heracross",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
+          "sprite": "/api/pokemon/heracross/sprite",
           "value": null
         },
         "answers": {},
@@ -221,13 +221,13 @@
         "previousPokemon": {
           "id": "heracross",
           "name": "Heracross",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
+          "sprite": "/api/pokemon/heracross/sprite",
           "value": 80
         },
         "currentPokemon": {
           "id": "sneasel",
           "name": "Sneasel",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+          "sprite": "/api/pokemon/sneasel/sprite",
           "value": null
         },
         "answers": {},
@@ -288,13 +288,13 @@
             "previousPokemon": {
               "id": "heracross",
               "name": "Heracross",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
+              "sprite": "/api/pokemon/heracross/sprite",
               "value": 80
             },
             "currentPokemon": {
               "id": "sneasel",
               "name": "Sneasel",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+              "sprite": "/api/pokemon/sneasel/sprite",
               "value": null
             },
             "answers": {
@@ -365,13 +365,13 @@
             "previousPokemon": {
               "id": "heracross",
               "name": "Heracross",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
+              "sprite": "/api/pokemon/heracross/sprite",
               "value": 80
             },
             "currentPokemon": {
               "id": "sneasel",
               "name": "Sneasel",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+              "sprite": "/api/pokemon/sneasel/sprite",
               "value": null
             },
             "answers": {
@@ -450,13 +450,13 @@
             "previousPokemon": {
               "id": "heracross",
               "name": "Heracross",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
+              "sprite": "/api/pokemon/heracross/sprite",
               "value": 80
             },
             "currentPokemon": {
               "id": "sneasel",
               "name": "Sneasel",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+              "sprite": "/api/pokemon/sneasel/sprite",
               "value": 55
             },
             "answers": {
@@ -575,13 +575,13 @@
             "previousPokemon": {
               "id": "sneasel",
               "name": "Sneasel",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+              "sprite": "/api/pokemon/sneasel/sprite",
               "value": 55
             },
             "currentPokemon": {
               "id": "pichu",
               "name": "Pichu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png",
+              "sprite": "/api/pokemon/pichu/sprite",
               "value": null
             },
             "answers": {},
@@ -642,13 +642,13 @@
             "previousPokemon": {
               "id": "sneasel",
               "name": "Sneasel",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+              "sprite": "/api/pokemon/sneasel/sprite",
               "value": 55
             },
             "currentPokemon": {
               "id": "pichu",
               "name": "Pichu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png",
+              "sprite": "/api/pokemon/pichu/sprite",
               "value": null
             },
             "answers": {
@@ -719,13 +719,13 @@
             "previousPokemon": {
               "id": "sneasel",
               "name": "Sneasel",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+              "sprite": "/api/pokemon/sneasel/sprite",
               "value": 55
             },
             "currentPokemon": {
               "id": "pichu",
               "name": "Pichu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png",
+              "sprite": "/api/pokemon/pichu/sprite",
               "value": null
             },
             "answers": {
@@ -803,13 +803,13 @@
             "previousPokemon": {
               "id": "sneasel",
               "name": "Sneasel",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+              "sprite": "/api/pokemon/sneasel/sprite",
               "value": 55
             },
             "currentPokemon": {
               "id": "pichu",
               "name": "Pichu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png",
+              "sprite": "/api/pokemon/pichu/sprite",
               "value": 20
             },
             "answers": {
@@ -920,13 +920,13 @@
             "previousPokemon": {
               "id": "pichu",
               "name": "Pichu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png",
+              "sprite": "/api/pokemon/pichu/sprite",
               "value": 60
             },
             "currentPokemon": {
               "id": "spinarak",
               "name": "Spinarak",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/167.png",
+              "sprite": "/api/pokemon/spinarak/sprite",
               "value": null
             },
             "answers": {},
@@ -987,13 +987,13 @@
             "previousPokemon": {
               "id": "pichu",
               "name": "Pichu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png",
+              "sprite": "/api/pokemon/pichu/sprite",
               "value": 60
             },
             "currentPokemon": {
               "id": "spinarak",
               "name": "Spinarak",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/167.png",
+              "sprite": "/api/pokemon/spinarak/sprite",
               "value": null
             },
             "answers": {
@@ -1064,13 +1064,13 @@
             "previousPokemon": {
               "id": "pichu",
               "name": "Pichu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png",
+              "sprite": "/api/pokemon/pichu/sprite",
               "value": 60
             },
             "currentPokemon": {
               "id": "spinarak",
               "name": "Spinarak",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/167.png",
+              "sprite": "/api/pokemon/spinarak/sprite",
               "value": null
             },
             "answers": {
@@ -1149,13 +1149,13 @@
             "previousPokemon": {
               "id": "pichu",
               "name": "Pichu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png",
+              "sprite": "/api/pokemon/pichu/sprite",
               "value": 60
             },
             "currentPokemon": {
               "id": "spinarak",
               "name": "Spinarak",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/167.png",
+              "sprite": "/api/pokemon/spinarak/sprite",
               "value": 30
             },
             "answers": {
@@ -1274,13 +1274,13 @@
             "previousPokemon": {
               "id": "pichu",
               "name": "Pichu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png",
+              "sprite": "/api/pokemon/pichu/sprite",
               "value": 60
             },
             "currentPokemon": {
               "id": "spinarak",
               "name": "Spinarak",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/167.png",
+              "sprite": "/api/pokemon/spinarak/sprite",
               "value": 30
             },
             "answers": {

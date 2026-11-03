@@ -1,7 +1,7 @@
 package es.pokemonuniverse.adapters.in.rest.pokemon;
 
-import es.pokemonuniverse.domain.game.engine.infra.JsUrl;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
+import es.pokemonuniverse.domain.pokemon.PokemonSpritePaths;
 import io.micronaut.serde.annotation.Serdeable;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record SelectorPokemon(String id, String name, String sprite) {
 
   static SelectorPokemon from(Pokemon pokemon) {
-    return new SelectorPokemon(pokemon.id(), pokemon.name(),
-        "/api/pokemon/" + JsUrl.encodeURIComponent(pokemon.id()) + "/sprite");
+    return new SelectorPokemon(pokemon.id(), pokemon.name(), PokemonSpritePaths.of(pokemon.id()));
   }
 }

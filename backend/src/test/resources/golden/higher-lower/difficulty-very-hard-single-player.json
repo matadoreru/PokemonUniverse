@@ -121,13 +121,13 @@
         "previousPokemon": {
           "id": "pinsir",
           "name": "Pinsir",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+          "sprite": "/api/pokemon/pinsir/sprite",
           "value": null
         },
         "currentPokemon": {
           "id": "pinsir",
           "name": "Pinsir",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+          "sprite": "/api/pokemon/pinsir/sprite",
           "value": null
         },
         "answers": {},
@@ -171,13 +171,13 @@
         "previousPokemon": {
           "id": "pinsir",
           "name": "Pinsir",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+          "sprite": "/api/pokemon/pinsir/sprite",
           "value": null
         },
         "currentPokemon": {
           "id": "rapidash",
           "name": "Rapidash",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
+          "sprite": "/api/pokemon/rapidash/sprite",
           "value": null
         },
         "answers": {},
@@ -224,13 +224,13 @@
             "previousPokemon": {
               "id": "pinsir",
               "name": "Pinsir",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+              "sprite": "/api/pokemon/pinsir/sprite",
               "value": 500
             },
             "currentPokemon": {
               "id": "rapidash",
               "name": "Rapidash",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
+              "sprite": "/api/pokemon/rapidash/sprite",
               "value": 500
             },
             "answers": {
@@ -301,13 +301,13 @@
             "previousPokemon": {
               "id": "rapidash",
               "name": "Rapidash",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
+              "sprite": "/api/pokemon/rapidash/sprite",
               "value": null
             },
             "currentPokemon": {
               "id": "seaking",
               "name": "Seaking",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png",
+              "sprite": "/api/pokemon/seaking/sprite",
               "value": null
             },
             "answers": {},
@@ -354,13 +354,13 @@
             "previousPokemon": {
               "id": "rapidash",
               "name": "Rapidash",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png",
+              "sprite": "/api/pokemon/rapidash/sprite",
               "value": 100
             },
             "currentPokemon": {
               "id": "seaking",
               "name": "Seaking",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png",
+              "sprite": "/api/pokemon/seaking/sprite",
               "value": 92
             },
             "answers": {
@@ -431,13 +431,13 @@
             "previousPokemon": {
               "id": "seaking",
               "name": "Seaking",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png",
+              "sprite": "/api/pokemon/seaking/sprite",
               "value": null
             },
             "currentPokemon": {
               "id": "pinsir",
               "name": "Pinsir",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+              "sprite": "/api/pokemon/pinsir/sprite",
               "value": null
             },
             "answers": {},
@@ -484,13 +484,13 @@
             "previousPokemon": {
               "id": "seaking",
               "name": "Seaking",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png",
+              "sprite": "/api/pokemon/seaking/sprite",
               "value": 119
             },
             "currentPokemon": {
               "id": "pinsir",
               "name": "Pinsir",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+              "sprite": "/api/pokemon/pinsir/sprite",
               "value": 127
             },
             "answers": {
@@ -561,13 +561,13 @@
             "previousPokemon": {
               "id": "pinsir",
               "name": "Pinsir",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+              "sprite": "/api/pokemon/pinsir/sprite",
               "value": null
             },
             "currentPokemon": {
               "id": "seadra",
               "name": "Seadra",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
+              "sprite": "/api/pokemon/seadra/sprite",
               "value": null
             },
             "answers": {},
@@ -614,13 +614,13 @@
             "previousPokemon": {
               "id": "pinsir",
               "name": "Pinsir",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png",
+              "sprite": "/api/pokemon/pinsir/sprite",
               "value": 127
             },
             "currentPokemon": {
               "id": "seadra",
               "name": "Seadra",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
+              "sprite": "/api/pokemon/seadra/sprite",
               "value": 117
             },
             "answers": {
@@ -691,13 +691,13 @@
             "previousPokemon": {
               "id": "seadra",
               "name": "Seadra",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
+              "sprite": "/api/pokemon/seadra/sprite",
               "value": null
             },
             "currentPokemon": {
               "id": "jolteon",
               "name": "Jolteon",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+              "sprite": "/api/pokemon/jolteon/sprite",
               "value": null
             },
             "answers": {},
@@ -743,13 +743,13 @@
             "previousPokemon": {
               "id": "seadra",
               "name": "Seadra",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
+              "sprite": "/api/pokemon/seadra/sprite",
               "value": 65
             },
             "currentPokemon": {
               "id": "jolteon",
               "name": "Jolteon",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+              "sprite": "/api/pokemon/jolteon/sprite",
               "value": 65
             },
             "answers": {},
@@ -810,13 +810,13 @@
             "previousPokemon": {
               "id": "seadra",
               "name": "Seadra",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/117.png",
+              "sprite": "/api/pokemon/seadra/sprite",
               "value": 65
             },
             "currentPokemon": {
               "id": "jolteon",
               "name": "Jolteon",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
+              "sprite": "/api/pokemon/jolteon/sprite",
               "value": 65
             },
             "answers": {},

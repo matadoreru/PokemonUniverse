@@ -171,13 +171,13 @@
         "previousPokemon": {
           "id": "golduck",
           "name": "Golduck",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png",
+          "sprite": "/api/pokemon/golduck/sprite",
           "value": 55
         },
         "currentPokemon": {
           "id": "golduck",
           "name": "Golduck",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png",
+          "sprite": "/api/pokemon/golduck/sprite",
           "value": null
         },
         "answers": {},
@@ -235,13 +235,13 @@
         "previousPokemon": {
           "id": "golduck",
           "name": "Golduck",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png",
+          "sprite": "/api/pokemon/golduck/sprite",
           "value": 85
         },
         "currentPokemon": {
           "id": "ledyba",
           "name": "Ledyba",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png",
+          "sprite": "/api/pokemon/ledyba/sprite",
           "value": null
         },
         "answers": {},
@@ -302,13 +302,13 @@
             "previousPokemon": {
               "id": "golduck",
               "name": "Golduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png",
+              "sprite": "/api/pokemon/golduck/sprite",
               "value": 85
             },
             "currentPokemon": {
               "id": "ledyba",
               "name": "Ledyba",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png",
+              "sprite": "/api/pokemon/ledyba/sprite",
               "value": null
             },
             "answers": {},
@@ -374,13 +374,13 @@
             "previousPokemon": {
               "id": "golduck",
               "name": "Golduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png",
+              "sprite": "/api/pokemon/golduck/sprite",
               "value": 85
             },
             "currentPokemon": {
               "id": "ledyba",
               "name": "Ledyba",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png",
+              "sprite": "/api/pokemon/ledyba/sprite",
               "value": null
             },
             "answers": {},
@@ -450,13 +450,13 @@
             "previousPokemon": {
               "id": "golduck",
               "name": "Golduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png",
+              "sprite": "/api/pokemon/golduck/sprite",
               "value": 85
             },
             "currentPokemon": {
               "id": "ledyba",
               "name": "Ledyba",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png",
+              "sprite": "/api/pokemon/ledyba/sprite",
               "value": 55
             },
             "answers": {
@@ -575,13 +575,13 @@
             "previousPokemon": {
               "id": "ledyba",
               "name": "Ledyba",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png",
+              "sprite": "/api/pokemon/ledyba/sprite",
               "value": 40
             },
             "currentPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": null
             },
             "answers": {},
@@ -642,13 +642,13 @@
             "previousPokemon": {
               "id": "ledyba",
               "name": "Ledyba",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png",
+              "sprite": "/api/pokemon/ledyba/sprite",
               "value": 40
             },
             "currentPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": null
             },
             "answers": {},
@@ -714,13 +714,13 @@
             "previousPokemon": {
               "id": "ledyba",
               "name": "Ledyba",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png",
+              "sprite": "/api/pokemon/ledyba/sprite",
               "value": 40
             },
             "currentPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": null
             },
             "answers": {},
@@ -789,13 +789,13 @@
             "previousPokemon": {
               "id": "ledyba",
               "name": "Ledyba",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png",
+              "sprite": "/api/pokemon/ledyba/sprite",
               "value": 40
             },
             "currentPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": 20
             },
             "answers": {
@@ -906,13 +906,13 @@
             "previousPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": 129
             },
             "currentPokemon": {
               "id": "pineco",
               "name": "Pineco",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png",
+              "sprite": "/api/pokemon/pineco/sprite",
               "value": null
             },
             "answers": {},
@@ -973,13 +973,13 @@
             "previousPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": 129
             },
             "currentPokemon": {
               "id": "pineco",
               "name": "Pineco",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png",
+              "sprite": "/api/pokemon/pineco/sprite",
               "value": null
             },
             "answers": {},
@@ -1045,13 +1045,13 @@
             "previousPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": 129
             },
             "currentPokemon": {
               "id": "pineco",
               "name": "Pineco",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png",
+              "sprite": "/api/pokemon/pineco/sprite",
               "value": null
             },
             "answers": {},
@@ -1121,13 +1121,13 @@
             "previousPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": 129
             },
             "currentPokemon": {
               "id": "pineco",
               "name": "Pineco",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png",
+              "sprite": "/api/pokemon/pineco/sprite",
               "value": 204
             },
             "answers": {
@@ -1246,13 +1246,13 @@
             "previousPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": 129
             },
             "currentPokemon": {
               "id": "pineco",
               "name": "Pineco",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png",
+              "sprite": "/api/pokemon/pineco/sprite",
               "value": 204
             },
             "answers": {

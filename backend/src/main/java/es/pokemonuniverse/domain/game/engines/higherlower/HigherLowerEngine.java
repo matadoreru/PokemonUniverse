@@ -25,6 +25,7 @@ import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerTypes.Highe
 import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerTypes.HigherLowerState;
 import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerTypes.HigherLowerStats;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
+import es.pokemonuniverse.domain.pokemon.PokemonSpritePaths;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import java.util.ArrayList;
@@ -95,8 +96,9 @@ public final class HigherLowerEngine
     return context.pokemon().byId(id).orElseThrow(() -> new EngineException("Pokémon desconocido: " + id));
   }
 
+  /** El sprite va por el proxy: la URL de PokéAPI lleva el número de Pokédex, la respuesta de la categoría DEX_NUMBER. */
   private static HigherLowerPokemonView pokemonView(Pokemon pokemon, @Nullable Integer value) {
-    return new HigherLowerPokemonView(pokemon.id(), pokemon.name(), pokemon.sprite(), value);
+    return new HigherLowerPokemonView(pokemon.id(), pokemon.name(), PokemonSpritePaths.of(pokemon.id()), value);
   }
 
   /** Consume {@code random} dos veces: categoría y luego Pokémon. */

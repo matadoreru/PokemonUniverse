@@ -169,13 +169,13 @@
         "previousPokemon": {
           "id": "magikarp",
           "name": "Magikarp",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "sprite": "/api/pokemon/magikarp/sprite",
           "value": 129
         },
         "currentPokemon": {
           "id": "magikarp",
           "name": "Magikarp",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "sprite": "/api/pokemon/magikarp/sprite",
           "value": null
         },
         "answers": {},
@@ -226,13 +226,13 @@
         "previousPokemon": {
           "id": "magikarp",
           "name": "Magikarp",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+          "sprite": "/api/pokemon/magikarp/sprite",
           "value": 15
         },
         "currentPokemon": {
           "id": "psyduck",
           "name": "Psyduck",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+          "sprite": "/api/pokemon/psyduck/sprite",
           "value": null
         },
         "answers": {},
@@ -286,13 +286,13 @@
             "previousPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": 15
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": null
             },
             "answers": {},
@@ -352,13 +352,13 @@
             "previousPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": 15
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": null
             },
             "answers": {},
@@ -418,13 +418,13 @@
             "previousPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": 15
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": null
             },
             "answers": {},
@@ -483,13 +483,13 @@
             "previousPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": 15
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": 65
             },
             "answers": {
@@ -586,13 +586,13 @@
             "previousPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": 15
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": 65
             },
             "answers": {
@@ -687,13 +687,13 @@
             "previousPokemon": {
               "id": "magikarp",
               "name": "Magikarp",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png",
+              "sprite": "/api/pokemon/magikarp/sprite",
               "value": 15
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": 65
             },
             "answers": {
@@ -788,13 +788,13 @@
             "previousPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": 65
             },
             "currentPokemon": {
               "id": "girafarig",
               "name": "Girafarig",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "sprite": "/api/pokemon/girafarig/sprite",
               "value": null
             },
             "answers": {},
@@ -848,13 +848,13 @@
             "previousPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": 65
             },
             "currentPokemon": {
               "id": "girafarig",
               "name": "Girafarig",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "sprite": "/api/pokemon/girafarig/sprite",
               "value": null
             },
             "answers": {},
@@ -912,13 +912,13 @@
             "previousPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": 65
             },
             "currentPokemon": {
               "id": "girafarig",
               "name": "Girafarig",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "sprite": "/api/pokemon/girafarig/sprite",
               "value": null
             },
             "answers": {},
@@ -976,13 +976,13 @@
             "previousPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": 65
             },
             "currentPokemon": {
               "id": "girafarig",
               "name": "Girafarig",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "sprite": "/api/pokemon/girafarig/sprite",
               "value": 90
             },
             "answers": {
@@ -1069,13 +1069,13 @@
             "previousPokemon": {
               "id": "girafarig",
               "name": "Girafarig",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "sprite": "/api/pokemon/girafarig/sprite",
               "value": 90
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": null
             },
             "answers": {},
@@ -1130,13 +1130,13 @@
             "previousPokemon": {
               "id": "girafarig",
               "name": "Girafarig",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "sprite": "/api/pokemon/girafarig/sprite",
               "value": 90
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": null
             },
             "answers": {},
@@ -1189,13 +1189,13 @@
             "previousPokemon": {
               "id": "girafarig",
               "name": "Girafarig",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "sprite": "/api/pokemon/girafarig/sprite",
               "value": 90
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": 65
             },
             "answers": {},
@@ -1272,13 +1272,13 @@
             "previousPokemon": {
               "id": "girafarig",
               "name": "Girafarig",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
+              "sprite": "/api/pokemon/girafarig/sprite",
               "value": 90
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": 65
             },
             "answers": {},

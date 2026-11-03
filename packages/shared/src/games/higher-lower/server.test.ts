@@ -70,5 +70,17 @@ describe('Higher or Lower', () => {
   it('finishes after configured rounds', () => { const f = setup({ rounds: 1 }); let state = answerAll(f.state, f.context, 'HIGHER'); f.setNow(state.nextTransitionAt!); state = higherLowerGame.handleTimeout(state, f.context); expect(state.phase).toBe('GAME_RESULTS'); expect(higherLowerGame.getResults(state).standings).toHaveLength(2); });
   it('restores own locked answer on reconnect', () => { const f = setup(); const state = higherLowerGame.handleAction(f.state, 'p1', { type: 'ANSWER', choice: 'HIGHER' }, f.context).state; const restored = higherLowerGame.getPlayerState(state, 'p1', f.context) as HigherLowerPlayerState; expect(restored).toMatchObject({ canAnswer: false, answer: { choice: 'HIGHER' } }); });
   it('canAnswer is false for a disconnected player', () => { const f = setup(); f.context.players[1]!.connected = false; expect((higherLowerGame.getPlayerState(f.state, 'p2', f.context) as HigherLowerPlayerState).canAnswer).toBe(false); expect((higherLowerGame.getPlayerState(f.state, 'p1', f.context) as HigherLowerPlayerState).canAnswer).toBe(true); });
+  it('public pokemon sprites never carry the PokéAPI path', () => {
+    const proxied = /^\/api\/pokemon\/[^/]+\/sprite$/;
+    const f = setup();
+    const active = higherLowerGame.getPublicState(f.state, f.context);
+    expect(f.state.phase).toBe('ROUND_ACTIVE');
+    expect(active.previousPokemon.sprite).toMatch(proxied); expect(active.currentPokemon.sprite).toMatch(proxied);
+    expect(active.currentPokemon.sprite).toBe('/api/pokemon/beta/sprite');
+    const revealed = answerAll(f.state, f.context, 'HIGHER'); expect(revealed.phase).toBe('ROUND_RESULTS');
+    const results = higherLowerGame.getPublicState(revealed, f.context);
+    expect(results.previousPokemon.sprite).toMatch(proxied); expect(results.currentPokemon.sprite).toMatch(proxied);
+    expect(JSON.stringify(active)).not.toMatch(/\.png|nationalDexNumber/);
+  });
   it('reveals as soon as every connected player answered and keeps prior answers', () => { const f = setup(); let state = higherLowerGame.handleAction(f.state, 'p2', { type: 'ANSWER', choice: 'HIGHER' }, f.context).state; f.context.players[1]!.connected = false; state = higherLowerGame.handleAction(state, 'p1', { type: 'ANSWER', choice: 'HIGHER' }, f.context).state; expect(state.phase).toBe('ROUND_RESULTS'); expect(state.answers.p2?.choice).toBe('HIGHER'); });
 });

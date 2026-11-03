@@ -1,5 +1,6 @@
 import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
+import { pokemonSpritePath } from '../../pokemon/sprite-path.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, PRESENCE_GRACE_MS, GAME_INTRO_MS } from '../contracts.js';
 import { advanceTimedRound, resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultHigherLowerConfig, higherLowerConfigSchema, type HigherLowerConfig } from './config.js';
@@ -23,7 +24,9 @@ const manifest = {
   },
 } as const;
 function randomItem<T>(items: readonly T[], random: () => number): T { return items[Math.min(Math.floor(random() * items.length), items.length - 1)]!; }
-function pokemonView(pokemon: Pokemon, value: number | null) { return { id: pokemon.id, name: pokemon.name, sprite: pokemon.sprite, value }; }
+// El sprite va por el proxy: la URL de PokéAPI lleva el número de Pokédex, la respuesta de la categoría DEX_NUMBER.
+// El sprite va por el proxy: la URL de PokéAPI lleva el número de Pokédex, la respuesta de la categoría DEX_NUMBER.
+function pokemonView(pokemon: Pokemon, value: number | null) { return { id: pokemon.id, name: pokemon.name, sprite: pokemonSpritePath(pokemon.id), value }; }
 
 function beginRound(state: HigherLowerState, context: GameContext): HigherLowerState {
   const pool = context.pokemon.forGenerations(state.config.generations);

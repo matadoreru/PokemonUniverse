@@ -189,13 +189,13 @@
         "previousPokemon": {
           "id": "omastar",
           "name": "Omastar",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
+          "sprite": "/api/pokemon/omastar/sprite",
           "value": 60
         },
         "currentPokemon": {
           "id": "omastar",
           "name": "Omastar",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
+          "sprite": "/api/pokemon/omastar/sprite",
           "value": null
         },
         "answers": {},
@@ -253,13 +253,13 @@
         "previousPokemon": {
           "id": "omastar",
           "name": "Omastar",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
+          "sprite": "/api/pokemon/omastar/sprite",
           "value": 55
         },
         "currentPokemon": {
           "id": "chinchou",
           "name": "Chinchou",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+          "sprite": "/api/pokemon/chinchou/sprite",
           "value": null
         },
         "answers": {},
@@ -320,13 +320,13 @@
             "previousPokemon": {
               "id": "omastar",
               "name": "Omastar",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
+              "sprite": "/api/pokemon/omastar/sprite",
               "value": 55
             },
             "currentPokemon": {
               "id": "chinchou",
               "name": "Chinchou",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+              "sprite": "/api/pokemon/chinchou/sprite",
               "value": null
             },
             "answers": {
@@ -397,13 +397,13 @@
             "previousPokemon": {
               "id": "omastar",
               "name": "Omastar",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
+              "sprite": "/api/pokemon/omastar/sprite",
               "value": 55
             },
             "currentPokemon": {
               "id": "chinchou",
               "name": "Chinchou",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+              "sprite": "/api/pokemon/chinchou/sprite",
               "value": null
             },
             "answers": {
@@ -481,13 +481,13 @@
             "previousPokemon": {
               "id": "omastar",
               "name": "Omastar",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png",
+              "sprite": "/api/pokemon/omastar/sprite",
               "value": 55
             },
             "currentPokemon": {
               "id": "chinchou",
               "name": "Chinchou",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+              "sprite": "/api/pokemon/chinchou/sprite",
               "value": 67
             },
             "answers": {
@@ -598,13 +598,13 @@
             "previousPokemon": {
               "id": "chinchou",
               "name": "Chinchou",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+              "sprite": "/api/pokemon/chinchou/sprite",
               "value": 38
             },
             "currentPokemon": {
               "id": "pikachu",
               "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "sprite": "/api/pokemon/pikachu/sprite",
               "value": null
             },
             "answers": {},
@@ -666,13 +666,13 @@
             "previousPokemon": {
               "id": "chinchou",
               "name": "Chinchou",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+              "sprite": "/api/pokemon/chinchou/sprite",
               "value": 38
             },
             "currentPokemon": {
               "id": "pikachu",
               "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "sprite": "/api/pokemon/pikachu/sprite",
               "value": null
             },
             "answers": {},
@@ -733,13 +733,13 @@
             "previousPokemon": {
               "id": "chinchou",
               "name": "Chinchou",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+              "sprite": "/api/pokemon/chinchou/sprite",
               "value": 38
             },
             "currentPokemon": {
               "id": "pikachu",
               "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "sprite": "/api/pokemon/pikachu/sprite",
               "value": null
             },
             "answers": {
@@ -810,13 +810,13 @@
             "previousPokemon": {
               "id": "chinchou",
               "name": "Chinchou",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/170.png",
+              "sprite": "/api/pokemon/chinchou/sprite",
               "value": 38
             },
             "currentPokemon": {
               "id": "pikachu",
               "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "sprite": "/api/pokemon/pikachu/sprite",
               "value": 55
             },
             "answers": {
@@ -927,13 +927,13 @@
             "previousPokemon": {
               "id": "pikachu",
               "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "sprite": "/api/pokemon/pikachu/sprite",
               "value": 90
             },
             "currentPokemon": {
               "id": "elekid",
               "name": "Elekid",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
+              "sprite": "/api/pokemon/elekid/sprite",
               "value": null
             },
             "answers": {},
@@ -993,13 +993,13 @@
             "previousPokemon": {
               "id": "pikachu",
               "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "sprite": "/api/pokemon/pikachu/sprite",
               "value": 90
             },
             "currentPokemon": {
               "id": "elekid",
               "name": "Elekid",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
+              "sprite": "/api/pokemon/elekid/sprite",
               "value": null
             },
             "answers": {},
@@ -1060,13 +1060,13 @@
             "previousPokemon": {
               "id": "pikachu",
               "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "sprite": "/api/pokemon/pikachu/sprite",
               "value": 90
             },
             "currentPokemon": {
               "id": "elekid",
               "name": "Elekid",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
+              "sprite": "/api/pokemon/elekid/sprite",
               "value": null
             },
             "answers": {
@@ -1137,13 +1137,13 @@
             "previousPokemon": {
               "id": "pikachu",
               "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "sprite": "/api/pokemon/pikachu/sprite",
               "value": 90
             },
             "currentPokemon": {
               "id": "elekid",
               "name": "Elekid",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
+              "sprite": "/api/pokemon/elekid/sprite",
               "value": null
             },
             "answers": {
@@ -1221,13 +1221,13 @@
             "previousPokemon": {
               "id": "pikachu",
               "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "sprite": "/api/pokemon/pikachu/sprite",
               "value": 90
             },
             "currentPokemon": {
               "id": "elekid",
               "name": "Elekid",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
+              "sprite": "/api/pokemon/elekid/sprite",
               "value": 95
             },
             "answers": {
@@ -1338,13 +1338,13 @@
             "previousPokemon": {
               "id": "pikachu",
               "name": "Pikachu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+              "sprite": "/api/pokemon/pikachu/sprite",
               "value": 90
             },
             "currentPokemon": {
               "id": "elekid",
               "name": "Elekid",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
+              "sprite": "/api/pokemon/elekid/sprite",
               "value": 95
             },
             "answers": {

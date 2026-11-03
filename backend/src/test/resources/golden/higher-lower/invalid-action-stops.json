@@ -106,13 +106,13 @@
         "previousPokemon": {
           "id": "chansey",
           "name": "Chansey",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+          "sprite": "/api/pokemon/chansey/sprite",
           "value": 113
         },
         "currentPokemon": {
           "id": "chansey",
           "name": "Chansey",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+          "sprite": "/api/pokemon/chansey/sprite",
           "value": null
         },
         "answers": {},
@@ -163,13 +163,13 @@
         "previousPokemon": {
           "id": "chansey",
           "name": "Chansey",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+          "sprite": "/api/pokemon/chansey/sprite",
           "value": 50
         },
         "currentPokemon": {
           "id": "raichu",
           "name": "Raichu",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png",
+          "sprite": "/api/pokemon/raichu/sprite",
           "value": null
         },
         "answers": {},
@@ -223,13 +223,13 @@
             "previousPokemon": {
               "id": "chansey",
               "name": "Chansey",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "sprite": "/api/pokemon/chansey/sprite",
               "value": 50
             },
             "currentPokemon": {
               "id": "raichu",
               "name": "Raichu",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png",
+              "sprite": "/api/pokemon/raichu/sprite",
               "value": null
             },
             "answers": {

@@ -218,13 +218,13 @@
         "previousPokemon": {
           "id": "vulpix",
           "name": "Vulpix",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png",
+          "sprite": "/api/pokemon/vulpix/sprite",
           "value": 37
         },
         "currentPokemon": {
           "id": "vulpix",
           "name": "Vulpix",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png",
+          "sprite": "/api/pokemon/vulpix/sprite",
           "value": null
         },
         "answers": {},
@@ -282,13 +282,13 @@
         "previousPokemon": {
           "id": "vulpix",
           "name": "Vulpix",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png",
+          "sprite": "/api/pokemon/vulpix/sprite",
           "value": 37
         },
         "currentPokemon": {
           "id": "chansey",
           "name": "Chansey",
-          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+          "sprite": "/api/pokemon/chansey/sprite",
           "value": null
         },
         "answers": {},
@@ -349,13 +349,13 @@
             "previousPokemon": {
               "id": "vulpix",
               "name": "Vulpix",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png",
+              "sprite": "/api/pokemon/vulpix/sprite",
               "value": 37
             },
             "currentPokemon": {
               "id": "chansey",
               "name": "Chansey",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "sprite": "/api/pokemon/chansey/sprite",
               "value": null
             },
             "answers": {},
@@ -420,13 +420,13 @@
             "previousPokemon": {
               "id": "vulpix",
               "name": "Vulpix",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png",
+              "sprite": "/api/pokemon/vulpix/sprite",
               "value": 37
             },
             "currentPokemon": {
               "id": "chansey",
               "name": "Chansey",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "sprite": "/api/pokemon/chansey/sprite",
               "value": null
             },
             "answers": {},
@@ -493,13 +493,13 @@
             "previousPokemon": {
               "id": "vulpix",
               "name": "Vulpix",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png",
+              "sprite": "/api/pokemon/vulpix/sprite",
               "value": 37
             },
             "currentPokemon": {
               "id": "chansey",
               "name": "Chansey",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "sprite": "/api/pokemon/chansey/sprite",
               "value": null
             },
             "answers": {},
@@ -565,13 +565,13 @@
             "previousPokemon": {
               "id": "vulpix",
               "name": "Vulpix",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png",
+              "sprite": "/api/pokemon/vulpix/sprite",
               "value": 37
             },
             "currentPokemon": {
               "id": "chansey",
               "name": "Chansey",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "sprite": "/api/pokemon/chansey/sprite",
               "value": 113
             },
             "answers": {
@@ -682,13 +682,13 @@
             "previousPokemon": {
               "id": "chansey",
               "name": "Chansey",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "sprite": "/api/pokemon/chansey/sprite",
               "value": 105
             },
             "currentPokemon": {
               "id": "togepi",
               "name": "Togepi",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png",
+              "sprite": "/api/pokemon/togepi/sprite",
               "value": null
             },
             "answers": {},
@@ -748,13 +748,13 @@
             "previousPokemon": {
               "id": "chansey",
               "name": "Chansey",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "sprite": "/api/pokemon/chansey/sprite",
               "value": 105
             },
             "currentPokemon": {
               "id": "togepi",
               "name": "Togepi",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png",
+              "sprite": "/api/pokemon/togepi/sprite",
               "value": null
             },
             "answers": {},
@@ -815,13 +815,13 @@
             "previousPokemon": {
               "id": "chansey",
               "name": "Chansey",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "sprite": "/api/pokemon/chansey/sprite",
               "value": 105
             },
             "currentPokemon": {
               "id": "togepi",
               "name": "Togepi",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png",
+              "sprite": "/api/pokemon/togepi/sprite",
               "value": null
             },
             "answers": {},
@@ -887,13 +887,13 @@
             "previousPokemon": {
               "id": "chansey",
               "name": "Chansey",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "sprite": "/api/pokemon/chansey/sprite",
               "value": 105
             },
             "currentPokemon": {
               "id": "togepi",
               "name": "Togepi",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png",
+              "sprite": "/api/pokemon/togepi/sprite",
               "value": null
             },
             "answers": {},
@@ -963,13 +963,13 @@
             "previousPokemon": {
               "id": "chansey",
               "name": "Chansey",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png",
+              "sprite": "/api/pokemon/chansey/sprite",
               "value": 105
             },
             "currentPokemon": {
               "id": "togepi",
               "name": "Togepi",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png",
+              "sprite": "/api/pokemon/togepi/sprite",
               "value": 65
             },
             "answers": {
@@ -1088,13 +1088,13 @@
             "previousPokemon": {
               "id": "togepi",
               "name": "Togepi",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png",
+              "sprite": "/api/pokemon/togepi/sprite",
               "value": 20
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": null
             },
             "answers": {},
@@ -1155,13 +1155,13 @@
             "previousPokemon": {
               "id": "togepi",
               "name": "Togepi",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png",
+              "sprite": "/api/pokemon/togepi/sprite",
               "value": 20
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": null
             },
             "answers": {},
@@ -1226,13 +1226,13 @@
             "previousPokemon": {
               "id": "togepi",
               "name": "Togepi",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png",
+              "sprite": "/api/pokemon/togepi/sprite",
               "value": 20
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": null
             },
             "answers": {},
@@ -1297,13 +1297,13 @@
             "previousPokemon": {
               "id": "togepi",
               "name": "Togepi",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png",
+              "sprite": "/api/pokemon/togepi/sprite",
               "value": 20
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": 55
             },
             "answers": {
@@ -1406,13 +1406,13 @@
             "previousPokemon": {
               "id": "togepi",
               "name": "Togepi",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png",
+              "sprite": "/api/pokemon/togepi/sprite",
               "value": 20
             },
             "currentPokemon": {
               "id": "psyduck",
               "name": "Psyduck",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+              "sprite": "/api/pokemon/psyduck/sprite",
               "value": 55
             },
             "answers": {
