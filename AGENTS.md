@@ -14,7 +14,7 @@ This Node 22+ npm-workspaces monorepo separates authority from presentation:
 ## Build, Test, and Development Commands
 
 - `npm install` installs all workspaces and generates the Prisma client.
-- `npm run dev` starts the server watcher and Vite frontend together.
+- `npm run dev` starts the Java backend watcher and the Vite frontend together.
 - `npm run build` builds shared, server, then web in dependency order.
 - `npm run typecheck` runs strict TypeScript checks across the monorepo.
 - `npm test` runs all Vitest suites; target one workspace with `npm test -w @pokemon-universe/shared`.

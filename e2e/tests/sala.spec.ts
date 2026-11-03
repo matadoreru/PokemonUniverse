@@ -141,18 +141,11 @@ async function avisoDeConexion(page: Page, theme: Theme, perdida = false): Promi
   await page.goto('/play');
   const aviso = page.getByRole('status').filter({ hasText: perdida ? 'Conexión perdida' : 'Conectando con la sala' });
   await expect(aviso).toBeVisible();
-  const reintentar = aviso.getByRole('button', { name: 'Reintentar ahora' });
-  if (perdida) await expect(reintentar).toBeEnabled();
-  else await expect(reintentar).toHaveCount(0);
   // El aviso nunca tapa la fila de marca y navegación de la cabecera: empieza donde ella acaba o más abajo.
   const marca = await page.locator('header > div').first().boundingBox();
   const caja = await aviso.locator('.connection-notice').boundingBox();
   expect(marca && caja && caja.y >= marca.y + marca.height - 1, 'el aviso queda bajo la fila de marca').toBe(true);
   await capture(page, `sala-${perdida ? 'conexion-perdida' : 'conectando'}${theme === 'light' ? '-claro' : ''}`);
-  if (perdida) {
-    await reintentar.click();
-    await expect(aviso).toContainText('Conexión perdida');
-  }
   expect(errors).toEqual([]);
 }
 
@@ -174,4 +167,23 @@ test('aviso de conexión de la sala en tema claro a 1280×720', async ({ page })
 
 test('aviso de conexión perdida en tema claro a 1280×720', async ({ page }) => {
   await avisoDeConexion(page, 'light', true);
+});
+
+test('una entrada normal en la sala no muestra el aviso de conexión', async ({ page }) => {
+  const errors = collectErrors(page);
+  await loginAsGuest(page, uniqueName('E2E'));
+  // Primera conexión de calentamiento: el `/ws` en frío puede tardar más que el retardo del aviso.
+  await expect(page.getByRole('button', { name: 'Crear sala privada' })).toBeEnabled();
+  // Desde aquí se anota si el aviso llega a pintarse en algún momento, aunque sea un instante.
+  await page.addInitScript(() => {
+    const w = window as unknown as { avisoVisto: boolean };
+    w.avisoVisto = false;
+    new MutationObserver(() => { if (document.querySelector('.connection-notice')) w.avisoVisto = true; })
+      .observe(document, { childList: true, subtree: true });
+  });
+  await page.goto('/play');
+  await createRoom(page);
+  await page.waitForTimeout(600);
+  expect(await page.evaluate(() => (window as unknown as { avisoVisto: boolean }).avisoVisto), 'el aviso de conexión no debe aparecer').toBe(false);
+  expect(errors).toEqual([]);
 });

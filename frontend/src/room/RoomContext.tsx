@@ -11,7 +11,6 @@ interface RoomContextValue {
   connected: boolean;
   error: string | null;
   clearError(): void;
-  reconnect(): void;
   createRoom(): Promise<RoomView>;
   joinRoom(code: string): Promise<RoomView>;
   leaveRoom(): Promise<void>;
@@ -49,7 +48,7 @@ export function RoomProvider({ children }: PropsWithChildren) {
     if (!user) { socketRef.current?.disconnect(); socketRef.current = null; setRoom(projection.setAuthoritative(null, true)); return; }
     const socket = createRealtime(); socketRef.current = socket;
     const detachCursorChannel = attachWhoIsWhoCursorChannel(socket);
-    // `error` only comes with a failed connection attempt (Socket.IO `connect_error`, WebSocket close 4401), never with a plain disconnect.
+    // `error` only comes with an authentication close of `/ws` (4401), never with a plain disconnect.
     socket.onConnection((isConnected, connectionError) => {
       setConnected(isConnected);
       if (!isConnected) setRoom(projection.clearPending());
@@ -79,7 +78,6 @@ export function RoomProvider({ children }: PropsWithChildren) {
 
   const value = useMemo<RoomContextValue>(() => ({
     room, connected, error, clearError: () => setError(null),
-    reconnect: () => socketRef.current?.reconnect(),
     async createRoom() { const response = await emit('room:create', {}); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
     async joinRoom(code) { const response = await emit('room:join', { code }); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
     async leaveRoom() { await emit('room:leave', {}); setRoom(projectionRef.current.setAuthoritative(null, true)); },

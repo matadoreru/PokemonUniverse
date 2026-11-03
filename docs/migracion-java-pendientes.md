@@ -100,13 +100,15 @@ medidor lo cuenta como solape con la cabecera. Es la primera apertura de `/ws` t
 `main` (3d0ef85) sin ningún servidor levantado, `npm run test:e2e:java -- acceso` falla igual (1 fallo y 3 pasados;
 mismo solape «Pokémon Universe» ⟷ «Conectando con la sala», 903 px²; en esa pasada no se midió la latencia de `/ws`).
 Resuelto en la Tarea 2 de 2D: el aviso vive ahora en un hueco de la cabecera fija, bajo la fila de marca, y
-`sala.spec.ts` fija el estado «Conectando» (un `/ws` que nunca abre) para comprobarlo sin depender del tiempo.
+«Conectando» solo aparece tras 400 ms sin conexión (una conexión perdida se avisa al momento). `sala.spec.ts` fija los
+estados con un `/ws` simulado y comprueba que una entrada normal no muestra el aviso.
 
 #### Convivencia con Node hasta 2D
 
-- **Rutas solo en Vite.** `infra/nginx.conf` solo ganó `/api/health`. Las demás rutas de 2C van a Java **solo** con
-  `VITE_REALTIME=java` (`proxyFor('java')` de `frontend/vite.config.ts`): Node guarda en memoria categorías, dilemas,
-  configuraciones y el catálogo TCG, que quedarían obsoletos si Java escribiera en producción.
+- **Rutas solo en Vite.** `infra/nginx.conf` solo ganó `/api/health`. Las demás rutas de 2C van a Java en desarrollo y
+  E2E: desde la Tarea 2 de 2D, `proxyFor()` de `frontend/vite.config.ts` manda todo `/api` y `/ws` a `:8080` (ya no hay
+  bandera `VITE_REALTIME` ni modo `node`). En producción siguen en Node hasta que nginx pase a Java en el corte: Node
+  guarda en memoria categorías, dilemas, configuraciones y el catálogo TCG, que quedarían obsoletos si Java escribiera.
 - **Cachés Java también en memoria.** Las de categorías, dilemas y configuraciones se cargan al arrancar y solo ven lo
   que escribe Java; el catálogo TCG se recarga al arrancar y tras cada TCGDEX completada **por Java**. Con Node
   escribiendo (producción), el estado de Java queda viejo hasta reiniciarlo; por eso no se enrutan en nginx.

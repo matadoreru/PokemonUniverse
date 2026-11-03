@@ -87,7 +87,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .skeleton { @apply animate-pulse rounded-lg bg-ink/10; }
   .ranking-row { @apply grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-xl border border-ink/10 bg-surface-raised p-3 sm:grid-cols-[auto_auto_minmax(0,1fr)_auto]; }
   .connection-notice-region { @apply mx-auto w-full max-w-[96rem] px-3 sm:px-5 md:px-8; }
-  .connection-notice { @apply mb-2.5 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl border border-electric/35 bg-electric/10 px-4 py-2.5 font-bold text-ink; }
+  .connection-notice { @apply mb-2.5 flex items-center gap-3 rounded-xl border border-electric/35 bg-electric/10 px-4 py-2.5 font-bold text-ink; }
   .modal-dialog { @apply m-auto max-h-[calc(100dvh-2rem)] w-[min(42rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-ink/10 bg-surface p-0 text-ink shadow-card; }
 }
 

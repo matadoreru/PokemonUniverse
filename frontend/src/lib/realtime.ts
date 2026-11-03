@@ -22,7 +22,5 @@ export interface RealtimeClient {
   request<E extends CommandEvent>(event: E, payload: CommandPayload<E>): Promise<CommandResult<E>>;
   /** Fire-and-forget event without ack; dropped while offline. */
   fire<E extends FireEvent>(event: E, payload: CommandPayload<E>): void;
-  /** Retry right away after a lost connection (skips the backoff wait); no-op while connecting, open or after `disconnect()`. */
-  reconnect(): void;
   disconnect(): void;
 }

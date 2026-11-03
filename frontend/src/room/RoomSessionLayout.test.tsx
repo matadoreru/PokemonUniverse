@@ -3,9 +3,9 @@ import { createElement, type PropsWithChildren } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
-import { ConnectionNotice, RoomSessionLayout } from './RoomSessionLayout';
+import { ConnectionNoticeRegion, RoomSessionLayout } from './RoomSessionLayout';
 
-const context = vi.hoisted(() => ({ room: null as RoomView | null, connected: true as boolean, error: null, clearError: vi.fn(), reconnect: vi.fn(), setGameSkipVote: vi.fn() }));
+const context = vi.hoisted(() => ({ room: null as RoomView | null, connected: true as boolean, error: null, clearError: vi.fn(), setGameSkipVote: vi.fn() }));
 vi.mock('./RoomContext', () => ({ useRoom: () => context, RoomProvider: ({ children }: PropsWithChildren) => children }));
 
 const skip: GameSkipStateView = { gameInstanceId: '123e4567-e89b-42d3-a456-426614174000', voterIds: [], votes: 0, requiredVotes: 4, currentUserVoted: false, canVote: true };
@@ -32,23 +32,24 @@ describe('global room actions', () => {
 });
 
 describe('room connection notice', () => {
-  it('renders the connecting notice in the flow, never as a fixed overlay', () => {
+  it('renders nothing on the first paint while still connecting (the notice waits for its delay)', () => {
     context.connected = false;
     try {
       const markup = render('higher-lower', 'LOBBY', null);
-      expect(markup).toContain('role="status"');
-      expect(markup).toContain('Conectando con la sala');
-      expect(markup).toContain('class="connection-notice"');
-      expect(markup).not.toMatch(/class="[^"]*\bfixed\b[^"]*"[^>]*role="status"/);
+      expect(markup).toContain('<div class="connection-notice-region" role="status" aria-live="polite"></div>');
+      expect(markup).not.toContain('Conectando con la sala');
     } finally { context.connected = true; }
   });
 
-  it('offers an immediate retry only after a lost connection', () => {
-    const lost = renderToStaticMarkup(createElement(ConnectionNotice, { connected: false, wasConnected: true, onReconnect: vi.fn() }));
+  it('renders the connecting and lost notices in the flow, never as a fixed overlay', () => {
+    const connecting = renderToStaticMarkup(createElement(ConnectionNoticeRegion, { kind: 'connecting' }));
+    expect(connecting).toContain('class="connection-notice"');
+    expect(connecting).toContain('Conectando con la sala');
+    expect(connecting).not.toMatch(/\bfixed\b/);
+    const lost = renderToStaticMarkup(createElement(ConnectionNoticeRegion, { kind: 'lost' }));
     expect(lost).toContain('Conexión perdida');
-    expect(lost).toMatch(/<button type="button" class="btn-ghost[^"]*"[^>]*>.*Reintentar ahora<\/button>/);
-    const connecting = renderToStaticMarkup(createElement(ConnectionNotice, { connected: false, wasConnected: false, onReconnect: vi.fn() }));
-    expect(connecting).not.toContain('Reintentar ahora');
+    expect(lost).toContain('Reconectando… Tu sesión sigue guardada.');
+    expect(lost).not.toContain('<button');
   });
 
   it('keeps an empty status region while connected', () => {
