@@ -86,6 +86,25 @@ class PokedexDistanceEngineTest {
     assertEquals("pikachu", engine.getPlayerState(second.state(), "p1", context).selection().pokemonId());
   }
 
+  /** Dos jugadores con el mismo Pokémon más cercano sobreviven los dos: la eliminación va por jugador, no por Pokémon. */
+  @Test
+  void hiddenDuplicateClosestPickKeepsBothPlayers() {
+    var context = context(3);
+    var state = engine.start(engine.createInitialState(engine.defaultConfig(), context), context).toBuilder()
+        .targetDexNumber(1)
+        .build();
+    state = engine.handleAction(state, "p1", new PokedexDistanceAction("bulbasaur"), context).state();
+    state = engine.handleAction(state, "p2", new PokedexDistanceAction("bulbasaur"), context).state();
+    state = engine.handleAction(state, "p3", new PokedexDistanceAction("mew"), context).state();
+    var round = state.lastRound();
+    assertEquals(PokedexDistanceTypes.RoundReason.FARTHEST, round.reason());
+    assertEquals(List.of("p3"), round.eliminatedIds());
+    assertEquals(0, round.selections().get("p1").distance());
+    assertEquals(0, round.selections().get("p2").distance());
+    assertEquals(1, state.playerStats().get("p1").exactHits());
+    assertEquals(1, state.playerStats().get("p2").exactHits());
+  }
+
   @Test
   void liveKeepsTheLockAndTheLiveSelections() {
     var context = context(3);
