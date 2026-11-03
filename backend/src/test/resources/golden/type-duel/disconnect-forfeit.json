@@ -1,0 +1,1644 @@
+{
+  "engineId": "type-duel",
+  "scenario": "disconnect-forfeit",
+  "seed": 909,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "typeSelectSeconds": 10,
+    "searchSeconds": 20,
+    "rounds": 3
+  },
+  "steps": [
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 3000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 4000
+    },
+    {
+      "kind": "timeout",
+      "now": 13000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_TYPE",
+        "pokemonType": "fire"
+      },
+      "now": 14000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_TYPE",
+        "pokemonType": "flying"
+      },
+      "now": 14500
+    },
+    {
+      "kind": "timeout",
+      "now": 16500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 17000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 17500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 18000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 19000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "CONTINUE"
+      },
+      "now": 20000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_TYPE",
+        "pokemonType": "water"
+      },
+      "now": 20500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 21000
+    },
+    {
+      "kind": "timeout",
+      "now": 31000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 10,
+      "searchSeconds": 20,
+      "rounds": 3
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "type-duel",
+        "phase": "GAME_STARTING",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "completedRounds": 0,
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "participants": [
+          "p1",
+          "p2"
+        ],
+        "participationCounts": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "typeSelectionCompletedIds": [],
+        "revealedTypes": {},
+        "requiredTypes": null,
+        "invalidCombinations": 0,
+        "finalSelectionCycle": false,
+        "attempts": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "participant": true,
+          "ownType": null,
+          "canSelectType": false,
+          "canAttempt": false,
+          "cooldownUntil": 0
+        },
+        "p2": {
+          "participant": true,
+          "ownType": null,
+          "canSelectType": false,
+          "canAttempt": false,
+          "cooldownUntil": 0
+        },
+        "p3": {
+          "participant": false,
+          "ownType": null,
+          "canSelectType": false,
+          "canAttempt": false,
+          "cooldownUntil": 0
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "SELECTING_TYPES",
+        "nextDeadline": 11000,
+        "actionEpoch": "[\"SELECTING_TYPES\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "type-duel",
+        "phase": "SELECTING_TYPES",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "completedRounds": 0,
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "participants": [
+          "p2",
+          "p3"
+        ],
+        "participationCounts": {
+          "p1": 0,
+          "p2": 1,
+          "p3": 1
+        },
+        "typeSelectionCompletedIds": [],
+        "revealedTypes": {},
+        "requiredTypes": null,
+        "invalidCombinations": 0,
+        "finalSelectionCycle": false,
+        "attempts": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 11000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "participant": false,
+          "ownType": null,
+          "canSelectType": false,
+          "canAttempt": false,
+          "cooldownUntil": 0
+        },
+        "p2": {
+          "participant": true,
+          "ownType": null,
+          "canSelectType": true,
+          "canAttempt": false,
+          "cooldownUntil": 0
+        },
+        "p3": {
+          "participant": true,
+          "ownType": null,
+          "canSelectType": true,
+          "canAttempt": false,
+          "cooldownUntil": 0
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 13000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "participants": [
+              "p2",
+              "p3"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 1
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 13000,
+            "lastRound": {
+              "reason": "DISCONNECT_FORFEIT",
+              "winnerId": "p2",
+              "attempts": [],
+              "solutions": [],
+              "requiredTypes": null,
+              "selectedTypes": {},
+              "disconnectedIds": [
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "participant": false,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 13000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "participants": [
+              "p2",
+              "p3"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 1
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 13000,
+            "lastRound": {
+              "reason": "DISCONNECT_FORFEIT",
+              "winnerId": "p2",
+              "attempts": [],
+              "solutions": [],
+              "requiredTypes": null,
+              "selectedTypes": {},
+              "disconnectedIds": [
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "participant": false,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "SELECTING_TYPES",
+            "nextDeadline": 23000,
+            "actionEpoch": "[\"SELECTING_TYPES\",2,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "SELECTING_TYPES",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p3"
+            ],
+            "participationCounts": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 2
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 13000,
+            "roundEndsAt": 23000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": true,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": false,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": true,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "SELECTING_TYPES",
+            "nextDeadline": 23000,
+            "actionEpoch": "[\"SELECTING_TYPES\",2,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "SELECTING_TYPES",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p3"
+            ],
+            "participationCounts": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 2
+            },
+            "typeSelectionCompletedIds": [
+              "p1"
+            ],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 13000,
+            "roundEndsAt": 23000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": "fire",
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": false,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": true,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TYPE_REVEAL",
+            "nextDeadline": 16500,
+            "actionEpoch": "[\"TYPE_REVEAL\",2,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "TYPE_REVEAL",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p3"
+            ],
+            "participationCounts": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 2
+            },
+            "typeSelectionCompletedIds": [
+              "p1",
+              "p3"
+            ],
+            "revealedTypes": {
+              "p1": "fire",
+              "p3": "flying"
+            },
+            "requiredTypes": [
+              "fire",
+              "flying"
+            ],
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 13000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 16500,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": "fire",
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": false,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": "flying",
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 36500,
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,16500,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p3"
+            ],
+            "participationCounts": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 2
+            },
+            "typeSelectionCompletedIds": [
+              "p1",
+              "p3"
+            ],
+            "revealedTypes": {
+              "p1": "fire",
+              "p3": "flying"
+            },
+            "requiredTypes": [
+              "fire",
+              "flying"
+            ],
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 16500,
+            "roundEndsAt": 36500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": "fire",
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": false,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": "flying",
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 36500,
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,16500,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p3"
+            ],
+            "participationCounts": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 2
+            },
+            "typeSelectionCompletedIds": [
+              "p1",
+              "p3"
+            ],
+            "revealedTypes": {
+              "p1": "fire",
+              "p3": "flying"
+            },
+            "requiredTypes": [
+              "fire",
+              "flying"
+            ],
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p3",
+                "pokemonId": "pikachu",
+                "pokemonName": "Pikachu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                "correct": false,
+                "attemptedAt": 17000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 16500,
+            "roundEndsAt": 36500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": "fire",
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": false,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": "flying",
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 18000
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 36500,
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,16500,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p3"
+            ],
+            "participationCounts": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 2
+            },
+            "typeSelectionCompletedIds": [
+              "p1",
+              "p3"
+            ],
+            "revealedTypes": {
+              "p1": "fire",
+              "p3": "flying"
+            },
+            "requiredTypes": [
+              "fire",
+              "flying"
+            ],
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p3",
+                "pokemonId": "pikachu",
+                "pokemonName": "Pikachu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                "correct": false,
+                "attemptedAt": 17000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 0
+            },
+            "roundStartedAt": 16500,
+            "roundEndsAt": 36500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": "fire",
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": false,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": "flying",
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 18000
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 28000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,16500,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 2,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p3"
+            ],
+            "participationCounts": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 2
+            },
+            "typeSelectionCompletedIds": [
+              "p1",
+              "p3"
+            ],
+            "revealedTypes": {
+              "p1": "fire",
+              "p3": "flying"
+            },
+            "requiredTypes": [
+              "fire",
+              "flying"
+            ],
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p3",
+                "pokemonId": "pikachu",
+                "pokemonName": "Pikachu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                "correct": false,
+                "attemptedAt": 17000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 5
+            },
+            "roundStartedAt": 16500,
+            "roundEndsAt": null,
+            "nextTransitionAt": 28000,
+            "lastRound": {
+              "reason": "DISCONNECT_FORFEIT",
+              "winnerId": "p3",
+              "attempts": [
+                {
+                  "playerId": "p3",
+                  "pokemonId": "pikachu",
+                  "pokemonName": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "correct": false,
+                  "attemptedAt": 17000
+                }
+              ],
+              "solutions": [],
+              "requiredTypes": [
+                "fire",
+                "flying"
+              ],
+              "selectedTypes": {
+                "p1": "fire",
+                "p3": "flying"
+              },
+              "disconnectedIds": [
+                "p1"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": "fire",
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": false,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": "flying",
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 18000
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 28000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,16500,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 2,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p3"
+            ],
+            "participationCounts": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 2
+            },
+            "typeSelectionCompletedIds": [
+              "p1",
+              "p3"
+            ],
+            "revealedTypes": {
+              "p1": "fire",
+              "p3": "flying"
+            },
+            "requiredTypes": [
+              "fire",
+              "flying"
+            ],
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p3",
+                "pokemonId": "pikachu",
+                "pokemonName": "Pikachu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                "correct": false,
+                "attemptedAt": 17000
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 5
+            },
+            "roundStartedAt": 16500,
+            "roundEndsAt": null,
+            "nextTransitionAt": 28000,
+            "lastRound": {
+              "reason": "DISCONNECT_FORFEIT",
+              "winnerId": "p3",
+              "attempts": [
+                {
+                  "playerId": "p3",
+                  "pokemonId": "pikachu",
+                  "pokemonName": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "correct": false,
+                  "attemptedAt": 17000
+                }
+              ],
+              "solutions": [],
+              "requiredTypes": [
+                "fire",
+                "flying"
+              ],
+              "selectedTypes": {
+                "p1": "fire",
+                "p3": "flying"
+              },
+              "disconnectedIds": [
+                "p1"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": "fire",
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": false,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": "flying",
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 18000
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "SELECTING_TYPES",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"SELECTING_TYPES\",3,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "SELECTING_TYPES",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 2,
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 2,
+              "p2": 2,
+              "p3": 2
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 5
+            },
+            "roundStartedAt": 20000,
+            "roundEndsAt": 30000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": true,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": true,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": false,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "SELECTING_TYPES",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"SELECTING_TYPES\",3,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "SELECTING_TYPES",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 2,
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 2,
+              "p2": 2,
+              "p3": 2
+            },
+            "typeSelectionCompletedIds": [
+              "p1"
+            ],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 5
+            },
+            "roundStartedAt": 20000,
+            "roundEndsAt": 30000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": "water",
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": true,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": false,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "ROUND_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 3,
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 2,
+              "p2": 2,
+              "p3": 2
+            },
+            "typeSelectionCompletedIds": [
+              "p1"
+            ],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 5
+            },
+            "roundStartedAt": 20000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 31000,
+            "lastRound": {
+              "reason": "DISCONNECTED",
+              "winnerId": null,
+              "attempts": [],
+              "solutions": [],
+              "requiredTypes": null,
+              "selectedTypes": {
+                "p1": "water"
+              },
+              "disconnectedIds": [
+                "p1",
+                "p2"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": "water",
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": false,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "GAME_RESULTS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 3,
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 2,
+              "p2": 2,
+              "p3": 2
+            },
+            "typeSelectionCompletedIds": [
+              "p1"
+            ],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 5,
+              "p3": 5
+            },
+            "roundStartedAt": 20000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "reason": "DISCONNECTED",
+              "winnerId": null,
+              "attempts": [],
+              "solutions": [],
+              "requiredTypes": null,
+              "selectedTypes": {
+                "p1": "water"
+              },
+              "disconnectedIds": [
+                "p1",
+                "p2"
+              ]
+            },
+            "results": {
+              "winnerId": null,
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 5,
+                  "won": true,
+                  "stats": {
+                    "duelsPlayed": 1,
+                    "duelsWon": 1,
+                    "correctAttempts": 0,
+                    "incorrectAttempts": 0,
+                    "correctTimeTotalMs": 0,
+                    "winRate": 100,
+                    "averageCorrectTimeMs": 0
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 5,
+                  "won": true,
+                  "stats": {
+                    "duelsPlayed": 2,
+                    "duelsWon": 1,
+                    "correctAttempts": 0,
+                    "incorrectAttempts": 1,
+                    "correctTimeTotalMs": 0,
+                    "winRate": 50,
+                    "averageCorrectTimeMs": 0
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "duelsPlayed": 1,
+                    "duelsWon": 0,
+                    "correctAttempts": 0,
+                    "incorrectAttempts": 0,
+                    "correctTimeTotalMs": 0,
+                    "winRate": 0,
+                    "averageCorrectTimeMs": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": "water",
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": false,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": null,
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 5,
+          "won": true,
+          "stats": {
+            "duelsPlayed": 1,
+            "duelsWon": 1,
+            "correctAttempts": 0,
+            "incorrectAttempts": 0,
+            "correctTimeTotalMs": 0,
+            "winRate": 100,
+            "averageCorrectTimeMs": 0
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 1,
+          "points": 5,
+          "won": true,
+          "stats": {
+            "duelsPlayed": 2,
+            "duelsWon": 1,
+            "correctAttempts": 0,
+            "incorrectAttempts": 1,
+            "correctTimeTotalMs": 0,
+            "winRate": 50,
+            "averageCorrectTimeMs": 0
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "duelsPlayed": 1,
+            "duelsWon": 0,
+            "correctAttempts": 0,
+            "incorrectAttempts": 0,
+            "correctTimeTotalMs": 0,
+            "winRate": 0,
+            "averageCorrectTimeMs": 0
+          }
+        }
+      ]
+    }
+  }
+}

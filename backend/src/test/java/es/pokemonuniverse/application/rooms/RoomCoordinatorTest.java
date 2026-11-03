@@ -351,6 +351,76 @@ class RoomCoordinatorTest {
     assertNull(room.members.get("p3").presenceGraceTimer);
   }
 
+  /** Type Duel real (sin motores falsos) con {@code p1} (host) y {@code p2} como duelistas del primer duelo. */
+  private static LiveRoom typeDuelRoom(RoomTestKit kit) {
+    var room = kit.room(8, guest("p1", "Uno"), guest("p2", "Dos"));
+    kit.manager.selectGame("p1", "type-duel");
+    // Plazos más largos que la gracia: lo que resuelve el duelo es la presencia, no el tiempo.
+    kit.manager.updateConfig("p1", json("{\"generations\":[1],\"typeSelectSeconds\":30,\"searchSeconds\":60,"
+        + "\"rounds\":3}"));
+    kit.startReady(room, "p1");
+    assertEquals("SELECTING_TYPES", kit.publicGame(room, "p1").get("phase").getStringValue());
+    return room;
+  }
+
+  private static RoomTestKit typeDuelKit() {
+    var engines = new LinkedHashMap<String, GameEngine<?, ?, ?, ?>>();
+    for (var id : List.of("higher-lower", "pokedex-distance", "type-duel")) {
+      engines.put(id, RoomTestKit.REAL_REGISTRY.engine(id).orElseThrow());
+    }
+    return new RoomTestKit(50_000, UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY,
+        RoomTestKit.REAL_REGISTRY.withEngines(engines));
+  }
+
+  private static void assertDuelAlive(RoomTestKit kit, LiveRoom room, String phase) {
+    var game = kit.publicGame(room, "p1");
+    assertEquals(phase, game.get("phase").getStringValue());
+    var lastRound = game.get("lastRound");
+    assertTrue(lastRound == null || lastRound.isNull());
+    assertEquals(0, game.get("completedRounds").getIntValue());
+  }
+
+  @Test
+  @DisplayName("a duelist who comes back within the presence grace keeps the duel alive")
+  void presenceGraceReconnectKeepsTheDuelAlive() {
+    var kit = typeDuelKit();
+    var room = typeDuelRoom(kit);
+    // Elección de tipos: se cae y vuelve a los 9 s.
+    kit.manager.disconnect("p2", "socket-p2");
+    kit.time.advance(9_000);
+    assertTrue(kit.manager.connect(guest("p2", "Dos"), "socket-p2-b"));
+    kit.time.advance(5_000);
+    assertDuelAlive(kit, room, "SELECTING_TYPES");
+    // Búsqueda: lo mismo con la carrera en marcha.
+    kit.manager.action("p1", json("{\"type\":\"SELECT_TYPE\",\"pokemonType\":\"fire\"}"));
+    kit.manager.action("p2", json("{\"type\":\"SELECT_TYPE\",\"pokemonType\":\"flying\"}"));
+    kit.passDeadline(room);
+    assertDuelAlive(kit, room, "POKEMON_SEARCH");
+    kit.manager.disconnect("p2", "socket-p2-b");
+    kit.time.advance(9_000);
+    assertTrue(kit.manager.connect(guest("p2", "Dos"), "socket-p2-c"));
+    kit.time.advance(5_000);
+    assertDuelAlive(kit, room, "POKEMON_SEARCH");
+  }
+
+  @Test
+  @DisplayName("a duelist who does not come back within the presence grace forfeits the duel")
+  void presenceGraceExpiryForfeitsTheDuel() {
+    var kit = typeDuelKit();
+    var room = typeDuelRoom(kit);
+    kit.manager.disconnect("p2", "socket-p2");
+    kit.time.advance(9_999);
+    assertDuelAlive(kit, room, "SELECTING_TYPES");
+    kit.time.advance(1);
+    var game = kit.publicGame(room, "p1");
+    assertEquals("ROUND_RESULTS", game.get("phase").getStringValue());
+    var lastRound = game.get("lastRound");
+    assertEquals("DISCONNECT_FORFEIT", lastRound.get("reason").getStringValue());
+    assertEquals("p1", lastRound.get("winnerId").getStringValue());
+    assertTrue(JsonTree.equal(json("[\"p2\"]"), lastRound.get("disconnectedIds")));
+    assertTrue(JsonTree.equal(json("{\"p1\":5,\"p2\":0}"), game.get("scores")));
+  }
+
   @Test
   @DisplayName("each player has their own presence grace")
   void presenceGraceIsPerPlayer() {

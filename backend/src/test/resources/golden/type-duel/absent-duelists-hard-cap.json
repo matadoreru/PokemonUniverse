@@ -668,15 +668,15 @@
             "attempts": [],
             "scores": {
               "p1": 0,
-              "p2": 0,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 24500,
             "roundEndsAt": null,
             "nextTransitionAt": 40000,
             "lastRound": {
-              "reason": "DISCONNECTED",
-              "winnerId": null,
+              "reason": "DISCONNECT_FORFEIT",
+              "winnerId": "p2",
               "attempts": [],
               "solutions": [],
               "requiredTypes": [
@@ -755,7 +755,7 @@
             "attempts": [],
             "scores": {
               "p1": 0,
-              "p2": 0,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 40000,
@@ -826,7 +826,7 @@
             "attempts": [],
             "scores": {
               "p1": 0,
-              "p2": 0,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 40000,
@@ -905,7 +905,7 @@
             "attempts": [],
             "scores": {
               "p1": 0,
-              "p2": 0,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 40000,
@@ -921,28 +921,28 @@
               "disconnectedIds": []
             },
             "results": {
-              "winnerId": null,
+              "winnerId": "p2",
               "standings": [
                 {
-                  "playerId": "p1",
+                  "playerId": "p2",
                   "position": 1,
-                  "points": 0,
+                  "points": 5,
                   "won": true,
                   "stats": {
-                    "duelsPlayed": 0,
-                    "duelsWon": 0,
+                    "duelsPlayed": 1,
+                    "duelsWon": 1,
                     "correctAttempts": 0,
                     "incorrectAttempts": 0,
                     "correctTimeTotalMs": 0,
-                    "winRate": 0,
+                    "winRate": 100,
                     "averageCorrectTimeMs": 0
                   }
                 },
                 {
-                  "playerId": "p2",
-                  "position": 1,
+                  "playerId": "p1",
+                  "position": 2,
                   "points": 0,
-                  "won": true,
+                  "won": false,
                   "stats": {
                     "duelsPlayed": 0,
                     "duelsWon": 0,
@@ -955,11 +955,11 @@
                 },
                 {
                   "playerId": "p3",
-                  "position": 1,
+                  "position": 2,
                   "points": 0,
-                  "won": true,
+                  "won": false,
                   "stats": {
-                    "duelsPlayed": 0,
+                    "duelsPlayed": 1,
                     "duelsWon": 0,
                     "correctAttempts": 0,
                     "incorrectAttempts": 0,
@@ -999,28 +999,28 @@
       }
     ],
     "results": {
-      "winnerId": null,
+      "winnerId": "p2",
       "standings": [
         {
-          "playerId": "p1",
+          "playerId": "p2",
           "position": 1,
-          "points": 0,
+          "points": 5,
           "won": true,
           "stats": {
-            "duelsPlayed": 0,
-            "duelsWon": 0,
+            "duelsPlayed": 1,
+            "duelsWon": 1,
             "correctAttempts": 0,
             "incorrectAttempts": 0,
             "correctTimeTotalMs": 0,
-            "winRate": 0,
+            "winRate": 100,
             "averageCorrectTimeMs": 0
           }
         },
         {
-          "playerId": "p2",
-          "position": 1,
+          "playerId": "p1",
+          "position": 2,
           "points": 0,
-          "won": true,
+          "won": false,
           "stats": {
             "duelsPlayed": 0,
             "duelsWon": 0,
@@ -1033,11 +1033,11 @@
         },
         {
           "playerId": "p3",
-          "position": 1,
+          "position": 2,
           "points": 0,
-          "won": true,
+          "won": false,
           "stats": {
-            "duelsPlayed": 0,
+            "duelsPlayed": 1,
             "duelsWon": 0,
             "correctAttempts": 0,
             "incorrectAttempts": 0,

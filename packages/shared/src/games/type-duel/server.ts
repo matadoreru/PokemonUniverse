@@ -37,15 +37,15 @@ function resolveTypes(state: TypeDuelState, context: GameContext): TypeDuelState
 }
 function beginSearch(state: TypeDuelState, context: GameContext): TypeDuelState { return { ...state, phase: 'POKEMON_SEARCH', attempts: [], cooldownUntil: {}, roundStartedAt: context.now, roundEndsAt: context.now + state.config.searchSeconds * 1_000, nextTransitionAt: null }; }
 function roundResult(state: TypeDuelState, context: GameContext, reason: TypeDuelRoundResult['reason'], winnerId: string | null): TypeDuelState {
-  // Toda resolución consume duelo; las estadísticas solo cuentan los duelos que se llegaron a disputar.
-  const played = reason === 'WINNER' || reason === 'TIMEOUT' || reason === 'TYPE_FORFEIT';
+  // Toda resolución consume duelo; las estadísticas cuentan los duelos disputados, también los ganados por abandono.
+  const played = reason === 'WINNER' || reason === 'TIMEOUT' || reason === 'TYPE_FORFEIT' || reason === 'DISCONNECT_FORFEIT';
   const completed = state.completedRounds + 1; const stats = { ...state.playerStats }; const scores = { ...state.scores };
   if (played) for (const id of state.participants) stats[id] = { ...stats[id]!, duelsPlayed: stats[id]!.duelsPlayed + 1, duelsWon: stats[id]!.duelsWon + (id === winnerId ? 1 : 0) };
   if (winnerId) scores[winnerId] = (scores[winnerId] ?? 0) + TYPE_DUEL_WIN_POINTS;
   const winningPokemonIds = new Set(state.attempts.filter((attempt) => attempt.correct).map((attempt) => attempt.pokemonId));
   const showSolutions = reason === 'TIMEOUT' || reason === 'WINNER';
   const solutions = showSolutions ? state.validPokemonIds.filter((id) => !winningPokemonIds.has(id)).slice(0, TYPE_DUEL_MAX_SOLUTIONS).map((id) => context.pokemon.byId(id)!).map(({ id, name, sprite }) => ({ id, name, sprite })) : [];
-  return { ...state, phase: 'ROUND_RESULTS', completedRounds: completed, scores, playerStats: stats, roundEndsAt: null, nextTransitionAt: context.now + TYPE_DUEL_RESULT_MS, lastRound: { reason, winnerId, attempts: [...state.attempts], solutions, requiredTypes: state.requiredTypes, selectedTypes: { ...state.typeSelections }, disconnectedIds: reason === 'DISCONNECTED' ? state.participants.filter((id) => !isPlayerRequired(context, id)) : [] } };
+  return { ...state, phase: 'ROUND_RESULTS', completedRounds: completed, scores, playerStats: stats, roundEndsAt: null, nextTransitionAt: context.now + TYPE_DUEL_RESULT_MS, lastRound: { reason, winnerId, attempts: [...state.attempts], solutions, requiredTypes: state.requiredTypes, selectedTypes: { ...state.typeSelections }, disconnectedIds: reason === 'DISCONNECTED' || reason === 'DISCONNECT_FORFEIT' ? state.participants.filter((id) => !isPlayerRequired(context, id)) : [] } };
 }
 function finish(state: TypeDuelState): TypeDuelState { return { ...state, phase: 'GAME_RESULTS', roundEndsAt: null, nextTransitionAt: null }; }
 function advanceAfterResult(state: TypeDuelState, context: GameContext): TypeDuelState { return state.completedRounds >= state.config.rounds || state.selectionCycles >= state.config.rounds * 2 ? finish(state) : selectPlayers(state, context); }
@@ -102,7 +102,10 @@ export const typeDuelGame: MiniGameModule<TypeDuelConfig, TypeDuelState, TypeDue
   },
   handlePresenceChange(state, context) {
     if (state.phase === 'SELECTING_TYPES' || state.phase === 'TYPE_REVEAL' || state.phase === 'INVALID_COMBINATION' || state.phase === 'POKEMON_SEARCH') {
-      if (state.participants.some((playerId) => !isPlayerRequired(context, playerId))) return roundResult(state, context, 'DISCONNECTED', null);
+      // La sala solo avisa cuando vence la gracia de presencia: la ausencia ya es definitiva.
+      const absent = state.participants.filter((playerId) => !isPlayerRequired(context, playerId));
+      if (absent.length === 1) return roundResult(state, context, 'DISCONNECT_FORFEIT', state.participants.find((playerId) => playerId !== absent[0])!);
+      if (absent.length === 2) return roundResult(state, context, 'DISCONNECTED', null);
     }
     return state;
   },

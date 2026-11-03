@@ -127,9 +127,9 @@ public final class TypeDuelEngine
 
   private static TypeDuelState roundResult(TypeDuelState state, GameContext context, TypeDuelRoundReason reason,
       @Nullable String winnerId) {
-    // Toda resolución consume duelo; las estadísticas solo cuentan los duelos que se llegaron a disputar.
+    // Toda resolución consume duelo; las estadísticas cuentan los duelos disputados, también los ganados por abandono.
     boolean played = reason == TypeDuelRoundReason.WINNER || reason == TypeDuelRoundReason.TIMEOUT
-        || reason == TypeDuelRoundReason.TYPE_FORFEIT;
+        || reason == TypeDuelRoundReason.TYPE_FORFEIT || reason == TypeDuelRoundReason.DISCONNECT_FORFEIT;
     int completed = state.completedRounds() + 1;
     var stats = new LinkedHashMap<>(state.playerStats());
     var scores = new LinkedHashMap<>(state.scores());
@@ -153,6 +153,7 @@ public final class TypeDuelEngine
             .toList()
         : List.of();
     List<String> disconnectedIds = reason == TypeDuelRoundReason.DISCONNECTED
+        || reason == TypeDuelRoundReason.DISCONNECT_FORFEIT
         ? state.participants().stream().filter(id -> !context.isPlayerRequired(id)).toList()
         : List.of();
     return state.toBuilder()
@@ -318,9 +319,15 @@ public final class TypeDuelEngine
     var phase = state.phase();
     if (phase == GamePhase.SELECTING_TYPES || phase == GamePhase.TYPE_REVEAL
         || phase == GamePhase.INVALID_COMBINATION || phase == GamePhase.POKEMON_SEARCH) {
-      if (state.participants().stream().anyMatch(playerId -> !context.isPlayerRequired(playerId))) {
-        return roundResult(state, context, TypeDuelRoundReason.DISCONNECTED, null);
+      // La sala solo avisa cuando vence la gracia de presencia: la ausencia ya es definitiva.
+      List<String> absent = state.participants().stream().filter(playerId -> !context.isPlayerRequired(playerId))
+          .toList();
+      if (absent.size() == 1) {
+        String rival = state.participants().stream().filter(playerId -> !playerId.equals(absent.getFirst()))
+            .findFirst().orElseThrow();
+        return roundResult(state, context, TypeDuelRoundReason.DISCONNECT_FORFEIT, rival);
       }
+      if (absent.size() == 2) return roundResult(state, context, TypeDuelRoundReason.DISCONNECTED, null);
     }
     return state;
   }

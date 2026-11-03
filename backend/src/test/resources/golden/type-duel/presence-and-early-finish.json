@@ -574,15 +574,15 @@
             "attempts": [],
             "scores": {
               "p1": 0,
-              "p2": 0,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 1000,
             "roundEndsAt": null,
             "nextTransitionAt": 13000,
             "lastRound": {
-              "reason": "DISCONNECTED",
-              "winnerId": null,
+              "reason": "DISCONNECT_FORFEIT",
+              "winnerId": "p2",
               "attempts": [],
               "solutions": [],
               "requiredTypes": [
@@ -670,15 +670,15 @@
             "attempts": [],
             "scores": {
               "p1": 0,
-              "p2": 0,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 1000,
             "roundEndsAt": null,
             "nextTransitionAt": 13000,
             "lastRound": {
-              "reason": "DISCONNECTED",
-              "winnerId": null,
+              "reason": "DISCONNECT_FORFEIT",
+              "winnerId": "p2",
               "attempts": [],
               "solutions": [],
               "requiredTypes": [
@@ -756,7 +756,7 @@
             "attempts": [],
             "scores": {
               "p1": 0,
-              "p2": 0,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 13000,
@@ -830,7 +830,7 @@
             "attempts": [],
             "scores": {
               "p1": 0,
-              "p2": 0,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 13000,
@@ -911,7 +911,7 @@
             "attempts": [],
             "scores": {
               "p1": 0,
-              "p2": 0,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 13000,
@@ -991,7 +991,7 @@
             "attempts": [],
             "scores": {
               "p1": 0,
-              "p2": 0,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 16500,
@@ -1081,7 +1081,7 @@
             ],
             "scores": {
               "p1": 5,
-              "p2": 0,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 16500,
@@ -1206,7 +1206,7 @@
             "attempts": [],
             "scores": {
               "p1": 5,
-              "p2": 0,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 27000,
@@ -1276,16 +1276,16 @@
             "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
-              "p1": 5,
-              "p2": 0,
+              "p1": 10,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 27000,
             "roundEndsAt": null,
             "nextTransitionAt": 38000,
             "lastRound": {
-              "reason": "DISCONNECTED",
-              "winnerId": null,
+              "reason": "DISCONNECT_FORFEIT",
+              "winnerId": "p1",
               "attempts": [],
               "solutions": [],
               "requiredTypes": null,
@@ -1357,16 +1357,16 @@
             "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
-              "p1": 5,
-              "p2": 0,
+              "p1": 10,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 27000,
             "roundEndsAt": null,
             "nextTransitionAt": 38000,
             "lastRound": {
-              "reason": "DISCONNECTED",
-              "winnerId": null,
+              "reason": "DISCONNECT_FORFEIT",
+              "winnerId": "p1",
               "attempts": [],
               "solutions": [],
               "requiredTypes": null,
@@ -1439,16 +1439,16 @@
             "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
-              "p1": 5,
-              "p2": 0,
+              "p1": 10,
+              "p2": 5,
               "p3": 0
             },
             "roundStartedAt": 27000,
             "roundEndsAt": null,
             "nextTransitionAt": null,
             "lastRound": {
-              "reason": "DISCONNECTED",
-              "winnerId": null,
+              "reason": "DISCONNECT_FORFEIT",
+              "winnerId": "p1",
               "attempts": [],
               "solutions": [],
               "requiredTypes": null,
@@ -1463,11 +1463,11 @@
                 {
                   "playerId": "p1",
                   "position": 1,
-                  "points": 5,
+                  "points": 10,
                   "won": true,
                   "stats": {
-                    "duelsPlayed": 1,
-                    "duelsWon": 1,
+                    "duelsPlayed": 2,
+                    "duelsWon": 2,
                     "correctAttempts": 1,
                     "incorrectAttempts": 0,
                     "correctTimeTotalMs": 500,
@@ -1478,25 +1478,25 @@
                 {
                   "playerId": "p2",
                   "position": 2,
-                  "points": 0,
+                  "points": 5,
                   "won": false,
                   "stats": {
-                    "duelsPlayed": 1,
-                    "duelsWon": 0,
+                    "duelsPlayed": 3,
+                    "duelsWon": 1,
                     "correctAttempts": 0,
                     "incorrectAttempts": 0,
                     "correctTimeTotalMs": 0,
-                    "winRate": 0,
+                    "winRate": 33,
                     "averageCorrectTimeMs": 0
                   }
                 },
                 {
                   "playerId": "p3",
-                  "position": 2,
+                  "position": 3,
                   "points": 0,
                   "won": false,
                   "stats": {
-                    "duelsPlayed": 0,
+                    "duelsPlayed": 1,
                     "duelsWon": 0,
                     "correctAttempts": 0,
                     "incorrectAttempts": 0,
@@ -1541,11 +1541,11 @@
         {
           "playerId": "p1",
           "position": 1,
-          "points": 5,
+          "points": 10,
           "won": true,
           "stats": {
-            "duelsPlayed": 1,
-            "duelsWon": 1,
+            "duelsPlayed": 2,
+            "duelsWon": 2,
             "correctAttempts": 1,
             "incorrectAttempts": 0,
             "correctTimeTotalMs": 500,
@@ -1556,25 +1556,25 @@
         {
           "playerId": "p2",
           "position": 2,
-          "points": 0,
+          "points": 5,
           "won": false,
           "stats": {
-            "duelsPlayed": 1,
-            "duelsWon": 0,
+            "duelsPlayed": 3,
+            "duelsWon": 1,
             "correctAttempts": 0,
             "incorrectAttempts": 0,
             "correctTimeTotalMs": 0,
-            "winRate": 0,
+            "winRate": 33,
             "averageCorrectTimeMs": 0
           }
         },
         {
           "playerId": "p3",
-          "position": 2,
+          "position": 3,
           "points": 0,
           "won": false,
           "stats": {
-            "duelsPlayed": 0,
+            "duelsPlayed": 1,
             "duelsWon": 0,
             "correctAttempts": 0,
             "incorrectAttempts": 0,

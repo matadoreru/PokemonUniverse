@@ -5,7 +5,7 @@ import type { GamePhase, GameResults } from '../contracts.js';
 import type { TypeDuelConfig } from './config.js';
 export interface TypeDuelAttempt { playerId: string; pokemonId: string; pokemonName: string; sprite: string; correct: boolean; attemptedAt: number }
 export interface TypeDuelStats { duelsPlayed: number; duelsWon: number; correctAttempts: number; incorrectAttempts: number; correctTimeTotalMs: number }
-export interface TypeDuelRoundResult { reason: 'WINNER' | 'TIMEOUT' | 'TYPE_TIMEOUT' | 'TYPE_FORFEIT' | 'DISCONNECTED' | 'INVALID_COMBINATION'; winnerId: string | null; attempts: TypeDuelAttempt[]; solutions: Array<{ id: string; name: string; sprite: string }>; requiredTypes: PokemonType[] | null; selectedTypes: Record<string, PokemonType>; disconnectedIds: string[] }
+export interface TypeDuelRoundResult { reason: 'WINNER' | 'TIMEOUT' | 'TYPE_TIMEOUT' | 'TYPE_FORFEIT' | 'DISCONNECTED' | 'DISCONNECT_FORFEIT' | 'INVALID_COMBINATION'; winnerId: string | null; attempts: TypeDuelAttempt[]; solutions: Array<{ id: string; name: string; sprite: string }>; requiredTypes: PokemonType[] | null; selectedTypes: Record<string, PokemonType>; disconnectedIds: string[] }
 export interface TypeDuelState {
   phase: GamePhase; config: TypeDuelConfig; playerIds: string[]; completedRounds: number; selectionCycles: number; roundNumber: number;
   participants: [string, string]; participationCounts: Record<string, number>; lastPair: [string, string] | null;

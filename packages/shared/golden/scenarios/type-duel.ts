@@ -1,7 +1,9 @@
 // Escenarios dorados de Type Duel. handleTimeout es propio (cinco fases temporizadas): cada escenario recorre varias
 // y entre todos cubren SELECTING_TYPES (abandono y sin tipos), TYPE_REVEAL, INVALID_COMBINATION, POKEMON_SEARCH y
 // ROUND_RESULTS, cada literal de error de server.ts, la presencia y una acción que no valida. Toda resolución consume
-// duelo (también TYPE_TIMEOUT, DISCONNECTED e INVALID_COMBINATION, sin puntos ni estadísticas de duelo).
+// duelo (también TYPE_TIMEOUT, DISCONNECTED e INVALID_COMBINATION, sin puntos ni estadísticas de duelo). La sala solo
+// pasa la desconexión al motor cuando vence la gracia de presencia: con un duelista ausente gana el rival
+// (DISCONNECT_FORFEIT, +5 y duelo jugado); con los dos, el duelo se anula (DISCONNECTED).
 import { typeDuelGame } from '../../dist/index.js';
 import type { GamePlayer } from '../../dist/index.js';
 import type { GoldenEngineEntry } from './index.js';
@@ -128,7 +130,7 @@ const presenceAndEarlyFinish: GoldenScenario = {
   players: [ana, bruno, carla],
   config: { ...baseConfig, rounds: 5 },
   steps: [
-    // Ronda 1: un duelista se desconecta durante la elección; el duelo se consume sin ganador ni puntos.
+    // Ronda 1: un duelista se desconecta durante la elección y su rival gana por abandono.
     selectType('p1', 'grass', 2_000),
     selectType('p2', 'grass', 2_100),
     selectType('p3', 'grass', 2_200),
@@ -157,7 +159,7 @@ const absentDuelistsHardCap: GoldenScenario = {
     // Ronda 1 (1000–11000): nadie elige; el duelo se consume (TYPE_TIMEOUT) y la ronda siguiente es la 2.
     timeout(11_000),
     timeout(21_000),
-    // Ronda 2: eligen, se revela y, en plena búsqueda, un duelista se desconecta (DISCONNECTED con su id).
+    // Ronda 2: eligen, se revela y, en plena búsqueda, un duelista se desconecta (DISCONNECT_FORFEIT con su id).
     selectType('p2', 'fire', 22_000),
     selectType('p3', 'flying', 22_500),
     timeout(24_500),
@@ -269,6 +271,33 @@ const hardCapEndsBeforeLastRound: GoldenScenario = {
   ],
 };
 
+const disconnectForfeit: GoldenScenario = {
+  name: 'disconnect-forfeit',
+  seed: 909,
+  catalog: 'gen1-2',
+  players: [ana, bruno, carla],
+  config: { ...baseConfig, rounds: 3 },
+  steps: [
+    // Duelo 1 (Bruno contra Carla), elección de tipos: Carla no vuelve y Bruno gana por abandono; luego reconecta.
+    { kind: 'presence', players: [ana, bruno, { ...carla, connected: false }], now: 3_000 },
+    { kind: 'presence', players: [ana, bruno, carla], now: 4_000 },
+    timeout(13_000),
+    // Duelo 2 (Ana contra Carla), búsqueda: la ausencia de un espectador no cambia nada; Ana no vuelve y gana Carla.
+    selectType('p1', 'fire', 14_000),
+    selectType('p3', 'flying', 14_500),
+    timeout(16_500),
+    attempt('p3', 'pikachu', 17_000),
+    { kind: 'presence', players: [ana, { ...bruno, connected: false }, carla], now: 17_500 },
+    { kind: 'presence', players: [{ ...ana, connected: false }, { ...bruno, connected: false }, carla], now: 18_000 },
+    { kind: 'presence', players: [ana, bruno, carla], now: 19_000 },
+    continueRound('p1', 20_000),
+    // Duelo 3 (Ana contra Bruno): faltan los dos, el duelo se anula sin puntos y la partida acaba tras tres duelos.
+    selectType('p1', 'water', 20_500),
+    { kind: 'presence', players: [{ ...ana, connected: false }, { ...bruno, connected: false }, carla], now: 21_000 },
+    timeout(31_000),
+  ],
+};
+
 const invalidActionStops: GoldenScenario = {
   name: 'invalid-action-stops',
   seed: 404,
@@ -285,7 +314,7 @@ const invalidActionStops: GoldenScenario = {
 
 export const typeDuelScenarios: GoldenEngineEntry = {
   module: typeDuelGame,
-  scenarios: [twoDuelistsFullCycle, fourPlayersBalancedPairs, presenceAndEarlyFinish, invalidActionStops, absentDuelistsHardCap, invalidCombinationsAndRepeats, hardCapCutsImpossibleRetries, hardCapEndsBeforeLastRound],
+  scenarios: [twoDuelistsFullCycle, fourPlayersBalancedPairs, presenceAndEarlyFinish, invalidActionStops, absentDuelistsHardCap, invalidCombinationsAndRepeats, hardCapCutsImpossibleRetries, hardCapEndsBeforeLastRound, disconnectForfeit],
   configCases: [
     // Válidos: normalización de generaciones, límites inferiores y superiores, clave extra ignorada.
     { ...baseConfig, generations: [2, 1, 2] },

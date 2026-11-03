@@ -30,7 +30,8 @@ public final class TypeDuelTypes {
       "fighting", "poison", "ground", "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy");
 
   /** {@code TypeDuelRoundResult['reason']}. */
-  public enum TypeDuelRoundReason { WINNER, TIMEOUT, TYPE_TIMEOUT, TYPE_FORFEIT, DISCONNECTED, INVALID_COMBINATION }
+  public enum TypeDuelRoundReason { WINNER, TIMEOUT, TYPE_TIMEOUT, TYPE_FORFEIT, DISCONNECTED, DISCONNECT_FORFEIT,
+    INVALID_COMBINATION }
 
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)

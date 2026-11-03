@@ -21,6 +21,9 @@ describe('typeDuelResultText', () => {
   it('TYPE_TIMEOUT counts the duel without points', () => {
     expect(typeDuelResultText(round({ reason: 'TYPE_TIMEOUT' }), participants, nameOf)).toEqual({ title: 'Ninguno eligió tipo', detail: 'El duelo cuenta sin puntos.' });
   });
+  it('DISCONNECT_FORFEIT names the winner and the duelist who did not come back', () => {
+    expect(typeDuelResultText(round({ reason: 'DISCONNECT_FORFEIT', winnerId: 'p1', disconnectedIds: ['p2'] }), participants, nameOf)).toEqual({ title: 'Ana gana', detail: 'Bruno se desconectó.' });
+  });
   it('DISCONNECTED names who left', () => {
     expect(typeDuelResultText(round({ reason: 'DISCONNECTED', disconnectedIds: ['p2'] }), participants, nameOf)).toEqual({ title: 'Duelo anulado', detail: 'Bruno se desconectó.' });
   });

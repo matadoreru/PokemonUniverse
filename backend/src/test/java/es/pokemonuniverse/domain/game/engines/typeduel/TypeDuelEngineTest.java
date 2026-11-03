@@ -3,6 +3,7 @@ package es.pokemonuniverse.domain.game.engines.typeduel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -13,6 +14,7 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelAction;
+import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelRoundReason;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
@@ -22,9 +24,13 @@ import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-/** Lo que las fixtures doradas no cubren: manifiesto, configuración por defecto, parseo y errores de arranque. */
+/**
+ * Lo que las fixtures doradas no cubren: manifiesto, configuración por defecto, parseo, errores de arranque y las
+ * estadísticas privadas del abandono por desconexión.
+ */
 class TypeDuelEngineTest {
 
   private final TypeDuelEngine engine = new TypeDuelEngine(GoldenManifests.of(TypeDuelEngine.ID));
@@ -110,5 +116,46 @@ class TypeDuelEngineTest {
     var result = engine.handleAction(state, duelist, new TypeDuelAction.SelectType("fire"), late);
     assertFalse(result.accepted());
     assertEquals("El tiempo ha terminado.", result.error());
+  }
+
+  private static GameContext without(GameContext context, Set<String> absent) {
+    return context.withPlayers(context.players().stream()
+        .map(player -> absent.contains(player.id()) ? new GamePlayer(player.id(), player.displayName(), false, null)
+            : player)
+        .toList());
+  }
+
+  @Test
+  void aLoneDisconnectedDuelistForfeitsToTheRival() {
+    var context = context(3);
+    var state = engine.start(engine.createInitialState(engine.defaultConfig(), context), context);
+    var rival = state.participants().getFirst();
+    var absent = state.participants().get(1);
+    var result = engine.handlePresenceChange(state, without(context, Set.of(absent)));
+    assertEquals(GamePhase.ROUND_RESULTS, result.phase());
+    assertEquals(state.completedRounds() + 1, result.completedRounds());
+    assertEquals(TypeDuelRoundReason.DISCONNECT_FORFEIT, result.lastRound().reason());
+    assertEquals(rival, result.lastRound().winnerId());
+    assertEquals(List.of(absent), result.lastRound().disconnectedIds());
+    assertEquals(5, result.scores().get(rival));
+    assertEquals(0, result.scores().get(absent));
+    assertEquals(1, result.playerStats().get(rival).duelsPlayed());
+    assertEquals(1, result.playerStats().get(rival).duelsWon());
+    assertEquals(1, result.playerStats().get(absent).duelsPlayed());
+    assertEquals(0, result.playerStats().get(absent).duelsWon());
+  }
+
+  @Test
+  void twoDisconnectedDuelistsStillCancelWithoutPoints() {
+    var context = context(3);
+    var state = engine.start(engine.createInitialState(engine.defaultConfig(), context), context);
+    var result = engine.handlePresenceChange(state, without(context, Set.copyOf(state.participants())));
+    assertEquals(TypeDuelRoundReason.DISCONNECTED, result.lastRound().reason());
+    assertNull(result.lastRound().winnerId());
+    assertEquals(state.participants(), result.lastRound().disconnectedIds());
+    for (var id : state.participants()) {
+      assertEquals(0, result.scores().get(id));
+      assertEquals(0, result.playerStats().get(id).duelsPlayed());
+    }
   }
 }
