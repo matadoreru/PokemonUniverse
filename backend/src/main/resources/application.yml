@@ -41,16 +41,13 @@ datasources:
   default:
     driver-class-name: org.postgresql.Driver
     dialect: POSTGRES
-# Flyway es el único dueño del esquema. Fuera de test migra FlywayMigrations al arrancar (BD vacía: V1__baseline.sql
-# crea el esquema completo; BD creada por Prisma sin historial: baseline en la versión 1 sin ejecutar V1) con estos
-# mismos ajustes; en test lo hace la migración automática de Micronaut (application-test.yml).
+# Flyway es el único dueño del esquema. Fuera de test migra FlywayMigrations al arrancar, con sus propios ajustes en
+# código (BD vacía: V1__baseline.sql crea el esquema completo; BD creada por Prisma sin historial: baseline en la
+# versión 1 sin ejecutar V1). La migración automática de Micronaut solo se activa en test (application-test.yml).
 flyway:
   datasources:
     default:
       enabled: false
-      baseline-on-migrate: true
-      baseline-version: 1
-      validate-on-migrate: true
 jpa:
   default:
     entity-scan:

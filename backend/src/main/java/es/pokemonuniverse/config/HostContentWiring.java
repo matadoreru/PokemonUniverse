@@ -25,8 +25,8 @@ public final class HostContentWiring {
   /**
    * Carga las cachés de todos los usuarios al arrancar, como los {@code await customCategories.load()} y
    * {@code await wouldYouRatherPrompts.load()} de Node. Con
-   * {@link StartupEvent} corre después de los beans {@code @Context} (comprobación de la URL JDBC y del esquema de
-   * Prisma) y antes de que el servidor HTTP acepte peticiones.
+   * {@link StartupEvent} corre después de los beans {@code @Context} (comprobación de la URL JDBC y migraciones
+   * Flyway) y antes de que el servidor HTTP acepte peticiones.
    *
    * <p>Solo con {@code pu.rooms.enabled=true}: las cachés existen para el {@code HostContentProvider} de las salas
    * Java. Con las salas apagadas (producción hasta 2D) no se cargan, así que {@code GET /api/categories} y

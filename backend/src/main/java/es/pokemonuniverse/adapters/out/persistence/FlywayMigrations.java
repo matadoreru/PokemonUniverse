@@ -6,6 +6,7 @@ import io.micronaut.jdbc.DataSourceResolver;
 import jakarta.annotation.PostConstruct;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 
 /**
  * Flyway es el único dueño del esquema: al arrancar migra la BD antes de que los beans de datos la usen (los que
@@ -16,7 +17,8 @@ import org.flywaydb.core.Flyway;
  *   <li>BD creada por Prisma sin {@code flyway_schema_history}: {@code baseline-on-migrate} la registra en la
  *       versión 1 sin ejecutar {@code V1} (solo actúa sobre un esquema con tablas).</li>
  * </ul>
- * En {@code test} la migración la hace Flyway de Micronaut sobre la BD vacía de Test Resources, con los mismos ajustes.
+ * En {@code test} la migración la hace Flyway de Micronaut ({@code application-test.yml}) sobre la BD vacía de Test
+ * Resources, sin baseline (no hace falta: la BD parte vacía).
  */
 @Context
 @Requires(notEnv = "test")
@@ -35,14 +37,17 @@ public class FlywayMigrations {
     migrate(dataSource);
   }
 
-  /** Mismos ajustes que {@code flyway.datasources.default} de {@code application.yml}. */
   static void migrate(DataSource dataSource) {
-    Flyway.configure()
+    configure(dataSource).load().migrate();
+  }
+
+  /** Los ajustes de producción; los tests los reutilizan (p. ej. con {@code target("1")} o más ubicaciones). */
+  static FluentConfiguration configure(DataSource dataSource) {
+    return Flyway.configure()
         .dataSource(dataSource)
         .baselineOnMigrate(true)
         .baselineVersion("1")
         .validateOnMigrate(true)
-        .load()
-        .migrate();
+        .cleanDisabled(true);
   }
 }

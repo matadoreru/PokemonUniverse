@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,7 @@ class FlywayMigrationsTest {
   @Test
   void flywaySchemaEqualsThePrismaSchema() throws Exception {
     var flyway = createDatabase();
-    FlywayMigrations.migrate(dataSource(flyway));
+    migrateToV1(dataSource(flyway));
     var prisma = createDatabase();
     applyPrismaMigrations(dataSource(prisma));
 
@@ -62,7 +63,8 @@ class FlywayMigrationsTest {
     var db = createDatabase();
     FlywayMigrations.migrate(dataSource(db));
 
-    assertEquals(List.of("1|1|baseline|SQL|true"), history(db));
+    assertEquals("1|1|baseline|SQL|true", history(db).getFirst());
+    assertTrue(history(db).stream().allMatch(r -> r.endsWith("|true")), history(db).toString());
     assertTrue(schema(db).stream().anyMatch(s -> s.startsWith("CREATE TABLE public.\"User\" (")));
   }
 
@@ -86,21 +88,39 @@ class FlywayMigrationsTest {
     applyPrismaMigrations(dataSource(db));
     var schemaBefore = schema(db);
 
-    FlywayMigrations.migrate(dataSource(db));
+    migrateToV1(dataSource(db));
 
     assertEquals(List.of("1|1|<< Flyway Baseline >>|BASELINE|true"), history(db));
     assertEquals(schemaBefore, schema(db));
   }
 
+  /**
+   * Invariante que sobrevive a las {@code V2__…} reales: una BD vacía migrada hasta la última versión y una BD de
+   * Prisma (baseline 1) migrada hasta la última quedan iguales. La sonda {@code db/testmigration/V9999__probe.sql}
+   * (solo de test) garantiza que siempre hay al menos una migración después de V1.
+   */
+  @Test
+  void freshAndPrismaDatabasesConvergeAfterLaterMigrations() throws Exception {
+    var fresh = createDatabase();
+    withProbe(dataSource(fresh)).load().migrate();
+    var prisma = createDatabase();
+    applyPrismaMigrations(dataSource(prisma));
+    withProbe(dataSource(prisma)).load().migrate();
+
+    assertEquals("9999|probe|SQL|true", lastHistoryRow(fresh));
+    assertEquals("9999|probe|SQL|true", lastHistoryRow(prisma));
+    assertEquals(String.join("\n\n", schema(fresh)), String.join("\n\n", schema(prisma)));
+  }
+
   @Test
   void schemaVersionIsTheLatestSuccessfulFlywayMigration() throws Exception {
     var fresh = createDatabase();
-    FlywayMigrations.migrate(dataSource(fresh));
+    migrateToV1(dataSource(fresh));
     assertEquals("1 baseline", reader(fresh).latestMigration());
 
     var baselined = createDatabase();
     applyPrismaMigrations(dataSource(baselined));
-    FlywayMigrations.migrate(dataSource(baselined));
+    migrateToV1(dataSource(baselined));
     assertEquals("1 baseline", reader(baselined).latestMigration());
 
     execute(dataSource(fresh), "insert into flyway_schema_history (installed_rank, version, description, type, script,"
@@ -116,6 +136,20 @@ class FlywayMigrationsTest {
     assertEquals(lastPrismaMigration(), reader(prisma).latestMigration());
 
     assertEquals(SchemaVersionReader.UNKNOWN, reader(createDatabase()).latestMigration());
+  }
+
+  /** Los ajustes de producción detenidos en V1: las comprobaciones de V1 no dependen de las {@code V2__…} futuras. */
+  private static void migrateToV1(DataSource ds) {
+    FlywayMigrations.configure(ds).target("1").load().migrate();
+  }
+
+  private static FluentConfiguration withProbe(DataSource ds) {
+    return FlywayMigrations.configure(ds).locations("classpath:db/migration", "classpath:db/testmigration");
+  }
+
+  private static String lastHistoryRow(String db) throws SQLException {
+    var last = history(db).getLast();
+    return last.substring(last.indexOf('|') + 1);
   }
 
   private static SchemaVersionReader reader(String db) {
