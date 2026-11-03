@@ -870,7 +870,10 @@ public class RoomCoordinator {
    * conectado. Exige además su temporizador pendiente, así una desconexión anterior a la partida nunca da gracia.
    */
   boolean withinPresenceGrace(LiveRoom room, RoomMember member, long now) {
-    var graceMs = livePresenceGraceMs(room);
+    return withinPresenceGrace(livePresenceGraceMs(room), member, now);
+  }
+
+  private static boolean withinPresenceGrace(@Nullable Integer graceMs, RoomMember member, long now) {
     return graceMs != null && member.presence == PresenceStatus.TEMPORARILY_DISCONNECTED
         && member.presenceGraceTimer != null && now < member.disconnectedAt + graceMs;
   }
@@ -1239,9 +1242,10 @@ public class RoomCoordinator {
 
   private GameContext context(LiveRoom room, GameCatalogSnapshot catalog) {
     long now = clock.now();
+    var graceMs = livePresenceGraceMs(room);
     var players = room.members.values().stream().map(member -> new GamePlayer(member.identity.id(),
         member.identity.displayName(),
-        member.presence == PresenceStatus.CONNECTED || withinPresenceGrace(room, member, now),
+        member.presence == PresenceStatus.CONNECTED || withinPresenceGrace(graceMs, member, now),
         member.role == MemberRole.PLAYER && member.presence != PresenceStatus.LEFT)).toList();
     return contextBuilder(catalog)
         .players(players)

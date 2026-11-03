@@ -268,6 +268,7 @@ class RoomCoordinatorTest {
     kit.time.advance(5_000);
     assertTrue(kit.manager.connect(guest("p3", "Tres"), "socket-p3-b"));
     assertNull(room.members.get("p3").presenceGraceTimer);
+    assertEquals(0, room.members.get("p3").disconnectedAt);
     select(kit, "p3", "squirtle");
     var lastRound = kit.publicGame(room, "p1").get("lastRound");
     assertNotNull(lastRound);
@@ -389,6 +390,28 @@ class RoomCoordinatorTest {
     assertNotNull(game.finishReason);
     assertNull(member.presenceGraceTimer);
     assertTrue(member.disconnectTimer != null);
+  }
+
+  @Test
+  @DisplayName("a short blip of the only non-voter never makes the skip unanimous")
+  void presenceGraceBlipKeepsTheSkipVoteOpen() {
+    var fixture = activeSkipFixture(3, 10);
+    var kit = fixture.kit();
+    var room = fixture.room();
+    var game = room.game;
+    fixture.setVote("skip-p1", true);
+    fixture.setVote("skip-p2", true);
+    kit.manager.disconnect("skip-p3", "skip-socket-3");
+    assertSame(game, room.game);
+    assertNull(game.finishReason);
+    kit.time.advance(2_000);
+    assertTrue(kit.manager.connect(guest("skip-p3", "Player 3"), "skip-socket-3b"));
+    assertSame(game, room.game);
+    assertNull(game.finishReason);
+    kit.manager.disconnect("skip-p3", "skip-socket-3b");
+    kit.time.advance(10_000);
+    assertSame(game, room.game);
+    assertNull(game.finishReason);
   }
 
   @Test

@@ -14,6 +14,7 @@ public final class Presence {
     member.identity = identity;
     member.disconnectTimer = null;
     member.presenceGraceTimer = RoomTimer.cancel(member.presenceGraceTimer);
+    member.disconnectedAt = 0;
     member.connected = true;
     member.presence = PresenceStatus.CONNECTED;
     member.connectionId = connectionId;
