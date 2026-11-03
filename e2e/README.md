@@ -126,7 +126,7 @@ ejecución hace una subida, así que más de 12 seguidas contra el mismo servido
   (`:5173`). Al backend le pasa `PORT=8080`, `MICRONAUT_ENVIRONMENTS=dev`, `RATE_LIMIT_DISABLED=true` y
   `COOKIE_SECURE=false` (su data-sync queda apagado salvo `BACKEND_DATA_SYNC_ENABLED=true` en el shell); a la web,
   `VITE_API_URL` vacío. `baseURL` es `http://localhost:5173`.
-- Un solo worker, Chromium, tema oscuro, `reducedMotion: 'reduce'`, `locale: 'es-ES'`; traza solo
+- Un solo worker, Chromium, `colorScheme: 'dark'` (la web tiene un solo tema), `reducedMotion: 'reduce'`, `locale: 'es-ES'`; traza solo
   si falla (`test-results/`, ignorado por git).
 
 **Ojo con `reuseExistingServer`**: si ya tienes `npm run dev` levantado, Playwright lo reutiliza y no
@@ -156,7 +156,6 @@ solo si es un falso positivo del medidor; cada uso se apunta en `docs/visual-rev
 - Entra con `loginAsGuest(page, uniqueName('E2E'))` (un invitado nuevo por test; nunca registres
   usuarios). Para salas: `createRoom(page)` devuelve el código y `joinRoom(page, code)` se une; para
   varios jugadores, un `browser.newContext()` por jugador.
-- `pinTheme(context, 'light')` para capturar en tema claro.
 - Localiza por rol y etiqueta (`getByRole`, `getByLabel`); `data-testid` solo si no hay otra asa.
 - `await capture(page, '<pantalla>')` guarda `screenshots/<pantalla>-<ancho>x<alto>.png`.
 

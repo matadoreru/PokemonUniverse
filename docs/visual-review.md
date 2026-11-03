@@ -3,7 +3,7 @@
 ## Propósito y cuándo se aplica
 
 La rúbrica puntúa cada pantalla **nueva o rediseñada** antes de integrarla. Mide lo que el usuario ve
-(jerarquía, legibilidad, encaje, temas, movimiento) y lo que no se ve en una captura fija
+(jerarquía, legibilidad, encaje, relieve y color, movimiento) y lo que no se ve en una captura fija
 (interacción con teclado y estados de datos). Se replica la metodología de InazumaElevenManager
 (DESIGN.md §11), no su aspecto: Pokémon Universe mantiene su diseño propio.
 
@@ -16,7 +16,7 @@ La rúbrica puntúa cada pantalla **nueva o rediseñada** antes de integrarla. M
   ```
 
   Las letras siguen el orden de la tabla: a Jerarquía, b Legibilidad, c Solo componentes del
-  sistema, d Tokens y temas, e Encaje, f Interacción, g Movimiento, h Estados de datos.
+  sistema, d Relieve y color, e Encaje, f Interacción, g Movimiento, h Estados de datos.
 
 ## Regla de integración
 
@@ -33,9 +33,9 @@ Una pantalla nueva o rediseñada nunca es línea base, y un 0 en "Solo component
 | Criterio | 0 | 1 | 2 | 3 |
 |---|---|---|---|---|
 | Jerarquía | no se sabe qué hacer primero | la acción principal existe pero compite | una acción principal clara, resto ordenado | la mirada va sola: acción principal, dato clave, resto en calma |
-| Legibilidad | texto < 12 px, cortado o sin `title` al truncar | 12 px pero abreviaturas improvisadas | 12 px, truncado con `title`, numerales tabulares donde hay cifras | además, nombres y cifras alineados y contraste AA en ambos temas |
+| Legibilidad | texto < 12 px, cortado o sin `title` al truncar | 12 px pero abreviaturas improvisadas | 12 px, truncado con `title`, numerales tabulares donde hay cifras | además, nombres y cifras alineados y contraste AA |
 | Solo componentes del sistema | botones, tarjetas o campos propios en vez de `.btn-*`, `.card`, `.field`, `.chip`… | una clase adaptada sin añadirla a `styles.css` | todo con las clases de `@layer components`, un estado nuevo documentado | además, el estado nuevo está en `styles.css` y reutilizado donde toca |
-| Tokens y temas | colores literales o solo probado en un tema | tokens pero sin revisar el tema claro | tokens (`ink`, `surface`, `berry`…) y correcto en oscuro y claro | además, los overrides de `[data-theme='light']` se usan donde el contraste lo pide |
+| Relieve y color | colores literales o sin contorno | tokens pero relieve incompleto (falta contorno o sombra) | tokens, contorno y sombra correctos | además, el color del jugador donde el sistema lo pide |
 | Encaje | scroll horizontal o desborde en algún tamaño | cabe a 1280 pero no se ha mirado a 390 ni a 1920 | cabe en 390, 1280 y 1920 sin desbordes ni solapes (`measureLayout` limpio) | además, el espacio sobrante a 1920 se aprovecha o se deja limpio a propósito |
 | Interacción | falta algún estado (hover, foco, deshabilitado, cargando) | estados presentes pero el teclado no llega a todo | hover, foco visible, deshabilitado, `aria-busy`/cargando; teclado completo; objetivos ≥ 44 px | además, foco inicial y retorno de foco correctos (diálogos, errores con `role="alert"`) |
 | Movimiento | animaciones que no sean transform/opacity o sin `prefers-reduced-motion` | solo transform/opacity pero sin reducción | dentro del presupuesto (≤ 400 ms) y con reducción en `styles.css` | además, una animación con intención (revelado, acierto) |
@@ -51,8 +51,6 @@ Una pantalla nueva o rediseñada nunca es línea base, y un 0 en "Solo component
   de forma visible. Las transiciones de color de hover/foco/pulsado de `.btn`, `.field`, etc.
   (≤ 200 ms, respuesta a una acción) son estado, no animación. Un `animate-spin` sin
   `motion-reduce:animate-none` (ni regla en `styles.css`) es "sin reducción".
-- **Tema claro**: "revisado" significa que existe una captura en claro de esa pantalla
-  (`pinTheme(context, 'light')`) y se ha mirado.
 - Sin captura a 390 ni a 1920, el Encaje no pasa de 1.
 
 ## Procedimiento
@@ -60,8 +58,8 @@ Una pantalla nueva o rediseñada nunca es línea base, y un 0 en "Solo component
 1. Ejecuta los E2E: `npm run test:e2e` (todo) o solo el spec de la pantalla, desde `e2e/`:
    `npx playwright test tests/<spec>.spec.ts`. `capture()` falla si hay scroll horizontal o si
    `measureLayout` encuentra texto < 12 px, solapes, recortes sin `title` o controles fuera de su caja.
-2. Abre las capturas de `e2e/screenshots/` de la pantalla en los tres tamaños (y en claro si la
-   pantalla cambia colores) y míralas antes de dar la tarea por hecha.
+2. Abre las capturas de `e2e/screenshots/` de la pantalla en los tres tamaños y míralas antes de
+   dar la tarea por hecha.
 3. Puntúa los ocho criterios con la tabla. Movimiento e Interacción se juzgan también leyendo
    `frontend/src/styles.css` y el código del componente (no se ven en una captura fija).
 4. Escribe la línea `Rúbrica <pantalla>: …` en el commit o PR. Si no llega a la regla de
@@ -92,7 +90,7 @@ la app).
 
 Pendientes de la línea base (ninguna pantalla llega a 19; no son cambios de esta rama).
 
-Notas actuales (a Jerarquía, b Legibilidad, c Componentes, d Tokens/temas, e Encaje, f Interacción, g Movimiento, h Estados):
+Notas actuales (a Jerarquía, b Legibilidad, c Componentes, d Relieve/color, e Encaje, f Interacción, g Movimiento, h Estados):
 
 - Portada: 3, 2, 2, 1, 3, 2, 2, 2 = 17/24
 - Acceso: 3, 2, 1, 2, 3, 1, 1, 2 = 15/24
@@ -102,8 +100,7 @@ Notas actuales (a Jerarquía, b Legibilidad, c Componentes, d Tokens/temas, e En
 
 Cambios pendientes, por pantalla y criterio:
 
-- Portada (d, h): captura en tema claro; el estado vacío sin acción propia que enseñe a jugar.
-- Portada, entrar en partida, lobby y juego (d): capturas en tema claro.
+- Portada (h): el estado vacío sin acción propia que enseñe a jugar.
 - Juego (e): capturas a 390 y 1920 (bucle `SIZES` en `sala.spec.ts`).
 - Lobby (d): `.experimental-badge` usa el literal `#c92a42`; pasarlo a un token (p. ej. `bg-berry`).
 - Acceso (f, c): pestañas de 40 px (`min-h-10`); subir a 44 px con flechas, `aria-controls` y tabpanel (reutilizar `.lobby-tab`).

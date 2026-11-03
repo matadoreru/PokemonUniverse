@@ -1,5 +1,5 @@
 import { expect, test as base, type Browser, type BrowserContext, type Page } from '@playwright/test';
-import { capture, collectErrors, createRoom, joinRoom, loginAsGuest, pinTheme, saltarIntro, SIZES, uniqueName, type Theme } from '../src/helpers.js';
+import { capture, collectErrors, createRoom, joinRoom, loginAsGuest, saltarIntro, SIZES, uniqueName } from '../src/helpers.js';
 
 interface Jugador {
   context: BrowserContext;
@@ -135,8 +135,7 @@ async function salaSinConexion(page: Page, perdida: boolean): Promise<void> {
   }, perdida);
 }
 
-async function avisoDeConexion(page: Page, theme: Theme, perdida = false): Promise<void> {
-  if (theme === 'light') await pinTheme(page.context(), 'light');
+async function avisoDeConexion(page: Page, perdida = false): Promise<void> {
   const errors = collectErrors(page);
   await loginAsGuest(page, uniqueName('E2E'));
   await salaSinConexion(page, perdida);
@@ -147,29 +146,21 @@ async function avisoDeConexion(page: Page, theme: Theme, perdida = false): Promi
   const marca = await page.locator('header > div').first().boundingBox();
   const caja = await aviso.locator('.connection-notice').boundingBox();
   expect(marca && caja && caja.y >= marca.y + marca.height - 1, 'el aviso queda bajo la fila de marca').toBe(true);
-  await capture(page, `sala-${perdida ? 'conexion-perdida' : 'conectando'}${theme === 'light' ? '-claro' : ''}`);
+  await capture(page, `sala-${perdida ? 'conexion-perdida' : 'conectando'}`);
   expect(errors).toEqual([]);
 }
 
 for (const { w, h } of SIZES) {
   test(`aviso de conexión de la sala a ${w}×${h}`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: h });
-    await avisoDeConexion(page, 'dark');
+    await avisoDeConexion(page);
   });
 
   test(`aviso de conexión perdida a ${w}×${h}`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: h });
-    await avisoDeConexion(page, 'dark', true);
+    await avisoDeConexion(page, true);
   });
 }
-
-test('aviso de conexión de la sala en tema claro a 1280×720', async ({ page }) => {
-  await avisoDeConexion(page, 'light');
-});
-
-test('aviso de conexión perdida en tema claro a 1280×720', async ({ page }) => {
-  await avisoDeConexion(page, 'light', true);
-});
 
 test('una entrada normal en la sala no muestra el aviso de conexión', async ({ page }) => {
   const errors = collectErrors(page);

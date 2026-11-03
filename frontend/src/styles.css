@@ -6,57 +6,47 @@
 
 :root {
   color-scheme: dark;
-  --color-ink: 232 237 247;
-  --color-cream: 9 13 24;
-  --color-surface: 20 27 43;
-  --color-surface-raised: 27 36 54;
-  --color-night: 5 8 17;
-  --color-berry: 255 92 130;
-  --color-electric: 240 191 84;
-  --color-aqua: 82 199 232;
-  --color-leaf: 98 201 149;
-  --color-focus: 82 199 232;
+  /*
+   * Alias de Tailwind reasignados por papel (spec §11) mientras dura la migración: tripletes RGB del token DS
+   * para que `rgb(var(--color-x) / <alfa>)` siga funcionando. Se borran en F9.
+   */
+  --color-ink: 255 255 255; /* --white */
+  --color-cream: 11 22 64; /* --navy-2 */
+  --color-surface: 19 35 92; /* --navy */
+  --color-surface-raised: 27 47 120; /* --navy-3 */
+  --color-night: 6 11 34; /* --band */
+  --color-berry: 210 47 62; /* --red-text */
+  --color-electric: 255 210 63; /* --yellow */
+  --color-aqua: 55 182 255; /* --info */
+  --color-leaf: 57 181 74; /* --ok */
+  --color-focus: 255 210 63; /* --yellow */
   --shadow-card: 0 1px 2px rgb(0 0 0 / .22);
+  /* Escena de fondo (§3.6): patrón tenue de Poké Ball y estrellas sobre un cielo de --blue-d a --navy-2. */
+  --scene-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.06' stroke-width='3'%3E%3Ccircle cx='40' cy='40' r='22'/%3E%3Cpath d='M18 40h15m14 0h15'/%3E%3Ccircle cx='40' cy='40' r='7'/%3E%3Ccircle cx='120' cy='120' r='22'/%3E%3Cpath d='M98 120h15m14 0h15'/%3E%3Ccircle cx='120' cy='120' r='7'/%3E%3C/g%3E%3Cg fill='%23fff' fill-opacity='.12'%3E%3Ccircle cx='118' cy='30' r='1.5'/%3E%3Ccircle cx='30' cy='112' r='1.2'/%3E%3Ccircle cx='80' cy='78' r='1'/%3E%3Ccircle cx='148' cy='72' r='1.2'/%3E%3C/g%3E%3C/svg%3E");
   color: rgb(var(--color-ink));
-  background: rgb(var(--color-cream));
+  background: var(--band);
   font-family: Nunito, system-ui, sans-serif;
   font-synthesis: none;
 }
 
-:root[data-theme='light'] {
-  color-scheme: light;
-  --color-ink: 24 33 49;
-  --color-cream: 244 247 251;
-  --color-surface: 255 255 255;
-  --color-surface-raised: 235 240 247;
-  --color-night: 9 13 24;
-  --color-berry: 226 62 101;
-  --color-electric: 232 174 52;
-  --color-aqua: 43 155 187;
-  --color-leaf: 47 155 105;
-  --color-focus: 12 111 141;
-  --shadow-card: 0 1px 3px rgb(24 33 49 / .12);
-}
-
-* { box-sizing: border-box; scrollbar-color: rgb(var(--color-ink) / .28) rgb(var(--color-surface-raised)); scrollbar-width: thin; }
-html { min-width: 320px; overflow-x: clip; background: rgb(var(--color-cream)); }
-body { margin: 0; min-width: 320px; min-height: 100vh; overflow-x: clip; background: rgb(var(--color-cream)); }
+/* Barra de desplazamiento amarilla sobre azul noche (§3.7). */
+* { box-sizing: border-box; scrollbar-color: var(--yellow) var(--navy-2); scrollbar-width: thin; }
+html { min-width: 320px; overflow-x: clip; }
+/* La escena es fija y sin animación; los paneles van encima y son opacos. */
+body { margin: 0; min-width: 320px; min-height: 100vh; overflow-x: clip; background-color: var(--band); background-image: var(--scene-pattern), linear-gradient(var(--blue-d), var(--navy-2)); background-attachment: fixed; }
 button, input, select, textarea { min-width: 0; font: inherit; caret-color: rgb(var(--color-aqua)); }
 button { -webkit-tap-highlight-color: transparent; }
 img, video, canvas { max-width: 100%; }
 fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
 h1, h2, h3 { text-wrap: balance; }
 p { text-wrap: pretty; }
-button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid rgb(var(--color-focus)); outline-offset: 3px; }
-::selection { color: rgb(var(--color-night)); background: rgb(var(--color-aqua)); }
+/* Foco visible siempre: anillo de 3 px con 2 px de separación; sobre amarillo, blanco. */
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.btn-secondary:focus-visible { outline-color: var(--focus-ring-on-yellow); }
+::selection { color: var(--navy-2); background: var(--yellow); }
 ::-webkit-scrollbar { width: .65rem; height: .65rem; }
-::-webkit-scrollbar-track { background: rgb(var(--color-surface-raised)); }
-::-webkit-scrollbar-thumb { border: 2px solid rgb(var(--color-surface-raised)); border-radius: 999px; background: rgb(var(--color-ink) / .28); }
-
-:root[data-theme='light'] .text-aqua { color: rgb(12 111 141); }
-:root[data-theme='light'] .text-berry { color: rgb(188 39 75); }
-:root[data-theme='light'] .text-electric { color: rgb(139 91 0); }
-:root[data-theme='light'] .text-leaf { color: rgb(31 123 79); }
+::-webkit-scrollbar-track { background: var(--navy-2); }
+::-webkit-scrollbar-thumb { border: 2px solid var(--navy-2); border-radius: 999px; background: var(--yellow); }
 
 @layer components {
   .page-shell { @apply mx-auto w-full max-w-[96rem] px-3 py-4 sm:px-5 sm:py-6 lg:px-8; }
@@ -103,7 +93,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .modal-dialog { @apply m-auto max-h-[calc(100dvh-2rem)] w-[min(42rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-ink/10 bg-surface p-0 text-ink shadow-card; }
 }
 
-/* Insignia de tipo Pokémon: borde y fondo con el token del tipo (`--type-*`), texto con `ink`. */
+/* Insignia de tipo Pokémon: borde y fondo con el token del tipo (`--type-*`), texto con `ink`.
+   Los tipos de tinta blanca llevan un anillo blanco para despegarse del azul noche. */
 .type-badge { border-color: rgb(var(--type-rgb) / .5); background-color: rgb(var(--type-rgb) / .12); }
 .type-badge-icon { background-color: rgb(var(--type-rgb) / .21); }
 .type-badge-normal { --type-rgb: var(--type-normal-rgb); }
@@ -112,16 +103,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .type-badge-electric { --type-rgb: var(--type-electric-rgb); }
 .type-badge-grass { --type-rgb: var(--type-grass-rgb); }
 .type-badge-ice { --type-rgb: var(--type-ice-rgb); }
-.type-badge-fighting { --type-rgb: var(--type-fighting-rgb); }
-.type-badge-poison { --type-rgb: var(--type-poison-rgb); }
+.type-badge-fighting { --type-rgb: var(--type-fighting-rgb); box-shadow: 0 0 0 2px var(--white); }
+.type-badge-poison { --type-rgb: var(--type-poison-rgb); box-shadow: 0 0 0 2px var(--white); }
 .type-badge-ground { --type-rgb: var(--type-ground-rgb); }
 .type-badge-flying { --type-rgb: var(--type-flying-rgb); }
 .type-badge-psychic { --type-rgb: var(--type-psychic-rgb); }
 .type-badge-bug { --type-rgb: var(--type-bug-rgb); }
 .type-badge-rock { --type-rgb: var(--type-rock-rgb); }
-.type-badge-ghost { --type-rgb: var(--type-ghost-rgb); }
-.type-badge-dragon { --type-rgb: var(--type-dragon-rgb); }
-.type-badge-dark { --type-rgb: var(--type-dark-rgb); }
+.type-badge-ghost { --type-rgb: var(--type-ghost-rgb); box-shadow: 0 0 0 2px var(--white); }
+.type-badge-dragon { --type-rgb: var(--type-dragon-rgb); box-shadow: 0 0 0 2px var(--white); }
+.type-badge-dark { --type-rgb: var(--type-dark-rgb); box-shadow: 0 0 0 2px var(--white); }
 .type-badge-steel { --type-rgb: var(--type-steel-rgb); }
 .type-badge-fairy { --type-rgb: var(--type-fairy-rgb); }
 
@@ -222,10 +213,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .reveal-cut-in-berry, .score-pop-berry { --cut-in-tone: var(--color-berry); --cut-in-text: var(--color-berry); }
 .reveal-cut-in-aqua, .score-pop-aqua { --cut-in-tone: var(--color-aqua); --cut-in-text: var(--color-aqua); }
 .reveal-cut-in-leaf, .score-pop-leaf { --cut-in-tone: var(--color-leaf); --cut-in-text: var(--color-leaf); }
-:root[data-theme='light'] .reveal-cut-in-electric, :root[data-theme='light'] .score-pop-electric { --cut-in-text: 139 91 0; }
-:root[data-theme='light'] .reveal-cut-in-berry, :root[data-theme='light'] .score-pop-berry { --cut-in-text: 188 39 75; }
-:root[data-theme='light'] .reveal-cut-in-aqua, :root[data-theme='light'] .score-pop-aqua { --cut-in-text: 12 111 141; }
-:root[data-theme='light'] .reveal-cut-in-leaf, :root[data-theme='light'] .score-pop-leaf { --cut-in-text: 31 123 79; }
 .reveal-cut-in-enter { animation: reveal-cut-in-enter 280ms cubic-bezier(.16,1,.3,1) both; }
 @keyframes reveal-cut-in-enter { from { opacity: 0; transform: translateX(-8%); } to { opacity: 1; transform: translateX(0); } }
 /* Puntos flotantes: sube y se desvanece; el cambio de marcador se anuncia en el texto de la pantalla. */

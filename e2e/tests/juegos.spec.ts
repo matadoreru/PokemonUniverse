@@ -160,24 +160,14 @@ for (const manifest of registry) {
 /**
  * Capturas de revisión de una pantalla a los tres tamaños, con `measureLayout` vacío en todos. Si se pasa `sigue`,
  * después de cada captura se comprueba que sigue visible: una fase que avanza sola no debe fotografiar la siguiente.
- * Con `claro`, añade `<nombre>-claro` (a 1280×720 o al tamaño dado) cambiando el tema en caliente (como hace el selector de tema).
  * Con `completa`, el PNG es de página completa (para paneles más altos que la vista; el medidor ya mide toda la página).
  */
-async function capturarTamanos(page: Page, nombre: string, { sigue, claro = false, completa = false }: { sigue?: Locator; claro?: boolean | { w: number; h: number }; completa?: boolean } = {}): Promise<void> {
+async function capturarTamanos(page: Page, nombre: string, { sigue, completa = false }: { sigue?: Locator; completa?: boolean } = {}): Promise<void> {
   const comprobar = async () => { if (sigue) await expect(sigue, `${nombre}: la fase sigue en pantalla`).toBeVisible({ timeout: 1_000 }); };
   for (const { w, h } of SIZES) {
     await page.setViewportSize({ width: w, height: h });
     await page.waitForFunction(() => [...document.images].every((img) => img.complete), undefined, { timeout: 3_000 }).catch(() => undefined);
     const { id, problems } = await layoutProblems(page, nombre, true, completa);
-    await comprobar();
-    expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
-  }
-  if (claro) {
-    const { w, h } = claro === true ? SIZES[0] : claro;
-    await page.setViewportSize({ width: w, height: h });
-    const previo = await page.evaluate(() => { const actual = document.documentElement.dataset.theme ?? 'dark'; document.documentElement.dataset.theme = 'light'; return actual; });
-    const { id, problems } = await layoutProblems(page, `${nombre}-claro`, true, completa);
-    await page.evaluate((tema) => { document.documentElement.dataset.theme = tema; }, previo);
     await comprobar();
     expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
   }
@@ -221,7 +211,7 @@ test('type-duel: resultado con tipos', async ({ browser }) => {
     // Los dos eligieron Fuego: «Monotipo» en vez de repetir el badge, y el título no repite los nombres.
     await expect(versus.getByText('Monotipo', { exact: true })).toBeVisible();
     await expect(host.page.getByRole('heading', { level: 1, name: 'Duelo de tipos' })).toBeVisible();
-    await capturarTamanos(host.page, 'juego-type-duel-vs', { sigue: versus, claro: true });
+    await capturarTamanos(host.page, 'juego-type-duel-vs', { sigue: versus });
     expect(await animacionDe(vs), 'VS con reducción de movimiento').toBe('none');
     await conMovimiento(host.page);
     expect(await animacionDe(vs), 'VS con movimiento').toBe('motion-bump');
@@ -248,7 +238,7 @@ test('type-duel: resultado con tipos', async ({ browser }) => {
     await expect(titulo).toBeVisible({ timeout: 30_000 });
     const tarjeta = host.page.locator('.card').filter({ hasText: 'Resultado del duelo' });
     await expect(tarjeta.locator('[aria-label="Tipo Fuego"]')).toBeVisible();
-    await capturarTamanos(host.page, 'juego-type-duel-resultado', { sigue: titulo, claro: true });
+    await capturarTamanos(host.page, 'juego-type-duel-resultado', { sigue: titulo });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -276,7 +266,7 @@ test('pokemon-impostor: votación con Saltar', async ({ browser }) => {
 
     const saltar = (page: Page) => page.getByRole('button', { name: 'Saltar', exact: true });
     for (const page of pages) await expect(saltar(page)).toBeVisible({ timeout: 15_000 });
-    await capturarTamanos(host.page, 'juego-pokemon-impostor-votacion', { sigue: saltar(host.page), claro: true });
+    await capturarTamanos(host.page, 'juego-pokemon-impostor-votacion', { sigue: saltar(host.page) });
 
     for (const page of pages) {
       await saltar(page).click();
@@ -327,18 +317,14 @@ test.describe('pokemon-impostor: eliminación', () => {
       await expect(banda(host.page)).toHaveCount(0);
       await expect(host.page.getByText(/era (impostor|inocente|IMPOSTOR|INOCENTE)/)).toHaveCount(0);
 
-      // Cada página captura un tamaño a la vez, así las cuatro caben mientras se ve el cut-in (3,2 s de 4 s).
+      // Cada página captura un tamaño a la vez, así las tres caben mientras se ve el cut-in (3,2 s de 4 s).
       const nombre = 'juego-pokemon-impostor-eliminacion';
       const capturas = [
-        { page: pages[0]!, w: 1280, h: 720, claro: false },
-        { page: pages[1]!, w: 1920, h: 1080, claro: false },
-        { page: pages[2]!, w: 390, h: 844, claro: false },
-        { page: pages[3]!, w: 1280, h: 720, claro: true },
+        { page: pages[0]!, w: 1280, h: 720 },
+        { page: pages[1]!, w: 1920, h: 1080 },
+        { page: pages[2]!, w: 390, h: 844 },
       ];
-      for (const { page, w, h, claro } of capturas) {
-        await page.setViewportSize({ width: w, height: h });
-        if (claro) await page.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
-      }
+      for (const { page, w, h } of capturas) await page.setViewportSize({ width: w, height: h });
       // El host ve el movimiento: al empezar la fase el rol no está ni en la banda ni en la tarjeta (ni su color), y llega a 1 s.
       await conMovimiento(host.page);
       await expect(banda(host.page)).toBeVisible({ timeout: 10_000 });
@@ -353,7 +339,7 @@ test.describe('pokemon-impostor: eliminación', () => {
         await expect(banda(page)).toContainText(expulsado.name);
         await expect(banda(page)).toContainText('…era');
       }
-      const medidas = await Promise.all(capturas.map(({ page, claro }) => layoutProblems(page, claro ? `${nombre}-claro` : nombre, true)));
+      const medidas = await Promise.all(capturas.map(({ page }) => layoutProblems(page, nombre, true)));
       for (const page of pages) await expect(banda(page), 'el cut-in sigue a la vista tras la captura').toBeVisible({ timeout: 500 });
       for (const { id, problems } of medidas) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
 
@@ -374,8 +360,7 @@ test.describe('pokemon-impostor: eliminación', () => {
       await expect(banda(reducida)).toBeHidden({ timeout: 4_000 });
       await expect(reducida.getByRole('heading', { name: 'Jugador eliminado' })).toBeVisible();
       await host.page.emulateMedia({ reducedMotion: 'reduce' });
-      for (const { page, w, h, claro } of capturas) {
-        if (claro) await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
+      for (const { page, w, h } of capturas) {
         if (w !== 1280 || h !== 720) await page.setViewportSize({ width: 1280, height: 720 });
       }
       for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
@@ -404,8 +389,7 @@ test('pokemon-impostor: panel de configuración', async ({ browser }) => {
     await expect(host.page.getByRole('button', { name: 'Empezar partida' })).toBeDisabled();
     await impostores.blur();
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    // En claro a 1920×1080, donde caben el panel y el aviso de la columna de la sala.
-    await capturarTamanos(host.page, 'lobby-config-pokemon-impostor', { claro: { w: 1920, h: 1080 } });
+    await capturarTamanos(host.page, 'lobby-config-pokemon-impostor');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -434,7 +418,7 @@ test('lobby: rotación con Impostor omitido por paridad', async ({ browser }) =>
     // Pulsar el deslizador desplaza la página y la cabecera fija taparía el contenido: se captura desde arriba.
     await impostores.blur();
     await page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(page, 'lobby-rotacion-impostor-omitido', { claro: { w: 1920, h: 1080 } });
+    await capturarTamanos(page, 'lobby-rotacion-impostor-omitido');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -472,7 +456,7 @@ test('lobby: cómo se juega', async ({ browser }) => {
     expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe('hidden');
     // Abrir desplaza la página hasta la tarjeta y la cabecera fija pisaría el lobby de fondo: se captura desde arriba.
     await page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(page, 'lobby-como-se-juega', { sigue: dialogo, claro: true });
+    await capturarTamanos(page, 'lobby-como-se-juega', { sigue: dialogo });
     await page.keyboard.press('Escape');
     await expect(dialogo).toBeHidden();
     await expect(abrir).toBeFocused();
@@ -500,7 +484,7 @@ test('lobby: rotación', async ({ browser }) => {
     await expect(buscar).toHaveValue('');
     await expect(page.getByRole('region', { name: 'Juegos de la rotación' }).locator('article').first()).toBeVisible();
     await page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(page, 'lobby-rotacion', { claro: true, completa: true });
+    await capturarTamanos(page, 'lobby-rotacion', { completa: true });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -546,10 +530,10 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     const barras = (page: Page) => page.getByTestId('higher-lower-bars');
     await expect(barras(host.page)).toHaveCount(0);
     await expect(host.page.locator('article.card').nth(1).getByText('???', { exact: true })).toBeVisible();
-    await capturarTamanos(host.page, 'juego-higher-lower', { sigue: mayor(host.page), claro: true });
+    await capturarTamanos(host.page, 'juego-higher-lower', { sigue: mayor(host.page) });
 
     // Todos responden: la ronda se revela en cuanto contesta el último y el revelado dura 3 s. Para que quepan los
-    // tres tamaños y el claro, cada página se fija a un tamaño antes de la última respuesta y se capturan a la vez.
+    // tres tamaños, cada página se fija a un tamaño antes de la última respuesta y se capturan a la vez.
     const capturas = [
       { page: host.page, w: SIZES[0].w, h: SIZES[0].h },
       { page: invitados[0]!.page, w: SIZES[1].w, h: SIZES[1].h },
@@ -588,16 +572,9 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     await expect(host.page.locator('[data-outcome="miss"]')).toHaveText(['✗ Fallo', '✗ Fallo']);
     await expect(host.page.locator('p', { hasText: /Racha 1( · \+\d+ rapidez)?$/ })).toHaveCount(1);
     const nombre = 'juego-higher-lower-revelacion';
-    const medidas = await Promise.all(capturas.map(async ({ page }) => {
-      const oscuro = await layoutProblems(page, nombre, true);
-      if (page !== host.page) return [oscuro];
-      await page.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
-      const claro = await layoutProblems(page, `${nombre}-claro`, true);
-      await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
-      return [oscuro, claro];
-    }));
+    const medidas = await Promise.all(capturas.map(({ page }) => layoutProblems(page, nombre, true)));
     for (const { page } of capturas) await expect(revelado(page), 'el revelado sigue en pantalla tras la captura').toBeVisible({ timeout: 500 });
-    for (const { id, problems } of medidas.flat()) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
+    for (const { id, problems } of medidas) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     const vistos = await Promise.all(jugadores.map(({ page }) => page.evaluate(() => (window as unknown as { scorePopVisto?: boolean }).scorePopVisto === true)));
     expect(vistos.filter(Boolean), 'el «+N» sale solo a quien acierta').toHaveLength(1);
     for (const { page } of capturas) await page.setViewportSize({ width: 1280, height: 720 });
@@ -607,7 +584,7 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     // Plurales de las estadísticas: nunca «1 aciertos» ni «1 iguales».
     await expect(host.page.getByText(/\d+ aciertos? · \d+ igual(es)? · mejor racha/).first()).toBeVisible();
     await expect(host.page.getByText(/(^|\D)1 (aciertos|iguales)/)).toHaveCount(0);
-    await capturarTamanos(host.page, 'juego-higher-lower-clasificacion', { claro: true });
+    await capturarTamanos(host.page, 'juego-higher-lower-clasificacion');
     const delatoras = imagenes.filter((url) => /githubusercontent|\/sprites\/pokemon\/|\/\d+\.(png|gif|webp|svg)(\?|$)|\/pokemon\/\d+(\/|$)/.test(url));
     expect(delatoras, 'ninguna imagen de la partida delata el número de Pokédex').toEqual([]);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
@@ -635,7 +612,7 @@ test('pokedex-distance: elección de los rivales oculta y panel de visibilidad',
     // Desde arriba, como el resto de capturas del lobby: con la página desplazada la cabecera fija solapa las pestañas.
     await host.page.evaluate(() => window.scrollTo(0, 0));
     // Página completa: a 390×844 el grupo «Elecciones de los rivales» queda bajo las generaciones.
-    await capturarTamanos(host.page, 'lobby-config-pokedex-distance', { claro: { w: 1920, h: 1080 }, completa: true });
+    await capturarTamanos(host.page, 'lobby-config-pokedex-distance', { completa: true });
     await ocultas.click();
     await expect(ocultas).toHaveAttribute('aria-pressed', 'true');
     await expect(aviso).toHaveCount(0);
@@ -655,7 +632,7 @@ test('pokedex-distance: elección de los rivales oculta y panel de visibilidad',
     await expect(host.page.getByText(/→ Pikachu/)).toHaveCount(0);
     await expect(host.page.getByRole('heading', { name: 'En la ronda' })).toBeVisible();
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'juego-pokedex-distance-oculta', { sigue: yaHaElegido, claro: true });
+    await capturarTamanos(host.page, 'juego-pokedex-distance-oculta', { sigue: yaHaElegido });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -724,7 +701,7 @@ test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
     }
     const enLaRonda = host.page.getByRole('heading', { name: 'En la ronda' });
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'juego-pokedex-distance-ronda-oculta', { sigue: enLaRonda, claro: true });
+    await capturarTamanos(host.page, 'juego-pokedex-distance-ronda-oculta', { sigue: enLaRonda });
 
     // El tercero recarga: la app le ofrece «Volver a la sala» y vuelve al buscador antes de que venza la gracia de 8 s,
     // con la ronda aún abierta.
@@ -759,7 +736,7 @@ test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
     expect(await animacionDe(marcadores.first()), 'marcador con movimiento').toBe('motion-enter-up');
     await host.page.emulateMedia({ reducedMotion: 'reduce' });
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'juego-pokedex-distance-revelacion', { sigue: regla, claro: true });
+    await capturarTamanos(host.page, 'juego-pokedex-distance-revelacion', { sigue: regla });
     expect(antiguas, 'peticiones a /api/pokemon').toEqual([]);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
@@ -775,7 +752,7 @@ test('pokedex-distance: acierto exacto con cut-in', async ({ browser }) => {
     const [invitado] = invitados as [Jugador];
     await seleccionarJuego(host.page, 'Pokédex Distance');
     // 60 s por ronda: el reloj del host se detiene, pero el plazo del servidor sigue y el invitado no elige; así la
-    // ronda no cierra (y se lleva la banda) mientras se capturan los tres tamaños y el claro.
+    // ronda no cierra (y se lleva la banda) mientras se capturan los tres tamaños.
     await host.page.getByRole('tab', { name: 'Configuración' }).click();
     const tiempo = host.page.getByRole('slider', { name: 'Tiempo por ronda' });
     await tiempo.focus();
@@ -800,12 +777,12 @@ test('pokedex-distance: acierto exacto con cut-in', async ({ browser }) => {
     const banda = host.page.locator('.reveal-cut-in[role="status"]');
     await expect(banda).toContainText('¡Acierto exacto!', { timeout: 5_000 });
     // Se detiene un poco por delante del reloj de la página (detenerlo en el pasado falla) y se captura a los tres
-    // tamaños y en claro con la banda quieta.
+    // tamaños con la banda quieta.
     await host.page.clock.pauseAt(await host.page.evaluate(() => Date.now() + 100));
     try {
       await expect(banda).toContainText(`#${String(numero).padStart(3, '0')}`);
       await host.page.evaluate(() => window.scrollTo(0, 0));
-      await capturarTamanos(host.page, 'juego-pokedex-distance-acierto-exacto', { sigue: banda, claro: true });
+      await capturarTamanos(host.page, 'juego-pokedex-distance-acierto-exacto', { sigue: banda });
     } finally {
       await host.page.clock.resume();
     }
@@ -824,7 +801,7 @@ test('pokedex-distance: buscador sin coincidencias', async ({ browser }) => {
     const { host, invitados } = sala;
     const [invitado] = invitados as [Jugador];
     await seleccionarJuego(host.page, 'Pokédex Distance');
-    // 60 s por ronda: caben las capturas a los tres tamaños y en claro.
+    // 60 s por ronda: caben las capturas a los tres tamaños.
     await host.page.getByRole('tab', { name: 'Configuración' }).click();
     const tiempo = host.page.getByRole('slider', { name: 'Tiempo por ronda' });
     await tiempo.focus();
@@ -852,7 +829,7 @@ test('pokedex-distance: buscador sin coincidencias', async ({ browser }) => {
     await expect(vacio).toBeVisible({ timeout: 10_000 });
     const borrar = host.page.getByRole('button', { name: 'Borrar búsqueda' });
     await expect(borrar).toBeVisible();
-    await capturarTamanos(host.page, 'juego-buscador-vacio', { sigue: vacio, claro: true });
+    await capturarTamanos(host.page, 'juego-buscador-vacio', { sigue: vacio });
     await borrar.click();
     await expect(buscador).toHaveValue('');
     await expect(buscador).toBeFocused();
@@ -860,7 +837,7 @@ test('pokedex-distance: buscador sin coincidencias', async ({ browser }) => {
 
     const alerta = invitado.page.getByRole('alert').filter({ hasText: 'No se pudo cargar el buscador de Pokémon.' });
     await expect(alerta).toBeVisible({ timeout: 20_000 });
-    await capturarTamanos(invitado.page, 'juego-buscador-error', { sigue: alerta, claro: true });
+    await capturarTamanos(invitado.page, 'juego-buscador-error', { sigue: alerta });
     bloqueado = false;
     await alerta.getByRole('button', { name: 'Reintentar' }).click();
     await expect(alerta).toHaveCount(0, { timeout: 10_000 });
@@ -954,7 +931,7 @@ test('pokedex-distance: empate forzado tras tres desempates', async ({ browser }
     await host.page.setViewportSize({ width: 390, height: 844 });
     expect(await host.page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'sin scroll horizontal de la página a 390').toBe(true);
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'juego-pokedex-distance-resultados', { sigue: tabla, claro: true, completa: true });
+    await capturarTamanos(host.page, 'juego-pokedex-distance-resultados', { sigue: tabla, completa: true });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -993,7 +970,7 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     for (const { page } of jugadores) await expect(votantes(page)).toHaveCount(0);
     await expect(invitado.page.getByText('Votos al revelar')).toBeVisible();
     await invitado.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(invitado.page, 'juego-shiny-vote-votos-al-revelar', { sigue: invitado.page.getByRole('button', { name: 'Confirmar voto' }), claro: true });
+    await capturarTamanos(invitado.page, 'juego-shiny-vote-votos-al-revelar', { sigue: invitado.page.getByRole('button', { name: 'Confirmar voto' }) });
 
     // Antes de revelar nadie ha pedido el sprite normal: daría la respuesta.
     expect(normales).toEqual([]);
@@ -1030,7 +1007,7 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     await invitado.page.setViewportSize({ width: 1280, height: 720 });
     await invitado.page.evaluate(() => window.scrollTo(0, 0));
     // Página completa: la franja «Antes / después» queda bajo la rejilla en móvil y en la columna lateral en lg.
-    await capturarTamanos(invitado.page, 'juego-shiny-vote-revelacion', { sigue: franja(invitado.page), claro: true, completa: true });
+    await capturarTamanos(invitado.page, 'juego-shiny-vote-revelacion', { sigue: franja(invitado.page), completa: true });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -1053,7 +1030,7 @@ test('higher-lower: panel de visibilidad', async ({ browser }) => {
     // El grupo de visibilidad queda bajo las categorías y la dificultad: captura de página completa desde arriba (con la
     // página desplazada, la cabecera fija taparía las categorías y el medidor lo cuenta como solape).
     await page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(page, 'lobby-config-higher-lower', { claro: { w: 1920, h: 1080 }, completa: true });
+    await capturarTamanos(page, 'lobby-config-higher-lower', { completa: true });
 
     await enDirecto.click();
     await expect(enDirecto).toHaveAttribute('aria-pressed', 'true');
@@ -1231,7 +1208,7 @@ test('learnset-guess: marcador en vivo', async ({ browser }) => {
     await primero.page.emulateMedia({ reducedMotion: 'reduce' });
     await primero.page.getByRole('textbox', { name: 'Buscar Pokémon' }).blur();
     await primero.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(primero.page, 'juego-learnset-guess', { sigue: enJuego, claro: true });
+    await capturarTamanos(primero.page, 'juego-learnset-guess', { sigue: enJuego });
 
     // Si alguien se va sin acertar, la revelación dice «Sin conexión» y no «No acertó».
     await segundo.context.close();
@@ -1272,7 +1249,7 @@ test('intro: los pasos antes de la primera ronda', async ({ browser }) => {
         await expect(objetivo, `${w}×${h}`).toBeInViewport({ ratio: 1 });
       }
     }
-    await capturarTamanos(host.page, 'juego-intro', { sigue: intro, claro: true });
+    await capturarTamanos(host.page, 'juego-intro', { sigue: intro });
 
     // Uno pulsa «Empezar ya»: él espera al resto y los demás ven el recuento.
     const saltar = empezar;

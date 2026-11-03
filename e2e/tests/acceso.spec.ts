@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { capture, collectErrors, loginAsGuest, pinTheme, SIZES, uniqueName } from '../src/helpers.js';
+import { capture, collectErrors, loginAsGuest, SIZES, uniqueName } from '../src/helpers.js';
 
 for (const { w, h } of SIZES) {
   test(`acceso a ${w}×${h}`, async ({ page }) => {
@@ -41,13 +41,3 @@ for (const { w, h } of SIZES) {
     expect(errors).toEqual([]);
   });
 }
-
-test('acceso en tema claro a 1280×720', async ({ page, context }) => {
-  const errors = collectErrors(page);
-  await pinTheme(context, 'light');
-  await page.setViewportSize({ width: 1280, height: 720 });
-  await page.goto('/auth');
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await capture(page, 'acceso-entrar-claro');
-  expect(errors).toEqual([]);
-});

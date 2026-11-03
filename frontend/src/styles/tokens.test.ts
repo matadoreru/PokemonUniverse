@@ -1,15 +1,20 @@
+/// <reference types="node" />
 /**
  * Tokens (spec Arcade DS §3): el espejo tokens.ts coincide con tokens.css, las parejas de texto
  * cumplen AA y las capas están ordenadas.
  */
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { bestInk, colors, contrast, cssName, fontSizes, layers, typeColors, typeInk, type PokemonType } from './tokens';
 
-const here = path.dirname(new URL(import.meta.url).pathname);
+const here = path.dirname(fileURLToPath(import.meta.url));
 const css = readFileSync(path.join(here, 'tokens.css'), 'utf8');
-const rootBlock = css.slice(css.indexOf(':root {'), css.indexOf('/* Reducción de movimiento'));
+const rootStart = css.indexOf(':root {');
+// El bloque `:root` acaba en la primera llave de cierre a principio de línea.
+const rootBlock = css.slice(rootStart, css.indexOf('\n}', rootStart));
+const styles = readFileSync(path.join(here, '..', 'styles.css'), 'utf8');
 
 function cssHex(name: string): string {
   const m = rootBlock.match(new RegExp(`^\\s*${name}:\\s*(#[0-9a-fA-F]{6});`, 'm'));
@@ -98,5 +103,17 @@ describe('capas (§3.5)', () => {
   });
   it('cada valor coincide con su --z-* del CSS', () => {
     for (const [k, v] of Object.entries(layers)) expect(rootBlock, k).toMatch(new RegExp(`--z-${k}:\\s*${v};`));
+  });
+});
+
+describe('insignias de tipo', () => {
+  it('tipos con tinta blanca llevan anillo', () => {
+    const blancos = tipos.filter((t) => typeInk[t] === colors.white);
+    expect(blancos).toHaveLength(5);
+    for (const t of blancos) {
+      const regla = styles.match(new RegExp(`\\.type-badge-${t}\\s*\\{([^}]*)\\}`));
+      expect(regla, `.type-badge-${t}`).not.toBeNull();
+      expect(regla![1], t).toMatch(/box-shadow:\s*0 0 0 2px var\(--white\)/);
+    }
   });
 });

@@ -7,8 +7,6 @@ for (const { w, h } of SIZES) {
     await page.setViewportSize({ width: w, height: h });
 
     await page.goto('/');
-    // El `colorScheme: 'dark'` de la configuración deja la app en su tema por defecto.
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     const empezar = page.getByRole('link', { name: 'Empezar a jugar' });
     await expect(empezar).toBeVisible();
     await capture(page, 'portada');
@@ -20,6 +18,18 @@ for (const { w, h } of SIZES) {
     expect(errors).toEqual([]);
   });
 }
+
+// Tema único: una preferencia de tema claro de la versión anterior se ignora.
+test('ignora un tema claro guardado', async ({ page }) => {
+  const errors = collectErrors(page);
+  await page.addInitScript(() => localStorage.setItem('pokemon-universe-theme', 'light'));
+  await page.goto('/');
+  await expect(page.getByRole('link', { name: 'Empezar a jugar' })).toBeVisible();
+  await expect(page.locator('html')).not.toHaveAttribute('data-theme', /.*/);
+  // Fondo del body: --band (#060B22).
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(6, 11, 34)');
+  expect(errors).toEqual([]);
+});
 
 test('botón de sonido apagado por defecto que se recuerda al recargar', async ({ page }) => {
   const errors = collectErrors(page);

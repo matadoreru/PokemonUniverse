@@ -1,5 +1,5 @@
 /**
- * Utilidades comunes de los E2E: tamaños de captura, tema, errores de consola, `capture()` (PNG de
+ * Utilidades comunes de los E2E: tamaños de captura, errores de consola, `capture()` (PNG de
  * revisión + sin scroll horizontal + medición de encaje y legibilidad), entrada como invitado y
  * cuentas registradas de prueba (con ADMIN promovido en la BD local).
  */
@@ -15,13 +15,6 @@ export const SIZES = [
   { w: 390, h: 844 },
 ] as const;
 export const DESKTOP = SIZES.slice(0, 2);
-
-export type Theme = 'dark' | 'light';
-
-/** Fija el tema antes de que cargue la página (`index.html` lo lee de `localStorage`). */
-export async function pinTheme(context: BrowserContext, theme: Theme): Promise<void> {
-  await context.addInitScript((t) => localStorage.setItem('pokemon-universe-theme', t), theme);
-}
 
 /**
  * Nombre del `@keyframes` que tiene el elemento (`'none'` si no anima). Es determinista: lee el
