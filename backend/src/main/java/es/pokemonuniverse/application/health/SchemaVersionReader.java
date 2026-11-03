@@ -1,10 +1,14 @@
 package es.pokemonuniverse.application.health;
 
-/** Puerto: comprueba la base de datos y devuelve la última migración de Prisma aplicada. */
+/** Puerto: comprueba la base de datos y devuelve la versión del esquema (Flyway; si no hay, Prisma). */
 public interface SchemaVersionReader {
 
   String UNKNOWN = "unknown";
 
-  /** Última {@code migration_name} terminada, o {@code "unknown"} si no hay ninguna; lanza si la BD falla. */
+  /**
+   * Última migración Flyway correcta como {@code "<versión> <descripción>"} (p. ej. {@code "1 baseline"}); sin
+   * historial de Flyway, la última {@code migration_name} terminada de Prisma; si no hay ninguna, {@code "unknown"}.
+   * Lanza si la BD falla.
+   */
   String latestMigration();
 }

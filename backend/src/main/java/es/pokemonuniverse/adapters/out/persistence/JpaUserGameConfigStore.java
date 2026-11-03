@@ -39,8 +39,8 @@ public class JpaUserGameConfigStore implements UserGameConfigStore {
   private final JsonMapper json;
   private final Clock clock;
 
-  /** {@code guard} fuerza el orden fuera de test: el esquema está comprobado antes de la carga inicial. */
-  public JpaUserGameConfigStore(@Nullable PrismaSchemaGuard guard, UserGameConfigRepository repository,
+  /** {@code migrations} fuerza el orden fuera de test: el esquema está migrado antes de la carga inicial. */
+  public JpaUserGameConfigStore(@Nullable FlywayMigrations migrations, UserGameConfigRepository repository,
       EntityManager entityManager, JsonMapper json, Clock clock) {
     this.repository = repository;
     this.entityManager = entityManager;

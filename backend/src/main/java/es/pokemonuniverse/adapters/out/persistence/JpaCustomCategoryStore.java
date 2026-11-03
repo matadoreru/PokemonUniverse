@@ -31,10 +31,10 @@ public class JpaCustomCategoryStore implements CustomCategoryStore {
   private final EntityManager entityManager;
 
   /**
-   * {@code guard} fuerza el orden fuera de test: el esquema está comprobado y migrado antes de la carga inicial (en
+   * {@code migrations} fuerza el orden fuera de test: el esquema está migrado antes de la carga inicial (en
    * test no existe; Flyway de Micronaut migra antes de crear beans de datos).
    */
-  public JpaCustomCategoryStore(@Nullable PrismaSchemaGuard guard, CustomCategoryRepository repository,
+  public JpaCustomCategoryStore(@Nullable FlywayMigrations migrations, CustomCategoryRepository repository,
       EntityManager entityManager) {
     this.repository = repository;
     this.entityManager = entityManager;

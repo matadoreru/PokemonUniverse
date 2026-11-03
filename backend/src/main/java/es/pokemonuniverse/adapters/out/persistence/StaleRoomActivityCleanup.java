@@ -8,7 +8,7 @@ import java.time.Instant;
 import javax.sql.DataSource;
 
 /**
- * Al arrancar (tras {@link PrismaSchemaGuard} cuando existe), marca como INTERRUPTED las salas y partidas que el
+ * Al arrancar (tras {@link FlywayMigrations} cuando existe), marca como INTERRUPTED las salas y partidas que el
  * proceso anterior dejó abiertas ({@code interruptStaleActivity} de Node). Desactivado por defecto: mientras Node sea
  * dueño de las salas y comparta la base de datos, marcaría como interrumpidas sus salas vivas. Se activa con
  * {@code pu.interrupt-stale-rooms=true} en el corte 2D, cuando Java sea el único dueño de las salas.
@@ -21,10 +21,10 @@ public class StaleRoomActivityCleanup {
   private final RoomHistoryWriter writer;
 
   /**
-   * {@code guard} fuerza el orden fuera de test: el esquema está comprobado y migrado antes de escribir (en test no
+   * {@code migrations} fuerza el orden fuera de test: el esquema está migrado antes de escribir (en test no
    * existe; Flyway de Micronaut migra antes de crear beans de datos).
    */
-  public StaleRoomActivityCleanup(@Nullable PrismaSchemaGuard guard, RoomHistoryWriter writer) {
+  public StaleRoomActivityCleanup(@Nullable FlywayMigrations migrations, RoomHistoryWriter writer) {
     this.writer = writer;
   }
 

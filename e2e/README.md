@@ -33,9 +33,9 @@ Requisitos: Node 22+, `podman` y `podman-compose`, y red (el seed descarga de Po
    npm install
    npm run db:up                                  # Postgres local con podman (compose.local.yaml)
    npm run build -w @pokemon-universe/shared
-   set -a; . ./.env; set +a                       # carga .env en el shell para Prisma
-   npm run db:deploy -w @pokemon-universe/server  # aplica las migraciones
-   npm run db:seed                                # catálogo de PokéAPI: tarda minutos
+   set -a; . ./.env; set +a                       # carga .env en el shell para el backend
+   npm run db:seed                                # backend con sincronización: esquema (Flyway) y catálogo de
+                                                  # PokéAPI; tarda minutos, Ctrl+C cuando responda en :8080
    npx playwright install chromium                # en Fedora sin --with-deps (asume apt)
    ```
 

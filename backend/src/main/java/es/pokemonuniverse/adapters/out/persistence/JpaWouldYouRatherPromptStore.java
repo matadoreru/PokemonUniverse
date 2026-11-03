@@ -40,8 +40,8 @@ public class JpaWouldYouRatherPromptStore implements WouldYouRatherPromptStore {
   private final WouldYouRatherPromptWriter writer;
   private final EntityManager entityManager;
 
-  /** {@code guard}: como en {@link JpaCustomCategoryStore}, el esquema está comprobado antes de la carga inicial. */
-  public JpaWouldYouRatherPromptStore(@Nullable PrismaSchemaGuard guard, CustomWouldYouRatherPromptRepository repository,
+  /** {@code migrations}: como en {@link JpaCustomCategoryStore}, el esquema está migrado antes de la carga inicial. */
+  public JpaWouldYouRatherPromptStore(@Nullable FlywayMigrations migrations, CustomWouldYouRatherPromptRepository repository,
       WouldYouRatherPromptWriter writer, EntityManager entityManager) {
     this.repository = repository;
     this.writer = writer;

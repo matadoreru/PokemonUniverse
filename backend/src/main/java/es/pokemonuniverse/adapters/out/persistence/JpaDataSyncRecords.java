@@ -89,8 +89,8 @@ public class JpaDataSyncRecords implements DataSyncRecords {
   private final JsonMapper json;
   private final Clock clock;
 
-  /** {@code guard} fuerza el orden fuera de test: el esquema está comprobado antes de escribir. */
-  public JpaDataSyncRecords(@Nullable PrismaSchemaGuard guard, DataSyncRunRepository runs,
+  /** {@code migrations} fuerza el orden fuera de test: el esquema está migrado antes de escribir. */
+  public JpaDataSyncRecords(@Nullable FlywayMigrations migrations, DataSyncRunRepository runs,
       DataSyncStateRepository states, EntityManager entityManager, JsonMapper json, Clock clock) {
     this.runs = runs;
     this.states = states;

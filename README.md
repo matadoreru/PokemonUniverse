@@ -83,8 +83,7 @@ npm run db:up                                 # PostgreSQL local en el puerto 54
 cp .env.example .env                          # luego deja solo el bloque «Desarrollo local sin Compose»
 npm run build -w @pokemon-universe/shared
 set -a; . ./.env; set +a                      # el servidor no carga .env por sí solo
-npm run db:deploy -w @pokemon-universe/server # aplica las migraciones
-npm run db:seed                               # descarga los Pokémon de PokéAPI (unos minutos)
+npm run db:seed                               # backend con sincronización: crea el esquema y descarga PokéAPI (minutos)
 npm run dev                                   # Java en :8080 y web en http://localhost:5173
 ```
 
@@ -97,6 +96,8 @@ Todo en contenedores con un solo comando:
 ```bash
 docker compose -f compose.yaml -f compose.dev.yaml up -d --build --wait
 ```
+
+El esquema es de Flyway: al arrancar, el backend Java aplica `backend/src/main/resources/db/migration/` (en una BD vacía, `V1__baseline.sql` crea el esquema completo). `npm run db:seed` es el mismo backend de desarrollo con `BACKEND_DATA_SYNC_ENABLED=true`: carga el catálogo antes de abrir el puerto, así que cuando responde en :8080 ya está sembrado; se puede parar con Ctrl+C o dejarlo como backend. Prisma (`apps/server/prisma/`) queda congelado como modelo del oráculo Node y ya no crea ni migra la BD.
 
 ## Comandos
 
@@ -111,7 +112,7 @@ docker compose -f compose.yaml -f compose.dev.yaml up -d --build --wait
 | `npm run lint` | ESLint sin advertencias permitidas. |
 | `npm run typecheck` | Comprobación de tipos de todo el monorepo. |
 | `npm run db:up` / `npm run db:down` | Arranca o para el PostgreSQL local. |
-| `npm run db:seed` | Carga o actualiza el catálogo Pokémon. |
+| `npm run db:seed` | Arranca el backend Java con `BACKEND_DATA_SYNC_ENABLED=true`: crea el esquema si falta y carga o actualiza el catálogo Pokémon. |
 
 ## Contribuir
 
