@@ -69,17 +69,17 @@ function PokemonAnchor({ row, latest }: { row: PokeddlePublicBoard['rows'][numbe
 
 function DesktopBoard({ board, columns }: { board: PokeddlePublicBoard; columns: PokeddleColumn[] }) {
   const latestRound = latestGuessRound(board.rows);
-  return <div className="hidden max-h-[34rem] max-w-full overflow-auto overscroll-contain lg:block">
+  return <div className="isolate hidden max-h-[34rem] max-w-full overflow-auto overscroll-contain lg:block">
     <table className="w-max min-w-full border-separate border-spacing-0 text-sm" aria-label={`Historial Pokédle de ${board.playerId}`}>
       <thead><tr className="text-left text-xs uppercase tracking-wide text-ink/70">
-        <th className="sticky left-0 top-0 z-30 min-w-48 border-b border-ink/10 bg-night/95 px-3 py-2.5 font-black">Pokémon</th>
-        {columns.map((column, index) => <th key={column.key} data-clue-key={column.key} title={column.fullLabel} className={`sticky top-0 z-20 border-b border-ink/10 bg-night/95 px-2.5 py-2.5 font-black ${column.minWidth} ${isPokeddleGroupStart(columns, index) ? 'border-l !border-l-ink/15' : ''}`}>{column.label}</th>)}
+        <th className="sticky left-0 top-0 z-sticky min-w-48 border-b border-ink/10 bg-night/95 px-3 py-2.5 font-black">Pokémon</th>
+        {columns.map((column, index) => <th key={column.key} data-clue-key={column.key} title={column.fullLabel} className={`sticky top-0 z-hud border-b border-ink/10 bg-night/95 px-2.5 py-2.5 font-black ${column.minWidth} ${isPokeddleGroupStart(columns, index) ? 'border-l !border-l-ink/15' : ''}`}>{column.label}</th>)}
       </tr></thead>
       <tbody>{board.rows.length ? board.rows.map((row) => {
         if (row.status === 'NO_GUESS') return <tr key={row.round} className="border-t border-ink/5"><td colSpan={columns.length + 1} className="bg-night/15 px-3 py-2"><NoGuessBand round={row.round} /></td></tr>;
         const latest = row.round === latestRound;
         return <tr key={row.round} data-latest={latest ? 'true' : undefined} data-correct={row.correct ? 'true' : undefined} className={`border-t border-ink/[0.07] transition-opacity ${latest ? 'pokeddle-row-enter bg-aqua/[0.035]' : 'opacity-75 hover:opacity-100'} ${row.correct ? '!bg-leaf/[0.06] !opacity-100' : ''}`}>
-          <td className={`sticky left-0 z-10 border-b border-ink/[0.07] px-3 py-2.5 ${latest ? 'bg-aqua/[.08]' : row.correct ? 'bg-leaf/[.08]' : 'bg-surface'}`}><PokemonAnchor row={row} latest={latest} /></td>
+          <td className={`sticky left-0 z-content border-b border-ink/[0.07] px-3 py-2.5 ${latest ? 'bg-aqua/[.08]' : row.correct ? 'bg-leaf/[.08]' : 'bg-surface'}`}><PokemonAnchor row={row} latest={latest} /></td>
           {columns.map((column, index) => { const feedback = row.feedback?.[column.key]; return <td key={column.key} className={`border-b border-ink/[0.07] p-0 align-top ${isPokeddleGroupStart(columns, index) ? 'border-l !border-l-ink/15' : ''}`}>{feedback ? <FeedbackValue column={column} entry={feedback} /> : <span className="block px-3 py-4 text-ink/20">—</span>}</td>; })}
         </tr>;
       }) : <EmptyBoard columnCount={columns.length + 1} />}</tbody>

@@ -154,10 +154,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .sketchmon-canvas { display: block; width: 100%; aspect-ratio: 4 / 3; touch-action: none; background: white; }
 
 @media (max-width: 640px) {
-  .connections-submit { position: sticky; bottom: .5rem; z-index: 10; border: 1px solid rgb(var(--color-ink) / .1); border-radius: .75rem; background: rgb(var(--color-surface) / .97); padding: .75rem; }
+  .connections-submit { position: sticky; bottom: .5rem; z-index: var(--z-sticky); border: 1px solid rgb(var(--color-ink) / .1); border-radius: .75rem; background: rgb(var(--color-surface) / .97); padding: .75rem; }
   .connections-submit .btn-primary { width: 100%; }
   /* Respuestas de Higher or Lower: pegadas al borde inferior (mismo patrón que `.connections-submit`) para que se vean sin desplazar en móvil. */
-  .answer-dock { position: sticky; bottom: .5rem; z-index: 10; border: 1px solid rgb(var(--color-ink) / .1); border-radius: .75rem; background: rgb(var(--color-surface) / .97); padding: .5rem; }
+  .answer-dock { position: sticky; bottom: .5rem; z-index: var(--z-sticky); border: 1px solid rgb(var(--color-ink) / .1); border-radius: .75rem; background: rgb(var(--color-surface) / .97); padding: .5rem; }
 }
 
 .lobby-readonly { opacity: .72; }
@@ -197,7 +197,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .shiny-before-after-stage { background: rgb(var(--color-night) / .12); }
 .shiny-option-interactive:hover { transform: translateY(-2px); border-color: rgb(var(--color-aqua) / .58); background: rgb(var(--color-surface-raised) / .72); }
 .shiny-option-selected { box-shadow: var(--shadow-card), 0 0 0 3px rgb(var(--color-aqua) / .13); }
-.shiny-option-correct { z-index: 1; box-shadow: var(--shadow-card), 0 0 0 4px rgb(var(--color-leaf) / .15); }
+.shiny-option-correct { z-index: var(--z-content); box-shadow: var(--shadow-card), 0 0 0 4px rgb(var(--color-leaf) / .15); }
 .shiny-option-state { animation: shiny-state-in 180ms cubic-bezier(.16,1,.3,1) both; }
 .shiny-sprite-stage { flex: none; height: clamp(8.25rem, 37vw, 13rem); margin-block: .125rem; overflow: hidden; border-radius: .75rem; background: rgb(var(--color-night) / .12); }
 .shiny-sprite { image-rendering: crisp-edges; image-rendering: pixelated; }
@@ -222,7 +222,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .who-reveal-stage { background-image: radial-gradient(circle at center, rgba(98,201,149,.2), transparent 68%); }
 .zoomed-viewport { box-shadow: inset 0 0 70px rgba(5,8,17,.55), 0 18px 45px rgba(0,0,0,.24); }
 .zoomed-image { transition: transform 300ms cubic-bezier(.2,.75,.25,1); will-change: transform; }
-@media (max-width: 640px) { .zoomed-answer { position: sticky; bottom: .5rem; z-index: 10; border-radius: .75rem; border: 1px solid rgb(var(--color-ink) / .1); background: rgb(var(--color-surface) / .97); padding: .75rem; } }
+@media (max-width: 640px) { .zoomed-answer { position: sticky; bottom: .5rem; z-index: var(--z-sticky); border-radius: .75rem; border: 1px solid rgb(var(--color-ink) / .1); background: rgb(var(--color-surface) / .97); padding: .75rem; } }
 /* Vocabulario de movimiento común: solo transform/opacity y ≤400 ms. La reducción de movimiento se apaga abajo, en una sola regla. */
 .timer-track { border: 1px solid rgb(var(--color-ink) / .15); background: rgb(var(--color-ink) / .12); }
 .motion-bump { animation: motion-bump 300ms cubic-bezier(.2,.8,.3,1); }
@@ -239,7 +239,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @keyframes motion-grow-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes motion-flip { from { transform: rotateY(90deg); } to { transform: rotateY(0); } }
 /* Cut-in de cartucho: banda a todo el ancho, centrada en vertical, que no bloquea la pantalla. */
-.reveal-cut-in { position: fixed; inset-inline: 0; top: 0; bottom: 0; z-index: 50; height: fit-content; margin-block: auto; padding: 1rem; pointer-events: none; text-align: center; border-block: 4px solid rgb(var(--cut-in-tone)); background: rgb(var(--color-surface)); box-shadow: var(--shadow-card); }
+.reveal-cut-in { position: fixed; inset-inline: 0; top: 0; bottom: 0; z-index: var(--z-cutin); height: fit-content; margin-block: auto; padding: 1rem; pointer-events: none; text-align: center; border-block: 4px solid rgb(var(--cut-in-tone)); background: rgb(var(--color-surface)); box-shadow: var(--shadow-card); }
 .reveal-cut-in-title { color: rgb(var(--cut-in-text)); }
 .reveal-cut-in-electric, .score-pop-electric { --cut-in-tone: var(--color-electric); --cut-in-text: var(--color-electric); }
 .reveal-cut-in-berry, .score-pop-berry { --cut-in-tone: var(--color-berry); --cut-in-text: var(--color-berry); }

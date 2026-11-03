@@ -3,7 +3,7 @@
  * Tokens (spec Arcade DS §3): el espejo tokens.ts coincide con tokens.css, las parejas de texto
  * cumplen AA y las capas están ordenadas.
  */
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
@@ -142,5 +142,23 @@ describe('escala tipográfica (§3.2)', () => {
     const claves = Object.keys(sizes).filter((k) => /^\d+$/.test(k)).map(Number).sort((a, b) => a - b);
     expect(claves).toEqual([...fontSizes]);
     for (const n of fontSizes) expect(sizes[String(n)]![0]).toBe(`${n}px`);
+  });
+});
+
+describe('capas (§2)', () => {
+  function tsxFiles(dir: string): string[] {
+    return readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+      const p = path.join(dir, e.name);
+      return e.isDirectory() ? tsxFiles(p) : e.name.endsWith('.tsx') ? [p] : [];
+    });
+  }
+  it('sin z-index literales', () => {
+    expect(styles).not.toMatch(/z-index:\s*\d/);
+    const root = path.join(here, '..');
+    const malos = tsxFiles(root).filter((f) => /(^|[^\w-])-?z-(\d+|\[)/.test(readFileSync(f, 'utf8'))).map((f) => path.relative(root, f));
+    expect(malos).toEqual([]);
+  });
+  it('la escala de Tailwind son solo las capas', () => {
+    expect(Object.keys((tailwind.theme as { zIndex?: Record<string, string> }).zIndex ?? {}).sort()).toEqual(Object.keys(layers).sort());
   });
 });

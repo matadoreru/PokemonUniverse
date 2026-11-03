@@ -27,7 +27,7 @@ function SilhouetteStage({ source }: { source: string }) {
   return <div className="who-silhouette-stage relative mx-auto grid aspect-square w-full max-w-[23rem] place-items-center overflow-hidden rounded-2xl border border-aqua/20" aria-label="Silueta misteriosa normalizada">
     <div className="absolute inset-0 opacity-35 [background-image:radial-gradient(circle_at_center,rgba(240,191,84,.65),transparent_55%)]" />
     <span className="absolute right-5 top-4 font-display text-5xl text-ink/10" aria-hidden="true">?</span>
-    <img src={source} alt="Silueta de un Pokémon misterioso" className="relative z-10 h-[82%] w-[82%] object-contain [image-rendering:pixelated]" />
+    <img src={source} alt="Silueta de un Pokémon misterioso" className="relative z-content h-[82%] w-[82%] object-contain [image-rendering:pixelated]" />
   </div>;
 }
 

@@ -1,7 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
-  theme: { extend: {
+  theme: {
+  // Sustituye la escala por defecto: solo existen las capas del sistema (spec §2).
+  zIndex: { content: 'var(--z-content)', hud: 'var(--z-hud)', sticky: 'var(--z-sticky)', cutin: 'var(--z-cutin)', toast: 'var(--z-toast)' },
+  extend: {
     colors: {
       ink: 'rgb(var(--color-ink) / <alpha-value>)', cream: 'rgb(var(--color-cream) / <alpha-value>)',
       surface: 'rgb(var(--color-surface) / <alpha-value>)', 'surface-raised': 'rgb(var(--color-surface-raised) / <alpha-value>)',
