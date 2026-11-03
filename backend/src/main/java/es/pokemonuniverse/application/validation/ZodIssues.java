@@ -70,6 +70,18 @@ public final class ZodIssues {
     issues.add(issue);
   }
 
+  /** {@code z.number()} con {@code NaN} o un infinito: Zod añade {@code received} con el valor. */
+  public void notANumber(double value, List<Object> path) {
+    var received = JsNumbers.format(value);
+    var issue = new LinkedHashMap<String, Object>();
+    issue.put("expected", "number");
+    issue.put("code", "invalid_type");
+    issue.put("received", received);
+    issue.put("path", path);
+    issue.put("message", "Invalid input: expected number, received " + received);
+    issues.add(issue);
+  }
+
   public void notInteger(List<Object> path) {
     var issue = new LinkedHashMap<String, Object>();
     issue.put("expected", "int");

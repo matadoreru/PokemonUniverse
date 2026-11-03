@@ -99,6 +99,10 @@ public class UserEntity {
     return role;
   }
 
+  public Instant getUpdatedAt() {
+    return updatedAt;
+  }
+
   public Instant getCreatedAt() {
     return createdAt;
   }

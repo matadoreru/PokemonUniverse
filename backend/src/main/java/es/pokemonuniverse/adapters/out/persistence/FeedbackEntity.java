@@ -81,6 +81,12 @@ public class FeedbackEntity {
     return e;
   }
 
+  /** {@code updateMany({data: {status}})}: Prisma también actualiza {@code @updatedAt}. */
+  public void changeStatus(FeedbackStatus status, Instant now) {
+    this.status = status;
+    this.updatedAt = now;
+  }
+
   public String getId() { return id; }
   public FeedbackReference getReference() { return reference; }
   public String getGameId() { return gameId; }

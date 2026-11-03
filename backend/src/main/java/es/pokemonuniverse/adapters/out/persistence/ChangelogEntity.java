@@ -87,4 +87,15 @@ public class ChangelogEntity {
   public Instant getUpdatedAt() {
     return updatedAt;
   }
+
+  /** Cambios de una edición; {@code null} deja el campo como estaba. */
+  public void update(String version, String title, Instant date, Boolean published, List<Object> content,
+      Instant now) {
+    if (version != null) this.version = version;
+    if (title != null) this.title = title;
+    if (date != null) this.date = date;
+    if (published != null) this.published = published;
+    if (content != null) this.content = content;
+    this.updatedAt = now;
+  }
 }

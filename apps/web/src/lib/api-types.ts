@@ -4,6 +4,195 @@
  */
 
 export interface paths {
+    "/api/admin/active-rooms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Salas activas en memoria */
+        get: operations["adminActiveRooms"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/changelog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Todas las entradas del changelog, publicadas o no */
+        get: operations["adminListChangelog"];
+        put?: never;
+        /** Crear una entrada del changelog */
+        post: operations["adminCreateChangelog"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/changelog/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Borrar una entrada del changelog */
+        delete: operations["adminDeleteChangelog"];
+        options?: never;
+        head?: never;
+        /** Editar una entrada del changelog */
+        patch: operations["adminUpdateChangelog"];
+        trace?: never;
+    };
+    "/api/admin/data-sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Estado de la sincronización de datos */
+        get: operations["adminDataSyncOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/data-sync/{source}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Lanzar una sincronización de datos */
+        post: operations["adminStartDataSync"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Feedback recibido */
+        get: operations["adminListFeedback"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/feedback/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Cambiar el estado de un feedback */
+        patch: operations["adminUpdateFeedbackStatus"];
+        trace?: never;
+    };
+    "/api/admin/games": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Historial de partidas */
+        get: operations["adminGames"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/rooms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Historial de salas */
+        get: operations["adminRooms"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Resumen de administración */
+        get: operations["adminSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Usuarios registrados */
+        get: operations["adminUsers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/avatars/{filename}": {
         parameters: {
             query?: never;
@@ -437,6 +626,202 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description `AdminActiveRoom`: proyección segura para administración (sin estado de juego ni correos). */
+        AdminActiveRoom: {
+            id: string;
+            code: string;
+            phase: components["schemas"]["RoomPhase"];
+            gameId: string | null;
+            gameName: string | null;
+            /** Format: int32 */
+            connectedPlayers: number;
+            /** Format: int32 */
+            totalPlayers: number;
+            /** Format: int32 */
+            maxPlayers: number;
+            hostDisplayName: string;
+            createdAt: string;
+            updatedAt: string;
+            participants: components["schemas"]["AdminActiveRoom.Participant"][];
+        };
+        "AdminActiveRoom.Participant": {
+            id: string;
+            displayName: string;
+            kind: components["schemas"]["AuthUser.Kind"];
+            presence: components["schemas"]["PresenceStatus"];
+            roomRole: components["schemas"]["RoomRole"];
+        };
+        /** @description Solo documenta la página concreta en OpenAPI. */
+        AdminActiveRoomsPage: {
+            items: components["schemas"]["AdminActiveRoom"][];
+            /** Format: int64 */
+            page: number;
+            /** Format: int32 */
+            pageSize: number;
+            /** Format: int64 */
+            total: number;
+            /** Format: int64 */
+            totalPages: number;
+        };
+        "AdminChangelogController.EntriesResponse": {
+            entries: components["schemas"]["ChangelogEntryResponse"][];
+        };
+        "AdminChangelogController.EntryResponse": {
+            entry: components["schemas"]["ChangelogEntryResponse"];
+        };
+        /** @description Estricto: una clave desconocida es un 400 `unrecognized_keys`. */
+        AdminCreateChangelogRequest: {
+            version: string;
+            title: string;
+            /** Format: date-time */
+            date: string;
+            /** @default false */
+            published: boolean;
+            content: components["schemas"]["ChangelogChange"][];
+        };
+        "AdminDataSyncController.OverviewResponse": {
+            sources: components["schemas"]["SyncOverviewItem"][];
+        };
+        "AdminDataSyncController.StartResponse": {
+            accepted: boolean;
+            source: string;
+            mode: string;
+        };
+        "AdminFeedbackController.FeedbackPageResponse": {
+            items: components["schemas"]["FeedbackItemResponse"][];
+            /** Format: int64 */
+            page: number;
+            /** Format: int32 */
+            pageSize: number;
+            /** Format: int64 */
+            total: number;
+            /** Format: int64 */
+            totalPages: number;
+            overview: components["schemas"]["FeedbackService.Overview"];
+        };
+        "AdminFeedbackController.FeedbackResponse": {
+            feedback: components["schemas"]["FeedbackItemResponse"];
+        };
+        /** @description Estricto: una clave desconocida es un 400 `unrecognized_keys`. */
+        AdminFeedbackStatusRequest: {
+            status: components["schemas"]["FeedbackStatus"];
+        };
+        /** @description `AdminGameHistoryItem` de `shared/admin.ts`; los nulos se emiten explícitos, como Node. */
+        AdminGameHistoryItem: {
+            id: string;
+            roomCode: string;
+            gameId: string;
+            gameName: string;
+            /** Format: int32 */
+            playerCount: number;
+            status: string;
+            startedAt: string;
+            endedAt: string | null;
+            participants: components["schemas"]["AdminGameHistoryItem.Participant"][];
+        };
+        "AdminGameHistoryItem.Participant": {
+            displayName: string;
+            userId: string | null;
+            /** Format: int32 */
+            position: number;
+            /** Format: int32 */
+            points: number;
+        };
+        /** @description Solo documenta la página concreta en OpenAPI. */
+        AdminGamesPage: {
+            items: components["schemas"]["AdminGameHistoryItem"][];
+            /** Format: int64 */
+            page: number;
+            /** Format: int32 */
+            pageSize: number;
+            /** Format: int64 */
+            total: number;
+            /** Format: int64 */
+            totalPages: number;
+        };
+        /** @description `AdminRoomHistoryItem` de `shared/admin.ts`; los nulos se emiten explícitos, como Node. */
+        AdminRoomHistoryItem: {
+            id: string;
+            code: string;
+            hostDisplayName: string;
+            hostUserId: string | null;
+            /** Format: int32 */
+            maxPlayers: number;
+            status: string;
+            closeReason: string | null;
+            /** Format: int64 */
+            gamesStarted: number;
+            createdAt: string;
+            endedAt: string | null;
+        };
+        /** @description Solo documenta la página concreta en OpenAPI. */
+        AdminRoomsPage: {
+            items: components["schemas"]["AdminRoomHistoryItem"][];
+            /** Format: int64 */
+            page: number;
+            /** Format: int32 */
+            pageSize: number;
+            /** Format: int64 */
+            total: number;
+            /** Format: int64 */
+            totalPages: number;
+        };
+        /** @description Claves desconocidas ignoradas. */
+        AdminStartDataSyncRequest: {
+            /** @default false */
+            full: boolean;
+            /** @default false */
+            confirmFull: boolean;
+        };
+        /** @description `AdminSummary` de `shared/admin.ts`. */
+        AdminSummary: {
+            /** Format: int32 */
+            activeRooms: number;
+            /** Format: int32 */
+            gamesInProgress: number;
+            /** Format: int64 */
+            registeredUsers: number;
+            /** Format: int64 */
+            interruptedToday: number;
+            updatedAt: string;
+        };
+        /** @description Estricto. Si se omite `published`, la entrada queda despublicada (`published` vale `false` por defecto también al editar). */
+        AdminUpdateChangelogRequest: {
+            version?: string;
+            title?: string;
+            /** Format: date-time */
+            date?: string;
+            /** @default false */
+            published: boolean;
+            content?: components["schemas"]["ChangelogChange"][];
+        };
+        /** @description `AdminUserItem` de `shared/admin.ts`. */
+        AdminUserItem: {
+            id: string;
+            username: string;
+            email: string;
+            role: string;
+            /** Format: int32 */
+            gamesPlayed: number;
+            /** Format: int32 */
+            gamesWon: number;
+            /** Format: int32 */
+            totalPoints: number;
+            createdAt: string;
+            updatedAt: string;
+        };
+        /** @description Solo documenta la página concreta en OpenAPI. */
+        AdminUsersPage: {
+            items: components["schemas"]["AdminUserItem"][];
+            /** Format: int64 */
+            page: number;
+            /** Format: int32 */
+            pageSize: number;
+            /** Format: int64 */
+            total: number;
+            /** Format: int64 */
+            totalPages: number;
+        };
         /** @description Cuerpo de error común con el servidor Node: `{"error": "...", "issues": [...]}`. */
         ApiError: {
             error: string;
@@ -533,6 +918,11 @@ export interface components {
             createdAt: string;
             updatedAt: string;
         };
+        /**
+         * @description Enum nativo `"DataSyncSource"` de Postgres: origen externo de datos.
+         * @enum {string}
+         */
+        DataSyncSource: "POKEAPI" | "TCGDEX";
         "FeedbackController.FeedbackResponse": {
             feedback: components["schemas"]["FeedbackItemResponse"];
         };
@@ -557,6 +947,19 @@ export interface components {
         };
         /** @enum {string} */
         FeedbackReference: "GENERAL" | "MINIGAME" | "ROOMS" | "ACCOUNT" | "INTERFACE" | "CHANGELOG" | "OTHER";
+        /** @description `FeedbackOverview`. */
+        "FeedbackService.Overview": {
+            /** Format: int64 */
+            newBugs: number;
+            /** Format: int64 */
+            newSuggestions: number;
+            /** Format: int64 */
+            reviewing: number;
+            /** Format: int64 */
+            resolved: number;
+        };
+        /** @enum {string} */
+        FeedbackStatus: "NEW" | "REVIEWING" | "RESOLVED";
         /** @enum {string} */
         FeedbackType: "BUG" | "SUGGESTION";
         /** @description Manifiesto de un minijuego mas su configuracion por defecto, tal como lo exporta el registro TypeScript. */
@@ -666,6 +1069,11 @@ export interface components {
         "PokemonController.PokemonResponse": {
             pokemon: components["schemas"]["Pokemon"][];
         };
+        /**
+         * @description `PresenceStatus` de `room.ts`.
+         * @enum {string}
+         */
+        PresenceStatus: "CONNECTED" | "TEMPORARILY_DISCONNECTED" | "LEFT";
         /** @description Estricto: una clave desconocida es un 400 `unrecognized_keys`. */
         PresetAvatarRequest: {
             /** @enum {string} */
@@ -728,6 +1136,44 @@ export interface components {
             email: string;
             password: string;
         };
+        /**
+         * @description `RoomPhase` de `room.ts`: el lobby, cualquier fase de un minijuego y las fases de sesión.
+         * @enum {string}
+         */
+        RoomPhase: "LOBBY" | "GAME_STARTING" | "ROUND_ACTIVE" | "ROUND_RESULTS" | "TIEBREAKER_ACTIVE" | "ROLE_REVEAL" | "CLUE_PHASE" | "VOTING" | "VOTE_RESULTS" | "ELIMINATION" | "SELECTING_TYPES" | "TYPE_REVEAL" | "INVALID_COMBINATION" | "POKEMON_SEARCH" | "TURN_ACTIVE" | "CHOICE_REVEAL" | "DISCUSSION" | "REVOTE" | "GAME_RESULTS" | "NEXT_GAME_VOTE" | "NEXT_GAME_VOTE_RESULTS" | "SESSION_RESULTS";
+        /**
+         * @description Rol de permisos en la sala (`ROOM_ROLES`), independiente del rol en el minijuego.
+         * @enum {string}
+         */
+        RoomRole: "HOST" | "CO_HOST" | "MEMBER";
+        /** @description Estado de un origen para la administración (`SyncOverviewItem` / `AdminDataSyncItem`). Las fechas son cadenas `toISOString()` y los nulos se serializan (la configuración global omite los nulos). */
+        SyncOverviewItem: {
+            source: components["schemas"]["DataSyncSource"];
+            status: components["schemas"]["SyncOverviewItem.Status"];
+            ready: boolean;
+            lastSyncAt: string | null;
+            lastAttemptAt: string | null;
+            lastFullSyncAt: string | null;
+            /** Format: int32 */
+            durationMs: number | null;
+            /** Format: int32 */
+            recordsProcessed: number;
+            /** Format: int32 */
+            inserted: number;
+            /** Format: int32 */
+            updated: number;
+            /** Format: int32 */
+            skipped: number;
+            /** Format: int32 */
+            recordsAvailable: number;
+            error: string | null;
+            nextSyncAt: string;
+        };
+        /**
+         * @description `IDLE` existe en el contrato, pero nunca se produce (como en Node).
+         * @enum {string}
+         */
+        "SyncOverviewItem.Status": "IDLE" | "RUNNING" | "FAILED" | "COMPLETED" | "NOT_READY";
         "TcgCardCatalog.FilterOptions": {
             ready: boolean;
             /** Format: int32 */
@@ -825,6 +1271,717 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    adminActiveRooms: {
+        parameters: {
+            query?: {
+                /** @description Página (entero >= 1, por defecto 1) */
+                page?: number;
+                /** @description Texto recortado de hasta 80 caracteres */
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminActiveRoomsPage"];
+                };
+            };
+            /** @description Query inválida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Se requiere administrador */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminListChangelog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminChangelogController.EntriesResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Se requiere administrador */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminCreateChangelog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AdminCreateChangelogRequest"];
+            };
+        };
+        responses: {
+            /** @description Creada */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminChangelogController.EntryResponse"];
+                };
+            };
+            /** @description Datos inválidos */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Se requiere administrador */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Versión duplicada */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminDeleteChangelog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sin contenido */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Id demasiado largo */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Se requiere administrador */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description No encontrada */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminUpdateChangelog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AdminUpdateChangelogRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminChangelogController.EntryResponse"];
+                };
+            };
+            /** @description Datos inválidos */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Se requiere administrador */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description No encontrada */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Versión duplicada */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminDataSyncOverview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminDataSyncController.OverviewResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Se requiere administrador */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Data-sync desactivado */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminStartDataSync: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                source: "pokemon" | "tcg" | "all";
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AdminStartDataSyncRequest"];
+            };
+        };
+        responses: {
+            /** @description Aceptada */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminDataSyncController.StartResponse"];
+                };
+            };
+            /** @description Origen o cuerpo inválido, o Full Sync sin confirmar */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Se requiere administrador */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description El origen ya se está sincronizando */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Data-sync desactivado */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminListFeedback: {
+        parameters: {
+            query?: {
+                /** @description Página (entero >= 1, por defecto 1) */
+                page?: number;
+                /** @description Texto recortado de hasta 80 caracteres */
+                search?: string;
+                reference?: components["schemas"]["FeedbackReference"];
+                status?: components["schemas"]["FeedbackStatus"];
+                type?: components["schemas"]["FeedbackType"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminFeedbackController.FeedbackPageResponse"];
+                };
+            };
+            /** @description Query inválida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Se requiere administrador */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminUpdateFeedbackStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AdminFeedbackStatusRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminFeedbackController.FeedbackResponse"];
+                };
+            };
+            /** @description Datos inválidos */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Se requiere administrador */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description No encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminGames: {
+        parameters: {
+            query?: {
+                /** @description Página (entero >= 1, por defecto 1) */
+                page?: number;
+                /** @description Texto recortado de hasta 80 caracteres */
+                search?: string;
+                status?: "IN_PROGRESS" | "COMPLETED" | "ABANDONED" | "INTERRUPTED";
+                /** @description Id exacto (recortado, hasta 64 caracteres) */
+                gameId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminGamesPage"];
+                };
+            };
+            /** @description Query inválida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Se requiere administrador */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminRooms: {
+        parameters: {
+            query?: {
+                /** @description Página (entero >= 1, por defecto 1) */
+                page?: number;
+                /** @description Texto recortado de hasta 80 caracteres */
+                search?: string;
+                status?: "ACTIVE" | "CLOSED" | "INTERRUPTED";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminRoomsPage"];
+                };
+            };
+            /** @description Query inválida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Se requiere administrador */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminSummary"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Se requiere administrador */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    adminUsers: {
+        parameters: {
+            query?: {
+                /** @description Página (entero >= 1, por defecto 1) */
+                page?: number;
+                /** @description Texto recortado de hasta 80 caracteres */
+                search?: string;
+                role?: "USER" | "ADMIN";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUsersPage"];
+                };
+            };
+            /** @description Query inválida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Se requiere administrador */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     avatar: {
         parameters: {
             query?: never;

@@ -10,7 +10,7 @@ import java.util.List;
 public record ChangelogEntryResponse(String id, String version, String title, String date,
     boolean published, List<ChangelogChange> content, String createdAt, String updatedAt) {
 
-  static ChangelogEntryResponse of(ChangelogService.Entry e) {
+  public static ChangelogEntryResponse of(ChangelogService.Entry e) {
     return new ChangelogEntryResponse(e.id(), e.version(), e.title(), IsoTimestamps.millis(e.date()),
         e.published(), e.content(), IsoTimestamps.millis(e.createdAt()),
         IsoTimestamps.millis(e.updatedAt()));

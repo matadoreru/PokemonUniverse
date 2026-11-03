@@ -38,4 +38,34 @@ class JsNumbersTest {
     assertFalse(JsNumbers.isSafeInteger(Double.NaN));
     assertFalse(JsNumbers.isSafeInteger(Double.POSITIVE_INFINITY));
   }
+
+  /** Valores obtenidos de {@code Number(x)} en Node 22. */
+  @Test
+  void parsesStringsLikeNumberConstructor() {
+    assertEquals(0, JsNumbers.fromString(""));
+    assertEquals(0, JsNumbers.fromString(" \t\n"));
+    assertEquals(12, JsNumbers.fromString(" 12 "));
+    assertEquals(7, JsNumbers.fromString(" \u00a0 7 \ufeff"));
+    assertEquals(16, JsNumbers.fromString("0x10"));
+    assertEquals(16, JsNumbers.fromString("0X10"));
+    assertEquals(3, JsNumbers.fromString("0b11"));
+    assertEquals(7, JsNumbers.fromString("0o7"));
+    assertEquals(1000, JsNumbers.fromString("1e3"));
+    assertEquals(5, JsNumbers.fromString("5."));
+    assertEquals(0.5, JsNumbers.fromString(".5"));
+    assertEquals(5, JsNumbers.fromString("+5"));
+    assertEquals(-1.5, JsNumbers.fromString("-1.5"));
+    assertEquals(12, JsNumbers.fromString("00012"));
+    assertEquals(1e-7, JsNumbers.fromString("1e-7"));
+    assertEquals(Double.POSITIVE_INFINITY, JsNumbers.fromString("Infinity"));
+    assertEquals(Double.POSITIVE_INFINITY, JsNumbers.fromString("+Infinity"));
+    assertEquals(Double.NEGATIVE_INFINITY, JsNumbers.fromString("-Infinity"));
+    assertEquals(Double.NEGATIVE_INFINITY, JsNumbers.fromString("-1e400"));
+    assertEquals(1.8446744073709552e19, JsNumbers.fromString("0xffffffffffffffff"));
+    assertEquals("-0", Double.toString(JsNumbers.fromString("-0")).replace(".0", ""));
+    for (var nan : new String[] {"abc", "-0x10", "1_000", "1n", "1d", "1f", "0x1p3", "0x", "e5", ".", "+", "1e",
+        "infinity", "NaN", "1 2", "0b2", "0o8", "--1"}) {
+      assertTrue(Double.isNaN(JsNumbers.fromString(nan)), nan);
+    }
+  }
 }

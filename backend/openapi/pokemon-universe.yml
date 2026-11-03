@@ -3,6 +3,603 @@ info:
   title: Pokémon Universe API
   version: "0.1"
 paths:
+  /api/admin/active-rooms:
+    get:
+      tags:
+      - admin
+      summary: Salas activas en memoria
+      operationId: adminActiveRooms
+      parameters:
+      - name: page
+        in: query
+        description: "Página (entero >= 1, por defecto 1)"
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+          default: 1
+      - name: search
+        in: query
+        description: Texto recortado de hasta 80 caracteres
+        schema:
+          maxLength: 80
+          type: string
+          default: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminActiveRoomsPage"
+        "400":
+          description: Query inválida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Se requiere administrador
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/admin/changelog:
+    get:
+      tags:
+      - admin
+      summary: "Todas las entradas del changelog, publicadas o no"
+      operationId: adminListChangelog
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminChangelogController.EntriesResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Se requiere administrador
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    post:
+      tags:
+      - admin
+      summary: Crear una entrada del changelog
+      operationId: adminCreateChangelog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminCreateChangelogRequest"
+      responses:
+        "201":
+          description: Creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminChangelogController.EntryResponse"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Se requiere administrador
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Versión duplicada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/admin/changelog/{id}:
+    delete:
+      tags:
+      - admin
+      summary: Borrar una entrada del changelog
+      operationId: adminDeleteChangelog
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Sin contenido
+        "400":
+          description: Id demasiado largo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Se requiere administrador
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: No encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    patch:
+      tags:
+      - admin
+      summary: Editar una entrada del changelog
+      operationId: adminUpdateChangelog
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminUpdateChangelogRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminChangelogController.EntryResponse"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Se requiere administrador
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: No encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Versión duplicada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/admin/data-sync:
+    get:
+      tags:
+      - admin
+      summary: Estado de la sincronización de datos
+      operationId: adminDataSyncOverview
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminDataSyncController.OverviewResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Se requiere administrador
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Data-sync desactivado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/admin/data-sync/{source}:
+    post:
+      tags:
+      - admin
+      summary: Lanzar una sincronización de datos
+      operationId: adminStartDataSync
+      parameters:
+      - name: source
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - pokemon
+          - tcg
+          - all
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminStartDataSyncRequest"
+      responses:
+        "202":
+          description: Aceptada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminDataSyncController.StartResponse"
+        "400":
+          description: "Origen o cuerpo inválido, o Full Sync sin confirmar"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Se requiere administrador
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: El origen ya se está sincronizando
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Data-sync desactivado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/admin/feedback:
+    get:
+      tags:
+      - admin
+      summary: Feedback recibido
+      operationId: adminListFeedback
+      parameters:
+      - name: page
+        in: query
+        description: "Página (entero >= 1, por defecto 1)"
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+          default: 1
+      - name: search
+        in: query
+        description: Texto recortado de hasta 80 caracteres
+        schema:
+          maxLength: 80
+          type: string
+          default: ""
+      - name: reference
+        in: query
+        schema:
+          $ref: "#/components/schemas/FeedbackReference"
+      - name: status
+        in: query
+        schema:
+          $ref: "#/components/schemas/FeedbackStatus"
+      - name: type
+        in: query
+        schema:
+          $ref: "#/components/schemas/FeedbackType"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminFeedbackController.FeedbackPageResponse"
+        "400":
+          description: Query inválida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Se requiere administrador
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/admin/feedback/{id}/status:
+    patch:
+      tags:
+      - admin
+      summary: Cambiar el estado de un feedback
+      operationId: adminUpdateFeedbackStatus
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminFeedbackStatusRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminFeedbackController.FeedbackResponse"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Se requiere administrador
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/admin/games:
+    get:
+      tags:
+      - admin
+      summary: Historial de partidas
+      operationId: adminGames
+      parameters:
+      - name: page
+        in: query
+        description: "Página (entero >= 1, por defecto 1)"
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+          default: 1
+      - name: search
+        in: query
+        description: Texto recortado de hasta 80 caracteres
+        schema:
+          maxLength: 80
+          type: string
+          default: ""
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - IN_PROGRESS
+          - COMPLETED
+          - ABANDONED
+          - INTERRUPTED
+      - name: gameId
+        in: query
+        description: "Id exacto (recortado, hasta 64 caracteres)"
+        schema:
+          maxLength: 64
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminGamesPage"
+        "400":
+          description: Query inválida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Se requiere administrador
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/admin/rooms:
+    get:
+      tags:
+      - admin
+      summary: Historial de salas
+      operationId: adminRooms
+      parameters:
+      - name: page
+        in: query
+        description: "Página (entero >= 1, por defecto 1)"
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+          default: 1
+      - name: search
+        in: query
+        description: Texto recortado de hasta 80 caracteres
+        schema:
+          maxLength: 80
+          type: string
+          default: ""
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - ACTIVE
+          - CLOSED
+          - INTERRUPTED
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminRoomsPage"
+        "400":
+          description: Query inválida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Se requiere administrador
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/admin/summary:
+    get:
+      tags:
+      - admin
+      summary: Resumen de administración
+      operationId: adminSummary
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSummary"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Se requiere administrador
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/admin/users:
+    get:
+      tags:
+      - admin
+      summary: Usuarios registrados
+      operationId: adminUsers
+      parameters:
+      - name: page
+        in: query
+        description: "Página (entero >= 1, por defecto 1)"
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+          default: 1
+      - name: search
+        in: query
+        description: Texto recortado de hasta 80 caracteres
+        schema:
+          maxLength: 80
+          type: string
+          default: ""
+      - name: role
+        in: query
+        schema:
+          type: string
+          enum:
+          - USER
+          - ADMIN
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUsersPage"
+        "400":
+          description: Query inválida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: Se requiere administrador
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/auth/avatars/{filename}:
     get:
       tags:
@@ -879,6 +1476,472 @@ paths:
                 $ref: "#/components/schemas/ApiError"
 components:
   schemas:
+    AdminActiveRoom:
+      required:
+      - code
+      - connectedPlayers
+      - createdAt
+      - gameId
+      - gameName
+      - hostDisplayName
+      - id
+      - maxPlayers
+      - participants
+      - phase
+      - totalPlayers
+      - updatedAt
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        phase:
+          $ref: "#/components/schemas/RoomPhase"
+        gameId:
+          type: string
+          nullable: true
+        gameName:
+          type: string
+          nullable: true
+        connectedPlayers:
+          type: integer
+          format: int32
+        totalPlayers:
+          type: integer
+          format: int32
+        maxPlayers:
+          type: integer
+          format: int32
+        hostDisplayName:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        participants:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminActiveRoom.Participant"
+      description: "`AdminActiveRoom`: proyección segura para administración (sin\
+        \ estado de juego ni correos)."
+    AdminActiveRoom.Participant:
+      required:
+      - displayName
+      - id
+      - kind
+      - presence
+      - roomRole
+      type: object
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        kind:
+          $ref: "#/components/schemas/AuthUser.Kind"
+        presence:
+          $ref: "#/components/schemas/PresenceStatus"
+        roomRole:
+          $ref: "#/components/schemas/RoomRole"
+    AdminActiveRoomsPage:
+      required:
+      - items
+      - page
+      - pageSize
+      - total
+      - totalPages
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminActiveRoom"
+        page:
+          type: integer
+          format: int64
+        pageSize:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+      description: Solo documenta la página concreta en OpenAPI.
+    AdminChangelogController.EntriesResponse:
+      required:
+      - entries
+      type: object
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChangelogEntryResponse"
+    AdminChangelogController.EntryResponse:
+      required:
+      - entry
+      type: object
+      properties:
+        entry:
+          $ref: "#/components/schemas/ChangelogEntryResponse"
+    AdminCreateChangelogRequest:
+      required:
+      - content
+      - date
+      - title
+      - version
+      type: object
+      properties:
+        version:
+          pattern: "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$"
+          type: string
+        title:
+          maxLength: 120
+          minLength: 3
+          type: string
+        date:
+          type: string
+          format: date-time
+        published:
+          type: boolean
+          default: false
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChangelogChange"
+      description: "Estricto: una clave desconocida es un 400 `unrecognized_keys`."
+    AdminDataSyncController.OverviewResponse:
+      required:
+      - sources
+      type: object
+      properties:
+        sources:
+          type: array
+          items:
+            $ref: "#/components/schemas/SyncOverviewItem"
+    AdminDataSyncController.StartResponse:
+      required:
+      - accepted
+      - mode
+      - source
+      type: object
+      properties:
+        accepted:
+          type: boolean
+        source:
+          type: string
+        mode:
+          type: string
+    AdminFeedbackController.FeedbackPageResponse:
+      required:
+      - items
+      - overview
+      - page
+      - pageSize
+      - total
+      - totalPages
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/FeedbackItemResponse"
+        page:
+          type: integer
+          format: int64
+        pageSize:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        overview:
+          $ref: "#/components/schemas/FeedbackService.Overview"
+    AdminFeedbackController.FeedbackResponse:
+      required:
+      - feedback
+      type: object
+      properties:
+        feedback:
+          $ref: "#/components/schemas/FeedbackItemResponse"
+    AdminFeedbackStatusRequest:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/FeedbackStatus"
+      description: "Estricto: una clave desconocida es un 400 `unrecognized_keys`."
+    AdminGameHistoryItem:
+      required:
+      - endedAt
+      - gameId
+      - gameName
+      - id
+      - participants
+      - playerCount
+      - roomCode
+      - startedAt
+      - status
+      type: object
+      properties:
+        id:
+          type: string
+        roomCode:
+          type: string
+        gameId:
+          type: string
+        gameName:
+          type: string
+        playerCount:
+          type: integer
+          format: int32
+        status:
+          type: string
+        startedAt:
+          type: string
+        endedAt:
+          type: string
+          nullable: true
+        participants:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminGameHistoryItem.Participant"
+      description: "`AdminGameHistoryItem` de `shared/admin.ts`; los nulos se emiten\
+        \ explícitos, como Node."
+    AdminGameHistoryItem.Participant:
+      required:
+      - displayName
+      - points
+      - position
+      - userId
+      type: object
+      properties:
+        displayName:
+          type: string
+        userId:
+          type: string
+          nullable: true
+        position:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+    AdminGamesPage:
+      required:
+      - items
+      - page
+      - pageSize
+      - total
+      - totalPages
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminGameHistoryItem"
+        page:
+          type: integer
+          format: int64
+        pageSize:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+      description: Solo documenta la página concreta en OpenAPI.
+    AdminRoomHistoryItem:
+      required:
+      - closeReason
+      - code
+      - createdAt
+      - endedAt
+      - gamesStarted
+      - hostDisplayName
+      - hostUserId
+      - id
+      - maxPlayers
+      - status
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        hostDisplayName:
+          type: string
+        hostUserId:
+          type: string
+          nullable: true
+        maxPlayers:
+          type: integer
+          format: int32
+        status:
+          type: string
+        closeReason:
+          type: string
+          nullable: true
+        gamesStarted:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+        endedAt:
+          type: string
+          nullable: true
+      description: "`AdminRoomHistoryItem` de `shared/admin.ts`; los nulos se emiten\
+        \ explícitos, como Node."
+    AdminRoomsPage:
+      required:
+      - items
+      - page
+      - pageSize
+      - total
+      - totalPages
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminRoomHistoryItem"
+        page:
+          type: integer
+          format: int64
+        pageSize:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+      description: Solo documenta la página concreta en OpenAPI.
+    AdminStartDataSyncRequest:
+      type: object
+      properties:
+        full:
+          type: boolean
+          default: false
+        confirmFull:
+          type: boolean
+          default: false
+      description: Claves desconocidas ignoradas.
+    AdminSummary:
+      required:
+      - activeRooms
+      - gamesInProgress
+      - interruptedToday
+      - registeredUsers
+      - updatedAt
+      type: object
+      properties:
+        activeRooms:
+          type: integer
+          format: int32
+        gamesInProgress:
+          type: integer
+          format: int32
+        registeredUsers:
+          type: integer
+          format: int64
+        interruptedToday:
+          type: integer
+          format: int64
+        updatedAt:
+          type: string
+      description: '`AdminSummary` de `shared/admin.ts`.'
+    AdminUpdateChangelogRequest:
+      type: object
+      properties:
+        version:
+          type: string
+        title:
+          maxLength: 120
+          minLength: 3
+          type: string
+        date:
+          type: string
+          format: date-time
+        published:
+          type: boolean
+          default: false
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChangelogChange"
+      description: "Estricto. Si se omite `published`, la entrada queda despublicada\
+        \ (`published` vale `false` por defecto también al editar)."
+    AdminUserItem:
+      required:
+      - createdAt
+      - email
+      - gamesPlayed
+      - gamesWon
+      - id
+      - role
+      - totalPoints
+      - updatedAt
+      - username
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        gamesPlayed:
+          type: integer
+          format: int32
+        gamesWon:
+          type: integer
+          format: int32
+        totalPoints:
+          type: integer
+          format: int32
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      description: '`AdminUserItem` de `shared/admin.ts`.'
+    AdminUsersPage:
+      required:
+      - items
+      - page
+      - pageSize
+      - total
+      - totalPages
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminUserItem"
+        page:
+          type: integer
+          format: int64
+        pageSize:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+      description: Solo documenta la página concreta en OpenAPI.
     ApiError:
       required:
       - error
@@ -1115,6 +2178,13 @@ components:
           type: string
       description: Vista pública de una categoría (`CustomCategoryView` de `packages/shared`);
         fechas ISO con milisegundos.
+    DataSyncSource:
+      type: string
+      description: "Enum nativo `\"DataSyncSource\"` de Postgres: origen externo de\
+        \ datos."
+      enum:
+      - POKEAPI
+      - TCGDEX
     FeedbackController.FeedbackResponse:
       required:
       - feedback
@@ -1188,6 +2258,33 @@ components:
       - INTERFACE
       - CHANGELOG
       - OTHER
+    FeedbackService.Overview:
+      required:
+      - newBugs
+      - newSuggestions
+      - resolved
+      - reviewing
+      type: object
+      properties:
+        newBugs:
+          type: integer
+          format: int64
+        newSuggestions:
+          type: integer
+          format: int64
+        reviewing:
+          type: integer
+          format: int64
+        resolved:
+          type: integer
+          format: int64
+      description: '`FeedbackOverview`.'
+    FeedbackStatus:
+      type: string
+      enum:
+      - NEW
+      - REVIEWING
+      - RESOLVED
     FeedbackType:
       type: string
       enum:
@@ -1478,6 +2575,13 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Pokemon"
+    PresenceStatus:
+      type: string
+      description: '`PresenceStatus` de `room.ts`.'
+      enum:
+      - CONNECTED
+      - TEMPORARILY_DISCONNECTED
+      - LEFT
     PresetAvatarRequest:
       required:
       - presetId
@@ -1640,6 +2744,110 @@ components:
           type: string
           x-size-message: La contraseña debe tener entre 10 y 128 caracteres
           x-not-null-message: La contraseña es obligatoria
+    RoomPhase:
+      type: string
+      description: "`RoomPhase` de `room.ts`: el lobby, cualquier fase de un minijuego\
+        \ y las fases de sesión."
+      enum:
+      - LOBBY
+      - GAME_STARTING
+      - ROUND_ACTIVE
+      - ROUND_RESULTS
+      - TIEBREAKER_ACTIVE
+      - ROLE_REVEAL
+      - CLUE_PHASE
+      - VOTING
+      - VOTE_RESULTS
+      - ELIMINATION
+      - SELECTING_TYPES
+      - TYPE_REVEAL
+      - INVALID_COMBINATION
+      - POKEMON_SEARCH
+      - TURN_ACTIVE
+      - CHOICE_REVEAL
+      - DISCUSSION
+      - REVOTE
+      - GAME_RESULTS
+      - NEXT_GAME_VOTE
+      - NEXT_GAME_VOTE_RESULTS
+      - SESSION_RESULTS
+    RoomRole:
+      type: string
+      description: "Rol de permisos en la sala (`ROOM_ROLES`), independiente del rol\
+        \ en el minijuego."
+      enum:
+      - HOST
+      - CO_HOST
+      - MEMBER
+    SyncOverviewItem:
+      required:
+      - durationMs
+      - error
+      - inserted
+      - lastAttemptAt
+      - lastFullSyncAt
+      - lastSyncAt
+      - nextSyncAt
+      - ready
+      - recordsAvailable
+      - recordsProcessed
+      - skipped
+      - source
+      - status
+      - updated
+      type: object
+      properties:
+        source:
+          $ref: "#/components/schemas/DataSyncSource"
+        status:
+          $ref: "#/components/schemas/SyncOverviewItem.Status"
+        ready:
+          type: boolean
+        lastSyncAt:
+          type: string
+          nullable: true
+        lastAttemptAt:
+          type: string
+          nullable: true
+        lastFullSyncAt:
+          type: string
+          nullable: true
+        durationMs:
+          type: integer
+          format: int32
+          nullable: true
+        recordsProcessed:
+          type: integer
+          format: int32
+        inserted:
+          type: integer
+          format: int32
+        updated:
+          type: integer
+          format: int32
+        skipped:
+          type: integer
+          format: int32
+        recordsAvailable:
+          type: integer
+          format: int32
+        error:
+          type: string
+          nullable: true
+        nextSyncAt:
+          type: string
+      description: Estado de un origen para la administración (`SyncOverviewItem`
+        / `AdminDataSyncItem`). Las fechas son cadenas `toISOString()` y los nulos
+        se serializan (la configuración global omite los nulos).
+    SyncOverviewItem.Status:
+      type: string
+      description: "`IDLE` existe en el contrato, pero nunca se produce (como en Node)."
+      enum:
+      - IDLE
+      - RUNNING
+      - FAILED
+      - COMPLETED
+      - NOT_READY
     TcgCardCatalog.FilterOptions:
       required:
       - cardCount

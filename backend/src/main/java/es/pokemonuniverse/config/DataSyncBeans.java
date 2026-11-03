@@ -25,8 +25,9 @@ import javax.sql.DataSource;
 
 /**
  * Construcción del data-sync ({@code index.ts}): el servicio con los adaptadores presentes (pueden faltar mientras no
- * estén portados) y el planificador con el horario de {@code pu.data-sync}. Existen aunque el data-sync esté apagado
- * (el resumen de administración funciona); solo {@link DataSyncStartup} los pone en marcha. El oyente
+ * estén portados) y el planificador con el horario de {@code pu.data-sync}. Existen aunque el data-sync esté apagado,
+ * pero solo {@link DataSyncStartup} los pone en marcha y, apagado, las rutas de administración responden 503 como Node
+ * sin servicio ({@code AdminDataSyncController}). El oyente
  * {@code onCompleted(TCGDEX) → tcgCards.refresh()} se registra al crear el servicio, antes de que nada pueda lanzar una
  * sincronización (incluida la inicial de TCG). Igual el de {@code onCompleted(POKEAPI)}: recarga catálogo, gritos y
  * artworks y los pasa a las salas ({@code rooms.replaceCatalog}, nueva {@code catalogVersion}); las partidas en curso

@@ -6,7 +6,8 @@ import react from '@vitejs/plugin-react';
  * Con `VITE_REALTIME=java` las salas viven en Java, así que sus imágenes y gritos de ronda (`/api/rooms/…`) también, y
  * las categorías personalizadas (`/api/categories`), los dilemas (`/api/would-you-rather-prompts`) y las escrituras de
  * avatar (`/api/auth/guest/custom-avatar`, `/api/auth/profile/avatar…`), cuyos cambios debe avisar el proceso dueño de
- * las salas, y el catálogo TCG (`/api/tcg/…`), que el proceso Java solo recarga al arrancar mientras Node sincronice.
+ * las salas, el catálogo TCG (`/api/tcg/…`), que el proceso Java solo recarga al arrancar mientras Node sincronice, y
+ * la administración (`/api/admin/…`), cuyas salas activas y novedades deben ser las del mismo proceso.
  */
 export function proxyFor(realtime: string | undefined): Record<string, string | ProxyOptions> {
   return {
@@ -19,6 +20,7 @@ export function proxyFor(realtime: string | undefined): Record<string, string | 
       '^/api/would-you-rather-prompts(/|\\?|$)': 'http://localhost:8080',
       '^/api/auth/(guest/custom-avatar|profile/avatar)(/|\\?|$)': 'http://localhost:8080',
       '^/api/tcg/': 'http://localhost:8080',
+      '^/api/admin/': 'http://localhost:8080',
     } : {}),
     '/api': 'http://localhost:3001',
     '/socket.io': { target: 'http://localhost:3001', ws: true },

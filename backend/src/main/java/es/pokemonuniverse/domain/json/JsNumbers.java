@@ -2,6 +2,7 @@ package es.pokemonuniverse.domain.json;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.regex.Pattern;
 
 /**
  * Formatea números como {@code Number.prototype.toString()} de JavaScript ({@code 2}, no {@code 2.0}) y reproduce
@@ -11,6 +12,11 @@ public final class JsNumbers {
 
   private static final BigDecimal PLAIN_MIN = new BigDecimal("1e-6");
   private static final BigDecimal PLAIN_LIMIT = new BigDecimal("1e21");
+  /** {@code StrDecimalLiteral} de ECMAScript (sin {@code Infinity}, que se trata aparte). */
+  private static final Pattern DECIMAL = Pattern.compile("[+-]?(?:\\d+\\.?\\d*|\\.\\d+)(?:[eE][+-]?\\d+)?");
+  private static final Pattern HEX = Pattern.compile("0[xX][0-9a-fA-F]+");
+  private static final Pattern OCTAL = Pattern.compile("0[oO][0-7]+");
+  private static final Pattern BINARY = Pattern.compile("0[bB][01]+");
 
   /** {@code Number.MAX_SAFE_INTEGER}: {@code 2^53 - 1}. */
   public static final double MAX_SAFE_INTEGER = 9_007_199_254_740_991d;
@@ -47,5 +53,30 @@ public final class JsNumbers {
     int exponent = digits.length() - 1 - decimal.scale();
     var mantissa = digits.length() == 1 ? digits : digits.charAt(0) + "." + digits.substring(1);
     return (value < 0 ? "-" : "") + mantissa + "e" + (exponent >= 0 ? "+" : "-") + Math.abs(exponent);
+  }
+
+  /**
+   * {@code Number(text)} de JavaScript (lo que hace {@code z.coerce.number()} con una cadena): recorta los espacios de
+   * ECMAScript, la cadena vacía es {@code 0}, admite {@code 0x}/{@code 0o}/{@code 0b} sin signo, {@code Infinity} con
+   * signo opcional y literales decimales; cualquier otra cosa es {@code NaN} (también los sufijos {@code d}/{@code f}
+   * y los hexadecimales con exponente que {@link Double#parseDouble} sí acepta).
+   */
+  public static double fromString(String text) {
+    var trimmed = es.pokemonuniverse.domain.game.engine.infra.JsStrings.trim(text);
+    if (trimmed.isEmpty()) return 0;
+    switch (trimmed) {
+      case "Infinity", "+Infinity" -> {
+        return Double.POSITIVE_INFINITY;
+      }
+      case "-Infinity" -> {
+        return Double.NEGATIVE_INFINITY;
+      }
+      default -> {}
+    }
+    if (DECIMAL.matcher(trimmed).matches()) return Double.parseDouble(trimmed);
+    if (HEX.matcher(trimmed).matches()) return new BigInteger(trimmed.substring(2), 16).doubleValue();
+    if (OCTAL.matcher(trimmed).matches()) return new BigInteger(trimmed.substring(2), 8).doubleValue();
+    if (BINARY.matcher(trimmed).matches()) return new BigInteger(trimmed.substring(2), 2).doubleValue();
+    return Double.NaN;
   }
 }

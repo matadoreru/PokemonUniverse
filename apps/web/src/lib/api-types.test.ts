@@ -1,9 +1,12 @@
 import { describe, expect, expectTypeOf, it } from 'vitest';
-import type { AuthUser, ChangelogEntry, CustomCategoryView, CustomWouldYouRatherPromptView, FeedbackItem, TcgFilterOptions } from '@pokemon-universe/shared/public';
+import type { AdminActiveRoom, AdminDataSyncItem, AdminGameHistoryItem, AdminRoomHistoryItem, AdminSummary, AdminUserItem, AuthUser, ChangelogEntry, CustomCategoryView, CustomWouldYouRatherPromptView, FeedbackItem, TcgFilterOptions } from '@pokemon-universe/shared/public';
 import type { components, paths } from './api-types';
 import type { ChangelogResponse, FeedbackCreateResponse, MeResponse } from './api-contract';
 
 const ROUTES = [
+  '/api/admin/active-rooms', '/api/admin/changelog', '/api/admin/changelog/{id}', '/api/admin/data-sync',
+  '/api/admin/data-sync/{source}', '/api/admin/feedback', '/api/admin/feedback/{id}/status', '/api/admin/games',
+  '/api/admin/rooms', '/api/admin/summary', '/api/admin/users',
   '/api/auth/avatars/{filename}', '/api/auth/guest', '/api/auth/guest/custom-avatar', '/api/auth/login',
   '/api/auth/logout', '/api/auth/me', '/api/auth/profile', '/api/auth/profile/avatar', '/api/auth/profile/avatar/custom',
   '/api/auth/profile/avatar/preset', '/api/auth/register', '/api/categories', '/api/categories/{id}', '/api/changelog',
@@ -15,9 +18,9 @@ const ROUTES = [
 ] as const satisfies readonly (keyof paths)[];
 
 describe('contrato OpenAPI generado', () => {
-  it('expone exactamente las 25 rutas del backend Java', () => {
+  it('expone exactamente las 36 rutas del backend Java', () => {
     expectTypeOf<keyof paths>().toEqualTypeOf<typeof ROUTES[number]>();
-    expect(ROUTES).toHaveLength(25);
+    expect(ROUTES).toHaveLength(36);
   });
   it('las opciones TCG coinciden con las de shared y la elegibilidad valida con incidencias de Zod', () => {
     expectTypeOf<paths['/api/tcg/options']['get']['responses'][200]['content']['application/json']>().toEqualTypeOf<TcgFilterOptions>();
@@ -59,6 +62,19 @@ describe('contrato OpenAPI generado', () => {
     expectTypeOf<paths['/api/would-you-rather-prompts/{id}']['patch']['responses'][400]['content']['application/json']>()
       .toEqualTypeOf<Error400>();
     expectTypeOf<paths['/api/would-you-rather-prompts/import']['post']['responses'][400]['content']['application/json']>()
+      .toEqualTypeOf<components['schemas']['ValidationErrorResponse']>();
+  });
+  it('las respuestas de administración aceptan los tipos de shared que lee AdminPage', () => {
+    type Json<P extends keyof paths, M extends 'get' | 'post'> = NonNullable<paths[P][M]> extends { responses: infer R }
+      ? R extends { 200: { content: { 'application/json': infer B } } } ? B : never : never;
+    expectTypeOf<AdminSummary>().toEqualTypeOf<components['schemas']['AdminSummary']>();
+    expectTypeOf<AdminActiveRoom[]>().toMatchTypeOf<Json<'/api/admin/active-rooms', 'get'>['items']>();
+    expectTypeOf<AdminRoomHistoryItem[]>().toMatchTypeOf<Json<'/api/admin/rooms', 'get'>['items']>();
+    expectTypeOf<AdminGameHistoryItem[]>().toMatchTypeOf<Json<'/api/admin/games', 'get'>['items']>();
+    expectTypeOf<AdminUserItem[]>().toMatchTypeOf<Json<'/api/admin/users', 'get'>['items']>();
+    expectTypeOf<AdminDataSyncItem[]>().toMatchTypeOf<Json<'/api/admin/data-sync', 'get'>['sources']>();
+    expectTypeOf<Json<'/api/admin/feedback', 'get'>['overview']>().toHaveProperty('newBugs');
+    expectTypeOf<paths['/api/admin/users']['get']['responses'][400]['content']['application/json']>()
       .toEqualTypeOf<components['schemas']['ValidationErrorResponse']>();
   });
 });
