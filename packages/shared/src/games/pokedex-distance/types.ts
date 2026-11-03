@@ -90,7 +90,10 @@ export interface PokedexDistancePublicState {
   eligibleIds: string[];
   survivorIds: string[];
   spectatorIds: string[];
+  /** Elecciones de la ronda en curso: vacío en `HIDDEN` (el resultado las revela en `lastRound`). */
   selections: Record<string, PublicActiveSelection>;
+  /** Quién ha elegido ya en la ronda en curso, en cualquier modo; nunca qué ha elegido. */
+  selectedIds: string[];
   lockedPokemonIds: string[];
   roundStartedAt: number | null;
   roundEndsAt: number | null;

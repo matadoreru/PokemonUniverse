@@ -220,7 +220,7 @@ class RoomCoordinatorTest {
   void expiresIdentityDuringPokedexDistance() {
     var kit = new RoomTestKit(20_000, UserGameConfigPreferences.NO_OP);
     var room = kit.room(8, guest("host", "Host"), guest("ana", "Ana"), guest("carlos", "Carlos"));
-    kit.manager.updateConfig("host", json("{\"generations\":[1],\"roundSeconds\":60}"));
+    kit.manager.updateConfig("host", json("{\"generations\":[1],\"roundSeconds\":60,\"selectionVisibility\":\"HIDDEN\"}"));
     kit.startReady(room, "host");
     kit.manager.disconnect("carlos", "socket-carlos");
     kit.time.advance(30_000);
@@ -502,7 +502,7 @@ class RoomCoordinatorTest {
     kit.manager.returnLobby("host");
 
     kit.manager.selectGame("host", "pokedex-distance");
-    kit.manager.updateConfig("host", json("{\"generations\":[1],\"roundSeconds\":10}"));
+    kit.manager.updateConfig("host", json("{\"generations\":[1],\"roundSeconds\":10,\"selectionVisibility\":\"HIDDEN\"}"));
     kit.startReady(room, "host");
     assertEquals("pokedex-distance", room.game.gameId);
     var view = kit.manager.view(room, "guest");
@@ -1071,7 +1071,7 @@ class RoomCoordinatorTest {
       @Override
       public Map<String, JsonNode> forUser(String userId) {
         loaded.add(userId);
-        return Map.of("pokedex-distance", json("{\"generations\":[1],\"roundSeconds\":25}"));
+        return Map.of("pokedex-distance", json("{\"generations\":[1],\"roundSeconds\":25,\"selectionVisibility\":\"HIDDEN\"}"));
       }
 
       @Override
@@ -1082,7 +1082,7 @@ class RoomCoordinatorTest {
     var kit = new RoomTestKit(50_000, preferences);
     var room = kit.room(8, user("host-user", "Host", "host@example.com"));
     assertEquals(List.of("host-user"), loaded);
-    assertTrue(JsonTree.equal(json("{\"generations\":[1],\"roundSeconds\":25}"), room.gameConfigs.get("pokedex-distance")));
+    assertTrue(JsonTree.equal(json("{\"generations\":[1],\"roundSeconds\":25,\"selectionVisibility\":\"HIDDEN\"}"), room.gameConfigs.get("pokedex-distance")));
     kit.manager.selectGame("host-user", "higher-lower");
     var next = new LinkedHashMap<>(RoomTestKit.asMap(room.gameConfigs.get("higher-lower")));
     next.put("rounds", 3);
@@ -1093,10 +1093,10 @@ class RoomCoordinatorTest {
     loaded.clear();
     saved.clear();
     var guestRoom = guestKit.room(8, guest("guest-host", "Guest Host"));
-    guestKit.manager.updateConfig("guest-host", json("{\"generations\":[1],\"roundSeconds\":25}"));
+    guestKit.manager.updateConfig("guest-host", json("{\"generations\":[1],\"roundSeconds\":25,\"selectionVisibility\":\"HIDDEN\"}"));
     assertEquals(List.of(), loaded);
     assertEquals(List.of(), saved);
-    assertTrue(JsonTree.equal(json("{\"generations\":[1],\"roundSeconds\":25}"), guestRoom.gameConfigs.get("pokedex-distance")));
+    assertTrue(JsonTree.equal(json("{\"generations\":[1],\"roundSeconds\":25,\"selectionVisibility\":\"HIDDEN\"}"), guestRoom.gameConfigs.get("pokedex-distance")));
   }
 
   @Test

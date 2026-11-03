@@ -22,7 +22,8 @@
       1,
       2
     ],
-    "roundSeconds": 20
+    "roundSeconds": 20,
+    "selectionVisibility": "LIVE"
   },
   "steps": [
     {
@@ -125,7 +126,8 @@
         1,
         2
       ],
-      "roundSeconds": 20
+      "roundSeconds": 20,
+      "selectionVisibility": "LIVE"
     },
     "initial": {
       "lifecycle": {
@@ -148,6 +150,7 @@
         ],
         "spectatorIds": [],
         "selections": {},
+        "selectedIds": [],
         "lockedPokemonIds": [],
         "roundStartedAt": null,
         "roundEndsAt": null,
@@ -200,6 +203,7 @@
         ],
         "spectatorIds": [],
         "selections": {},
+        "selectedIds": [],
         "lockedPokemonIds": [],
         "roundStartedAt": 1000,
         "roundEndsAt": 21000,
@@ -256,6 +260,7 @@
             ],
             "spectatorIds": [],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 1000,
             "roundEndsAt": 21000,
@@ -318,6 +323,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/250.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "ho-oh"
             ],
@@ -391,6 +399,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "ho-oh",
               "celebi"
@@ -477,6 +489,11 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/240.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
             "lockedPokemonIds": [
               "ho-oh",
               "celebi",
@@ -590,6 +607,7 @@
               "p3"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 10000,
             "roundEndsAt": 30000,
@@ -648,6 +666,7 @@
               "p3"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 10000,
             "roundEndsAt": 30000,
@@ -712,6 +731,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/140.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "kabuto"
             ],
@@ -787,6 +809,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "kabuto",
               "chikorita"
@@ -888,6 +914,7 @@
               "p3"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 19000,
             "roundEndsAt": 39000,
@@ -952,6 +979,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png"
               }
             },
+            "selectedIds": [
+              "p2"
+            ],
             "lockedPokemonIds": [
               "misdreavus"
             ],
@@ -1028,6 +1058,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/225.png"
               }
             },
+            "selectedIds": [
+              "p2",
+              "p1"
+            ],
             "lockedPokemonIds": [
               "misdreavus",
               "delibird"
@@ -1139,6 +1173,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/225.png"
               }
             },
+            "selectedIds": [
+              "p2",
+              "p1"
+            ],
             "lockedPokemonIds": [
               "misdreavus",
               "delibird"

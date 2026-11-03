@@ -214,7 +214,7 @@ class UserGameConfigServiceTest {
   void loadMigratesKnownRowsSkipsUnknownGamesAndRewritesOnlyChangedRows() {
     store.rows.add(new StoredUserGameConfig("u1", "higher-lower", higherLower(4)));
     store.rows.add(new StoredUserGameConfig("u1", "pokedex-distance",
-        json("{\"roundSeconds\":25,\"generations\":[1]}")));
+        json("{\"roundSeconds\":25,\"selectionVisibility\":\"LIVE\",\"generations\":[1]}")));
     store.rows.add(new StoredUserGameConfig("u2", "juego-retirado", json("{\"rounds\":1}")));
     store.rows.add(new StoredUserGameConfig("u2", "higher-lower", json("\"corrupto\"")));
     service.load();

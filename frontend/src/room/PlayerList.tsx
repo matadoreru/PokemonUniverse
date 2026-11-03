@@ -2,6 +2,7 @@ import type { PokedexDistancePublicState, RoomMemberView } from '@pokemon-univer
 import { ArrowRightLeft, CheckCircle2, Circle, Crown, Eye, MoreVertical, Star, UserMinus, UserRoundCog, WifiOff } from 'lucide-react';
 import { memo } from 'react';
 import { Avatar } from '../components/Avatar';
+import { DISTANCE_HIDDEN_PICKED_LABEL, distanceMemberStatus } from './pokedex-distance-selection';
 
 interface Props {
   members: RoomMemberView[];
@@ -36,7 +37,8 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
         const role = roomRoleCopy[member.roomRole];
         const RoleIcon = role.icon;
         const manageable = canManage && member.roomRole !== 'HOST' && member.id !== selfId;
-        const selection = game?.selections[member.id];
+        const status = game ? distanceMemberStatus(game, member.id) : null;
+        const selection = status?.kind === 'picked' ? status : null;
         const readiness = member.roomRole === 'HOST'
           ? { label: 'Controla el inicio', className: 'text-electric', icon: Crown }
           : member.presence !== 'CONNECTED'
@@ -54,7 +56,7 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
                 {member.id === selfId && <span className="text-xs text-ink/55">(tú)</span>}
                 {!member.connected && <WifiOff size={14} className="shrink-0 text-electric" aria-hidden="true" />}
               </div>
-              {selection ? <p className="truncate text-sm font-bold text-ink/70">→ {selection.pokemonName}</p> : game && member.role === 'PLAYER' ? <p className="text-sm font-bold text-ink/55">seleccionando…</p> : <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-extrabold">
+              {selection ? <p className="truncate text-sm font-bold text-ink/70">→ {selection.pokemonName}</p> : status?.kind === 'hidden-picked' && member.role === 'PLAYER' ? <p className="text-sm font-bold text-leaf">{DISTANCE_HIDDEN_PICKED_LABEL}</p> : game && member.role === 'PLAYER' ? <p className="text-sm font-bold text-ink/55">seleccionando…</p> : <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-extrabold">
                 <span className={`inline-flex items-center gap-1 ${role.className}`}>{RoleIcon && <RoleIcon size={13} fill="currentColor" />} {role.label}</span>
                 <span className="text-ink/45">·</span>
                 <span className="text-ink/60">{member.role === 'SPECTATOR' ? 'Espectador' : `${member.sessionPoints} pts`}</span>

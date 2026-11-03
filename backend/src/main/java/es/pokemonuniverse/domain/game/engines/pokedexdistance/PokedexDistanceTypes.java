@@ -263,6 +263,7 @@ public final class PokedexDistanceTypes {
       List<String> survivorIds,
       List<String> spectatorIds,
       Map<String, PublicActiveSelection> selections,
+      List<String> selectedIds,
       List<String> lockedPokemonIds,
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
@@ -289,6 +290,7 @@ public final class PokedexDistanceTypes {
       private List<String> survivorIds;
       private List<String> spectatorIds;
       private Map<String, PublicActiveSelection> selections;
+      private List<String> selectedIds;
       private List<String> lockedPokemonIds;
       private Long roundStartedAt;
       private Long roundEndsAt;
@@ -317,6 +319,8 @@ public final class PokedexDistanceTypes {
 
       Builder selections(Map<String, PublicActiveSelection> value) { selections = value; return this; }
 
+      Builder selectedIds(List<String> value) { selectedIds = value; return this; }
+
       Builder lockedPokemonIds(List<String> value) { lockedPokemonIds = value; return this; }
 
       Builder roundStartedAt(@Nullable Long value) { roundStartedAt = value; return this; }
@@ -336,6 +340,7 @@ public final class PokedexDistanceTypes {
             Objects.requireNonNull(phase, "phase"), roundNumber, tiebreakDepth, targetDexNumber,
             Objects.requireNonNull(eligibleIds, "eligibleIds"), Objects.requireNonNull(survivorIds, "survivorIds"),
             Objects.requireNonNull(spectatorIds, "spectatorIds"), Objects.requireNonNull(selections, "selections"),
+            Objects.requireNonNull(selectedIds, "selectedIds"),
             Objects.requireNonNull(lockedPokemonIds, "lockedPokemonIds"), roundStartedAt, roundEndsAt, lastRound,
             winnerId, nextTransitionAt, results);
       }

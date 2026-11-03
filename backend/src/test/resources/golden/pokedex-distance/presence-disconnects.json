@@ -26,7 +26,8 @@
       1,
       2
     ],
-    "roundSeconds": 20
+    "roundSeconds": 20,
+    "selectionVisibility": "LIVE"
   },
   "steps": [
     {
@@ -215,7 +216,8 @@
         1,
         2
       ],
-      "roundSeconds": 20
+      "roundSeconds": 20,
+      "selectionVisibility": "LIVE"
     },
     "initial": {
       "lifecycle": {
@@ -239,6 +241,7 @@
         ],
         "spectatorIds": [],
         "selections": {},
+        "selectedIds": [],
         "lockedPokemonIds": [],
         "roundStartedAt": null,
         "roundEndsAt": null,
@@ -298,6 +301,7 @@
         ],
         "spectatorIds": [],
         "selections": {},
+        "selectedIds": [],
         "lockedPokemonIds": [],
         "roundStartedAt": 1000,
         "roundEndsAt": 21000,
@@ -367,6 +371,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "kingdra"
             ],
@@ -440,6 +447,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "kingdra"
             ],
@@ -520,6 +530,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/240.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "kingdra",
               "magby"
@@ -613,6 +627,11 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
             "lockedPokemonIds": [
               "kingdra",
               "magby",
@@ -754,6 +773,11 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
             "lockedPokemonIds": [
               "kingdra",
               "magby",
@@ -875,6 +899,7 @@
               "p4"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 11000,
             "roundEndsAt": 31000,
@@ -938,6 +963,7 @@
               "p4"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 11000,
             "roundEndsAt": 31000,
@@ -1009,6 +1035,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/202.png"
               }
             },
+            "selectedIds": [
+              "p2"
+            ],
             "lockedPokemonIds": [
               "wobbuffet"
             ],
@@ -1091,6 +1120,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/234.png"
               }
             },
+            "selectedIds": [
+              "p2",
+              "p1"
+            ],
             "lockedPokemonIds": [
               "wobbuffet",
               "stantler"
@@ -1177,6 +1210,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/234.png"
               }
             },
+            "selectedIds": [
+              "p2",
+              "p1"
+            ],
             "lockedPokemonIds": [
               "wobbuffet",
               "stantler"
@@ -1285,6 +1322,7 @@
               "p3"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 21000,
             "roundEndsAt": 41000,
@@ -1348,6 +1386,7 @@
               "p3"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 21000,
             "roundEndsAt": 41000,
@@ -1411,6 +1450,7 @@
               "p3"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 21000,
             "roundEndsAt": 41000,
@@ -1475,6 +1515,7 @@
               "p2"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 21000,
             "roundEndsAt": null,
@@ -1555,6 +1596,7 @@
               "p2"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 21000,
             "roundEndsAt": null,

@@ -9,6 +9,8 @@ import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
+import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceConfig.SelectionVisibility;
+import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.PokedexDistanceAction;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
@@ -49,9 +51,53 @@ class PokedexDistanceEngineTest {
 
   @Test
   void acceptsIntegralDoublesAndRejectsFractions() throws IOException {
-    assertEquals(10, engine.parseConfig(json("{\"generations\":[1.0],\"roundSeconds\":10.0}")).roundSeconds());
-    assertThrows(ConfigValidationException.class,
-        () -> engine.parseConfig(json("{\"generations\":[1],\"roundSeconds\":null}")));
+    assertEquals(10, engine.parseConfig(
+        json("{\"generations\":[1.0],\"roundSeconds\":10.0,\"selectionVisibility\":\"HIDDEN\"}")).roundSeconds());
+    assertThrows(ConfigValidationException.class, () -> engine.parseConfig(
+        json("{\"generations\":[1],\"roundSeconds\":null,\"selectionVisibility\":\"HIDDEN\"}")));
+  }
+
+  @Test
+  void selectionVisibilityDefaultsToHiddenAndIsRequired() throws IOException {
+    assertEquals(SelectionVisibility.HIDDEN, engine.defaultConfig().selectionVisibility());
+    assertEquals(SelectionVisibility.LIVE, engine.parseConfig(
+        json("{\"generations\":[1],\"roundSeconds\":20,\"selectionVisibility\":\"LIVE\"}")).selectionVisibility());
+    var missing = assertThrows(ConfigValidationException.class,
+        () -> engine.parseConfig(json("{\"generations\":[1],\"roundSeconds\":20}")));
+    assertEquals("Configuración de Pokédex Distance no válida: falta selectionVisibility.", missing.getMessage());
+    var invalid = assertThrows(ConfigValidationException.class, () -> engine.parseConfig(
+        json("{\"generations\":[1],\"roundSeconds\":20,\"selectionVisibility\":\"SECRET\"}")));
+    assertEquals("Configuración de Pokédex Distance no válida: selectionVisibility tiene un valor no válido.",
+        invalid.getMessage());
+  }
+
+  @Test
+  void hiddenAcceptsDuplicatePicksAndOnlyPublishesWhoPicked() {
+    var context = context(3);
+    var state = engine.start(engine.createInitialState(engine.defaultConfig(), context), context);
+    var first = engine.handleAction(state, "p1", new PokedexDistanceAction("pikachu"), context);
+    var second = engine.handleAction(first.state(), "p2", new PokedexDistanceAction("pikachu"), context);
+    assertTrue(first.accepted());
+    assertTrue(second.accepted());
+    assertEquals(List.of(), second.state().lockedPokemonIds());
+    var view = engine.getPublicState(second.state(), context);
+    assertTrue(view.selections().isEmpty());
+    assertEquals(List.of("p1", "p2"), view.selectedIds());
+    assertEquals("pikachu", engine.getPlayerState(second.state(), "p1", context).selection().pokemonId());
+  }
+
+  @Test
+  void liveKeepsTheLockAndTheLiveSelections() {
+    var context = context(3);
+    var live = new PokedexDistanceConfig(List.of(1, 2), 20, SelectionVisibility.LIVE);
+    var state = engine.start(engine.createInitialState(live, context), context);
+    var first = engine.handleAction(state, "p1", new PokedexDistanceAction("pikachu"), context);
+    var duplicate = engine.handleAction(first.state(), "p2", new PokedexDistanceAction("pikachu"), context);
+    assertEquals("Ese Pokémon ya ha sido elegido.", duplicate.error());
+    var view = engine.getPublicState(first.state(), context);
+    assertEquals("Pikachu", view.selections().get("p1").pokemonName());
+    assertEquals(List.of("p1"), view.selectedIds());
+    assertEquals(List.of("pikachu"), view.lockedPokemonIds());
   }
 
   @Test
@@ -74,7 +120,7 @@ class PokedexDistanceEngineTest {
     var config = engine.defaultConfig();
     var error = assertThrows(EngineException.class, () -> engine.createInitialState(config, context(1)));
     assertEquals("At least 2 players are required", error.getMessage());
-    var tiny = new PokedexDistanceConfig(List.of(9), 20); // gen1-2 no tiene Pokémon de la generación 9
+    var tiny = new PokedexDistanceConfig(List.of(9), 20, SelectionVisibility.HIDDEN); // gen1-2 no tiene Pokémon de la generación 9
     error = assertThrows(EngineException.class, () -> engine.createInitialState(tiny, context(2)));
     assertEquals("The Pokémon pool is too small for this player count", error.getMessage());
   }

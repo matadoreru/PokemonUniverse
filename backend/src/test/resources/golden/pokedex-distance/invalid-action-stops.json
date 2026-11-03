@@ -18,7 +18,8 @@
       1,
       2
     ],
-    "roundSeconds": 20
+    "roundSeconds": 20,
+    "selectionVisibility": "LIVE"
   },
   "steps": [
     {
@@ -55,7 +56,8 @@
         1,
         2
       ],
-      "roundSeconds": 20
+      "roundSeconds": 20,
+      "selectionVisibility": "LIVE"
     },
     "initial": {
       "lifecycle": {
@@ -77,6 +79,7 @@
         ],
         "spectatorIds": [],
         "selections": {},
+        "selectedIds": [],
         "lockedPokemonIds": [],
         "roundStartedAt": null,
         "roundEndsAt": null,
@@ -122,6 +125,7 @@
         ],
         "spectatorIds": [],
         "selections": {},
+        "selectedIds": [],
         "lockedPokemonIds": [],
         "roundStartedAt": 1000,
         "roundEndsAt": 21000,
@@ -177,6 +181,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "bulbasaur"
             ],

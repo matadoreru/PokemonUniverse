@@ -349,3 +349,47 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     await sala.cerrar();
   }
 });
+
+test('pokedex-distance: elección de los rivales oculta y panel de visibilidad', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, invitados, jugadores } = sala;
+    await seleccionarJuego(host.page, 'Pokédex Distance');
+    // Panel: «Ocultas» por defecto; «Visibles» muestra el aviso de copia. Se captura con el aviso y se vuelve a ocultas.
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    const ocultas = host.page.getByRole('button', { name: 'Ocultas', exact: true });
+    const visibles = host.page.getByRole('button', { name: 'Visibles', exact: true });
+    await expect(ocultas).toHaveAttribute('aria-pressed', 'true');
+    const aviso = host.page.getByText('Permite copiar: los demás ven tu elección al momento.');
+    await expect(aviso).toHaveCount(0);
+    await visibles.click();
+    await expect(visibles).toHaveAttribute('aria-pressed', 'true');
+    await expect(aviso).toBeVisible();
+    // Desde arriba, como el resto de capturas del lobby: con la página desplazada la cabecera fija solapa las pestañas.
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'lobby-config-pokedex-distance', { claro: { w: 1920, h: 1080 } });
+    await ocultas.click();
+    await expect(ocultas).toHaveAttribute('aria-pressed', 'true');
+    await expect(aviso).toHaveCount(0);
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+
+    // Un invitado elige: él ve su confirmación (estado privado) y el host solo ve que ya ha elegido, nunca el Pokémon.
+    const [eligeAntes] = invitados;
+    const buscador = eligeAntes!.page.getByRole('textbox', { name: 'Buscar Pokémon' });
+    await buscador.fill('Pikachu', { timeout: 20_000 });
+    // El catálogo del buscador llega por HTTP: se espera a la coincidencia antes de elegirla.
+    await eligeAntes!.page.getByRole('button', { name: 'Pikachu', exact: true }).click({ timeout: 10_000 });
+    await expect(eligeAntes!.page.getByRole('heading', { name: /Selección confirmada|EXACT HIT/ })).toBeVisible({ timeout: 10_000 });
+    const yaHaElegido = host.page.getByText('✓ Ya ha elegido', { exact: true });
+    await expect(yaHaElegido).toHaveCount(1, { timeout: 10_000 });
+    await expect(host.page.getByText(/→ Pikachu/)).toHaveCount(0);
+    await expect(host.page.getByRole('heading', { name: 'En la ronda' })).toBeVisible();
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-pokedex-distance-oculta', { sigue: yaHaElegido, claro: true });
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});

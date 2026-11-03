@@ -22,7 +22,8 @@
       1,
       2
     ],
-    "roundSeconds": 20
+    "roundSeconds": 20,
+    "selectionVisibility": "LIVE"
   },
   "steps": [
     {
@@ -159,7 +160,8 @@
         1,
         2
       ],
-      "roundSeconds": 20
+      "roundSeconds": 20,
+      "selectionVisibility": "LIVE"
     },
     "initial": {
       "lifecycle": {
@@ -182,6 +184,7 @@
         ],
         "spectatorIds": [],
         "selections": {},
+        "selectedIds": [],
         "lockedPokemonIds": [],
         "roundStartedAt": null,
         "roundEndsAt": null,
@@ -234,6 +237,7 @@
         ],
         "spectatorIds": [],
         "selections": {},
+        "selectedIds": [],
         "lockedPokemonIds": [],
         "roundStartedAt": 1000,
         "roundEndsAt": 21000,
@@ -296,6 +300,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "nidorina"
             ],
@@ -369,6 +376,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/36.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "nidorina",
               "clefable"
@@ -452,6 +463,11 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/33.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
             "lockedPokemonIds": [
               "nidorina",
               "clefable",
@@ -563,6 +579,7 @@
             ],
             "spectatorIds": [],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 10000,
             "roundEndsAt": 30000,
@@ -618,6 +635,7 @@
             ],
             "spectatorIds": [],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 10000,
             "roundEndsAt": 30000,
@@ -679,6 +697,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
               }
             },
+            "selectedIds": [
+              "p2"
+            ],
             "lockedPokemonIds": [
               "entei"
             ],
@@ -751,6 +772,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/240.png"
               }
             },
+            "selectedIds": [
+              "p2",
+              "p1"
+            ],
             "lockedPokemonIds": [
               "entei",
               "magby"
@@ -849,6 +874,7 @@
             ],
             "spectatorIds": [],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 19000,
             "roundEndsAt": 39000,
@@ -910,6 +936,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "raichu"
             ],
@@ -982,6 +1011,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "raichu",
               "doduo"
@@ -1080,6 +1113,7 @@
             ],
             "spectatorIds": [],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 27000,
             "roundEndsAt": 47000,
@@ -1141,6 +1175,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "electabuzz"
             ],
@@ -1206,6 +1243,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "electabuzz"
             ],
@@ -1274,6 +1314,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "electabuzz"
             ],
@@ -1362,6 +1405,7 @@
               "p2"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 53000,
             "roundEndsAt": 73000,
@@ -1426,6 +1470,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/92.png"
               }
             },
+            "selectedIds": [
+              "p3"
+            ],
             "lockedPokemonIds": [
               "gastly"
             ],
@@ -1502,6 +1549,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
               }
             },
+            "selectedIds": [
+              "p3",
+              "p1"
+            ],
             "lockedPokemonIds": [
               "gastly",
               "voltorb"
@@ -1613,6 +1664,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
               }
             },
+            "selectedIds": [
+              "p3",
+              "p1"
+            ],
             "lockedPokemonIds": [
               "gastly",
               "voltorb"

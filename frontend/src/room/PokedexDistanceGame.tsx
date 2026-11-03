@@ -1,23 +1,25 @@
-import type { PokedexDistancePlayerState, PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { PokedexDistanceConfig, PokedexDistancePlayerState, PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared/public';
 import { AlertTriangle, Clock3, Crosshair, Eye, Target, Trophy, UserX } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { PlayerList } from './PlayerList';
 import { PokemonSelector } from './PokemonSelector';
+import { distanceSpectatorHint } from './pokedex-distance-selection';
 
 export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
   const game = room.game as PokedexDistancePublicState;
   const playerState = room.gamePlayerState as PokedexDistancePlayerState | null;
-  const generations = (room.selectedGameConfig as { generations: number[] }).generations;
+  const config = room.selectedGameConfig as PokedexDistanceConfig;
+  const generations = config.generations;
   const { pokemon } = usePokemonPool({ generations });
   const serverOffset = useServerOffset(room.serverNow);
-  const remainingMs = useRemainingMs(game.roundEndsAt, serverOffset); const totalMs = (room.selectedGameConfig as { roundSeconds: number }).roundSeconds * 1_000;
+  const remainingMs = useRemainingMs(game.roundEndsAt, serverOffset); const totalMs = config.roundSeconds * 1_000;
   const resultsRemainingMs = useRemainingMs(game.nextTransitionAt, serverOffset);
   const remaining = Math.ceil(remainingMs / 1_000); const progress = Math.min(100, remainingMs / totalMs * 100);
   const member = room.members.find((item) => item.id === selfId);
   const activePhase = game.phase === 'ROUND_ACTIVE' || game.phase === 'TIEBREAKER_ACTIVE';
-  const eligible = game.eligibleIds.includes(selfId); const hasSelection = Boolean(game.selections[selfId]);
+  const eligible = game.eligibleIds.includes(selfId); const hasSelection = Boolean(playerState?.selection);
   return <section className="mx-auto max-w-7xl px-4 py-5 md:px-8">
     <div className="mb-5 grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
       <div className="flex gap-2"><span className="chip">Ronda {game.roundNumber}</span>{game.tiebreakDepth > 0 && <span className="chip bg-berry/15 text-berry">Desempate {game.tiebreakDepth}</span>}</div>
@@ -42,7 +44,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
     </div>}
     {game.phase !== 'ROUND_RESULTS' && <div className="grid gap-5 lg:grid-cols-[340px_1fr]">
       <aside className="card !p-4"><div className="mb-3 flex items-center justify-between"><h2 className="font-display text-xl font-bold">En la ronda</h2><span className="chip">{game.survivorIds.length} siguen</span></div><PlayerList members={room.members} game={game} selfId={selfId} /></aside>
-      <div>{activePhase && eligible && !hasSelection ? <PokemonSelector pokemon={pokemon} locked={new Set(game.lockedPokemonIds)} disabled={false} onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId })} /> : <div className={`card grid min-h-[280px] place-items-center text-center ${playerState?.exactHit ? '!border-leaf bg-leaf/10' : ''}`}><div>{member?.role === 'SPECTATOR' || !eligible ? <><Eye className="mx-auto text-aqua" size={48} /><h2 className="mt-4 font-display text-2xl font-bold">Estás observando</h2><p className="mt-2 font-bold text-ink/65">Sigue las selecciones en directo.</p></> : hasSelection && playerState?.exactHit ? <div className="reveal-pop"><div className="mx-auto grid h-24 w-24 place-items-center rounded-full border-4 border-leaf bg-leaf/20 text-leaf shadow-[0_0_40px_rgba(77,210,140,.35)]"><Crosshair size={52} /></div><span className="label mt-5 text-leaf">Distancia 0</span><h2 className="mt-1 font-display text-4xl font-bold text-leaf">¡EXACT HIT!</h2><p className="mt-2 font-bold text-ink/60">Has elegido exactamente el Pokémon objetivo.</p><span className="chip mt-4 bg-leaf/15 text-leaf">Selección bloqueada ✓</span></div> : hasSelection ? <><div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-leaf/20 text-4xl">✓</div><h2 className="mt-4 font-display text-2xl font-bold">¡Selección confirmada!</h2><p className="mt-2 font-bold text-ink/65">Ya está bloqueada en el servidor.</p></> : <><Clock3 className="mx-auto text-aqua" size={48} /><h2 className="mt-4 font-display text-2xl font-bold">Siguiente ronda en breve…</h2></>}</div></div>}</div>
+      <div>{activePhase && eligible && !hasSelection ? <PokemonSelector pokemon={pokemon} locked={new Set(game.lockedPokemonIds)} disabled={false} onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId })} /> : <div className={`card grid min-h-[280px] place-items-center text-center ${playerState?.exactHit ? '!border-leaf bg-leaf/10' : ''}`}><div>{member?.role === 'SPECTATOR' || !eligible ? <><Eye className="mx-auto text-aqua" size={48} /><h2 className="mt-4 font-display text-2xl font-bold">Estás observando</h2><p className="mt-2 font-bold text-ink/65">{distanceSpectatorHint(config.selectionVisibility)}</p></> : hasSelection && playerState?.exactHit ? <div className="reveal-pop"><div className="mx-auto grid h-24 w-24 place-items-center rounded-full border-4 border-leaf bg-leaf/20 text-leaf shadow-[0_0_40px_rgba(77,210,140,.35)]"><Crosshair size={52} /></div><span className="label mt-5 text-leaf">Distancia 0</span><h2 className="mt-1 font-display text-4xl font-bold text-leaf">¡EXACT HIT!</h2><p className="mt-2 font-bold text-ink/60">Has elegido exactamente el Pokémon objetivo.</p><span className="chip mt-4 bg-leaf/15 text-leaf">Selección bloqueada ✓</span></div> : hasSelection ? <><div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-leaf/20 text-4xl">✓</div><h2 className="mt-4 font-display text-2xl font-bold">¡Selección confirmada!</h2><p className="mt-2 font-bold text-ink/65">Ya está bloqueada en el servidor.</p></> : <><Clock3 className="mx-auto text-aqua" size={48} /><h2 className="mt-4 font-display text-2xl font-bold">Siguiente ronda en breve…</h2></>}</div></div>}</div>
     </div>}
   </section>;
 }

@@ -12,6 +12,7 @@ import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
+import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceConfig.SelectionVisibility;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.EliminationReason;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.EliminationRecord;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.PlayerRoundStats;
@@ -216,7 +217,8 @@ public final class PokedexDistanceEngine implements
     if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
       return GameActionResult.reject(resolveRound(state, context), "Round has ended");
     }
-    if (state.lockedPokemonIds().contains(action.pokemonId())) {
+    boolean live = state.config().selectionVisibility() == SelectionVisibility.LIVE;
+    if (live && state.lockedPokemonIds().contains(action.pokemonId())) {
       return GameActionResult.reject(state, "Ese Pokémon ya ha sido elegido.");
     }
     Optional<Pokemon> found = context.pokemon().byId(action.pokemonId());
@@ -231,8 +233,9 @@ public final class PokedexDistanceEngine implements
     var stats = state.playerStats().getOrDefault(playerId, PokedexDistanceRules.emptyPlayerStats());
     var selections = new LinkedHashMap<>(state.selections());
     selections.put(playerId, new RoundSelection(pokemon.id(), pokemon.nationalDexNumber(), distance, context.now()));
+    // En HIDDEN no hay bloqueo: dos jugadores pueden elegir el mismo Pokémon y reciben la misma distancia.
     var lockedPokemonIds = new ArrayList<>(state.lockedPokemonIds());
-    lockedPokemonIds.add(pokemon.id());
+    if (live) lockedPokemonIds.add(pokemon.id());
     var playerStats = new LinkedHashMap<>(state.playerStats());
     playerStats.put(playerId, stats.afterSelection(distance));
     var next = state.toBuilder()
@@ -266,12 +269,15 @@ public final class PokedexDistanceEngine implements
 
   @Override
   public PokedexDistancePublicState getPublicState(PokedexDistanceState state, GameContext context) {
+    // En HIDDEN nadie ve qué han elegido los demás hasta el resultado (también en los desempates); solo quién.
     var selections = new LinkedHashMap<String, PublicActiveSelection>();
-    state.selections().forEach((playerId, selection) -> {
-      var pokemon = context.pokemon().byId(selection.pokemonId());
-      selections.put(playerId, new PublicActiveSelection(selection.pokemonId(), selection.selectedAt(),
-          pokemon.map(Pokemon::name).orElse("Unknown"), pokemon.map(Pokemon::sprite).orElse("")));
-    });
+    if (state.config().selectionVisibility() == SelectionVisibility.LIVE) {
+      state.selections().forEach((playerId, selection) -> {
+        var pokemon = context.pokemon().byId(selection.pokemonId());
+        selections.put(playerId, new PublicActiveSelection(selection.pokemonId(), selection.selectedAt(),
+            pokemon.map(Pokemon::name).orElse("Unknown"), pokemon.map(Pokemon::sprite).orElse("")));
+      });
+    }
     PublicRoundResult lastRound = null;
     var round = state.lastRound();
     if (round != null) {
@@ -298,6 +304,7 @@ public final class PokedexDistanceEngine implements
         .survivorIds(state.survivorIds())
         .spectatorIds(state.spectatorIds())
         .selections(selections)
+        .selectedIds(List.copyOf(state.selections().keySet()))
         .lockedPokemonIds(state.lockedPokemonIds())
         .roundStartedAt(state.roundStartedAt())
         .roundEndsAt(state.roundEndsAt())

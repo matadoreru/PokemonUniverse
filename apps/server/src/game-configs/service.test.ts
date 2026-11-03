@@ -32,7 +32,7 @@ describe('user game configuration preferences', () => {
   it('repairs only invalid branches before falling back to the complete default', () => {
     const game = gameRegistry.get('pokedex-distance')!;
     expect(migrateStoredGameConfig(game, { generations: [1], roundSeconds: 999 })).toEqual({
-      generations: [1], roundSeconds: 20,
+      generations: [1], roundSeconds: 20, selectionVisibility: 'HIDDEN',
     });
     expect(migrateStoredGameConfig(game, 'corrupt')).toEqual(game.defaultConfig);
   });
@@ -42,19 +42,19 @@ describe('user game configuration preferences', () => {
     const service = new UserGameConfigService(data);
     await service.load();
 
-    expect(service.forUser('u1').get('pokedex-distance')).toEqual({ generations: [1], roundSeconds: 20 });
-    expect(data.upsert).toHaveBeenCalledWith('u1', 'pokedex-distance', { generations: [1], roundSeconds: 20 });
+    expect(service.forUser('u1').get('pokedex-distance')).toEqual({ generations: [1], roundSeconds: 20, selectionVisibility: 'HIDDEN' });
+    expect(data.upsert).toHaveBeenCalledWith('u1', 'pokedex-distance', { generations: [1], roundSeconds: 20, selectionVisibility: 'HIDDEN' });
 
     data.upsert.mockClear();
-    service.save('u1', 'pokedex-distance', { generations: [1], roundSeconds: 25 });
-    service.save('u1', 'pokedex-distance', { generations: [2], roundSeconds: 30 });
+    service.save('u1', 'pokedex-distance', { generations: [1], roundSeconds: 25, selectionVisibility: 'LIVE' });
+    service.save('u1', 'pokedex-distance', { generations: [2], roundSeconds: 30, selectionVisibility: 'LIVE' });
     service.save('u1', 'shiny-vote', {
       generations: [1], roundSeconds: 15, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE',
     });
     await service.flush();
 
     expect(data.upsert).toHaveBeenCalledTimes(2);
-    expect(data.upsert).toHaveBeenCalledWith('u1', 'pokedex-distance', { generations: [2], roundSeconds: 30 });
+    expect(data.upsert).toHaveBeenCalledWith('u1', 'pokedex-distance', { generations: [2], roundSeconds: 30, selectionVisibility: 'LIVE' });
     expect(data.upsert).toHaveBeenCalledWith('u1', 'shiny-vote', expect.objectContaining({ rounds: 2 }));
   });
 });

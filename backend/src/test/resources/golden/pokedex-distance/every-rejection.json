@@ -21,7 +21,8 @@
     "generations": [
       1
     ],
-    "roundSeconds": 10
+    "roundSeconds": 10,
+    "selectionVisibility": "LIVE"
   },
   "steps": [
     {
@@ -190,7 +191,8 @@
       "generations": [
         1
       ],
-      "roundSeconds": 10
+      "roundSeconds": 10,
+      "selectionVisibility": "LIVE"
     },
     "initial": {
       "lifecycle": {
@@ -213,6 +215,7 @@
         ],
         "spectatorIds": [],
         "selections": {},
+        "selectedIds": [],
         "lockedPokemonIds": [],
         "roundStartedAt": null,
         "roundEndsAt": null,
@@ -265,6 +268,7 @@
         ],
         "spectatorIds": [],
         "selections": {},
+        "selectedIds": [],
         "lockedPokemonIds": [],
         "roundStartedAt": 1000,
         "roundEndsAt": 11000,
@@ -327,6 +331,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "psyduck"
             ],
@@ -395,6 +402,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "psyduck"
             ],
@@ -463,6 +473,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "psyduck"
             ],
@@ -531,6 +544,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "psyduck"
             ],
@@ -599,6 +615,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "psyduck"
             ],
@@ -667,6 +686,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "psyduck"
             ],
@@ -735,6 +757,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "psyduck"
             ],
@@ -808,6 +833,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "psyduck",
               "golduck"
@@ -884,6 +913,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "psyduck",
               "golduck"
@@ -965,6 +998,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "psyduck",
               "golduck"
@@ -1082,6 +1119,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "psyduck",
               "golduck"
@@ -1183,6 +1224,7 @@
               "p3"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 17000,
             "roundEndsAt": 27000,
@@ -1241,6 +1283,7 @@
               "p3"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 17000,
             "roundEndsAt": 27000,
@@ -1305,6 +1348,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "gyarados"
             ],
@@ -1380,6 +1426,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "gyarados",
               "aerodactyl"
@@ -1481,6 +1531,7 @@
               "p3"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 26000,
             "roundEndsAt": 36000,
@@ -1545,6 +1596,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "raichu"
             ],
@@ -1621,6 +1675,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "raichu",
               "ekans"
@@ -1732,6 +1790,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "raichu",
               "ekans"
@@ -1879,6 +1941,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "raichu",
               "ekans"

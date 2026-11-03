@@ -22,7 +22,8 @@
       1,
       2
     ],
-    "roundSeconds": 20
+    "roundSeconds": 20,
+    "selectionVisibility": "LIVE"
   },
   "steps": [
     {
@@ -124,7 +125,8 @@
         1,
         2
       ],
-      "roundSeconds": 20
+      "roundSeconds": 20,
+      "selectionVisibility": "LIVE"
     },
     "initial": {
       "lifecycle": {
@@ -147,6 +149,7 @@
         ],
         "spectatorIds": [],
         "selections": {},
+        "selectedIds": [],
         "lockedPokemonIds": [],
         "roundStartedAt": null,
         "roundEndsAt": null,
@@ -199,6 +202,7 @@
         ],
         "spectatorIds": [],
         "selections": {},
+        "selectedIds": [],
         "lockedPokemonIds": [],
         "roundStartedAt": 1000,
         "roundEndsAt": 21000,
@@ -261,6 +265,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "clefairy"
             ],
@@ -334,6 +341,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "clefairy",
               "wigglytuff"
@@ -420,6 +431,11 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
             "lockedPokemonIds": [
               "clefairy",
               "wigglytuff",
@@ -553,6 +569,11 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
             "lockedPokemonIds": [
               "clefairy",
               "wigglytuff",
@@ -666,6 +687,7 @@
               "p3"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 10000,
             "roundEndsAt": 30000,
@@ -724,6 +746,7 @@
               "p3"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 10000,
             "roundEndsAt": 30000,
@@ -788,6 +811,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/190.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "aipom"
             ],
@@ -863,6 +889,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "aipom",
               "wooper"
@@ -964,6 +994,7 @@
               "p3"
             ],
             "selections": {},
+            "selectedIds": [],
             "lockedPokemonIds": [],
             "roundStartedAt": 19000,
             "roundEndsAt": 39000,
@@ -1028,6 +1059,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/136.png"
               }
             },
+            "selectedIds": [
+              "p1"
+            ],
             "lockedPokemonIds": [
               "flareon"
             ],
@@ -1104,6 +1138,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "flareon",
               "mewtwo"
@@ -1215,6 +1253,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "flareon",
               "mewtwo"
@@ -1360,6 +1402,10 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               }
             },
+            "selectedIds": [
+              "p1",
+              "p2"
+            ],
             "lockedPokemonIds": [
               "flareon",
               "mewtwo"

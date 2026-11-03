@@ -7,7 +7,14 @@ import java.util.List;
 
 /** Configuración normalizada ({@code pokedexDistanceConfigSchema} de {@code pokedex-distance/config.ts}). */
 @Serdeable
-public record PokedexDistanceConfig(List<Integer> generations, int roundSeconds) {
+public record PokedexDistanceConfig(List<Integer> generations, int roundSeconds, SelectionVisibility selectionVisibility) {
+
+  /**
+   * {@code POKEDEX_DISTANCE_SELECTION_VISIBILITIES}: {@code HIDDEN} oculta las elecciones de los rivales hasta el
+   * resultado y admite elecciones repetidas; {@code LIVE} las muestra al momento y bloquea cada Pokémon elegido
+   * (permite copiar).
+   */
+  public enum SelectionVisibility { HIDDEN, LIVE }
 
   public PokedexDistanceConfig {
     generations = List.copyOf(generations);
@@ -16,7 +23,7 @@ public record PokedexDistanceConfig(List<Integer> generations, int roundSeconds)
   /** {@code defaultPokedexDistanceConfig}. */
   public static PokedexDistanceConfig defaults() {
     var generations = ConfigReader.allGenerations();
-    return new PokedexDistanceConfig(generations, 20);
+    return new PokedexDistanceConfig(generations, 20, SelectionVisibility.HIDDEN);
   }
 
   /**
@@ -27,6 +34,8 @@ public record PokedexDistanceConfig(List<Integer> generations, int roundSeconds)
   public static PokedexDistanceConfig parse(JsonNode raw) {
     var config = ConfigReader.of(raw, "Pokédex Distance");
     var generations = config.generations("generations");
-    return new PokedexDistanceConfig(generations, config.integer("roundSeconds", 10, 60));
+    int roundSeconds = config.integer("roundSeconds", 10, 60);
+    var selectionVisibility = config.enumValue("selectionVisibility", SelectionVisibility.class);
+    return new PokedexDistanceConfig(generations, roundSeconds, selectionVisibility);
   }
 }

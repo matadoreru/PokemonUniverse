@@ -153,7 +153,8 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
     if (!state.eligibleIds.includes(playerId)) return { state, accepted: false, error: 'You are spectating this round' };
     if (state.selections[playerId]) return { state, accepted: false, error: 'Selection already locked' };
     if (context.now >= (state.roundEndsAt ?? 0)) return { state: resolveRound(state, context), accepted: false, error: 'Round has ended' };
-    if (state.lockedPokemonIds.includes(action.pokemonId)) return { state, accepted: false, error: 'Ese Pokémon ya ha sido elegido.' };
+    const live = state.config.selectionVisibility === 'LIVE';
+    if (live && state.lockedPokemonIds.includes(action.pokemonId)) return { state, accepted: false, error: 'Ese Pokémon ya ha sido elegido.' };
     const pokemon = context.pokemon.byId(action.pokemonId);
     if (!pokemon || pokemon.isDefault === false || !state.config.generations.includes(pokemon.generation)) return { state, accepted: false, error: 'Pokémon is not in the configured pool' };
 
@@ -162,7 +163,7 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
     let next: PokedexDistanceState = {
       ...state,
       selections: { ...state.selections, [playerId]: { pokemonId: pokemon.id, dexNumber: pokemon.nationalDexNumber, distance, selectedAt: context.now } },
-      lockedPokemonIds: [...state.lockedPokemonIds, pokemon.id],
+      lockedPokemonIds: live ? [...state.lockedPokemonIds, pokemon.id] : state.lockedPokemonIds,
       playerStats: { ...state.playerStats, [playerId]: { ...stats, exactHits: stats.exactHits + (distance === 0 ? 1 : 0), distanceTotal: stats.distanceTotal + distance, selections: stats.selections + 1 } },
     };
     next = resolveWhenRequiredPlayersComplete(next, context, next.eligibleIds, (id) => Boolean(next.selections[id]), resolveRound, next.phase);
@@ -185,7 +186,8 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
   },
 
   getPublicState(state, context) {
-    const selections = Object.fromEntries(Object.entries(state.selections).map(([playerId, selection]) => {
+    // En HIDDEN nadie ve qué han elegido los demás hasta el resultado (también en los desempates); solo quién.
+    const selections = state.config.selectionVisibility !== 'LIVE' ? {} : Object.fromEntries(Object.entries(state.selections).map(([playerId, selection]) => {
       const pokemon = context.pokemon.byId(selection.pokemonId);
       return [playerId, { pokemonId: selection.pokemonId, selectedAt: selection.selectedAt, pokemonName: pokemon?.name ?? 'Unknown', sprite: pokemon?.sprite ?? '' }];
     }));
@@ -206,7 +208,7 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
     return {
       gameId: 'pokedex-distance', phase: state.phase, roundNumber: state.roundNumber,
       tiebreakDepth: state.tiebreakDepth, targetDexNumber: state.targetDexNumber, eligibleIds: state.eligibleIds,
-      survivorIds: state.survivorIds, spectatorIds: state.spectatorIds, selections,
+      survivorIds: state.survivorIds, spectatorIds: state.spectatorIds, selections, selectedIds: Object.keys(state.selections),
       lockedPokemonIds: state.lockedPokemonIds, roundStartedAt: state.roundStartedAt,
       roundEndsAt: state.roundEndsAt, lastRound, winnerId: state.winnerId,
       nextTransitionAt: state.nextTransitionAt,

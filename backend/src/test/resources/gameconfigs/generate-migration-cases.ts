@@ -23,6 +23,9 @@ add('higher-lower: REALTIME guardado pasa a REVEAL', 'higher-lower', { ...def('h
 add('higher-lower: LIVE guardado se conserva', 'higher-lower', { ...def('higher-lower'), answerVisibility: 'LIVE', rounds: 4 });
 add('shiny-vote: showVotes guardado se descarta', 'shiny-vote', { ...Object.fromEntries(Object.entries(def('shiny-vote')).filter(([key]) => key !== 'voteVisibility')), showVotes: true, rounds: 4 });
 add('shiny-vote: LIVE guardado se conserva', 'shiny-vote', { ...def('shiny-vote'), voteVisibility: 'LIVE', rounds: 6 });
+add('pokedex-distance: sin selectionVisibility toma HIDDEN', 'pokedex-distance', { generations: [1, 2], roundSeconds: 25 });
+add('pokedex-distance: LIVE guardado se conserva', 'pokedex-distance', { ...def('pokedex-distance'), selectionVisibility: 'LIVE', roundSeconds: 30 });
+add('pokedex-distance: selectionVisibility inválido pasa a HIDDEN', 'pokedex-distance', { ...def('pokedex-distance'), selectionVisibility: 'SECRET', roundSeconds: 15 });
 add('pokemon-bingo: clave obsoleta eliminada', 'pokemon-bingo', { ...def('pokemon-bingo'), legacy: true, width: 4 });
 add('pokemon-bingo: tipo erróneo sustituido por el defecto', 'pokemon-bingo', { ...def('pokemon-bingo'), durationSeconds: '120', width: 5 });
 add('pokemon-bingo: generations con un elemento inválido', 'pokemon-bingo', { ...def('pokemon-bingo'), generations: [1, 12], height: 4 });

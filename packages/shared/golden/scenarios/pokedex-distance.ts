@@ -12,7 +12,9 @@ const bruno: GamePlayer = { id: 'p2', displayName: 'Bruno' };
 const carla: GamePlayer = { id: 'p3', displayName: 'Carla' };
 const dario: GamePlayer = { id: 'p4', displayName: 'Darío' };
 
-const baseConfig = { generations: [1, 2], roundSeconds: 20 };
+// Los escenarios anteriores a la visibilidad oculta juegan en LIVE para seguir cubriendo el bloqueo y las selecciones
+// públicas en vivo.
+const baseConfig = { generations: [1, 2], roundSeconds: 20, selectionVisibility: 'LIVE' };
 
 function select(playerId: string, pokemonId: string, now: number): GoldenStep {
   return { kind: 'action', playerId, action: { type: 'SELECT_POKEMON', pokemonId }, now };
@@ -120,7 +122,7 @@ const everyRejection: GoldenScenario = {
   seed: 404,
   catalog: 'gen1-2',
   players: [ana, bruno, carla],
-  config: { generations: [1], roundSeconds: 10 },
+  config: { generations: [1], roundSeconds: 10, selectionVisibility: 'LIVE' },
   steps: [
     // Ronda 1 (1000–11000, objetivo #54 de los 151 de la generación 1).
     select('p1', 'psyduck', 2_000),
@@ -190,27 +192,63 @@ const roundsSurvivedAndForms: GoldenScenario = {
   ],
 };
 
+const hiddenDuplicatesAndTiebreak: GoldenScenario = {
+  name: 'hidden-duplicates-and-tiebreak',
+  seed: 818,
+  catalog: 'gen1-2',
+  players: [ana, bruno, carla],
+  config: { generations: [1, 2], roundSeconds: 20, selectionVisibility: 'HIDDEN' },
+  steps: [
+    // Ronda 1 (1000–21000, objetivo #93): en HIDDEN no hay bloqueo; Ana y Bruno eligen los dos Bulbasaur (#1), quedan
+    // a la misma distancia 92 y empatan como los más lejanos. Carla (#94) sobrevive. La proyección pública solo dice
+    // quién ha elegido (selectedIds), nunca qué.
+    select('p1', 'bulbasaur', 2_000),
+    select('p1', 'gengar', 2_500), // Selection already locked
+    select('p2', 'bulbasaur', 3_000),
+    select('p3', 'gengar', 4_000),
+    // Desempate 1 (10000–30000, objetivo #232): los dos repiten Celebi (#251) y vuelven a empatar a 19.
+    timeout(10_000),
+    select('p3', 'donphan', 11_000), // You are spectating this round
+    select('p2', 'celebi', 11_500),
+    select('p1', 'celebi', 12_000),
+    // Desempate 2 (18000–38000, objetivo #110): Bruno acierta Weezing y Ana (#109) cae.
+    timeout(18_000),
+    select('p1', 'koffing', 19_000),
+    select('p2', 'weezing', 20_000),
+    // Ronda 2 (26000–46000, objetivo #45): Bruno acierta Vileplume y Carla (#43) cae: gana Bruno.
+    timeout(26_000),
+    select('p3', 'oddish', 27_000),
+    select('p2', 'vileplume', 28_000),
+    timeout(34_000),
+  ],
+};
+
 export const pokedexDistanceScenarios: GoldenEngineEntry = {
   module: pokedexDistanceGame,
-  scenarios: [threePlayersFullGame, repeatedTiebreaks, presenceDisconnects, everyRejection, invalidActionStops, roundsSurvivedAndForms],
+  scenarios: [threePlayersFullGame, repeatedTiebreaks, presenceDisconnects, everyRejection, invalidActionStops, roundsSurvivedAndForms, hiddenDuplicatesAndTiebreak],
   configCases: [
-    // Válidos: generaciones deduplicadas y ordenadas, clave extra ignorada, límites de roundSeconds.
-    { generations: [2, 1, 2], roundSeconds: 20 },
-    { generations: [9, 3, 3], roundSeconds: 60, unknownKey: 'se ignora' },
-    { generations: [1], roundSeconds: 10 },
-    { generations: [1, 2, 3, 4, 5, 6, 7, 8, 9], roundSeconds: 20.0 },
+    // Válidos: generaciones deduplicadas y ordenadas, clave extra ignorada, límites de roundSeconds, los dos modos.
+    { generations: [2, 1, 2], roundSeconds: 20, selectionVisibility: 'HIDDEN' },
+    { generations: [9, 3, 3], roundSeconds: 60, selectionVisibility: 'LIVE', unknownKey: 'se ignora' },
+    { generations: [1], roundSeconds: 10, selectionVisibility: 'HIDDEN' },
+    { generations: [1, 2, 3, 4, 5, 6, 7, 8, 9], roundSeconds: 20.0, selectionVisibility: 'LIVE' },
     // Inválidos.
-    { generations: [1, 2], roundSeconds: 9 },
-    { generations: [1, 2], roundSeconds: 61 },
-    { generations: [1, 2], roundSeconds: 10.5 },
-    { generations: [1, 2], roundSeconds: '20' },
-    { generations: [1, 2] },
-    { generations: [], roundSeconds: 20 },
-    { generations: [0], roundSeconds: 20 },
-    { generations: [10], roundSeconds: 20 },
-    { generations: [1.5], roundSeconds: 20 },
-    { generations: 1, roundSeconds: 20 },
-    { roundSeconds: 20 },
+    { generations: [1, 2], roundSeconds: 9, selectionVisibility: 'HIDDEN' },
+    { generations: [1, 2], roundSeconds: 61, selectionVisibility: 'HIDDEN' },
+    { generations: [1, 2], roundSeconds: 10.5, selectionVisibility: 'HIDDEN' },
+    { generations: [1, 2], roundSeconds: '20', selectionVisibility: 'HIDDEN' },
+    { generations: [1, 2], selectionVisibility: 'HIDDEN' },
+    { generations: [], roundSeconds: 20, selectionVisibility: 'HIDDEN' },
+    { generations: [0], roundSeconds: 20, selectionVisibility: 'HIDDEN' },
+    { generations: [10], roundSeconds: 20, selectionVisibility: 'HIDDEN' },
+    { generations: [1.5], roundSeconds: 20, selectionVisibility: 'HIDDEN' },
+    { generations: 1, roundSeconds: 20, selectionVisibility: 'HIDDEN' },
+    { roundSeconds: 20, selectionVisibility: 'HIDDEN' },
+    { generations: [1, 2], roundSeconds: 20, selectionVisibility: 'SECRET' },
+    { generations: [1, 2], roundSeconds: 20, selectionVisibility: 'hidden' },
+    { generations: [1, 2], roundSeconds: 20, selectionVisibility: true },
+    // Sin la clave nueva: Zod la exige (lo guardado sin ella se repara con la migración de configuraciones).
+    { generations: [1, 2], roundSeconds: 20 },
     [],
     null,
   ],

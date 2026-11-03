@@ -259,7 +259,9 @@
     "roundSeconds tipo erróneo": "Configuración de Pokédex Distance no válida: roundSeconds debe ser un número entero.",
     "roundSeconds 10.5": "Configuración de Pokédex Distance no válida: roundSeconds debe ser un número entero.",
     "roundSeconds 1e20": "Configuración de Pokédex Distance no válida: roundSeconds debe estar entre 10 y 60.",
-    "roundSeconds -1": "Configuración de Pokédex Distance no válida: roundSeconds debe estar entre 10 y 60."
+    "roundSeconds -1": "Configuración de Pokédex Distance no válida: roundSeconds debe estar entre 10 y 60.",
+    "selectionVisibility ausente": "Configuración de Pokédex Distance no válida: falta selectionVisibility.",
+    "selectionVisibility tipo erróneo": "Configuración de Pokédex Distance no válida: selectionVisibility tiene un valor no válido."
   },
   "pokedex-entry-guess": {
     "<raíz null>": "Configuración de Pokédex Entry Guess no válida: la configuración debe ser un objeto.",

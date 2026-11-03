@@ -36,7 +36,8 @@
         8,
         9
       ],
-      "roundSeconds": 20
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN"
     }
   },
   {

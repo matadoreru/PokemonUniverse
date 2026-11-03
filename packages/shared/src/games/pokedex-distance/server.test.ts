@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { GameContext, GamePlayer, Pokemon, PokemonCatalog, PokedexDistanceState } from '../../index.js';
-import { defaultPokedexDistanceConfig, distanceBetween, farthestPlayerIds, pointsForPosition, pokedexDistanceGame } from '../../index.js';
+import type { GameContext, GamePlayer, Pokemon, PokemonCatalog, PokedexDistanceConfig, PokedexDistancePlayerState, PokedexDistanceState } from '../../index.js';
+import { defaultPokedexDistanceConfig, distanceBetween, pokedexDistanceConfigSchema, farthestPlayerIds, pointsForPosition, pokedexDistanceGame } from '../../index.js';
 
 const battleData = { hp: 50, attack: 50, defense: 50, specialAttack: 50, specialDefense: 50, speed: 50, baseStatTotal: 300, types: ['normal'] as Pokemon['types'] };
 
@@ -23,10 +23,10 @@ const catalog: PokemonCatalog = {
 
 const players = (count: number): GamePlayer[] => Array.from({ length: count }, (_, index) => ({ id: `p${index + 1}`, displayName: `Player ${index + 1}` }));
 
-function setup(count = 3, random = 0): { state: PokedexDistanceState; context: GameContext; setNow: (now: number) => void } {
+function setup(count = 3, random = 0, overrides: Partial<PokedexDistanceConfig> = {}): { state: PokedexDistanceState; context: GameContext; setNow: (now: number) => void } {
   let now = 1_000;
   const context: GameContext = { players: players(count), pokemon: catalog, get now() { return now; }, random: () => random };
-  let state = pokedexDistanceGame.createInitialState({ ...defaultPokedexDistanceConfig, generations: [1, 2, 3] }, context);
+  let state = pokedexDistanceGame.createInitialState({ ...defaultPokedexDistanceConfig, generations: [1, 2, 3], ...overrides }, context);
   state = pokedexDistanceGame.start(state, context);
   return { state, context, setNow: (value) => { now = value; } };
 }
@@ -68,7 +68,7 @@ describe('Pokédex Distance rules', () => {
   });
 
   it('does not expose Pokédex number or distance while selections are active', () => {
-    const { context, state } = setup(3, 0);
+    const { context, state } = setup(3, 0, { selectionVisibility: 'LIVE' });
     const next = choose(state, 'p1', 'pikachu', context);
     const publicState = pokedexDistanceGame.getPublicState(next, context);
     expect(publicState.selections.p1).toEqual({ pokemonId: 'pikachu', pokemonName: 'Pikachu', sprite: '/25.png', selectedAt: context.now });
@@ -177,8 +177,8 @@ describe('Pokédex Distance rules', () => {
     expect(state.pendingTiebreakDepth).toBe(2);
   });
 
-  it('authoritatively rejects duplicate Pokémon and unlocks all at the next round', () => {
-    const fixture = setup(4, 0);
+  it('authoritatively rejects duplicate Pokémon in LIVE and unlocks all at the next round', () => {
+    const fixture = setup(4, 0, { selectionVisibility: 'LIVE' });
     let state = choose(fixture.state, 'p1', 'pikachu', fixture.context);
     const duplicate = pokedexDistanceGame.handleAction(state, 'p2', { type: 'SELECT_POKEMON', pokemonId: 'pikachu' }, fixture.context);
     expect(duplicate.accepted).toBe(false);
@@ -188,6 +188,83 @@ describe('Pokédex Distance rules', () => {
     state = choose(state, 'p4', 'celebi', fixture.context);
     state = advanceResults(state, fixture.context, fixture.setNow);
     expect(state.lockedPokemonIds).toEqual([]);
+  });
+
+  it('hides selections during ROUND_ACTIVE by default', () => {
+    const { context, state } = setup(3, 0);
+    expect(defaultPokedexDistanceConfig.selectionVisibility).toBe('HIDDEN');
+    const next = choose(state, 'p1', 'pikachu', context);
+    const view = pokedexDistanceGame.getPublicState(next, context);
+    expect(view.phase).toBe('ROUND_ACTIVE');
+    expect(view.selections).toEqual({});
+    expect(view.selectedIds).toEqual(['p1']);
+    expect(view.lockedPokemonIds).toEqual([]);
+    expect(JSON.stringify(view)).not.toContain('pikachu');
+  });
+
+  it('hides selections during a tiebreak', () => {
+    const fixture = setup(3, 0);
+    let state: PokedexDistanceState = { ...fixture.state, targetDexNumber: 126 };
+    state = choose(state, 'p1', 'bulbasaur', fixture.context);
+    state = choose(state, 'p2', 'celebi', fixture.context);
+    state = choose(state, 'p3', 'mew', fixture.context);
+    expect(state.lastRound?.reason).toBe('TIE');
+    state = advanceResults(state, fixture.context, fixture.setNow);
+    expect(state.phase).toBe('TIEBREAKER_ACTIVE');
+    state = choose(state, 'p1', 'pikachu', fixture.context);
+    const view = pokedexDistanceGame.getPublicState(state, fixture.context);
+    expect(view.phase).toBe('TIEBREAKER_ACTIVE');
+    expect(view.selections).toEqual({});
+    expect(view.selectedIds).toEqual(['p1']);
+    expect(view.lockedPokemonIds).toEqual([]);
+  });
+
+  it('allows duplicate picks in HIDDEN and gives them the same distance', () => {
+    const fixture = setup(3, 0); // target #1
+    let state = choose(fixture.state, 'p1', 'mew', fixture.context);
+    state = choose(state, 'p2', 'mew', fixture.context);
+    expect(state.lockedPokemonIds).toEqual([]);
+    state = choose(state, 'p3', 'pikachu', fixture.context);
+    expect(state.phase).toBe('ROUND_RESULTS');
+    expect(state.lastRound?.selections.p1?.distance).toBe(150);
+    expect(state.lastRound?.selections.p1?.distance).toBe(state.lastRound?.selections.p2?.distance);
+    expect(state.lastRound).toMatchObject({ reason: 'TIE', tiedIds: ['p1', 'p2'], eliminatedIds: [] });
+    expect(state.pendingEligibleIds).toEqual(['p1', 'p2']);
+  });
+
+  it('a duplicate pick that is closest keeps both players in HIDDEN', () => {
+    const fixture = setup(3, 0); // target #1
+    let state = choose(fixture.state, 'p1', 'bulbasaur', fixture.context);
+    state = choose(state, 'p2', 'bulbasaur', fixture.context);
+    state = choose(state, 'p3', 'mew', fixture.context);
+    expect(state.lastRound).toMatchObject({ reason: 'FARTHEST', eliminatedIds: ['p3'] });
+    expect(state.playerStats.p1?.exactHits).toBe(1);
+    expect(state.playerStats.p2?.exactHits).toBe(1);
+  });
+
+  it('LIVE keeps the lock and the live selections', () => {
+    const { context, state } = setup(3, 0, { selectionVisibility: 'LIVE' });
+    const next = choose(state, 'p1', 'pikachu', context);
+    const duplicate = pokedexDistanceGame.handleAction(next, 'p2', { type: 'SELECT_POKEMON', pokemonId: 'pikachu' }, context);
+    expect(duplicate.accepted).toBe(false);
+    expect(duplicate.error).toBe('Ese Pokémon ya ha sido elegido.');
+    const view = pokedexDistanceGame.getPublicState(next, context);
+    expect(view.selections.p1?.pokemonName).toBe('Pikachu');
+    expect(view.selectedIds).toEqual(['p1']);
+    expect(view.lockedPokemonIds).toEqual(['pikachu']);
+  });
+
+  it('the private state still confirms the own pick', () => {
+    const { context, state } = setup(3, 0);
+    const next = choose(state, 'p1', 'pikachu', context);
+    expect((pokedexDistanceGame.getPlayerState(next, 'p1', context) as PokedexDistancePlayerState).selection).toEqual({ pokemonId: 'pikachu', selectedAt: context.now });
+    expect((pokedexDistanceGame.getPlayerState(next, 'p2', context) as PokedexDistancePlayerState).selection).toBeNull();
+  });
+
+  it('rejects an unknown selectionVisibility and requires the key', () => {
+    expect(pokedexDistanceConfigSchema.safeParse({ generations: [1], roundSeconds: 20, selectionVisibility: 'SECRET' }).success).toBe(false);
+    expect(pokedexDistanceConfigSchema.safeParse({ generations: [1], roundSeconds: 20 }).success).toBe(false);
+    expect(pokedexDistanceConfigSchema.safeParse({ generations: [1], roundSeconds: 20, selectionVisibility: 'LIVE' }).success).toBe(true);
   });
 
   it('finishes with one winner', () => {

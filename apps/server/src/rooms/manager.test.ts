@@ -112,7 +112,7 @@ describe('room multi-game lifecycle', () => {
   it('loads each registered host preference into new rooms and saves edited games separately', () => {
     const preferences = {
       forUser: vi.fn(() => new Map<string, unknown>([
-        ['pokedex-distance', { generations: [1], roundSeconds: 25 }],
+        ['pokedex-distance', { generations: [1], roundSeconds: 25, selectionVisibility: 'HIDDEN' }],
         ['shiny-vote', { generations: [1], roundSeconds: 15, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'REVEAL' }],
       ])),
       save: vi.fn(),
@@ -123,14 +123,14 @@ describe('room multi-game lifecycle', () => {
     const room = manager.store.get(created.room.code)!;
 
     expect(preferences.forUser).toHaveBeenCalledWith(host.id);
-    expect(room.gameConfigs.get('pokedex-distance')).toEqual({ generations: [1], roundSeconds: 25 });
+    expect(room.gameConfigs.get('pokedex-distance')).toEqual({ generations: [1], roundSeconds: 25, selectionVisibility: 'HIDDEN' });
     expect(room.gameConfigs.get('shiny-vote')).toMatchObject({ rounds: 2, voteVisibility: 'REVEAL' });
 
     (manager as any).selectGame(host.id, 'shiny-vote');
     const nextConfig = { ...(room.gameConfigs.get('shiny-vote') as Record<string, unknown>), rounds: 3 };
     (manager as any).updateConfig(host.id, nextConfig);
     expect(preferences.save).toHaveBeenCalledWith(host.id, 'shiny-vote', nextConfig);
-    expect(room.gameConfigs.get('pokedex-distance')).toEqual({ generations: [1], roundSeconds: 25 });
+    expect(room.gameConfigs.get('pokedex-distance')).toEqual({ generations: [1], roundSeconds: 25, selectionVisibility: 'HIDDEN' });
   });
 
   it('does not read or write account preferences for guests', () => {
@@ -139,11 +139,11 @@ describe('room multi-game lifecycle', () => {
     const host = identity('guest-host', 'Guest Host');
     const created = (manager as any).create(socket('guest-socket'), host, 8);
     const room = manager.store.get(created.room.code)!;
-    (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 25 });
+    (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 25, selectionVisibility: 'HIDDEN' });
 
     expect(preferences.forUser).not.toHaveBeenCalled();
     expect(preferences.save).not.toHaveBeenCalled();
-    expect(room.gameConfigs.get('pokedex-distance')).toEqual({ generations: [1], roundSeconds: 25 });
+    expect(room.gameConfigs.get('pokedex-distance')).toEqual({ generations: [1], roundSeconds: 25, selectionVisibility: 'HIDDEN' });
   });
 
   it('edits and publishes a rotation game without changing the selected minigame', () => {
@@ -232,11 +232,11 @@ describe('room multi-game lifecycle', () => {
     expect(room.selectedGameId).toBe('pokedex-distance');
     expect(room.members.size).toBe(2);
 
-    (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 25 });
+    (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 25, selectionVisibility: 'HIDDEN' });
     (manager as any).selectGame(host.id, 'shiny-vote');
     (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 15, rounds: 1, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE' });
     (manager as any).selectGame(host.id, 'pokedex-distance');
-    expect(room.gameConfigs.get('pokedex-distance')).toEqual({ generations: [1], roundSeconds: 25 });
+    expect(room.gameConfigs.get('pokedex-distance')).toEqual({ generations: [1], roundSeconds: 25, selectionVisibility: 'HIDDEN' });
     expect(room.gameConfigs.get('shiny-vote')).toEqual({ generations: [1], roundSeconds: 15, rounds: 1, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE' });
 
     const originalMembers = [...room.members.values()];
@@ -1114,7 +1114,7 @@ describe('room multi-game lifecycle', () => {
     const sockets = people.map((person) => socket(`socket-${person.id}`));
     const created = (manager as any).create(sockets[0], people[0], 8); const room = manager.store.get(created.room.code)!;
     (manager as any).join(sockets[1], people[1], room.code); (manager as any).join(sockets[2], people[2], room.code);
-    (manager as any).updateConfig('host', { generations: [1], roundSeconds: 60 });
+    (manager as any).updateConfig('host', { generations: [1], roundSeconds: 60, selectionVisibility: 'HIDDEN' });
     startReady(manager, room, 'host');
     (manager as any).disconnect('carlos', 'socket-carlos');
     vi.advanceTimersByTime(30_000);
