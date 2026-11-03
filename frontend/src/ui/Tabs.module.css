@@ -1,0 +1,67 @@
+/* Pestañas: lengüetas con contorno de 3 px sin borde inferior; la activa en crema, unida al cuerpo. */
+.tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-4);
+  flex-wrap: wrap;
+}
+.tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: 44px;
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-badge) var(--r-badge) 0 0;
+  border: var(--ol-3) solid var(--navy);
+  border-bottom: 0;
+  background: var(--navy-2);
+  color: var(--white);
+  font: 800 var(--fs-15) / 1 var(--font-display);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tab:hover:not(.on):not(:disabled),
+.tab.hover {
+  background: var(--navy-3);
+}
+.on {
+  background: var(--cream);
+  color: var(--ink);
+  /* Crece 3 px hacia abajo y tapa el filo del cuerpo: se funde con él. */
+  margin-bottom: calc(var(--ol-3) * -1);
+  padding-bottom: var(--ol-3);
+}
+.tab:focus-visible,
+.tab.focus {
+  outline: var(--ol-3) solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.tab:active:not(:disabled),
+.tab.active {
+  transform: translateY(2px);
+}
+.tab:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 var(--sp-1);
+  border-radius: var(--r-pill);
+  border: var(--ol-2) solid var(--navy);
+  background: var(--red-text);
+  color: var(--white);
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+.panel {
+  border: var(--ol-3) solid var(--navy);
+  border-radius: 0 var(--r-panel) var(--r-panel) var(--r-panel);
+  background: var(--cream);
+  color: var(--ink);
+  padding: var(--sp-4);
+}

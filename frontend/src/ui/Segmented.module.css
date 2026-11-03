@@ -1,0 +1,48 @@
+/* Segmentos: cápsula con contorno de 2,5 px; la opción activa en degradado azul. */
+.seg {
+  display: inline-flex;
+  min-width: 0;
+  border: var(--ol-2-5) solid var(--navy);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  background: var(--cream);
+  color: var(--ink);
+}
+.opt {
+  flex: 1 1 0;
+  min-height: 44px;
+  padding: 0 var(--sp-4);
+  border: 0;
+  border-right: var(--ol-2) solid var(--navy);
+  background: transparent;
+  color: inherit;
+  font: 800 var(--fs-15) / 1.2 var(--font-display);
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+.opt:last-child {
+  border-right: 0;
+}
+.opt:hover:not(.on):not(:disabled),
+.opt.hover {
+  background: var(--cream-2);
+}
+.on {
+  background: linear-gradient(180deg, var(--blue-l), var(--blue));
+  color: var(--white);
+}
+.opt:focus-visible,
+.opt.focus {
+  outline: var(--ol-3) solid var(--focus-ring);
+  outline-offset: -6px;
+}
+.opt:active:not(:disabled),
+.opt.active {
+  transform: translateY(1px);
+}
+.opt:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
