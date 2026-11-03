@@ -8,6 +8,7 @@ import { validateOneOfUsIsFakeConfig } from './one-of-us-is-fake/validation';
 import { validateSecretRankingConfig } from './secret-ranking/validation';
 import { validateMostLikelyToConfig } from './most-likely-to/validation';
 import { validateWouldYouRatherConfig } from './would-you-rather/validation';
+import { validatePokemonImpostorConfig } from './pokemon-impostor/validation';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
@@ -94,6 +95,7 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   config: component(() => import('./pokemon-impostor/ConfigPanel'), 'PokemonImpostorConfigPanel'),
   active: component(() => import('../room/PokemonImpostorGame'), 'PokemonImpostorGame'),
   results: component(() => import('../room/PokemonImpostorResults'), 'PokemonImpostorResults'),
+  validateConfig: validatePokemonImpostorConfig,
 })).register(clientModule({
   id: 'higher-lower',
   config: component(() => import('./higher-lower/ConfigPanel'), 'HigherLowerConfigPanel'),

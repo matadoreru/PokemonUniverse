@@ -4,6 +4,8 @@ import { POKEDDLE_CLUE_KEYS } from './pokeddle-race/config.js';
 export interface GameConfigReadinessContext {
   hostCustomCategoryCount?: number;
   hostWouldYouRatherPromptCount?: number;
+  /** Connected players; when absent or 0, player-count dependent checks are skipped. */
+  playerCount?: number;
 }
 
 const bingoFamilyLabels: Record<BingoFamilyKey, string> = {
@@ -50,6 +52,19 @@ function record(value: unknown): Record<string, unknown> {
   return value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
 }
 
+/**
+ * Lobby requirements that depend on the connected player count. In a rotation they exclude the game (like the
+ * manifest's player range) instead of blocking the room.
+ */
+export function playerCountReadinessReason(gameId: string, config: unknown, playerCount: number): string | null {
+  if (playerCount <= 0 || gameId !== 'pokemon-impostor') return null;
+  const impostorCount = record(config).impostorCount;
+  if (typeof impostorCount === 'number' && impostorCount * 2 >= playerCount) {
+    return `Demasiados impostores: con ${playerCount} jugadores el máximo es ${Math.floor((playerCount - 1) / 2)}.`;
+  }
+  return null;
+}
+
 /** Validates lobby requirements that cannot be represented by a game's Zod schema alone. */
 export function validateGameConfigReadiness(
   gameId: string,
@@ -77,6 +92,8 @@ export function validateGameConfigReadiness(
       }
     }
   }
+  const playerCountReason = playerCountReadinessReason(gameId, value, context.playerCount ?? 0);
+  if (playerCountReason) return playerCountReason;
   if (gameId === 'one-of-us-is-fake' && value.categorySource === 'CUSTOM' && (context.hostCustomCategoryCount ?? 0) < 2) {
     return `El host necesita al menos 2 categorías personales activas; ahora hay ${context.hostCustomCategoryCount ?? 0}.`;
   }

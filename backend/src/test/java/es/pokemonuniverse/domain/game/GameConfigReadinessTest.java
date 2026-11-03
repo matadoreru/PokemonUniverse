@@ -76,4 +76,18 @@ class GameConfigReadinessTest {
     assertEquals(Optional.empty(), validate("would-you-rather", Map.of("promptSource", "CUSTOM"), 0, 1));
     assertEquals(Optional.empty(), validate("type-chain", null, 0, 0));
   }
+  @Test
+  void impostorParityNeedsMoreInnocents() {
+    assertEquals(Optional.of("Demasiados impostores: con 4 jugadores el máximo es 1."),
+        GameConfigReadiness.validate("pokemon-impostor", tree(Map.of("impostorCount", 2)), new Context(0, 0, 4)));
+    assertEquals(Optional.empty(),
+        GameConfigReadiness.validate("pokemon-impostor", tree(Map.of("impostorCount", 2)), new Context(0, 0, 5)));
+    assertEquals(Optional.of("Demasiados impostores: con 5 jugadores el máximo es 2."),
+        GameConfigReadiness.validate("pokemon-impostor", tree(Map.of("impostorCount", 3)), new Context(0, 0, 5)));
+    // Sin recuento de jugadores (constructor de 2 argumentos o EMPTY) no se comprueba.
+    assertEquals(Optional.empty(), validate("pokemon-impostor", Map.of("impostorCount", 2), 0, 0));
+    assertEquals(Optional.empty(), GameConfigReadiness.validate("pokemon-impostor", tree(Map.of("impostorCount", 2))));
+    assertEquals(Optional.empty(),
+        GameConfigReadiness.validate("pokedex-distance", tree(Map.of("impostorCount", 2)), new Context(0, 0, 4)));
+  }
 }

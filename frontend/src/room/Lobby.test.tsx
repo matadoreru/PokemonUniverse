@@ -48,3 +48,42 @@ describe('lobby information hierarchy', () => {
     expect(markup).toContain('Iniciar partida');
   });
 });
+
+describe('lobby impostor parity', () => {
+  const impostorManifest = { id: 'pokemon-impostor', name: 'Pokémon Impostor', icon: '🕵️', description: 'Encuentra al impostor.', minPlayers: 3, profileStats: { metrics: [] } };
+  const members = ['host', 'p2', 'p3', 'p4'].map((id) => ({
+    id, displayName: id, avatar: { type: 'DEFAULT' as const }, connected: true, presence: 'CONNECTED' as const,
+    roomRole: id === 'host' ? 'HOST' as const : 'MEMBER' as const, role: 'PLAYER' as const, isHost: id === 'host', ready: true, sessionPoints: 0,
+  }));
+  const parityRoom: RoomView = {
+    ...room, members, availableGames: [...room.availableGames, impostorManifest],
+    selectedGameId: 'pokemon-impostor', selectedGameConfig: { impostorCount: 2 },
+    gameConfigs: { 'pokemon-impostor': { impostorCount: 2 } },
+  };
+  const render = (value: RoomView) => renderToStaticMarkup(<MemoryRouter><Lobby
+    room={value} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
+    onSelectGame={noOp} onConfig={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
+    onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
+  /></MemoryRouter>);
+
+  it('blocks a fixed start with the parity literal', () => {
+    expect(render(parityRoom)).toContain('Demasiados impostores: con 4 jugadores el máximo es 1.');
+  });
+
+  it('excludes the game from a rotation instead of blocking the start', () => {
+    const markup = render({
+      ...parityRoom, selectedGameId: 'pokedex-distance', selectedGameConfig: room.selectedGameConfig,
+      gameSelectionMode: { type: 'RANDOM', gameIds: ['pokemon-impostor', 'pokedex-distance', 'shiny-vote'] },
+    });
+    expect(markup).toContain('La sala está lista.');
+  });
+
+  it('does not count the excluded game towards the rotation minimum', () => {
+    const markup = render({
+      ...parityRoom, selectedGameId: 'pokedex-distance', selectedGameConfig: room.selectedGameConfig,
+      gameSelectionMode: { type: 'RANDOM', gameIds: ['pokemon-impostor', 'pokedex-distance'] },
+    });
+    expect(markup).toContain('La rotación aleatoria necesita al menos 2 minijuegos compatibles.');
+  });
+});
+

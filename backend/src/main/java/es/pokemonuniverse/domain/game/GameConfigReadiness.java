@@ -59,10 +59,17 @@ public final class GameConfigReadiness {
       Map.entry("legendaryStatus", 3),
       Map.entry("color", 10));
 
-  /** Recuentos de contenido personal del host; ausentes en TS equivalen a 0. */
-  public record Context(int hostCustomCategoryCount, int hostWouldYouRatherPromptCount) {
+  /**
+   * Recuentos de contenido personal del host y jugadores conectados; ausentes en TS equivalen a 0. Con
+   * {@code playerCount = 0} no se comprueba nada que dependa del número de jugadores.
+   */
+  public record Context(int hostCustomCategoryCount, int hostWouldYouRatherPromptCount, int playerCount) {
 
-    public static final Context EMPTY = new Context(0, 0);
+    public static final Context EMPTY = new Context(0, 0, 0);
+
+    public Context(int hostCustomCategoryCount, int hostWouldYouRatherPromptCount) {
+      this(hostCustomCategoryCount, hostWouldYouRatherPromptCount, 0);
+    }
   }
 
   private GameConfigReadiness() {}
@@ -100,6 +107,8 @@ public final class GameConfigReadiness {
         }
       }
     }
+    var playerCountReason = playerCountReason(gameId, value, context.playerCount());
+    if (playerCountReason.isPresent()) return playerCountReason;
     if (gameId.equals("one-of-us-is-fake") && isString(value.get("categorySource"), "CUSTOM")
         && context.hostCustomCategoryCount() < 2) {
       return Optional.of("El host necesita al menos 2 categorías personales activas; ahora hay "
@@ -112,6 +121,21 @@ public final class GameConfigReadiness {
     if (gameId.equals("would-you-rather") && isString(value.get("promptSource"), "CUSTOM")
         && context.hostWouldYouRatherPromptCount() < 1) {
       return Optional.of("El host necesita al menos un dilema personal activo para usar solo dilemas personalizados.");
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * Traducción de {@code playerCountReadinessReason}: solo los requisitos que dependen de los jugadores conectados.
+   * En una rotación excluyen el juego (como el rango de jugadores del manifiesto) en vez de bloquear la sala.
+   */
+  public static Optional<String> playerCountReason(String gameId, JsonNode config, int playerCount) {
+    if (playerCount <= 0 || !gameId.equals("pokemon-impostor")) return Optional.empty();
+    var impostorCount = record(config).get("impostorCount");
+    if (impostorCount != null && impostorCount.isNumber() && impostorCount.getDoubleValue() * 2 >= playerCount) {
+      // División entera: el máximo que cumple impostorCount * 2 < playerCount.
+      return Optional.of("Demasiados impostores: con " + playerCount + " jugadores el máximo es "
+          + (playerCount - 1) / 2 + ".");
     }
     return Optional.empty();
   }

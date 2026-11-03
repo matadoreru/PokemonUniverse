@@ -818,6 +818,49 @@ class RoomCoordinatorTest {
     assertEquals(new GameSelectionMode.Fixed(), room.gameSelectionMode);
   }
 
+  /** Kit con el motor real de Pokémon Impostor además de los dos motores reales de siempre. */
+  private static RoomTestKit impostorKit() {
+    var engines = new LinkedHashMap<String, GameEngine<?, ?, ?, ?>>();
+    for (var id : List.of("higher-lower", "pokedex-distance", "pokemon-impostor")) {
+      engines.put(id, RoomTestKit.REAL_REGISTRY.engine(id).orElseThrow());
+    }
+    return new RoomTestKit(50_000, UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY,
+        RoomTestKit.REAL_REGISTRY.withEngines(engines));
+  }
+
+  @Test
+  @DisplayName("blocks a fixed Pokémon Impostor start with the lobby parity literal")
+  void impostorParityBlocksStartWithTheReadinessLiteral() {
+    var kit = impostorKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest-1", "Ana"), guest("guest-2", "Bea"),
+        guest("guest-3", "Carla"));
+    kit.manager.selectGame("host", "pokemon-impostor");
+    var config = new LinkedHashMap<>(RoomTestKit.asMap(room.gameConfigs.get("pokemon-impostor")));
+    config.put("impostorCount", 2);
+    kit.manager.updateConfig("host", RoomTestKit.tree(config));
+    assertMessage("Pokémon Impostor: Demasiados impostores: con 4 jugadores el máximo es 1.",
+        () -> kit.startReady(room, "host"));
+    assertEquals(RoomPhase.LOBBY, room.phase);
+  }
+
+  @Test
+  @DisplayName("excludes Pokémon Impostor from a random rotation instead of blocking on parity")
+  void impostorParityExcludesTheGameFromRotation() {
+    var kit = impostorKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest-1", "Ana"), guest("guest-2", "Bea"),
+        guest("guest-3", "Carla"));
+    var config = new LinkedHashMap<>(RoomTestKit.asMap(room.gameConfigs.get("pokemon-impostor")));
+    config.put("impostorCount", 2);
+    kit.manager.updateGameConfig("host", "pokemon-impostor", RoomTestKit.tree(config));
+    kit.manager.updateGameSelection("host",
+        json("{\"type\":\"RANDOM\",\"gameIds\":[\"pokemon-impostor\",\"higher-lower\",\"pokedex-distance\"]}"));
+    assertEquals(List.of("higher-lower", "pokedex-distance"),
+        kit.manager.playableGameIds(room, List.of("pokemon-impostor", "higher-lower", "pokedex-distance")));
+    kit.startReady(room, "host");
+    assertNotEquals(RoomPhase.LOBBY, room.phase);
+    assertNotEquals("pokemon-impostor", room.selectedGameId);
+  }
+
   @Test
   @DisplayName("selects a compatible random minigame at start and avoids an immediate repeat")
   void selectsRandomAlternative() {

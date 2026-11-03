@@ -612,7 +612,7 @@ public class RoomCoordinator {
       } catch (ConfigValidationException e) {
         return false;
       }
-      return GameConfigReadiness.validate(gameId, toTree(parsed), readinessContext(room)).isEmpty()
+      return GameConfigReadiness.validate(gameId, toTree(parsed), readinessContext(room, playerCount)).isEmpty()
           && engine.checkAvailability(parsed, context(room, catalogSnapshot())).isEmpty();
     }).toList();
   }
@@ -627,13 +627,17 @@ public class RoomCoordinator {
     } catch (ConfigValidationException e) {
       return Optional.of(e.getMessage() != null ? e.getMessage() : "Configuración inválida.");
     }
-    var staticReason = GameConfigReadiness.validate(gameId, toTree(parsed), readinessContext(room));
+    // Sin recuento de jugadores: en una rotación, lo que depende de los conectados excluye el juego en
+    // playableGameIds (como el rango del manifiesto) en vez de bloquear la sala.
+    var staticReason = GameConfigReadiness.validate(gameId, toTree(parsed), readinessContext(room, 0));
     if (staticReason.isPresent()) return staticReason;
     return engine.checkAvailability(parsed, context(room, catalogSnapshot()));
   }
 
-  private GameConfigReadiness.Context readinessContext(LiveRoom room) {
-    return new GameConfigReadiness.Context(hostCustomCategories(room).size(), hostWouldYouRatherPrompts(room).size());
+  /** Con {@code playerCount = 0} se omiten los requisitos que dependen de los jugadores conectados. */
+  private GameConfigReadiness.Context readinessContext(LiveRoom room, int playerCount) {
+    return new GameConfigReadiness.Context(hostCustomCategories(room).size(), hostWouldYouRatherPrompts(room).size(),
+        playerCount);
   }
 
   private void assertRotationReady(LiveRoom room, boolean continuing) {
@@ -705,7 +709,7 @@ public class RoomCoordinator {
     var config = engine.parseConfig(room.gameConfigs.get(room.selectedGameId));
     var configTree = toTree(config);
     var configReason = GameConfigReadiness.validate(module.id(), configTree, new GameConfigReadiness.Context(
-        context.hostCustomCategories().size(), context.hostWouldYouRatherPrompts().size()));
+        context.hostCustomCategories().size(), context.hostWouldYouRatherPrompts().size(), players.size()));
     if (configReason.isPresent()) throw new RoomException(module.name() + ": " + configReason.get());
     var availabilityReason = engine.checkAvailability(config, context);
     if (availabilityReason.isPresent()) throw new RoomException(module.name() + ": " + availabilityReason.get());

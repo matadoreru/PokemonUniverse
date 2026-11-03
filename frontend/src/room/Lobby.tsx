@@ -1,4 +1,4 @@
-import { formatPendingReadyNames, hasRoomPermission, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
+import { formatPendingReadyNames, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
 import { ArrowRight, Check, CheckCircle2, Copy, Gamepad2, Headphones, LockKeyhole, LogOut, MessageSquareWarning, Play, Search, Settings2, Shuffle, UsersRound, WifiOff } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -102,16 +102,19 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
     void onKick(playerId).catch(report);
   };
 
-  const rotationPlayableCount = room.gameSelectionMode.type !== 'FIXED' ? room.gameSelectionMode.gameIds.filter((gameId) => {
+  const rotationConfig = (gameId: string): unknown => room.gameConfigs?.[gameId] ?? (gameId === room.selectedGameId ? room.selectedGameConfig : {});
+  // In a rotation, a player-count requirement (manifest range or impostor parity) excludes the game, like the server.
+  const rotationPlayable = (gameId: string): boolean => {
     const manifest = room.availableGames.find((game) => game.id === gameId);
-    return Boolean(manifest && supportsPlayerCount(manifest, connectedPlayers));
-  }).length : 0;
+    return Boolean(manifest && supportsPlayerCount(manifest, connectedPlayers)
+      && playerCountReadinessReason(gameId, rotationConfig(gameId), connectedPlayers) === null);
+  };
+  const rotationPlayableCount = room.gameSelectionMode.type !== 'FIXED' ? room.gameSelectionMode.gameIds.filter(rotationPlayable).length : 0;
   const rotationConfigReason = room.gameSelectionMode.type === 'FIXED' ? null : room.gameSelectionMode.gameIds.map((gameId) => {
     const manifest = room.availableGames.find((game) => game.id === gameId);
-    if (!manifest || !supportsPlayerCount(manifest, connectedPlayers)) return null;
+    if (!manifest || !rotationPlayable(gameId)) return null;
     const candidate = clientGameRegistry.get(gameId);
-    const config = room.gameConfigs?.[gameId] ?? (gameId === room.selectedGameId ? room.selectedGameConfig : {});
-    const reason = candidate.validateConfig?.(config, room) ?? null;
+    const reason = candidate.validateConfig?.(rotationConfig(gameId), room) ?? null;
     return reason ? `${manifest.name}: ${reason}` : null;
   }).find((reason) => reason !== null) ?? null;
   const selectedGameReason = connectedPlayers < selectedManifest.minPlayers
