@@ -44,11 +44,12 @@ export function hasNewToast(toasts: ToastData[], seen: ReadonlySet<number>): boo
 }
 
 /**
- * Dónde se monta la pila: dentro del último `<dialog open>` (un diálogo modal deja inerte el resto del documento, así
- * que un aviso fuera de él se vería pero no se anunciaría ni se podría cerrar) o, sin diálogo, en su sitio (`null`).
+ * Dónde se monta la pila: dentro del último `<dialog>` modal abierto (un diálogo modal deja inerte el resto del
+ * documento, así que un aviso fuera de él se vería pero no se anunciaría ni se podría cerrar) o, sin él, en su sitio
+ * (`null`). Un `<dialog>` abierto con `show()` no es modal ni deja nada inerte: no se lleva los avisos.
  */
 export function toastHost(doc: Pick<Document, 'querySelectorAll'>): Element | null {
-  const open = doc.querySelectorAll('dialog[open]');
+  const open = doc.querySelectorAll('dialog[open]:modal');
   return open.length > 0 ? (open[open.length - 1] ?? null) : null;
 }
 

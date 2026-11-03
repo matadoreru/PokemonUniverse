@@ -34,12 +34,12 @@ describe('ToastStack', () => {
     expect(toastRole('info')).toBe('status');
   });
 
-  it('el aviso se monta en el último diálogo abierto, o en su sitio si no hay ninguno', () => {
+  it('el aviso se monta en el último diálogo modal abierto, o en su sitio si no hay ninguno', () => {
     const a = { id: 'a' };
     const b = { id: 'b' };
     const doc = (open: object[]) => ({
       querySelectorAll: (sel: string) => {
-        expect(sel).toBe('dialog[open]');
+        expect(sel).toBe('dialog[open]:modal');
         return open as unknown as NodeListOf<Element>;
       },
     });

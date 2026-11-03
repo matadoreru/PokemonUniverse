@@ -80,7 +80,7 @@ export async function measureLayout(page: Page, minFontPx = 12): Promise<LayoutR
       let t = r.top;
       let rr = r.right;
       let b = r.bottom;
-      for (let c: Element = el, e = el.parentElement; e && e !== root && !topLayer(c); c = e, e = e.parentElement) {
+      for (let child: Element = el, e = el.parentElement; e && e !== root && !topLayer(child); child = e, e = e.parentElement) {
         const cs = getComputedStyle(e);
         if (cs.overflowX !== 'visible' || cs.overflowY !== 'visible') {
           const c = e.getBoundingClientRect();
@@ -153,7 +153,7 @@ export async function measureLayout(page: Page, minFontPx = 12): Promise<LayoutR
     for (const el of root.querySelectorAll('button, [role="button"], [role="tab"], kbd')) {
       if (ignored(el) || !visible(el)) continue;
       const r = el.getBoundingClientRect();
-      for (let c: Element = el, e = el.parentElement; e && e !== root && !topLayer(c); c = e, e = e.parentElement) {
+      for (let child: Element = el, e = el.parentElement; e && e !== root && !topLayer(child); child = e, e = e.parentElement) {
         const cs = getComputedStyle(e);
         if (cs.overflowX === 'visible' && cs.overflowY === 'visible') continue;
         if (cs.overflowX === 'auto' || cs.overflowX === 'scroll' || cs.overflowY === 'auto' || cs.overflowY === 'scroll') break;

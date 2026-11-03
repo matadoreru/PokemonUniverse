@@ -74,6 +74,7 @@ interface PillLinkBase extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'ch
   to: string;
   children?: ReactNode;
   icon?: LucideIcon;
+  block?: boolean;
   /** Solo galería: estado forzado. */
   forced?: ForcedState;
 }
@@ -88,12 +89,12 @@ export type PillLinkProps = PillLinkBase &
 
 /** Píldora que navega: el mismo relieve y sonido que `Pill`, pero es un enlace (se abre en otra pestaña, se anuncia como enlace). */
 export function PillLink(props: PillLinkProps) {
-  const { to, variant = 'blue', size = 'std', icon, forced, className, children, onClick, ...rest } = props;
+  const { to, variant = 'blue', size = 'std', icon, block, forced, className, children, onClick, ...rest } = props;
   return (
     <Link
       {...rest}
       to={to}
-      className={cx(s.pill, s.link, s[variant], size !== 'std' && s[size], forced && s[forced], className)}
+      className={cx(s.pill, s.link, s[variant], size !== 'std' && s[size], block && s.block, forced && s[forced], className)}
       onClick={(e) => {
         uiSound(variant === 'ghost' || variant === 'cream' ? 'tap' : 'confirm');
         onClick?.(e);

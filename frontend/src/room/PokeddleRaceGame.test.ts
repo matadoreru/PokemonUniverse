@@ -144,5 +144,10 @@ describe('Global header accessibility', () => {
     const unread = renderToStaticMarkup(createElement(MemoryRouter, null, createElement(AppHeader, { user: { ...user, role: 'ADMIN' as const }, onLogout: () => undefined, unreadChangelogCount: 3 })));
     expect(unread).toContain('aria-label="Novedades, 3 versiones sin leer"');
     expect(unread).toContain('aria-label="Abrir panel de administración"');
+    expect(unread).toContain('aria-label="Enviar feedback"');
+    expect(unread).toContain('aria-label="Más opciones, 3 versiones sin leer"');
+    const loggedOut = renderToStaticMarkup(createElement(MemoryRouter, null, createElement(AppHeader, { user: null, onLogout: () => undefined })));
+    expect(loggedOut).not.toContain('Enviar feedback');
+    expect(loggedOut).not.toContain('Más opciones');
   });
 });
