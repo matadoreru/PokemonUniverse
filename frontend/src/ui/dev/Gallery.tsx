@@ -7,6 +7,7 @@
 import { Bell, Heart, Settings, Star, Trophy, Zap } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
+import { AudioSettingsPanel } from '../../components/AudioSettingsDialog';
 import { pokemonTypeLabels } from '../../components/PokemonTypeBadge';
 import type { PokemonType } from '../../styles/tokens';
 import { typeColors } from '../../styles/tokens';
@@ -567,6 +568,9 @@ function DialogSection({ onToast }: { onToast(): void }) {
         <Pill variant="yellow" onClick={() => setOpen(true)}>
           Abrir diálogo
         </Pill>
+      </Fig>
+      <Fig id="dialog-audio" caption="Ajustes de sonido (contenido del diálogo)" cream>
+        <AudioSettingsPanel settings={{ muted: false, master: 75, music: 50, sfx: 75, ui: 25 }} onPatch={noop} onTest={noop} />
       </Fig>
       <Dialog
         open={open}
