@@ -33,6 +33,8 @@ describe('PokemonSelector estados', () => {
     const markup = selector({ loading: true });
     expect(markup).toContain('aria-busy="true"');
     expect(markup.match(/skeleton/g)).toHaveLength(6);
+    expect(markup).toContain('role="status"');
+    expect(markup).toContain('Cargando Pokémon…');
   });
   it('pinta el error con role="alert" y la acción de reintentar', () => {
     const markup = selector({ loadError: 'No se pudo cargar el buscador.', onRetry: () => undefined });

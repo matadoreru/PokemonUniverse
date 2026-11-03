@@ -24,10 +24,20 @@ export function pokemonPoolPath(generations: readonly number[], includeForms: bo
   return `/pokemon/selector?${params.toString()}`;
 }
 
-/** Mensaje del buscador: un fallo de red (`TypeError` de `fetch`) no llega en español, el del servidor sí. */
+const POOL_ERROR_FALLBACK = 'No se pudo cargar el buscador de Pokémon. Comprueba la conexión.';
+
+/** Frases de estado HTTP que `api()` usa como mensaje cuando la respuesta no trae un `error` propio. */
+const HTTP_STATUS_TEXTS = new Set(['Request failed', 'Bad Request', 'Unauthorized', 'Forbidden', 'Not Found', 'Request Timeout', 'Too Many Requests', 'Internal Server Error', 'Bad Gateway', 'Service Unavailable', 'Gateway Timeout']);
+
+/**
+ * Mensaje del estado de error del buscador. Un fallo de red (`TypeError` de `fetch`), un mensaje vacío, el
+ * genérico de `api()` o una frase de estado HTTP en inglés se sustituyen por un texto en español; el `error` que
+ * envía el servidor en el cuerpo se muestra tal cual.
+ */
 export function poolErrorMessage(caught: unknown): string {
-  if (caught instanceof TypeError || !(caught instanceof Error) || !caught.message) return 'No se pudo cargar el buscador de Pokémon. Comprueba la conexión.';
-  return caught.message;
+  if (caught instanceof TypeError || !(caught instanceof Error)) return POOL_ERROR_FALLBACK;
+  const message = caught.message.trim();
+  return !message || HTTP_STATUS_TEXTS.has(message) ? POOL_ERROR_FALLBACK : message;
 }
 
 export async function fetchPokemonPool(path: string, signal: AbortSignal): Promise<PokemonSearchOption[]> {
@@ -56,7 +66,7 @@ export function usePokemonPool({ generations, includeForms = false, enabled = tr
     setLoading(true);
     void fetchPokemonPool(query, controller.signal)
       .then((entries) => { if (active) setPokemon(entries); })
-      .catch((caught: unknown) => { if (active) setError(poolErrorMessage(caught)); })
+      .catch((caught: unknown) => { if (!active) return; console.warn('[usePokemonPool]', caught); setError(poolErrorMessage(caught)); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; controller.abort(); };
   }, [attempt, enabled, query]);
