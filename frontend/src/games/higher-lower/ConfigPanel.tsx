@@ -64,7 +64,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
                 key={difficulty}
                 onClick={() => void onChange({ ...value, difficulty })}
                 aria-pressed={selected}
-                className={`toggle-option py-3 text-left ${selected ? 'border-berry bg-berry text-white' : 'text-ink'}`}
+                className={`toggle-option py-3 text-left ${selected ? 'border-berry bg-berry text-night' : 'text-ink'}`}
               >
                 <span className="block font-extrabold">{copy.label}</span>
                 <span className={`mt-1 block text-xs font-semibold ${selected ? 'text-white/80' : 'text-ink/65'}`}>{copy.description}</span>
@@ -81,7 +81,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
           <span className="label">Mostrar el valor del anterior Pokémon</span>
           <div className="grid grid-cols-2 gap-2">
             {([[true, 'Sí'], [false, 'No']] as const).map(([choice, label]) => (
-              <button type="button" key={String(choice)} aria-pressed={value.showPreviousValue === choice} onClick={() => void onChange({ ...value, showPreviousValue: choice })} className={`toggle-option ${value.showPreviousValue === choice ? 'border-berry bg-berry text-white' : 'text-ink'}`}>
+              <button type="button" key={String(choice)} aria-pressed={value.showPreviousValue === choice} onClick={() => void onChange({ ...value, showPreviousValue: choice })} className={`toggle-option ${value.showPreviousValue === choice ? 'border-berry bg-berry text-night' : 'text-ink'}`}>
                 {label}
               </button>
             ))}

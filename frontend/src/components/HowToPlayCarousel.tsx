@@ -13,7 +13,7 @@ const generalSlides: readonly HowToPlaySlide[] = [
     visual: <div className="grid w-full max-w-sm gap-3" aria-hidden="true">
       <div className="flex items-center gap-3 rounded-xl border border-aqua/25 bg-aqua/[.08] p-3"><Crown className="text-electric" /><span className="min-w-0 flex-1"><strong className="block">Crea la sala</strong><small className="font-bold text-ink/55">Tú eliges juego y ajustes</small></span></div>
       <div className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-ink/20 bg-surface px-4 py-3 font-display text-xl tracking-[.28em]"><KeyRound className="text-aqua" size={20} /> PIKA42</div>
-      <div className="flex justify-center -space-x-2"><span className="grid h-9 w-9 place-items-center rounded-full border-2 border-surface bg-berry text-sm font-black text-white">A</span><span className="grid h-9 w-9 place-items-center rounded-full border-2 border-surface bg-aqua text-sm font-black text-night">P</span><span className="grid h-9 w-9 place-items-center rounded-full border-2 border-surface bg-electric text-sm font-black text-night">+3</span></div>
+      <div className="flex justify-center -space-x-2"><span className="grid h-9 w-9 place-items-center rounded-full border-2 border-surface bg-berry text-sm font-black text-night">A</span><span className="grid h-9 w-9 place-items-center rounded-full border-2 border-surface bg-aqua text-sm font-black text-night">P</span><span className="grid h-9 w-9 place-items-center rounded-full border-2 border-surface bg-electric text-sm font-black text-night">+3</span></div>
     </div>,
   },
   {
@@ -21,7 +21,7 @@ const generalSlides: readonly HowToPlaySlide[] = [
     title: 'Conectate a una llamada con tus amigos',
     description: 'Recomendamos estar en una llamada de voz, por ejemplo en Discord, Zoom o vuestra app favorita. Muchos juegos ganan muchísimo cuando podéis comentar y reíros juntos.',
     visual: <div className="flex w-full max-w-sm items-center gap-4 rounded-xl border border-berry/20 bg-berry/[.07] p-4" aria-hidden="true">
-      <span className="grid h-16 w-16 shrink-0 place-items-center rounded-xl bg-berry text-white shadow-card"><Headphones size={34} /></span>
+      <span className="grid h-16 w-16 shrink-0 place-items-center rounded-xl bg-berry text-night shadow-card"><Headphones size={34} /></span>
       <span><strong className="font-display text-xl">Llamada de voz</strong><small className="mt-1 block font-bold text-ink/60">Discord · Zoom · Meet · Telegram</small><span className="mt-2 inline-flex items-center gap-1 text-xs font-black text-leaf"><span className="h-2 w-2 rounded-full bg-leaf" /> Grupo conectado</span></span>
     </div>,
   },

@@ -178,7 +178,7 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
           </div>
         </aside>
         <aside className="feedback-callout flex items-center gap-3 rounded-2xl border border-berry/30 bg-berry/[.08] px-4 py-3 sm:px-5" aria-label="Ayuda a mejorar Pokémon Universe">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-berry text-white"><MessageSquareWarning size={22} /></span>
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-berry text-night"><MessageSquareWarning size={22} /></span>
           <div className="min-w-0 flex-1">
             <strong className="block font-display text-lg">Tu opinión cuenta</strong>
             <p className="text-sm font-bold text-ink/70">Reporta un bug o envía feedback sobre esta sala, un minijuego o el proyecto.</p>

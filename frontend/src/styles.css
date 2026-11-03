@@ -15,7 +15,7 @@
   --color-surface: 19 35 92; /* --navy */
   --color-surface-raised: 27 47 120; /* --navy-3 */
   --color-night: 6 11 34; /* --band */
-  --color-berry: 210 47 62; /* --red-text */
+  --color-berry: 255 139 149; /* --red-l: texto legible sobre azul noche */
   --color-electric: 255 210 63; /* --yellow */
   --color-aqua: 55 182 255; /* --info */
   --color-leaf: 57 181 74; /* --ok */
@@ -24,6 +24,7 @@
   /* Escena de fondo (§3.6): patrón tenue de Poké Ball y estrellas sobre un cielo de --blue-d a --navy-2. */
   --scene-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.06' stroke-width='3'%3E%3Ccircle cx='40' cy='40' r='22'/%3E%3Cpath d='M18 40h15m14 0h15'/%3E%3Ccircle cx='40' cy='40' r='7'/%3E%3Ccircle cx='120' cy='120' r='22'/%3E%3Cpath d='M98 120h15m14 0h15'/%3E%3Ccircle cx='120' cy='120' r='7'/%3E%3C/g%3E%3Cg fill='%23fff' fill-opacity='.12'%3E%3Ccircle cx='118' cy='30' r='1.5'/%3E%3Ccircle cx='30' cy='112' r='1.2'/%3E%3Ccircle cx='80' cy='78' r='1'/%3E%3Ccircle cx='148' cy='72' r='1.2'/%3E%3C/g%3E%3C/svg%3E");
   color: rgb(var(--color-ink));
+  /* Fondo del lienzo (rebote del desplazamiento, zonas fuera del body): nunca blanco. */
   background: var(--band);
   font-family: Nunito, system-ui, sans-serif;
   font-synthesis: none;
@@ -53,7 +54,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .card { @apply rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-5; }
   .panel { @apply rounded-2xl border border-ink/10 bg-surface; }
   .btn { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-extrabold transition-[background-color,color,border-color,opacity,transform] duration-200 active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:active:scale-100; }
-  .btn-primary { @apply btn bg-berry text-white hover:bg-berry/90; }
+  /* Principal: rojo oscuro con texto blanco (4,98:1); el alias `berry` es el rojo claro de texto. */
+  .btn-primary { @apply btn text-white; background-color: var(--red-text); }
+  .btn-primary:hover:not(:disabled) { background-color: var(--red-d); }
   .btn-secondary { @apply btn bg-electric text-night hover:bg-electric/85; }
   .btn-ghost { @apply btn border border-ink/15 bg-surface-raised hover:border-ink/30 hover:bg-ink/[.08]; }
   .icon-button { @apply inline-grid min-h-11 min-w-11 place-items-center rounded-xl text-ink/70 transition-colors hover:bg-ink/[.07] hover:text-ink disabled:cursor-not-allowed disabled:opacity-45; }

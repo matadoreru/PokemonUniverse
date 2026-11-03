@@ -117,3 +117,20 @@ describe('insignias de tipo', () => {
     }
   });
 });
+
+describe('alias de Tailwind (§11)', () => {
+  it('--color-berry es el triplete de --red-l', () => {
+    const rgb = [1, 3, 5].map((i) => parseInt(colors.redL.slice(i, i + 2), 16)).join(' ');
+    expect(styles).toMatch(new RegExp(`--color-berry:\\s*${rgb};`));
+  });
+  it.each([
+    ['navy-2', colors.navy2],
+    ['navy', colors.navy],
+    ['navy-3', colors.navy3],
+  ])('red-l sobre %s ≥ 4,5:1 (texto berry)', (_n, bg) => {
+    expect(contrast(colors.redL, bg)).toBeGreaterThanOrEqual(4.5);
+  });
+  it('blanco sobre red-text ≥ 4,5:1 (botón principal)', () => {
+    expect(contrast(colors.white, colors.redText)).toBeGreaterThanOrEqual(4.5);
+  });
+});

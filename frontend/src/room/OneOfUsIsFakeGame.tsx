@@ -18,7 +18,7 @@ function StageRail({ phase }: { phase: string }) {
 
 function CategoryCard({ player }: { player: Extract<OneOfUsIsFakePlayerState, { role: 'PLAYER' }> }) {
   return <section className={`overflow-hidden rounded-2xl border shadow-card ${player.isFake ? 'border-berry/35 bg-berry/[.06]' : 'border-aqua/25 bg-surface'}`} aria-labelledby="my-category">
-    <div className="border-b border-ink/10 px-4 py-3 sm:px-6"><span className="label !mb-0">Solo tú puedes ver esto</span><div className="flex items-center gap-2"><h2 id="my-category" className="font-display text-xl">Tu categoría</h2>{player.isFake && <span className="rounded-full bg-berry px-2.5 py-1 text-xs font-black text-white">FAKE</span>}</div></div>
+    <div className="border-b border-ink/10 px-4 py-3 sm:px-6"><span className="label !mb-0">Solo tú puedes ver esto</span><div className="flex items-center gap-2"><h2 id="my-category" className="font-display text-xl">Tu categoría</h2>{player.isFake && <span className="rounded-full bg-berry px-2.5 py-1 text-xs font-black text-night">FAKE</span>}</div></div>
     <div className="px-4 py-6 text-center sm:px-8"><blockquote className="mx-auto max-w-3xl font-display text-2xl leading-tight sm:text-4xl">“{player.myCategory}”</blockquote>{player.isFake && <p className="mx-auto mt-4 max-w-xl rounded-xl bg-berry/10 px-3 py-2 font-extrabold text-berry"><ShieldAlert className="mr-2 inline" size={18} />Tienes una categoría diferente al resto. No conoces la categoría principal.</p>}</div>
   </section>;
 }

@@ -12,7 +12,7 @@ function member(room: RoomView, playerId: string): RoomMemberView | undefined {
 
 function StageRail({ phase }: { phase: string }) {
   const stages = ['Escribir', 'Votar', 'Resultado']; const active = phase === 'ROUND_ACTIVE' ? 0 : phase === 'VOTING' || phase === 'REVOTE' ? 1 : 2;
-  return <ol className="mt-4 grid grid-cols-3 gap-1.5" aria-label="Fases de la ronda">{stages.map((stage, index) => <li key={stage} aria-current={index === active ? 'step' : undefined} className={`rounded-lg px-2 py-2 text-center text-xs font-black ${index === active ? 'bg-berry text-white' : index < active ? 'bg-leaf/10 text-leaf' : 'bg-ink/[.05] text-ink/45'}`}>{index < active ? '✓ ' : ''}{stage}</li>)}</ol>;
+  return <ol className="mt-4 grid grid-cols-3 gap-1.5" aria-label="Fases de la ronda">{stages.map((stage, index) => <li key={stage} aria-current={index === active ? 'step' : undefined} className={`rounded-lg px-2 py-2 text-center text-xs font-black ${index === active ? 'bg-berry text-night' : index < active ? 'bg-leaf/10 text-leaf' : 'bg-ink/[.05] text-ink/45'}`}>{index < active ? '✓ ' : ''}{stage}</li>)}</ol>;
 }
 
 function PokemonPrompt({ game }: { game: PokemonRedFlagPublicState }) {

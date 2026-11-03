@@ -291,7 +291,7 @@ de 0 a 3, con un máximo de 24. Para integrar: **≥19 y ningún 0**. Capturas a
   4 de `MINIJUEGOS_MEJORAS.md` y toda la web en el alcance.
 - Se mantienen Tailwind (solo para maquetación), `lucide-react` (dentro de `Icon`) y los textos en español.
 - Durante la migración, Tailwind reasigna los colores actuales por papel (`cream` → `--navy-2`, `ink` → blanco,
-  `surface` → `--navy`, `surface-raised` → `--navy-3`, `berry` → `--red-text`, `electric` → `--yellow`, `aqua` →
+  `surface` → `--navy`, `surface-raised` → `--navy-3`, `berry` → `--red-l` (texto legible sobre azul noche; `.btn-primary` va en `--red-text` con texto blanco), `electric` → `--yellow`, `aqua` →
   `--info`, `leaf` → `--ok`) y `.on-cream` devuelve la tinta oscura dentro del crema. Los alias y las clases antiguas
   se borran en F9.
 - Nada de assets de Inazuma ni de LEVEL-5 (emblemas, retratos, fondos ni OST). Solo fuentes OFL y música propia.

@@ -20,7 +20,7 @@ Nunito y se ponen las capas en tokens. Un test protege contraste, espejo y capas
 - Los tokens van en `:root` (tema único). No queda ningún `data-theme`, `ThemeToggle` ni `pokemon-universe-theme`.
 - Valores de color: exactamente los de la spec §3.1 (base, acentos y los 18 tipos en hex con su tinta).
 - Reasignación por papel: `cream`→`--navy-2`, `ink`→blanco, `surface`→`--navy`, `surface-raised`→`--navy-3`,
-  `night`→`--band`, `berry`→`--red-text`, `electric`→`--yellow`, `aqua`→`--info`, `leaf`→`--ok`, `focus`→`--yellow`.
+  `night`→`--band`, `berry`→`--red-l`, `electric`→`--yellow`, `aqua`→`--info`, `leaf`→`--ok`, `focus`→`--yellow`.
 - Fuentes: Baloo 2 (display) y Nunito (texto), woff2 en `frontend/public/fonts/` con `OFL.txt`, `font-display: block`,
   precargadas. Nada de Google Fonts ni Fredoka.
 - Capas: `--z-content` 1, `--z-hud` 5, `--z-sticky` 10, `--z-cutin` 25, `--z-toast` 40. Ningún `z-index` literal en CSS
