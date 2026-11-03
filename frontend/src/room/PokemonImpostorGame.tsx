@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { PokemonSelector } from './PokemonSelector';
-import { clampImpostorClue, impostorVoteHeadline, impostorVoteTargetLabel } from './pokemon-impostor-texts';
+import { clampImpostorClue, impostorClueLength, impostorVoteHeadline, impostorVoteTargetLabel } from './pokemon-impostor-texts';
 
 function memberName(members: Map<string, RoomMemberView>, id: string): string {
   return members.get(id)?.displayName ?? id;
@@ -33,7 +33,7 @@ export function PokemonImpostorGame({ room, selfId, onAction }: { room: RoomView
   const serverOffset = useServerOffset(room.serverNow);
   const deadline = game.roundEndsAt ?? game.nextTransitionAt;
   const remaining = Math.ceil(useRemainingMs(deadline, serverOffset) / 1_000);
-  const clueLength = [...clueText.normalize('NFC')].length;
+  const clueLength = impostorClueLength(clueText);
   const generations = (room.selectedGameConfig as { generations: number[] }).generations;
   const { pokemon } = usePokemonPool({ generations, enabled: player.canGuessPokemon });
   const orderedPlayers = game.phase === 'CLUE_PHASE'

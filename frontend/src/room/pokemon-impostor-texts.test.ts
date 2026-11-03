@@ -1,6 +1,6 @@
 import type { ImpostorVoteResult } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
-import { clampImpostorClue, impostorFinishText, impostorVoteHeadline, impostorVoteTargetLabel } from './pokemon-impostor-texts';
+import { clampImpostorClue, impostorClueLength, impostorFinishText, impostorVoteHeadline, impostorVoteTargetLabel } from './pokemon-impostor-texts';
 
 const nameOf = (id: string) => ({ p1: 'Ana', p2: 'Bruno' } as Record<string, string>)[id] ?? id;
 function result(overrides: Partial<ImpostorVoteResult>): ImpostorVoteResult {
@@ -58,7 +58,20 @@ describe('clampImpostorClue', () => {
     expect(clampImpostorClue('\u{1F525}'.repeat(26))).toBe('\u{1F525}'.repeat(25));
     expect(clampImpostorClue('x'.repeat(30))).toBe('x'.repeat(25));
   });
+  it('counts only the trimmed text, like the server, and keeps the spaces typed around it', () => {
+    const clue = `  ${'x'.repeat(25)}  `;
+    expect(clampImpostorClue(clue)).toBe(clue);
+    expect(clampImpostorClue(`  ${'x'.repeat(26)}  `)).toBe(`  ${'x'.repeat(25)}`);
+    expect(clampImpostorClue(`\u00A0${'\u{1F525}'.repeat(26)}`)).toBe(`\u00A0${'\u{1F525}'.repeat(25)}`);
+  });
   it('normalizes to NFC before counting', () => {
     expect(clampImpostorClue('É'.repeat(25))).toBe('É'.repeat(25));
+  });
+});
+
+describe('impostorClueLength', () => {
+  it('counts code points of the trimmed, NFC-normalized clue', () => {
+    expect(impostorClueLength('  abc  ')).toBe(3);
+    expect(impostorClueLength('E\u0301\u{1F525}')).toBe(2);
   });
 });

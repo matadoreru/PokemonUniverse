@@ -435,4 +435,18 @@ describe('Pokémon Impostor', () => {
     expect(state.roundsWithoutElimination).toBe(0);
     expect(state.finishReason).toBeNull();
   });
+
+  it('skip, elimination, skip, skip does not end with STALEMATE because the elimination resets the counter', () => {
+    const fixture = setup();
+    const skipRound = (current: PokemonImpostorState) => timeout(fixture, timeout(fixture, fillClues(current, fixture.context)));
+    let state = skipRound(startClues(fixture));
+    expect(state.roundsWithoutElimination).toBe(1);
+    state = fillClues(state, fixture.context);
+    for (const id of state.aliveIds) state = cast(state, id, id === 'p5' ? 'p4' : 'p5', fixture.context).state;
+    state = timeout(fixture, timeout(fixture, state));
+    expect(state).toMatchObject({ phase: 'CLUE_PHASE', roundNumber: 3, roundsWithoutElimination: 0, winnerTeam: null });
+    state = skipRound(state);
+    state = skipRound(state);
+    expect(state).toMatchObject({ phase: 'CLUE_PHASE', roundNumber: 5, roundsWithoutElimination: 2, winnerTeam: null, finishReason: null });
+  });
 });

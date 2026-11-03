@@ -35,7 +35,19 @@ export function impostorFinishText(reason: ImpostorFinishReason | null, guesserN
   }
 }
 
-/** Recorta la pista a los puntos de código que acepta el motor (tras NFC), no a unidades UTF-16. */
+/** Longitud de la pista como la cuenta el motor: puntos de código tras `trim()` y NFC. */
+export function impostorClueLength(value: string): number {
+  return [...value.trim().normalize('NFC')].length;
+}
+
+/**
+ * Recorta la pista a los puntos de código que acepta el motor, que cuenta el texto sin espacios en los bordes: conserva
+ * los espacios iniciales tal como se escriben y solo corta si el texto recortado supera el máximo (NFC).
+ */
 export function clampImpostorClue(value: string): string {
-  return [...value.normalize('NFC')].slice(0, IMPOSTOR_CLUE_MAX_CODE_POINTS).join('');
+  const normalized = value.normalize('NFC');
+  const points = [...normalized.trim()];
+  if (points.length <= IMPOSTOR_CLUE_MAX_CODE_POINTS) return normalized;
+  const leading = normalized.slice(0, normalized.length - normalized.trimStart().length);
+  return leading + points.slice(0, IMPOSTOR_CLUE_MAX_CODE_POINTS).join('');
 }
