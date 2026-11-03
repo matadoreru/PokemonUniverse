@@ -13,7 +13,7 @@ Feedback is a short, trustworthy path from a live minigame into an administrator
 
 ## Own world
 
-Inherit Pokémon Universe: dark/light token palette, Fredoka headings, Nunito body, functional berry/electric/aqua/leaf accents, 12–16px bordered surfaces, direct Spanish copy and Lucide stroke icons. No advertising, monetization or premium treatment.
+Inherit Pokémon Universe: single dark Arcade DS theme (tokens in `styles/tokens.css`), Baloo 2 headings, Nunito body, functional berry/electric/aqua/leaf accents, 12–16px bordered surfaces, direct Spanish copy and Lucide stroke icons. No advertising, monetization or premium treatment.
 
 ## First viewport
 

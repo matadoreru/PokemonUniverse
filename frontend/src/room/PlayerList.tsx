@@ -70,7 +70,7 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
                 <summary className="grid h-10 w-10 cursor-pointer list-none place-items-center rounded-xl text-ink/65 transition hover:bg-ink/5 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aqua [&::-webkit-details-marker]:hidden" aria-label={`Gestionar a ${member.displayName}`}>
                   <MoreVertical size={19} />
                 </summary>
-                <div className="absolute right-0 top-11 z-sticky w-56 rounded-2xl border border-ink/10 bg-surface p-2 shadow-card">
+                <div className="absolute right-0 top-11 z-content w-56 rounded-2xl border border-ink/10 bg-surface p-2 shadow-card">
                   <button className="flex min-h-10 w-full items-center gap-2 rounded-xl px-3 text-left text-sm font-extrabold hover:bg-ink/5" onClick={() => onSetRoomRole?.(member.id, member.roomRole === 'CO_HOST' ? 'MEMBER' : 'CO_HOST')}>
                     <UserRoundCog size={16} /> {member.roomRole === 'CO_HOST' ? 'Quitar Co-host' : 'Hacer Co-host'}
                   </button>

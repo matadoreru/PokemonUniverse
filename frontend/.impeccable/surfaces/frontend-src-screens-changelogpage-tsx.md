@@ -13,7 +13,7 @@ Patch notes are a calm, scannable product record inside the established Pokémon
 
 ## Own world
 
-Reuse the existing dark/light palette, Fredoka display type, Nunito body type, functional accent colors, rounded bordered surfaces and direct Spanish copy. Do not introduce monetization, advertising, premium states or a separate visual language.
+Reuse the existing single dark Arcade DS theme, Baloo 2 display type, Nunito body type, functional accent colors, rounded bordered surfaces and direct Spanish copy. Do not introduce monetization, advertising, premium states or a separate visual language.
 
 ## First viewport
 

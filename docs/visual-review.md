@@ -108,7 +108,7 @@ Cambios pendientes, por pantalla y criterio:
 
 - Portada (h): el estado vacío sin acción propia que enseñe a jugar.
 - Juego (e): capturas a 390 y 1920 (bucle `SIZES` en `sala.spec.ts`).
-- Lobby (d): `.experimental-badge` usa el literal `#c92a42`; pasarlo a un token (p. ej. `bg-berry`).
+- Lobby (d): `.experimental-badge` usa el literal `#c92a42`; pasarlo a `--red-text` con texto blanco (`berry` ahora es el rosa claro `--red-l`, no sirve de fondo con texto blanco).
 - Acceso (f, c): pestañas de 40 px (`min-h-10`); subir a 44 px con flechas, `aria-controls` y tabpanel (reutilizar `.lobby-tab`).
 - Entrar en partida (f): `aria-describedby="room-code-help"` apunta a un id inexistente (quitarlo o crear `#room-code-help`); `aria-busy` al entrar.
 - Juego (f, h): indicador y `aria-busy` al enviar la selección; estado vacío del buscador que explique la ronda; `.empty-state` para «No hay coincidencias»; `title` en nombres truncados.

@@ -67,7 +67,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
                 className={`toggle-option py-3 text-left ${selected ? 'border-berry bg-berry text-night' : 'text-ink'}`}
               >
                 <span className="block font-extrabold">{copy.label}</span>
-                <span className={`mt-1 block text-xs font-semibold ${selected ? 'text-white/80' : 'text-ink/65'}`}>{copy.description}</span>
+                <span className={`mt-1 block text-xs font-semibold ${selected ? 'text-night/75' : 'text-ink/65'}`}>{copy.description}</span>
               </button>
             );
           })}

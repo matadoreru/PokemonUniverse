@@ -167,6 +167,15 @@ describe('capas (§2)', () => {
     const aplicadas = styles.split('\n').filter((l) => l.includes('@apply')).flatMap((l) => ilegales(l.replace(/^.*@apply/, '')));
     expect(aplicadas).toEqual([]);
   });
+  it('sin zIndex inline salvo el contenido por isolate', () => {
+    const root = path.join(here, '..');
+    // DistanceRuler.tsx usa zIndex inline para apilar carriles; `.distance-ruler-lanes` lleva `isolation: isolate`.
+    const permitidos = new Set(['room/DistanceRuler.tsx']);
+    const malos = tsxFiles(root).map((f) => path.relative(root, f).split(path.sep).join('/'))
+      .filter((r) => !permitidos.has(r) && /zIndex\s*:/.test(readFileSync(path.join(root, r), 'utf8')));
+    expect(malos).toEqual([]);
+    expect(styles).toMatch(/\.distance-ruler-lanes\s*\{[^}]*isolation:\s*isolate/);
+  });
   it('la escala de Tailwind son solo las capas', () => {
     expect(Object.keys((tailwind.theme as { zIndex?: Record<string, string> }).zIndex ?? {}).sort()).toEqual(Object.keys(layers).sort());
   });
