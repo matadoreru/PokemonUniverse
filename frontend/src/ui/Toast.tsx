@@ -90,7 +90,8 @@ export function ToastStack({ toasts, onClose }: ToastStackProps) {
     for (const t of toasts) if (!seen.current.has(t.id) && t.kind === 'error') uiSound('error');
     seen.current = new Set(toasts.map((t) => t.id));
     const el = ref.current;
-    if (!el || !hasPopover(el)) return;
+    // Un anfitrión viejo (diálogo ya quitado del DOM) deja el elemento fuera del documento: `showPopover()` lanzaría.
+    if (!el || !el.isConnected || !hasPopover(el)) return;
     const shown = el.matches(':popover-open');
     if (toasts.length === 0) {
       if (shown) el.hidePopover();

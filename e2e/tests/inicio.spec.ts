@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { borrarCuentas, capture, collectErrors, comprobarBdE2E, loginAsGuest, nuevaCuenta, promoverAAdmin, registrarPorApi, SIZES, uniqueName, type CuentaE2E } from '../src/helpers.js';
+import { borrarCuentas, capture, collectErrors, comprobarBdE2E, expectNoHorizontalScroll, loginAsGuest, nuevaCuenta, promoverAAdmin, registrarPorApi, SIZES, uniqueName, type CuentaE2E } from '../src/helpers.js';
 
 for (const { w, h } of SIZES) {
   test(`portada a ${w}×${h}`, async ({ page }) => {
@@ -93,6 +93,15 @@ test.describe('cabecera con cuenta', () => {
     await page.goto('/play');
     await expect(page.getByRole('link', { name: 'Abrir panel de administración' })).toBeVisible();
     await capturarCabecera(page, 'cabecera-admin');
+    // Tableta (640–1023 px): el ADMIN conserva el perfil en redondo y las placas siguen cabiendo.
+    for (const w of [640, 1023]) {
+      await page.setViewportSize({ width: w, height: 900 });
+      await expect(page.getByRole('link', { name: `Abrir perfil de ${cuenta.username}` })).toBeVisible();
+      await expectNoHorizontalScroll(page, `cabecera-admin-${w}`);
+      const [izq, der] = await page.locator('header > div').first().evaluate((fila) => [...fila.children].map((c) => c.getBoundingClientRect().toJSON() as DOMRect));
+      expect(izq!.right).toBeLessThanOrEqual(der!.left);
+      expect(der!.right).toBeLessThanOrEqual(w);
+    }
     expect(errors).toEqual([]);
   });
 });

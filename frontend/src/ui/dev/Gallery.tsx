@@ -572,14 +572,19 @@ function HudSection() {
           <span className={s.text}>12 pts</span>
         </HudPlate>
       </Fig>
-      <Fig id="hudplate-header" caption="Cabecera: logotipo, sonido y píldoras redondas" wide>
+      <Fig id="hudplate-header" caption="Cabecera: logotipo, sonido, novedades sin leer y salir" wide>
         <span className={s.iconRow}>
           <HudPlate>
             <span className="ol2 font-display text-26">Pokémon Universe</span>
             <Pill variant="cream" size="round" icon={Volume2} aria-label="Ajustes de sonido (ejemplo)" />
           </HudPlate>
           <HudPlate>
-            <PillLink to="/dev/ui" size="round" icon={Newspaper} aria-label="Novedades (ejemplo)" />
+            <span className="relative inline-flex">
+              <PillLink to="/dev/ui" size="round" icon={Newspaper} aria-label="Novedades (ejemplo), 3 versiones sin leer" />
+              <span className="pointer-events-none absolute -right-2 -top-2" data-layer aria-hidden="true">
+                <Badge>3</Badge>
+              </span>
+            </span>
             <Pill size="round" variant="ghost" icon={LogOut} aria-label="Cerrar sesión (ejemplo)" />
           </HudPlate>
         </span>

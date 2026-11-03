@@ -140,5 +140,9 @@ describe('Global header accessibility', () => {
     expect(markup).toContain('aria-label="Pokémon Universe, inicio"');
     expect(markup).toContain('aria-label="Abrir perfil de Eru"');
     expect(markup).toContain('aria-label="Cerrar sesión"');
+    expect(markup).not.toContain('Abrir panel de administración');
+    const unread = renderToStaticMarkup(createElement(MemoryRouter, null, createElement(AppHeader, { user: { ...user, role: 'ADMIN' as const }, onLogout: () => undefined, unreadChangelogCount: 3 })));
+    expect(unread).toContain('aria-label="Novedades, 3 versiones sin leer"');
+    expect(unread).toContain('aria-label="Abrir panel de administración"');
   });
 });

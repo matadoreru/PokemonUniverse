@@ -16,7 +16,8 @@ export const HEADER_NOTICES_ID = 'app-header-notices';
 /**
  * Cabecera de placas de HUD (spec §6): a la izquierda el logotipo (enlace a inicio) y el sonido; a la derecha Novedades,
  * Administración (solo ADMIN), el perfil y «Cerrar sesión». Por debajo de 640 px el logotipo pasa a «PU»; por debajo de
- * 1024 px Administración y el perfil quedan en píldoras redondas (el ADMIN deja el perfil para no desbordar el móvil).
+ * 1024 px Administración y el perfil quedan en píldoras redondas (por debajo de 640 px el ADMIN deja el perfil para no
+ * desbordar el móvil).
  */
 export function AppHeader({ user, onLogout, unreadChangelogCount = 0 }: { user: AuthUser | null; onLogout(): void; unreadChangelogCount?: number }) {
   const isAdmin = user?.kind === 'USER' && user.role === 'ADMIN';
@@ -58,13 +59,12 @@ export function AppHeader({ user, onLogout, unreadChangelogCount = 0 }: { user: 
           )}
           {user?.kind === 'USER' && (
             <>
-              {!isAdmin && (
-                <span className="contents lg:hidden">
-                  <PillLink to="/profile" variant="cream" size="round" aria-label={profileLabel} title={user.displayName}>
-                    <Avatar name={user.displayName} avatar={user.avatar} size="sm" className="!text-13" />
-                  </PillLink>
-                </span>
-              )}
+              {/* El ADMIN deja el perfil por debajo de 640 px: con Administración, la placa no cabría en el móvil. */}
+              <span className={isAdmin ? 'hidden sm:contents lg:hidden' : 'contents lg:hidden'}>
+                <PillLink to="/profile" variant="cream" size="round" aria-label={profileLabel} title={user.displayName}>
+                  <Avatar name={user.displayName} avatar={user.avatar} size="sm" className="!text-13" />
+                </PillLink>
+              </span>
               <span className="hidden lg:contents">
                 <PillLink to="/profile" variant="cream" aria-label={profileLabel} className={s.profile}>
                   <Avatar name={user.displayName} avatar={user.avatar} size="sm" className="!text-13" />
