@@ -8,18 +8,27 @@ import es.pokemonuniverse.domain.game.engines.learnsetguess.LearnsetGuessTypes.L
 import es.pokemonuniverse.domain.game.engines.learnsetguess.LearnsetGuessTypes.LearnsetGuessState;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /** Traducción literal de {@code learnset-guess/rules.ts}. */
 public final class LearnsetGuessRules {
 
   public static final int LEARNSET_INITIAL_POINTS = 5;
   public static final int LEARNSET_MIN_POINTS = 1;
+  /** {@code LEARNSET_ORDER_BONUSES}: extra para el primero y el segundo en acertar, en el orden en que se procesan. */
+  public static final List<Integer> ORDER_BONUSES = List.of(2, 1);
+  /** {@code LEARNSET_LAST_WARNING_MS}: si solo falta un jugador requerido, la ronda se cierra como mucho en 10 s. */
+  public static final long LAST_WARNING_MS = 10_000;
 
   private LearnsetGuessRules() {}
 
-  /** Cinco puntos con las pistas iniciales, uno menos por cada grupo extra revelado y nunca menos de uno. */
-  public static int learnsetPoints(int revealStage) {
-    return Math.max(LEARNSET_MIN_POINTS, LEARNSET_INITIAL_POINTS - revealStage);
+  /**
+   * Cinco puntos con las pistas iniciales, uno menos por cada grupo extra revelado y nunca menos de uno, más el bonus
+   * por orden ({@code bonus[solveOrder - 1] ?? 0}: fuera de rango no suma).
+   */
+  public static int learnsetPoints(int revealStage, int solveOrder) {
+    int bonus = solveOrder >= 1 && solveOrder <= ORDER_BONUSES.size() ? ORDER_BONUSES.get(solveOrder - 1) : 0;
+    return Math.max(LEARNSET_MIN_POINTS, LEARNSET_INITIAL_POINTS - revealStage) + bonus;
   }
 
   /**

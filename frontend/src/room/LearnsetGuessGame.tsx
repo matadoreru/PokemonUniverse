@@ -1,9 +1,10 @@
 import type { LearnsetGuessPlayerState, LearnsetGuessPublicState, LearnsetMoveHint, MoveCategory, PokemonType, RoomView } from '@pokemon-universe/shared/public';
-import { BookOpen, CheckCircle2, Clock3, Eye, History, Lightbulb, Sparkles, XCircle } from 'lucide-react';
+import { AlarmClock, BookOpen, CheckCircle2, Clock3, Eye, History, Lightbulb, Sparkles, XCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { revealedLearnsetFlags } from './learnset-reveal';
+import { learnsetLastWarningText } from './learnset-texts';
 import { PokemonSelector } from './PokemonSelector';
 
 const typeLabels: Record<PokemonType, [string, string]> = {
@@ -20,6 +21,7 @@ export function LearnsetGuessGame({ room, selfId, onAction }: { room: RoomView; 
   const transitionRemaining = Math.ceil(useRemainingMs(game.nextTransitionAt, offset) / 1_000);
   const cooldownRemaining = useRemainingMs(player.cooldownUntil, offset); const active = game.phase === 'ROUND_ACTIVE';
   const self = room.members.find((member) => member.id === selfId); const participating = self?.role === 'PLAYER';
+  const lastWarningText = active ? learnsetLastWarningText(game.lastWarning, player.solved || !participating || !player.canGuess) : null;
 
   if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} remaining={transitionRemaining} />;
   return <section className="mx-auto max-w-7xl px-4 py-5 md:px-7">
@@ -27,7 +29,7 @@ export function LearnsetGuessGame({ room, selfId, onAction }: { room: RoomView; 
     <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_20rem]">
       <main className="space-y-5">
         {game.evolutionHint && <div className="flex items-center gap-3 rounded-2xl border border-electric/25 bg-electric/10 p-3"><Sparkles className="text-electric" /><div><span className="label !mb-0">Pista evolutiva</span><strong className="font-display text-lg">{game.evolutionHint}</strong></div></div>}
-        <section className="card !p-4 md:!p-5"><div className="mb-4 flex flex-wrap items-center justify-between gap-2"><div><span className="label !mb-0">Movimientos conocidos</span><h2 className="font-display text-2xl">Pistas reveladas</h2></div>{active && game.nextTransitionAt && <span className="chip bg-aqua/10 text-aqua"><Lightbulb size={16} /> Nueva pista en {transitionRemaining}s</span>}</div>
+        <section className="card !p-4 md:!p-5"><div className="mb-4 flex flex-wrap items-center justify-between gap-2"><div><span className="label !mb-0">Movimientos conocidos</span><h2 className="font-display text-2xl">Pistas reveladas</h2></div><div className="flex flex-wrap items-center gap-2">{lastWarningText && <span role="status" className="chip timer-pulse gap-1.5 border border-berry bg-berry/10 text-berry"><AlarmClock size={16} aria-hidden="true" /> {lastWarningText}</span>}{active && game.nextTransitionAt && <span className="chip bg-aqua/10 text-aqua"><Lightbulb size={16} /> Nueva pista en {transitionRemaining}s</span>}</div></div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{game.visibleGroups.map((group, index) => <div key={`${group.level ?? 'hidden'}-${group.stage}-${index}`} className={`rounded-2xl border p-3 ${group.stage > 0 && group.stage === Math.max(...game.visibleGroups.map((entry) => entry.stage)) ? 'reveal-pop border-aqua bg-aqua/10' : 'border-ink/10 bg-surface-raised'}`}><div className="mb-2 flex items-center justify-between"><span className="label !mb-0">{group.level === null ? 'Movimiento' : `Nv. ${group.level}`}</span>{group.stage > 0 && <span className="rounded-full bg-aqua px-2 py-1 text-[10px] font-black uppercase text-night">Nueva pista</span>}</div><div className="space-y-2">{group.moves.map((move, moveIndex) => <MoveHint key={`${move.moveId}-${move.level ?? 'x'}-${moveIndex}`} move={move} />)}</div></div>)}</div>
         </section>
         {active && participating && player.canGuess && <div><PokemonSelector pokemon={pokemon} locked={new Set()} disabled={false} confirmationDisabled={cooldownRemaining > 0} onSelect={(pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId })} />{cooldownRemaining > 0 && <p className="mt-2 text-center text-sm font-extrabold text-berry">Espera {(cooldownRemaining / 1_000).toFixed(1)}s para confirmar otro intento.</p>}</div>}

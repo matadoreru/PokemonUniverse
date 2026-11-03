@@ -2,7 +2,7 @@ import type { GameContext, LearnsetPokemonCatalog, Move, Pokemon, PokemonEvoluti
 import { describe, expect, it } from 'vitest';
 import { defaultLearnsetGuessConfig } from './config.js';
 import { LEARNSET_GUESS_COOLDOWN_MS, LEARNSET_HINT_INTERVAL_MS, LEARNSET_RESULT_DURATION_MS, evolutionHint, groupLearnset, learnsetGuessGame, learnsetReferenceGeneration } from './server.js';
-import { learnsetPoints } from './rules.js';
+import { LEARNSET_LAST_WARNING_MS, LEARNSET_ORDER_BONUSES, learnsetPoints } from './rules.js';
 import type { LearnsetGuessPlayerState, LearnsetGuessState } from './types.js';
 
 const pokemon: Pokemon[] = [
@@ -92,13 +92,13 @@ describe('Learnset Guess', () => {
     const fixture = setup(); const solved = guess(fixture.state, 'p1', 'pikachu', fixture.context); const publicState = learnsetGuessGame.getPublicState(solved.state, fixture.context);
     expect(solved.state.phase).toBe('ROUND_ACTIVE'); expect(publicState.solvedPlayers).toEqual([{ playerId: 'p1', solveOrder: 1 }]); expect(publicState.attempts).toEqual([]);
     expect(JSON.stringify(publicState)).not.toContain('correctPokemonId'); expect(JSON.stringify(publicState)).not.toContain('Pikachu');
-    expect(learnsetGuessGame.getPlayerState(solved.state, 'p1', fixture.context)).toEqual({ canGuess: false, solved: true, solveOrder: 1, cooldownUntil: null, roundPoints: 5 });
+    expect(learnsetGuessGame.getPlayerState(solved.state, 'p1', fixture.context)).toEqual({ canGuess: false, solved: true, solveOrder: 1, cooldownUntil: null, roundPoints: 7 });
     expect(guess(solved.state, 'p1', 'pikachu', fixture.context).accepted).toBe(false); expect(guess(solved.state, 'p2', 'charmander', fixture.context).accepted).toBe(true);
   });
 
   it('ends early when all connected players solve and keeps prior solves on disconnect', () => {
     const fixture = setup(); let state = guess(fixture.state, 'p1', 'pikachu', fixture.context).state; fixture.context.players[1]!.connected = false;
-    state = learnsetGuessGame.handlePresenceChange!(state, fixture.context); expect(state.phase).toBe('ROUND_RESULTS'); expect(state.solves.p1?.points).toBe(5);
+    state = learnsetGuessGame.handlePresenceChange!(state, fixture.context); expect(state.phase).toBe('ROUND_RESULTS'); expect(state.solves.p1?.points).toBe(7);
   });
 
   it('a disconnected player does not add missed', () => {
@@ -127,20 +127,120 @@ describe('Learnset Guess', () => {
     fixture.setNow(state.nextTransitionAt!); state = learnsetGuessGame.handleTimeout(state, fixture.context); expect(state.phase).toBe('ROUND_ACTIVE'); expect(state.roundNumber).toBe(2);
   });
 
-  it('finishes after N rounds with profile metrics and tied winners', () => {
+  it('finishes after N rounds with profile metrics and the solve order breaking an equal stage', () => {
     const fixture = setup({ rounds: 1 }); let state = guess(fixture.state, 'p1', 'pikachu', fixture.context).state; state = guess(state, 'p2', 'pikachu', fixture.context).state;
     fixture.setNow(state.nextTransitionAt!); state = learnsetGuessGame.handleTimeout(state, fixture.context); const results = learnsetGuessGame.getResults(state);
-    expect(state.phase).toBe('GAME_RESULTS'); expect(results.winnerId).toBeNull(); expect(results.standings.every((entry) => entry.won)).toBe(true); expect(results.standings[0]?.stats).toMatchObject({ correct: 1, missed: 0, initialSolves: 1, pointsFromSolves: 5, bestRoundPoints: 5 });
+    expect(state.phase).toBe('GAME_RESULTS'); expect(results.winnerId).toBe('p1'); expect(results.standings.map((entry) => entry.won)).toEqual([true, false]);
+    expect(results.standings[0]?.stats).toMatchObject({ correct: 1, missed: 0, initialSolves: 1, pointsFromSolves: 7, bestRoundPoints: 7 });
+    expect(results.standings[1]?.stats).toMatchObject({ correct: 1, pointsFromSolves: 6, bestRoundPoints: 6 });
+  });
+
+  it('ties winners with equal scores', () => {
+    const fixture = setup({ rounds: 1 }); let state: LearnsetGuessState = { ...fixture.state, scores: { p1: 0, p2: 1 } }; state = guess(state, 'p1', 'pikachu', fixture.context).state; state = guess(state, 'p2', 'pikachu', fixture.context).state;
+    fixture.setNow(state.nextTransitionAt!); state = learnsetGuessGame.handleTimeout(state, fixture.context); const results = learnsetGuessGame.getResults(state);
+    expect(state.scores).toEqual({ p1: 7, p2: 7 }); expect(results.winnerId).toBeNull(); expect(results.standings.every((entry) => entry.won)).toBe(true);
   });
 
   it('reduces points by reveal stage to a configurable floor and allows equal stage scores', () => {
-    expect([0, 1, 2, 3, 4, 9].map(learnsetPoints)).toEqual([5, 4, 3, 2, 1, 1]);
-    const fixture = setup(); const staged = { ...fixture.state, revealedExtraGroups: 2 }; let state = guess(staged, 'p1', 'pikachu', fixture.context).state; state = guess(state, 'p2', 'pikachu', fixture.context).state; expect(state.solves.p1).toMatchObject({ points: 3, solveOrder: 1 }); expect(state.solves.p2).toMatchObject({ points: 3, solveOrder: 2 });
+    expect([0, 1, 2, 3, 4, 9].map((stage) => learnsetPoints(stage, 3))).toEqual([5, 4, 3, 2, 1, 1]);
+    const fixture = setup(); const staged = { ...fixture.state, revealedExtraGroups: 2 }; let state = guess(staged, 'p1', 'pikachu', fixture.context).state; state = guess(state, 'p2', 'pikachu', fixture.context).state; expect(state.solves.p1).toMatchObject({ points: 5, solveOrder: 1 }); expect(state.solves.p2).toMatchObject({ points: 4, solveOrder: 2 });
   });
 
   it('restores only safe private progress and rejects spectators', () => {
     const fixture = setup(); const state = guess(fixture.state, 'p1', 'pikachu', fixture.context).state; const restored = learnsetGuessGame.getPlayerState(state, 'p1', fixture.context);
     expect(JSON.stringify(restored)).not.toContain('pikachu'); expect(restored).toMatchObject({ solved: true, canGuess: false });
     expect(guess(state, 'spectator', 'pikachu', fixture.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/conectado/) });
+  });
+  describe('order bonus and last warning', () => {
+    function trio(roundSeconds = 60) {
+      const context: GameContext = { players: [{ id: 'p1', displayName: 'Pedro' }, { id: 'p2', displayName: 'Ana' }, { id: 'p3', displayName: 'Luis' }], pokemon: catalog, now: 1_000, random: () => 0 };
+      let state = learnsetGuessGame.createInitialState({ ...defaultLearnsetGuessConfig, generations: [1], rounds: 2, roundSeconds }, context);
+      expect(state.lastWarning).toBe(false);
+      state = learnsetGuessGame.start(state, context);
+      return { state, context };
+    }
+
+    it('rules', () => {
+      expect(LEARNSET_ORDER_BONUSES).toEqual([2, 1]); expect(LEARNSET_LAST_WARNING_MS).toBe(10_000);
+      expect(learnsetPoints(0, 1)).toBe(7); expect(learnsetPoints(0, 2)).toBe(6); expect(learnsetPoints(0, 3)).toBe(5); expect(learnsetPoints(4, 1)).toBe(3); expect(learnsetPoints(6, 3)).toBe(1);
+    });
+
+    it('the first two solvers earn the order bonus', () => {
+      const { state: initial, context } = trio(); let state = initial;
+      state = guess(state, 'p1', 'pikachu', context).state; state = guess(state, 'p2', 'pikachu', context).state; state = guess(state, 'p3', 'pikachu', context).state;
+      expect([state.solves.p1?.points, state.solves.p2?.points, state.solves.p3?.points]).toEqual([7, 6, 5]);
+      expect(state.scores).toEqual({ p1: 7, p2: 6, p3: 5 });
+      expect([state.playerStats.p1, state.playerStats.p2, state.playerStats.p3].map((stats) => [stats?.pointsFromSolves, stats?.bestRoundPoints])).toEqual([[7, 7], [6, 6], [5, 5]]);
+      expect((learnsetGuessGame.getPlayerState(state, 'p2', context) as LearnsetGuessPlayerState).roundPoints).toBe(6);
+    });
+
+    it('cuts the round to 10 s when only one player is missing', () => {
+      const { state: initial, context } = trio(); const start = context.now; expect(initial.roundEndsAt).toBe(start + 60_000);
+      context.now = start + 5_000; let state = guess(initial, 'p1', 'pikachu', context).state;
+      expect(state.lastWarning).toBe(false); expect(learnsetGuessGame.getPublicState(state, context).lastWarning).toBe(false); expect(state.roundEndsAt).toBe(start + 60_000);
+      state = guess(state, 'p2', 'pikachu', context).state;
+      expect(state.roundEndsAt).toBe(start + 15_000); expect(state.lastWarning).toBe(true);
+      expect(state.nextTransitionAt === null || state.nextTransitionAt < state.roundEndsAt!).toBe(true);
+      const view = learnsetGuessGame.getPublicState(state, context); expect(view.lastWarning).toBe(true); expect(view.roundEndsAt).toBe(start + 15_000);
+      expect(JSON.stringify(view)).not.toContain('Pikachu'); expect(JSON.stringify(view)).not.toContain('pikachu');
+      context.now = start + 15_000; state = learnsetGuessGame.handleTimeout(state, context);
+      expect(state.phase).toBe('ROUND_RESULTS'); expect(state.playerStats.p3?.missed).toBe(1);
+      expect(learnsetGuessGame.getPublicState(state, context).lastWarning).toBe(false);
+    });
+
+    it('drops a pending hint that would fall at or after the cut deadline', () => {
+      const { state: initial, context } = trio(); const start = context.now;
+      context.now = start + 6_000; let state = guess(initial, 'p1', 'pikachu', context).state; state = guess(state, 'p2', 'pikachu', context).state;
+      expect(state.roundEndsAt).toBe(start + 16_000); expect(state.nextTransitionAt).toBe(start + LEARNSET_HINT_INTERVAL_MS);
+      context.now = start + 7_000; state = learnsetGuessGame.handleTimeout(state, context);
+      expect(state.revealedExtraGroups).toBe(1); expect(state.nextTransitionAt).toBe(start + 14_000);
+      const late = { ...initial, nextTransitionAt: start + 20_000 }; context.now = start + 6_000;
+      let cut = guess(late, 'p1', 'pikachu', context).state; cut = guess(cut, 'p2', 'pikachu', context).state;
+      expect(cut.roundEndsAt).toBe(start + 16_000); expect(cut.nextTransitionAt).toBeNull();
+      const atEnd = { ...initial, nextTransitionAt: start + 16_000 };
+      let edge = guess(atEnd, 'p1', 'pikachu', context).state; edge = guess(edge, 'p2', 'pikachu', context).state;
+      expect(edge.nextTransitionAt).toBeNull();
+    });
+
+    it('last warning never extends a closer deadline', () => {
+      const { state: initial, context } = trio(); const end = initial.roundEndsAt!;
+      let state = guess(initial, 'p1', 'pikachu', context).state; context.now = end - 4_000; state = guess(state, 'p2', 'pikachu', context).state;
+      expect(state.roundEndsAt).toBe(end); expect(state.lastWarning).toBe(true);
+    });
+
+    it('a disconnect can trigger the last warning', () => {
+      const { state: initial, context } = trio(); const start = context.now;
+      let state = guess(initial, 'p1', 'pikachu', context).state; expect(state.lastWarning).toBe(false);
+      context.now = start + 3_000; context.players[2]!.connected = false; state = learnsetGuessGame.handlePresenceChange!(state, context);
+      expect(state.phase).toBe('ROUND_ACTIVE'); expect(state.lastWarning).toBe(true); expect(state.roundEndsAt).toBe(start + 13_000);
+      expect(learnsetGuessGame.getPublicState(state, context).lastWarning).toBe(true);
+      context.players[2]!.connected = true; state = learnsetGuessGame.handlePresenceChange!(state, context);
+      expect(state.roundEndsAt).toBe(start + 13_000);
+    });
+
+    it('the missing player leaving resolves the round instead of warning', () => {
+      const { state: initial, context } = trio();
+      let state = guess(initial, 'p1', 'pikachu', context).state; state = guess(state, 'p2', 'pikachu', context).state;
+      context.players[2]!.connected = false; state = learnsetGuessGame.handlePresenceChange!(state, context);
+      expect(state.phase).toBe('ROUND_RESULTS');
+    });
+
+    it('no warning while two players are missing', () => {
+      const { state: initial, context } = trio(); const end = initial.roundEndsAt!;
+      const state = guess(initial, 'p1', 'pikachu', context).state;
+      expect(state.lastWarning).toBe(false); expect(state.roundEndsAt).toBe(end);
+      const unsolved = learnsetGuessGame.handlePresenceChange!(initial, { ...context, players: context.players.map((player) => player.id === 'p3' ? { ...player, connected: false } : player) });
+      expect(unsolved.lastWarning).toBe(false); expect(unsolved.roundEndsAt).toBe(end);
+    });
+
+    it('the warning resets next round', () => {
+      const { state: initial, context } = trio(); const start = context.now;
+      let state = guess(initial, 'p1', 'pikachu', context).state; state = guess(state, 'p2', 'pikachu', context).state; expect(state.lastWarning).toBe(true);
+      context.now = state.roundEndsAt!; state = learnsetGuessGame.handleTimeout(state, context); expect(state.phase).toBe('ROUND_RESULTS');
+      context.now = state.nextTransitionAt!; state = learnsetGuessGame.handleTimeout(state, context);
+      expect(state.phase).toBe('ROUND_ACTIVE'); expect(state.roundNumber).toBe(2); expect(state.lastWarning).toBe(false);
+      expect(state.roundEndsAt).toBe(context.now + 60_000); expect(learnsetGuessGame.getPublicState(state, context).lastWarning).toBe(false);
+      expect(start).toBeLessThan(context.now);
+    });
   });
 });

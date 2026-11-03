@@ -129,6 +129,7 @@
         "roundStartedAt": null,
         "roundEndsAt": null,
         "nextTransitionAt": null,
+        "lastWarning": false,
         "lastRound": null,
         "scores": {
           "p1": 0,
@@ -211,6 +212,7 @@
         "roundStartedAt": 1000,
         "roundEndsAt": 31000,
         "nextTransitionAt": 8000,
+        "lastWarning": false,
         "lastRound": null,
         "scores": {
           "p1": 0,
@@ -301,9 +303,10 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 31000,
             "nextTransitionAt": 8000,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
-              "p1": 5,
+              "p1": 7,
               "p2": 0,
               "p3": 0
             },
@@ -315,7 +318,7 @@
               "solved": true,
               "solveOrder": 1,
               "cooldownUntil": null,
-              "roundPoints": 5
+              "roundPoints": 7
             },
             "p2": {
               "canGuess": true,
@@ -388,11 +391,12 @@
               }
             ],
             "roundStartedAt": 1000,
-            "roundEndsAt": 31000,
+            "roundEndsAt": 12000,
             "nextTransitionAt": 8000,
+            "lastWarning": true,
             "lastRound": null,
             "scores": {
-              "p1": 5,
+              "p1": 7,
               "p2": 0,
               "p3": 0
             },
@@ -404,7 +408,7 @@
               "solved": true,
               "solveOrder": 1,
               "cooldownUntil": null,
-              "roundPoints": 5
+              "roundPoints": 7
             },
             "p2": {
               "canGuess": true,
@@ -451,6 +455,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": null,
             "nextTransitionAt": 35000,
+            "lastWarning": false,
             "lastRound": {
               "pokemon": {
                 "id": "dodrio",
@@ -554,12 +559,12 @@
                   "solveOrder": 1,
                   "solvedAt": 1500,
                   "revealStage": 0,
-                  "points": 5
+                  "points": 7
                 }
               }
             },
             "scores": {
-              "p1": 5,
+              "p1": 7,
               "p2": 0,
               "p3": 0
             },
@@ -571,7 +576,7 @@
               "solved": true,
               "solveOrder": 1,
               "cooldownUntil": null,
-              "roundPoints": 5
+              "roundPoints": 7
             },
             "p2": {
               "canGuess": false,
@@ -660,9 +665,10 @@
             "roundStartedAt": 35000,
             "roundEndsAt": 65000,
             "nextTransitionAt": 42000,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
-              "p1": 5,
+              "p1": 7,
               "p2": 0,
               "p3": 0
             },
@@ -763,9 +769,10 @@
             "roundStartedAt": 35000,
             "roundEndsAt": 65000,
             "nextTransitionAt": 42000,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
-              "p1": 5,
+              "p1": 7,
               "p2": 0,
               "p3": 0
             },
@@ -819,6 +826,7 @@
             "roundStartedAt": 35000,
             "roundEndsAt": null,
             "nextTransitionAt": 69000,
+            "lastWarning": false,
             "lastRound": {
               "pokemon": {
                 "id": "farfetchd",
@@ -913,7 +921,7 @@
               "solves": {}
             },
             "scores": {
-              "p1": 5,
+              "p1": 7,
               "p2": 0,
               "p3": 0
             },
@@ -1015,9 +1023,10 @@
             "roundStartedAt": 69000,
             "roundEndsAt": 99000,
             "nextTransitionAt": 76000,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
-              "p1": 5,
+              "p1": 7,
               "p2": 0,
               "p3": 0
             },
@@ -1071,6 +1080,7 @@
             "roundStartedAt": 69000,
             "roundEndsAt": null,
             "nextTransitionAt": 103000,
+            "lastWarning": false,
             "lastRound": {
               "pokemon": {
                 "id": "persian",
@@ -1186,7 +1196,7 @@
               "solves": {}
             },
             "scores": {
-              "p1": 5,
+              "p1": 7,
               "p2": 0,
               "p3": 0
             },
@@ -1240,9 +1250,10 @@
             "roundStartedAt": 69000,
             "roundEndsAt": null,
             "nextTransitionAt": null,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
-              "p1": 5,
+              "p1": 7,
               "p2": 0,
               "p3": 0
             },
@@ -1252,15 +1263,15 @@
                 {
                   "playerId": "p1",
                   "position": 1,
-                  "points": 5,
+                  "points": 7,
                   "won": true,
                   "stats": {
                     "correct": 1,
                     "missed": 2,
                     "initialSolves": 1,
                     "incorrectGuesses": 0,
-                    "pointsFromSolves": 5,
-                    "bestRoundPoints": 5
+                    "pointsFromSolves": 7,
+                    "bestRoundPoints": 7
                   }
                 },
                 {
@@ -1327,15 +1338,15 @@
         {
           "playerId": "p1",
           "position": 1,
-          "points": 5,
+          "points": 7,
           "won": true,
           "stats": {
             "correct": 1,
             "missed": 2,
             "initialSolves": 1,
             "incorrectGuesses": 0,
-            "pointsFromSolves": 5,
-            "bestRoundPoints": 5
+            "pointsFromSolves": 7,
+            "bestRoundPoints": 7
           }
         },
         {

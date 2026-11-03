@@ -1,6 +1,7 @@
 package es.pokemonuniverse.domain.game.engines.learnsetguess;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -222,5 +223,39 @@ class LearnsetGuessEngineTest {
     assertEquals(levels.stream().sorted().distinct().toList(), levels);
     assertEquals(List.of("growl", "thunder-shock"),
         groups.getFirst().stream().map(ResolvedLevelUpMove::moveId).toList());
+  }
+
+  @Test
+  void pointsAddTheOrderBonusOnlyForTheFirstTwo() {
+    assertEquals(7, LearnsetGuessRules.learnsetPoints(0, 1));
+    assertEquals(6, LearnsetGuessRules.learnsetPoints(0, 2));
+    assertEquals(5, LearnsetGuessRules.learnsetPoints(0, 3));
+    assertEquals(3, LearnsetGuessRules.learnsetPoints(4, 1));
+    assertEquals(1, LearnsetGuessRules.learnsetPoints(6, 3));
+    // bonus[solveOrder - 1] ?? 0: un orden fuera de rango no suma.
+    assertEquals(5, LearnsetGuessRules.learnsetPoints(0, 0));
+  }
+
+  /**
+   * La pista pendiente en el cierre recortado o después pasa a {@code null}. El flujo público no lo produce (la pista
+   * siempre cae a menos de 7 s), así que no sale en las fixtures doradas.
+   */
+  @Test
+  void lastWarningDropsAHintAtOrAfterTheCutDeadline() {
+    var context = context(GOLDEN, 3);
+    var started = engine.start(engine.createInitialState(
+        new LearnsetGuessConfig(List.of(1), true, true, 60, 3), context), context);
+    var answer = started.correctPokemonId();
+    for (long hint : List.of(16_000L, 20_000L)) {
+      var state = started.toBuilder().nextTransitionAt(hint).build();
+      var at = context.withNow(6_000);
+      state = engine.handleAction(state, "p1", new LearnsetGuessTypes.LearnsetGuessAction(answer), at).state();
+      assertFalse(state.lastWarning());
+      state = engine.handleAction(state, "p2", new LearnsetGuessTypes.LearnsetGuessAction(answer), at).state();
+      assertTrue(state.lastWarning());
+      assertEquals(16_000L, state.roundEndsAt());
+      assertNull(state.nextTransitionAt());
+      assertTrue(engine.getPublicState(state, at).lastWarning());
+    }
   }
 }

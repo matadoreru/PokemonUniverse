@@ -61,6 +61,7 @@ export interface LearnsetGuessState {
   attempts: LearnsetGuessAttempt[];
   solves: Record<string, LearnsetGuessSolve>;
   cooldownUntil: Record<string, number>;
+  lastWarning: boolean;
   scores: Record<string, number>;
   playerStats: Record<string, LearnsetGuessPlayerStats>;
   roundStartedAt: number | null;
@@ -83,6 +84,7 @@ export interface LearnsetGuessPublicState {
   roundStartedAt: number | null;
   roundEndsAt: number | null;
   nextTransitionAt: number | null;
+  lastWarning: boolean;
   lastRound: LearnsetRoundResult | null;
   scores: Record<string, number>;
   results: GameResults | null;

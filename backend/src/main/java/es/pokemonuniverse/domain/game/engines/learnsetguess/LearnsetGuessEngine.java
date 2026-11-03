@@ -243,6 +243,7 @@ public final class LearnsetGuessEngine
         .attempts(List.of())
         .solves(Map.of())
         .cooldownUntil(Map.of())
+        .lastWarning(false)
         .roundStartedAt(context.now())
         .roundEndsAt(roundEndsAt)
         .nextTransitionAt(hasExtra ? context.now() + LEARNSET_HINT_INTERVAL_MS : null)
@@ -287,6 +288,27 @@ public final class LearnsetGuessEngine
         .roundEndsAt(null)
         .nextTransitionAt(null)
         .build();
+  }
+
+  /**
+   * Último aviso: si alguien ya ha acertado y entre los requeridos falta exactamente uno, la ronda se cierra como mucho
+   * {@link LearnsetGuessRules#LAST_WARNING_MS} después. Solo adelanta {@code roundEndsAt} y descarta la pista pendiente
+   * que caiga en el nuevo cierre o después.
+   */
+  private static LearnsetGuessState applyLastWarning(LearnsetGuessState state, GameContext context) {
+    if (state.phase() != GamePhase.ROUND_ACTIVE || state.roundEndsAt() == null || state.solves().isEmpty()) {
+      return state;
+    }
+    long missing = state.playerIds().stream()
+        .filter(context::isPlayerRequired)
+        .filter(id -> !state.solves().containsKey(id))
+        .count();
+    if (missing != 1) return state;
+    long roundEndsAt = Math.min(state.roundEndsAt(), context.now() + LearnsetGuessRules.LAST_WARNING_MS);
+    Long nextTransitionAt = state.nextTransitionAt() != null && state.nextTransitionAt() >= roundEndsAt
+        ? null
+        : state.nextTransitionAt();
+    return state.toBuilder().lastWarning(true).roundEndsAt(roundEndsAt).nextTransitionAt(nextTransitionAt).build();
   }
 
   private static LearnsetGuessState resolveIfComplete(LearnsetGuessState state, GameContext context) {
@@ -348,15 +370,15 @@ public final class LearnsetGuessEngine
     var playerStats = new LinkedHashMap<>(state.playerStats());
     if (guessed.id().equals(state.correctPokemonId())) {
       int revealStage = state.revealedExtraGroups();
-      int points = LearnsetGuessRules.learnsetPoints(revealStage);
       int solveOrder = state.solves().size() + 1;
+      int points = LearnsetGuessRules.learnsetPoints(revealStage, solveOrder);
       var solves = new LinkedHashMap<>(state.solves());
       solves.put(playerId, new LearnsetGuessSolve(solveOrder, context.now(), revealStage, points));
       var scores = new LinkedHashMap<>(state.scores());
       scores.put(playerId, state.scores().getOrDefault(playerId, 0) + points);
       playerStats.put(playerId, stats.afterSolve(revealStage, points));
       var next = state.toBuilder().solves(solves).scores(scores).playerStats(playerStats).build();
-      return GameActionResult.accept(resolveIfComplete(next, context));
+      return GameActionResult.accept(applyLastWarning(resolveIfComplete(next, context), context));
     }
     var attempts = new ArrayList<>(state.attempts());
     attempts.add(LearnsetGuessAttempt.of(playerId, guessed, context.now()));
@@ -376,7 +398,7 @@ public final class LearnsetGuessEngine
 
   @Override
   public LearnsetGuessState handlePresenceChange(LearnsetGuessState state, GameContext context) {
-    return resolveIfComplete(state, context);
+    return applyLastWarning(resolveIfComplete(state, context), context);
   }
 
   @Override
@@ -394,6 +416,7 @@ public final class LearnsetGuessEngine
             ? evolutionHint(evolution.stage(), evolution.stages())
             : null,
         state.attempts(), solvedPlayers, state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(),
+        active && state.lastWarning(),
         state.phase() == GamePhase.ROUND_RESULTS ? state.lastRound() : null, state.scores(),
         state.phase() == GamePhase.GAME_RESULTS ? LearnsetGuessRules.buildLearnsetResults(state) : null);
   }

@@ -107,7 +107,8 @@ const exhaustedHints: GoldenScenario = {
     guess('p2', 'exeggutor', 10_000),
     guess('p1', 'exeggutor', 10_500),
     timeout(14_500),
-    // Ronda 2 (14500–134500), Pinsir: un timeout muy tardío revela todos los grupos de golpe.
+    // Ronda 2 (14500–134500), Pinsir: un timeout muy tardío revela todos los grupos de golpe. El acierto de Ana deja
+    // solo a Bruno y recorta el cierre a 91000; el timeout tardío de 134500 lo resuelve.
     timeout(80_000),
     guess('p1', 'pinsir', 81_000),
     timeout(134_500),
@@ -129,6 +130,7 @@ const disconnectedNotMissed: GoldenScenario = {
   config: baseConfig,
   steps: [
     // Ronda 1 (1000–31000), Dodrio: Ana acierta, Carla se desconecta y la ronda se resuelve por tiempo; solo Bruno suma missed.
+    // La desconexión deja solo a Bruno: último aviso, cierre recortado a 12000 (el timeout tardío de 31000 lo resuelve).
     guess('p1', 'dodrio', 1_500),
     { kind: 'presence', players: [ana, bruno, { ...carla, connected: false }], now: 2_000 },
     timeout(31_000),
@@ -157,9 +159,43 @@ const invalidActionStops: GoldenScenario = {
   ],
 };
 
+const orderBonusLastWarning: GoldenScenario = {
+  name: 'order-bonus-last-warning',
+  seed: 913,
+  catalog: 'gen1-2',
+  players: [ana, bruno, carla],
+  config: { ...baseConfig, roundSeconds: 60 },
+  steps: [
+    // Ronda 1 (1000–61000), Kadabra: Ana y Bruno aciertan en el mismo instante; el orden es el de proceso (+2 y +1).
+    // Solo falta Carla: último aviso, la ronda se recorta a 15000 y la pista de 8000 sigue antes del cierre.
+    guess('p1', 'abra', 2_000),
+    guess('p1', 'kadabra', 5_000),
+    guess('p2', 'kadabra', 5_000),
+    // La pista revelada a 8000 no programa otra: la de 15000 caería en el cierre recortado.
+    timeout(8_000),
+    // Carla llega justo al plazo recortado: se rechaza y la ronda se resuelve.
+    guess('p3', 'kadabra', 15_000),
+    timeout(19_000),
+    // Ronda 2 (19000–79000), Exeggutor: Ana acierta y la desconexión de Bruno deja sola a Carla (aviso, cierre 31000).
+    guess('p1', 'exeggutor', 20_000),
+    { kind: 'presence', players: [ana, { ...bruno, connected: false }, carla], now: 21_000 },
+    timeout(26_000),
+    // Carla es la segunda en acertar tras una pista: 4 + 1 puntos.
+    guess('p3', 'exeggutor', 27_000),
+    timeout(31_000),
+    // Ronda 3 (31000–91000), Clefable: Bruno vuelve y acierta primero; el aviso a 6 s del final no alarga la ronda.
+    { kind: 'presence', players: [ana, bruno, carla], now: 32_000 },
+    guess('p2', 'clefable', 33_000),
+    guess('p3', 'clefable', 85_000),
+    guess('p1', 'clefairy', 86_000),
+    timeout(91_000),
+    timeout(95_000),
+  ],
+};
+
 export const learnsetGuessScenarios: GoldenEngineEntry = {
   module: learnsetGuessGame,
-  scenarios: [hintsAndRace, hiddenLevels, exhaustedHints, invalidActionStops, disconnectedNotMissed],
+  scenarios: [hintsAndRace, hiddenLevels, exhaustedHints, invalidActionStops, disconnectedNotMissed, orderBonusLastWarning],
   configCases: [
     // Válidos: normalización de generaciones y límites.
     { ...baseConfig, generations: [2, 1, 2] },

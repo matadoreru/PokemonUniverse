@@ -111,7 +111,7 @@ public final class LearnsetGuessTypes {
 
   /**
    * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
-   * {@link #toBuilder()} (setters con nombre: el constructor posicional de 20 campos no se usa en el motor).
+   * {@link #toBuilder()} (setters con nombre: el constructor posicional de 21 campos no se usa en el motor).
    */
   public record LearnsetGuessState(
       GamePhase phase,
@@ -128,6 +128,7 @@ public final class LearnsetGuessTypes {
       List<LearnsetGuessAttempt> attempts,
       Map<String, LearnsetGuessSolve> solves,
       Map<String, Long> cooldownUntil,
+      boolean lastWarning,
       Map<String, Integer> scores,
       Map<String, LearnsetGuessPlayerStats> playerStats,
       @Nullable Long roundStartedAt,
@@ -155,7 +156,7 @@ public final class LearnsetGuessTypes {
           .referenceGeneration(referenceGeneration).correctPokemonId(correctPokemonId).usedPokemonIds(usedPokemonIds)
           .learnset(learnset).evolutionInfo(evolutionInfo).initialGroupCount(initialGroupCount)
           .revealedExtraGroups(revealedExtraGroups).attempts(attempts).solves(solves).cooldownUntil(cooldownUntil)
-          .scores(scores).playerStats(playerStats).roundStartedAt(roundStartedAt).roundEndsAt(roundEndsAt)
+          .lastWarning(lastWarning).scores(scores).playerStats(playerStats).roundStartedAt(roundStartedAt).roundEndsAt(roundEndsAt)
           .nextTransitionAt(nextTransitionAt).lastRound(lastRound);
     }
 
@@ -175,6 +176,7 @@ public final class LearnsetGuessTypes {
       private List<LearnsetGuessAttempt> attempts = List.of();
       private Map<String, LearnsetGuessSolve> solves = Map.of();
       private Map<String, Long> cooldownUntil = Map.of();
+      private boolean lastWarning;
       private Map<String, Integer> scores = Map.of();
       private Map<String, LearnsetGuessPlayerStats> playerStats = Map.of();
       private Long roundStartedAt;
@@ -212,6 +214,8 @@ public final class LearnsetGuessTypes {
 
       public Builder cooldownUntil(Map<String, Long> value) { cooldownUntil = value; return this; }
 
+      public Builder lastWarning(boolean value) { lastWarning = value; return this; }
+
       public Builder scores(Map<String, Integer> value) { scores = value; return this; }
 
       public Builder playerStats(Map<String, LearnsetGuessPlayerStats> value) { playerStats = value; return this; }
@@ -227,7 +231,8 @@ public final class LearnsetGuessTypes {
       public LearnsetGuessState build() {
         return new LearnsetGuessState(Objects.requireNonNull(phase, "phase"), Objects.requireNonNull(config, "config"),
             playerIds, roundNumber, referenceGeneration, correctPokemonId, usedPokemonIds, learnset, evolutionInfo,
-            initialGroupCount, revealedExtraGroups, attempts, solves, cooldownUntil, scores, playerStats,
+            initialGroupCount, revealedExtraGroups, attempts, solves, cooldownUntil, lastWarning, scores,
+            playerStats,
             roundStartedAt, roundEndsAt, nextTransitionAt, lastRound);
       }
     }
@@ -254,6 +259,7 @@ public final class LearnsetGuessTypes {
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
+      boolean lastWarning,
       @Nullable LearnsetRoundResult lastRound,
       Map<String, Integer> scores,
       @Nullable GameResults results) {}

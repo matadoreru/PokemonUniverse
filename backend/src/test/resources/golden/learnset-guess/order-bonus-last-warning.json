@@ -1,0 +1,2178 @@
+{
+  "engineId": "learnset-guess",
+  "scenario": "order-bonus-last-warning",
+  "seed": 913,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "showLevels": true,
+    "showEvolution": true,
+    "roundSeconds": 60,
+    "rounds": 3
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "abra"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "kadabra"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "kadabra"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "timeout",
+      "now": 8000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "kadabra"
+      },
+      "now": 15000
+    },
+    {
+      "kind": "timeout",
+      "now": 19000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "exeggutor"
+      },
+      "now": 20000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 21000
+    },
+    {
+      "kind": "timeout",
+      "now": 26000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "exeggutor"
+      },
+      "now": 27000
+    },
+    {
+      "kind": "timeout",
+      "now": 31000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 32000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "clefable"
+      },
+      "now": 33000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "clefable"
+      },
+      "now": 85000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "clefairy"
+      },
+      "now": 86000
+    },
+    {
+      "kind": "timeout",
+      "now": 91000
+    },
+    {
+      "kind": "timeout",
+      "now": 95000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 60,
+      "rounds": 3
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "learnset-guess",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "referenceGeneration": 1,
+        "referenceSource": "Pokémon Yellow",
+        "visibleGroups": [],
+        "evolutionHint": null,
+        "attempts": [],
+        "solvedPlayers": [],
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastWarning": false,
+        "lastRound": null,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p2": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p3": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 8000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "learnset-guess",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "referenceGeneration": 1,
+        "referenceSource": "Pokémon Yellow",
+        "visibleGroups": [
+          {
+            "level": 1,
+            "moves": [
+              {
+                "moveId": "kinesis",
+                "name": "Kinético",
+                "level": 1,
+                "type": "psychic",
+                "category": "status"
+              },
+              {
+                "moveId": "teleport",
+                "name": "Teletransporte",
+                "level": 1,
+                "type": "psychic",
+                "category": "status"
+              }
+            ],
+            "stage": 0
+          }
+        ],
+        "evolutionHint": "Evolución intermedia · etapa 2 de 3",
+        "attempts": [],
+        "solvedPlayers": [],
+        "roundStartedAt": 1000,
+        "roundEndsAt": 61000,
+        "nextTransitionAt": 8000,
+        "lastWarning": false,
+        "lastRound": null,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p2": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p3": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "kinesis",
+                    "name": "Kinético",
+                    "level": 1,
+                    "type": "psychic",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "teleport",
+                    "name": "Teletransporte",
+                    "level": 1,
+                    "type": "psychic",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución intermedia · etapa 2 de 3",
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "attemptedAt": 2000
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 61000,
+            "nextTransitionAt": 8000,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 3000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "kinesis",
+                    "name": "Kinético",
+                    "level": 1,
+                    "type": "psychic",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "teleport",
+                    "name": "Teletransporte",
+                    "level": 1,
+                    "type": "psychic",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución intermedia · etapa 2 de 3",
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "attemptedAt": 2000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 61000,
+            "nextTransitionAt": 8000,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 7,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 3000,
+              "roundPoints": 7
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "kinesis",
+                    "name": "Kinético",
+                    "level": 1,
+                    "type": "psychic",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "teleport",
+                    "name": "Teletransporte",
+                    "level": 1,
+                    "type": "psychic",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución intermedia · etapa 2 de 3",
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "attemptedAt": 2000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 15000,
+            "nextTransitionAt": 8000,
+            "lastWarning": true,
+            "lastRound": null,
+            "scores": {
+              "p1": 7,
+              "p2": 6,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 3000,
+              "roundPoints": 7
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 6
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 15000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "kinesis",
+                    "name": "Kinético",
+                    "level": 1,
+                    "type": "psychic",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "teleport",
+                    "name": "Teletransporte",
+                    "level": 1,
+                    "type": "psychic",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 16,
+                "moves": [
+                  {
+                    "moveId": "confusion",
+                    "name": "Confusión",
+                    "level": 16,
+                    "type": "psychic",
+                    "category": "special"
+                  }
+                ],
+                "stage": 1
+              }
+            ],
+            "evolutionHint": "Evolución intermedia · etapa 2 de 3",
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "attemptedAt": 2000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 15000,
+            "nextTransitionAt": null,
+            "lastWarning": true,
+            "lastRound": null,
+            "scores": {
+              "p1": 7,
+              "p2": 6,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 3000,
+              "roundPoints": 7
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 6
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 19000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "attemptedAt": 2000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 19000,
+            "lastWarning": false,
+            "lastRound": {
+              "pokemon": {
+                "id": "kadabra",
+                "name": "Kadabra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png",
+                "nationalDexNumber": 64,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "kinesis",
+                  "name": "Kinético",
+                  "level": 1,
+                  "type": "psychic",
+                  "category": "status"
+                },
+                {
+                  "moveId": "teleport",
+                  "name": "Teletransporte",
+                  "level": 1,
+                  "type": "psychic",
+                  "category": "status"
+                },
+                {
+                  "moveId": "confusion",
+                  "name": "Confusión",
+                  "level": 16,
+                  "type": "psychic",
+                  "category": "special"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "kinesis",
+                  "name": "Kinético",
+                  "level": 1,
+                  "type": "psychic",
+                  "category": "status"
+                },
+                {
+                  "moveId": "teleport",
+                  "name": "Teletransporte",
+                  "level": 1,
+                  "type": "psychic",
+                  "category": "status"
+                },
+                {
+                  "moveId": "confusion",
+                  "name": "Confusión",
+                  "level": 16,
+                  "type": "psychic",
+                  "category": "special"
+                },
+                {
+                  "moveId": "disable",
+                  "name": "Anulación",
+                  "level": 20,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "psybeam",
+                  "name": "Psicorrayo",
+                  "level": 27,
+                  "type": "psychic",
+                  "category": "special"
+                },
+                {
+                  "moveId": "recover",
+                  "name": "Recuperación",
+                  "level": 31,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "psychic",
+                  "name": "Psíquico",
+                  "level": 38,
+                  "type": "psychic",
+                  "category": "special"
+                },
+                {
+                  "moveId": "reflect",
+                  "name": "Reflejo",
+                  "level": 42,
+                  "type": "psychic",
+                  "category": "status"
+                }
+              ],
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 5000,
+                  "revealStage": 0,
+                  "points": 7
+                },
+                "p2": {
+                  "solveOrder": 2,
+                  "solvedAt": 5000,
+                  "revealStage": 0,
+                  "points": 6
+                }
+              }
+            },
+            "scores": {
+              "p1": 7,
+              "p2": 6,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 3000,
+              "roundPoints": 7
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 6
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,19000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "barrage",
+                    "name": "Bombardeo",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "hypnosis",
+                    "name": "Hipnosis",
+                    "level": 1,
+                    "type": "psychic",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución final · etapa 2 de 2",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 19000,
+            "roundEndsAt": 79000,
+            "nextTransitionAt": 26000,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 7,
+              "p2": 6,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,19000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "barrage",
+                    "name": "Bombardeo",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "hypnosis",
+                    "name": "Hipnosis",
+                    "level": 1,
+                    "type": "psychic",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución final · etapa 2 de 2",
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 19000,
+            "roundEndsAt": 79000,
+            "nextTransitionAt": 26000,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 14,
+              "p2": 6,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 7
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 26000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,19000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "barrage",
+                    "name": "Bombardeo",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "hypnosis",
+                    "name": "Hipnosis",
+                    "level": 1,
+                    "type": "psychic",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución final · etapa 2 de 2",
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 19000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 26000,
+            "lastWarning": true,
+            "lastRound": null,
+            "scores": {
+              "p1": 14,
+              "p2": 6,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 7
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,19000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "barrage",
+                    "name": "Bombardeo",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "hypnosis",
+                    "name": "Hipnosis",
+                    "level": 1,
+                    "type": "psychic",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 28,
+                "moves": [
+                  {
+                    "moveId": "stomp",
+                    "name": "Pisotón",
+                    "level": 28,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 1
+              }
+            ],
+            "evolutionHint": "Evolución final · etapa 2 de 2",
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 19000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastWarning": true,
+            "lastRound": null,
+            "scores": {
+              "p1": 14,
+              "p2": 6,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 7
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,19000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p3",
+                "solveOrder": 2
+              }
+            ],
+            "roundStartedAt": 19000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 31000,
+            "lastWarning": false,
+            "lastRound": {
+              "pokemon": {
+                "id": "exeggutor",
+                "name": "Exeggutor",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/103.png",
+                "nationalDexNumber": 103,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "barrage",
+                  "name": "Bombardeo",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "hypnosis",
+                  "name": "Hipnosis",
+                  "level": 1,
+                  "type": "psychic",
+                  "category": "status"
+                },
+                {
+                  "moveId": "stomp",
+                  "name": "Pisotón",
+                  "level": 28,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "barrage",
+                  "name": "Bombardeo",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "hypnosis",
+                  "name": "Hipnosis",
+                  "level": 1,
+                  "type": "psychic",
+                  "category": "status"
+                },
+                {
+                  "moveId": "stomp",
+                  "name": "Pisotón",
+                  "level": 28,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 20000,
+                  "revealStage": 0,
+                  "points": 7
+                },
+                "p3": {
+                  "solveOrder": 2,
+                  "solvedAt": 27000,
+                  "revealStage": 1,
+                  "points": 5
+                }
+              }
+            },
+            "scores": {
+              "p1": 14,
+              "p2": 6,
+              "p3": 5
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 7
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 91000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,31000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "double-slap",
+                    "name": "Doble Bofetón",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "metronome",
+                    "name": "Metrónomo",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "minimize",
+                    "name": "Reducción",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "sing",
+                    "name": "Canto",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución final · etapa 3 de 3",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 31000,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": null,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 14,
+              "p2": 6,
+              "p3": 5
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 91000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,31000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "double-slap",
+                    "name": "Doble Bofetón",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "metronome",
+                    "name": "Metrónomo",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "minimize",
+                    "name": "Reducción",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "sing",
+                    "name": "Canto",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución final · etapa 3 de 3",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 31000,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": null,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 14,
+              "p2": 6,
+              "p3": 5
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 91000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,31000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "double-slap",
+                    "name": "Doble Bofetón",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "metronome",
+                    "name": "Metrónomo",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "minimize",
+                    "name": "Reducción",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "sing",
+                    "name": "Canto",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución final · etapa 3 de 3",
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 31000,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": null,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 14,
+              "p2": 13,
+              "p3": 5
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 7
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 91000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,31000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "double-slap",
+                    "name": "Doble Bofetón",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "metronome",
+                    "name": "Metrónomo",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "minimize",
+                    "name": "Reducción",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "sing",
+                    "name": "Canto",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución final · etapa 3 de 3",
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p3",
+                "solveOrder": 2
+              }
+            ],
+            "roundStartedAt": 31000,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": null,
+            "lastWarning": true,
+            "lastRound": null,
+            "scores": {
+              "p1": 14,
+              "p2": 13,
+              "p3": 11
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 7
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 6
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 91000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,31000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "double-slap",
+                    "name": "Doble Bofetón",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "metronome",
+                    "name": "Metrónomo",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "minimize",
+                    "name": "Reducción",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "sing",
+                    "name": "Canto",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución final · etapa 3 de 3",
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "clefairy",
+                "pokemonName": "Clefairy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png",
+                "attemptedAt": 86000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p3",
+                "solveOrder": 2
+              }
+            ],
+            "roundStartedAt": 31000,
+            "roundEndsAt": 91000,
+            "nextTransitionAt": null,
+            "lastWarning": true,
+            "lastRound": null,
+            "scores": {
+              "p1": 14,
+              "p2": 13,
+              "p3": 11
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 87000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 7
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 6
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 95000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,31000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "clefairy",
+                "pokemonName": "Clefairy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png",
+                "attemptedAt": 86000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p3",
+                "solveOrder": 2
+              }
+            ],
+            "roundStartedAt": 31000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 95000,
+            "lastWarning": false,
+            "lastRound": {
+              "pokemon": {
+                "id": "clefable",
+                "name": "Clefable",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/36.png",
+                "nationalDexNumber": 36,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "double-slap",
+                  "name": "Doble Bofetón",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "metronome",
+                  "name": "Metrónomo",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "minimize",
+                  "name": "Reducción",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "sing",
+                  "name": "Canto",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "double-slap",
+                  "name": "Doble Bofetón",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "metronome",
+                  "name": "Metrónomo",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "minimize",
+                  "name": "Reducción",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "sing",
+                  "name": "Canto",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                }
+              ],
+              "solves": {
+                "p2": {
+                  "solveOrder": 1,
+                  "solvedAt": 33000,
+                  "revealStage": 0,
+                  "points": 7
+                },
+                "p3": {
+                  "solveOrder": 2,
+                  "solvedAt": 85000,
+                  "revealStage": 0,
+                  "points": 6
+                }
+              }
+            },
+            "scores": {
+              "p1": 14,
+              "p2": 13,
+              "p3": 11
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 87000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 7
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 6
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,31000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "clefairy",
+                "pokemonName": "Clefairy",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png",
+                "attemptedAt": 86000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p2",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p3",
+                "solveOrder": 2
+              }
+            ],
+            "roundStartedAt": 31000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 14,
+              "p2": 13,
+              "p3": 11
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 14,
+                  "won": true,
+                  "stats": {
+                    "correct": 2,
+                    "missed": 1,
+                    "initialSolves": 2,
+                    "incorrectGuesses": 2,
+                    "pointsFromSolves": 14,
+                    "bestRoundPoints": 7
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 13,
+                  "won": false,
+                  "stats": {
+                    "correct": 2,
+                    "missed": 0,
+                    "initialSolves": 2,
+                    "incorrectGuesses": 0,
+                    "pointsFromSolves": 13,
+                    "bestRoundPoints": 7
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 11,
+                  "won": false,
+                  "stats": {
+                    "correct": 2,
+                    "missed": 1,
+                    "initialSolves": 1,
+                    "incorrectGuesses": 0,
+                    "pointsFromSolves": 11,
+                    "bestRoundPoints": 6
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 87000,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 7
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 6
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 14,
+          "won": true,
+          "stats": {
+            "correct": 2,
+            "missed": 1,
+            "initialSolves": 2,
+            "incorrectGuesses": 2,
+            "pointsFromSolves": 14,
+            "bestRoundPoints": 7
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 13,
+          "won": false,
+          "stats": {
+            "correct": 2,
+            "missed": 0,
+            "initialSolves": 2,
+            "incorrectGuesses": 0,
+            "pointsFromSolves": 13,
+            "bestRoundPoints": 7
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 11,
+          "won": false,
+          "stats": {
+            "correct": 2,
+            "missed": 1,
+            "initialSolves": 1,
+            "incorrectGuesses": 0,
+            "pointsFromSolves": 11,
+            "bestRoundPoints": 6
+          }
+        }
+      ]
+    }
+  }
+}

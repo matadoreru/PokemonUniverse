@@ -217,6 +217,7 @@
         "roundStartedAt": null,
         "roundEndsAt": null,
         "nextTransitionAt": null,
+        "lastWarning": false,
         "lastRound": null,
         "scores": {
           "p1": 0,
@@ -317,6 +318,7 @@
         "roundStartedAt": 1000,
         "roundEndsAt": 16000,
         "nextTransitionAt": 8000,
+        "lastWarning": false,
         "lastRound": null,
         "scores": {
           "p1": 0,
@@ -428,6 +430,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 16000,
             "nextTransitionAt": 8000,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
               "p1": 0,
@@ -546,6 +549,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 16000,
             "nextTransitionAt": 8000,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
               "p1": 0,
@@ -676,6 +680,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 16000,
             "nextTransitionAt": 15000,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
               "p1": 0,
@@ -819,6 +824,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 16000,
             "nextTransitionAt": null,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
               "p1": 0,
@@ -968,10 +974,11 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 16000,
             "nextTransitionAt": null,
+            "lastWarning": true,
             "lastRound": null,
             "scores": {
               "p1": 0,
-              "p2": 3
+              "p2": 5
             },
             "results": null
           },
@@ -988,7 +995,7 @@
               "solved": true,
               "solveOrder": 1,
               "cooldownUntil": null,
-              "roundPoints": 3
+              "roundPoints": 5
             }
           },
           "finished": false
@@ -1036,6 +1043,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": null,
             "nextTransitionAt": 20000,
+            "lastWarning": false,
             "lastRound": {
               "pokemon": {
                 "id": "poliwhirl",
@@ -1174,13 +1182,13 @@
                   "solveOrder": 1,
                   "solvedAt": 15500,
                   "revealStage": 2,
-                  "points": 3
+                  "points": 5
                 }
               }
             },
             "scores": {
               "p1": 0,
-              "p2": 3
+              "p2": 5
             },
             "results": null
           },
@@ -1197,7 +1205,7 @@
               "solved": true,
               "solveOrder": 1,
               "cooldownUntil": null,
-              "roundPoints": 3
+              "roundPoints": 5
             }
           },
           "finished": false
@@ -1259,10 +1267,11 @@
             "roundStartedAt": 20000,
             "roundEndsAt": 35000,
             "nextTransitionAt": 27000,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
               "p1": 0,
-              "p2": 3
+              "p2": 5
             },
             "results": null
           },
@@ -1345,12 +1354,13 @@
               }
             ],
             "roundStartedAt": 20000,
-            "roundEndsAt": 35000,
+            "roundEndsAt": 31000,
             "nextTransitionAt": 27000,
+            "lastWarning": true,
             "lastRound": null,
             "scores": {
               "p1": 0,
-              "p2": 8
+              "p2": 12
             },
             "results": null
           },
@@ -1367,7 +1377,7 @@
               "solved": true,
               "solveOrder": 1,
               "cooldownUntil": null,
-              "roundPoints": 5
+              "roundPoints": 7
             }
           },
           "finished": false
@@ -1400,6 +1410,7 @@
             "roundStartedAt": 20000,
             "roundEndsAt": null,
             "nextTransitionAt": 26000,
+            "lastWarning": false,
             "lastRound": {
               "pokemon": {
                 "id": "elekid",
@@ -1496,13 +1507,13 @@
                   "solveOrder": 1,
                   "solvedAt": 21000,
                   "revealStage": 0,
-                  "points": 5
+                  "points": 7
                 }
               }
             },
             "scores": {
               "p1": 0,
-              "p2": 8
+              "p2": 12
             },
             "results": null
           },
@@ -1519,7 +1530,7 @@
               "solved": true,
               "solveOrder": 1,
               "cooldownUntil": null,
-              "roundPoints": 5
+              "roundPoints": 7
             }
           },
           "finished": false
@@ -1582,10 +1593,11 @@
             "roundStartedAt": 26000,
             "roundEndsAt": 41000,
             "nextTransitionAt": null,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
               "p1": 0,
-              "p2": 8
+              "p2": 12
             },
             "results": null
           },
@@ -1667,10 +1679,11 @@
             "roundStartedAt": 26000,
             "roundEndsAt": 41000,
             "nextTransitionAt": null,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
               "p1": 0,
-              "p2": 8
+              "p2": 12
             },
             "results": null
           },
@@ -1750,10 +1763,11 @@
             "roundStartedAt": 26000,
             "roundEndsAt": 41000,
             "nextTransitionAt": null,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
               "p1": 0,
-              "p2": 8
+              "p2": 12
             },
             "results": null
           },
@@ -1833,10 +1847,11 @@
             "roundStartedAt": 26000,
             "roundEndsAt": 41000,
             "nextTransitionAt": null,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
               "p1": 0,
-              "p2": 8
+              "p2": 12
             },
             "results": null
           },
@@ -1922,10 +1937,11 @@
             "roundStartedAt": 26000,
             "roundEndsAt": 41000,
             "nextTransitionAt": null,
+            "lastWarning": true,
             "lastRound": null,
             "scores": {
-              "p1": 5,
-              "p2": 8
+              "p1": 7,
+              "p2": 12
             },
             "results": null
           },
@@ -1935,7 +1951,7 @@
               "solved": true,
               "solveOrder": 1,
               "cooldownUntil": null,
-              "roundPoints": 5
+              "roundPoints": 7
             },
             "p2": {
               "canGuess": true,
@@ -2019,10 +2035,11 @@
             "roundStartedAt": 26000,
             "roundEndsAt": 41000,
             "nextTransitionAt": null,
+            "lastWarning": true,
             "lastRound": null,
             "scores": {
-              "p1": 5,
-              "p2": 8
+              "p1": 7,
+              "p2": 12
             },
             "results": null
           },
@@ -2032,7 +2049,7 @@
               "solved": true,
               "solveOrder": 1,
               "cooldownUntil": null,
-              "roundPoints": 5
+              "roundPoints": 7
             },
             "p2": {
               "canGuess": true,
@@ -2117,10 +2134,11 @@
             "roundStartedAt": 26000,
             "roundEndsAt": 41000,
             "nextTransitionAt": null,
+            "lastWarning": true,
             "lastRound": null,
             "scores": {
-              "p1": 5,
-              "p2": 8
+              "p1": 7,
+              "p2": 12
             },
             "results": null
           },
@@ -2130,7 +2148,7 @@
               "solved": true,
               "solveOrder": 1,
               "cooldownUntil": null,
-              "roundPoints": 5
+              "roundPoints": 7
             },
             "p2": {
               "canGuess": true,
@@ -2178,6 +2196,7 @@
             "roundStartedAt": 26000,
             "roundEndsAt": null,
             "nextTransitionAt": 45000,
+            "lastWarning": false,
             "lastRound": {
               "pokemon": {
                 "id": "victreebel",
@@ -2253,13 +2272,13 @@
                   "solveOrder": 1,
                   "solvedAt": 31000,
                   "revealStage": 0,
-                  "points": 5
+                  "points": 7
                 }
               }
             },
             "scores": {
-              "p1": 5,
-              "p2": 8
+              "p1": 7,
+              "p2": 12
             },
             "results": null
           },
@@ -2269,7 +2288,7 @@
               "solved": true,
               "solveOrder": 1,
               "cooldownUntil": null,
-              "roundPoints": 5
+              "roundPoints": 7
             },
             "p2": {
               "canGuess": false,
@@ -2338,10 +2357,11 @@
             "roundStartedAt": 45000,
             "roundEndsAt": 60000,
             "nextTransitionAt": 52000,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
-              "p1": 5,
-              "p2": 8
+              "p1": 7,
+              "p2": 12
             },
             "results": null
           },
@@ -2433,10 +2453,11 @@
             "roundStartedAt": 45000,
             "roundEndsAt": 60000,
             "nextTransitionAt": 59000,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
-              "p1": 5,
-              "p2": 8
+              "p1": 7,
+              "p2": 12
             },
             "results": null
           },
@@ -2534,10 +2555,11 @@
             "roundStartedAt": 45000,
             "roundEndsAt": 60000,
             "nextTransitionAt": 59000,
+            "lastWarning": true,
             "lastRound": null,
             "scores": {
-              "p1": 9,
-              "p2": 8
+              "p1": 13,
+              "p2": 12
             },
             "results": null
           },
@@ -2547,7 +2569,7 @@
               "solved": true,
               "solveOrder": 1,
               "cooldownUntil": null,
-              "roundPoints": 4
+              "roundPoints": 6
             },
             "p2": {
               "canGuess": true,
@@ -2592,6 +2614,7 @@
             "roundStartedAt": 45000,
             "roundEndsAt": null,
             "nextTransitionAt": 58000,
+            "lastWarning": false,
             "lastRound": {
               "pokemon": {
                 "id": "suicune",
@@ -2702,19 +2725,19 @@
                   "solveOrder": 1,
                   "solvedAt": 53000,
                   "revealStage": 1,
-                  "points": 4
+                  "points": 6
                 },
                 "p2": {
                   "solveOrder": 2,
                   "solvedAt": 54000,
                   "revealStage": 1,
-                  "points": 4
+                  "points": 5
                 }
               }
             },
             "scores": {
-              "p1": 9,
-              "p2": 12
+              "p1": 13,
+              "p2": 17
             },
             "results": null
           },
@@ -2724,14 +2747,14 @@
               "solved": true,
               "solveOrder": 1,
               "cooldownUntil": null,
-              "roundPoints": 4
+              "roundPoints": 6
             },
             "p2": {
               "canGuess": false,
               "solved": true,
               "solveOrder": 2,
               "cooldownUntil": null,
-              "roundPoints": 4
+              "roundPoints": 5
             }
           },
           "finished": false
@@ -2768,10 +2791,11 @@
             "roundStartedAt": 45000,
             "roundEndsAt": null,
             "nextTransitionAt": null,
+            "lastWarning": false,
             "lastRound": null,
             "scores": {
-              "p1": 9,
-              "p2": 12
+              "p1": 13,
+              "p2": 17
             },
             "results": {
               "winnerId": "p2",
@@ -2779,29 +2803,29 @@
                 {
                   "playerId": "p2",
                   "position": 1,
-                  "points": 12,
+                  "points": 17,
                   "won": true,
                   "stats": {
                     "correct": 3,
                     "missed": 1,
                     "initialSolves": 1,
                     "incorrectGuesses": 1,
-                    "pointsFromSolves": 12,
-                    "bestRoundPoints": 5
+                    "pointsFromSolves": 17,
+                    "bestRoundPoints": 7
                   }
                 },
                 {
                   "playerId": "p1",
                   "position": 2,
-                  "points": 9,
+                  "points": 13,
                   "won": false,
                   "stats": {
                     "correct": 2,
                     "missed": 1,
                     "initialSolves": 1,
                     "incorrectGuesses": 2,
-                    "pointsFromSolves": 9,
-                    "bestRoundPoints": 5
+                    "pointsFromSolves": 13,
+                    "bestRoundPoints": 7
                   }
                 }
               ]
@@ -2813,14 +2837,14 @@
               "solved": true,
               "solveOrder": 1,
               "cooldownUntil": null,
-              "roundPoints": 4
+              "roundPoints": 6
             },
             "p2": {
               "canGuess": false,
               "solved": true,
               "solveOrder": 2,
               "cooldownUntil": null,
-              "roundPoints": 4
+              "roundPoints": 5
             }
           },
           "finished": true
@@ -2833,29 +2857,29 @@
         {
           "playerId": "p2",
           "position": 1,
-          "points": 12,
+          "points": 17,
           "won": true,
           "stats": {
             "correct": 3,
             "missed": 1,
             "initialSolves": 1,
             "incorrectGuesses": 1,
-            "pointsFromSolves": 12,
-            "bestRoundPoints": 5
+            "pointsFromSolves": 17,
+            "bestRoundPoints": 7
           }
         },
         {
           "playerId": "p1",
           "position": 2,
-          "points": 9,
+          "points": 13,
           "won": false,
           "stats": {
             "correct": 2,
             "missed": 1,
             "initialSolves": 1,
             "incorrectGuesses": 2,
-            "pointsFromSolves": 9,
-            "bestRoundPoints": 5
+            "pointsFromSolves": 13,
+            "bestRoundPoints": 7
           }
         }
       ]
