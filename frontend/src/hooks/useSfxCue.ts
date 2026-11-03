@@ -36,6 +36,33 @@ export function roomRevealKey(game: { gameId?: string; phase?: string; roundNumb
 }
 
 /**
+ * Juegos cuya pantalla de resultados ya monta `ResultsShell` con `won` (que da su propio `game.win`): la sala no suma
+ * el suyo para no duplicarlo.
+ */
+export const SELF_WIN_GAMES: ReadonlySet<string> = new Set(['pokedex-distance']);
+
+interface WinCueRoom {
+  phase?: string;
+  gamesPlayed?: number;
+  game?: unknown;
+}
+
+/**
+ * Clave del `game.win` común de la sala: cambia al entrar en los resultados de la partida si el jugador local ganó
+ * (`results.winnerId` o su fila con `won`, que cubre los empates y los equipos) y es `null` en otro caso. Un juego
+ * sin ganador en sus resultados no suena.
+ */
+export function gameWinCue(room: WinCueRoom | null | undefined, selfId: string | null | undefined): string | null {
+  if (!room || room.phase !== 'GAME_RESULTS' || !selfId) return null;
+  const game = room.game as { gameId?: string; results?: { winnerId?: string | null; standings?: readonly { playerId: string; won?: boolean }[] } | null } | null | undefined;
+  if (!game?.gameId || SELF_WIN_GAMES.has(game.gameId)) return null;
+  const results = game.results;
+  if (!results) return null;
+  const won = results.winnerId === selfId || (results.standings ?? []).some((s) => s.playerId === selfId && s.won === true);
+  return won ? `${game.gameId}:${room.gamesPlayed ?? 0}` : null;
+}
+
+/**
  * Suena `cue` una vez cada vez que cambia `key` (nunca en el primer render).
  * Con el sonido silenciado `audio.play` no hace nada.
  */

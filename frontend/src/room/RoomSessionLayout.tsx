@@ -3,7 +3,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, Outlet } from 'react-router-dom';
 import { useRoomMusic } from '../audio/useRoomMusic';
-import { roomRevealKey, useSfxCue } from '../hooks/useSfxCue';
+import { useAuth } from '../auth/AuthContext';
+import { gameWinCue, roomRevealKey, useSfxCue } from '../hooks/useSfxCue';
 import { HEADER_NOTICES_ID } from '../components/Layout';
 import { createConnectionNotice, type ConnectionNoticeKind } from './connection-notice';
 import { RoomProvider, useRoom } from './RoomContext';
@@ -41,9 +42,12 @@ function ConnectionNotice({ connected }: { connected: boolean }) {
 
 function RoomSessionContent() {
   const { connected, error, clearError, room, setGameSkipVote } = useRoom();
+  const { user } = useAuth();
   useRoomMusic(room?.phase ?? null);
   // Revelación común a los minijuegos al entrar en resultados de ronda (salvo los que ya piden la suya).
   useSfxCue('game.reveal', roomRevealKey(room?.game as { gameId?: string; phase?: string; roundNumber?: number } | null | undefined));
+  // Victoria común al llegar a los resultados de la partida si ganó el jugador local (salvo los que ya la dan).
+  useSfxCue('game.win', gameWinCue(room, user?.id));
   const feedbackUrl = room ? `/feedback?${new URLSearchParams({ game: (room.game as { gameId?: string } | null)?.gameId ?? room.selectedGameId, room: room.code })}` : '';
   const gameOwnsFeedbackLink = (room?.game as { gameId?: string } | null)?.gameId === 'shiny-vote' && room?.phase !== 'GAME_RESULTS';
   return <>

@@ -7,6 +7,7 @@ import { ConnectionNoticeRegion, RoomSessionLayout } from './RoomSessionLayout';
 
 const context = vi.hoisted(() => ({ room: null as RoomView | null, connected: true as boolean, error: null, clearError: vi.fn(), setGameSkipVote: vi.fn() }));
 vi.mock('./RoomContext', () => ({ useRoom: () => context, RoomProvider: ({ children }: PropsWithChildren) => children }));
+vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { id: 'self' } }) }));
 
 const skip: GameSkipStateView = { gameInstanceId: '123e4567-e89b-42d3-a456-426614174000', voterIds: [], votes: 0, requiredVotes: 4, currentUserVoted: false, canVote: true };
 function render(gameId: string, phase: RoomView['phase'], state: GameSkipStateView | null) {
