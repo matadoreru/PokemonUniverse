@@ -2,7 +2,7 @@
 export const SHINY_CARDS_TIMEOUT_MS = 4_000;
 
 export const SHINY_CARDS_LOADING = 'Cargando cartas…';
-export const SHINY_BEFORE_AFTER = { title: 'Antes / después', normal: 'Normal', shiny: 'Shiny' } as const;
+export const SHINY_BEFORE_AFTER = { title: 'Antes / después', normal: 'Normal', shiny: 'Shiny', missing: 'Sin sprite' } as const;
 export const SHINY_REVEAL_DURATION_LABEL = 'Duración de la revelación';
 
 export function shinyRevealSecondsLabel(seconds: number): string {

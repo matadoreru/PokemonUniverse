@@ -1,4 +1,5 @@
 import type { RoomMemberView, ShinyVotePublicState } from '@pokemon-universe/shared/public';
+import type { ReactNode } from 'react';
 import { Check, ChevronDown, CircleDashed, Eye, MessageSquareWarning, Trophy, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Avatar } from '../../components/Avatar';
@@ -7,17 +8,20 @@ function memberName(member: RoomMemberView | undefined, id: string) {
   return member?.displayName ?? id;
 }
 
-export function ShinyGameSidebar({ game, members, selfId, feedbackUrl }: {
+export function ShinyGameSidebar({ game, members, selfId, feedbackUrl, top = null }: {
   game: ShinyVotePublicState;
   members: ReadonlyMap<string, RoomMemberView>;
   selfId: string;
   feedbackUrl: string;
+  /** Contenido sobre el panel de la partida (la franja «Antes / después» en `lg`). */
+  top?: ReactNode;
 }) {
   const reveal = game.phase === 'ROUND_RESULTS';
   const ranking = [...game.playerIds].sort((left, right) => (game.scores[right] ?? 0) - (game.scores[left] ?? 0) || memberName(members.get(left), left).localeCompare(memberName(members.get(right), right)));
   const voted = new Set(game.votedPlayerIds);
 
   return <aside className="min-w-0 lg:sticky lg:top-4" aria-label="Estado de la partida">
+    {top}
     <section className="overflow-hidden rounded-2xl border border-ink/10 bg-surface shadow-card">
       <div className="p-3.5 sm:p-4">
         <div className="flex items-center justify-between gap-2">

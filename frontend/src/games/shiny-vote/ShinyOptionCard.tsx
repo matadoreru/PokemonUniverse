@@ -12,7 +12,8 @@ const imageSource = (source: string) => source.startsWith('/api/') ? `${API_ORIG
 const ignoreSettled = () => undefined;
 
 /** Sprite de la carta: la imagen se monta siempre (para que cargue) y el esqueleto la cubre hasta que la ronda está lista. */
-function PokemonSprite({ option, loading, onSettled }: { option: ShinyOption; loading: boolean; onSettled(optionId: ShinyOption['id']): void }) {
+/** `dimmed`: carta incorrecta al revelar; solo el sprite se apaga, la etiqueta y el nombre conservan el contraste. */
+function PokemonSprite({ option, loading, dimmed = false, onSettled }: { option: ShinyOption; loading: boolean; dimmed?: boolean; onSettled(optionId: ShinyOption['id']): void }) {
   const [loaded, setLoaded] = useState(false);
   const image = useRef<HTMLImageElement>(null);
   const markLoaded = () => {
@@ -26,7 +27,7 @@ function PokemonSprite({ option, loading, onSettled }: { option: ShinyOption; lo
     onSettled(option.id);
   }, [onSettled, option.id]);
   const visible = loaded && !loading;
-  return <span className="shiny-sprite-stage relative grid w-full place-items-center" aria-hidden="true">
+  return <span className={`shiny-sprite-stage relative grid w-full place-items-center ${dimmed ? 'opacity-60 grayscale' : ''}`} aria-hidden="true" data-dimmed={dimmed ? 'true' : undefined}>
     {!visible && <span className="skeleton absolute inset-2" data-testid="shiny-card-skeleton" />}
     <img
       ref={image}
@@ -73,7 +74,7 @@ export function ShinyOptionCard({ option, voters, selected, confirmed, disabled,
       ? 'shiny-option-correct motion-flip border-leaf bg-surface'
       : selectedWrong
         ? 'shiny-option-static border-berry bg-surface'
-        : 'shiny-option-static border-ink/10 bg-surface opacity-60 grayscale'
+        : 'shiny-option-static border-ink/10 bg-surface'
     : selected
       ? 'shiny-option-selected border-aqua bg-surface'
       : confirmed
@@ -109,25 +110,36 @@ export function ShinyOptionCard({ option, voters, selected, confirmed, disabled,
           : <span className="truncate" title={stateLabel}>{stateLabel}</span>}
       </span>}
     </span>
-    <PokemonSprite key={option.sprite} option={option} loading={loading} onSettled={onSettled ?? ignoreSettled} />
+    <PokemonSprite key={option.sprite} option={option} loading={loading} dimmed={reveal && !correct && !own} onSettled={onSettled ?? ignoreSettled} />
     <strong className="w-full truncate px-1 font-display text-base font-bold text-ink/85 sm:text-lg" title={option.pokemonName}>{option.pokemonName}</strong>
     {showVoters && voters.length > 0 && <VoterSummary optionId={option.id} voters={voters} />}
   </button>;
 }
 
 /** Franja de la revelación: el sprite normal (proxy de la Pokédex) junto al shiny verdadero. Solo se monta al revelar. */
-export function ShinyBeforeAfter({ option }: { option: ShinyOption }) {
-  const figures = [
-    { label: SHINY_BEFORE_AFTER.normal, src: apiAsset(pokemonSpritePath(option.pokemonId)), testId: 'shiny-before' },
-    { label: SHINY_BEFORE_AFTER.shiny, src: imageSource(option.sprite), testId: 'shiny-after' },
-  ];
-  return <section className="panel motion-enter-up mt-3 px-3 py-3 sm:px-4" aria-label={`${SHINY_BEFORE_AFTER.title}: ${option.pokemonName}`} data-testid="shiny-before-after">
+/** Una figura de la franja: si la imagen falla, deja el hueco con «Sin sprite» en lugar de una imagen rota. */
+function BeforeAfterFigure({ label, src, alt, testId, shiny }: { label: string; src: string; alt: string; testId: string; shiny: boolean }) {
+  const [failed, setFailed] = useState(false);
+  return <figure className="flex min-w-0 flex-col items-center gap-1">
+    <span className="shiny-before-after-stage grid h-24 w-full place-items-center rounded-xl sm:h-28">
+      {failed
+        ? <span className="text-sm font-bold text-ink/65" data-testid={`${testId}-missing`}>{SHINY_BEFORE_AFTER.missing}</span>
+        : <img className="shiny-sprite h-24 w-24 object-contain sm:h-28 sm:w-28" src={src} alt={alt} data-testid={testId} onError={() => setFailed(true)} />}
+    </span>
+    <figcaption className={`text-sm font-extrabold ${shiny ? 'text-leaf' : 'text-ink/65'}`}>{label}</figcaption>
+  </figure>;
+}
+
+/**
+ * Franja de la revelación: el sprite normal (proxy de la Pokédex) junto al shiny verdadero. Solo se monta al revelar.
+ * `className` decide dónde se ve (bajo la rejilla en móvil, arriba de la columna lateral en `lg`).
+ */
+export function ShinyBeforeAfter({ option, className = '' }: { option: ShinyOption; className?: string }) {
+  return <section className={`panel motion-enter-up px-3 py-3 sm:px-4 ${className}`} aria-label={`${SHINY_BEFORE_AFTER.title}: ${option.pokemonName}`} data-testid="shiny-before-after">
     <h3 className="text-center font-display text-base font-bold text-ink/80">{SHINY_BEFORE_AFTER.title} · <span className="text-ink">{option.pokemonName}</span></h3>
-    <div className="mt-2 grid grid-cols-2 gap-3">{figures.map((figure) => <figure key={figure.label} className="flex min-w-0 flex-col items-center gap-1">
-      <span className="shiny-before-after-stage grid w-full place-items-center rounded-xl">
-        <img className="shiny-sprite h-24 w-24 object-contain sm:h-28 sm:w-28" src={figure.src} alt={`${option.pokemonName} ${figure.label.toLowerCase()}`} data-testid={figure.testId} />
-      </span>
-      <figcaption className={`text-sm font-extrabold ${figure.label === SHINY_BEFORE_AFTER.shiny ? 'text-leaf' : 'text-ink/65'}`}>{figure.label}</figcaption>
-    </figure>)}</div>
+    <div className="mt-2 grid grid-cols-2 gap-3">
+      <BeforeAfterFigure label={SHINY_BEFORE_AFTER.normal} src={apiAsset(pokemonSpritePath(option.pokemonId))} alt={`${option.pokemonName} normal`} testId="shiny-before" shiny={false} />
+      <BeforeAfterFigure label={SHINY_BEFORE_AFTER.shiny} src={imageSource(option.sprite)} alt={`${option.pokemonName} shiny`} testId="shiny-after" shiny />
+    </div>
   </section>;
 }

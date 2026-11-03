@@ -150,7 +150,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
             onSettled={cards.onSettled}
           />;
         })}</div> : <div className="grid grid-cols-2 gap-2.5 sm:gap-3" aria-label="Cargando opciones">{Array.from({ length: 4 }, (_, index) => <div key={index} className="shiny-option-card rounded-2xl border border-ink/10 bg-surface p-3"><div className="skeleton h-9 w-9" /><div className="skeleton mx-auto mt-3 h-44 w-44 max-w-full" /><div className="skeleton mx-auto mt-3 h-5 w-24 max-w-full" /></div>)}</div>}
-        {correctOption && <ShinyBeforeAfter key={`${game.roundNumber}|${correctOption.id}`} option={correctOption} />}
+        {correctOption && <ShinyBeforeAfter key={`${game.roundNumber}|${correctOption.id}`} option={correctOption} className="mt-3 lg:hidden" />}
         <ShinyVoteStatus
           active={active}
           loading={loadingCards}
@@ -167,7 +167,14 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
           onConfirm={() => void confirmVote()}
         />
       </main>
-      <ShinyGameSidebar game={game} members={members} selfId={selfId} feedbackUrl={feedbackUrl} />
+      {/* En lg la franja sube a la columna lateral para quedar a la vista sin desplazar; debajo, sigue bajo la rejilla. */}
+      <ShinyGameSidebar
+        game={game}
+        members={members}
+        selfId={selfId}
+        feedbackUrl={feedbackUrl}
+        top={correctOption && <ShinyBeforeAfter key={`${game.roundNumber}|${correctOption.id}`} option={correctOption} className="mb-3 max-lg:hidden" />}
+      />
     </div>
   </section>;
 }

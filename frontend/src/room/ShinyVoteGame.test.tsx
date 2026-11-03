@@ -152,6 +152,10 @@ describe('Shiny Quiz UI', () => {
     expect(html).toContain('/api/pokemon/simisear/sprite');
     expect(html).toContain('>Normal</figcaption>');
     expect(html).toContain('>Shiny</figcaption>');
+    // Bajo la rejilla hasta lg y arriba de la columna lateral desde lg.
+    expect(html.match(/data-testid="shiny-before-after"/g)).toHaveLength(2);
+    expect(html).toContain('mt-3 lg:hidden');
+    expect(html).toContain('mb-3 max-lg:hidden');
     expect(html).toContain('¡Correcto!');
     expect(html).toContain('+4 puntos');
     expect(html).toContain('Respuesta correcta:');
@@ -162,8 +166,12 @@ describe('Shiny Quiz UI', () => {
     const wrong = render(revealGame(), player({ canVote: false, vote: { optionId: 'C', votedAt: 2_000 }, roundResult: { correct: false, points: 0 } }));
     expect(wrong).toContain('No era ese shiny');
     expect(wrong).toContain('aria-label="Opción C: Simisear, tu voto, incorrecta, +0 puntos"');
-    expect(wrong).toContain('score-pop-berry');
-    expect(wrong).toContain('grayscale');
+    // Un fallo muestra «+0» a propósito (en berry), junto a la etiqueta ✗ «Tu voto».
+    expect(wrong).toMatch(/<span class="score-pop score-pop-berry[^"]*"[^>]*>\+0<\/span>/);
+    // Solo el sprite de las incorrectas se apaga; la tarjeta, la etiqueta y el nombre conservan el contraste.
+    expect(wrong.match(/data-dimmed="true"/g)).toHaveLength(2);
+    expect(wrong).toMatch(/class="shiny-sprite-stage[^"]*opacity-60 grayscale"[^>]*data-dimmed="true"/);
+    expect(wrong).not.toMatch(/<button[^>]*class="[^"]*shiny-option-card[^"]*opacity-60/);
     expect(wrong).toContain('Shiny verdadero');
     expect(wrong).toContain('Tu elección:');
     expect(wrong).toContain('Respuesta correcta:');

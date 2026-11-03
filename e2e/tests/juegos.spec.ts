@@ -706,7 +706,8 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     const spriteNormal = invitado.page.waitForResponse((r) => /^\/api\/pokemon\/[^/]+\/sprite$/.test(new URL(r.url()).pathname), { timeout: 15_000 });
     await opcionA(invitado.page).click();
     await invitado.page.getByRole('button', { name: 'Confirmar voto' }).click();
-    const franja = (page: Page) => page.getByTestId('shiny-before-after');
+    // La franja se monta dos veces (bajo la rejilla y en la columna lateral en lg): se usa la visible.
+    const franja = (page: Page) => page.locator('[data-testid="shiny-before-after"]:visible');
     for (const { page } of jugadores) await expect(franja(page)).toBeVisible({ timeout: 10_000 });
     expect((await spriteNormal).status()).toBe(200);
     for (const { page } of jugadores) {

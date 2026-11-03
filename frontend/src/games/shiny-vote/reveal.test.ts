@@ -40,7 +40,7 @@ describe('shinyRoundFeedback', () => {
 describe('textos de la revelación', () => {
   it('names the loading state, the before/after strip and the reveal range', () => {
     expect(SHINY_CARDS_LOADING).toBe('Cargando cartas…');
-    expect(SHINY_BEFORE_AFTER).toEqual({ title: 'Antes / después', normal: 'Normal', shiny: 'Shiny' });
+    expect(SHINY_BEFORE_AFTER).toEqual({ title: 'Antes / después', normal: 'Normal', shiny: 'Shiny', missing: 'Sin sprite' });
     expect(SHINY_REVEAL_DURATION_LABEL).toBe('Duración de la revelación');
     expect(shinyRevealSecondsLabel(4)).toBe('4 segundos');
   });
