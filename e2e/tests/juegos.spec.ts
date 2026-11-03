@@ -968,7 +968,17 @@ test('higher-lower: panel de visibilidad', async ({ browser }) => {
 interface LearnsetVisible {
   phase: string;
   referenceGeneration: number;
-  visibleGroups: Array<{ level: number | null; moves: Array<{ moveId: string }> }>;
+  visibleGroups: Array<{ level: number | null; moves: Array<{ moveId: string }>; stage: number }>;
+}
+
+/**
+ * «Ahora vale N pts» calculado aparte con la regla del motor (`learnsetPoints` de `learnset-guess/rules.ts`): 5 menos
+ * la etapa de pistas, mínimo 1, más el bonus de orden (+2 al primero, +1 al segundo).
+ */
+function valorEnJuego(estado: LearnsetVisible, aciertos: number): string {
+  const etapa = Math.max(0, ...estado.visibleGroups.map((g) => g.stage));
+  const puntos = Math.max(1, 5 - etapa) + ([2, 1][aciertos] ?? 0);
+  return `Ahora vale ${puntos} ${puntos === 1 ? 'pt' : 'pts'}`;
 }
 
 /** Busca en una trama del `/ws` el estado público de Learnset Guess. */
@@ -1013,6 +1023,28 @@ function candidatosLearnset(estado: LearnsetVisible): string[] {
   })).map(([pokemonId]) => pokemonId);
 }
 
+/**
+ * El host prueba los candidatos (como mucho cuatro: cada fallo tiene enfriamiento) hasta ver «¡Has acertado!».
+ * Fuera de 1..4 candidatos el test no es fiable y lo dice ya.
+ */
+async function acertarLearnset(host: Page, estado: LearnsetVisible, nombres: ReadonlyMap<string, string>): Promise<void> {
+  const candidatos = [...new Set(candidatosLearnset(estado).map((id) => nombres.get(id)).filter((n): n is string => Boolean(n)))];
+  test.info().annotations.push({ type: 'learnset', description: `candidatos: ${candidatos.join(', ')}` });
+  expect(candidatos.length, `candidatos a la respuesta con los movimientos visibles (1..4): ${candidatos.join(', ') || 'ninguno'}`).toBeGreaterThanOrEqual(1);
+  expect(candidatos.length, `demasiados candidatos para probarlos antes del final de la ronda: ${candidatos.join(', ')}`).toBeLessThanOrEqual(4);
+  const acierto = host.getByRole('heading', { name: '¡Has acertado!' });
+  for (const nombre of candidatos) {
+    await expect(host.getByText(/^Espera .*s para confirmar otro intento\.$/)).toHaveCount(0, { timeout: 10_000 });
+    await elegirPokemon(host, nombre);
+    const resultado = await Promise.race([
+      acierto.waitFor({ timeout: 5_000 }).then(() => true, () => false),
+      host.getByText(/^Espera .*s para confirmar otro intento\.$/).waitFor({ timeout: 5_000 }).then(() => false, () => false),
+    ]);
+    if (resultado || await acierto.isVisible()) break;
+  }
+  await expect(acierto).toBeVisible({ timeout: 5_000 });
+}
+
 test('learnset-guess: último aviso a 390', async ({ browser }) => {
   test.setTimeout(120_000);
   const sala = await crearSalaConJugadores(browser, 2);
@@ -1032,24 +1064,8 @@ test('learnset-guess: último aviso a 390', async ({ browser }) => {
     const seleccion = host.page.getByRole('textbox', { name: 'Buscar Pokémon' });
     await expect(seleccion).toBeVisible({ timeout: 20_000 });
     await expect.poll(() => (estado as LearnsetVisible | null)?.visibleGroups.length ?? 0, { timeout: 10_000 }).toBeGreaterThan(0);
-    const candidatos = [...new Set(candidatosLearnset(estado!).map((id) => nombres.get(id)).filter((n): n is string => Boolean(n)))];
-    test.info().annotations.push({ type: 'learnset', description: `candidatos: ${candidatos.join(', ')}` });
-    // El host prueba como mucho cuatro (cada fallo tiene enfriamiento): fuera de 1..4 el test no es fiable y lo dice ya.
-    expect(candidatos.length, `candidatos a la respuesta con los movimientos visibles (1..4): ${candidatos.join(', ') || 'ninguno'}`).toBeGreaterThanOrEqual(1);
-    expect(candidatos.length, `demasiados candidatos para probarlos antes del final de la ronda: ${candidatos.join(', ')}`).toBeLessThanOrEqual(4);
-
-    // El host prueba los candidatos hasta acertar; con dos jugadores, su acierto deja al invitado como el último.
-    const acierto = host.page.getByRole('heading', { name: '¡Has acertado!' });
-    for (const nombre of candidatos) {
-      await expect(host.page.getByText(/^Espera .*s para confirmar otro intento\.$/)).toHaveCount(0, { timeout: 10_000 });
-      await elegirPokemon(host.page, nombre);
-      const resultado = await Promise.race([
-        acierto.waitFor({ timeout: 5_000 }).then(() => true, () => false),
-        host.page.getByText(/^Espera .*s para confirmar otro intento\.$/).waitFor({ timeout: 5_000 }).then(() => false, () => false),
-      ]);
-      if (resultado || await acierto.isVisible()) break;
-    }
-    await expect(acierto).toBeVisible({ timeout: 5_000 });
+    // Con dos jugadores, el acierto del host deja al invitado como el último.
+    await acertarLearnset(host.page, estado!, nombres);
     const chip = invitado.page.getByRole('status').filter({ hasText: /¡Último aviso! Solo faltas tú: \d+ segundos?\./ });
     await expect(chip).toBeVisible({ timeout: 5_000 });
     await invitado.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
@@ -1059,6 +1075,63 @@ test('learnset-guess: último aviso a 390', async ({ browser }) => {
     await expect(chip).toBeInViewport();
     await capturarAnotando(invitado.page, 'juego-learnset-guess-ultimo-aviso', chip, [SIZES[2]]);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+test('learnset-guess: marcador en vivo', async ({ browser }) => {
+  test.setTimeout(180_000);
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const [primero, segundo] = invitados as [Jugador, Jugador];
+    await seleccionarJuego(host.page, 'Learnset Guess');
+    let estado: LearnsetVisible | null = null;
+    for (const ws of host.sockets.filter((s) => JAVA_WS.test(s.url()))) ws.on('framereceived', ({ payload }) => { estado = learnsetEnTrama(payload) ?? estado; });
+    const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await saltarIntro(jugadores.map((j) => j.page));
+    const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
+    const nombres = new Map(catalogo.map((p) => [p.id, p.name]));
+    await expect(host.page.getByRole('textbox', { name: 'Buscar Pokémon' })).toBeVisible({ timeout: 20_000 });
+    await expect.poll(() => (estado as LearnsetVisible | null)?.visibleGroups.length ?? 0, { timeout: 10_000 }).toBeGreaterThan(0);
+
+    // Marcador: una fila por jugador, todos a 0; quien aún puede acertar ve lo que vale un acierto.
+    const filas = primero.page.getByTestId('learnset-score-row');
+    await expect(filas).toHaveCount(3);
+    await expect(primero.page.getByTestId('learnset-score')).toHaveText(['0 pts', '0 pts', '0 pts']);
+    const enJuego = primero.page.getByTestId('learnset-stake');
+    // Coincide con la cuenta del motor para la etapa visible (la pista nueva puede llegar entre lecturas: se reintenta).
+    await expect.poll(async () => (await enJuego.innerText()).trim() === valorEnJuego(estado!, 0), { timeout: 10_000 }).toBe(true);
+
+    await acertarLearnset(host.page, estado!, nombres);
+    // Los demás ven quién ha acertado (2 s), su fila sube con «1.º» y el valor en juego ya no lleva el bonus del primero.
+    await expect(primero.page.getByRole('status').filter({ hasText: `${host.name} ha acertado` })).toBeVisible({ timeout: 2_000 });
+    const filaHost = filas.first();
+    await expect(filaHost).toContainText(host.name);
+    await expect(filaHost).toContainText('1.º');
+    await expect(filaHost.getByTestId('learnset-score')).toHaveText(/^[1-9]\d* pts$/);
+    await expect.poll(async () => (await enJuego.innerText()).trim() === valorEnJuego(estado!, 1), { timeout: 10_000 }).toBe(true);
+    await expect(host.page.getByTestId('learnset-stake')).toHaveCount(0);
+    // Los puntos saltan con `motion-bump`; con la reducción de movimiento, nada.
+    const puntos = filaHost.getByTestId('learnset-score');
+    expect(await animacionDe(puntos), 'puntos con reducción de movimiento').toBe('none');
+    await conMovimiento(primero.page);
+    expect(await animacionDe(puntos), 'puntos con movimiento').toBe('motion-bump');
+    await primero.page.emulateMedia({ reducedMotion: 'reduce' });
+    await primero.page.getByRole('textbox', { name: 'Buscar Pokémon' }).blur();
+    await primero.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(primero.page, 'juego-learnset-guess', { sigue: enJuego, claro: true });
+
+    // Si alguien se va sin acertar, la revelación dice «Sin conexión» y no «No acertó».
+    await segundo.context.close();
+    await expect(host.page.getByRole('heading', { name: /^¡Era / })).toBeVisible({ timeout: 45_000 });
+    const tarjetas = host.page.getByTestId('learnset-reveal-row');
+    await expect(tarjetas.filter({ hasText: segundo.name })).toContainText('Sin conexión');
+    await expect(tarjetas.filter({ hasText: segundo.name })).not.toContainText('No acertó');
+    await expect(tarjetas.filter({ hasText: primero.name })).toContainText('✗ No acertó');
+    for (const jugador of [host, primero]) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
   }

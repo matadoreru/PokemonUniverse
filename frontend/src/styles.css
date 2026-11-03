@@ -110,6 +110,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .empty-state { @apply rounded-xl border border-dashed border-ink/20 bg-ink/[.025] p-6 text-center text-ink/65; }
   .skeleton { @apply animate-pulse rounded-lg bg-ink/10; }
   .ranking-row { @apply grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-xl border border-ink/10 bg-surface-raised p-3 sm:grid-cols-[auto_auto_minmax(0,1fr)_auto]; }
+  /* Fila compacta para barras laterales (marcador en vivo): las 4 celdas en todos los anchos; `-solved` marca a quien ya acertó. */
+  .ranking-row-compact { @apply grid-cols-[auto_auto_minmax(0,1fr)_auto] gap-2 p-2 sm:grid-cols-[auto_auto_minmax(0,1fr)_auto]; }
+  .ranking-row-solved { @apply border-leaf/40 bg-leaf/10; }
   .connection-notice-region { @apply mx-auto w-full max-w-[96rem] px-3 sm:px-5 md:px-8; }
   .connection-notice { @apply mb-2.5 flex items-center gap-3 rounded-xl border border-electric/35 bg-electric/10 px-4 py-2.5 font-bold text-ink; }
   /* Barra de acción fija abajo: la acción principal sigue a la vista aunque el contenido no quepa (voto, intro). */
