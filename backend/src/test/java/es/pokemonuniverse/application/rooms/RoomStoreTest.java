@@ -1,5 +1,6 @@
 package es.pokemonuniverse.application.rooms;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -11,6 +12,7 @@ import es.pokemonuniverse.domain.room.LiveRoom;
 import es.pokemonuniverse.domain.room.MemberRole;
 import es.pokemonuniverse.domain.room.RoomMember;
 import es.pokemonuniverse.domain.room.RoomRole;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,5 +68,19 @@ class RoomStoreTest {
     store.delete("AAA");
     assertTrue(store.attachUnlessInOtherRoom("user", "BBB"));
     assertFalse(store.saveIfAbsent(room("BBB")));
+  }
+
+  /** {@code Map} de JavaScript: {@code list()} sigue el orden de creación, y re-guardar no mueve la sala. */
+  @Test
+  void listsRoomsInInsertionOrder() {
+    var store = new RoomStore();
+    var codes = List.of("ZZZZZZ", "AAAAAA", "MMMMMM", "BBBBBB", "YYYYYY", "CCCCCC", "XXXXXX", "DDDDDD");
+    for (var code : codes) store.save(room(code));
+    store.save(store.get("AAAAAA"));
+    assertEquals(codes, store.list().stream().map(r -> r.code).toList());
+    store.delete("MMMMMM");
+    assertTrue(store.saveIfAbsent(room("MMMMMM")));
+    assertEquals(List.of("ZZZZZZ", "AAAAAA", "BBBBBB", "YYYYYY", "CCCCCC", "XXXXXX", "DDDDDD", "MMMMMM"),
+        store.list().stream().map(r -> r.code).toList());
   }
 }

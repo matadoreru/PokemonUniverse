@@ -4,24 +4,32 @@ import es.pokemonuniverse.domain.room.LiveRoom;
 import io.micronaut.core.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.Comparator;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * {@code InMemoryRoomStore} de {@code store.ts}: salas por código e índice jugador → sala. Los mapas son concurrentes
  * para que la búsqueda de la sala de un jugador no necesite lock; toda mutación de una sala ocurre bajo su lock.
  * Propietario de un solo proceso: el despliegue multinodo exige estado serializable y temporizadores duraderos.
+ * {@link #list()} sigue el orden de inserción, como el {@code Map} de Node (la lista de salas activas de
+ * administración depende de él): cada código recibe un número de secuencia al entrar y lo pierde al borrarse.
  */
 public final class RoomStore {
 
   private final Map<String, LiveRoom> rooms = new ConcurrentHashMap<>();
   private final Map<String, String> playerRooms = new ConcurrentHashMap<>();
+  private final Map<String, Long> insertion = new ConcurrentHashMap<>();
+  private final AtomicLong sequence = new AtomicLong();
 
   public @Nullable LiveRoom get(String code) {
     return rooms.get(code);
   }
 
   public List<LiveRoom> list() {
-    return List.copyOf(rooms.values());
+    return rooms.values().stream()
+        .sorted(Comparator.comparingLong(room -> insertion.getOrDefault(room.code, Long.MAX_VALUE)))
+        .toList();
   }
 
   public @Nullable LiveRoom roomForPlayer(String playerId) {
@@ -31,11 +39,14 @@ public final class RoomStore {
 
   public void save(LiveRoom room) {
     rooms.put(room.code, room);
+    insertion.computeIfAbsent(room.code, code -> sequence.incrementAndGet());
   }
 
   /** Guarda la sala solo si el código está libre (unicidad del código sin lock global). */
   boolean saveIfAbsent(LiveRoom room) {
-    return rooms.putIfAbsent(room.code, room) == null;
+    if (rooms.putIfAbsent(room.code, room) != null) return false;
+    insertion.computeIfAbsent(room.code, code -> sequence.incrementAndGet());
+    return true;
   }
 
   public void attachPlayer(String playerId, String roomCode) {
@@ -60,5 +71,6 @@ public final class RoomStore {
     var room = rooms.get(code);
     if (room != null) for (var id : List.copyOf(room.members.keySet())) detachPlayer(id, code);
     rooms.remove(code);
+    insertion.remove(code);
   }
 }
