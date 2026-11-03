@@ -123,8 +123,8 @@ Nunito y se ponen las capas en tokens. Un test protege contraste, espejo y capas
 - Modify:
   - `frontend/index.html`: fuera los tres `<link>` de Google Fonts; dos `<link rel="preload" as="font" type="font/woff2" crossorigin>`.
   - `frontend/src/styles.css`: importa `fonts.css`; `:root` con `font-family: var(--font-text)`, `font-weight: 700` y
-    `font-variant-numeric: tabular-nums`; clases `.ol` y `.ol2` (Inazuma `global.css`) y `.font-display` con
-    `line-height: var(--lh-display)`.
+    `font-variant-numeric: tabular-nums`; clases `.ol` y `.ol2` (Inazuma `global.css`). El interlineado display (`--lh-display`) lo dan solo
+    los tamaños `text-26`…`text-68`; `.font-display` no fija `line-height`.
   - `frontend/tailwind.config.js`: `fontFamily.display = ['"Baloo 2"', 'Nunito', 'system-ui', 'sans-serif']`,
     `fontFamily.body = ['Nunito', 'system-ui', 'sans-serif']`; `fontSize` extendido con `13`…`68` (`text-13` … `text-68`,
     `px` y su interlineado). Los tamaños por defecto de Tailwind (`text-xs`…) se quedan hasta F9.

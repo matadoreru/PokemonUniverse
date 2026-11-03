@@ -58,10 +58,6 @@
     -2px 2px var(--navy),
     0 5px 0 var(--navy-2);
 }
-/* Títulos de display: interlineado compacto (los que ya fijan su `leading-*` lo conservan, al ir después). */
-@layer utilities {
-  .font-display { line-height: var(--lh-display); }
-}
 
 /* Barra de desplazamiento amarilla sobre azul noche (§3.7). */
 * { box-sizing: border-box; scrollbar-color: var(--yellow) var(--navy-2); scrollbar-width: thin; }
