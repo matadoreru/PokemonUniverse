@@ -27,12 +27,13 @@ export function PokedexDistanceResults({ room, selfId, onLobby, onEnd }: { room:
     <ol className="space-y-2" aria-label="Clasificación">{standings.map((standing) => {
       const player = byPlayer.get(standing.playerId);
       const won = standing.playerId === winnerId;
+      const standingLabel = player ? distanceStandingLabel(player, winnerId) : null;
       return <li key={standing.playerId} className={`ranking-row ${won ? 'border-electric/50 bg-electric/[.08]' : ''}`}>
         <strong className="w-9 text-center font-display text-2xl tabular-nums">{won ? '👑' : standing.position}</strong>
         <span className="hidden sm:block"><Avatar name={nameOf(standing.playerId)} avatar={avatarOf(standing.playerId)} size="md" /></span>
         <div className="min-w-0">
           <strong className="block truncate font-display text-lg" title={nameOf(standing.playerId)}>{nameOf(standing.playerId)}</strong>
-          <p className={`text-sm font-extrabold ${won ? 'text-ink' : 'text-berry'}`}>{player ? distanceStandingLabel(player, winnerId) : 'Superviviente'}</p>
+          {standingLabel && <p className={`text-sm font-extrabold ${won ? 'text-ink' : 'text-berry'}`}>{standingLabel}</p>}
           <p className="text-sm font-bold text-ink/65">{distanceStatsLine(standing.stats)}</p>
         </div>
         <strong className="justify-self-end text-xl tabular-nums text-berry">+{standing.points}</strong>
@@ -62,7 +63,7 @@ export function PokedexDistanceResults({ room, selfId, onLobby, onEnd }: { room:
           </tr></thead>
           <tbody>{standings.map((standing) => <tr key={standing.playerId} className="border-t border-ink/10">
             <th scope="row" className="sticky left-0 max-w-36 bg-surface px-3 py-2.5 text-left font-bold"><span className="block truncate" title={nameOf(standing.playerId)}>{nameOf(standing.playerId)}</span></th>
-            {history.map((record) => { const cell = distanceCell(record, standing.playerId); return <td key={`${record.roundNumber}-${record.tiebreakDepth}`} className={`whitespace-nowrap px-3 py-2.5 text-center font-extrabold tabular-nums ${CELL_TONE[cell.tone]}`} title={cell.label} aria-label={cell.label}>{cell.mark && <span aria-hidden="true">{cell.mark} </span>}<span aria-hidden="true">{cell.text}</span></td>; })}
+            {history.map((record) => { const cell = distanceCell(record, standing.playerId); return <td key={`${record.roundNumber}-${record.tiebreakDepth}`} className={`whitespace-nowrap px-3 py-2.5 text-center font-extrabold tabular-nums ${CELL_TONE[cell.tone]}`} title={cell.label}><span aria-hidden="true">{cell.mark && `${cell.mark} `}{cell.text}</span><span className="sr-only">{cell.label}</span></td>; })}
           </tr>)}</tbody>
         </table>
       </div>

@@ -33,10 +33,12 @@ describe('PokedexDistanceResults', () => {
     expect(html).toContain('Cayó en la ronda 1');
     expect(html).toContain('1 desempate superado');
     expect(html).toContain('Mejor acierto');
-    expect(html).toContain('Acierto exacto en la ronda 1');
     expect(html).toContain('Distancia por ronda');
     expect(html).toContain('R1 · D1');
     expect(html).toContain('R1 · D1: a 161, cayó');
+    expect(html).toContain('<span class="sr-only">R1 · D1: a 161, cayó</span>');
+    expect(html).toContain('Acierto exacto en R1 · D1');
+    expect(html).not.toContain('aria-label="R1');
     expect(html).toContain('overflow-x-auto');
     expect(html).toContain('Continuar sesión');
   });
