@@ -32,4 +32,24 @@ describe('DistanceRuler', () => {
   it('deja fuera de la regla a quien no respondió', () => {
     expect(html).toContain('Leo: sin respuesta, eliminado');
   });
+
+  it('con más de tres carriles pasa a marcadores compactos, sin sprite', () => {
+    const ids = ['p1', 'p2', 'p3', 'p4', 'p5'];
+    const crowd: PublicRoundResult = {
+      ...round, eligibleIds: ids, eliminatedIds: ['p5'], reason: 'FARTHEST',
+      selections: Object.fromEntries(ids.map((id, i) => [id, { pokemonId: id, pokemonName: id, sprite: `/${i + 1}.png`, dexNumber: i + 1, distance: 24 - i, selectedAt: 1 }])),
+    };
+    const crowded = renderToStaticMarkup(createElement(DistanceRuler, { round: crowd, members, selfId: 'p1' }));
+    expect(crowded.match(/data-testid="distance-ruler-marker"/g)).toHaveLength(5);
+    expect(crowded.match(/<img /g)).toHaveLength(1);
+    expect(crowded).toContain('height:8.75rem');
+  });
+
+  it('marca en eléctrico a los empatados que no caen', () => {
+    const tie: PublicRoundResult = { ...round, eliminatedIds: [], reason: 'TIE', tiedIds: ['p2'] };
+    const tied = renderToStaticMarkup(createElement(DistanceRuler, { round: tie, members, selfId: 'p1' }));
+    expect(tied).toContain('ring-electric');
+    expect(tied).toContain('bg-electric/20 text-electric');
+    expect(tied).toContain('Ana: #004, a 21, empate');
+  });
 });

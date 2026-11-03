@@ -55,10 +55,43 @@ describe('rulerLayout', () => {
     expect(markers.find((m) => m.playerId === 'p1')!.eliminated).toBe(true);
   });
 
-  it('nunca pasa del carril 2 aunque se amontonen más de tres', () => {
+  it('abre los carriles que hagan falta cuando se amontonan', () => {
     const { markers } = rulerLayout(round(200, { p1: 1, p2: 2, p3: 3, p4: 4, p5: 5 }));
-    expect(Math.max(...markers.map((m) => m.lane))).toBe(2);
-    expect(markers.every((m) => m.lane >= 0)).toBe(true);
+    expect(markers.map((m) => m.lane)).toEqual([0, 1, 2, 3, 4]);
+  });
+
+  it('dos marcadores del mismo carril siempre quedan a la separación pedida (azar, hasta 8 jugadores)', () => {
+    // Generador determinista (LCG) para que el test no dependa de la suerte.
+    let seed = 12345;
+    const next = (max: number) => { seed = (seed * 1103515245 + 12345) % 2147483648; return 1 + seed % max; };
+    // 15,5 puntos: un marcador de 44 px en la regla de 284 px que queda a 390 px de ancho.
+    for (const gap of [8, 15.5, 30]) {
+      for (let run = 0; run < 300; run++) {
+        const players = 2 + next(7) - 1;
+        const target = next(1025);
+        // La mitad de las veces, todos cerca del objetivo o entre sí: el caso que amontona.
+        const spread = run % 2 === 0 ? 1025 : 12;
+        const base = spread === 1025 ? 0 : next(1000);
+        const picks = Object.fromEntries(Array.from({ length: players }, (_, i) => [`p${i}`, run % 3 === 0 && i === 0 ? null : base + next(spread)]));
+        const { markers } = rulerLayout(round(target, picks), gap);
+        const placed = markers.filter((m) => m.dexNumber !== null);
+        for (const a of placed) {
+          expect(a.offsetPercent).toBeGreaterThanOrEqual(2);
+          expect(a.offsetPercent).toBeLessThanOrEqual(98);
+          for (const b of placed) {
+            if (a !== b && a.lane === b.lane) expect(Math.abs(a.offsetPercent - b.offsetPercent)).toBeGreaterThanOrEqual(gap - 1e-9);
+          }
+        }
+        expect(Math.max(0, ...placed.map((m) => m.lane))).toBeLessThan(Math.max(1, placed.length));
+      }
+    }
+  });
+
+  it('marca el empate de quien no cae', () => {
+    const tie = { ...round(50, { p1: 40, p2: 60, p3: 52 }), reason: 'TIE' as const, tiedIds: ['p1', 'p2'] };
+    expect(rulerLayout(tie).markers.map((m) => m.tied)).toEqual([true, true, false]);
+    const forced = { ...round(50, { p1: 40, p2: 60 }, ['p2']), tiedIds: ['p1', 'p2'] };
+    expect(rulerLayout(forced).markers.map((m) => m.tied)).toEqual([true, false]);
   });
 
   it('deja fuera de la regla a quien no respondió', () => {
@@ -82,12 +115,13 @@ describe('formatDexNumber', () => {
 });
 
 describe('textos de la regla', () => {
-  const marker = { playerId: 'p1', dexNumber: 4, distance: 21, offsetPercent: 30, lane: 0, eliminated: false, exact: false };
+  const marker = { playerId: 'p1', dexNumber: 4, distance: 21, offsetPercent: 30, lane: 0, eliminated: false, exact: false, tied: false };
 
   it('describe cada marcador para lectores de pantalla', () => {
     expect(DISTANCE_RULER_CAPTION).toBe('Distancia al objetivo');
     expect(distanceMarkerLabel('Ana', marker)).toBe('Ana: #004, a 21');
     expect(distanceMarkerLabel('Ana', { ...marker, eliminated: true })).toBe('Ana: #004, a 21, eliminado');
+    expect(distanceMarkerLabel('Ana', { ...marker, tied: true })).toBe('Ana: #004, a 21, empate');
     expect(distanceMarkerLabel('Leo', { ...marker, dexNumber: 25, distance: 0, exact: true })).toBe('Leo: #025, acierto exacto');
     expect(distanceMarkerLabel('Eru', { ...marker, dexNumber: null, distance: null, eliminated: true })).toBe('Eru: sin respuesta, eliminado');
   });
