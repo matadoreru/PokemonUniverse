@@ -7,7 +7,6 @@ import es.pokemonuniverse.application.errors.NotFoundException;
 import es.pokemonuniverse.application.time.Clock;
 import io.micronaut.json.tree.JsonNode;
 import jakarta.inject.Singleton;
-import java.sql.SQLException;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,20 +15,21 @@ import java.util.UUID;
 /**
  * {@code ChangelogService} de {@code changelog/service.ts}: lista pública y CRUD de administración. La versión es única:
  * se comprueba antes de escribir (409 antes que 404 en la edición, como Node) y la carrera la resuelve la unicidad de
- * la BD ({@code 23505}, P2002), que también responde 409.
+ * la BD ({@code 23505}, P2002; {@link ChangelogWriter.DuplicateVersionException}), que también responde 409.
  */
 @Singleton
 public class ChangelogService {
 
   static final String DUPLICATE_VERSION = "Ya existe una entrada con esta versión.";
   static final String NOT_FOUND = "Versión no encontrada.";
-  private static final String UNIQUE_VIOLATION = "23505";
 
   private final ChangelogRepository repository;
+  private final ChangelogWriter writer;
   private final Clock clock;
 
-  public ChangelogService(ChangelogRepository repository, Clock clock) {
+  public ChangelogService(ChangelogRepository repository, ChangelogWriter writer, Clock clock) {
     this.repository = repository;
+    this.writer = writer;
     this.clock = clock;
   }
 
@@ -51,10 +51,9 @@ public class ChangelogService {
     var entity = ChangelogEntity.create(UUID.randomUUID().toString(), input.version(), input.title(), input.date(),
         input.published(), stored(input.content()), now);
     try {
-      return view(repository.save(entity));
-    } catch (RuntimeException e) {
-      if (isUniqueViolation(e)) throw new ConflictException(DUPLICATE_VERSION);
-      throw e;
+      return view(writer.insert(entity));
+    } catch (ChangelogWriter.DuplicateVersionException e) {
+      throw new ConflictException(DUPLICATE_VERSION);
     }
   }
 
@@ -68,10 +67,9 @@ public class ChangelogService {
     entity.update(input.version(), input.title(), input.date(), input.published(),
         input.content() == null ? null : stored(input.content()), Instant.ofEpochMilli(clock.now()));
     try {
-      return view(repository.update(entity));
-    } catch (RuntimeException e) {
-      if (isUniqueViolation(e)) throw new ConflictException(DUPLICATE_VERSION);
-      throw e;
+      return view(writer.update(entity));
+    } catch (ChangelogWriter.DuplicateVersionException e) {
+      throw new ConflictException(DUPLICATE_VERSION);
     }
   }
 
@@ -92,14 +90,5 @@ public class ChangelogService {
       item.put("text", change.text());
       return item;
     }).toList();
-  }
-
-  /** {@code 23505} en la cadena de causas (P2002 de Prisma). */
-  public static boolean isUniqueViolation(Throwable error) {
-    for (Throwable cause = error; cause != null && cause.getCause() != cause; cause = cause.getCause()) {
-      if (cause instanceof SQLException sql && UNIQUE_VIOLATION.equals(sql.getSQLState())) return true;
-      if (cause instanceof org.hibernate.JDBCException jdbc && UNIQUE_VIOLATION.equals(jdbc.getSQLState())) return true;
-    }
-    return false;
   }
 }

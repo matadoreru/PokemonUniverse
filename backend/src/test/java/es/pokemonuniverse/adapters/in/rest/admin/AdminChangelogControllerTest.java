@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import es.pokemonuniverse.adapters.out.persistence.ChangelogEntity;
 import es.pokemonuniverse.adapters.out.persistence.ChangelogRepository;
 import es.pokemonuniverse.application.auth.IdentityTokens;
-import es.pokemonuniverse.application.changelog.ChangelogService;
+import es.pokemonuniverse.application.changelog.ChangelogWriter;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.client.HttpClient;
@@ -37,6 +37,7 @@ class AdminChangelogControllerTest {
   @Inject DataSource dataSource;
   @Inject DataSourceResolver resolver;
   @Inject ChangelogRepository repository;
+  @Inject ChangelogWriter writer;
 
   private AdminTestSupport support;
   private AdminTestSupport.Account admin;
@@ -197,15 +198,17 @@ class AdminChangelogControllerTest {
         body(longId));
   }
 
-  /** La carrera de versiones (comprobación previa superada, INSERT rechazado por la unicidad) también es 409. */
+  /**
+   * La carrera de versiones (comprobación previa superada, INSERT rechazado por la unicidad) llega al servicio como
+   * {@link ChangelogWriter.DuplicateVersionException}, que es su 409.
+   */
   @Test
   void aUniqueViolationOnSaveIsAConflict() throws Exception {
     var v = version();
     var now = java.time.Instant.now();
     repository.save(ChangelogEntity.create("race-a-" + v, v, "Primera", now, false, List.of(Map.of("type", "NEW",
         "text", "abc")), now));
-    var thrown = org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class, () -> repository.save(
+    org.junit.jupiter.api.Assertions.assertThrows(ChangelogWriter.DuplicateVersionException.class, () -> writer.insert(
         ChangelogEntity.create("race-b-" + v, v, "Segunda", now, false, List.of(), now)));
-    assertTrue(ChangelogService.isUniqueViolation(thrown), thrown.toString());
   }
 }
