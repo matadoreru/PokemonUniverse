@@ -1,4 +1,4 @@
-import type { TypeDuelRoundResult } from '@pokemon-universe/shared/public';
+import type { GamePhase, TypeDuelRoundResult } from '@pokemon-universe/shared/public';
 
 export interface TypeDuelResultText { title: string; detail: string | null }
 
@@ -33,4 +33,9 @@ export function typeDuelResultText(lastRound: TypeDuelRoundResult, participants:
 /** Cuántos Pokémon cumplen la combinación revelada (el servidor publica el número, nunca cuáles). */
 export function typeDuelSolutionsText(count: number): string {
   return count === 1 ? '1 Pokémon tiene esta combinación' : `${count} Pokémon tienen esta combinación`;
+}
+
+/** Título de la pantalla: con el bloque VS a la vista (revelación y búsqueda) no repite los nombres. */
+export function typeDuelHeading(phase: GamePhase, names: readonly string[]): string {
+  return phase === 'TYPE_REVEAL' || phase === 'POKEMON_SEARCH' ? 'Duelo de tipos' : `${names[0] ?? '?'} VS ${names[1] ?? '?'}`;
 }

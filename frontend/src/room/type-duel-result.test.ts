@@ -1,6 +1,6 @@
 import type { TypeDuelRoundResult } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
-import { typeDuelResultText, typeDuelSolutionsText } from './type-duel-result';
+import { typeDuelHeading, typeDuelResultText, typeDuelSolutionsText } from './type-duel-result';
 
 const participants = ['p1', 'p2'] as const;
 const nameOf = (id: string) => ({ p1: 'Ana', p2: 'Bruno' } as Record<string, string>)[id] ?? id;
@@ -41,5 +41,16 @@ describe('typeDuelSolutionsText', () => {
   });
   it('uses the plural otherwise', () => {
     expect(typeDuelSolutionsText(25)).toBe('25 Pokémon tienen esta combinación');
+  });
+});
+
+describe('typeDuelHeading', () => {
+  it('names the duel while the VS block shows the duelists', () => {
+    expect(typeDuelHeading('TYPE_REVEAL', ['Ana', 'Bruno'])).toBe('Duelo de tipos');
+    expect(typeDuelHeading('POKEMON_SEARCH', ['Ana', 'Bruno'])).toBe('Duelo de tipos');
+  });
+  it('keeps both names in the other phases', () => {
+    expect(typeDuelHeading('SELECTING_TYPES', ['Ana', 'Bruno'])).toBe('Ana VS Bruno');
+    expect(typeDuelHeading('ROUND_RESULTS', ['Ana', 'Bruno'])).toBe('Ana VS Bruno');
   });
 });

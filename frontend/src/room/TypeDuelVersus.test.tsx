@@ -13,6 +13,13 @@ describe('TypeDuelVersus', () => {
     expect(html).toContain('1 Pokémon tiene esta combinación');
     expect(html).toContain('Objetivo exacto');
   });
+  it('says Monotipo instead of repeating the badge when both picked the same type', () => {
+    const same = [{ id: 'p1', name: 'Ana', type: 'fire' as const }, { id: 'p2', name: 'Bruno', type: 'fire' as const }] as const;
+    const html = renderToStaticMarkup(<TypeDuelVersus duelists={same} requiredTypes={['fire']} solutionCount={36} />);
+    expect(html).toContain('Monotipo');
+    expect(html).not.toContain('Objetivo exacto');
+    expect(html.match(/aria-label="Tipo Fuego"/g)).toHaveLength(2);
+  });
   it('hides the count when the server does not publish it', () => {
     const html = renderToStaticMarkup(<TypeDuelVersus duelists={duelists} requiredTypes={['bug', 'fighting']} solutionCount={null} />);
     expect(html).not.toContain('esta combinación');

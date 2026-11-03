@@ -14,7 +14,10 @@ export function TypeDuelVersus({ duelists, requiredTypes, solutionCount }: { due
       <Duelist duelist={second} className="motion-enter-right sm:items-start sm:text-left" />
     </div>
     {solutionCount !== null && <p className="mt-4 font-display text-xl font-bold tabular-nums">{typeDuelSolutionsText(solutionCount)}</p>}
-    {requiredTypes && <div className="mt-2 flex flex-wrap items-center justify-center gap-2 font-bold"><span>Objetivo exacto:</span>{requiredTypes.map((type) => <TypeBadge key={type} type={type} compact />)}</div>}
+    {requiredTypes && (requiredTypes.length === 1
+      // Mismo tipo en los dos lados: los badges ya lo dicen, solo falta aclarar que es un monotipo exacto.
+      ? <p className="mt-2 font-bold"><span className="chip">Monotipo</span></p>
+      : <div className="mt-2 flex flex-wrap items-center justify-center gap-2 font-bold"><span>Objetivo exacto:</span>{requiredTypes.map((type) => <TypeBadge key={type} type={type} compact />)}</div>)}
   </div>;
 }
 

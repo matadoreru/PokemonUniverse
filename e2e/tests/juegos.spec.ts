@@ -218,6 +218,9 @@ test('type-duel: resultado con tipos', async ({ browser }) => {
     await expect(vs).toBeVisible();
     await expect(versus.getByText(/^\d+ Pokémon tienen esta combinación$/)).toBeVisible();
     for (const lado of ['.motion-enter-left', '.motion-enter-right']) await expect(versus.locator(`${lado} [aria-label="Tipo Fuego"]`)).toBeVisible();
+    // Los dos eligieron Fuego: «Monotipo» en vez de repetir el badge, y el título no repite los nombres.
+    await expect(versus.getByText('Monotipo', { exact: true })).toBeVisible();
+    await expect(host.page.getByRole('heading', { level: 1, name: 'Duelo de tipos' })).toBeVisible();
     await capturarTamanos(host.page, 'juego-type-duel-vs', { sigue: versus, claro: true });
     expect(await animacionDe(vs), 'VS con reducción de movimiento').toBe('none');
     await conMovimiento(host.page);
@@ -229,6 +232,8 @@ test('type-duel: resultado con tipos', async ({ browser }) => {
     await expect(buscador).toBeVisible({ timeout: 10_000 });
     await duelistas[0]!.setViewportSize({ width: 390, height: 844 });
     await expect(buscador).toBeInViewport();
+    const busqueda = await layoutProblems(duelistas[0]!, 'juego-type-duel-vs-busqueda', true);
+    expect(busqueda.problems, `${busqueda.id}: encaje y legibilidad`).toEqual([]);
     await duelistas[0]!.setViewportSize({ width: 1280, height: 720 });
 
     // Nadie busca: la búsqueda de 20 s termina en «Tiempo agotado» y el host no pulsa «Siguiente ronda».
@@ -414,8 +419,19 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     await rondas.blur();
     await expect(rondas).toHaveValue('1');
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+    // Toda imagen que pidan los navegadores durante la partida: ninguna puede llevar el número de Pokédex (la respuesta
+    // de la categoría N.º Pokédex) ni la ruta numérica de los sprites de PokéAPI.
+    const imagenes: string[] = [];
+    for (const { page } of jugadores) page.on('request', (r) => { if (r.resourceType() === 'image') imagenes.push(r.url()); });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
     await saltarIntro(jugadores.map((j) => j.page));
+    const proxy = /^\/api\/pokemon\/[a-z][a-z0-9-]*\/sprite$/;
+    const sprites = host.page.locator('article.card img');
+    await expect(sprites).toHaveCount(2, { timeout: 20_000 });
+    for (const src of await sprites.evaluateAll((imgs) => imgs.map((img) => (img as HTMLImageElement).src))) {
+      expect(new URL(src).pathname, 'sprite de Higher or Lower por el proxy').toMatch(proxy);
+    }
+    await expect.poll(() => imagenes.filter((url) => proxy.test(new URL(url).pathname)).length, { timeout: 10_000 }).toBeGreaterThanOrEqual(2);
 
     // Todos responden: la ronda se revela en cuanto contesta el último y el revelado dura 3 s. Se captura un solo
     // tamaño (390×844, el de los botones de respuesta), fijado antes de la última respuesta; la pantalla activa ya está
@@ -440,6 +456,8 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     await expect(host.page.getByText(/\d+ aciertos? · \d+ igual(es)? · mejor racha/).first()).toBeVisible();
     await expect(host.page.getByText(/(^|\D)1 (aciertos|iguales)/)).toHaveCount(0);
     await capturarTamanos(host.page, 'juego-higher-lower-clasificacion', { claro: true });
+    const delatoras = imagenes.filter((url) => /githubusercontent|\/sprites\/pokemon\/|\/\d+\.(png|gif|webp|svg)(\?|$)|\/pokemon\/\d+(\/|$)/.test(url));
+    expect(delatoras, 'ninguna imagen de la partida delata el número de Pokédex').toEqual([]);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
