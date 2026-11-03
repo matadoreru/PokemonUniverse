@@ -2,7 +2,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { gameHowToPlay } from '../games/how-to-play';
-import { HowToPlayCarousel } from './HowToPlayCarousel';
+import { carouselStep, HowToPlayCarousel } from './HowToPlayCarousel';
 
 describe('HowToPlayCarousel', () => {
   it('presenta la guía como un carrusel accesible', () => {
@@ -24,5 +24,22 @@ describe('HowToPlayCarousel', () => {
     expect(markup).not.toContain('transition-[width');
     // Solo se ve el paso activo: las otras dos llevan `hidden` y la clase `hidden` (una clase `flex` anularía el atributo).
     expect(markup.match(/hidden="" class="hidden /g)).toHaveLength(2);
+  });
+
+  it('sin bucle no pasa del último paso ni del primero; con bucle da la vuelta', () => {
+    expect(carouselStep(2, 3, false, 1)).toBe(2);
+    expect(carouselStep(0, 3, false, -1)).toBe(0);
+    expect(carouselStep(1, 3, false, 1)).toBe(2);
+    expect(carouselStep(3, 4, true, 1)).toBe(0);
+    expect(carouselStep(0, 4, true, -1)).toBe(3);
+    // Un índice fuera de rango (las diapositivas cambiaron) se ajusta al último.
+    expect(carouselStep(5, 3, false, 0)).toBe(2);
+  });
+
+  it('los pasos de un juego no dan la vuelta: «Anterior» inactivo en el primero y puntos inactivos visibles', () => {
+    const markup = renderToStaticMarkup(createElement(HowToPlayCarousel, { slides: gameHowToPlay['type-duel']!, loop: false, lastAction: createElement('button', { type: 'button' }, 'Entendido') }));
+    expect(markup).toMatch(/aria-disabled="true"[^>]*aria-label="Consejo anterior"|aria-label="Consejo anterior"[^>]*aria-disabled="true"/);
+    expect(markup).toContain('bg-ink/40');
+    expect(markup).not.toContain('Entendido');
   });
 });

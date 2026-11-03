@@ -12,7 +12,7 @@ interface Props {
 
 /**
  * «Cómo se juega» de un minijuego en un `<dialog>` modal: el navegador atrapa el foco, Esc lo cierra
- * y, al cerrarse (o desmontarse abierto), el foco vuelve al botón que lo abrió.
+ * y, al cerrarse (o desmontarse abierto), el foco vuelve al botón que lo abrió. Bloquea el scroll de la página.
  */
 export function GameHowToPlayDialog({ gameId, gameName, open, onClose }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -22,10 +22,15 @@ export function GameHowToPlayDialog({ gameId, gameName, open, onClose }: Props) 
     const dialog = dialogRef.current;
     if (!dialog || !open) return;
     const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    // La página de fondo no se desplaza mientras el diálogo está abierto.
+    const root = document.documentElement;
+    const previousOverflow = root.style.overflow;
+    root.style.overflow = 'hidden';
     if (!dialog.open) dialog.showModal();
     dialog.querySelector<HTMLElement>('[data-carousel-next]')?.focus();
     return () => {
       if (dialog.open) dialog.close();
+      root.style.overflow = previousOverflow;
       opener?.focus();
     };
   }, [open]);
@@ -33,6 +38,6 @@ export function GameHowToPlayDialog({ gameId, gameName, open, onClose }: Props) 
   if (!slides) return null;
   const idPrefix = `how-to-play-${gameId}`;
   return <dialog ref={dialogRef} className="modal-dialog" aria-labelledby={`${idPrefix}-title`} onCancel={(event) => { event.preventDefault(); onClose(); }} onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}>
-    {open && <HowToPlayCarousel slides={slides} kicker="Cómo se juega" heading={gameName} idPrefix={idPrefix} itemLabel="paso" headerAction={<button type="button" className="icon-button -mr-2 shrink-0" onClick={onClose} aria-label="Cerrar"><X /></button>} />}
+    {open && <HowToPlayCarousel slides={slides} kicker="Cómo se juega" heading={gameName} idPrefix={idPrefix} itemLabel="paso" loop={false} lastAction={<button type="button" className="btn-primary" onClick={onClose}>Entendido</button>} headerAction={<button type="button" className="icon-button -mr-2 shrink-0" onClick={onClose} aria-label="Cerrar"><X /></button>} />}
   </dialog>;
 }

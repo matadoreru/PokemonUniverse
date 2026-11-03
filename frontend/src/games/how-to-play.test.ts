@@ -21,4 +21,10 @@ describe('gameHowToPlay', () => {
       for (const slide of slides) expect(slide.description.length, `${gameId}: ${slide.title}`).toBeGreaterThan(0);
     }
   });
+
+  it('avisa de las reglas que deciden la ronda sin jugar', () => {
+    expect(gameHowToPlay['pokemon-impostor']![2].description).toContain('3 rondas seguidas sin expulsar a nadie');
+    expect(gameHowToPlay['type-duel']![0].description).toContain('Si no eliges a tiempo');
+    expect(gameHowToPlay['pokedex-distance']![2].description).toContain('Si no respondes, caes');
+  });
 });

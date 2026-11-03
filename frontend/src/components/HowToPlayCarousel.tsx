@@ -1,5 +1,5 @@
 import { ArrowLeft, ArrowRight, Crown, Gamepad2, Headphones, KeyRound, SlidersHorizontal, Sparkles, Users } from 'lucide-react';
-import { useState, type KeyboardEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 
 /** Una diapositiva del carrusel: antetítulo («Paso 1 de 3»), título, descripción de una línea y visual decorativo. */
 export interface HowToPlaySlide { eyebrow: string; title: string; description: string; visual: ReactNode }
@@ -59,19 +59,50 @@ interface Props {
   idPrefix?: string;
   /** Nombre de cada diapositiva en las etiquetas: «Ver consejo 2», «Paso anterior»… */
   itemLabel?: string;
+  /** Con bucle (por defecto), «Siguiente» en la última vuelve a la primera; sin él, se para en los extremos. */
+  loop?: boolean;
+  /** Sin bucle, sustituye a «Siguiente» en la última diapositiva (por ejemplo, «Entendido» o «Empezar»). */
+  lastAction?: ReactNode;
+}
+
+/** Índice tras moverse `delta` posiciones: da la vuelta con bucle, se para en los extremos sin él y nunca sale de rango. */
+export function carouselStep(active: number, count: number, loop: boolean, delta: number): number {
+  const current = Math.min(Math.max(active, 0), count - 1);
+  const target = current + delta;
+  return loop ? (target + count) % count : Math.min(Math.max(target, 0), count - 1);
 }
 
 /**
  * Carrusel accesible sin reproducción automática: flechas, puntos de 44 px y teclas ← → sobre la región.
  * Pinta todas las diapositivas y oculta las inactivas con `hidden`, así el contenido existe sin JavaScript.
  */
-export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jugar', kicker = 'Guía rápida', footer, headerAction, idPrefix = 'how-to-play', itemLabel = 'consejo' }: Props) {
-  const [active, setActive] = useState(0);
+export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jugar', kicker = 'Guía rápida', footer, headerAction, idPrefix = 'how-to-play', itemLabel = 'consejo', loop = true, lastAction }: Props) {
+  const [storedActive, setActive] = useState(0);
   const [direction, setDirection] = useState<'next' | 'previous'>('next');
+  // Otras diapositivas (otro juego) vuelven a empezar por la primera.
+  const [shownSlides, setShownSlides] = useState(slides);
+  if (shownSlides !== slides) { setShownSlides(slides); setActive(0); }
   const count = slides.length;
-  const go = (index: number, towards: 'next' | 'previous') => { setDirection(towards); setActive((index + count) % count); };
-  const previous = () => go(active - 1, 'previous');
-  const next = () => go(active + 1, 'next');
+  const active = carouselStep(storedActive, count, loop, 0);
+  const isFirst = !loop && active === 0;
+  const isLast = !loop && active === count - 1;
+  const showLastAction = isLast && lastAction !== undefined;
+  const lastActionRef = useRef<HTMLSpanElement>(null);
+  const [focusLastAction, setFocusLastAction] = useState(false);
+  useEffect(() => {
+    // «Siguiente» desaparece al llegar al final: el foco pasa a la acción que lo sustituye.
+    if (!focusLastAction) return;
+    setFocusLastAction(false);
+    lastActionRef.current?.querySelector<HTMLElement>('button, a, [tabindex]')?.focus();
+  }, [focusLastAction]);
+  const go = (index: number, towards: 'next' | 'previous') => { setDirection(towards); setActive(carouselStep(index, count, loop, 0)); };
+  const previous = () => { if (!isFirst) go(carouselStep(active, count, loop, -1), 'previous'); };
+  const next = () => {
+    if (isLast) return;
+    const target = carouselStep(active, count, loop, 1);
+    if (!loop && target === count - 1 && lastAction !== undefined && lastActionRef.current === null && document.activeElement?.hasAttribute('data-carousel-next')) setFocusLastAction(true);
+    go(target, 'next');
+  };
   const onKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === 'ArrowLeft') { event.preventDefault(); previous(); }
     else if (event.key === 'ArrowRight') { event.preventDefault(); next(); }
@@ -96,9 +127,11 @@ export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jug
       </div>)}
     </div>
     <nav className="flex items-center justify-between gap-2 border-t border-ink/10 px-4 py-3 sm:px-5" aria-label={`${label}s de ${heading}`}>
-      <button type="button" className="btn-ghost !px-3" onClick={previous} aria-label={`${label} anterior`}><ArrowLeft size={18} /> <span className="hidden sm:inline">Anterior</span></button>
-      <div className="flex items-center" role="group" aria-label={`${label} ${active + 1} de ${count}`}>{slides.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => go(index, index < active ? 'previous' : 'next')} aria-label={`Ver ${itemLabel} ${index + 1}`} aria-controls={`${idPrefix}-slide-${index + 1}`} aria-current={index === active ? 'step' : undefined} className="group grid min-h-11 min-w-11 place-items-center rounded-full"><span className={`block h-2.5 w-2.5 rounded-full ${index === active ? 'scale-x-[2.6] bg-aqua' : 'bg-ink/20 group-hover:bg-ink/35'}`} /></button>)}</div>
-      <button type="button" className="btn-ghost !px-3" onClick={next} aria-label={`Siguiente ${itemLabel}`} data-carousel-next=""><span className="hidden sm:inline">Siguiente</span> <ArrowRight size={18} /></button>
+      <button type="button" className="btn-ghost !px-3 aria-disabled:cursor-not-allowed aria-disabled:opacity-45" onClick={previous} aria-disabled={isFirst || undefined} aria-label={`${label} anterior`}><ArrowLeft size={18} /> <span className="hidden sm:inline">Anterior</span></button>
+      <div className="flex items-center" role="group" aria-label={`${label} ${active + 1} de ${count}`}>{slides.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => go(index, index < active ? 'previous' : 'next')} aria-label={`Ver ${itemLabel} ${index + 1}`} aria-controls={`${idPrefix}-slide-${index + 1}`} aria-current={index === active ? 'step' : undefined} className="group grid min-h-11 min-w-11 place-items-center rounded-full"><span className={`block h-2.5 w-2.5 rounded-full ${index === active ? 'scale-x-[2.6] bg-aqua' : 'bg-ink/40 group-hover:bg-ink/60'}`} /></button>)}</div>
+      {showLastAction
+        ? <span ref={lastActionRef} className="flex">{lastAction}</span>
+        : <button type="button" className="btn-ghost !px-3 aria-disabled:cursor-not-allowed aria-disabled:opacity-45" onClick={next} aria-disabled={isLast || undefined} aria-label={`Siguiente ${itemLabel}`} data-carousel-next=""><span className="hidden sm:inline">Siguiente</span> <ArrowRight size={18} /></button>}
     </nav>
     {footer && <div className="border-t border-ink/10 px-4 py-3 sm:px-5">{footer}</div>}
   </section>;

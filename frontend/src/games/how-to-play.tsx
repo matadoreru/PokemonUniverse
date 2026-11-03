@@ -31,7 +31,7 @@ export const gameHowToPlay: Readonly<Record<string, readonly [HowToPlaySlide, Ho
   'pokedex-distance': steps(
     ['Te damos un número de Pokédex', 'Cada ronda sale un objetivo, por ejemplo el #025.', Target, 'berry'],
     ['Elige el Pokémon cuyo número esté más cerca', 'Búscalo por su nombre: el buscador no muestra números.', Search, 'aqua'],
-    ['El más lejano cae. El último en pie gana', 'Si empatáis en la peor distancia, hay desempate.', UserX, 'electric'],
+    ['El más lejano cae. El último en pie gana', 'Si no respondes, caes. Los empates se desempatan; tras 3, cae quien eligió el último.', UserX, 'electric'],
   ),
   'shiny-vote': steps(
     ['Uno de estos es el shiny oficial', 'Verás entre 3 y 6 cartas en cada ronda.', Sparkles, 'electric'],
@@ -41,7 +41,7 @@ export const gameHowToPlay: Readonly<Record<string, readonly [HowToPlaySlide, Ho
   'pokemon-impostor': steps(
     ['Todos menos el impostor ven el Pokémon', 'El impostor no lo sabe e intenta disimular.', Eye, 'aqua'],
     ['Da una pista corta sin decir el nombre', 'Por turnos y con 25 caracteres como máximo.', MessageSquareText, 'electric'],
-    ['Votad al sospechoso; el impostor gana si adivina el Pokémon o iguala en número', 'Si no lo tienes claro, puedes votar «Saltar».', Vote, 'berry'],
+    ['Votad al sospechoso; el impostor gana si adivina el Pokémon o iguala en número', 'Puedes votar «Saltar», pero 3 rondas seguidas sin expulsar a nadie dan la victoria a los impostores.', Vote, 'berry'],
   ),
   'higher-lower': steps(
     ['Mira la stat del Pokémon de la izquierda', 'La categoría puede cambiar en cada ronda.', BarChart3, 'aqua'],
@@ -49,7 +49,7 @@ export const gameHowToPlay: Readonly<Record<string, readonly [HowToPlaySlide, Ho
     ['Igual vale más puntos y las rachas dan bonus', 'Acertar en la primera mitad de la ronda suma +1.', Flame, 'berry'],
   ),
   'type-duel': steps(
-    ['Cada uno elige un tipo en secreto', 'Los dos tipos se revelan a la vez.', LockKeyhole, 'berry'],
+    ['Cada uno elige un tipo en secreto', 'Los dos tipos se revelan a la vez. Si no eliges a tiempo y tu rival sí, gana él.', LockKeyhole, 'berry'],
     ['Juntos forman una combinación: encuentra un Pokémon que la tenga EXACTA', 'Si elegís el mismo tipo, vale un Pokémon de ese único tipo.', Swords, 'aqua'],
     ['El primero que acierte gana 5 puntos', 'Tras un fallo esperas un segundo antes de volver a probar.', Trophy, 'electric'],
   ),

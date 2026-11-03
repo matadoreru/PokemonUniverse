@@ -333,12 +333,18 @@ test('lobby: cómo se juega', async ({ browser }) => {
     await expect(dialogo.getByText('Paso 3 de 3')).toBeVisible();
     await expect(dialogo.getByText('Paso 2 de 3')).toBeHidden();
     await expect(dialogo.getByText('El primero que acierte gana 5 puntos')).toBeVisible();
+    // Sin bucle: en el último paso «Siguiente» deja paso a «Entendido», que recibe el foco.
+    await expect(dialogo.getByRole('button', { name: 'Entendido' })).toBeFocused();
+    await expect(siguiente).toHaveCount(0);
+    // La página de fondo no se desplaza con el diálogo abierto.
+    expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe('hidden');
     // Abrir desplaza la página hasta la tarjeta y la cabecera fija pisaría el lobby de fondo: se captura desde arriba.
     await page.evaluate(() => window.scrollTo(0, 0));
     await capturarTamanos(page, 'lobby-como-se-juega', { sigue: dialogo, claro: true });
     await page.keyboard.press('Escape');
     await expect(dialogo).toBeHidden();
     await expect(abrir).toBeFocused();
+    expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe('');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

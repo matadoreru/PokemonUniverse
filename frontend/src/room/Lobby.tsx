@@ -146,6 +146,8 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
   const playerRange = selectedManifest.maxPlayers === undefined
     ? `${selectedManifest.minPlayers}+ jugadores`
     : `${selectedManifest.minPlayers}–${selectedManifest.maxPlayers} jugadores`;
+  // Un solo aviso en el árbol accesible: la copia oculta por `display: none` no se anuncia.
+  const errorAlert = (placement: string) => error ? <div role="alert" className={`status-error motion-enter-up items-start justify-between gap-2 ${placement}`}><span className="min-w-0 py-0.5">{error}</span><button type="button" className="icon-button -my-2 -mr-2 shrink-0" onClick={() => setError('')} aria-label="Cerrar aviso"><X size={18} /></button></div> : null;
   const feedbackUrl = `/feedback?${new URLSearchParams({ game: room.selectedGameId, room: room.code })}`;
 
   return (
@@ -187,6 +189,7 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
 
       <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_21rem] xl:grid-cols-[minmax(0,1fr)_23rem]">
         <main className="min-w-0">
+          {errorAlert('mb-4 flex lg:hidden')}
           <article className="panel overflow-hidden">
             <nav className="grid grid-cols-3 border-b border-ink/10 bg-ink/[.025] px-2 pt-2 sm:px-4" role="tablist" aria-label="Secciones del lobby">
               <button id="lobby-tab-games" type="button" role="tab" tabIndex={activeTab === 'games' ? 0 : -1} aria-selected={activeTab === 'games'} aria-controls="lobby-panel-games" onClick={() => setActiveTab('games')} onKeyDown={(event) => moveTabFocus(event, 'games')} className={`lobby-tab ${activeTab === 'games' ? 'lobby-tab-active' : ''}`}><Gamepad2 className="hidden sm:block" size={18} /> Minijuegos</button>
@@ -288,8 +291,8 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
 
           <div className="mt-4 border-t border-ink/10 pt-4">
             <div className="mb-3"><span className="label !mb-0">{startReason ? 'Falta algo' : 'Todo listo'}</span><h2 className="font-display text-xl font-bold">Iniciar partida</h2></div>
-            {/* Errores de cualquier acción del lobby, junto a la acción principal (la columna es fija en escritorio). */}
-            {error && <div role="alert" className="status-error motion-enter-up mb-3 flex items-start justify-between gap-2"><span className="min-w-0 py-0.5">{error}</span><button type="button" className="icon-button -my-2 -mr-2 shrink-0" onClick={() => setError('')} aria-label="Cerrar aviso"><X size={18} /></button></div>}
+            {/* En escritorio (columna fija), junto a la acción principal; por debajo de lg va arriba de la columna principal. */}
+            {errorAlert('mb-3 hidden lg:flex')}
             {self?.roomRole !== 'HOST' && <button type="button" className={`mb-2 w-full ${self?.ready ? 'btn-ghost border-leaf/40 text-leaf' : 'btn-secondary'}`} disabled={readyBusy || self?.presence !== 'CONNECTED'} aria-pressed={Boolean(self?.ready)} onClick={() => void toggleReady()}><CheckCircle2 size={18} /> {readyBusy ? 'Guardando…' : self?.ready ? 'Estoy listo' : 'Marcarme listo'}</button>}
             <button className="btn-primary w-full" disabled={Boolean(startReason) || starting} onClick={() => void start()} aria-describedby="start-help"><Play size={18} fill="currentColor" /> {starting ? 'Iniciando…' : 'Empezar partida'}</button>
             <p id="start-help" className={`mt-2 text-sm font-bold ${startReason ? 'text-berry' : 'text-leaf'}`}>{startReason ?? 'La sala está lista.'}</p>
