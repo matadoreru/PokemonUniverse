@@ -210,12 +210,45 @@ export async function iniciarPartida(host: Page, invitados: readonly Page[]): Pr
  */
 const PG_CONTAINER = process.env.PU_E2E_PG_CONTAINER ?? 'pokemonuniverse_postgres_1';
 
+let bdComprobada = false;
+
+/**
+ * Comprueba que `podman` existe y que el contenedor de PostgreSQL está en marcha, y falla al momento
+ * con un mensaje que dice cómo arreglarlo. `psql()` la llama la primera vez; los specs que preparan
+ * datos la llaman en `beforeAll`, antes de crear nada.
+ */
+export function comprobarBdE2E(): void {
+  if (bdComprobada) return;
+  try {
+    execFileSync('podman', ['--version'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  } catch {
+    throw new Error('Los E2E necesitan `podman` en el PATH para preparar datos en PostgreSQL (`npm run db:up`).');
+  }
+  let estado = '';
+  try {
+    estado = execFileSync('podman', ['container', 'inspect', '--format', '{{.State.Running}}', PG_CONTAINER], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+    }).trim();
+  } catch {
+    /* contenedor inexistente: se informa abajo */
+  }
+  if (estado !== 'true') {
+    throw new Error(
+      `El contenedor de PostgreSQL «${PG_CONTAINER}» no está en marcha: arráncalo con \`npm run db:up\` ` +
+        'o indica el tuyo con PU_E2E_PG_CONTAINER=<nombre>.',
+    );
+  }
+  bdComprobada = true;
+}
+
 /**
  * Ejecuta SQL contra la BD local de desarrollo con `psql` dentro del contenedor (el host no necesita
  * `psql` ni el paquete `pg`) y devuelve la salida sin cabeceras. Solo para preparar y limpiar datos
  * de prueba: los valores van como variables de `psql` (`:'nombre'`), nunca concatenados.
  */
 export function psql(sql: string, vars: Record<string, string> = {}): string {
+  comprobarBdE2E();
   const args = ['exec', '-i', PG_CONTAINER, 'psql', '-U', 'pokemon', '-d', 'pokemon_universe', '-v', 'ON_ERROR_STOP=1', '-At'];
   for (const [name, value] of Object.entries(vars)) args.push('-v', `${name}=${value}`);
   return execFileSync('podman', args, { input: sql, encoding: 'utf8' }).trim();
@@ -254,15 +287,20 @@ export async function promoverAAdmin(page: Page, cuenta: CuentaE2E): Promise<voi
 
 /**
  * Borra las cuentas de prueba (categorías, dilemas, estadísticas y configuraciones caen en cascada;
- * el historial de salas queda sin anfitrión) y devuelve los ficheros de avatar personalizados que
- * tenían, para que el spec los quite del almacenamiento.
+ * el historial de salas queda sin anfitrión) y pasa a `quitarAvatar` el fichero de avatar
+ * personalizado de cada una, para que el spec lo quite del almacenamiento. Cada cuenta se limpia por
+ * separado: un fallo no deja las demás sin borrar, y al final se lanzan todos los fallos juntos.
  */
-export function borrarCuentas(emails: readonly string[]): string[] {
-  const avatars: string[] = [];
+export function borrarCuentas(emails: readonly string[], quitarAvatar: (fichero: string) => void): void {
+  const fallos: string[] = [];
   for (const email of emails) {
-    const avatar = psql(`SELECT "avatarValue" FROM "User" WHERE email = :'email' AND "avatarType" = 'CUSTOM';`, { email });
-    if (avatar) avatars.push(avatar);
-    psql(`DELETE FROM "User" WHERE email = :'email';`, { email });
+    try {
+      const avatar = psql(`SELECT "avatarValue" FROM "User" WHERE email = :'email' AND "avatarType" = 'CUSTOM';`, { email });
+      psql(`DELETE FROM "User" WHERE email = :'email';`, { email });
+      if (avatar) quitarAvatar(avatar);
+    } catch (error) {
+      fallos.push(`${email}: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
-  return avatars;
+  if (fallos.length > 0) throw new Error(`No se pudieron borrar ${fallos.length} cuentas de prueba:\n${fallos.join('\n')}`);
 }

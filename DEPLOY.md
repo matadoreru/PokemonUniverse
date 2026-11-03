@@ -179,7 +179,7 @@ cd /srv/docker/pokemon-universe
 ```
 
 El script crea y valida un backup, descarga las tres imágenes y espera mientras el servidor aplica migraciones y sincroniza
-el catálogo; después comprueba los healthchecks y `/api/health`. Si falla, vuelve a las imágenes exactas anteriores. Si el despliegue que falla es el primero que incluye el backend
+el catálogo; después comprueba los healthchecks y, a través de nginx, `/api/health` y `/api/games` (Java) y `/api/tcg/options` (Node: responde 200 aunque el catálogo TCG esté vacío), para que una ruta rota de nginx hacia cualquiera de los dos dispare el rollback. Si falla, vuelve a las imágenes exactas anteriores. Si el despliegue que falla es el primero que incluye el backend
 (no hay contenedor `backend` previo), el rollback elimina el backend nuevo y restaura solo `server` y `web` con
 `--no-deps`, porque `web` depende de que el backend esté sano y el nginx anterior no tiene rutas hacia él. Flyway (backend) no aplica migraciones propias en la etapa 1: solo hace baseline del esquema Prisma. Una migración no se deshace
 automáticamente; antes de cambios incompatibles debe existir un procedimiento de migración inversa o restaurarse el dump.

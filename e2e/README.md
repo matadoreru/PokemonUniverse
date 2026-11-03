@@ -104,8 +104,10 @@ cargado en la lista de jugadores de su sala; en la configuración del lobby crea
 su anfitrión. Para el ADMIN se registra una cuenta por la API, se promueve en la BD local y se vuelve a iniciar sesión
 (`/api/auth/me` devuelve el rol del token). Los helpers (`psql`, `nuevaCuenta`, `registrarPorApi`, `promoverAAdmin`,
 `borrarCuentas` en `src/helpers.ts`) ejecutan `psql` dentro del contenedor con `podman exec`
-(`pokemonuniverse_postgres_1`; otro nombre con `PU_E2E_PG_CONTAINER`). Al acabar, aunque falle, se borran las dos
-cuentas (`@e2e.example.test`) y el fichero del avatar de `apps/server/.data/avatars`.
+(`pokemonuniverse_postgres_1`; otro nombre con `PU_E2E_PG_CONTAINER`). Antes de crear nada, `comprobarBdE2E` (en
+`beforeAll`, y en la primera llamada a `psql`) falla con un mensaje claro si falta `podman` o el contenedor no está en
+marcha (`npm run db:up`). Al acabar, aunque falle, se borran las dos cuentas (`@e2e.example.test`) y el fichero del
+avatar de `apps/server/.data/avatars`; cada cuenta se borra por separado y los fallos se informan juntos al final.
 
 Ojo: el limitador de avatares (12 escrituras por 15 min y IP, por proceso) ignora `RATE_LIMIT_DISABLED`; cada
 ejecución hace una subida, así que más de 12 seguidas contra el mismo servidor dan 429 hasta reiniciarlo.

@@ -10,7 +10,7 @@ import { rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { crc32, deflateSync } from 'node:zlib';
 import { expect, test, type BrowserContext, type Page } from '@playwright/test';
-import { borrarCuentas, collectErrors, createRoom, nuevaCuenta, promoverAAdmin, registrarPorApi, seleccionarJuego } from '../src/helpers.js';
+import { borrarCuentas, collectErrors, comprobarBdE2E, createRoom, nuevaCuenta, promoverAAdmin, registrarPorApi, seleccionarJuego } from '../src/helpers.js';
 
 /** Almacén de avatares compartido en desarrollo (`AVATAR_STORAGE_DIR` de Node; `application-dev.yml` de Java). */
 const AVATAR_DIR = fileURLToPath(new URL('../../apps/server/.data/avatars/', import.meta.url));
@@ -49,6 +49,11 @@ async function configurar(page: Page, juego: string): Promise<void> {
 function aceptarConfirmacion(page: Page): void {
   page.once('dialog', (dialog) => void dialog.accept());
 }
+
+// Antes de registrar cuentas: sin podman o sin el contenedor de PostgreSQL no se podrían promover ni borrar.
+test.beforeAll(() => {
+  comprobarBdE2E();
+});
 
 test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa', async ({ browser }) => {
   test.setTimeout(120_000);
@@ -148,8 +153,8 @@ test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa
   } finally {
     // allSettled: tras un timeout los contextos ya están cerrados y la limpieza de la BD debe correr igual.
     await Promise.allSettled(contextos.map((c) => c.close()));
-    for (const fichero of borrarCuentas([usuario.email, admin.email])) {
+    borrarCuentas([usuario.email, admin.email], (fichero) => {
       if (/^[0-9a-f-]{36}\.webp$/.test(fichero)) rmSync(`${AVATAR_DIR}${fichero}`, { force: true });
-    }
+    });
   }
 });

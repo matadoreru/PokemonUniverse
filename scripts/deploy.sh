@@ -102,8 +102,10 @@ docker compose pull server web backend
 docker compose up -d --wait --wait-timeout "$deploy_wait_seconds" server backend web || rollback
 
 published_port=$(docker compose port web 8080 | sed 's/.*://')
-# /api/health is served by Node and /api/games by the Java backend through nginx.
-for smoke_path in /api/health /api/games; do
+# Through nginx: /api/health and /api/games are served by the Java backend; /api/tcg/options is still served by Node
+# (location /api/) and answers 200 even with an empty TCG catalog (Node registers it before listening). At the 2D
+# cutover /api/tcg/ moves to Java: pick another Node route then, or drop the check once Node is retired.
+for smoke_path in /api/health /api/games /api/tcg/options; do
   if ! curl --fail --silent --show-error --max-time 10 "http://127.0.0.1:${published_port:-8080}$smoke_path" >/dev/null; then
     rollback
   fi
