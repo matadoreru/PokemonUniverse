@@ -11,7 +11,7 @@ export const TIMEOUT_MESSAGE = 'No se pudo confirmar la acción. Comprueba el es
 export const CONNECTION_LOST_MESSAGE = 'Conexión perdida: no se pudo confirmar la acción.';
 export const COMMAND_TIMEOUT_MS = 8_000;
 
-/** Transport-agnostic realtime channel: Socket.IO (Node) or native WebSocket (Java). */
+/** Realtime room channel (the Java `/ws` WebSocket, `realtime-ws.ts`); `RoomContext` depends only on this interface. */
 export interface RealtimeClient {
   readonly connected: boolean;
   on<E extends keyof ServerToClientEvents>(event: E, listener: ServerToClientEvents[E]): void;

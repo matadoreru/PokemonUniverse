@@ -44,28 +44,26 @@ Después basta con `npm run db:up` (si el contenedor está parado) y `npm run te
 ## Ejecutar
 
 ```sh
-npm run test:e2e        # toda la suite
+npm run test:e2e        # toda la suite, contra el backend Java
 npm run test:e2e:ui     # modo UI de Playwright
-npm run test:e2e:java   # la misma suite con las salas en el /ws del backend Java
 cd e2e && npx playwright test tests/sala.spec.ts   # un solo spec
 ```
 
-`test:e2e` y `test:e2e:java` ejecutan todos los specs, una vez por transporte: la segunda exporta
-`VITE_REALTIME=java` y el project se llama `chromium-java`. Como la web arrancada se reutiliza
-(`reuseExistingServer`), para la pasada Java no puede haber ya una web con el transporte de Node en el puerto.
+Desde el corte 2D la web habla solo con el backend Java (HTTP y las salas por `/ws`): hay un único project,
+`chromium`, y Playwright ya no arranca el servidor Node. La antigua `test:e2e:java` y la bandera `VITE_REALTIME` ya no
+existen.
 
 ### Un test por minijuego: `juegos.spec.ts`
 
 ```sh
-npm run test:e2e -- juegos        # los 28 minijuegos con Socket.IO (Node)
-npm run test:e2e:java -- juegos   # los mismos con el /ws de Java
+npm run test:e2e -- juegos        # los 28 minijuegos contra el /ws de Java
 ```
 
 Lee los ids de `backend/src/main/resources/games/registry.json` y genera un test por juego: abre
 `max(3, minPlayers)` invitados, el host crea la sala, los demás se unen por código, el host elige el
 juego por su nombre del manifest, los invitados se marcan listos y el host pulsa «Empezar partida».
 Después comprueba que todos salen del lobby y pintan la pantalla de juego, que cada página abrió el
-WebSocket del transporte de la pasada (`/ws` en `chromium-java`, `/socket.io/` en `chromium`) y ninguno del otro, que
+WebSocket `/ws` de Java y ninguno de Socket.IO, que
 nunca sale «Este minijuego todavía no está disponible en el servidor Java.», que no hay errores de
 consola y que a 1280×720 no hay scroll horizontal (`measureLayout` se anota, ver «Encaje»). En `whos-that-pokemon`,
 `zoomed-pokemon`, `shiny-vote` y `pokemon-cry-quiz` exige además que la primera respuesta a
@@ -74,7 +72,7 @@ consola y que a 1280×720 no hay scroll horizontal (`measureLayout` se anota, ve
 - **Saltos**: `tcg-higher-lower` (sin cartas TCG) y `pokemon-palette-guess` (sin `metadata.palette` en
   la BD) se saltan **solo** si el lobby muestra el literal de no disponibilidad del servidor; el motivo
   queda en el skip. Con los datos cargados se prueban como los demás: tras una sincronización con el backend Java
-  (`BACKEND_DATA_SYNC_ENABLED=true`, ver el README raíz) la pasada Java dio 28/28 sin saltos (2026-11-03).
+  (`BACKEND_DATA_SYNC_ENABLED=true`, ver el README raíz) dio 28/28 sin saltos (2026-11-03).
 - **Capturas**: un juego de cada lote (`type-duel`, `poke-taboo`, `most-likely-to`, `learnset-guess`,
   `whos-that-pokemon`, `who-is-who-pokemon`, `pokemon-bingo`, `sketchmon`) se guarda como
   `screenshots/juego-<id>-<ancho>x<alto>.png` a los tres tamaños, antes de la aserción de encaje.
@@ -88,14 +86,12 @@ consola y que a 1280×720 no hay scroll horizontal (`measureLayout` se anota, ve
   (`docs/migracion-java-pendientes.md`).
 - **Detalle por juego**: el spec deja anotaciones (recurso comprobado, título visible y encaje a
   los tres tamaños). `npm run` se come `--reporter`, así que para verlas lánzalo desde `e2e/`:
-  `PLAYWRIGHT_JSON_OUTPUT_FILE=juegos.json npx playwright test juegos --reporter=list,json`
-  (con `VITE_REALTIME=java` delante para la pasada Java).
+  `PLAYWRIGHT_JSON_OUTPUT_FILE=juegos.json npx playwright test juegos --reporter=list,json`.
 
 ### Contenido de cuenta y administración: `contenido-y-admin.spec.ts`
 
 ```sh
-npm run test:e2e -- contenido-y-admin        # rutas 2C servidas por Node
-npm run test:e2e:java -- contenido-y-admin   # las mismas servidas por Java (proxyFor('java') de Vite)
+npm run test:e2e -- contenido-y-admin        # rutas 2C servidas por Java
 ```
 
 Un USER se registra por la interfaz, sube un PNG (generado en el test) desde «Cambiar avatar» del perfil y lo ve
@@ -115,16 +111,16 @@ ejecución hace una subida, así que más de 12 seguidas contra el mismo servido
 `playwright.config.ts` hace lo siguiente por ti:
 
 - Carga `../.env` con `process.loadEnvFile` (sin `.env`, usa el entorno del shell).
-- Arranca el servidor (`:3001`) tras construir `shared`, espera a `GET /api/health`, y luego la web
-  (`:5173`). Al servidor le pasa `DATA_SYNC_ENABLED=false`, `RATE_LIMIT_DISABLED=true` y
-  `COOKIE_SECURE=false`; a la web, `VITE_API_URL` vacío. `baseURL` es `http://localhost:5173`.
+- Arranca el backend Java (`npm run dev:backend`, `:8080`), espera a `GET /health`, y luego la web
+  (`:5173`). Al backend le pasa `PORT=8080`, `MICRONAUT_ENVIRONMENTS=dev`, `RATE_LIMIT_DISABLED=true` y
+  `COOKIE_SECURE=false` (su data-sync queda apagado salvo `BACKEND_DATA_SYNC_ENABLED=true` en el shell); a la web,
+  `VITE_API_URL` vacío. `baseURL` es `http://localhost:5173`.
 - Un solo worker, Chromium, tema oscuro, `reducedMotion: 'reduce'`, `locale: 'es-ES'`; traza solo
   si falla (`test-results/`, ignorado por git).
 
 **Ojo con `reuseExistingServer`**: si ya tienes `npm run dev` levantado, Playwright lo reutiliza y no
-le pasa sus variables. Arráncalo con `RATE_LIMIT_DISABLED=true` (y `DATA_SYNC_ENABLED=false`) o la
-segunda tanda seguida chocará con el límite de `/api/auth`. Las salas viven en memoria: reiniciar el
-servidor las borra.
+le pasa sus variables. Arráncalo con `RATE_LIMIT_DISABLED=true` o la segunda tanda seguida chocará
+con el límite de `/api/auth`. Las salas viven en memoria: reiniciar el backend las borra.
 
 ## Medición de encaje: `PU_LAYOUT_LOG`
 

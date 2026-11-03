@@ -2,16 +2,12 @@
 //
 // - Solo Chromium. En Fedora: `npx playwright install chromium` (sin `--with-deps`,
 //   que asume apt).
-// - Corre contra la BD local de desarrollo: carga el `.env` de la raíz y arranca
-//   servidor (`:3001`), backend Java (`:8080`) y web (`:5173`) si no están ya levantados.
+// - Corre contra la BD local de desarrollo: carga el `.env` de la raíz y arranca el
+//   backend Java (`:8080`) y la web (`:5173`) si no están ya levantados. Desde el corte 2D
+//   la web habla solo con Java (HTTP y el WebSocket `/ws`); Node no se arranca.
 // - Todo pasa por el proxy de Vite, así que `baseURL` es la web y no se define
 //   `VITE_API_URL`.
 // - Las capturas de revisión van a `e2e/screenshots/`.
-// - Transporte de salas: `npm run test:e2e` usa Socket.IO (Node) y
-//   `npm run test:e2e:java` exporta `VITE_REALTIME=java` para que la web hable con
-//   el WebSocket `/ws` del backend Java. Las dos ejecutan todos los specs. Con
-//   `reuseExistingServer` una web ya levantada se reutiliza tal cual: para la
-//   pasada Java no debe haber otra web en el puerto con el transporte de Node.
 import { fileURLToPath } from 'node:url';
 import { defineConfig, devices } from '@playwright/test';
 
@@ -20,8 +16,6 @@ try {
 } catch {
   /* sin .env: se espera env en el shell */
 }
-
-const realtime = process.env.VITE_REALTIME === 'java' ? 'java' : 'node';
 
 export default defineConfig({
   testDir: 'tests',
@@ -42,26 +36,15 @@ export default defineConfig({
   },
   projects: [
     {
-      name: realtime === 'java' ? 'chromium-java' : 'chromium',
+      name: 'chromium',
       use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 720 } },
     },
   ],
   webServer: [
     {
-      // El servidor compila `shared` desde `dist`: hay que construirlo antes.
-      command: 'npm run build -w @pokemon-universe/shared && npm run dev -w @pokemon-universe/server',
-      url: 'http://localhost:3001/api/health',
-      cwd: '..',
-      reuseExistingServer: !process.env.CI,
-      timeout: 180_000,
-      // ROOM_MAX_PLAYERS fijo: sala.spec.ts espera el contador "2 / 8" y no debe depender del .env.
-      env: { DATA_SYNC_ENABLED: 'false', RATE_LIMIT_DISABLED: 'true', COOKIE_SECURE: 'false', ROOM_MAX_PLAYERS: '8' },
-    },
-    {
-      // Backend Java: auth, perfil, novedades, feedback, juegos, salud y Pokémon; con VITE_REALTIME=java también
-      // salas, contenido de cuenta, escrituras de avatar, TCG y admin (ver proxyFor de vite.config.ts). Su data-sync
-      // queda apagado salvo que el shell exporte BACKEND_DATA_SYNC_ENABLED=true.
-      // PORT fijo porque el .env exporta PORT=3001 para Node; JWT_SECRET llega del .env cargado.
+      // Backend Java: toda la API y las salas (ver proxyFor de vite.config.ts). Su data-sync queda apagado salvo
+      // que el shell exporte BACKEND_DATA_SYNC_ENABLED=true. PORT fijo porque el .env puede traer PORT=3001 (el del
+      // antiguo servidor Node); JWT_SECRET llega del .env cargado.
       command: 'npm run dev:backend',
       url: 'http://localhost:8080/health',
       cwd: '..',
@@ -75,9 +58,8 @@ export default defineConfig({
       cwd: '..',
       reuseExistingServer: !process.env.CI,
       timeout: 60_000,
-      // VITE_API_URL vacío para que un valor suelto del shell no mande al navegador
-      // cross-origin; VITE_REALTIME elige Socket.IO (node) o el /ws de Java.
-      env: { VITE_API_URL: '', VITE_REALTIME: realtime },
+      // VITE_API_URL vacío para que un valor suelto del shell no mande al navegador cross-origin.
+      env: { VITE_API_URL: '' },
     },
   ],
 });

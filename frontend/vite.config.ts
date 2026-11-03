@@ -1,41 +1,21 @@
-import { defineConfig, loadEnv, type ProxyOptions } from 'vite';
+import { defineConfig, type ProxyOptions } from 'vite';
 import react from '@vitejs/plugin-react';
 
-/**
- * Las claves con `^` son regex contra `req.url` (incluye la query) y Vite las evalúa en orden: las rutas del backend Java (:8080) van antes que `/api` (Node).
- * Con `VITE_REALTIME=java` las salas viven en Java, así que sus imágenes y gritos de ronda (`/api/rooms/…`) también, y
- * las categorías personalizadas (`/api/categories`), los dilemas (`/api/would-you-rather-prompts`) y las escrituras de
- * avatar (`/api/auth/guest/custom-avatar`, `/api/auth/profile/avatar…`), cuyos cambios debe avisar el proceso dueño de
- * las salas, el catálogo TCG (`/api/tcg/…`), que el proceso Java solo recarga al arrancar mientras Node sincronice, y
- * la administración (`/api/admin/…`), cuyas salas activas y novedades deben ser las del mismo proceso.
- */
-export function proxyFor(realtime: string | undefined): Record<string, string | ProxyOptions> {
+/** En desarrollo todo `/api` y el WebSocket de salas `/ws` van al backend Java (:8080), el único servidor desde el corte 2D. */
+export function proxyFor(): Record<string, string | ProxyOptions> {
   return {
-    '^/api/auth/(register|login|guest|logout|me|profile)(\\?.*)?$': 'http://localhost:8080',
-    '^/api/auth/avatars/': 'http://localhost:8080',
-    '^/api/(changelog|feedback|games|health|pokemon)(\\?.*)?$': 'http://localhost:8080',
-    ...(realtime === 'java' ? {
-      '^/api/rooms/': 'http://localhost:8080',
-      '^/api/categories(/|\\?|$)': 'http://localhost:8080',
-      '^/api/would-you-rather-prompts(/|\\?|$)': 'http://localhost:8080',
-      '^/api/auth/(guest/custom-avatar|profile/avatar)(/|\\?|$)': 'http://localhost:8080',
-      '^/api/tcg/': 'http://localhost:8080',
-      '^/api/admin/': 'http://localhost:8080',
-    } : {}),
-    '/api': 'http://localhost:3001',
-    '/socket.io': { target: 'http://localhost:3001', ws: true },
+    '/api': 'http://localhost:8080',
     '/ws': { target: 'ws://localhost:8080', ws: true },
   };
 }
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
   plugins: [react()],
-  server: { port: 5173, proxy: proxyFor(loadEnv(mode, process.cwd(), 'VITE_').VITE_REALTIME) },
+  server: { port: 5173, proxy: proxyFor() },
   build: { rollupOptions: { output: { manualChunks: {
     'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-    'vendor-socket': ['socket.io-client'],
     'vendor-icons': ['lucide-react'],
     'vendor-validation': ['zod'],
     'vendor-shared': ['@pokemon-universe/shared/public'],
   } } } },
-}));
+});

@@ -138,7 +138,7 @@ export interface Jugador {
   page: Page;
   errors: string[];
   name: string;
-  /** URLs de los WebSocket que ha abierto la página (Socket.IO, `/ws` de Java o el HMR de Vite). */
+  /** URLs de los WebSocket que ha abierto la página (el `/ws` de Java o el HMR de Vite). */
   websockets: string[];
 }
 
@@ -277,7 +277,7 @@ export async function registrarPorApi(page: Page, cuenta: CuentaE2E): Promise<vo
 /**
  * Da el rol ADMIN a una cuenta ya registrada y vuelve a iniciar sesión con ella. Las rutas
  * `/api/admin/` releen el rol de la BD, pero `/api/auth/me` (y con él `RequireAdmin` de la web)
- * devuelve el del token, que solo cambia con un login nuevo, en Node y en Java.
+ * devuelve el del token, que solo cambia con un login nuevo.
  */
 export async function promoverAAdmin(page: Page, cuenta: CuentaE2E): Promise<void> {
   psql(`UPDATE "User" SET role = 'ADMIN' WHERE email = :'email';`, { email: cuenta.email });

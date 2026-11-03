@@ -1,6 +1,6 @@
 /**
- * Un test por minijuego del registro (`backend/src/main/resources/games/registry.json`), igual con
- * Socket.IO (`npm run test:e2e -- juegos`) que con el `/ws` de Java (`npm run test:e2e:java -- juegos`):
+ * Un test por minijuego del registro (`backend/src/main/resources/games/registry.json`) contra el `/ws`
+ * del backend Java (`npm run test:e2e -- juegos`):
  * sala nueva con `max(3, minPlayers)` invitados, selección del juego, listos, «Empezar partida» y
  * comprobación de que la partida sale del lobby y pinta su pantalla sin desbordes a 1280×720.
  */
@@ -22,7 +22,7 @@ const ASSET_GAMES = new Set(['whos-that-pokemon', 'zoomed-pokemon', 'shiny-vote'
 const ASSET_URL = /^\/api\/rooms\/[^/]+\/games\/[^/]+\/rounds\/[^/]+\/options\/[^/]+\/(sprite|audio)$/;
 
 /**
- * Literales con los que el servidor (Node y Java dicen lo mismo) declara un juego no disponible
+ * Literales con los que el servidor declara un juego no disponible
  * con los datos de la BD local. Solo se salta el test si el lobby muestra exactamente esto.
  */
 const UNAVAILABLE: Record<string, RegExp> = {
@@ -30,9 +30,9 @@ const UNAVAILABLE: Record<string, RegExp> = {
   'pokemon-palette-guess': /No hay suficientes paletas en PostgreSQL para las generaciones y tamaño seleccionados\.|No hay paletas persistidas para esta configuración\./,
 };
 
-/** WebSocket de la sala según el transporte (`frontend/src/lib/socket.ts`). */
+/** WebSocket de la sala (`frontend/src/lib/socket.ts`): siempre el `/ws` de Java, nunca Socket.IO. */
 const JAVA_WS = /^wss?:\/\/[^/]+\/ws$/;
-const SOCKET_IO = /^wss?:\/\/[^/]+\/socket\.io\/\?/;
+const SOCKET_IO = /\/socket\.io\//;
 
 /** Lo que el backend Java dice de un juego sin motor portado: nunca debe salir. */
 const NOT_PORTED = 'Este minijuego todavía no está disponible en el servidor Java.';
@@ -107,12 +107,10 @@ for (const manifest of registry) {
       await expect.poll(async () => (await lobby.isVisible()) ? `lobby; avisos: ${await avisos(host.page)}` : 'fuera del lobby', { timeout: 15_000 }).toBe('fuera del lobby');
 
       for (const jugador of jugadores) await esperarPantallaDeJuego(jugador.page);
-      // La sala va por el transporte de esta pasada (`/ws` de Java o Socket.IO de Node) y no por el otro.
-      const java = test.info().project.name.endsWith('-java');
-      const [transporte, otro] = java ? [JAVA_WS, SOCKET_IO] : [SOCKET_IO, JAVA_WS];
+      // La sala va por el `/ws` de Java y nadie abre Socket.IO.
       for (const jugador of jugadores) {
-        expect(jugador.websockets, `${jugador.name}: WebSocket de la sala`).toContainEqual(expect.stringMatching(transporte));
-        expect(jugador.websockets, `${jugador.name}: sin WebSocket del otro transporte`).not.toContainEqual(expect.stringMatching(otro));
+        expect(jugador.websockets, `${jugador.name}: WebSocket de la sala`).toContainEqual(expect.stringMatching(JAVA_WS));
+        expect(jugador.websockets, `${jugador.name}: sin Socket.IO`).not.toContainEqual(expect.stringMatching(SOCKET_IO));
       }
       for (const jugador of jugadores) {
         expect(await avisos(jugador.page)).not.toContain(NOT_PORTED);

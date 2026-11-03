@@ -1,8 +1,6 @@
 /**
- * Contenido de cuenta y administración (etapa 2C), igual con Node (`npm run test:e2e -- contenido-y-admin`)
- * que con Java (`npm run test:e2e:java -- contenido-y-admin`): en la pasada Java, Vite manda a :8080 las
- * categorías, los dilemas, las escrituras de avatar y `/api/admin/` (`proxyFor('java')`); en la de Node
- * las sirve Node. Un USER registrado sube un avatar PNG y lo ve en su sala, crea, edita y borra una
+ * Contenido de cuenta y administración (etapa 2C) contra el backend Java
+ * (`npm run test:e2e -- contenido-y-admin`). Un USER registrado sube un avatar PNG y lo ve en su sala, crea, edita y borra una
  * categoría y un dilema desde la configuración del lobby; un ADMIN (promovido en la BD local) abre el
  * panel y ve la sala activa. Las dos cuentas y el fichero del avatar se borran al acabar.
  */
@@ -12,7 +10,7 @@ import { crc32, deflateSync } from 'node:zlib';
 import { expect, test, type BrowserContext, type Page } from '@playwright/test';
 import { borrarCuentas, collectErrors, comprobarBdE2E, createRoom, nuevaCuenta, promoverAAdmin, registrarPorApi, seleccionarJuego } from '../src/helpers.js';
 
-/** Almacén de avatares compartido en desarrollo (`AVATAR_STORAGE_DIR` de Node; `application-dev.yml` de Java). */
+/** Almacén de avatares de desarrollo del backend Java (`application-dev.yml`). */
 const AVATAR_DIR = fileURLToPath(new URL('../../apps/server/.data/avatars/', import.meta.url));
 
 /** PNG válido de `lado`×`lado` (RGB, degradado) con CRC y zlib reales: sharp no acepta un PNG roto. */
