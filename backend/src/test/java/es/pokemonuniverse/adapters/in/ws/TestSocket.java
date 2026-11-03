@@ -87,7 +87,12 @@ abstract class TestSocket implements AutoCloseable {
   }
 
   CloseReason awaitClose() {
-    return closed.orTimeout(WAIT.toMillis(), TimeUnit.MILLISECONDS).join();
+    return awaitClose(WAIT);
+  }
+
+  /** Espera el cierre con un plazo propio: vuelve en cuanto llega, el plazo solo acota la espera bajo carga. */
+  CloseReason awaitClose(Duration wait) {
+    return closed.orTimeout(wait.toMillis(), TimeUnit.MILLISECONDS).join();
   }
 
   private static JsonNode poll(BlockingQueue<JsonNode> queue) {
