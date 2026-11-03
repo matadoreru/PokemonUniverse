@@ -20,7 +20,7 @@ export function ShinyVoteConfigPanel({ config, disabled, onChange }: { config: u
     <div className="mt-5"><span className="label">Mostrar votos de otros jugadores</span><div className="grid grid-cols-2 gap-2">{[{ label: 'Sí', value: true }, { label: 'No', value: false }].map((option) => <button type="button" key={String(option.value)} aria-pressed={value.showVotes === option.value} className={`rounded-xl border px-3 py-3 font-extrabold transition ${value.showVotes === option.value ? 'border-aqua bg-aqua text-night' : 'border-ink/10 bg-surface-raised text-ink/70'}`} onClick={() => void onChange({ ...value, showVotes: option.value })}>{option.label}</button>)}</div></div>
     <div className="mt-5 grid gap-4 md:grid-cols-2">
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
-      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => `${rounds} rondas`} onCommit={(rounds) => onChange({ ...value, rounds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} formatValue={(rounds) => `${rounds} rondas`} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
   </fieldset>;
 }

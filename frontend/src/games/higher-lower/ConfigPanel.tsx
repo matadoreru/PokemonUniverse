@@ -95,7 +95,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
 
       <div className="grid gap-4 md:grid-cols-2">
         <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
-        <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={30} disabled={disabled} accent="aqua" formatValue={(rounds) => `${rounds} rondas`} onCommit={(rounds) => onChange({ ...value, rounds })} />
+        <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} accent="aqua" formatValue={(rounds) => `${rounds} rondas`} onCommit={(rounds) => onChange({ ...value, rounds })} />
       </div>
     </fieldset>
   );
