@@ -12,8 +12,8 @@ const TONE_COLOR: Record<CutInTone, string> = { electric: 'var(--yellow)', berry
  * Envoltorio de `ui/ScorePop` con la API de siempre (`tone`); conserva las clases `score-pop`, `score-pop-<tono>` y
  * `score-pop-anim` (las buscan los tests y los E2E).
  */
-export function ScorePop({ points, tone, reducedMotion }: { points: number; tone?: CutInTone; reducedMotion?: boolean }) {
+export function ScorePop({ points, tone, reducedMotion, self }: { points: number; tone?: CutInTone; reducedMotion?: boolean; self?: boolean }) {
   const prefersReduced = usePrefersReducedMotion();
   const reduced = reducedMotion ?? prefersReduced;
-  return <UiScorePop points={points} color={tone && TONE_COLOR[tone]} reducedMotion={reduced} className={cx('score-pop', tone && `score-pop-${tone}`, !reduced && 'score-pop-anim')} />;
+  return <UiScorePop points={points} color={tone && TONE_COLOR[tone]} reducedMotion={reduced} self={self} className={cx('score-pop', tone && `score-pop-${tone}`, !reduced && 'score-pop-anim')} />;
 }

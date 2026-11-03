@@ -102,7 +102,7 @@ export function ShinyOptionCard({ option, voters, selected, confirmed, disabled,
   >
     <span className="flex w-full items-center justify-between gap-2">
       <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg border font-display text-base font-bold sm:h-9 sm:w-9 sm:text-lg ${selected || (reveal && correct) ? 'border-electric bg-electric text-night' : 'border-electric/55 bg-electric/15 text-electric'}`}>{option.id}</span>
-      {own && feedback && <ScorePop key={`${option.id}|${feedback.label}`} points={feedback.points} tone={feedback.tone} />}
+      {own && feedback && <ScorePop key={`${option.id}|${feedback.label}`} points={feedback.points} tone={feedback.tone} self />}
       {stateLabel && <span className={`shiny-option-state inline-flex min-w-0 items-center gap-1 rounded-full px-2 py-1 text-xs font-black ${reveal ? correct ? 'bg-leaf/15 text-leaf' : 'bg-berry/10 text-berry' : 'bg-aqua/[.12] text-aqua'}`}>
         {reveal && correct ? <span className="motion-enter-up" aria-hidden="true" data-testid="shiny-sparkle">✨</span> : stateIcon}
         {reveal && correct && !own

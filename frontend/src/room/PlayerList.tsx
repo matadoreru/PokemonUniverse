@@ -1,6 +1,7 @@
 import type { PokedexDistancePublicState, RoomMemberView } from '@pokemon-universe/shared/public';
 import { ArrowRightLeft, CheckCircle2, Circle, Crown, Eye, MoreVertical, Star, UserMinus, UserRoundCog, WifiOff } from 'lucide-react';
-import { memo } from 'react';
+import { memo, useEffect, useRef } from 'react';
+import { audio } from '../audio';
 import { Avatar } from '../components/Avatar';
 import { DISTANCE_HIDDEN_PICKED_LABEL, distanceMemberStatus } from './pokedex-distance-selection';
 
@@ -30,7 +31,27 @@ function sameMembers(left: RoomMemberView[], right: RoomMemberView[]): boolean {
   });
 }
 
+/**
+ * ¿Ha entrado o salido alguien entre dos listas? Compara los conectados; si cambia la conexión del propio jugador
+ * (la suya o su reconexión) no suena nada: ese cambio no es de otro.
+ */
+export function presenceChange(before: RoomMemberView[], after: RoomMemberView[], selfId: string): 'join' | 'leave' | null {
+  const connected = (list: RoomMemberView[]) => new Set(list.filter((member) => member.presence === 'CONNECTED').map((member) => member.id));
+  const prev = connected(before);
+  const next = connected(after);
+  if (prev.has(selfId) !== next.has(selfId)) return null;
+  const joined = [...next].some((id) => id !== selfId && !prev.has(id));
+  const left = [...prev].some((id) => id !== selfId && !next.has(id));
+  return joined ? 'join' : left ? 'leave' : null;
+}
+
 export const PlayerList = memo(function PlayerList({ members, game, selfId, canManage = false, onSetRoomRole, onTransferHost, onKick }: Props) {
+  const previousMembers = useRef(members);
+  useEffect(() => {
+    const change = presenceChange(previousMembers.current, members, selfId);
+    previousMembers.current = members;
+    if (change) audio.play(change === 'join' ? 'room.join' : 'room.leave');
+  }, [members, selfId]);
   return (
     <div className="space-y-2.5">
       {members.map((member) => {

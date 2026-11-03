@@ -1,5 +1,6 @@
 import { Check, X } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
+import { audio } from '../audio';
 import type { PokemonType } from '../styles/tokens';
 import { TypeBadge } from './Badge';
 import { cx } from './cx';
@@ -20,6 +21,12 @@ export interface CardProps {
 
 /** Carta de Pokémon; con `onSelect` es un botón conmutador. Correcta/incorrecta llevan icono y texto además del color. */
 export function Card({ sprite, name, number, types, state = 'idle', onSelect, children }: CardProps) {
+  // Suena al pasar a `revealing` (la carta se da la vuelta).
+  const before = useRef<CardState>('idle');
+  useEffect(() => {
+    if (state === 'revealing' && before.current !== 'revealing') audio.play('game.flip');
+    before.current = state;
+  }, [state]);
   const body = (
     <>
       <span className={s.art}>

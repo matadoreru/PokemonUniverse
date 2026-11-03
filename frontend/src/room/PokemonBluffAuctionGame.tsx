@@ -3,6 +3,7 @@ import { ArrowUp, CheckCircle2, Clock3, Gavel, Mic2, Search, ShieldQuestion, XCi
 import { useEffect, useState, type FormEvent } from 'react';
 import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';
+import { useSfxCue } from '../hooks/useSfxCue';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useServerOffset } from '../hooks/useServerTime';
 import { PokemonSelector } from './PokemonSelector';
@@ -58,6 +59,7 @@ function RoundResult({ room, game }: { room: RoomView; game: PokemonBluffAuction
 export function PokemonBluffAuctionGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
   const serverOffset = useServerOffset(room.serverNow);
   const game = room.game as PokemonBluffAuctionPublicState; const player = room.gamePlayerState as PokemonBluffAuctionPlayerState;
+  useSfxCue(game.currentBid != null ? 'game.bid' : null, `${game.roundNumber}:${game.currentBid ?? ''}`);
   if (game.phase === 'POKEMON_SEARCH') return <Demonstration room={room} selfId={selfId} game={game} player={player} onAction={onAction} />;
   if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundResult room={room} game={game} />;
   const turn = member(room, game.currentTurnPlayerId); const leader = member(room, game.currentBidderId);

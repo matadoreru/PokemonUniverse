@@ -1,5 +1,5 @@
 import { Volume2, VolumeX } from 'lucide-react';
-import { useSfxEnabled } from '../lib/sfx';
+import { audio, useAudioSettings } from '../audio';
 
 export function SoundToggleButton({ enabled, onToggle }: { enabled: boolean; onToggle(): void }) {
   const label = enabled ? 'Silenciar sonido' : 'Activar sonido';
@@ -8,8 +8,8 @@ export function SoundToggleButton({ enabled, onToggle }: { enabled: boolean; onT
   </button>;
 }
 
-/** Botón de la cabecera: el clic que activa el sonido es el que crea el `AudioContext`. */
+/** Provisional: la Tarea 4 lo sustituye por el panel de ajustes. El clic que activa el sonido crea el `AudioContext`. */
 export function SoundToggle() {
-  const [enabled, setEnabled] = useSfxEnabled();
-  return <SoundToggleButton enabled={enabled} onToggle={() => setEnabled(!enabled)} />;
+  const enabled = !useAudioSettings().muted;
+  return <SoundToggleButton enabled={enabled} onToggle={() => audio.update({ muted: enabled })} />;
 }

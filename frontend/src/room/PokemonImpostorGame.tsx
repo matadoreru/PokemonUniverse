@@ -47,7 +47,7 @@ export function PokemonImpostorGame({ room, selfId, onAction }: { room: RoomView
 
   const elimination = game.phase === 'ELIMINATION' ? game.eliminationReveal : null;
   const eliminationCutIn = elimination ? impostorEliminationCutIn(elimination, memberName(members, elimination.playerId)) : null;
-  useSfxCue('reveal', elimination ? `${game.roundNumber}:${game.votingRound}` : null);
+  useSfxCue('game.eliminate', elimination ? `${game.roundNumber}:${game.votingRound}` : null);
   // El rol de la tarjeta sigue la misma pausa que el cut-in: no está en el DOM hasta pasado 1 s.
   const reducedMotion = usePrefersReducedMotion();
   const eliminationRoleShown = useDelayElapsed(CUT_IN_DELAYED_LINE_MS, elimination ? `${game.roundNumber}:${elimination.playerId}` : 'none', reducedMotion);

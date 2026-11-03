@@ -1,4 +1,5 @@
-import type { CSSProperties } from 'react';
+import { useEffect, type CSSProperties } from 'react';
+import { audio } from '../audio';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { useTimedVisibility } from '../hooks/useTimedVisibility';
 import { cx } from './cx';
@@ -18,6 +19,8 @@ export interface ScorePopProps {
   reducedMotion?: boolean | undefined;
   /** Clases de quien lo envuelve; van primero. */
   className?: string | undefined;
+  /** Es el «+N» del propio jugador: solo entonces suena `game.score`. */
+  self?: boolean | undefined;
 }
 
 /**
@@ -25,10 +28,12 @@ export interface ScorePopProps {
  * `points` o `color` nuevos lo vuelven a mostrar; para repetir el mismo valor, móntalo con `key={idDelEvento}`. Es
  * decorativo (`aria-hidden`): el cambio de puntos se anuncia en el texto de la pantalla.
  */
-export function ScorePop({ points, color, reducedMotion, className }: ScorePopProps) {
+export function ScorePop({ points, color, reducedMotion, className, self }: ScorePopProps) {
   const prefersReduced = usePrefersReducedMotion();
   const reduced = reducedMotion ?? prefersReduced;
-  const visible = useTimedVisibility(SCORE_POP_MS, `${points}|${color ?? ''}`);
+  const key = `${points}|${color ?? ''}`;
+  const visible = useTimedVisibility(SCORE_POP_MS, key);
+  useEffect(() => { if (self) audio.play('game.score'); }, [key, self]);
   if (!visible) return null;
   const style = color ? ({ '--player': color } as CSSProperties) : undefined;
   return (

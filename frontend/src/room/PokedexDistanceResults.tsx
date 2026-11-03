@@ -23,7 +23,7 @@ export function PokedexDistanceResults({ room, selfId, onLobby, onEnd }: { room:
   const avatarOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.avatar;
   const best = summary.best;
 
-  return <ResultsShell title={winnerId ? 'Resultado de la partida' : 'Partida desierta'} subtitle={`Pokédex Distance · Partida ${room.gamesPlayed}`}>
+  return <ResultsShell won={winnerId === selfId} title={winnerId ? 'Resultado de la partida' : 'Partida desierta'} subtitle={`Pokédex Distance · Partida ${room.gamesPlayed}`}>
     <ol className="space-y-2" aria-label="Clasificación">{standings.map((standing) => {
       const player = byPlayer.get(standing.playerId);
       const won = standing.playerId === winnerId;

@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
+import { audio } from '../audio';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { useDelayElapsed, useTimedVisibility } from '../hooks/useTimedVisibility';
 import { cx } from './cx';
@@ -124,6 +125,8 @@ export function Cutin({ holdMs = CUTIN_HOLD_MS, reducedMotion, onDone, ...conten
   const reduced = reducedMotion ?? prefersReduced;
   const armKey = `${content.tone}|${content.title}`;
   const visible = useTimedVisibility(holdMs, armKey, onDone);
+  // Suena al aparecer (y con cada anuncio nuevo), también con reducción de movimiento.
+  useEffect(() => { audio.play('game.cutin'); }, [armKey]);
   const delayedShown = useDelayElapsed(CUTIN_DELAYED_LINE_MS, armKey, reduced);
   const onSkipRef = useRef(content.onSkip);
   useEffect(() => {

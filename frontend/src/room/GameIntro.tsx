@@ -1,6 +1,7 @@
 import type { GameIntroView, RoomView, SkipGameIntroRequest } from '@pokemon-universe/shared/public';
 import { Check, LoaderCircle, UsersRound } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { audio } from '../audio';
 import { HowToPlayCarousel } from '../components/HowToPlayCarousel';
 import { ServerTimer } from '../components/ServerTimer';
 import { gameHowToPlay } from '../games/how-to-play';
@@ -27,6 +28,7 @@ export function GameIntro({ room, intro, selfId, onSkip }: Props) {
   const [submitting, setSubmitting] = useState(false);
   // Se llega desde el lobby, a menudo desplazado hasta «Empezar partida»: la intro empieza arriba, bajo la cabecera.
   useEffect(() => { window.scrollTo({ top: 0 }); }, []);
+  useEffect(() => { audio.play('game.start'); }, []);
 
   async function skip() {
     if (submitting || progress.selfSkipped) return;

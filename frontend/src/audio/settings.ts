@@ -22,7 +22,7 @@ export interface StorageLike {
 }
 
 export const AUDIO_STORAGE_KEY = 'pokemon-universe-audio';
-/** Clave del sonido antiguo (`lib/sfx.ts`): `'on'` u `'off'`. */
+/** Clave del sonido antiguo (el módulo de sonido anterior): `'on'` u `'off'`. */
 export const LEGACY_SFX_KEY = 'pokemon-universe-sfx';
 
 export const STEPS: readonly Step[] = [0, 25, 50, 75, 100];
