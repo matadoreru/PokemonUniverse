@@ -12,6 +12,7 @@ describe('ScorePop', () => {
   it('animates only without reduced motion and stays hidden from assistive tech', () => {
     const animated = renderToStaticMarkup(createElement(ScorePop, { points: 3, tone: 'leaf', reducedMotion: false }));
     expect(animated).toContain('score-pop-anim');
+    expect(animated).toContain('score-pop-leaf');
     expect(animated).toContain('aria-hidden="true"');
     expect(animated).toContain('+3');
     const reduced = renderToStaticMarkup(createElement(ScorePop, { points: 3, reducedMotion: true }));
