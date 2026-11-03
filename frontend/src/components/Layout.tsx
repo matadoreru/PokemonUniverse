@@ -1,10 +1,9 @@
 import type { AuthUser } from '@pokemon-universe/shared/public';
-import { LogOut, Menu, MessageSquareWarning, Newspaper, ShieldCheck } from 'lucide-react';
-import { Suspense, useState } from 'react';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { LogOut, MessageSquareWarning, ShieldCheck } from 'lucide-react';
+import { Suspense } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import { useChangelog } from '../changelog/ChangelogContext';
-import { Badge, Dialog, HudPlate, Pill, PillLink, ScreenTransition } from '../ui';
+import { HudPlate, Pill, PillLink, ScreenTransition } from '../ui';
 import { Avatar } from './Avatar';
 import { AudioButton } from './AudioButton';
 import { RouteLoadingFallback } from './LoadingFallback';
@@ -13,98 +12,24 @@ import s from './Layout.module.css';
 /** Hueco de la cabecera para avisos de toda la página, como el de conexión de la sala: van bajo las placas, nunca encima. */
 export const HEADER_NOTICES_ID = 'app-header-notices';
 
-/** Nombre accesible del enlace a Novedades, con las versiones sin leer. */
-function newsLabel(unread: number): string {
-  return unread ? `Novedades, ${unread} versiones sin leer` : 'Novedades';
-}
-
-/** Insignia de no leídas en la esquina de una píldora redonda (capa aparte: el nombre accesible ya lleva el número). */
-function UnreadBadge({ count }: { count: number }) {
-  if (count <= 0) return null;
-  return (
-    <span className="pointer-events-none absolute -right-2 -top-2" data-layer aria-hidden="true">
-      <Badge>{count > 9 ? '9+' : count}</Badge>
-    </span>
-  );
-}
-
 /**
- * Menú de la cabecera por debajo de 768 px (spec §6): Novedades, «Enviar feedback» y Administración en un diálogo, para
- * que la placa derecha quepa en el móvil con el perfil y «Cerrar sesión». Elegir un enlace cierra el diálogo.
+ * Cabecera de HUD (spec §6, ajustada por el usuario el 2026-11-04): una sola placa a la derecha con el sonido,
+ * «Enviar feedback», Administración (solo ADMIN), el perfil y «Cerrar sesión». Sin logotipo ni Novedades (las novedades
+ * están en Inicio). Todo son píldoras redondas de 44 px, así que cabe a 390 px sin menú; el perfil muestra el nombre
+ * desde 1024 px y Administración su texto desde 1280 px.
  */
-function HeaderMenu({ unread, isAdmin }: { unread: number; isAdmin: boolean }) {
-  const [open, setOpen] = useState(false);
-  const close = () => setOpen(false);
-  return (
-    <>
-      <span className="relative inline-flex">
-        <Pill size="round" icon={Menu} aria-label={unread ? `Más opciones, ${unread} versiones sin leer` : 'Más opciones'} aria-haspopup="dialog" title="Más opciones" onClick={() => setOpen(true)} />
-        <UnreadBadge count={unread} />
-      </span>
-      <Dialog open={open} title="Más opciones" onClose={close} width={360}>
-        <nav aria-label="Más opciones" className="flex flex-col gap-3">
-          <PillLink nav to="/changelog" icon={Newspaper} block aria-label={newsLabel(unread)} onClick={close}>
-            {unread ? `Novedades (${unread > 9 ? '9+' : unread})` : 'Novedades'}
-          </PillLink>
-          <PillLink nav to="/feedback" icon={MessageSquareWarning} block onClick={close}>
-            Enviar feedback
-          </PillLink>
-          {isAdmin && (
-            <PillLink nav to="/admin" icon={ShieldCheck} block aria-label="Abrir panel de administración" onClick={close}>
-              Administración
-            </PillLink>
-          )}
-        </nav>
-      </Dialog>
-    </>
-  );
-}
-
-/**
- * Cabecera de placas de HUD (spec §6): a la izquierda el logotipo (enlace a inicio) y el sonido; a la derecha Novedades,
- * «Enviar feedback», Administración (solo ADMIN), el perfil y «Cerrar sesión». Por debajo de 640 px el logotipo pasa a
- * «PU». Con sesión y por debajo de 768 px, Novedades, feedback y Administración van al menú (`HeaderMenu`); por debajo
- * de 1024 px el perfil queda en píldora redonda, y Administración por debajo de 1280 px.
- */
-export function AppHeader({ user, onLogout, unreadChangelogCount = 0 }: { user: AuthUser | null; onLogout(): void; unreadChangelogCount?: number }) {
+export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(): void }) {
   const isAdmin = user?.kind === 'USER' && user.role === 'ADMIN';
   const profileLabel = user ? `Abrir perfil de ${user.displayName}` : '';
-  const news = (
-    <span className="relative inline-flex">
-      <PillLink nav to="/changelog" size="round" icon={Newspaper} aria-label={newsLabel(unreadChangelogCount)} title="Novedades" />
-      <UnreadBadge count={unreadChangelogCount} />
-    </span>
-  );
   return (
     <header className="relative z-hud" data-layout="hud-plates">
-      <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-2 px-3 pb-1 pt-3 sm:px-4 lg:px-6">
+      <div className="mx-auto flex w-full max-w-[1600px] items-center justify-end gap-2 px-3 pb-1 pt-3 sm:px-4 lg:px-6">
         <HudPlate>
-          <Link to="/" className={`${s.logo} ol2 font-display text-26`} aria-label="Pokémon Universe, inicio">
-            <span className="sm:hidden" aria-hidden="true">
-              P<span className={s.accent}>U</span>
-            </span>
-            <span className="hidden sm:inline" aria-hidden="true">
-              Pokémon <span className={s.accent}>Universe</span>
-            </span>
-          </Link>
           <AudioButton />
-        </HudPlate>
-        <HudPlate>
-          {!user && news}
-          {user && (
-            <>
-              <span className="contents md:hidden">
-                <HeaderMenu unread={unreadChangelogCount} isAdmin={isAdmin} />
-              </span>
-              <span className="hidden md:contents">
-                {news}
-                <PillLink nav to="/feedback" size="round" icon={MessageSquareWarning} aria-label="Enviar feedback" title="Enviar feedback" />
-              </span>
-            </>
-          )}
+          {user && <PillLink nav to="/feedback" size="round" icon={MessageSquareWarning} aria-label="Enviar feedback" title="Enviar feedback" />}
           {isAdmin && (
             <>
-              <span className="hidden md:contents xl:hidden">
+              <span className="contents xl:hidden">
                 <PillLink nav to="/admin" size="round" icon={ShieldCheck} aria-label="Abrir panel de administración" title="Administración" />
               </span>
               <span className="hidden xl:contents">
@@ -155,10 +80,9 @@ export function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { unreadCount } = useChangelog();
   return (
     <div className="grid h-[100dvh] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)]">
-      <AppHeader user={user} unreadChangelogCount={unreadCount} onLogout={() => void logout().then(() => navigate('/'))} />
+      <AppHeader user={user} onLogout={() => void logout().then(() => navigate('/'))} />
       <main className="min-h-0 overflow-y-auto">
         <ScreenTransition routeKey={pathname} focusHeading>
           <Suspense fallback={<RouteLoadingFallback />}>

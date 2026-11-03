@@ -81,51 +81,34 @@ test('ignora un tema claro guardado', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-/** Las dos placas de la cabecera no se pisan ni se salen de la vista. */
+/** La placa de la cabecera cabe en la vista y va pegada a la derecha. */
 async function placasCaben(page: Page, id: string, w: number): Promise<void> {
   await expectNoHorizontalScroll(page, id);
   const placas = await page.locator('header > div').first().evaluate((fila) => [...fila.children].map((c) => c.getBoundingClientRect().toJSON() as DOMRect));
-  expect(placas).toHaveLength(2);
-  const [izq, der] = placas as [DOMRect, DOMRect];
-  expect(izq.right, `${id}: las placas se pisan`).toBeLessThanOrEqual(der.left);
-  expect(der.right, `${id}: la placa derecha se sale`).toBeLessThanOrEqual(w);
+  expect(placas).toHaveLength(1);
+  const [placa] = placas as [DOMRect];
+  expect(placa.left, `${id}: la placa se sale por la izquierda`).toBeGreaterThanOrEqual(0);
+  expect(placa.right, `${id}: la placa se sale por la derecha`).toBeLessThanOrEqual(w);
 }
 
 /**
- * Cabecera de placas (Arcade DS F3) a los tres tamaños, con el mínimo de 13 px del sistema. Se mide la cabecera: el
- * contenido de `/play` aún no está rediseñado, así que el `main` lleva `data-layout-ignore` durante la medición. Desde
- * 768 px Novedades y «Enviar feedback» están en la placa; por debajo, en el menú, que se abre y se captura a 390 px.
+ * Cabecera de HUD a los tres tamaños, con el mínimo de 13 px del sistema: una sola placa a la derecha con el sonido,
+ * «Enviar feedback», Administración (solo ADMIN), el perfil y «Cerrar sesión». Sin logotipo, sin Novedades y sin menú.
+ * Se mide la cabecera: el `main` lleva `data-layout-ignore` durante la medición.
  */
 async function capturarCabecera(page: Page, nombre: string, { perfil, admin = false }: { perfil?: string; admin?: boolean } = {}): Promise<void> {
   for (const { w, h } of SIZES) {
     await page.setViewportSize({ width: w, height: h });
-    await expect(page.getByRole('link', { name: 'Pokémon Universe, inicio' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Ajustes de sonido' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Pokémon Universe, inicio' })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: /^Novedades/ })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /^Más opciones/ })).toHaveCount(0);
     if (perfil) await expect(page.getByRole('link', { name: `Abrir perfil de ${perfil}` })).toBeVisible();
-    const menu = page.getByRole('button', { name: /^Más opciones/ });
-    if (w >= 768) {
-      await expect(menu).toBeHidden();
-      await expect(page.getByRole('link', { name: /^Novedades/ })).toBeVisible();
-      await expect(page.getByRole('link', { name: 'Enviar feedback' })).toBeVisible();
-      await expect(page.getByRole('link', { name: 'Abrir panel de administración' })).toHaveCount(admin ? 1 : 0);
-    } else {
-      await expect(menu).toBeVisible();
-    }
+    await expect(page.getByRole('link', { name: 'Enviar feedback' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Abrir panel de administración' })).toHaveCount(admin ? 1 : 0);
     await page.locator('main').evaluate((main) => main.setAttribute('data-layout-ignore', ''));
     await capture(page, nombre, { minFontPx: 13 });
     await placasCaben(page, `${nombre}-${w}`, w);
-    if (w < 768) {
-      await menu.click();
-      const dialogo = page.getByRole('dialog', { name: 'Más opciones' });
-      await expect(dialogo).toBeVisible();
-      await expect(dialogo.getByRole('link', { name: /^Novedades/ })).toBeVisible();
-      await expect(dialogo.getByRole('link', { name: 'Enviar feedback' })).toBeVisible();
-      await expect(dialogo.getByRole('link', { name: 'Abrir panel de administración' })).toHaveCount(admin ? 1 : 0);
-      await capture(page, `${nombre}-menu`, { minFontPx: 13 });
-      await page.keyboard.press('Escape');
-      await expect(dialogo).toBeHidden();
-      await expect(menu).toBeFocused();
-    }
   }
 }
 
@@ -176,23 +159,19 @@ test.describe('cabecera con cuenta', () => {
       await expect(page.getByRole('link', { name: `Abrir perfil de ${cuenta.username}` })).toBeVisible();
       await placasCaben(page, `cabecera-admin-${w}`, w);
     }
-    // Desde el menú del móvil se llega a «Enviar feedback» y el menú se cierra al navegar.
+    // Desde la placa se llega a «Enviar feedback» también en el móvil.
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.getByRole('button', { name: /^Más opciones/ }).click();
-    await page.getByRole('dialog', { name: 'Más opciones' }).getByRole('link', { name: 'Enviar feedback' }).click();
+    await page.getByRole('link', { name: 'Enviar feedback' }).click();
     await expect(page).toHaveURL(/\/feedback$/);
-    await expect(page.getByRole('dialog', { name: 'Más opciones' })).toBeHidden();
-    // El foco pasa a la pantalla nueva (su título o el campo que ella elige), no vuelve al botón del menú.
-    await expect(page.getByRole('button', { name: /^Más opciones/ })).not.toBeFocused();
+    // El foco pasa a la pantalla nueva (su título o el campo que ella elige).
     await expect.poll(() => page.evaluate(() => document.querySelector('main')?.contains(document.activeElement) ?? false)).toBe(true);
     // En la placa, la píldora de la página actual lo dice (aria-current) y se ve elegida.
     await page.setViewportSize({ width: 1280, height: 720 });
     await expect(page.getByRole('link', { name: 'Enviar feedback' })).toHaveAttribute('aria-current', 'page');
-    await expect(page.getByRole('link', { name: /^Novedades/ })).not.toHaveAttribute('aria-current', 'page');
     // Una pantalla que no elige su foco lo recibe en su h1 al llegar desde la cabecera.
-    await page.getByRole('link', { name: /^Novedades/ }).click();
-    await expect(page.getByRole('heading', { level: 1, name: 'Novedades' })).toBeFocused();
-    await expect(page.getByRole('link', { name: /^Novedades/ })).toHaveAttribute('aria-current', 'page');
+    await page.getByRole('link', { name: `Abrir perfil de ${cuenta.username}` }).click();
+    await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
+    await expect(page.getByRole('link', { name: `Abrir perfil de ${cuenta.username}` })).toHaveAttribute('aria-current', 'page');
     expect(errors).toEqual([]);
   });
 });
