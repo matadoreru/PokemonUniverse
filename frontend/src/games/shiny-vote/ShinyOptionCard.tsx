@@ -24,7 +24,7 @@ function VoterSummary({ optionId, voters }: { optionId: ShinyOption['id']; voter
   const visible = voters.slice(0, 3);
   const hidden = voters.length - visible.length;
   return <span className="mt-2 flex min-h-7 w-full items-center justify-center gap-2 border-t border-ink/10 pt-2 text-xs font-extrabold text-ink/65" data-testid={`shiny-voters-${optionId}`}>
-    <span className="flex -space-x-1.5" aria-hidden="true">{visible.map((member) => <Avatar key={member.id} name={member.displayName} avatar={member.avatar} size="xs" className="ring-2 ring-surface-raised" />)}</span>
+    <span className="flex -space-x-2" aria-hidden="true">{visible.map((member) => <Avatar key={member.id} name={member.displayName} avatar={member.avatar} size="sm" className="ring-2 ring-surface-raised" />)}</span>
     {hidden > 0 && <span className="text-ink/55">+{hidden}</span>}
     <span>{voters.length} {voters.length === 1 ? 'voto' : 'votos'}</span>
   </span>;

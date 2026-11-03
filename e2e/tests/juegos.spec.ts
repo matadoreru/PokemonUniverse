@@ -655,11 +655,13 @@ test('learnset-guess: último aviso a 390', async ({ browser }) => {
     await expect.poll(() => (estado as LearnsetVisible | null)?.visibleGroups.length ?? 0, { timeout: 10_000 }).toBeGreaterThan(0);
     const candidatos = [...new Set(candidatosLearnset(estado!).map((id) => nombres.get(id)).filter((n): n is string => Boolean(n)))];
     test.info().annotations.push({ type: 'learnset', description: `candidatos: ${candidatos.join(', ')}` });
-    expect(candidatos.length, 'candidatos a la respuesta').toBeGreaterThan(0);
+    // El host prueba como mucho cuatro (cada fallo tiene enfriamiento): fuera de 1..4 el test no es fiable y lo dice ya.
+    expect(candidatos.length, `candidatos a la respuesta con los movimientos visibles (1..4): ${candidatos.join(', ') || 'ninguno'}`).toBeGreaterThanOrEqual(1);
+    expect(candidatos.length, `demasiados candidatos para probarlos antes del final de la ronda: ${candidatos.join(', ')}`).toBeLessThanOrEqual(4);
 
     // El host prueba los candidatos hasta acertar; con dos jugadores, su acierto deja al invitado como el último.
     const acierto = host.page.getByRole('heading', { name: '¡Has acertado!' });
-    for (const nombre of candidatos.slice(0, 4)) {
+    for (const nombre of candidatos) {
       await expect(host.page.getByText(/^Espera .*s para confirmar otro intento\.$/)).toHaveCount(0, { timeout: 10_000 });
       await elegirPokemon(host.page, nombre);
       const resultado = await Promise.race([

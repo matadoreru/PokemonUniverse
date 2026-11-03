@@ -78,7 +78,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <span className="label">Mostrar el valor del anterior Pokemon</span>
+          <span className="label">Mostrar el valor del anterior Pokémon</span>
           <div className="grid grid-cols-2 gap-2">
             {([[true, 'Sí'], [false, 'No']] as const).map(([choice, label]) => (
               <button type="button" key={String(choice)} aria-pressed={value.showPreviousValue === choice} onClick={() => void onChange({ ...value, showPreviousValue: choice })} className={`toggle-option ${value.showPreviousValue === choice ? 'border-berry bg-berry text-white' : 'text-ink'}`}>
