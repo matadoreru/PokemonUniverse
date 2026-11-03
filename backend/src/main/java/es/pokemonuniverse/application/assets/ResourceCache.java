@@ -67,6 +67,11 @@ public final class ResourceCache<T> {
     }
   }
 
+  /** Tope de claves en vuelo. */
+  int maxPending() {
+    return maxPending;
+  }
+
   /** Claves en vuelo (ejecutando o esperando turno). */
   synchronized int pendingCount() {
     return pending.size();

@@ -1205,6 +1205,7 @@ public class RoomCoordinator {
         .pokemonVisuals(catalog.visuals())
         .pokemonAudio(catalog.audio())
         .tcgCards(tcgCards)
+        // preloadImage es el gancho heredado de los demás motores; Shiny Quiz usa preloadAsset.
         .preloadImage(assets::preload)
         .preloadAsset(assets::preload);
   }

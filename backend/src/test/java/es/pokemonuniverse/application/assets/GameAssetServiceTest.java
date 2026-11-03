@@ -3,6 +3,7 @@ package es.pokemonuniverse.application.assets;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.domain.game.engine.AssetResolution;
@@ -111,5 +112,53 @@ class GameAssetServiceTest {
     }, GameAssetService.defaultCache());
     service.preload(new AssetResolution(SOURCE, Transform.PIXEL_ART, null, null, null));
     assertTrue(fetched.await(5, TimeUnit.SECONDS));
+  }
+
+  /** La precarga nunca espera a la descarga: vuelve aunque el cargador esté bloqueado. */
+  @Test
+  void preloadReturnsWithoutWaitingForTheFetch() throws InterruptedException {
+    var release = new CountDownLatch(1);
+    var fetched = new CountDownLatch(1);
+    var service = new GameAssetService(source -> {
+      fetched.countDown();
+      await(release);
+      return new LoadedAsset(new byte[] {1}, "image/png");
+    }, GameAssetService.defaultCache());
+    long started = System.nanoTime();
+    service.preload(new AssetResolution(SOURCE, Transform.PIXEL_ART, null, null, null));
+    long elapsedMs = (System.nanoTime() - started) / 1_000_000;
+    assertTrue(elapsedMs < 200, "preload tardó " + elapsedMs + " ms");
+    assertTrue(fetched.await(5, TimeUnit.SECONDS));
+    release.countDown();
+  }
+
+  /** Con la caché por encima de la mitad de sus pendientes, la precarga se descarta y deja sitio a la ronda. */
+  @Test
+  void preloadIsSkippedWhenTheCacheIsBusy() throws InterruptedException {
+    var release = new CountDownLatch(1);
+    var busy = new CountDownLatch(3);
+    var skippedFetched = new CountDownLatch(1);
+    var service = new GameAssetService(source -> {
+      if (source.endsWith("d.png")) skippedFetched.countDown();
+      busy.countDown();
+      await(release);
+      return new LoadedAsset(new byte[] {1}, "image/png");
+    }, new ResourceCache<>(1024, 16, 8, 4, asset -> asset.body().length));
+    try {
+      for (var name : new String[] {"a", "b", "c"}) service.preload(AssetResolution.original(SOURCE + name + ".png"));
+      assertTrue(busy.await(5, TimeUnit.SECONDS));
+      service.preload(AssetResolution.original(SOURCE + "d.png"));
+      assertFalse(skippedFetched.await(300, TimeUnit.MILLISECONDS));
+    } finally {
+      release.countDown();
+    }
+  }
+
+  private static void await(CountDownLatch latch) {
+    try {
+      latch.await(5, TimeUnit.SECONDS);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
   }
 }

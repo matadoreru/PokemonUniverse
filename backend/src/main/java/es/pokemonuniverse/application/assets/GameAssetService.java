@@ -45,17 +45,21 @@ public class GameAssetService {
 
   /**
    * Precarga asíncrona de una resolución con su transformación, en la misma clave que {@link #load}: la ronda la sirve
-   * desde la caché. Nunca bloquea a quien la pide; los fallos solo se registran y el tope de pendientes de la caché
-   * la acota (por encima, la precarga se descarta).
+   * desde la caché. Nunca bloquea a quien la pide y los fallos solo se registran. Para no quitar sitio a las peticiones
+   * reales, se descarta si la caché tiene en vuelo más de la mitad de su tope de pendientes.
    */
   public void preload(AssetResolution asset) {
+    if (cache.pendingCount() > cache.maxPending() / 2) {
+      LOG.debug("Skipped game image preload: asset cache busy");
+      return;
+    }
     Thread.ofVirtual().name("game-asset-preload").start(() -> {
       try {
         load(asset);
       } catch (ResourceCapacityException e) {
-        LOG.warn("Skipped game image preload: asset cache at capacity");
+        LOG.debug("Skipped game image preload: asset cache at capacity");
       } catch (RuntimeException e) {
-        LOG.error("Failed to preload game image", e);
+        LOG.warn("Failed to preload game image: {}", e.toString());
       }
     });
   }
