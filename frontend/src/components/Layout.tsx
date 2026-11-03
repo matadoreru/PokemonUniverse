@@ -6,6 +6,7 @@ import { useAuth } from '../auth/AuthContext';
 import { useChangelog } from '../changelog/ChangelogContext';
 import { Avatar } from './Avatar';
 import { RouteLoadingFallback } from './LoadingFallback';
+import { SoundToggle } from './SoundToggle';
 import { ThemeToggle } from './ThemeToggle';
 
 /** Hueco de la cabecera (fija) para avisos de toda la página, como el de conexión de la sala: van bajo la fila de marca, nunca encima. */
@@ -13,7 +14,7 @@ export const HEADER_NOTICES_ID = 'app-header-notices';
 
 export function AppHeader({ user, onLogout, unreadChangelogCount = 0 }: { user: AuthUser | null; onLogout(): void; unreadChangelogCount?: number }) {
   return <header className="sticky top-0 z-40 border-b border-ink/10 bg-cream/95" data-layout="centered-brand"><div className="mx-auto grid w-full max-w-[96rem] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center px-3 py-2.5 sm:px-5 md:px-8">
-    <span className="justify-self-start"><ThemeToggle /></span>
+    <span className="flex items-center gap-1 justify-self-start"><ThemeToggle /><SoundToggle /></span>
     <Link to="/" className="justify-self-center whitespace-nowrap font-display text-sm font-bold no-underline sm:text-xl" aria-label="Pokémon Universe, inicio">
       <span className="sm:hidden">P<span className="text-berry">U</span></span><span className="hidden sm:inline">Pokémon <span className="text-berry">Universe</span></span>
     </Link>

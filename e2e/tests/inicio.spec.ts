@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { capture, collectErrors, SIZES } from '../src/helpers.js';
+import { capture, collectErrors, layoutProblems, loginAsGuest, SIZES, uniqueName } from '../src/helpers.js';
 
 for (const { w, h } of SIZES) {
   test(`portada a ${w}×${h}`, async ({ page }) => {
@@ -18,5 +18,32 @@ for (const { w, h } of SIZES) {
     await expect(page.getByRole('tab', { name: 'Entrar' })).toBeVisible();
 
     expect(errors).toEqual([]);
+  });
+}
+
+test('botón de sonido apagado por defecto que se recuerda al recargar', async ({ page }) => {
+  const errors = collectErrors(page);
+  await page.goto('/');
+  const activar = page.getByRole('button', { name: 'Activar sonido' });
+  await expect(activar).toHaveAttribute('aria-pressed', 'false');
+
+  await activar.click();
+  const silenciar = page.getByRole('button', { name: 'Silenciar sonido' });
+  await expect(silenciar).toHaveAttribute('aria-pressed', 'true');
+
+  await page.reload();
+  await expect(page.getByRole('button', { name: 'Silenciar sonido' })).toHaveAttribute('aria-pressed', 'true');
+  expect(errors).toEqual([]);
+});
+
+for (const { w, h } of SIZES) {
+  test(`cabecera con el botón de sonido a ${w}×${h}`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: h });
+    // Con sesión la cabecera lleva también el perfil y «Cerrar sesión»: es la fila más llena.
+    await loginAsGuest(page, uniqueName('Sonido'));
+    await expect(page.getByRole('button', { name: 'Activar sonido' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Cerrar sesión' })).toBeVisible();
+    const { id, problems } = await layoutProblems(page, 'cabecera-sonido', true);
+    expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
   });
 }
