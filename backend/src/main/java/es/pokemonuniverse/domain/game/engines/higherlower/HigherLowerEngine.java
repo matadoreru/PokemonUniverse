@@ -253,7 +253,7 @@ public final class HigherLowerEngine
   public HigherLowerPlayerState getPlayerState(HigherLowerState state, String playerId, GameContext context) {
     return new HigherLowerPlayerState(
         state.phase() == GamePhase.ROUND_ACTIVE && state.playerIds().contains(playerId)
-            && !state.answers().containsKey(playerId),
+            && context.isPlayerRequired(playerId) && !state.answers().containsKey(playerId),
         state.answers().get(playerId));
   }
 

@@ -198,7 +198,7 @@
         },
         {
           "key": "sameCorrect",
-          "label": "SAME acertados",
+          "label": "Iguales acertados",
           "aggregation": "SUM"
         },
         {

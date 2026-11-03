@@ -148,9 +148,37 @@ const invalidActionStops: GoldenScenario = {
   ],
 };
 
+const disconnectedCannotAnswer: GoldenScenario = {
+  name: 'disconnected-cannot-answer',
+  seed: 66,
+  catalog: 'gen1-2',
+  players: [ana, bruno, carla],
+  config: { ...baseConfig, answerVisibility: 'REVEAL', roundSeconds: 15 },
+  steps: [
+    // Ronda 1 (activa 1000–16000): Carla se desconecta sin responder; su proyección privada pasa a canAnswer false
+    // mientras la ronda sigue activa, y su respuesta se rechaza.
+    answer('p1', 'HIGHER', 2_000),
+    { kind: 'presence', players: [ana, bruno, { ...carla, connected: false }], now: 3_000 },
+    answer('p3', 'LOWER', 3_500),
+    answer('p2', 'LOWER', 4_000),
+    timeout(7_000),
+    // Ronda 2 (activa 7000–22000): Carla vuelve y recupera los botones.
+    { kind: 'presence', players: [ana, bruno, carla], now: 8_000 },
+    answer('p3', 'SAME', 9_000),
+    answer('p1', 'LOWER', 10_000),
+    answer('p2', 'HIGHER', 11_000),
+    timeout(14_000),
+    // Ronda 3 (activa 14000–29000): Bruno se desconecta tras responder y la ronda se agota.
+    answer('p2', 'HIGHER', 15_000),
+    { kind: 'presence', players: [ana, { ...bruno, connected: false }, carla], now: 16_000 },
+    timeout(29_000),
+    timeout(32_000),
+  ],
+};
+
 export const higherLowerScenarios: GoldenEngineEntry = {
   module: higherLowerGame,
-  scenarios: [twoPlayersThreeRounds, realtimeVisibility, presenceResolvesRound, veryHardSinglePlayer, invalidActionStops],
+  scenarios: [twoPlayersThreeRounds, realtimeVisibility, presenceResolvesRound, veryHardSinglePlayer, invalidActionStops, disconnectedCannotAnswer],
   configCases: [
     // Válidos: normalización de generaciones (dedup + orden) y categorías (dedup, primer orden), clave extra ignorada.
     { ...baseConfig, generations: [2, 1, 2, 1] },

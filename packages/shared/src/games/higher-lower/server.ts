@@ -14,7 +14,7 @@ const manifest = {
     metrics: [
       { key: 'correct', label: 'Respuestas correctas', aggregation: 'SUM' },
       { key: 'incorrect', label: 'Respuestas incorrectas', aggregation: 'SUM' },
-      { key: 'sameCorrect', label: 'SAME acertados', aggregation: 'SUM' },
+      { key: 'sameCorrect', label: 'Iguales acertados', aggregation: 'SUM' },
       { key: 'bestStreak', label: 'Mejor racha', aggregation: 'MAX' },
     ],
     derivedMetrics: [{ key: 'accuracy', label: 'Precisión', kind: 'PERCENT', numerator: 'correct', denominator: ['correct', 'incorrect'] }],
@@ -79,6 +79,6 @@ export const higherLowerGame: MiniGameModule<HigherLowerConfig, HigherLowerState
       previousPokemon: pokemonView(previous, revealPhase || state.config.showPreviousValue ? pokemonCategoryValue(previous, category) : null),
       currentPokemon: pokemonView(current, revealPhase ? pokemonCategoryValue(current, category) : null), answers: showAnswers ? state.answers : {}, answeredIds: Object.keys(state.answers), scores: state.scores, streaks: state.streaks, roundStartedAt: state.roundStartedAt, roundEndsAt: state.roundEndsAt, nextTransitionAt: state.nextTransitionAt, lastRound: revealPhase ? state.lastRound : null, results: state.phase === 'GAME_RESULTS' ? buildHigherLowerResults(state) : null };
   },
-  getPlayerState(state, playerId): HigherLowerPlayerState { return { canAnswer: state.phase === 'ROUND_ACTIVE' && state.playerIds.includes(playerId) && !state.answers[playerId], answer: state.answers[playerId] ?? null }; },
+  getPlayerState(state, playerId, context): HigherLowerPlayerState { return { canAnswer: state.phase === 'ROUND_ACTIVE' && state.playerIds.includes(playerId) && isPlayerRequired(context, playerId) && !state.answers[playerId], answer: state.answers[playerId] ?? null }; },
   isFinished(state) { return state.phase === 'GAME_RESULTS'; }, getResults(state) { return buildHigherLowerResults(state); },
 };

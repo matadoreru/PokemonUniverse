@@ -632,7 +632,7 @@
               "answer": null
             },
             "p3": {
-              "canAnswer": true,
+              "canAnswer": false,
               "answer": null
             }
           },
@@ -700,7 +700,7 @@
               "answer": null
             },
             "p3": {
-              "canAnswer": true,
+              "canAnswer": false,
               "answer": null
             }
           },
@@ -777,7 +777,7 @@
               }
             },
             "p3": {
-              "canAnswer": true,
+              "canAnswer": false,
               "answer": null
             }
           },
@@ -958,7 +958,7 @@
               "answer": null
             },
             "p3": {
-              "canAnswer": true,
+              "canAnswer": false,
               "answer": null
             }
           },
