@@ -100,8 +100,8 @@ a mano (`workflow_dispatch`) fuerza las dos builds; solo hace falta si el job `r
 
 Desde noviembre de 2026 (medido antes del cambio en la ejecución 41657262671): `Gradle check` 3:30 → `webp-arm64` bajo
 QEMU 6:12 → imagen backend multi-arch 3:25 → retag → deploy, **≈ 14 min**. Ahora la imagen amd64 se construye a la vez
-que `check`, sin QEMU ni `webp-arm64` ni nativa: camino crítico ≈ `check` (3:30) + retag + deploy ≈ **5–6 min**
-(estimado; corregir con la primera ejecución).
+que `check`, sin QEMU ni `webp-arm64` ni nativa. Medido en la ejecución 41665973669 (las dos imágenes reconstruidas):
+imágenes 0:32 con caché, `check` 0:52, tests web 1:23, retag 0:23, deploy 1:00: **3:16 de push a PRE**.
 
 ### Tiempos antes/después (separación frontend/backend)
 
