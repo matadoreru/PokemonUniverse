@@ -29,7 +29,7 @@ export function Timer({ endsAt, now, totalMs, label = 'Tiempo restante' }: Timer
       <span className={s.num} role="timer" aria-label={`${label}: ${secs} s`}>
         {endsAt == null ? '–' : secs}
       </span>
-      <Bar value={secs * 1000} max={totalMs} tone={urgent ? 'bad' : 'yellow'} label={label} valueText={`${secs} s`} />
+      <Bar value={secs * 1000} max={totalMs} tone={urgent ? 'bad' : 'yellow'} label={label} decorative valueText={`${secs} s`} />
     </div>
   );
 }

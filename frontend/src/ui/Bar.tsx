@@ -15,18 +15,20 @@ export interface BarProps {
   showValue?: boolean;
   /** Texto del valor si no es «value/max». */
   valueText?: string;
+  /** Oculta la barra a las tecnologías de apoyo cuando otro texto ya da el valor. */
+  decorative?: boolean;
 }
 
 /** Barra de medida; el relleno se escala con transform. */
-export function Bar({ value, max, tone = 'yellow', label, showValue, valueText }: BarProps) {
+export function Bar({ value, max, tone = 'yellow', label, showValue, valueText, decorative }: BarProps) {
   const ratio = barRatio(value, max);
   return (
-    <span className={s.wrap}>
+    <span className={s.wrap} aria-hidden={decorative || undefined}>
       <span
         className={s.bar}
         role="meter"
         aria-label={label}
-        aria-valuenow={value}
+        aria-valuenow={Math.min(Math.max(value, 0), Math.max(max, 0))}
         aria-valuemin={0}
         aria-valuemax={max}
         {...(valueText ? { 'aria-valuetext': valueText } : {})}

@@ -24,4 +24,8 @@ describe('Bar', () => {
     expect(html).toContain('aria-label="Vida"');
     expect(html).toContain('--ratio:0.3');
   });
+  it('recorta aria-valuenow a [0, max]', () => {
+    expect(renderToStaticMarkup(createElement(Bar, { value: 30, max: 10, label: 'x' }))).toContain('aria-valuenow="10"');
+    expect(renderToStaticMarkup(createElement(Bar, { value: -3, max: 10, label: 'x' }))).toContain('aria-valuenow="0"');
+  });
 });

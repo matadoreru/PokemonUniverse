@@ -264,3 +264,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .shiny-option-interactive:hover { transform: none; }
 }
+
+/* Modo estático de los E2E (spec §3.4): .static lo apaga todo. */
+body.static *, body.static *::before, body.static *::after { animation: none !important; transition: none !important; }
