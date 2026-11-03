@@ -6,7 +6,7 @@ if [ "$#" -ne 1 ] || [ ! -f "$1" ]; then
   exit 2
 fi
 
-project_dir=${PU_PROJECT_DIR:-$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)}
+project_dir=${PU_PROJECT_DIR:-$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)}
 cd "$project_dir"
 if [ -f .env ]; then
   set -a

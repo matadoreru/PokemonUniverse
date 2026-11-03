@@ -1,8 +1,8 @@
 ---
 version: 1
-slug: "apps-web-src-screens-changelogpage-tsx"
-primary_target: "apps/web/src/screens/ChangelogPage.tsx"
-related_targets: ["apps/web/src/screens/HomePage.tsx","apps/web/src/admin/AdminChangelogPanel.tsx","apps/web/src/screens/AdminPage.tsx"]
+slug: "frontend-src-screens-changelogpage-tsx"
+primary_target: "frontend/src/screens/ChangelogPage.tsx"
+related_targets: ["frontend/src/screens/HomePage.tsx","frontend/src/admin/AdminChangelogPanel.tsx","frontend/src/screens/AdminPage.tsx"]
 ---
 
 # Changelog surfaces

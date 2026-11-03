@@ -1,8 +1,8 @@
 ---
 version: 1
-slug: "apps-web-src-screens-feedbackpage-tsx"
-primary_target: "apps/web/src/screens/FeedbackPage.tsx"
-related_targets: ["apps/web/src/admin/AdminFeedbackPanel.tsx","apps/web/src/screens/AdminPage.tsx","apps/web/src/room/RoomSessionLayout.tsx"]
+slug: "frontend-src-screens-feedbackpage-tsx"
+primary_target: "frontend/src/screens/FeedbackPage.tsx"
+related_targets: ["frontend/src/admin/AdminFeedbackPanel.tsx","frontend/src/screens/AdminPage.tsx","frontend/src/room/RoomSessionLayout.tsx"]
 ---
 
 # Feedback surfaces

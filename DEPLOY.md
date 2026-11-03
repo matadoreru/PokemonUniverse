@@ -19,7 +19,9 @@ Cloudflare Tunnel → 127.0.0.1:8080 → pokemon-universe-web (nginx: SPA estát
 la SPA. `proxy_pass` sin URI reenvía la ruta tal cual: las variantes de `/api/admin` (`//api/admin/users`,
 `/api/%61dmin/users`, `/api/ADMIN/users`, `/api/admin/../admin/users`…) llegan sin normalizar a Micronaut, que responde
 401/403 (guardia) o 404, nunca 200 (`AdminGateTest`). `client_max_body_size 10m` iguala el `max-request-size` de
-Micronaut, así que un avatar de más de 5 MiB recibe el 413 JSON del backend y no el de nginx. Añade
+Micronaut, así que un avatar de más de 5 MiB recibe el 413 JSON del backend y no el de nginx. `/socket.io/` responde
+410 (Socket.IO se retiró en el corte; una pestaña con la web anterior no recibe el `index.html`) y `/api` sin barra,
+404. Añade
 `X-Content-Type-Options`, `X-Frame-Options` y `Referrer-Policy` (sin CSP).
 
 La imagen web sale del `Dockerfile` raíz (contexto la raíz del repositorio, única etapa final `web`): compila
@@ -58,6 +60,9 @@ Sube el proyecto a GitHub con rama principal `main`. La integración continua es
 | --- | --- | --- | --- |
 | `.github/workflows/frontend.yml` | `frontend/`, `packages/shared/`, `e2e/`, `apps/server/`, `scripts/export-golden-*.mjs`, `backend/src/test/resources/golden/`, `package*.json`, `tsconfig.base.json`, `eslint.config.mjs`, `Dockerfile`, `.dockerignore`, `infra/nginx.conf`, `backend/openapi/` | lint, typecheck y tests en paralelo (incluye `check:boundaries` y `check:registry`); job `oracle`: oráculo Node (migraciones Prisma sobre una BD de prueba, typecheck, lint, tests, build) y `check:golden`; build Vite | `pokemon-universe-web` (target `web`) |
 | `.github/workflows/backend.yml` | `backend/`, `compose.yaml` | `./gradlew check` (tests con Testcontainers, `ComposeStartupTest` y `verifyOpenApi`); `webp-arm64`: codificador WebP en la imagen `linux/arm64` | `pokemon-universe-backend` (JVM); `main.yml` añade `:<sha>-native` experimental, no bloqueante |
+
+`.github/workflows/deploy-scripts.yml` (en PR y push a `main` cuando cambian `scripts/**` o `compose.yaml`) pasa
+shellcheck a los scripts y `scripts/test-deploy-rollback.sh`; no construye imágenes ni forma parte de `main.yml`.
 
 Desde el corte 2D no hay workflow ni imagen de Node: `node-server.yml` desapareció y los tests del oráculo pasaron al
 job `oracle` de `frontend.yml`, que bloquea la imagen web como antes bloqueaban la de Node.

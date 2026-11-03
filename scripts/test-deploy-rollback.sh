@@ -20,9 +20,9 @@ work=$(mktemp -d)
 trap '[ -n "${KEEP_WORK:-}" ] || rm -rf "$work"' EXIT
 prev_sha=1111111111111111111111111111111111111111
 new_sha=2222222222222222222222222222222222222222
-# compose.yaml anterior al corte: el de main si existe; si no, el del commit anterior a la retirada de Node.
-git -C "$repo" show main:compose.yaml > "$work/pre-cutover-compose.yaml" 2>/dev/null \
-  || git -C "$repo" show 9275fd9:compose.yaml > "$work/pre-cutover-compose.yaml"
+# compose.yaml anterior al corte: el del último commit con Node (igual al de main antes de fusionar el corte). Fijo:
+# tras la fusión, el de main ya no tiene server. Necesita el historial completo (en CI, fetch-depth: 0).
+git -C "$repo" show 9275fd9:compose.yaml > "$work/pre-cutover-compose.yaml"
 grep -q '^  server:' "$work/pre-cutover-compose.yaml" || { echo "El compose anterior no tiene server" >&2; exit 2; }
 
 mkdir -p "$work/bin"
@@ -177,6 +177,14 @@ expect_out() {
   fi
 }
 
+# El log del docker falso contiene esta llamada.
+expect_log() {
+  local name=$1 text=$2
+  if ! grep -qF -- "$text" "$work/$name/log"; then
+    echo "   FALLO: falta «$text» en las llamadas a docker"; failures=$((failures + 1))
+  fi
+}
+
 fallback_note='redespliega el SHA anterior'
 # compose.yaml con server y sin backend (anterior a la etapa 1).
 git -C "$repo" show ac5b3ff:compose.yaml > "$work/no-backend-compose.yaml"
@@ -185,6 +193,8 @@ git -C "$repo" show ac5b3ff:compose.yaml > "$work/no-backend-compose.yaml"
 run_case corte-ok running "" 1 1;                expect corte-ok 0 absent
 expect_first_java corte-ok "true true true"
 run_case corte-up-falla-con-git running 1 1 1;   expect corte-up-falla-con-git 1 running
+# Vuelve con el compose anterior (imágenes de GHCR): los tags locales *-rollback:deployment-rollback-* sobran.
+expect_log corte-up-falla-con-git "docker image rm pokemon-universe-web-rollback:deployment-rollback-"
 run_case corte-up-falla-sin-git running 1 0 1;   expect corte-up-falla-sin-git 1 running
 expect_last_java corte-up-falla-sin-git "false false false"; expect_out corte-up-falla-sin-git "$fallback_note"
 run_case corte-humo-falla-sin-git running "" 0 0; expect corte-humo-falla-sin-git 1 running

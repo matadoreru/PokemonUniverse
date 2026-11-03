@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
-project_dir=${PU_PROJECT_DIR:-$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)}
+project_dir=${PU_PROJECT_DIR:-$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)}
 cd "$project_dir"
 if [ -f .env ]; then
   set -a

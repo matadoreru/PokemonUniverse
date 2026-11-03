@@ -103,6 +103,11 @@ rollback_across_cutover() {
     if PU_IMAGE_TAG="$previous_tag" docker compose -f "$previous_compose" --project-directory "$project_dir" \
       up -d --wait --wait-timeout "$deploy_wait_seconds" server backend web; then
       rm -f "$previous_compose"
+      # Ese stack usa las imágenes de GHCR del SHA anterior: los tags locales del snapshot ya no hacen falta.
+      if [ "$rollback_snapshot" -eq 1 ]; then
+        docker image rm "$rollback_web_image:$rollback_tag" "$rollback_backend_image:$rollback_tag" >/dev/null 2>&1 \
+          || true
+      fi
       exit 1
     fi
     echo "Falló el stack anterior al corte de $previous_tag" >&2

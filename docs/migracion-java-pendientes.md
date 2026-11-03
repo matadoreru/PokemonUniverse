@@ -262,7 +262,12 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
    de Prisma en baseline 1); seguir
    `DEPLOY.md` §5 («Primer despliegue tras el corte 2D») y programarlo entre sesiones. Tras un rollback de emergencia,
    redesplegar el SHA anterior.
-4. **Deuda técnica.** La de «Deuda técnica conocida» más abajo; además, borrar `_prisma_migrations` con una `V2__` si
+4. **Retirar el código solo del corte en `scripts/deploy.sh`** en cuanto producción haya pasado el corte: la
+   búsqueda y parada del contenedor Node (`legacy_server_container`), `rollback_across_cutover`,
+   `PU_CUTOVER_ROLLBACK_JAVA` (también en `compose.yaml`, dejando los tres interruptores a `true` fijo) y sus
+   escenarios de `scripts/test-deploy-rollback.sh`. El test se ejecuta en CI (`.github/workflows/deploy-scripts.yml`,
+   con shellcheck) cuando cambian `scripts/**` o `compose.yaml`.
+5. **Deuda técnica.** La de «Deuda técnica conocida» más abajo; además, borrar `_prisma_migrations` con una `V2__` si
    se quiere, y decidir cuándo retirar el oráculo Node (`apps/server`) cuando ya no hagan falta sus fixtures.
 
 ## Riesgos abiertos
