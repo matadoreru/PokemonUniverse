@@ -17,11 +17,13 @@ export interface ToggleProps {
 /** Interruptor: botón `role="switch"` de al menos 44 px de alto. */
 export function Toggle({ label, checked, onChange, hint, disabled, className, forced }: ToggleProps) {
   const hintId = useId();
+  const labelId = useId();
   return (
     <button
       type="button"
       role="switch"
       aria-checked={checked}
+      aria-labelledby={labelId}
       aria-describedby={hint ? hintId : undefined}
       disabled={disabled}
       className={cx(s.toggle, checked && s.on, forced && s[forced], className)}
@@ -31,7 +33,7 @@ export function Toggle({ label, checked, onChange, hint, disabled, className, fo
       }}
     >
       <span className={s.text}>
-        <span className={s.label}>{label}</span>
+        <span id={labelId} className={s.label}>{label}</span>
         {hint && <span id={hintId} className={s.hint}>{hint}</span>}
       </span>
       <span className={s.switch} aria-hidden="true">

@@ -91,16 +91,24 @@
   outline: var(--ol-3) solid var(--focus-ring);
   outline-offset: 2px;
 }
-.focus .range::-webkit-slider-thumb,
+.focus .range::-webkit-slider-thumb {
+  outline: var(--ol-3) solid var(--focus-ring);
+  outline-offset: 2px;
+}
 .focus .range::-moz-range-thumb {
   outline: var(--ol-3) solid var(--focus-ring);
   outline-offset: 2px;
 }
-.hover .range::-webkit-slider-thumb,
+.hover .range::-webkit-slider-thumb {
+  background: var(--white);
+}
 .hover .range::-moz-range-thumb {
   background: var(--white);
 }
-.active .range::-webkit-slider-thumb,
+.active .range::-webkit-slider-thumb {
+  background: var(--cream-2);
+  box-shadow: none;
+}
 .active .range::-moz-range-thumb {
   background: var(--cream-2);
   box-shadow: none;
