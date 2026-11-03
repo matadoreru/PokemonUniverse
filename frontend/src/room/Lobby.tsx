@@ -278,7 +278,7 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
           <PlayerList members={room.members} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(report)} onTransferHost={transferHost} onKick={kick} />
 
           <div className="mt-4 border-t border-ink/10 pt-4">
-            <div className="mb-3"><span className="label !mb-0">Todo listo</span><h2 className="font-display text-xl font-bold">Iniciar partida</h2></div>
+            <div className="mb-3"><span className="label !mb-0">{startReason ? 'Falta algo' : 'Todo listo'}</span><h2 className="font-display text-xl font-bold">Iniciar partida</h2></div>
             {self?.roomRole !== 'HOST' && <button type="button" className={`mb-2 w-full ${self?.ready ? 'btn-ghost border-leaf/40 text-leaf' : 'btn-secondary'}`} disabled={readyBusy || self?.presence !== 'CONNECTED'} aria-pressed={Boolean(self?.ready)} onClick={() => void toggleReady()}><CheckCircle2 size={18} /> {readyBusy ? 'Guardando…' : self?.ready ? 'Estoy listo' : 'Marcarme listo'}</button>}
             <button className="btn-primary w-full" disabled={Boolean(startReason) || starting} onClick={() => void start()} aria-describedby="start-help"><Play size={18} fill="currentColor" /> {starting ? 'Iniciando…' : 'Empezar partida'}</button>
             <p id="start-help" className={`mt-2 text-sm font-bold ${startReason ? 'text-berry' : 'text-leaf'}`}>{startReason ?? 'La sala está lista.'}</p>

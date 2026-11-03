@@ -168,9 +168,9 @@ async function capturarTamanos(page: Page, nombre: string, { sigue, claro = fals
   if (claro) {
     const { w, h } = claro === true ? SIZES[0] : claro;
     await page.setViewportSize({ width: w, height: h });
-    await page.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
+    const previo = await page.evaluate(() => { const actual = document.documentElement.dataset.theme ?? 'dark'; document.documentElement.dataset.theme = 'light'; return actual; });
     const { id, problems } = await layoutProblems(page, `${nombre}-claro`, true);
-    await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
+    await page.evaluate((tema) => { document.documentElement.dataset.theme = tema; }, previo);
     await comprobar();
     expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
   }
@@ -298,7 +298,7 @@ test('lobby: rotación con Impostor omitido por paridad', async ({ browser }) =>
     // Pulsar el deslizador desplaza la página y la cabecera fija taparía el contenido: se captura desde arriba.
     await impostores.blur();
     await page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(page, 'lobby-rotacion-impostor-omitido');
+    await capturarTamanos(page, 'lobby-rotacion-impostor-omitido', { claro: { w: 1920, h: 1080 } });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -321,21 +321,29 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, invitados.map((j) => j.page));
 
-    // Todos responden: la ronda se revela en cuanto contesta el último (3 s de revelado).
-    for (const { page } of jugadores) await page.getByRole('button', { name: 'Mayor', exact: true }).click({ timeout: 20_000 });
+    // Todos responden: la ronda se revela en cuanto contesta el último y el revelado dura 3 s. Se captura un solo
+    // tamaño (390×844, el de los botones de respuesta), fijado antes de la última respuesta; la pantalla activa ya está
+    // a los tres tamaños en el test por juego. El host contesta primero (su clic desplaza la página) y la última
+    // respuesta es de un invitado.
+    const mayor = (page: Page) => page.getByRole('button', { name: 'Mayor', exact: true });
+    await mayor(host.page).click({ timeout: 20_000 });
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
+    for (const { page } of invitados) await mayor(page).click({ timeout: 20_000 });
     const revelado = host.page.getByText(/^Respuesta: (Mayor|Igual|Menor)$/);
     await expect(revelado).toBeVisible({ timeout: 10_000 });
-    // El revelado dura 3 s: solo 1280×720 y 390×844 (la pantalla activa ya se captura a los tres tamaños).
-    for (const { w, h } of [SIZES[0], SIZES[2]]) {
-      await host.page.setViewportSize({ width: w, height: h });
-      const { id, problems } = await layoutProblems(host.page, 'juego-higher-lower-revelado', true);
-      await expect(revelado, `${id}: el revelado sigue en pantalla`).toBeVisible({ timeout: 1_000 });
-      expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
-    }
+    await expect(host.page.getByText(/^Clasificación en \ds…$/)).toBeVisible();
+    const { id, problems } = await layoutProblems(host.page, 'juego-higher-lower-revelado', true);
+    await expect(revelado, `${id}: el revelado sigue en pantalla`).toBeVisible({ timeout: 1_000 });
+    expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
+    await host.page.setViewportSize({ width: 1280, height: 720 });
 
     const clasificacion = host.page.getByRole('heading', { name: 'Clasificación Higher or Lower' });
     await expect(clasificacion).toBeVisible({ timeout: 15_000 });
-    await capturarTamanos(host.page, 'juego-higher-lower-clasificacion');
+    // Plurales de las estadísticas: nunca «1 aciertos» ni «1 iguales».
+    await expect(host.page.getByText(/\d+ aciertos? · \d+ igual(es)? · mejor racha/).first()).toBeVisible();
+    await expect(host.page.getByText(/(^|\D)1 (aciertos|iguales)/)).toHaveCount(0);
+    await capturarTamanos(host.page, 'juego-higher-lower-clasificacion', { claro: true });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

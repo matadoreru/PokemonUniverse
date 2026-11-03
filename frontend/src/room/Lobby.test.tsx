@@ -68,6 +68,8 @@ describe('lobby impostor parity', () => {
 
   it('blocks a fixed start with the parity literal', () => {
     expect(render(parityRoom)).toContain('Demasiados impostores: con 4 jugadores el máximo es 1.');
+    expect(render(parityRoom)).toContain('>Falta algo<');
+    expect(render(parityRoom)).not.toContain('>Todo listo<');
   });
 
   it('excludes the game from a rotation instead of blocking the start', () => {
@@ -76,6 +78,8 @@ describe('lobby impostor parity', () => {
       gameSelectionMode: { type: 'RANDOM', gameIds: ['pokemon-impostor', 'pokedex-distance', 'shiny-vote'] },
     });
     expect(markup).toContain('La sala está lista.');
+    expect(markup).toContain('>Todo listo<');
+    expect(markup).not.toContain('>Falta algo<');
   });
 
   it('does not count the excluded game towards the rotation minimum', () => {
