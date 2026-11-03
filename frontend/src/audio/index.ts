@@ -52,14 +52,8 @@ function isTextField(target: EventTarget | null): boolean {
 
 /** Engancha el audio al documento; devuelve cómo soltarlo (tests y recargas en caliente). */
 export function installAudio(a: Audio, doc: Document, win: Window): () => void {
-  const unlock = (): void => {
-    a.unlock();
-    // Mientras siga silenciado no hay contexto: se sigue escuchando hasta que lo haya.
-    if (a.state().unlocked) {
-      doc.removeEventListener('pointerdown', unlock, { capture: true });
-      doc.removeEventListener('keydown', unlock, { capture: true });
-    }
-  };
+  // Se escucha siempre: el primer gesto crea el contexto (si hay sonido) y los siguientes lo reanudan si quedó suspendido.
+  const unlock = (): void => a.unlock();
   const onVisibility = (): void => a.setHidden(doc.hidden);
   const onKey = (e: KeyboardEvent): void => {
     if (e.repeat || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;

@@ -181,6 +181,11 @@ export function createAudio(deps: AudioDeps, cfg: SfxFile = loadSfx()): Audio {
     },
     unlock() {
       gestured = true;
+      if (ctx) {
+        // Safari/iOS puede dejar el contexto suspendido tras una interrupción: cada gesto lo reanuda.
+        if (!hidden && ctx.state !== 'running') applyHidden();
+        return;
+      }
       ensureContext();
     },
     settings: () => settings,

@@ -238,6 +238,12 @@ describe('motor de audio', () => {
     expect(t.ctx().state).toBe('running');
     expect(fire(t, 'game.hit').length).toBeGreaterThan(0);
 
+    // Un contexto suspendido por el sistema (Safari/iOS) se reanuda con el siguiente gesto.
+    t.ctx().state = 'interrupted';
+    t.audio.unlock();
+    expect(t.ctx().state).toBe('running');
+    expect(t.contexts).toHaveLength(1);
+
     const hidden = setup({ muted: false, hidden: true });
     hidden.audio.unlock();
     expect(hidden.ctx().suspends).toBe(1);
