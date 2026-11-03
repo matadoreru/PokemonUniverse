@@ -1,4 +1,4 @@
-import { supportsPlayerCount, type GameSelectionMode, type MiniGameManifest, type RoomView } from '@pokemon-universe/shared/public';
+import { playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type MiniGameManifest, type RoomView } from '@pokemon-universe/shared/public';
 import { AlertCircle, Check, Repeat2, Search, Settings2, Shuffle, Vote } from 'lucide-react';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { GameLoadingFallback } from '../components/LoadingFallback';
@@ -44,6 +44,11 @@ export function rotationGameReadinessReason(room: RoomView, game: MiniGameManife
   return client.validateConfig?.(rotationGameConfig(room, game.id), room) ?? null;
 }
 
+/** A player-count requirement (impostor parity) only skips the game in a rotation: it does not block the room. */
+export function rotationGameSkipReason(room: RoomView | undefined, game: MiniGameManifest, playerCount: number): string | null {
+  return room ? playerCountReadinessReason(game.id, rotationGameConfig(room, game.id), playerCount) : null;
+}
+
 export function GameSelectionConfig({ availableGames, mode, playerCount, disabled, room, selfId = '', configDisabled = disabled, onChange, onConfig }: Props) {
   const compatibleGames = availableGames.filter((game) => supportsPlayerCount(game, playerCount));
   const configuredIds = mode.type === 'FIXED' ? [] : mode.gameIds;
@@ -76,11 +81,12 @@ export function GameSelectionConfig({ availableGames, mode, playerCount, disable
     const game = availableGames.find((candidate) => candidate.id === gameId)!;
     return { game, reason: room ? rotationGameReadinessReason(room, game, playerCount) : null };
   }), [availableGames, playerCount, room, selectedKey]);
-  const readyCount = readiness.filter(({ reason }) => !reason).length;
+  const readyCount = readiness.filter(({ game, reason }) => !reason || rotationGameSkipReason(room, game, playerCount)).length;
   const editingGame = editingGameId ? availableGames.find((game) => game.id === editingGameId) ?? null : null;
   const editingClient = editingGame ? clientGameRegistry.get(editingGame.id) : null;
   const editingConfig = editingGame ? rotationGameConfig(room, editingGame.id) : {};
   const editingReason = editingGame && room ? rotationGameReadinessReason(room, editingGame, playerCount) : null;
+  const editingSkipReason = editingGame ? rotationGameSkipReason(room, editingGame, playerCount) : null;
 
   const selectMode = (type: GameSelectionMode['type']) => {
     if (disabled || type === mode.type) return;
@@ -142,6 +148,8 @@ export function GameSelectionConfig({ availableGames, mode, playerCount, disable
               const unavailableReason = gameAvailabilityReason(game, playerCount);
               const config = rotationGameConfig(room, game.id);
               const configReason = active && room ? rotationGameReadinessReason(room, game, playerCount) : null;
+              const skipReason = active ? rotationGameSkipReason(room, game, playerCount) : null;
+              const needsReview = Boolean(configReason) && !skipReason;
               const customized = room?.customizedGameIds?.includes(game.id) ?? false;
               const editing = editingGameId === game.id;
               return <article key={game.id} className={`rounded-xl border p-2.5 transition-colors ${editing ? 'border-aqua bg-aqua/10' : active ? 'border-ink/15 bg-surface-raised' : 'border-transparent bg-ink/[.035] text-ink/60'}`}>
@@ -149,12 +157,12 @@ export function GameSelectionConfig({ availableGames, mode, playerCount, disable
                   <button type="button" disabled={disabled || locked || Boolean(unavailableReason)} aria-pressed={active} aria-label={`${active ? 'Quitar' : 'Añadir'} ${game.name} ${active ? 'de' : 'a'} la rotación`} title={unavailableReason ?? (locked ? `Debes mantener al menos ${minimum} juegos` : undefined)} onClick={() => toggleGame(game.id)} className={`mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-md border ${active ? 'border-aqua bg-aqua text-night' : 'border-ink/20 bg-surface'} disabled:cursor-not-allowed disabled:opacity-55`}>{active && <Check size={16} />}</button>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-1.5"><span aria-hidden="true">{game.icon}</span><strong className="truncate text-sm text-ink">{game.name}</strong>{game.experimental && <span className="experimental-badge">Experimental</span>}{game.recommended && <span className="recommended-badge">TOP</span>}</div>
-                    <p className={`mt-0.5 text-xs font-bold leading-snug ${unavailableReason || configReason ? 'text-berry' : 'text-ink/55'}`}>{unavailableReason ?? configReason ?? summarizeGameConfig(config)}</p>
+                    <p className={`mt-0.5 text-xs font-bold leading-snug ${unavailableReason || needsReview ? 'text-berry' : 'text-ink/55'}`}>{unavailableReason ?? configReason ?? summarizeGameConfig(config)}</p>
                   </div>
-                  {active && <span className={`mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full ${configReason ? 'bg-berry' : 'bg-leaf'}`} title={configReason ? 'Requiere revisión' : 'Configuración lista'} />}
+                  {active && <span className={`mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full ${skipReason ? 'bg-ink/30' : needsReview ? 'bg-berry' : 'bg-leaf'}`} title={skipReason ? 'Se omitirá con los jugadores actuales' : needsReview ? 'Requiere revisión' : 'Configuración lista'} />}
                 </div>
                 {active && <div className="mt-2 flex items-center justify-between gap-2 border-t border-ink/10 pt-2">
-                  <span className={`text-[.68rem] font-extrabold uppercase tracking-wide ${configReason ? 'text-berry' : customized ? 'text-aqua' : 'text-ink/45'}`}>{configReason ? 'Revisar' : customized ? 'Configurado' : 'Predeterminado'}</span>
+                  <span className={`text-[.68rem] font-extrabold uppercase tracking-wide ${skipReason ? 'text-ink/55' : needsReview ? 'text-berry' : customized ? 'text-aqua' : 'text-ink/45'}`}>{skipReason ? 'Se omitirá' : needsReview ? 'Revisar' : customized ? 'Configurado' : 'Predeterminado'}</span>
                   <button type="button" onPointerEnter={() => void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined)} onFocus={() => void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined)} onClick={() => openEditor(game)} className="inline-flex min-h-8 items-center gap-1.5 rounded-lg px-2 text-xs font-extrabold text-aqua hover:bg-aqua/10" aria-pressed={editing}><Settings2 size={14} /> Ajustar</button>
                 </div>}
               </article>;
@@ -167,10 +175,12 @@ export function GameSelectionConfig({ availableGames, mode, playerCount, disable
             <header className="mb-4 border-b border-ink/10 pb-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div><span className="label !mb-0">Ajustes de la rotación</span><h4 className="font-display text-xl font-bold"><span aria-hidden="true">{editingGame.icon}</span> {editingGame.name}</h4></div>
-                <span className={`chip ${editingReason ? '!bg-berry/10 !text-berry' : '!bg-leaf/10 !text-leaf'}`}>{editingReason ? <><AlertCircle size={14} /> Revisar</> : <><Check size={14} /> Listo</>}</span>
+                <span className={`chip ${editingSkipReason ? '' : editingReason ? '!bg-berry/10 !text-berry' : '!bg-leaf/10 !text-leaf'}`}>{editingSkipReason ? 'Se omitirá' : editingReason ? <><AlertCircle size={14} /> Revisar</> : <><Check size={14} /> Listo</>}</span>
               </div>
               <p className="mt-1 text-sm font-bold text-ink/60">{editingGame.description}</p>
-              {editingReason && <p className="status-error mt-3" role="status">{editingReason}</p>}
+              {editingSkipReason
+                ? <p className="mt-3 text-sm font-bold text-ink/60" role="status">{editingSkipReason} Se omitirá en la rotación mientras haya {playerCount} jugadores.</p>
+                : editingReason && <p className="status-error mt-3" role="status">{editingReason}</p>}
             </header>
             <div className={configDisabled ? 'lobby-readonly' : ''} title={configDisabled ? 'No tienes permiso para editar estos ajustes.' : undefined}>
               <Suspense fallback={<GameLoadingFallback compact />}><editingClient.ConfigPanel config={editingConfig} disabled={configDisabled} room={room} selfId={selfId} onChange={(config) => onConfig(editingGame.id, config)} /></Suspense>

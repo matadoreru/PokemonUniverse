@@ -38,6 +38,28 @@ function room(phase: 'NEXT_GAME_VOTE' | 'NEXT_GAME_VOTE_RESULTS'): RoomView {
 }
 
 describe('game selection UI', () => {
+  it('marks an Impostor excluded by parity as skipped instead of needing review', () => {
+    const impostor: MiniGameManifest = { id: 'pokemon-impostor', name: 'Pokémon Impostor', icon: '🕵️', description: 'Encuentra al impostor.', minPlayers: 3, profileStats: { metrics: [] } };
+    const rotation: MiniGameManifest[] = [
+      { id: 'pokedex-distance', name: 'Pokédex Distance', icon: '🎯', description: 'Elige el número más cercano.', minPlayers: 2, profileStats: { metrics: [] } },
+      { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero.', minPlayers: 1, profileStats: { metrics: [] } },
+      impostor,
+    ];
+    const gameIds = rotation.map((game) => game.id);
+    const lobby: RoomView = {
+      ...room('NEXT_GAME_VOTE'), phase: 'LOBBY', nextGameVote: null, availableGames: rotation, selectedGameId: 'pokedex-distance',
+      gameSelectionMode: { type: 'RANDOM', gameIds }, gameConfigs: { 'pokemon-impostor': { impostorCount: 2 } },
+    };
+    const markup = renderToStaticMarkup(createElement(GameSelectionConfig, {
+      availableGames: rotation, mode: { type: 'RANDOM', gameIds }, playerCount: 3, disabled: false, room: lobby, onChange: () => undefined,
+    }));
+    expect(markup).toContain('Demasiados impostores: con 3 jugadores el máximo es 1.');
+    expect(markup).toContain('Se omitirá');
+    expect(markup).toContain('3/3 listos');
+    expect(markup).not.toContain('Revisar');
+    expect(markup).not.toContain('bg-berry');
+  });
+
   it('shows the three rotation methods and the selected voting pool', () => {
     const markup = renderToStaticMarkup(createElement(GameSelectionConfig, {
       availableGames: games, mode: { type: 'VOTE', gameIds: games.map((game) => game.id) }, playerCount: 3, disabled: false, onChange: () => undefined,
