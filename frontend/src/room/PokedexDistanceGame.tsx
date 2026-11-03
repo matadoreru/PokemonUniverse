@@ -1,11 +1,15 @@
 import type { PokedexDistanceConfig, PokedexDistancePlayerState, PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared/public';
 import { AlertTriangle, Clock3, Crosshair, Eye, Target, Trophy, UserX } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
+import { RevealCutIn } from '../components/RevealCutIn';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
+import { useSfxCue } from '../hooks/useSfxCue';
+import { formatDexNumber } from './distance-ruler';
+import { DistanceRuler } from './DistanceRuler';
 import { PlayerList } from './PlayerList';
 import { PokemonSelector } from './PokemonSelector';
-import { distanceRoundOutcome, distanceSpectatorHint } from './pokedex-distance-selection';
+import { DISTANCE_EXACT_HIT_TITLE, distancePickedCountText, distanceRoundOutcome, distanceSpectatorHint } from './pokedex-distance-selection';
 
 export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
   const game = room.game as PokedexDistancePublicState;
@@ -21,31 +25,37 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
   const outcome = game.lastRound ? distanceRoundOutcome(game.lastRound) : null;
   const activePhase = game.phase === 'ROUND_ACTIVE' || game.phase === 'TIEBREAKER_ACTIVE';
   const eligible = game.eligibleIds.includes(selfId); const hasSelection = Boolean(playerState?.selection);
+  // Una ronda y sus desempates comparten `roundNumber`: la clave lleva también la profundidad.
+  const roundKey = `${game.roundNumber}-${game.tiebreakDepth}`;
+  const exactHitNow = activePhase && Boolean(playerState?.exactHit);
+  useSfxCue('hit', exactHitNow ? roundKey : null);
+  useSfxCue('reveal', game.phase === 'ROUND_RESULTS' ? roundKey : null);
+  // Solo `selectedIds` (quién, nunca qué): con las elecciones ocultas no adelanta nada.
+  const pickedCount = game.selectedIds.filter((id) => game.eligibleIds.includes(id)).length;
+  const targetLabel = formatDexNumber(game.targetDexNumber ?? 0);
   return <section className="mx-auto max-w-7xl px-4 py-5 md:px-8">
     <div className="mb-5 grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
-      <div className="flex gap-2"><span className="chip">Ronda {game.roundNumber}</span>{game.tiebreakDepth > 0 && <span className="chip bg-berry/15 text-berry">Desempate {game.tiebreakDepth}</span>}</div>
-      <div className="text-center"><span className="label">Objetivo</span><div className="font-display text-5xl font-bold sm:text-6xl"><Target className="mr-2 inline text-berry" size={38} />#{String(game.targetDexNumber ?? 0).padStart(3, '0')}</div></div>
+      <div className="flex flex-wrap gap-2"><span className="chip">Ronda {game.roundNumber}</span>{game.tiebreakDepth > 0 && <span className="chip bg-berry/15 text-berry">Desempate {game.tiebreakDepth}</span>}{activePhase && <span className="chip tabular-nums" aria-live="polite">{distancePickedCountText(pickedCount, game.eligibleIds.length)}</span>}</div>
+      <div className="text-center"><span className="label">Objetivo</span><div className="font-display text-5xl font-bold sm:text-6xl"><Target className="mr-2 inline text-berry" size={38} />{targetLabel}</div></div>
       <div className="flex items-center justify-end gap-2"><Trophy size={18} className="text-berry" /><span className="font-extrabold tabular-nums">{member?.sessionPoints ?? 0} pts</span></div>
     </div>
+    {exactHitNow && <RevealCutIn key={roundKey} tone="electric" title={DISTANCE_EXACT_HIT_TITLE} subtitle={targetLabel} />}
     {activePhase && <div className="mb-5"><div className="mb-1.5 flex items-center justify-between text-sm font-extrabold"><span className="flex items-center gap-1.5"><Clock3 size={17} /> Tiempo del servidor</span><span className={`tabular-nums ${remaining <= 5 ? 'timer-pulse text-xl text-berry' : ''}`}>{remaining}s</span></div><div className="timer-track h-3 overflow-hidden rounded-full"><div className={`h-full w-full origin-left transition-transform duration-100 motion-reduce:transition-none ${remaining <= 5 ? 'bg-berry' : 'bg-aqua'}`} style={{ transform: `scaleX(${progress / 100})` }} /></div></div>}
     {game.phase === 'ROUND_RESULTS' && game.lastRound && <div className="reveal-pop mb-6 rounded-2xl border border-aqua/45 bg-surface p-4 shadow-card sm:p-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><div><span className="label">Resultado de la ronda</span><h2 className="font-display text-3xl font-bold">{outcome!.title}</h2></div><span className="chip"><Clock3 size={16} /> {Math.max(1, Math.ceil(resultsRemainingMs / 1_000))}s</span></div>
-      <div className="mb-5 grid items-center gap-4 rounded-2xl border border-berry/25 bg-berry/10 p-4 sm:grid-cols-[140px_1fr]">
-        <img src={game.lastRound.targetPokemon.sprite} alt={game.lastRound.targetPokemon.name} className="mx-auto h-32 w-32 object-contain [image-rendering:pixelated]" />
-        <div className="text-center sm:text-left"><span className="label">Pokémon objetivo</span><h3 className="font-display text-3xl font-bold">{game.lastRound.targetPokemon.name}</h3><p className="mt-1 font-display text-2xl font-bold text-berry">#{String(game.lastRound.targetPokemon.nationalDexNumber).padStart(3, '0')}</p></div>
-      </div>
+      <DistanceRuler round={game.lastRound} members={room.members} selfId={selfId} />
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{game.lastRound.eligibleIds.map((playerId) => {
         const selection = game.lastRound!.selections[playerId]; const eliminated = game.lastRound!.eliminatedIds.includes(playerId); const tied = outcome!.showTiedChip(playerId); const exact = selection?.distance === 0; const resultMember = room.members.find((item) => item.id === playerId); const displayName = resultMember?.displayName ?? playerId;
         return <article key={playerId} className={`rounded-2xl border p-4 ${eliminated ? 'border-berry bg-berry/10' : tied ? 'border-electric bg-electric/10' : exact ? 'border-leaf bg-leaf/10' : 'border-ink/10 bg-surface-raised'}`}>
           <div className="mb-3 flex items-center gap-2"><Avatar name={displayName} avatar={resultMember?.avatar} size="sm" /><strong className="min-w-0 flex-1 truncate font-display text-xl">{displayName}</strong>{eliminated && <span className="chip bg-berry/15 text-berry"><UserX size={15} /> Eliminado</span>}{tied && <span className="chip bg-electric/20 text-electric"><AlertTriangle size={15} /> Empate</span>}</div>
-          {selection ? <><div className="flex items-center gap-3"><img src={selection.sprite} alt={selection.pokemonName} className="h-20 w-20 object-contain [image-rendering:pixelated]" /><div><strong className="block font-display text-lg">{selection.pokemonName}</strong><span className="font-extrabold text-ink/70">#{String(selection.dexNumber).padStart(3, '0')}</span></div></div><div className="mt-3 rounded-xl bg-night/40 px-3 py-2 font-extrabold">Distancia: <span className={exact ? 'text-leaf' : 'text-aqua'}>{selection.distance}</span></div>{exact && <p className="mt-2 flex items-center gap-2 font-display font-bold text-leaf"><Crosshair size={18} /> EXACT HIT</p>}</> : <div className="grid min-h-28 place-items-center rounded-xl bg-night/30 text-center"><div><UserX className="mx-auto mb-2 text-berry" /><strong className="text-berry">Sin respuesta</strong></div></div>}
+          {selection ? <><div className="flex items-center gap-3"><img src={selection.sprite} alt={selection.pokemonName} className="h-20 w-20 object-contain [image-rendering:pixelated]" /><div><strong className="block font-display text-lg">{selection.pokemonName}</strong><span className="font-extrabold tabular-nums text-ink/70">{formatDexNumber(selection.dexNumber)}</span></div></div><div className="mt-3 rounded-xl bg-night/40 px-3 py-2 font-extrabold">Distancia: <span className={`tabular-nums ${exact ? 'text-leaf' : 'text-aqua'}`}>{selection.distance}</span></div>{exact && <p className="mt-2 flex items-center gap-2 font-display font-bold text-leaf"><Crosshair size={18} /> {DISTANCE_EXACT_HIT_TITLE}</p>}</> : <div className="grid min-h-28 place-items-center rounded-xl bg-night/30 text-center"><div><UserX className="mx-auto mb-2 text-berry" /><strong className="text-berry">Sin respuesta</strong></div></div>}
         </article>;
       })}</div>
       {outcome!.note && <p className="mt-4 rounded-2xl bg-electric/15 p-3 text-center font-extrabold text-electric">{outcome!.note}</p>}
     </div>}
     {game.phase !== 'ROUND_RESULTS' && <div className="grid gap-5 lg:grid-cols-[340px_1fr]">
       <aside className="card !p-4"><div className="mb-3 flex items-center justify-between"><h2 className="font-display text-xl font-bold">En la ronda</h2><span className="chip">{game.survivorIds.length} siguen</span></div><PlayerList members={room.members} game={game} selfId={selfId} /></aside>
-      <div>{activePhase && eligible && !hasSelection ? <PokemonSelector pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set(game.lockedPokemonIds)} disabled={false} onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId })} /> : <div className={`card grid min-h-[280px] place-items-center text-center ${playerState?.exactHit ? '!border-leaf bg-leaf/10' : ''}`}><div>{member?.role === 'SPECTATOR' || !eligible ? <><Eye className="mx-auto text-aqua" size={48} /><h2 className="mt-4 font-display text-2xl font-bold">Estás observando</h2><p className="mt-2 font-bold text-ink/65">{distanceSpectatorHint(config.selectionVisibility)}</p></> : hasSelection && playerState?.exactHit ? <div className="reveal-pop"><div className="mx-auto grid h-24 w-24 place-items-center rounded-full border-4 border-leaf bg-leaf/20 text-leaf shadow-[0_0_40px_rgba(77,210,140,.35)]"><Crosshair size={52} /></div><span className="label mt-5 text-leaf">Distancia 0</span><h2 className="mt-1 font-display text-4xl font-bold text-leaf">¡EXACT HIT!</h2><p className="mt-2 font-bold text-ink/60">Has elegido exactamente el Pokémon objetivo.</p><span className="chip mt-4 bg-leaf/15 text-leaf">Selección bloqueada ✓</span></div> : hasSelection ? <><div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-leaf/20 text-4xl">✓</div><h2 className="mt-4 font-display text-2xl font-bold">¡Selección confirmada!</h2><p className="mt-2 font-bold text-ink/65">Ya está bloqueada en el servidor.</p></> : <><Clock3 className="mx-auto text-aqua" size={48} /><h2 className="mt-4 font-display text-2xl font-bold">Siguiente ronda en breve…</h2></>}</div></div>}</div>
+      <div>{activePhase && eligible && !hasSelection ? <PokemonSelector pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set(game.lockedPokemonIds)} disabled={false} onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId })} /> : <div className={`card grid min-h-[280px] place-items-center text-center ${playerState?.exactHit ? '!border-leaf bg-leaf/10' : ''}`}><div>{member?.role === 'SPECTATOR' || !eligible ? <><Eye className="mx-auto text-aqua" size={48} /><h2 className="mt-4 font-display text-2xl font-bold">Estás observando</h2><p className="mt-2 font-bold text-ink/65">{distanceSpectatorHint(config.selectionVisibility)}</p></> : hasSelection && playerState?.exactHit ? <div className="reveal-pop"><div className="mx-auto grid h-24 w-24 place-items-center rounded-full border-4 border-leaf bg-leaf/20 text-leaf shadow-card"><Crosshair size={52} /></div><span className="label mt-5 text-leaf">Distancia 0</span><h2 className="mt-1 font-display text-4xl font-bold text-leaf">{DISTANCE_EXACT_HIT_TITLE}</h2><p className="mt-2 font-bold text-ink/60">Has elegido exactamente el Pokémon objetivo.</p><span className="chip mt-4 bg-leaf/15 text-leaf">Selección bloqueada ✓</span></div> : hasSelection ? <><div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-leaf/20 text-4xl">✓</div><h2 className="mt-4 font-display text-2xl font-bold">¡Selección confirmada!</h2><p className="mt-2 font-bold text-ink/65">Ya está bloqueada en el servidor.</p></> : <><Clock3 className="mx-auto text-aqua" size={48} /><h2 className="mt-4 font-display text-2xl font-bold">Siguiente ronda en breve…</h2></>}</div></div>}</div>
     </div>}
   </section>;
 }

@@ -459,7 +459,7 @@ test('pokedex-distance: elección de los rivales oculta y panel de visibilidad',
     await buscador.fill('Pikachu', { timeout: 20_000 });
     // El catálogo del buscador llega por HTTP: se espera a la coincidencia antes de elegirla.
     await eligeAntes!.page.getByRole('button', { name: 'Pikachu', exact: true }).click({ timeout: 10_000 });
-    await expect(eligeAntes!.page.getByRole('heading', { name: /Selección confirmada|EXACT HIT/ })).toBeVisible({ timeout: 10_000 });
+    await expect(eligeAntes!.page.getByRole('heading', { name: /Selección confirmada|Acierto exacto/ })).toBeVisible({ timeout: 10_000 });
     const yaHaElegido = host.page.getByText('✓ Ya ha elegido', { exact: true });
     await expect(yaHaElegido).toHaveCount(1, { timeout: 10_000 });
     await expect(host.page.getByText(/→ Pikachu/)).toHaveCount(0);
@@ -547,6 +547,8 @@ test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
     await expect(host.page.getByText('Resultado de la ronda')).toHaveCount(0);
     await expect(enLaRonda).toBeVisible();
     await expect(tercero.page.getByText(DISTANCE_PICKED, { exact: true })).toHaveCount(2);
+    // Contador junto a «Ronda N»: sale de `selectedIds`, así que dice cuántos han elegido y nunca qué.
+    await expect(tercero.page.getByText('2 de 3 han elegido', { exact: true })).toBeVisible();
     await elegirPokemon(tercero.page, 'Charmander');
 
     await expect(host.page.getByText('Resultado de la ronda')).toBeVisible({ timeout: 15_000 });
@@ -554,6 +556,20 @@ test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
     const tarjeta = host.page.locator('article').filter({ hasText: tercero.name });
     await expect(tarjeta).toContainText('Charmander');
     await expect(tarjeta).not.toContainText('Sin respuesta');
+    // Revelación: regla con el objetivo en el centro y un marcador por jugador (6 s en pantalla). La suite fija la
+    // reducción de movimiento: los marcadores no animan; sin ella entran con `motion-enter-up`. Se vuelve a reducir
+    // antes de capturar, porque reactivarla reinicia la entrada (opacidad 0) y la captura la mediría a medias.
+    const regla = host.page.getByTestId('distance-ruler');
+    await expect(regla).toBeVisible();
+    const marcadores = regla.getByTestId('distance-ruler-marker');
+    await expect(marcadores).toHaveCount(3);
+    await expect(regla.getByText(new RegExp(`^${tercero.name}: #004, (a \\d+|acierto exacto)`))).toHaveCount(1);
+    expect(await animacionDe(marcadores.first()), 'marcador con reducción de movimiento').toBe('none');
+    await conMovimiento(host.page);
+    expect(await animacionDe(marcadores.first()), 'marcador con movimiento').toBe('motion-enter-up');
+    await host.page.emulateMedia({ reducedMotion: 'reduce' });
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-pokedex-distance-revelacion', { sigue: regla, claro: true });
     expect(antiguas, 'peticiones a /api/pokemon').toEqual([]);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
@@ -609,7 +625,7 @@ test('pokedex-distance: buscador sin coincidencias', async ({ browser }) => {
     await alerta.getByRole('button', { name: 'Reintentar' }).click();
     await expect(alerta).toHaveCount(0, { timeout: 10_000 });
     await elegirPokemon(invitado.page, 'Pikachu');
-    await expect(invitado.page.getByRole('heading', { name: /Selección confirmada|EXACT HIT/ })).toBeVisible({ timeout: 10_000 });
+    await expect(invitado.page.getByRole('heading', { name: /Selección confirmada|Acierto exacto/ })).toBeVisible({ timeout: 10_000 });
     expect(host.errors, host.name).toEqual([]);
   } finally {
     await sala.cerrar();

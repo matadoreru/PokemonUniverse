@@ -6,6 +6,9 @@ export const DISTANCE_SELECTION_VISIBILITY_LABEL = 'Elecciones de los rivales';
 /** Botones del panel de configuración para cada modo de visibilidad. */
 export const distanceSelectionVisibilityLabels: Record<PokedexDistanceSelectionVisibility, string> = { HIDDEN: 'Ocultas', LIVE: 'Visibles' };
 
+/** Cut-in y tarjeta de quien acierta el número exacto del objetivo. */
+export const DISTANCE_EXACT_HIT_TITLE = '¡Acierto exacto!';
+
 /** Estado de un jugador que ya ha elegido cuando las elecciones de los rivales están ocultas. */
 export const DISTANCE_HIDDEN_PICKED_LABEL = '✓ Ya ha elegido';
 
@@ -54,4 +57,9 @@ export function distanceRoundOutcome(round: Pick<PokedexDistancePublicState['las
     note,
     showTiedChip: (playerId) => round.tiedIds.includes(playerId) && !(forcedTie && round.eliminatedIds.includes(playerId)),
   };
+}
+
+/** Cuántos de los que juegan la ronda ya han elegido (solo `selectedIds`: nunca qué). */
+export function distancePickedCountText(selected: number, eligible: number): string {
+  return `${selected} de ${eligible} ${selected === 1 ? 'ha' : 'han'} elegido`;
 }

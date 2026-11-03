@@ -244,6 +244,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .score-pop { @apply inline-block text-sm font-black tabular-nums; color: rgb(var(--cut-in-text, var(--color-ink))); }
 .score-pop-anim { animation: score-pop 400ms cubic-bezier(.16,1,.3,1) both; }
 @keyframes score-pop { 0% { opacity: 0; transform: translateY(0); } 35% { opacity: 1; } 100% { opacity: 0; transform: translateY(-.75rem); } }
+/* Regla de la revelación de Pokédex Distance: el objetivo en el 50 % y cada respuesta a su distancia, en carriles de 4 rem. */
+.distance-ruler-lanes { position: relative; }
+.distance-ruler-marker { position: absolute; display: flex; flex-direction: column; align-items: center; transform: translateX(-50%); }
+.distance-ruler-stem { position: absolute; left: 50%; top: 100%; width: 2px; margin-left: -1px; background: rgb(var(--color-ink) / .22); }
+.distance-ruler-track { position: relative; height: .375rem; border-radius: 9999px; background: rgb(var(--color-ink) / .18); }
+.distance-ruler-tick { position: absolute; top: -.25rem; width: 2px; height: .875rem; margin-left: -1px; border-radius: 1px; background: rgb(var(--color-ink) / .3); }
+.distance-ruler-tick-target { top: -.5rem; width: 4px; height: 1.375rem; margin-left: -2px; background: rgb(var(--color-berry)); }
 /* Reducción de movimiento global: apaga todas las animaciones y transiciones en un único sitio. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }

@@ -2,7 +2,7 @@ import type { PokedexDistancePublicState } from '@pokemon-universe/shared/public
 import { describe, expect, it } from 'vitest';
 import {
   DISTANCE_HIDDEN_PICKED_LABEL, DISTANCE_SELECTION_VISIBILITY_LABEL, distanceMemberStatus, distanceSelectionVisibilityLabels,
-  distanceRoundOutcome, distanceSpectatorHint,
+  DISTANCE_EXACT_HIT_TITLE, distancePickedCountText, distanceRoundOutcome, distanceSpectatorHint,
 } from './pokedex-distance-selection';
 
 function game(overrides: Partial<PokedexDistancePublicState>): PokedexDistancePublicState {
@@ -69,5 +69,19 @@ describe('distanceRoundOutcome', () => {
   it('una eliminación normal y una sin respuesta no llevan nota', () => {
     expect(distanceRoundOutcome({ ...base, reason: 'FARTHEST', eliminatedIds: ['p3'] })).toMatchObject({ title: '📏 Distancias calculadas', note: null });
     expect(distanceRoundOutcome({ ...base, reason: 'NO_RESPONSE', eliminatedIds: ['p3'] })).toMatchObject({ title: '⏱️ Tiempo agotado', note: null });
+  });
+});
+
+describe('distancePickedCountText', () => {
+  it('concuerda el verbo con cuántos han elegido', () => {
+    expect(distancePickedCountText(2, 3)).toBe('2 de 3 han elegido');
+    expect(distancePickedCountText(1, 2)).toBe('1 de 2 ha elegido');
+    expect(distancePickedCountText(0, 3)).toBe('0 de 3 han elegido');
+  });
+});
+
+describe('acierto exacto', () => {
+  it('se anuncia en español', () => {
+    expect(DISTANCE_EXACT_HIT_TITLE).toBe('¡Acierto exacto!');
   });
 });
