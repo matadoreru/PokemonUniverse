@@ -24,7 +24,10 @@ describe('typeDuelResultText', () => {
   it('DISCONNECTED names who left', () => {
     expect(typeDuelResultText(round({ reason: 'DISCONNECTED', disconnectedIds: ['p2'] }), participants, nameOf)).toEqual({ title: 'Duelo anulado', detail: 'Bruno se desconectó.' });
   });
+  it('DISCONNECTED names both duelists when both left', () => {
+    expect(typeDuelResultText(round({ reason: 'DISCONNECTED', disconnectedIds: ['p1', 'p2'] }), participants, nameOf)).toEqual({ title: 'Duelo anulado', detail: 'Ana y Bruno se desconectaron.' });
+  });
   it('INVALID_COMBINATION explains the three impossible tries', () => {
-    expect(typeDuelResultText(round({ reason: 'INVALID_COMBINATION', requiredTypes: ['dragon', 'fairy'] }), participants, nameOf)).toEqual({ title: 'Combinación imposible', detail: 'Tres intentos sin ningún Pokémon válido: el duelo cuenta sin puntos.' });
+    expect(typeDuelResultText(round({ reason: 'INVALID_COMBINATION', requiredTypes: ['dragon', 'fairy'] }), participants, nameOf)).toEqual({ title: 'Combinación imposible', detail: 'Ninguna combinación elegida tenía Pokémon válidos: el duelo cuenta sin puntos.' });
   });
 });

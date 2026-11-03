@@ -22,6 +22,6 @@ export function typeDuelResultText(lastRound: TypeDuelRoundResult, participants:
       return { title: 'Duelo anulado', detail };
     }
     case 'INVALID_COMBINATION':
-      return { title: 'Combinación imposible', detail: 'Tres intentos sin ningún Pokémon válido: el duelo cuenta sin puntos.' };
+      return { title: 'Combinación imposible', detail: 'Ninguna combinación elegida tenía Pokémon válidos: el duelo cuenta sin puntos.' };
   }
 }

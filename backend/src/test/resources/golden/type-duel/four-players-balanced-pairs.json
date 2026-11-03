@@ -297,6 +297,7 @@
         "revealedTypes": {},
         "requiredTypes": null,
         "invalidCombinations": 0,
+        "finalSelectionCycle": false,
         "attempts": [],
         "scores": {
           "p1": 0,
@@ -375,6 +376,7 @@
         "revealedTypes": {},
         "requiredTypes": null,
         "invalidCombinations": 0,
+        "finalSelectionCycle": false,
         "attempts": [],
         "scores": {
           "p1": 0,
@@ -455,6 +457,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -543,6 +546,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -625,6 +629,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -707,6 +712,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -790,6 +796,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -880,6 +887,7 @@
               "steel"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -969,6 +977,7 @@
               "steel"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1060,6 +1069,7 @@
               "steel"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1151,6 +1161,7 @@
               "steel"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1242,6 +1253,7 @@
               "steel"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1333,6 +1345,7 @@
               "steel"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1424,6 +1437,7 @@
               "steel"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1515,6 +1529,7 @@
               "steel"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1605,6 +1620,7 @@
               "steel"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [
               {
                 "playerId": "p3",
@@ -1734,6 +1750,7 @@
               "steel"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [
               {
                 "playerId": "p3",
@@ -1852,6 +1869,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1932,6 +1950,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2015,6 +2034,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2099,6 +2119,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2188,6 +2209,7 @@
               "electric"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2278,6 +2300,7 @@
               "electric"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2366,6 +2389,7 @@
               "electric"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2454,6 +2478,7 @@
               "electric"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2578,6 +2603,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2660,6 +2686,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2743,6 +2770,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2827,6 +2855,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2916,6 +2945,7 @@
               "psychic"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -3004,6 +3034,7 @@
               "psychic"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -3092,6 +3123,7 @@
               "psychic"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -3234,6 +3266,7 @@
               "psychic"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,

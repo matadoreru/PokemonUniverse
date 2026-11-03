@@ -233,6 +233,7 @@
         "revealedTypes": {},
         "requiredTypes": null,
         "invalidCombinations": 0,
+        "finalSelectionCycle": false,
         "attempts": [],
         "scores": {
           "p1": 0,
@@ -291,6 +292,7 @@
         "revealedTypes": {},
         "requiredTypes": null,
         "invalidCombinations": 0,
+        "finalSelectionCycle": false,
         "attempts": [],
         "scores": {
           "p1": 0,
@@ -354,6 +356,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -424,6 +427,7 @@
               "fairy"
             ],
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -484,6 +488,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -547,6 +552,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -617,6 +623,7 @@
               "fairy"
             ],
             "invalidCombinations": 2,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -677,6 +684,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 2,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -740,6 +748,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 2,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -810,6 +819,7 @@
               "flying"
             ],
             "invalidCombinations": 2,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -879,6 +889,7 @@
               "flying"
             ],
             "invalidCombinations": 2,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -949,6 +960,7 @@
               "flying"
             ],
             "invalidCombinations": 2,
+            "finalSelectionCycle": false,
             "attempts": [
               {
                 "playerId": "p1",
@@ -1053,6 +1065,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 5,
@@ -1116,6 +1129,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 5,
@@ -1186,6 +1200,7 @@
               "fairy"
             ],
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 5,
@@ -1246,6 +1261,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 5,
@@ -1309,6 +1325,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 5,
@@ -1379,6 +1396,7 @@
               "flying"
             ],
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 5,
@@ -1448,6 +1466,7 @@
               "flying"
             ],
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 5,
@@ -1518,6 +1537,7 @@
               "flying"
             ],
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [
               {
                 "playerId": "p2",
@@ -1622,6 +1642,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": true,
             "attempts": [],
             "scores": {
               "p1": 5,
@@ -1685,6 +1706,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": true,
             "attempts": [],
             "scores": {
               "p1": 5,
@@ -1755,6 +1777,7 @@
               "fairy"
             ],
             "invalidCombinations": 1,
+            "finalSelectionCycle": true,
             "attempts": [],
             "scores": {
               "p1": 5,
@@ -1824,6 +1847,7 @@
               "fairy"
             ],
             "invalidCombinations": 1,
+            "finalSelectionCycle": true,
             "attempts": [],
             "scores": {
               "p1": 5,
@@ -1907,6 +1931,7 @@
               "fairy"
             ],
             "invalidCombinations": 1,
+            "finalSelectionCycle": true,
             "attempts": [],
             "scores": {
               "p1": 5,

@@ -199,6 +199,7 @@
         "revealedTypes": {},
         "requiredTypes": null,
         "invalidCombinations": 0,
+        "finalSelectionCycle": false,
         "attempts": [],
         "scores": {
           "p1": 0,
@@ -257,6 +258,7 @@
         "revealedTypes": {},
         "requiredTypes": null,
         "invalidCombinations": 0,
+        "finalSelectionCycle": false,
         "attempts": [],
         "scores": {
           "p1": 0,
@@ -320,6 +322,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -390,6 +393,7 @@
               "fairy"
             ],
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -450,6 +454,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -513,6 +518,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -583,6 +589,7 @@
               "fairy"
             ],
             "invalidCombinations": 2,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -643,6 +650,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 2,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -706,6 +714,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 2,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -776,6 +785,7 @@
               "fairy"
             ],
             "invalidCombinations": 3,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -845,6 +855,7 @@
               "fairy"
             ],
             "invalidCombinations": 3,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -920,6 +931,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": true,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -983,6 +995,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": true,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1053,6 +1066,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": true,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1122,6 +1136,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": true,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1192,6 +1207,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": true,
             "attempts": [
               {
                 "playerId": "p1",
@@ -1271,6 +1287,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": true,
             "attempts": [
               {
                 "playerId": "p1",
@@ -1359,6 +1376,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": true,
             "attempts": [
               {
                 "playerId": "p1",
@@ -1446,6 +1464,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": true,
             "attempts": [
               {
                 "playerId": "p1",
@@ -1590,6 +1609,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": true,
             "attempts": [
               {
                 "playerId": "p1",

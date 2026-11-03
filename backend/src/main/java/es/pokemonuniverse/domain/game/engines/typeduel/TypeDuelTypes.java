@@ -283,6 +283,7 @@ public final class TypeDuelTypes {
       Map<String, String> revealedTypes,
       @Nullable List<String> requiredTypes,
       int invalidCombinations,
+      boolean finalSelectionCycle,
       List<TypeDuelAttempt> attempts,
       Map<String, Integer> scores,
       @Nullable Long roundStartedAt,

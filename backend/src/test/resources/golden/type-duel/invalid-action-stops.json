@@ -90,6 +90,7 @@
         "revealedTypes": {},
         "requiredTypes": null,
         "invalidCombinations": 0,
+        "finalSelectionCycle": false,
         "attempts": [],
         "scores": {
           "p1": 0,
@@ -148,6 +149,7 @@
         "revealedTypes": {},
         "requiredTypes": null,
         "invalidCombinations": 0,
+        "finalSelectionCycle": false,
         "attempts": [],
         "scores": {
           "p1": 0,
@@ -211,6 +213,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,

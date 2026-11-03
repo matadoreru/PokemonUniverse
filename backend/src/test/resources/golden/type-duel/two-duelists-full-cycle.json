@@ -292,6 +292,7 @@
         "revealedTypes": {},
         "requiredTypes": null,
         "invalidCombinations": 0,
+        "finalSelectionCycle": false,
         "attempts": [],
         "scores": {
           "p1": 0,
@@ -350,6 +351,7 @@
         "revealedTypes": {},
         "requiredTypes": null,
         "invalidCombinations": 0,
+        "finalSelectionCycle": false,
         "attempts": [],
         "scores": {
           "p1": 0,
@@ -412,6 +414,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -475,6 +478,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -539,6 +543,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -609,6 +614,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -680,6 +686,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -751,6 +758,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -820,6 +828,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -889,6 +898,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -959,6 +969,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [
               {
                 "playerId": "p1",
@@ -1039,6 +1050,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [
               {
                 "playerId": "p1",
@@ -1119,6 +1131,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [
               {
                 "playerId": "p1",
@@ -1198,6 +1211,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [
               {
                 "playerId": "p1",
@@ -1328,6 +1342,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [
               {
                 "playerId": "p1",
@@ -1458,6 +1473,7 @@
               "flying"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [
               {
                 "playerId": "p1",
@@ -1578,6 +1594,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1641,6 +1658,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1711,6 +1729,7 @@
               "fairy"
             ],
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1780,6 +1799,7 @@
               "fairy"
             ],
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1840,6 +1860,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1903,6 +1924,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1967,6 +1989,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2029,6 +2052,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 1,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2099,6 +2123,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2162,6 +2187,7 @@
             "revealedTypes": {},
             "requiredTypes": null,
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2231,6 +2257,7 @@
               "water"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2299,6 +2326,7 @@
               "water"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2369,6 +2397,7 @@
               "water"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2437,6 +2466,7 @@
               "water"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2561,6 +2591,7 @@
               "water"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2683,6 +2714,7 @@
               "water"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2841,6 +2873,7 @@
               "water"
             ],
             "invalidCombinations": 0,
+            "finalSelectionCycle": false,
             "attempts": [],
             "scores": {
               "p1": 0,

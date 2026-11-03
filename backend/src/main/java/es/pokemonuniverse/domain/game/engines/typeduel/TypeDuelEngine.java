@@ -336,6 +336,7 @@ public final class TypeDuelEngine
         reveal ? state.typeSelections() : Map.of(),
         reveal ? state.requiredTypes() : null,
         state.invalidCombinations(),
+        state.selectionCycles() >= state.config().rounds() * 2,
         state.attempts(), state.scores(), state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(),
         resultsPhase ? state.lastRound() : null,
         state.phase() == GamePhase.GAME_RESULTS ? TypeDuelRules.buildTypeDuelResults(state) : null);
