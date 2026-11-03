@@ -22,7 +22,7 @@ export interface CardProps {
 /** Carta de Pokémon; con `onSelect` es un botón conmutador. Correcta/incorrecta llevan icono y texto además del color. */
 export function Card({ sprite, name, number, types, state = 'idle', onSelect, children }: CardProps) {
   // Suena al pasar a `revealing` (la carta se da la vuelta).
-  const before = useRef<CardState>('idle');
+  const before = useRef<CardState>(state);
   useEffect(() => {
     if (state === 'revealing' && before.current !== 'revealing') audio.play('game.flip');
     before.current = state;

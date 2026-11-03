@@ -36,3 +36,12 @@ describe('countdownCue', () => {
     expect(countdownCue(null, 0, null)).toBeNull();
   });
 });
+
+describe('countdownCue con milisegundos restantes (ServerTimer)', () => {
+  it('equivale a deadline - restante', () => {
+    const deadline = 50_000;
+    expect(countdownCue(deadline, deadline - 2_400, null)).toBe(3);
+    expect(countdownCue(deadline, deadline - 3_000, null)).toBe(3);
+    expect(countdownCue(deadline, deadline - 3_001, null)).toBe(4 > 3 ? null : 0);
+  });
+});
