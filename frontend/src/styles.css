@@ -195,7 +195,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .shiny-option-state { animation: shiny-state-in 180ms cubic-bezier(.16,1,.3,1) both; }
 .shiny-sprite-stage { flex: none; height: clamp(8.25rem, 37vw, 13rem); margin-block: .125rem; overflow: hidden; border-radius: .75rem; background: rgb(var(--color-night) / .12); }
 .shiny-sprite { image-rendering: crisp-edges; image-rendering: pixelated; }
-.shiny-timer-bar { transition: transform 100ms linear, background-color 180ms ease; }
+.shiny-timer-bar { transition: transform 100ms linear; }
 .shiny-timer-critical { box-shadow: 0 4px 16px rgb(var(--color-berry) / .18); animation: shiny-timer-critical .4s ease-in-out infinite alternate; }
 .shiny-score-update { animation: shiny-score-update 360ms cubic-bezier(.16,1,.3,1) both; }
 .shiny-round-result { animation: shiny-result-in 280ms cubic-bezier(.16,1,.3,1) both; }
@@ -206,7 +206,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (min-width: 640px) { .shiny-sprite-stage { height: clamp(11rem, 24vw, 14.5rem); } }
 @media (min-width: 1024px) { .shiny-sprite-stage { height: clamp(15.5rem, 18vw, 16rem); } }
 @media (max-width: 380px) { .shiny-option-card { min-height: 13.5rem; } .shiny-sprite-stage { height: 7.75rem; } }
-.pokeddle-feedback { height: 100%; transition: background-color .18s ease, color .18s ease; }
+.pokeddle-feedback { height: 100%; }
 .pokeddle-row-enter { animation: pokeddle-row-enter .38s cubic-bezier(.2,.8,.3,1); }
 @keyframes pokeddle-row-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 .pokeddle-timer-urgent { animation: pokeddle-timer-urgent .4s ease-in-out infinite alternate; }

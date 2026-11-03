@@ -5,7 +5,7 @@
  * comprobación de que la partida sale del lobby y pinta su pantalla sin desbordes a 1280×720.
  */
 import { readFileSync } from 'node:fs';
-import { expect, test, type Locator, type Page, type Response } from '@playwright/test';
+import { expect, test, type Locator, type Page, type Response, type Route } from '@playwright/test';
 import { animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, introDePartida, layoutProblems, psql, saltarIntro, seleccionarJuego, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
 
 interface Manifest {
@@ -232,6 +232,13 @@ test('type-duel: resultado con tipos', async ({ browser }) => {
     await expect(buscador).toBeVisible({ timeout: 10_000 });
     await duelistas[0]!.setViewportSize({ width: 390, height: 844 });
     await expect(buscador).toBeInViewport();
+    // Al escribir, el campo y los dos primeros candidatos caben enteros en la pantalla sin desplazarla.
+    await buscador.fill('char');
+    const candidatos = duelistas[0]!.locator('.pokemon-selector-results button');
+    await expect(candidatos.first()).toBeVisible({ timeout: 10_000 });
+    expect(await duelistas[0]!.evaluate(() => window.scrollY), 'desplazamiento al buscar').toBe(0);
+    await expect(buscador).toBeInViewport({ ratio: 1 });
+    for (const n of [0, 1]) await expect(candidatos.nth(n), `candidato ${n + 1} entero a 390×844`).toBeInViewport({ ratio: 1 });
     const busqueda = await layoutProblems(duelistas[0]!, 'juego-type-duel-vs-busqueda', true);
     expect(busqueda.problems, `${busqueda.id}: encaje y legibilidad`).toEqual([]);
     await duelistas[0]!.setViewportSize({ width: 1280, height: 720 });
@@ -815,6 +822,47 @@ test('pokedex-distance: buscador sin coincidencias', async ({ browser }) => {
   }
 });
 
+test('pokedex-entry-guess: buscador cargando, con error y reintento', async ({ browser }) => {
+  // Uno de los juegos con el buscador fuera de los 6 de la Fase 2: la carga, el error y «Reintentar» llegan igual.
+  test.setTimeout(90_000);
+  const sala = await crearSalaConJugadores(browser, 2);
+  try {
+    const { host, invitados } = sala;
+    const [invitado] = invitados as [Jugador];
+    await seleccionarJuego(host.page, 'Pokédex Entry Guess');
+    // El catálogo del invitado se retiene (carga), luego falla (error) y, tras «Reintentar», pasa.
+    let estado: 'retener' | 'fallar' | 'pasar' = 'retener';
+    const retenidas: Route[] = [];
+    await invitado.page.route((url) => url.pathname === SELECTOR_PATH, async (route) => {
+      if (estado === 'retener') retenidas.push(route);
+      else if (estado === 'fallar') await route.abort('connectionrefused');
+      else await route.fallback();
+    });
+    await iniciarPartida(host.page, [invitado.page]);
+
+    const cargando = invitado.page.getByRole('status').filter({ hasText: 'Cargando Pokémon…' });
+    await expect(cargando).toBeVisible({ timeout: 20_000 });
+    await expect(cargando).toHaveAttribute('aria-busy', 'true');
+    estado = 'fallar';
+    for (const route of retenidas.splice(0)) await route.abort('connectionrefused').catch(() => undefined);
+
+    const alerta = invitado.page.getByRole('alert').filter({ hasText: 'No se pudo cargar el buscador de Pokémon.' });
+    await expect(alerta).toBeVisible({ timeout: 10_000 });
+    await expect(cargando).toHaveCount(0);
+    estado = 'pasar';
+    await alerta.getByRole('button', { name: 'Reintentar' }).click({ timeout: 10_000 });
+    await expect(alerta).toHaveCount(0, { timeout: 10_000 });
+    const buscador = invitado.page.getByRole('textbox', { name: /^Buscar respuesta para la ronda \d+$/ });
+    await expect(buscador).toBeFocused();
+    await buscador.fill('Pikachu');
+    await expect(invitado.page.locator('.pokemon-selector-results button').filter({ hasText: 'Pikachu' }).first()).toBeVisible({ timeout: 10_000 });
+    // El invitado registra en consola el fallo de red provocado; el host no ve ningún error.
+    expect(host.errors, host.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
 test('pokedex-distance: empate forzado tras tres desempates', async ({ browser }) => {
   test.setTimeout(120_000);
   const sala = await crearSalaConJugadores(browser, 2);
@@ -919,8 +967,19 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     expect(await animacionDe(correcta(host.page))).toBe('motion-flip');
     expect(await animacionDe(correcta(invitado.page))).toBe('none');
     expect(await animacionDe(franja(invitado.page))).toBe('none');
+    // Una sola franja visible en cada tamaño: bajo la rejilla en móvil y en la columna lateral, a la derecha de la rejilla, en lg.
+    for (const { w, h } of SIZES) {
+      await invitado.page.setViewportSize({ width: w, height: h });
+      await expect(franja(invitado.page), `franjas visibles a ${w}×${h}`).toHaveCount(1);
+      const tira = await franja(invitado.page).boundingBox();
+      const rejilla = await invitado.page.locator('.shiny-option-grid').boundingBox();
+      expect(tira && rejilla, 'cajas de la franja y la rejilla').toBeTruthy();
+      if (w >= 1024) expect(tira!.x, `franja en la columna lateral a ${w}×${h}`).toBeGreaterThanOrEqual(rejilla!.x + rejilla!.width);
+      else expect(tira!.y, `franja bajo la rejilla a ${w}×${h}`).toBeGreaterThanOrEqual(rejilla!.y + rejilla!.height);
+    }
+    await invitado.page.setViewportSize({ width: 1280, height: 720 });
     await invitado.page.evaluate(() => window.scrollTo(0, 0));
-    // Página completa: la franja «Antes / después» queda bajo la rejilla.
+    // Página completa: la franja «Antes / después» queda bajo la rejilla en móvil y en la columna lateral en lg.
     await capturarTamanos(invitado.page, 'juego-shiny-vote-revelacion', { sigue: franja(invitado.page), claro: true, completa: true });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {

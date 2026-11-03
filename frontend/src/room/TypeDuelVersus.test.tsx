@@ -9,7 +9,7 @@ describe('TypeDuelVersus', () => {
     const html = renderToStaticMarkup(<TypeDuelVersus duelists={duelists} requiredTypes={['bug', 'fighting']} solutionCount={1} />);
     expect(html).toMatch(/motion-enter-left[^>]*>.*Ana/);
     expect(html).toMatch(/motion-enter-right[^>]*>.*Bruno/);
-    expect(html).toMatch(/class="[^"]*font-display[^"]*text-4xl[^"]*motion-bump[^"]*"[^>]*>VS</);
+    expect(html).toMatch(/class="[^"]*font-display[^"]*text-3xl[^"]*motion-bump[^"]*sm:text-4xl[^"]*"[^>]*>VS</);
     expect(html).toContain('1 Pokémon tiene esta combinación');
     expect(html).toContain('Objetivo exacto');
   });

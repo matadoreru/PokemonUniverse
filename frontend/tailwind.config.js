@@ -11,6 +11,10 @@ export default {
     },
     fontFamily: { display: ['Fredoka', 'ui-rounded', 'system-ui'], body: ['Nunito', 'system-ui'] },
     boxShadow: { card: 'var(--shadow-card)', pop: '0 4px 0 rgb(var(--color-night) / .8)' },
+    // Presupuesto de movimiento (docs/visual-review.md): ciclos de 400 ms como máximo, solo transform y opacity.
+    // `pulse` alterna la opacidad cada 400 ms y `spin` da la vuelta en 400 ms; la reducción global de styles.css las apaga.
+    animation: { pulse: 'pulse 400ms ease-in-out infinite alternate', spin: 'spin 400ms linear infinite' },
+    keyframes: { pulse: { from: { opacity: '1' }, to: { opacity: '.5' } } },
   } },
   plugins: [],
 };

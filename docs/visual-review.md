@@ -105,14 +105,23 @@ Cambios pendientes, por pantalla y criterio:
 - Portada (d, h): captura en tema claro; el estado vacío sin acción propia que enseñe a jugar.
 - Portada, entrar en partida, lobby y juego (d): capturas en tema claro.
 - Juego (e): capturas a 390 y 1920 (bucle `SIZES` en `sala.spec.ts`).
-- Acceso y entrar en partida (g): `motion-reduce:animate-none` en los `animate-spin` de `AuthPage` y `PlayPage`.
-- Entrar en partida (g): puntos del carrusel con transform en vez de `transition-[width]`.
-- Juego (g): `timer-pulse` solo con transform (hoy anima `color`) y barra del temporizador con `scaleX` o reducida.
 - Lobby (d): `.experimental-badge` usa el literal `#c92a42`; pasarlo a un token (p. ej. `bg-berry`).
-- Juego (d): quitar el literal `#ef476f` de `timer-pulse` y el `rgba(77,210,140,.35)` del brillo de acierto.
 - Acceso (f, c): pestañas de 40 px (`min-h-10`); subir a 44 px con flechas, `aria-controls` y tabpanel (reutilizar `.lobby-tab`).
-- Entrar en partida (f): puntos (`h-2.5`) y flechas (`!min-h-10`) del carrusel a 44 px; `aria-describedby="room-code-help"` apunta a un id inexistente (quitarlo o crear `#room-code-help`); `aria-busy` al entrar.
+- Entrar en partida (f): `aria-describedby="room-code-help"` apunta a un id inexistente (quitarlo o crear `#room-code-help`); `aria-busy` al entrar.
 - Juego (f, h): indicador y `aria-busy` al enviar la selección; estado vacío del buscador que explique la ronda; `.empty-state` para «No hay coincidencias»; `title` en nombres truncados.
 - Lobby (a, b, c, h): «Empezar partida» visible sin scroll a 1280×720; antetítulo coherente con el estado; `tabular-nums` en puntos y contador (también en el juego); error con `.status-error` en vez del toast propio; acción para limpiar la búsqueda vacía.
 - Acceso (b): traducir el error del servidor de login («Invalid email or password»); el de sala inexistente («Room not found») también llega en inglés.
 - Entrar en partida (e): evitar el hueco de la tarjeta izquierda a 1280/1920.
+
+Resueltos en la Fase 2 de minijuegos (las notas de arriba no se han vuelto a puntuar):
+
+- Juego (g): `timer-pulse` y los pulsos de urgencia de Shiny y Pokédle animan solo `transform` (≤ 400 ms por ciclo),
+  sin el literal `#ef476f` ni el brillo `rgba(77,210,140,.35)`; las barras de tiempo usan `scaleX`; la de Shiny y las
+  casillas de Pokédle ya no hacen transición de color.
+- Acceso, entrar en partida y juego (g): `animate-spin` y `animate-pulse` (`tailwind.config.js`) duran 400 ms por
+  ciclo y solo cambian `transform`/`opacity`; la regla global de `prefers-reduced-motion` de `styles.css` los apaga.
+- Entrar en partida (g, f): puntos del carrusel (`HowToPlayCarousel`) con `scale-x` en vez de `transition-[width]` y
+  puntos y flechas de 44 px.
+- Juego (b): `ServerTimer`, `Avatar` `xs` y las insignias de Shiny, Pokédle Race y Learnset ya no bajan de 12 px.
+  Siguen a `text-[9px]`–`text-[11px]` partes de juegos fuera de la Fase 2 (Pokédle, Who's That, Guess from Stats,
+  Pokédex Entry, Type Chain, Team/Bluff Auction, Most Likely To, One of Us Is Fake, Quién es Quién).

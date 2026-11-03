@@ -84,12 +84,15 @@ consola y que a 1280×720 no hay scroll horizontal (`measureLayout` se anota, ve
   `screenshots/juego-<id>-<ancho>x<alto>.png` a los tres tamaños, antes de la aserción de encaje.
 - **Encaje**: a 1280×720 el scroll horizontal siempre hace fallar el test, pero lo que encuentre
   `measureLayout` se adjunta como anotación `encaje` del test y no lo hace fallar. Para la pasada de
-  contrato (`measureLayout` vacío), `PU_LAYOUT_STRICT=1 npm run test:e2e -- juegos`. Hoy esa pasada
-  falla en la mayoría de juegos por deuda de UI previa: etiquetas de `ServerTimer` y similares a
-  `text-[10px]`, iniciales de `Avatar` `xs` a `text-[9px]` y la cabecera fija tapando contenido cuando
-  el autofoco del buscador desplaza la página. Además, 8 juegos no muestran el título del manifest en
-  pantalla (anotación `pantalla`). Es deuda para el responsable de la UI, no de la etapa 2B
-  (`docs/migracion-java-pendientes.md`).
+  contrato (`measureLayout` vacío), `PU_LAYOUT_STRICT=1 npm run test:e2e -- juegos` (con filtro `-g`, lánzalo desde
+  `e2e/` con `npx playwright test juegos -g …`: `npm run` lee `-g` como `--global`). Estado de la pasada estricta
+  (2026-11-03, Fase 2 de minijuegos): los 6 minijuegos de la fase (`pokedex-distance`, `shiny-vote`,
+  `pokemon-impostor`, `higher-lower`, `type-duel`, `learnset-guess`) y sus tests propios pasan limpios. De los otros 22,
+  6 fallan solo por texto de 10–11 px de su propia pantalla (`pokeddle-race`, `whos-that-pokemon`,
+  `pokedex-entry-guess`, `type-chain`, `guess-from-stats`, `who-is-who-pokemon`) y `most-likely-to` lo tiene solo a
+  390; ninguno tiene solapes ni recortes, y la cabecera fija ya no tapa nada (el buscador enfoca sin desplazar).
+  Además, 9 juegos no muestran el título del manifest en pantalla (anotación `pantalla`): los 6 de la fase usan un
+  título propio. Es deuda de UI de esos juegos, apuntada en `docs/visual-review.md` («Seguimientos»).
 - **Detalle por juego**: el spec deja anotaciones (recurso comprobado, título visible y encaje a
   los tres tamaños). `npm run` se come `--reporter`, así que para verlas lánzalo desde `e2e/`:
   `PLAYWRIGHT_JSON_OUTPUT_FILE=juegos.json npx playwright test juegos --reporter=list,json`.
