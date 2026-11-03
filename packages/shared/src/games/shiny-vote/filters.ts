@@ -13,8 +13,9 @@ export const FAKE_SHINY_PALETTES = [
   { hueShiftDegrees: 310, saturationScale: 0.88, lightnessScale: 1.02, contrast: 0.95 },
 ] as const satisfies readonly GameAssetRecolor[];
 
-export function fakeShinyPalette(index: number): GameAssetRecolor {
-  return FAKE_SHINY_PALETTES[index % FAKE_SHINY_PALETTES.length]!;
+/** Paleta del señuelo `index` sobre la tabla barajada de la ronda (`palettes`), con vuelta al principio. */
+export function fakeShinyPalette(palettes: readonly GameAssetRecolor[], index: number): GameAssetRecolor {
+  return palettes[index % palettes.length]!;
 }
 
 export function useShinySpriteForFake(random: () => number): boolean {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { HigherLowerOutcome } from '@pokemon-universe/shared/public';
-import { HIGHER_LOWER_LIVE_WARNING, higherLowerChoiceLabels, higherLowerOutcomeDetail, higherLowerRevealCountdown, higherLowerStatsLine, higherLowerVisibilityLabels } from './higher-lower-labels';
+import { higherLowerChoiceLabels, higherLowerOutcomeDetail, higherLowerRevealCountdown, higherLowerStatsLine, higherLowerVisibilityLabels } from './higher-lower-labels';
 
 describe('higherLowerChoiceLabels', () => {
   it('traduce las tres respuestas al español', () => {
@@ -28,7 +28,6 @@ describe('higherLowerRevealCountdown', () => {
 describe('higherLowerVisibilityLabels', () => {
   it('nombra los dos modos de visibilidad', () => {
     expect(higherLowerVisibilityLabels).toEqual({ LIVE: 'En directo', REVEAL: 'Al revelar' });
-    expect(HIGHER_LOWER_LIVE_WARNING).toBe('Permite copiar: los demás ven tu elección al momento.');
   });
 });
 

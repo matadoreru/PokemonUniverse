@@ -1,11 +1,12 @@
-import type { ShinyCandidateMode } from '@pokemon-universe/shared/public';
+import type { ShinyCandidateMode, ShinyVoteVisibility } from '@pokemon-universe/shared/public';
 import { Clock3, Eye, Layers3, Shuffle } from 'lucide-react';
+import { shinyVisibilityChip } from './vote-visibility';
 
-export function ShinyGameHeader({ roundNumber, totalRounds, active, showVotes, candidateMode, remainingSeconds, progress }: {
+export function ShinyGameHeader({ roundNumber, totalRounds, active, voteVisibility, candidateMode, remainingSeconds, progress }: {
   roundNumber: number;
   totalRounds: number;
   active: boolean;
-  showVotes: boolean;
+  voteVisibility: ShinyVoteVisibility;
   candidateMode: ShinyCandidateMode;
   remainingSeconds: number;
   progress: number;
@@ -21,7 +22,7 @@ export function ShinyGameHeader({ roundNumber, totalRounds, active, showVotes, c
       </span>
     </div>
     <div className="mt-2.5 flex flex-wrap items-center gap-2">
-      <span className="permission-chip"><Eye size={14} aria-hidden="true" />{showVotes ? 'Votos públicos' : 'Votos ocultos'}</span>
+      <span className="permission-chip"><Eye size={14} aria-hidden="true" />{shinyVisibilityChip(voteVisibility)}</span>
       <span className="permission-chip">{candidateMode === 'SAME_POKEMON' ? <Layers3 size={14} aria-hidden="true" /> : <Shuffle size={14} aria-hidden="true" />}{candidateMode === 'SAME_POKEMON' ? 'Mismo Pokémon' : 'Pokémon diferentes'}</span>
       {active && <span className="ml-auto hidden items-center gap-1.5 text-xs font-extrabold text-ink/55 sm:inline-flex"><Clock3 size={14} aria-hidden="true" />El tiempo lo controla el servidor</span>}
     </div>

@@ -12,9 +12,11 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.AssetTokens;
+import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteConfig.CandidateMode;
+import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteConfig.VoteVisibility;
 import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteTypes.ShinyGeneratedOptions;
 import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteTypes.ShinyOption;
 import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteTypes.ShinyOptionId;
@@ -95,24 +97,32 @@ public final class ShinyVoteEngine
     return pokemon.shinySprite() != null ? pokemon.shinySprite() : pokemon.sprite();
   }
 
+  /** {@code shinyPool}: solo los Pokémon con sprite shiny oficial ({@code Boolean(pokemon.shinySprite)}). */
+  private static List<Pokemon> shinyPool(ShinyVoteConfig config, GameContext context) {
+    return context.pokemon().forGenerations(config.generations()).stream()
+        .filter(pokemon -> pokemon.shinySprite() != null && !pokemon.shinySprite().isEmpty())
+        .toList();
+  }
+
   private static String requiredPokemonMessage(int requiredPokemon) {
     return "At least " + requiredPokemon + " Pokémon are required for the selected generations";
   }
 
   /**
-   * {@code createOptions}: {@code requiredPokemon} extracciones de {@code takeRandom}, una para el índice correcto y una
-   * por señuelo ({@code useShinySpriteForFake}); el shiny oficial no consume ({@code authentic || ...}).
+   * {@code createOptions}: {@code requiredPokemon} extracciones de {@code takeRandom}, una para el índice correcto, cinco
+   * para barajar las paletas y una por señuelo ({@code useShinySpriteForFake}); el shiny oficial no consume
+   * ({@code authentic || ...}).
    */
   private static ShinyGeneratedOptions createOptions(ShinyVoteState state, GameContext context) {
     boolean samePokemon = state.config().candidateMode() == CandidateMode.SAME_POKEMON;
     var optionIds = List.of(ShinyOptionId.values()).subList(0, state.config().optionCount());
     int requiredPokemon = samePokemon ? 1 : optionIds.size();
-    var selected = takeRandom(context.pokemon().forGenerations(state.config().generations()), requiredPokemon,
-        context.random());
+    var selected = takeRandom(shinyPool(state.config(), context), requiredPokemon, context.random());
     if (selected.size() < requiredPokemon) throw new EngineException(requiredPokemonMessage(requiredPokemon));
     List<Pokemon> candidates = samePokemon ? optionIds.stream().map(id -> selected.getFirst()).toList() : selected;
     int correctIndex = Math.min((int) Math.floor(context.random().getAsDouble() * optionIds.size()),
         optionIds.size() - 1);
+    var palettes = Randoms.shuffled(ShinyVoteFilters.FAKE_SHINY_PALETTES, context.random());
     int fakePaletteIndex = 0;
     var options = new ArrayList<ShinyOptionState>();
     for (int index = 0; index < candidates.size(); index++) {
@@ -121,7 +131,7 @@ public final class ShinyVoteEngine
       boolean useShinyBase = authentic || ShinyVoteFilters.useShinySpriteForFake(context.random());
       options.add(new ShinyOptionState(optionIds.get(index), pokemon.id(), pokemon.name(),
           useShinyBase ? shinySprite(pokemon) : pokemon.sprite(),
-          authentic ? null : ShinyVoteFilters.fakeShinyPalette(fakePaletteIndex++)));
+          authentic ? null : ShinyVoteFilters.fakeShinyPalette(palettes, fakePaletteIndex++)));
     }
     return new ShinyGeneratedOptions(options, optionIds.get(correctIndex));
   }
@@ -212,7 +222,7 @@ public final class ShinyVoteEngine
       throw new EngineException("At least " + manifest.minPlayers() + " player is required");
     }
     int requiredPokemon = config.candidateMode() == CandidateMode.SAME_POKEMON ? 1 : config.optionCount();
-    if (context.pokemon().forGenerations(config.generations()).size() < requiredPokemon) {
+    if (shinyPool(config, context).size() < requiredPokemon) {
       throw new EngineException(requiredPokemonMessage(requiredPokemon));
     }
     var playerIds = context.players().stream().map(GamePlayer::id).toList();
@@ -285,10 +295,6 @@ public final class ShinyVoteEngine
   public ShinyVotePublicState getPublicState(ShinyVoteState state, GameContext context) {
     boolean reveal = state.phase() == GamePhase.ROUND_RESULTS || state.phase() == GamePhase.GAME_RESULTS;
     var results = state.phase() == GamePhase.GAME_RESULTS ? ShinyVoteRules.buildShinyResults(state) : null;
-    var lastRound = state.lastRound();
-    var publicLastRound = reveal && lastRound != null
-        ? state.config().showVotes() ? lastRound : lastRound.withoutVotes()
-        : null;
     // context.roomCode es falsy (nulo o vacío): el sprite real, como el TS.
     var roomCode = context.roomCode();
     var options = state.options().stream()
@@ -299,11 +305,13 @@ public final class ShinyVoteEngine
                 : option.sprite()))
         .toList();
     return new ShinyVotePublicState(ID, state.phase(), state.roundNumber(), state.config().rounds(),
-        state.playerIds(), options, state.config().showVotes() ? state.votes() : Map.of(),
-        List.copyOf(state.votes().keySet()), state.config().showVotes(),
+        // REVEAL: durante la ronda solo se publica quién ha votado, nunca qué.
+        state.playerIds(), options,
+        state.config().voteVisibility() == VoteVisibility.LIVE || reveal ? state.votes() : Map.of(),
+        List.copyOf(state.votes().keySet()), state.config().voteVisibility(),
         state.playerIds().stream().filter(playerId -> !state.votes().containsKey(playerId)).toList(),
         state.scores(), state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(),
-        reveal ? state.correctOptionId() : null, publicLastRound, results == null ? null : results.winnerId(),
+        reveal ? state.correctOptionId() : null, reveal ? state.lastRound() : null, results == null ? null : results.winnerId(),
         results);
   }
 

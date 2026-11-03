@@ -18,7 +18,7 @@
     "rounds": 3,
     "candidateMode": "SAME_POKEMON",
     "optionCount": 3,
-    "showVotes": true
+    "voteVisibility": "LIVE"
   },
   "steps": [
     {
@@ -91,7 +91,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 3,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "initial": {
       "lifecycle": {
@@ -111,7 +111,7 @@
         "options": [],
         "votes": {},
         "votedPlayerIds": [],
-        "showVotes": true,
+        "voteVisibility": "LIVE",
         "pendingPlayerIds": [
           "p1"
         ],
@@ -172,7 +172,7 @@
         ],
         "votes": {},
         "votedPlayerIds": [],
-        "showVotes": true,
+        "voteVisibility": "LIVE",
         "pendingPlayerIds": [
           "p1"
         ],
@@ -211,12 +211,12 @@
       },
       {
         "resolution": {
-          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/60.png",
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/60.png",
           "transform": "PALETTE_RECOLOR",
           "recolor": {
-            "hueShiftDegrees": 76,
-            "saturationScale": 0.82,
-            "lightnessScale": 0.99,
+            "hueShiftDegrees": 310,
+            "saturationScale": 0.88,
+            "lightnessScale": 1.02,
             "contrast": 0.95
           }
         }
@@ -276,7 +276,7 @@
             "votedPlayerIds": [
               "p1"
             ],
-            "showVotes": true,
+            "voteVisibility": "LIVE",
             "pendingPlayerIds": [],
             "scores": {
               "p1": 4
@@ -337,26 +337,26 @@
             "options": [
               {
                 "id": "A",
-                "pokemonId": "scyther",
-                "pokemonName": "Scyther",
+                "pokemonId": "spinarak",
+                "pokemonName": "Spinarak",
                 "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/A/sprite"
               },
               {
                 "id": "B",
-                "pokemonId": "scyther",
-                "pokemonName": "Scyther",
+                "pokemonId": "spinarak",
+                "pokemonName": "Spinarak",
                 "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/B/sprite"
               },
               {
                 "id": "C",
-                "pokemonId": "scyther",
-                "pokemonName": "Scyther",
+                "pokemonId": "spinarak",
+                "pokemonName": "Spinarak",
                 "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/C/sprite"
               }
             ],
             "votes": {},
             "votedPlayerIds": [],
-            "showVotes": true,
+            "voteVisibility": "LIVE",
             "pendingPlayerIds": [
               "p1"
             ],

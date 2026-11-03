@@ -49,7 +49,7 @@ describe('user game configuration preferences', () => {
     service.save('u1', 'pokedex-distance', { generations: [1], roundSeconds: 25 });
     service.save('u1', 'pokedex-distance', { generations: [2], roundSeconds: 30 });
     service.save('u1', 'shiny-vote', {
-      generations: [1], roundSeconds: 15, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, showVotes: true,
+      generations: [1], roundSeconds: 15, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE',
     });
     await service.flush();
 

@@ -632,8 +632,8 @@
     "optionCount 10.5": "Configuración de Shiny Quiz no válida: optionCount debe ser un número entero.",
     "optionCount 1e20": "Configuración de Shiny Quiz no válida: optionCount debe estar entre 3 y 6.",
     "optionCount -1": "Configuración de Shiny Quiz no válida: optionCount debe estar entre 3 y 6.",
-    "showVotes ausente": "Configuración de Shiny Quiz no válida: falta showVotes.",
-    "showVotes tipo erróneo": "Configuración de Shiny Quiz no válida: showVotes debe ser booleano."
+    "voteVisibility ausente": "Configuración de Shiny Quiz no válida: falta voteVisibility.",
+    "voteVisibility tipo erróneo": "Configuración de Shiny Quiz no válida: voteVisibility tiene un valor no válido."
   },
   "sketchmon": {
     "<raíz null>": "Configuración de Sketchmon no válida: la configuración debe ser un objeto.",

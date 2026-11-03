@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { GameAssetRecolor, GamePhase, GameResults } from '../contracts.js';
-import type { ShinyVoteConfig } from './config.js';
+import type { ShinyVoteConfig, ShinyVoteVisibility } from './config.js';
 
 export const SHINY_OPTION_IDS = ['A', 'B', 'C', 'D', 'E', 'F'] as const;
 export type ShinyOptionId = (typeof SHINY_OPTION_IDS)[number];
@@ -75,7 +75,7 @@ export interface ShinyVotePublicState {
   options: ShinyOption[];
   votes: Record<string, ShinyVote>;
   votedPlayerIds: string[];
-  showVotes: boolean;
+  voteVisibility: ShinyVoteVisibility;
   pendingPlayerIds: string[];
   scores: Record<string, number>;
   roundStartedAt: number | null;

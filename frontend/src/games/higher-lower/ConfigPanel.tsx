@@ -8,7 +8,8 @@ import {
 } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
-import { HIGHER_LOWER_LIVE_WARNING, higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
+import { higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
+import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
 
 const categoryLabels: Record<HigherLowerCategory, string> = {
   DEX_NUMBER: 'N.º Pokédex',
@@ -95,7 +96,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
               </button>
             ))}
           </div>
-          {value.answerVisibility === 'LIVE' && <p className="mt-2 text-sm font-bold text-ink/65">{HIGHER_LOWER_LIVE_WARNING}</p>}
+          {value.answerVisibility === 'LIVE' && <p className="mt-2 text-sm font-bold text-ink/65">{LIVE_VISIBILITY_WARNING}</p>}
         </div>
       </div>
 

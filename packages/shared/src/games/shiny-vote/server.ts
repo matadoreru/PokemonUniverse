@@ -3,7 +3,8 @@ import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultShinyVoteConfig, shinyVoteConfigSchema, type ShinyVoteConfig } from './config.js';
-import { fakeShinyPalette, useShinySpriteForFake } from './filters.js';
+import { shuffled } from '../infrastructure/random.js';
+import { FAKE_SHINY_PALETTES, fakeShinyPalette, useShinySpriteForFake } from './filters.js';
 import { buildShinyResults, emptyShinyStats, shinyPointsForOrder } from './rules.js';
 import {
   SHINY_OPTION_IDS,
@@ -49,14 +50,20 @@ function shinySprite(pokemon: Pokemon): string {
   return pokemon.shinySprite ?? pokemon.sprite;
 }
 
+/** Solo los Pokémon con sprite shiny oficial: sin él, el «shiny verdadero» sería el sprite normal. */
+function shinyPool(config: ShinyVoteConfig, context: GameContext): Pokemon[] {
+  return context.pokemon.forGenerations(config.generations).filter((pokemon) => Boolean(pokemon.shinySprite));
+}
+
 function createOptions(state: ShinyVoteState, context: GameContext): { options: ShinyOptionState[]; correctOptionId: ShinyOptionId } {
   const samePokemon = state.config.candidateMode === 'SAME_POKEMON';
   const optionIds = SHINY_OPTION_IDS.slice(0, state.config.optionCount);
   const requiredPokemon = samePokemon ? 1 : optionIds.length;
-  const selected = takeRandom(context.pokemon.forGenerations(state.config.generations), requiredPokemon, context.random);
+  const selected = takeRandom(shinyPool(state.config, context), requiredPokemon, context.random);
   if (selected.length < requiredPokemon) throw new Error(`At least ${requiredPokemon} Pokémon are required for the selected generations`);
   const candidates = samePokemon ? optionIds.map(() => selected[0]!) : selected;
   const correctIndex = Math.min(Math.floor(context.random() * optionIds.length), optionIds.length - 1);
+  const palettes = shuffled(FAKE_SHINY_PALETTES, context.random);
   let fakePaletteIndex = 0;
   return {
     options: candidates.map((pokemon, index) => {
@@ -67,7 +74,7 @@ function createOptions(state: ShinyVoteState, context: GameContext): { options: 
         pokemonId: pokemon.id,
         pokemonName: pokemon.name,
         sprite: useShinyBase ? shinySprite(pokemon) : pokemon.sprite,
-        recolor: authentic ? null : fakeShinyPalette(fakePaletteIndex++),
+        recolor: authentic ? null : fakeShinyPalette(palettes, fakePaletteIndex++),
       };
     }),
     correctOptionId: optionIds[correctIndex]!,
@@ -155,7 +162,7 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
     const parsed = shinyVoteConfigSchema.parse(config);
     if (context.players.length < manifest.minPlayers) throw new Error(`At least ${manifest.minPlayers} player is required`);
     const requiredPokemon = parsed.candidateMode === 'SAME_POKEMON' ? 1 : parsed.optionCount;
-    if (context.pokemon.forGenerations(parsed.generations).length < requiredPokemon) throw new Error(`At least ${requiredPokemon} Pokémon are required for the selected generations`);
+    if (shinyPool(parsed, context).length < requiredPokemon) throw new Error(`At least ${requiredPokemon} Pokémon are required for the selected generations`);
     return {
       phase: 'GAME_STARTING',
       config: parsed,
@@ -213,9 +220,6 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
   getPublicState(state, context) {
     const reveal = state.phase === 'ROUND_RESULTS' || state.phase === 'GAME_RESULTS';
     const results = state.phase === 'GAME_RESULTS' ? buildShinyResults(state) : null;
-    const publicLastRound = reveal && state.lastRound
-      ? state.config.showVotes ? state.lastRound : { ...state.lastRound, votes: {}, correctPlayerIds: [], missedPlayerIds: [] }
-      : null;
     const options: ShinyOption[] = state.options.map((option) => ({
       id: option.id,
       pokemonId: option.pokemonId,
@@ -231,16 +235,17 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
       totalRounds: state.config.rounds,
       playerIds: state.playerIds,
       options,
-      votes: state.config.showVotes ? state.votes : {},
+      // REVEAL: durante la ronda solo se publica quién ha votado, nunca qué.
+      votes: state.config.voteVisibility === 'LIVE' || reveal ? state.votes : {},
       votedPlayerIds: Object.keys(state.votes),
-      showVotes: state.config.showVotes,
+      voteVisibility: state.config.voteVisibility,
       pendingPlayerIds: state.playerIds.filter((playerId) => !state.votes[playerId]),
       scores: state.scores,
       roundStartedAt: state.roundStartedAt,
       roundEndsAt: state.roundEndsAt,
       nextTransitionAt: state.nextTransitionAt,
       correctOptionId: reveal ? state.correctOptionId : null,
-      lastRound: publicLastRound,
+      lastRound: reveal ? state.lastRound : null,
       winnerId: results?.winnerId ?? null,
       results,
     };

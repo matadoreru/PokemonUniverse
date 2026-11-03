@@ -30,7 +30,7 @@ export function ShinyGameSidebar({ game, members, selfId, feedbackUrl }: {
         </div>
         <div className="mt-3 flex items-center justify-between gap-2">
           <h3 className="font-display text-base font-bold">{game.pendingPlayerIds.length > 0 ? `Pendientes · ${game.pendingPlayerIds.length}` : 'Todos han votado'}</h3>
-          {!game.showVotes && <span className="text-[.68rem] font-extrabold text-ink/45">Elección privada</span>}
+          {game.voteVisibility === 'REVEAL' && !reveal && <span className="text-[.68rem] font-extrabold text-ink/45">Elección privada</span>}
         </div>
         <div className="mt-2 max-h-60 space-y-1.5 overflow-y-auto pr-0.5">{game.playerIds.map((id) => {
           const member = members.get(id);
@@ -40,7 +40,7 @@ export function ShinyGameSidebar({ game, members, selfId, feedbackUrl }: {
           return <div key={id} className={`flex min-h-11 items-center gap-2 rounded-xl px-2.5 py-2 ${id === selfId ? 'bg-aqua/[.08]' : 'bg-ink/[.03]'}`}>
             <Avatar name={memberName(member, id)} avatar={member?.avatar} presence={member?.presence} size="xs" />
             <strong className="min-w-0 flex-1 truncate text-sm">{memberName(member, id)}{id === selfId && <span className="ml-1 text-[.65rem] font-black text-aqua">TÚ</span>}</strong>
-            {member?.role === 'SPECTATOR' ? <Eye size={15} className="text-ink/45" aria-label="Espectador" /> : !hasVoted ? <span className="inline-flex items-center gap-1 text-xs font-bold text-ink/50"><CircleDashed size={14} />Pendiente</span> : reveal && game.showVotes && vote ? <span className={`inline-flex items-center gap-1 text-xs font-black ${correct ? 'text-leaf' : 'text-berry'}`}>{correct ? <Check size={14} /> : <X size={14} />}{vote.optionId}</span> : <span className="inline-flex items-center gap-1 text-xs font-black text-leaf"><Check size={14} />Votó</span>}
+            {member?.role === 'SPECTATOR' ? <Eye size={15} className="text-ink/45" aria-label="Espectador" /> : !hasVoted ? <span className="inline-flex items-center gap-1 text-xs font-bold text-ink/50"><CircleDashed size={14} />Pendiente</span> : reveal && vote ? <span className={`inline-flex items-center gap-1 text-xs font-black ${correct ? 'text-leaf' : 'text-berry'}`}>{correct ? <Check size={14} /> : <X size={14} />}{vote.optionId}</span> : <span className="inline-flex items-center gap-1 text-xs font-black text-leaf"><Check size={14} />Votó</span>}
           </div>;
         })}</div>
       </div>

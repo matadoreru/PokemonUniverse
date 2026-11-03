@@ -25,8 +25,9 @@ public final class ShinyVoteFilters {
 
   private ShinyVoteFilters() {}
 
-  public static Recolor fakeShinyPalette(int index) {
-    return FAKE_SHINY_PALETTES.get(index % FAKE_SHINY_PALETTES.size());
+  /** Paleta del señuelo {@code index} sobre la tabla barajada de la ronda ({@code palettes}), con vuelta al principio. */
+  public static Recolor fakeShinyPalette(List<Recolor> palettes, int index) {
+    return palettes.get(index % palettes.size());
   }
 
   /** Consume un {@code random()}. */

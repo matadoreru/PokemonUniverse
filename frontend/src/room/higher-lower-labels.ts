@@ -6,9 +6,6 @@ export const higherLowerChoiceLabels: Record<HigherLowerChoice, string> = { HIGH
 // Modos de visibilidad de las respuestas del panel de configuración.
 export const higherLowerVisibilityLabels: Record<HigherLowerAnswerVisibility, string> = { LIVE: 'En directo', REVEAL: 'Al revelar' };
 
-/** Aviso del panel cuando las respuestas se ven en directo. */
-export const HIGHER_LOWER_LIVE_WARNING = 'Permite copiar: los demás ven tu elección al momento.';
-
 /** Desglose de los bonus de un acierto («+1 racha · +1 rapidez»), o `null` si no hay ninguno. */
 export function higherLowerOutcomeDetail(outcome: HigherLowerOutcome): string | null {
   const parts = [outcome.streakBonus ? `+${outcome.streakBonus} racha` : null, outcome.speedBonus ? `+${outcome.speedBonus} rapidez` : null].filter((part) => part !== null);

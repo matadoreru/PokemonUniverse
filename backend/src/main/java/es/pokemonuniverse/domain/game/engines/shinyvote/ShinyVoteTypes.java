@@ -60,9 +60,6 @@ public final class ShinyVoteTypes {
     }
 
     /** {@code { ...lastRound, votes: {}, correctPlayerIds: [], missedPlayerIds: [] }} con los votos ocultos. */
-    ShinyRoundResult withoutVotes() {
-      return new ShinyRoundResult(roundNumber, correctOptionId, Map.of(), List.of(), List.of());
-    }
   }
 
   @Serdeable
@@ -238,7 +235,7 @@ public final class ShinyVoteTypes {
       List<ShinyOption> options,
       Map<String, ShinyVote> votes,
       List<String> votedPlayerIds,
-      boolean showVotes,
+      ShinyVoteConfig.VoteVisibility voteVisibility,
       List<String> pendingPlayerIds,
       Map<String, Integer> scores,
       @Nullable Long roundStartedAt,

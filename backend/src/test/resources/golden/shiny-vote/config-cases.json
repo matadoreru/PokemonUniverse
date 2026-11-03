@@ -10,7 +10,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": true,
     "normalized": {
@@ -22,7 +22,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     }
   },
   {
@@ -34,7 +34,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": true,
     "normalized": {
@@ -45,7 +45,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     }
   },
   {
@@ -57,7 +57,7 @@
       "rounds": 1,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 3,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": true,
     "normalized": {
@@ -68,7 +68,7 @@
       "rounds": 1,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 3,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     }
   },
   {
@@ -80,7 +80,7 @@
       "rounds": 50,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 6,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": true,
     "normalized": {
@@ -91,7 +91,7 @@
       "rounds": 50,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 6,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     }
   },
   {
@@ -103,7 +103,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": true,
     "normalized": {
@@ -114,7 +114,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     }
   },
   {
@@ -126,7 +126,7 @@
       "rounds": 3,
       "candidateMode": "DIFFERENT_POKEMON",
       "optionCount": 4,
-      "showVotes": false
+      "voteVisibility": "REVEAL"
     },
     "valid": true,
     "normalized": {
@@ -137,7 +137,7 @@
       "rounds": 3,
       "candidateMode": "DIFFERENT_POKEMON",
       "optionCount": 4,
-      "showVotes": false
+      "voteVisibility": "REVEAL"
     }
   },
   {
@@ -149,7 +149,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true,
+      "voteVisibility": "LIVE",
       "unknownKey": "se descarta"
     },
     "valid": true,
@@ -161,7 +161,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     }
   },
   {
@@ -173,7 +173,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": false
   },
@@ -186,7 +186,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": false
   },
@@ -199,7 +199,7 @@
       "rounds": 0,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": false
   },
@@ -212,7 +212,7 @@
       "rounds": 51,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": false
   },
@@ -225,7 +225,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 2,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": false
   },
@@ -238,7 +238,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 7,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": false
   },
@@ -251,7 +251,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4.5,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": false
   },
@@ -262,7 +262,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": false
   },
@@ -275,7 +275,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": false
   },
@@ -288,7 +288,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": false
   },
@@ -301,7 +301,7 @@
       "rounds": 3,
       "candidateMode": "same_pokemon",
       "optionCount": 4,
-      "showVotes": true
+      "voteVisibility": "LIVE"
     },
     "valid": false
   },
@@ -314,7 +314,7 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "showVotes": "true"
+      "voteVisibility": "SHOW"
     },
     "valid": false
   },
@@ -327,6 +327,19 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "candidateMode": "SAME_POKEMON",
+      "optionCount": 4,
+      "showVotes": true
     },
     "valid": false
   },

@@ -1,6 +1,6 @@
 {
   "engineId": "shiny-vote",
-  "scenario": "different-pokemon-hidden-votes",
+  "scenario": "different-pokemon-reveal-votes",
   "seed": 932,
   "catalog": "gen1-2",
   "players": [
@@ -22,7 +22,7 @@
     "rounds": 3,
     "candidateMode": "DIFFERENT_POKEMON",
     "optionCount": 6,
-    "showVotes": false
+    "voteVisibility": "REVEAL"
   },
   "startNow": 1767225600000,
   "steps": [
@@ -95,7 +95,7 @@
       "playerId": "p2",
       "action": {
         "type": "VOTE",
-        "optionId": "F"
+        "optionId": "C"
       },
       "now": 1767225606000
     },
@@ -110,7 +110,7 @@
       "kind": "asset",
       "assetToken": "mjuohs00",
       "roundNumber": 2,
-      "assetId": "F",
+      "assetId": "C",
       "now": 1767225606100
     },
     {
@@ -151,7 +151,7 @@
       "playerId": "p2",
       "action": {
         "type": "VOTE",
-        "optionId": "D"
+        "optionId": "A"
       },
       "now": 1767225611000
     },
@@ -160,7 +160,7 @@
       "playerId": "p1",
       "action": {
         "type": "VOTE",
-        "optionId": "D"
+        "optionId": "A"
       },
       "now": 1767225611500
     },
@@ -179,7 +179,7 @@
       "rounds": 3,
       "candidateMode": "DIFFERENT_POKEMON",
       "optionCount": 6,
-      "showVotes": false
+      "voteVisibility": "REVEAL"
     },
     "initial": {
       "lifecycle": {
@@ -200,7 +200,7 @@
         "options": [],
         "votes": {},
         "votedPlayerIds": [],
-        "showVotes": false,
+        "voteVisibility": "REVEAL",
         "pendingPlayerIds": [
           "p1",
           "p2"
@@ -287,7 +287,7 @@
         ],
         "votes": {},
         "votedPlayerIds": [],
-        "showVotes": false,
+        "voteVisibility": "REVEAL",
         "pendingPlayerIds": [
           "p1",
           "p2"
@@ -321,7 +321,7 @@
     "afterSteps": [
       {
         "resolution": {
-          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/146.png",
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png",
           "transform": "PALETTE_RECOLOR",
           "recolor": {
             "hueShiftDegrees": 28,
@@ -336,22 +336,22 @@
           "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/91.png",
           "transform": "PALETTE_RECOLOR",
           "recolor": {
-            "hueShiftDegrees": 76,
-            "saturationScale": 0.82,
-            "lightnessScale": 0.99,
-            "contrast": 0.95
+            "hueShiftDegrees": 142,
+            "saturationScale": 0.86,
+            "lightnessScale": 1.01,
+            "contrast": 0.96
           }
         }
       },
       {
         "resolution": {
-          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/242.png",
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/242.png",
           "transform": "PALETTE_RECOLOR",
           "recolor": {
-            "hueShiftDegrees": 142,
-            "saturationScale": 0.86,
-            "lightnessScale": 1.01,
-            "contrast": 0.96
+            "hueShiftDegrees": 310,
+            "saturationScale": 0.88,
+            "lightnessScale": 1.02,
+            "contrast": 0.95
           }
         }
       },
@@ -363,7 +363,7 @@
       },
       {
         "resolution": {
-          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/209.png",
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png",
           "transform": "PALETTE_RECOLOR",
           "recolor": {
             "hueShiftDegrees": 196,
@@ -375,7 +375,7 @@
       },
       {
         "resolution": {
-          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/136.png",
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/136.png",
           "transform": "PALETTE_RECOLOR",
           "recolor": {
             "hueShiftDegrees": 248,
@@ -445,7 +445,7 @@
             "votedPlayerIds": [
               "p1"
             ],
-            "showVotes": false,
+            "voteVisibility": "REVEAL",
             "pendingPlayerIds": [
               "p2"
             ],
@@ -535,12 +535,21 @@
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/1/options/F/sprite"
               }
             ],
-            "votes": {},
+            "votes": {
+              "p1": {
+                "optionId": "D",
+                "votedAt": 1767225601000
+              },
+              "p2": {
+                "optionId": "A",
+                "votedAt": 1767225602000
+              }
+            },
             "votedPlayerIds": [
               "p1",
               "p2"
             ],
-            "showVotes": false,
+            "voteVisibility": "REVEAL",
             "pendingPlayerIds": [],
             "scores": {
               "p1": 4,
@@ -553,9 +562,22 @@
             "lastRound": {
               "roundNumber": 1,
               "correctOptionId": "D",
-              "votes": {},
-              "correctPlayerIds": [],
-              "missedPlayerIds": []
+              "votes": {
+                "p1": {
+                  "optionId": "D",
+                  "votedAt": 1767225601000
+                },
+                "p2": {
+                  "optionId": "A",
+                  "votedAt": 1767225602000
+                }
+              },
+              "correctPlayerIds": [
+                "p1"
+              ],
+              "missedPlayerIds": [
+                "p2"
+              ]
             },
             "winnerId": null,
             "results": null
@@ -607,44 +629,44 @@
             "options": [
               {
                 "id": "A",
-                "pokemonId": "kabutops",
-                "pokemonName": "Kabutops",
+                "pokemonId": "voltorb",
+                "pokemonName": "Voltorb",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/A/sprite"
               },
               {
                 "id": "B",
-                "pokemonId": "gyarados",
-                "pokemonName": "Gyarados",
+                "pokemonId": "slugma",
+                "pokemonName": "Slugma",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/B/sprite"
               },
               {
                 "id": "C",
-                "pokemonId": "slowbro",
-                "pokemonName": "Slowbro",
+                "pokemonId": "granbull",
+                "pokemonName": "Granbull",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/C/sprite"
               },
               {
                 "id": "D",
-                "pokemonId": "magcargo",
-                "pokemonName": "Magcargo",
+                "pokemonId": "pidgey",
+                "pokemonName": "Pidgey",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/D/sprite"
               },
               {
                 "id": "E",
-                "pokemonId": "fearow",
-                "pokemonName": "Fearow",
+                "pokemonId": "mewtwo",
+                "pokemonName": "Mewtwo",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/E/sprite"
               },
               {
                 "id": "F",
-                "pokemonId": "voltorb",
-                "pokemonName": "Voltorb",
+                "pokemonId": "celebi",
+                "pokemonName": "Celebi",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/F/sprite"
               }
             ],
             "votes": {},
             "votedPlayerIds": [],
-            "showVotes": false,
+            "voteVisibility": "REVEAL",
             "pendingPlayerIds": [
               "p1",
               "p2"
@@ -697,38 +719,38 @@
             "options": [
               {
                 "id": "A",
-                "pokemonId": "kabutops",
-                "pokemonName": "Kabutops",
+                "pokemonId": "voltorb",
+                "pokemonName": "Voltorb",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/A/sprite"
               },
               {
                 "id": "B",
-                "pokemonId": "gyarados",
-                "pokemonName": "Gyarados",
+                "pokemonId": "slugma",
+                "pokemonName": "Slugma",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/B/sprite"
               },
               {
                 "id": "C",
-                "pokemonId": "slowbro",
-                "pokemonName": "Slowbro",
+                "pokemonId": "granbull",
+                "pokemonName": "Granbull",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/C/sprite"
               },
               {
                 "id": "D",
-                "pokemonId": "magcargo",
-                "pokemonName": "Magcargo",
+                "pokemonId": "pidgey",
+                "pokemonName": "Pidgey",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/D/sprite"
               },
               {
                 "id": "E",
-                "pokemonId": "fearow",
-                "pokemonName": "Fearow",
+                "pokemonId": "mewtwo",
+                "pokemonName": "Mewtwo",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/E/sprite"
               },
               {
                 "id": "F",
-                "pokemonId": "voltorb",
-                "pokemonName": "Voltorb",
+                "pokemonId": "celebi",
+                "pokemonName": "Celebi",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/F/sprite"
               }
             ],
@@ -736,7 +758,7 @@
             "votedPlayerIds": [
               "p2"
             ],
-            "showVotes": false,
+            "voteVisibility": "REVEAL",
             "pendingPlayerIds": [
               "p1"
             ],
@@ -761,7 +783,7 @@
             "p2": {
               "canVote": false,
               "vote": {
-                "optionId": "F",
+                "optionId": "C",
                 "votedAt": 1767225606000
               },
               "roundResult": null
@@ -775,7 +797,7 @@
       },
       {
         "resolution": {
-          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/100.png",
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/210.png",
           "transform": "PIXEL_ART"
         }
       },
@@ -799,46 +821,51 @@
             "options": [
               {
                 "id": "A",
-                "pokemonId": "kabutops",
-                "pokemonName": "Kabutops",
+                "pokemonId": "voltorb",
+                "pokemonName": "Voltorb",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/A/sprite"
               },
               {
                 "id": "B",
-                "pokemonId": "gyarados",
-                "pokemonName": "Gyarados",
+                "pokemonId": "slugma",
+                "pokemonName": "Slugma",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/B/sprite"
               },
               {
                 "id": "C",
-                "pokemonId": "slowbro",
-                "pokemonName": "Slowbro",
+                "pokemonId": "granbull",
+                "pokemonName": "Granbull",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/C/sprite"
               },
               {
                 "id": "D",
-                "pokemonId": "magcargo",
-                "pokemonName": "Magcargo",
+                "pokemonId": "pidgey",
+                "pokemonName": "Pidgey",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/D/sprite"
               },
               {
                 "id": "E",
-                "pokemonId": "fearow",
-                "pokemonName": "Fearow",
+                "pokemonId": "mewtwo",
+                "pokemonName": "Mewtwo",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/E/sprite"
               },
               {
                 "id": "F",
-                "pokemonId": "voltorb",
-                "pokemonName": "Voltorb",
+                "pokemonId": "celebi",
+                "pokemonName": "Celebi",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/2/options/F/sprite"
               }
             ],
-            "votes": {},
+            "votes": {
+              "p2": {
+                "optionId": "C",
+                "votedAt": 1767225606000
+              }
+            },
             "votedPlayerIds": [
               "p2"
             ],
-            "showVotes": false,
+            "voteVisibility": "REVEAL",
             "pendingPlayerIds": [
               "p1"
             ],
@@ -849,13 +876,22 @@
             "roundStartedAt": 1767225605000,
             "roundEndsAt": null,
             "nextTransitionAt": 1767225610000,
-            "correctOptionId": "F",
+            "correctOptionId": "C",
             "lastRound": {
               "roundNumber": 2,
-              "correctOptionId": "F",
-              "votes": {},
-              "correctPlayerIds": [],
-              "missedPlayerIds": []
+              "correctOptionId": "C",
+              "votes": {
+                "p2": {
+                  "optionId": "C",
+                  "votedAt": 1767225606000
+                }
+              },
+              "correctPlayerIds": [
+                "p2"
+              ],
+              "missedPlayerIds": [
+                "p1"
+              ]
             },
             "winnerId": null,
             "results": null
@@ -872,7 +908,7 @@
             "p2": {
               "canVote": false,
               "vote": {
-                "optionId": "F",
+                "optionId": "C",
                 "votedAt": 1767225606000
               },
               "roundResult": {
@@ -904,44 +940,44 @@
             "options": [
               {
                 "id": "A",
-                "pokemonId": "pidgey",
-                "pokemonName": "Pidgey",
+                "pokemonId": "jynx",
+                "pokemonName": "Jynx",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/A/sprite"
               },
               {
                 "id": "B",
-                "pokemonId": "abra",
-                "pokemonName": "Abra",
+                "pokemonId": "misdreavus",
+                "pokemonName": "Misdreavus",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/B/sprite"
               },
               {
                 "id": "C",
-                "pokemonId": "pidgeotto",
-                "pokemonName": "Pidgeotto",
+                "pokemonId": "omanyte",
+                "pokemonName": "Omanyte",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/C/sprite"
               },
               {
                 "id": "D",
-                "pokemonId": "mantine",
-                "pokemonName": "Mantine",
+                "pokemonId": "steelix",
+                "pokemonName": "Steelix",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/D/sprite"
               },
               {
                 "id": "E",
-                "pokemonId": "igglybuff",
-                "pokemonName": "Igglybuff",
+                "pokemonId": "golbat",
+                "pokemonName": "Golbat",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/E/sprite"
               },
               {
                 "id": "F",
-                "pokemonId": "togepi",
-                "pokemonName": "Togepi",
+                "pokemonId": "tyrogue",
+                "pokemonName": "Tyrogue",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/F/sprite"
               }
             ],
             "votes": {},
             "votedPlayerIds": [],
-            "showVotes": false,
+            "voteVisibility": "REVEAL",
             "pendingPlayerIds": [
               "p1",
               "p2"
@@ -993,44 +1029,44 @@
             "options": [
               {
                 "id": "A",
-                "pokemonId": "pidgey",
-                "pokemonName": "Pidgey",
+                "pokemonId": "jynx",
+                "pokemonName": "Jynx",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/A/sprite"
               },
               {
                 "id": "B",
-                "pokemonId": "abra",
-                "pokemonName": "Abra",
+                "pokemonId": "misdreavus",
+                "pokemonName": "Misdreavus",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/B/sprite"
               },
               {
                 "id": "C",
-                "pokemonId": "pidgeotto",
-                "pokemonName": "Pidgeotto",
+                "pokemonId": "omanyte",
+                "pokemonName": "Omanyte",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/C/sprite"
               },
               {
                 "id": "D",
-                "pokemonId": "mantine",
-                "pokemonName": "Mantine",
+                "pokemonId": "steelix",
+                "pokemonName": "Steelix",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/D/sprite"
               },
               {
                 "id": "E",
-                "pokemonId": "igglybuff",
-                "pokemonName": "Igglybuff",
+                "pokemonId": "golbat",
+                "pokemonName": "Golbat",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/E/sprite"
               },
               {
                 "id": "F",
-                "pokemonId": "togepi",
-                "pokemonName": "Togepi",
+                "pokemonId": "tyrogue",
+                "pokemonName": "Tyrogue",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/F/sprite"
               }
             ],
             "votes": {},
             "votedPlayerIds": [],
-            "showVotes": false,
+            "voteVisibility": "REVEAL",
             "pendingPlayerIds": [
               "p1",
               "p2"
@@ -1083,38 +1119,38 @@
             "options": [
               {
                 "id": "A",
-                "pokemonId": "pidgey",
-                "pokemonName": "Pidgey",
+                "pokemonId": "jynx",
+                "pokemonName": "Jynx",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/A/sprite"
               },
               {
                 "id": "B",
-                "pokemonId": "abra",
-                "pokemonName": "Abra",
+                "pokemonId": "misdreavus",
+                "pokemonName": "Misdreavus",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/B/sprite"
               },
               {
                 "id": "C",
-                "pokemonId": "pidgeotto",
-                "pokemonName": "Pidgeotto",
+                "pokemonId": "omanyte",
+                "pokemonName": "Omanyte",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/C/sprite"
               },
               {
                 "id": "D",
-                "pokemonId": "mantine",
-                "pokemonName": "Mantine",
+                "pokemonId": "steelix",
+                "pokemonName": "Steelix",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/D/sprite"
               },
               {
                 "id": "E",
-                "pokemonId": "igglybuff",
-                "pokemonName": "Igglybuff",
+                "pokemonId": "golbat",
+                "pokemonName": "Golbat",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/E/sprite"
               },
               {
                 "id": "F",
-                "pokemonId": "togepi",
-                "pokemonName": "Togepi",
+                "pokemonId": "tyrogue",
+                "pokemonName": "Tyrogue",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/F/sprite"
               }
             ],
@@ -1122,7 +1158,7 @@
             "votedPlayerIds": [
               "p2"
             ],
-            "showVotes": false,
+            "voteVisibility": "REVEAL",
             "pendingPlayerIds": [
               "p1"
             ],
@@ -1147,7 +1183,7 @@
             "p2": {
               "canVote": false,
               "vote": {
-                "optionId": "D",
+                "optionId": "A",
                 "votedAt": 1767225611000
               },
               "roundResult": null
@@ -1177,47 +1213,56 @@
             "options": [
               {
                 "id": "A",
-                "pokemonId": "pidgey",
-                "pokemonName": "Pidgey",
+                "pokemonId": "jynx",
+                "pokemonName": "Jynx",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/A/sprite"
               },
               {
                 "id": "B",
-                "pokemonId": "abra",
-                "pokemonName": "Abra",
+                "pokemonId": "misdreavus",
+                "pokemonName": "Misdreavus",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/B/sprite"
               },
               {
                 "id": "C",
-                "pokemonId": "pidgeotto",
-                "pokemonName": "Pidgeotto",
+                "pokemonId": "omanyte",
+                "pokemonName": "Omanyte",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/C/sprite"
               },
               {
                 "id": "D",
-                "pokemonId": "mantine",
-                "pokemonName": "Mantine",
+                "pokemonId": "steelix",
+                "pokemonName": "Steelix",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/D/sprite"
               },
               {
                 "id": "E",
-                "pokemonId": "igglybuff",
-                "pokemonName": "Igglybuff",
+                "pokemonId": "golbat",
+                "pokemonName": "Golbat",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/E/sprite"
               },
               {
                 "id": "F",
-                "pokemonId": "togepi",
-                "pokemonName": "Togepi",
+                "pokemonId": "tyrogue",
+                "pokemonName": "Tyrogue",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/F/sprite"
               }
             ],
-            "votes": {},
+            "votes": {
+              "p2": {
+                "optionId": "A",
+                "votedAt": 1767225611000
+              },
+              "p1": {
+                "optionId": "A",
+                "votedAt": 1767225611500
+              }
+            },
             "votedPlayerIds": [
               "p2",
               "p1"
             ],
-            "showVotes": false,
+            "voteVisibility": "REVEAL",
             "pendingPlayerIds": [],
             "scores": {
               "p1": 7,
@@ -1226,12 +1271,24 @@
             "roundStartedAt": 1767225610000,
             "roundEndsAt": null,
             "nextTransitionAt": 1767225614500,
-            "correctOptionId": "D",
+            "correctOptionId": "A",
             "lastRound": {
               "roundNumber": 3,
-              "correctOptionId": "D",
-              "votes": {},
-              "correctPlayerIds": [],
+              "correctOptionId": "A",
+              "votes": {
+                "p2": {
+                  "optionId": "A",
+                  "votedAt": 1767225611000
+                },
+                "p1": {
+                  "optionId": "A",
+                  "votedAt": 1767225611500
+                }
+              },
+              "correctPlayerIds": [
+                "p2",
+                "p1"
+              ],
               "missedPlayerIds": []
             },
             "winnerId": null,
@@ -1241,7 +1298,7 @@
             "p1": {
               "canVote": false,
               "vote": {
-                "optionId": "D",
+                "optionId": "A",
                 "votedAt": 1767225611500
               },
               "roundResult": {
@@ -1252,7 +1309,7 @@
             "p2": {
               "canVote": false,
               "vote": {
-                "optionId": "D",
+                "optionId": "A",
                 "votedAt": 1767225611000
               },
               "roundResult": {
@@ -1284,47 +1341,56 @@
             "options": [
               {
                 "id": "A",
-                "pokemonId": "pidgey",
-                "pokemonName": "Pidgey",
+                "pokemonId": "jynx",
+                "pokemonName": "Jynx",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/A/sprite"
               },
               {
                 "id": "B",
-                "pokemonId": "abra",
-                "pokemonName": "Abra",
+                "pokemonId": "misdreavus",
+                "pokemonName": "Misdreavus",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/B/sprite"
               },
               {
                 "id": "C",
-                "pokemonId": "pidgeotto",
-                "pokemonName": "Pidgeotto",
+                "pokemonId": "omanyte",
+                "pokemonName": "Omanyte",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/C/sprite"
               },
               {
                 "id": "D",
-                "pokemonId": "mantine",
-                "pokemonName": "Mantine",
+                "pokemonId": "steelix",
+                "pokemonName": "Steelix",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/D/sprite"
               },
               {
                 "id": "E",
-                "pokemonId": "igglybuff",
-                "pokemonName": "Igglybuff",
+                "pokemonId": "golbat",
+                "pokemonName": "Golbat",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/E/sprite"
               },
               {
                 "id": "F",
-                "pokemonId": "togepi",
-                "pokemonName": "Togepi",
+                "pokemonId": "tyrogue",
+                "pokemonName": "Tyrogue",
                 "sprite": "/api/rooms/GOLD01/games/mjuohs00/rounds/3/options/F/sprite"
               }
             ],
-            "votes": {},
+            "votes": {
+              "p2": {
+                "optionId": "A",
+                "votedAt": 1767225611000
+              },
+              "p1": {
+                "optionId": "A",
+                "votedAt": 1767225611500
+              }
+            },
             "votedPlayerIds": [
               "p2",
               "p1"
             ],
-            "showVotes": false,
+            "voteVisibility": "REVEAL",
             "pendingPlayerIds": [],
             "scores": {
               "p1": 7,
@@ -1333,12 +1399,24 @@
             "roundStartedAt": 1767225610000,
             "roundEndsAt": null,
             "nextTransitionAt": null,
-            "correctOptionId": "D",
+            "correctOptionId": "A",
             "lastRound": {
               "roundNumber": 3,
-              "correctOptionId": "D",
-              "votes": {},
-              "correctPlayerIds": [],
+              "correctOptionId": "A",
+              "votes": {
+                "p2": {
+                  "optionId": "A",
+                  "votedAt": 1767225611000
+                },
+                "p1": {
+                  "optionId": "A",
+                  "votedAt": 1767225611500
+                }
+              },
+              "correctPlayerIds": [
+                "p2",
+                "p1"
+              ],
               "missedPlayerIds": []
             },
             "winnerId": "p2",
@@ -1378,7 +1456,7 @@
             "p1": {
               "canVote": false,
               "vote": {
-                "optionId": "D",
+                "optionId": "A",
                 "votedAt": 1767225611500
               },
               "roundResult": null
@@ -1386,7 +1464,7 @@
             "p2": {
               "canVote": false,
               "vote": {
-                "optionId": "D",
+                "optionId": "A",
                 "votedAt": 1767225611000
               },
               "roundResult": null

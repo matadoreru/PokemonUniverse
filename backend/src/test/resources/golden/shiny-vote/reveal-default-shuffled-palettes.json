@@ -1,0 +1,1832 @@
+{
+  "engineId": "shiny-vote",
+  "scenario": "reveal-default-shuffled-palettes",
+  "seed": 919,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "roundSeconds": 20,
+    "rounds": 3,
+    "candidateMode": "SAME_POKEMON",
+    "optionCount": 4,
+    "voteVisibility": "REVEAL"
+  },
+  "steps": [
+    {
+      "kind": "asset",
+      "assetToken": "rs",
+      "roundNumber": 1,
+      "assetId": "A",
+      "now": 1100
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs",
+      "roundNumber": 1,
+      "assetId": "B",
+      "now": 1100
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs",
+      "roundNumber": 1,
+      "assetId": "C",
+      "now": 1100
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs",
+      "roundNumber": 1,
+      "assetId": "D",
+      "now": 1100
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE",
+        "optionId": "A"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE",
+        "optionId": "B"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE",
+        "optionId": "C"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "timeout",
+      "now": 7000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs",
+      "roundNumber": 2,
+      "assetId": "A",
+      "now": 7100
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs",
+      "roundNumber": 2,
+      "assetId": "B",
+      "now": 7100
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs",
+      "roundNumber": 2,
+      "assetId": "C",
+      "now": 7100
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs",
+      "roundNumber": 2,
+      "assetId": "D",
+      "now": 7100
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE",
+        "optionId": "D"
+      },
+      "now": 8000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE",
+        "optionId": "C"
+      },
+      "now": 9000
+    },
+    {
+      "kind": "timeout",
+      "now": 27000
+    },
+    {
+      "kind": "timeout",
+      "now": 30000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs",
+      "roundNumber": 3,
+      "assetId": "A",
+      "now": 30100
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs",
+      "roundNumber": 3,
+      "assetId": "B",
+      "now": 30100
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs",
+      "roundNumber": 3,
+      "assetId": "C",
+      "now": 30100
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs",
+      "roundNumber": 3,
+      "assetId": "D",
+      "now": 30100
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE",
+        "optionId": "B"
+      },
+      "now": 31000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE",
+        "optionId": "B"
+      },
+      "now": 32000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE",
+        "optionId": "B"
+      },
+      "now": 33000
+    },
+    {
+      "kind": "timeout",
+      "now": 36000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "candidateMode": "SAME_POKEMON",
+      "optionCount": 4,
+      "voteVisibility": "REVEAL"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "shiny-vote",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "options": [],
+        "votes": {},
+        "votedPlayerIds": [],
+        "voteVisibility": "REVEAL",
+        "pendingPlayerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "correctOptionId": null,
+        "lastRound": null,
+        "winnerId": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canVote": false,
+          "vote": null,
+          "roundResult": null
+        },
+        "p2": {
+          "canVote": false,
+          "vote": null,
+          "roundResult": null
+        },
+        "p3": {
+          "canVote": false,
+          "vote": null,
+          "roundResult": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "shiny-vote",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "options": [
+          {
+            "id": "A",
+            "pokemonId": "raticate",
+            "pokemonName": "Raticate",
+            "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/A/sprite"
+          },
+          {
+            "id": "B",
+            "pokemonId": "raticate",
+            "pokemonName": "Raticate",
+            "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/B/sprite"
+          },
+          {
+            "id": "C",
+            "pokemonId": "raticate",
+            "pokemonName": "Raticate",
+            "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/C/sprite"
+          },
+          {
+            "id": "D",
+            "pokemonId": "raticate",
+            "pokemonName": "Raticate",
+            "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/D/sprite"
+          }
+        ],
+        "votes": {},
+        "votedPlayerIds": [],
+        "voteVisibility": "REVEAL",
+        "pendingPlayerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 21000,
+        "nextTransitionAt": null,
+        "correctOptionId": null,
+        "lastRound": null,
+        "winnerId": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canVote": true,
+          "vote": null,
+          "roundResult": null
+        },
+        "p2": {
+          "canVote": true,
+          "vote": null,
+          "roundResult": null
+        },
+        "p3": {
+          "canVote": true,
+          "vote": null,
+          "roundResult": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png",
+          "transform": "PALETTE_RECOLOR",
+          "recolor": {
+            "hueShiftDegrees": 310,
+            "saturationScale": 0.88,
+            "lightnessScale": 1.02,
+            "contrast": 0.95
+          }
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png",
+          "transform": "PALETTE_RECOLOR",
+          "recolor": {
+            "hueShiftDegrees": 76,
+            "saturationScale": 0.82,
+            "lightnessScale": 0.99,
+            "contrast": 0.95
+          }
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/20.png",
+          "transform": "PIXEL_ART"
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png",
+          "transform": "PALETTE_RECOLOR",
+          "recolor": {
+            "hueShiftDegrees": 196,
+            "saturationScale": 0.8,
+            "lightnessScale": 1.03,
+            "contrast": 0.94
+          }
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "shiny-vote",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "raticate",
+                "pokemonName": "Raticate",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/A/sprite"
+              },
+              {
+                "id": "B",
+                "pokemonId": "raticate",
+                "pokemonName": "Raticate",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/B/sprite"
+              },
+              {
+                "id": "C",
+                "pokemonId": "raticate",
+                "pokemonName": "Raticate",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/C/sprite"
+              },
+              {
+                "id": "D",
+                "pokemonId": "raticate",
+                "pokemonName": "Raticate",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/D/sprite"
+              }
+            ],
+            "votes": {},
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "voteVisibility": "REVEAL",
+            "pendingPlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "correctOptionId": null,
+            "lastRound": null,
+            "winnerId": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "A",
+                "votedAt": 2000
+              },
+              "roundResult": null
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "shiny-vote",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "raticate",
+                "pokemonName": "Raticate",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/A/sprite"
+              },
+              {
+                "id": "B",
+                "pokemonId": "raticate",
+                "pokemonName": "Raticate",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/B/sprite"
+              },
+              {
+                "id": "C",
+                "pokemonId": "raticate",
+                "pokemonName": "Raticate",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/C/sprite"
+              },
+              {
+                "id": "D",
+                "pokemonId": "raticate",
+                "pokemonName": "Raticate",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/D/sprite"
+              }
+            ],
+            "votes": {},
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "voteVisibility": "REVEAL",
+            "pendingPlayerIds": [
+              "p3"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "correctOptionId": null,
+            "lastRound": null,
+            "winnerId": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "A",
+                "votedAt": 2000
+              },
+              "roundResult": null
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 3000
+              },
+              "roundResult": null
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 7000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "shiny-vote",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "raticate",
+                "pokemonName": "Raticate",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/A/sprite"
+              },
+              {
+                "id": "B",
+                "pokemonId": "raticate",
+                "pokemonName": "Raticate",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/B/sprite"
+              },
+              {
+                "id": "C",
+                "pokemonId": "raticate",
+                "pokemonName": "Raticate",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/C/sprite"
+              },
+              {
+                "id": "D",
+                "pokemonId": "raticate",
+                "pokemonName": "Raticate",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/1/options/D/sprite"
+              }
+            ],
+            "votes": {
+              "p1": {
+                "optionId": "A",
+                "votedAt": 2000
+              },
+              "p2": {
+                "optionId": "B",
+                "votedAt": 3000
+              },
+              "p3": {
+                "optionId": "C",
+                "votedAt": 4000
+              }
+            },
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "voteVisibility": "REVEAL",
+            "pendingPlayerIds": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 7000,
+            "correctOptionId": "C",
+            "lastRound": {
+              "roundNumber": 1,
+              "correctOptionId": "C",
+              "votes": {
+                "p1": {
+                  "optionId": "A",
+                  "votedAt": 2000
+                },
+                "p2": {
+                  "optionId": "B",
+                  "votedAt": 3000
+                },
+                "p3": {
+                  "optionId": "C",
+                  "votedAt": 4000
+                }
+              },
+              "correctPlayerIds": [
+                "p3"
+              ],
+              "missedPlayerIds": [
+                "p1",
+                "p2"
+              ]
+            },
+            "winnerId": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "A",
+                "votedAt": 2000
+              },
+              "roundResult": {
+                "correct": false,
+                "points": 0
+              }
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 3000
+              },
+              "roundResult": {
+                "correct": false,
+                "points": 0
+              }
+            },
+            "p3": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 4000
+              },
+              "roundResult": {
+                "correct": true,
+                "points": 4
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "shiny-vote",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/A/sprite"
+              },
+              {
+                "id": "B",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/B/sprite"
+              },
+              {
+                "id": "C",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/C/sprite"
+              },
+              {
+                "id": "D",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/D/sprite"
+              }
+            ],
+            "votes": {},
+            "votedPlayerIds": [],
+            "voteVisibility": "REVEAL",
+            "pendingPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "correctOptionId": null,
+            "lastRound": null,
+            "winnerId": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/36.png",
+          "transform": "PALETTE_RECOLOR",
+          "recolor": {
+            "hueShiftDegrees": 76,
+            "saturationScale": 0.82,
+            "lightnessScale": 0.99,
+            "contrast": 0.95
+          }
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/36.png",
+          "transform": "PALETTE_RECOLOR",
+          "recolor": {
+            "hueShiftDegrees": 310,
+            "saturationScale": 0.88,
+            "lightnessScale": 1.02,
+            "contrast": 0.95
+          }
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/36.png",
+          "transform": "PIXEL_ART"
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/36.png",
+          "transform": "PALETTE_RECOLOR",
+          "recolor": {
+            "hueShiftDegrees": 196,
+            "saturationScale": 0.8,
+            "lightnessScale": 1.03,
+            "contrast": 0.94
+          }
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "shiny-vote",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/A/sprite"
+              },
+              {
+                "id": "B",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/B/sprite"
+              },
+              {
+                "id": "C",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/C/sprite"
+              },
+              {
+                "id": "D",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/D/sprite"
+              }
+            ],
+            "votes": {},
+            "votedPlayerIds": [
+              "p2"
+            ],
+            "voteVisibility": "REVEAL",
+            "pendingPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "correctOptionId": null,
+            "lastRound": null,
+            "winnerId": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "D",
+                "votedAt": 8000
+              },
+              "roundResult": null
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "shiny-vote",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/A/sprite"
+              },
+              {
+                "id": "B",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/B/sprite"
+              },
+              {
+                "id": "C",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/C/sprite"
+              },
+              {
+                "id": "D",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/D/sprite"
+              }
+            ],
+            "votes": {},
+            "votedPlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "voteVisibility": "REVEAL",
+            "pendingPlayerIds": [
+              "p3"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "correctOptionId": null,
+            "lastRound": null,
+            "winnerId": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 9000
+              },
+              "roundResult": null
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "D",
+                "votedAt": 8000
+              },
+              "roundResult": null
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "shiny-vote",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/A/sprite"
+              },
+              {
+                "id": "B",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/B/sprite"
+              },
+              {
+                "id": "C",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/C/sprite"
+              },
+              {
+                "id": "D",
+                "pokemonId": "clefable",
+                "pokemonName": "Clefable",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/2/options/D/sprite"
+              }
+            ],
+            "votes": {
+              "p2": {
+                "optionId": "D",
+                "votedAt": 8000
+              },
+              "p1": {
+                "optionId": "C",
+                "votedAt": 9000
+              }
+            },
+            "votedPlayerIds": [
+              "p2",
+              "p1"
+            ],
+            "voteVisibility": "REVEAL",
+            "pendingPlayerIds": [
+              "p3"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 30000,
+            "correctOptionId": "C",
+            "lastRound": {
+              "roundNumber": 2,
+              "correctOptionId": "C",
+              "votes": {
+                "p2": {
+                  "optionId": "D",
+                  "votedAt": 8000
+                },
+                "p1": {
+                  "optionId": "C",
+                  "votedAt": 9000
+                }
+              },
+              "correctPlayerIds": [
+                "p1"
+              ],
+              "missedPlayerIds": [
+                "p2",
+                "p3"
+              ]
+            },
+            "winnerId": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 9000
+              },
+              "roundResult": {
+                "correct": true,
+                "points": 4
+              }
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "D",
+                "votedAt": 8000
+              },
+              "roundResult": {
+                "correct": false,
+                "points": 0
+              }
+            },
+            "p3": {
+              "canVote": false,
+              "vote": null,
+              "roundResult": {
+                "correct": false,
+                "points": 0
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 50000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,30000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "shiny-vote",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/A/sprite"
+              },
+              {
+                "id": "B",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/B/sprite"
+              },
+              {
+                "id": "C",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/C/sprite"
+              },
+              {
+                "id": "D",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/D/sprite"
+              }
+            ],
+            "votes": {},
+            "votedPlayerIds": [],
+            "voteVisibility": "REVEAL",
+            "pendingPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundStartedAt": 30000,
+            "roundEndsAt": 50000,
+            "nextTransitionAt": null,
+            "correctOptionId": null,
+            "lastRound": null,
+            "winnerId": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/111.png",
+          "transform": "PALETTE_RECOLOR",
+          "recolor": {
+            "hueShiftDegrees": 76,
+            "saturationScale": 0.82,
+            "lightnessScale": 0.99,
+            "contrast": 0.95
+          }
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/111.png",
+          "transform": "PIXEL_ART"
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/111.png",
+          "transform": "PALETTE_RECOLOR",
+          "recolor": {
+            "hueShiftDegrees": 248,
+            "saturationScale": 0.84,
+            "lightnessScale": 0.98,
+            "contrast": 0.96
+          }
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/111.png",
+          "transform": "PALETTE_RECOLOR",
+          "recolor": {
+            "hueShiftDegrees": 142,
+            "saturationScale": 0.86,
+            "lightnessScale": 1.01,
+            "contrast": 0.96
+          }
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 50000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,30000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "shiny-vote",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/A/sprite"
+              },
+              {
+                "id": "B",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/B/sprite"
+              },
+              {
+                "id": "C",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/C/sprite"
+              },
+              {
+                "id": "D",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/D/sprite"
+              }
+            ],
+            "votes": {},
+            "votedPlayerIds": [
+              "p3"
+            ],
+            "voteVisibility": "REVEAL",
+            "pendingPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundStartedAt": 30000,
+            "roundEndsAt": 50000,
+            "nextTransitionAt": null,
+            "correctOptionId": null,
+            "lastRound": null,
+            "winnerId": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            },
+            "p3": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 31000
+              },
+              "roundResult": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 50000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,30000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "shiny-vote",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/A/sprite"
+              },
+              {
+                "id": "B",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/B/sprite"
+              },
+              {
+                "id": "C",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/C/sprite"
+              },
+              {
+                "id": "D",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/D/sprite"
+              }
+            ],
+            "votes": {},
+            "votedPlayerIds": [
+              "p3",
+              "p1"
+            ],
+            "voteVisibility": "REVEAL",
+            "pendingPlayerIds": [
+              "p2"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 0,
+              "p3": 4
+            },
+            "roundStartedAt": 30000,
+            "roundEndsAt": 50000,
+            "nextTransitionAt": null,
+            "correctOptionId": null,
+            "lastRound": null,
+            "winnerId": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 32000
+              },
+              "roundResult": null
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null,
+              "roundResult": null
+            },
+            "p3": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 31000
+              },
+              "roundResult": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 36000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,30000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "shiny-vote",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/A/sprite"
+              },
+              {
+                "id": "B",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/B/sprite"
+              },
+              {
+                "id": "C",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/C/sprite"
+              },
+              {
+                "id": "D",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/D/sprite"
+              }
+            ],
+            "votes": {
+              "p3": {
+                "optionId": "B",
+                "votedAt": 31000
+              },
+              "p1": {
+                "optionId": "B",
+                "votedAt": 32000
+              },
+              "p2": {
+                "optionId": "B",
+                "votedAt": 33000
+              }
+            },
+            "votedPlayerIds": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "voteVisibility": "REVEAL",
+            "pendingPlayerIds": [],
+            "scores": {
+              "p1": 7,
+              "p2": 2,
+              "p3": 8
+            },
+            "roundStartedAt": 30000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 36000,
+            "correctOptionId": "B",
+            "lastRound": {
+              "roundNumber": 3,
+              "correctOptionId": "B",
+              "votes": {
+                "p3": {
+                  "optionId": "B",
+                  "votedAt": 31000
+                },
+                "p1": {
+                  "optionId": "B",
+                  "votedAt": 32000
+                },
+                "p2": {
+                  "optionId": "B",
+                  "votedAt": 33000
+                }
+              },
+              "correctPlayerIds": [
+                "p3",
+                "p1",
+                "p2"
+              ],
+              "missedPlayerIds": []
+            },
+            "winnerId": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 32000
+              },
+              "roundResult": {
+                "correct": true,
+                "points": 3
+              }
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 33000
+              },
+              "roundResult": {
+                "correct": true,
+                "points": 2
+              }
+            },
+            "p3": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 31000
+              },
+              "roundResult": {
+                "correct": true,
+                "points": 4
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,30000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "shiny-vote",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/A/sprite"
+              },
+              {
+                "id": "B",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/B/sprite"
+              },
+              {
+                "id": "C",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/C/sprite"
+              },
+              {
+                "id": "D",
+                "pokemonId": "rhyhorn",
+                "pokemonName": "Rhyhorn",
+                "sprite": "/api/rooms/GOLD01/games/rs/rounds/3/options/D/sprite"
+              }
+            ],
+            "votes": {
+              "p3": {
+                "optionId": "B",
+                "votedAt": 31000
+              },
+              "p1": {
+                "optionId": "B",
+                "votedAt": 32000
+              },
+              "p2": {
+                "optionId": "B",
+                "votedAt": 33000
+              }
+            },
+            "votedPlayerIds": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "voteVisibility": "REVEAL",
+            "pendingPlayerIds": [],
+            "scores": {
+              "p1": 7,
+              "p2": 2,
+              "p3": 8
+            },
+            "roundStartedAt": 30000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "correctOptionId": "B",
+            "lastRound": {
+              "roundNumber": 3,
+              "correctOptionId": "B",
+              "votes": {
+                "p3": {
+                  "optionId": "B",
+                  "votedAt": 31000
+                },
+                "p1": {
+                  "optionId": "B",
+                  "votedAt": 32000
+                },
+                "p2": {
+                  "optionId": "B",
+                  "votedAt": 33000
+                }
+              },
+              "correctPlayerIds": [
+                "p3",
+                "p1",
+                "p2"
+              ],
+              "missedPlayerIds": []
+            },
+            "winnerId": "p3",
+            "results": {
+              "winnerId": "p3",
+              "standings": [
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 8,
+                  "won": true,
+                  "stats": {
+                    "correctVotes": 2,
+                    "votes": 2,
+                    "incorrectVotes": 0,
+                    "unanswered": 1,
+                    "accuracy": 100
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 7,
+                  "won": false,
+                  "stats": {
+                    "correctVotes": 2,
+                    "votes": 3,
+                    "incorrectVotes": 1,
+                    "unanswered": 0,
+                    "accuracy": 67
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 3,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "correctVotes": 1,
+                    "votes": 3,
+                    "incorrectVotes": 2,
+                    "unanswered": 0,
+                    "accuracy": 33
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 32000
+              },
+              "roundResult": null
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 33000
+              },
+              "roundResult": null
+            },
+            "p3": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 31000
+              },
+              "roundResult": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p3",
+      "standings": [
+        {
+          "playerId": "p3",
+          "position": 1,
+          "points": 8,
+          "won": true,
+          "stats": {
+            "correctVotes": 2,
+            "votes": 2,
+            "incorrectVotes": 0,
+            "unanswered": 1,
+            "accuracy": 100
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 2,
+          "points": 7,
+          "won": false,
+          "stats": {
+            "correctVotes": 2,
+            "votes": 3,
+            "incorrectVotes": 1,
+            "unanswered": 0,
+            "accuracy": 67
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 3,
+          "points": 2,
+          "won": false,
+          "stats": {
+            "correctVotes": 1,
+            "votes": 3,
+            "incorrectVotes": 2,
+            "unanswered": 0,
+            "accuracy": 33
+          }
+        }
+      ]
+    }
+  }
+}

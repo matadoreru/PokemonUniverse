@@ -17,6 +17,8 @@ const pokemon: Pokemon[] = Array.from({ length: 16 }, (_, index) => ({
   name: `Pokémon ${index + 1}`,
   generation: 1,
   sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index + 1}.png`,
+  // Shiny Quiz solo usa Pokémon con sprite shiny oficial.
+  shinySprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${index + 1}.png`,
   palette: ['#183048', '#d86048', '#f0c030', '#4878c0', '#78a848', '#d8d8d8'].map((color, colorIndex) => colorIndex === 0 ? `#${(0x183048 + index).toString(16).padStart(6, '0')}` : color),
   hp: 40 + index, attack: 50 + index, defense: 45 + index, specialAttack: 55 + index, specialDefense: 50 + index, speed: 60 + index, baseStatTotal: 300 + index * 6, types: index === 0 ? ['fire'] : index === 1 ? ['water'] : index === 2 ? ['fire', 'water'] : ['normal'],
   heightDecimeters: 5 + index, weightHectograms: 50 + index, evolutionStage: 1, evolutionStageCount: 1,
@@ -111,7 +113,7 @@ describe('room multi-game lifecycle', () => {
     const preferences = {
       forUser: vi.fn(() => new Map<string, unknown>([
         ['pokedex-distance', { generations: [1], roundSeconds: 25 }],
-        ['shiny-vote', { generations: [1], roundSeconds: 15, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, showVotes: false }],
+        ['shiny-vote', { generations: [1], roundSeconds: 15, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'REVEAL' }],
       ])),
       save: vi.fn(),
     };
@@ -122,7 +124,7 @@ describe('room multi-game lifecycle', () => {
 
     expect(preferences.forUser).toHaveBeenCalledWith(host.id);
     expect(room.gameConfigs.get('pokedex-distance')).toEqual({ generations: [1], roundSeconds: 25 });
-    expect(room.gameConfigs.get('shiny-vote')).toMatchObject({ rounds: 2, showVotes: false });
+    expect(room.gameConfigs.get('shiny-vote')).toMatchObject({ rounds: 2, voteVisibility: 'REVEAL' });
 
     (manager as any).selectGame(host.id, 'shiny-vote');
     const nextConfig = { ...(room.gameConfigs.get('shiny-vote') as Record<string, unknown>), rounds: 3 };
@@ -232,10 +234,10 @@ describe('room multi-game lifecycle', () => {
 
     (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 25 });
     (manager as any).selectGame(host.id, 'shiny-vote');
-    (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 15, rounds: 1, candidateMode: 'SAME_POKEMON', optionCount: 4, showVotes: true });
+    (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 15, rounds: 1, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE' });
     (manager as any).selectGame(host.id, 'pokedex-distance');
     expect(room.gameConfigs.get('pokedex-distance')).toEqual({ generations: [1], roundSeconds: 25 });
-    expect(room.gameConfigs.get('shiny-vote')).toEqual({ generations: [1], roundSeconds: 15, rounds: 1, candidateMode: 'SAME_POKEMON', optionCount: 4, showVotes: true });
+    expect(room.gameConfigs.get('shiny-vote')).toEqual({ generations: [1], roundSeconds: 15, rounds: 1, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE' });
 
     const originalMembers = [...room.members.values()];
     startReady(manager, room, host.id);
@@ -398,8 +400,8 @@ describe('room multi-game lifecycle', () => {
     expect(room.members.get(cohost.id)?.roomRole).toBe('CO_HOST');
     expect(transport.to().emit).toHaveBeenCalledWith('room:state', expect.objectContaining({ members: expect.arrayContaining([expect.objectContaining({ id: cohost.id, roomRole: 'CO_HOST' })]) }));
     (manager as any).selectGame(cohost.id, 'shiny-vote');
-    (manager as any).updateConfig(cohost.id, { generations: [1], roundSeconds: 20, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, showVotes: true });
-    expect(() => (manager as any).updateConfig(cohost.id, { generations: [1], roundSeconds: 2, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, showVotes: true })).toThrow();
+    (manager as any).updateConfig(cohost.id, { generations: [1], roundSeconds: 20, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE' });
+    expect(() => (manager as any).updateConfig(cohost.id, { generations: [1], roundSeconds: 2, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE' })).toThrow();
     (manager as any).updateSession(cohost.id, { type: 'GAME_COUNT', target: 5 });
     expect(room.selectedGameId).toBe('shiny-vote'); expect(room.sessionMode).toEqual({ type: 'GAME_COUNT', target: 5 });
     expect(() => (manager as any).startGame(cohost.id)).toThrow(/No tienes permiso/);
@@ -429,7 +431,7 @@ describe('room multi-game lifecycle', () => {
     expect(room.members.get(guest.id)?.ready).toBe(true);
 
     const config = room.gameConfigs.get('shiny-vote') as Record<string, unknown>;
-    (manager as any).updateConfig(host.id, { ...config, showVotes: false });
+    (manager as any).updateConfig(host.id, { ...config, voteVisibility: 'LIVE' });
     expect(room.members.get(guest.id)?.ready).toBe(true);
 
     (manager as any).updateSession(host.id, { type: 'GAME_COUNT', target: 5 });
@@ -827,7 +829,7 @@ describe('room multi-game lifecycle', () => {
     const room = manager.store.get(created.room.code)!;
     for (let index = 1; index < people.length; index += 1) (manager as any).join(sockets[index], people[index], room.code);
     (manager as any).selectGame('host', 'shiny-vote');
-    (manager as any).updateConfig('host', { generations: [1], roundSeconds: 20, rounds: 1, candidateMode: 'SAME_POKEMON', optionCount: 4, showVotes: false });
+    (manager as any).updateConfig('host', { generations: [1], roundSeconds: 20, rounds: 1, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'REVEAL' });
     startReady(manager, room, 'host');
     (manager as any).action('carlos', { type: 'VOTE', optionId: 'C' });
     (manager as any).disconnect('carlos', 'socket-carlos');
@@ -839,11 +841,11 @@ describe('room multi-game lifecycle', () => {
     (manager as any).action('ana', { type: 'VOTE', optionId: 'B' });
     expect(room.phase).toBe('ROUND_RESULTS');
     expect(inspectState(room.game!).votes.carlos.optionId).toBe('C');
-    const hiddenReveal = (manager as any).view(room, 'ana');
-    expect(hiddenReveal.game.votes).toEqual({});
-    expect(hiddenReveal.game.lastRound.votes).toEqual({});
-    expect(JSON.stringify(hiddenReveal.game)).not.toContain('"optionId":"C"');
-    expect(hiddenReveal.gamePlayerState).toMatchObject({ vote: { optionId: 'B' }, roundResult: { correct: expect.any(Boolean), points: expect.any(Number) } });
+    // REVEAL: al revelar ya se publican los votos, también el aceptado antes de desconectarse.
+    const reveal = (manager as any).view(room, 'ana');
+    expect(reveal.game.votes).toMatchObject({ carlos: { optionId: 'C' }, host: { optionId: 'A' }, ana: { optionId: 'B' } });
+    expect(reveal.game.lastRound.votes).toEqual(reveal.game.votes);
+    expect(reveal.gamePlayerState).toMatchObject({ vote: { optionId: 'B' }, roundResult: { correct: expect.any(Boolean), points: expect.any(Number) } });
     expect(room.members.get('carlos')).toMatchObject({ connected: false, presence: 'TEMPORARILY_DISCONNECTED', role: 'PLAYER' });
   });
 

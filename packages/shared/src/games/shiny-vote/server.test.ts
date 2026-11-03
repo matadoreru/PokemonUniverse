@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { GameContext, GamePlayer, Pokemon, PokemonCatalog, ShinyCandidateMode, ShinyOptionId, ShinyVoteState } from '../../index.js';
-import { shinyPointsForOrder, shinyVoteGame } from '../../index.js';
+import type { GameContext, GamePlayer, Pokemon, PokemonCatalog, ShinyCandidateMode, ShinyOptionId, ShinyVoteState, ShinyVoteVisibility } from '../../index.js';
+import { defaultShinyVoteConfig, FAKE_SHINY_PALETTES, shinyPointsForOrder, shinyVoteGame } from '../../index.js';
 
 const pokemon: Pokemon[] = Array.from({ length: 8 }, (_, index) => ({
   id: `pokemon-${index + 1}`,
@@ -22,11 +22,11 @@ const players: GamePlayer[] = [
   { id: 'marta', displayName: 'Marta' },
 ];
 
-function setup(rounds = 2, candidateMode: ShinyCandidateMode = 'SAME_POKEMON', optionCount = 4, generations = [1], showVotes = true, random: () => number = () => 0) {
+function setup(rounds = 2, candidateMode: ShinyCandidateMode = 'SAME_POKEMON', optionCount = 4, generations = [1], voteVisibility: ShinyVoteVisibility = 'LIVE', random: () => number = () => 0) {
   let now = 1_000;
   const preloadedImages: string[] = [];
   const context: GameContext = { players: players.map((player) => ({ ...player })), pokemon: catalog, get now() { return now; }, random, roomCode: 'PIKA42', preloadImage: (source) => preloadedImages.push(source) };
-  let state = shinyVoteGame.createInitialState({ generations, roundSeconds: 20, rounds, candidateMode, optionCount, showVotes }, context);
+  let state = shinyVoteGame.createInitialState({ generations, roundSeconds: 20, rounds, candidateMode, optionCount, voteVisibility }, context);
   state = shinyVoteGame.start(state, context);
   return { state, context, preloadedImages, setNow(value: number) { now = value; } };
 }
@@ -49,8 +49,9 @@ describe('public shiny voting', () => {
   });
 
   it('builds fake recolors from normal sprites and sometimes from official shiny sprites', () => {
-    const values = [0, 0, 0.9, 0.1, 0.9];
-    const fixture = setup(2, 'SAME_POKEMON', 4, [1], true, () => values.shift() ?? 0.9);
+    // takeRandom y el índice correcto, cinco extracciones de la barajada de paletas y una por señuelo.
+    const values = [0, 0, 0, 0, 0, 0, 0, 0.9, 0.1, 0.9];
+    const fixture = setup(2, 'SAME_POKEMON', 4, [1], 'LIVE', () => values.shift() ?? 0.9);
     const fakeOptions = fixture.state.options.filter((option) => option.id !== fixture.state.correctOptionId);
     expect(fakeOptions.some((option) => !option.sprite.includes('/shiny/'))).toBe(true);
     expect(fakeOptions.some((option) => option.sprite.includes('/shiny/'))).toBe(true);
@@ -134,26 +135,63 @@ describe('public shiny voting', () => {
     expect(spectator.error).toMatch(/participas/);
   });
 
-  it('keeps hidden ballot targets private through reveal while exposing completion', () => {
-    const fixture = setup(2, 'SAME_POKEMON', 4, [1], false);
-    let state = vote(fixture.state, 'pedro', 'C', fixture.context).state;
-    let publicState = shinyVoteGame.getPublicState(state, fixture.context);
-    expect(publicState.showVotes).toBe(false);
+  it('hides votes during ROUND_ACTIVE by default and shows them at the reveal', () => {
+    let now = 1_000;
+    const context: GameContext = { players: players.map((player) => ({ ...player })), pokemon: catalog, get now() { return now; }, random: () => 0, roomCode: 'PIKA42' };
+    const initial = shinyVoteGame.start(shinyVoteGame.createInitialState({ ...defaultShinyVoteConfig, generations: [1], rounds: 2 }, context), context);
+    let state = vote(initial, 'pedro', 'C', context).state;
+    let publicState = shinyVoteGame.getPublicState(state, context);
+    expect(publicState.voteVisibility).toBe('REVEAL');
     expect(publicState.votedPlayerIds).toEqual(['pedro']);
     expect(publicState.votes).toEqual({});
+    expect(publicState.lastRound).toBeNull();
     expect(JSON.stringify(publicState)).not.toContain('"optionId":"C"');
-    expect((shinyVoteGame.getPlayerState(state, 'pedro', fixture.context) as { vote: { optionId: string } }).vote.optionId).toBe('C');
-    state = vote(state, 'ana', 'A', fixture.context).state;
-    state = vote(state, 'marta', 'B', fixture.context).state;
-    publicState = shinyVoteGame.getPublicState(state, fixture.context);
+    expect((shinyVoteGame.getPlayerState(state, 'pedro', context) as { vote: { optionId: string } }).vote.optionId).toBe('C');
+    now = 1_200;
+    state = vote(state, 'ana', 'A', context).state;
+    state = vote(state, 'marta', 'B', context).state;
+    publicState = shinyVoteGame.getPublicState(state, context);
     expect(publicState.phase).toBe('ROUND_RESULTS');
     expect(publicState.correctOptionId).toBe('A');
-    expect(publicState.votes).toEqual({});
-    expect(publicState.lastRound?.votes).toEqual({});
-    expect(publicState.lastRound?.correctPlayerIds).toEqual([]);
-    expect(publicState.lastRound?.missedPlayerIds).toEqual([]);
-    expect(JSON.stringify(publicState)).not.toContain('"optionId":"C"');
-    expect(shinyVoteGame.getPlayerState(state, 'pedro', fixture.context)).toMatchObject({ vote: { optionId: 'C' }, roundResult: { correct: false, points: 0 } });
+    expect(publicState.votes).toEqual({ pedro: { optionId: 'C', votedAt: 1_000 }, ana: { optionId: 'A', votedAt: 1_200 }, marta: { optionId: 'B', votedAt: 1_200 } });
+    expect(publicState.lastRound?.votes).toEqual(publicState.votes);
+    expect(publicState.lastRound?.correctPlayerIds).toEqual(['ana']);
+    expect(publicState.lastRound?.missedPlayerIds).toEqual(['pedro', 'marta']);
+    expect(shinyVoteGame.getPlayerState(state, 'pedro', context)).toMatchObject({ vote: { optionId: 'C' }, roundResult: { correct: false, points: 0 } });
+  });
+
+  it('LIVE shows votes while the round is open', () => {
+    const fixture = setup(2, 'SAME_POKEMON', 4, [1], 'LIVE');
+    const state = vote(fixture.state, 'pedro', 'C', fixture.context).state;
+    const publicState = shinyVoteGame.getPublicState(state, fixture.context);
+    expect(publicState.phase).toBe('ROUND_ACTIVE');
+    expect(publicState.voteVisibility).toBe('LIVE');
+    expect(publicState.votes).toEqual({ pedro: { optionId: 'C', votedAt: 1_000 } });
+    expect(publicState.votedPlayerIds).toEqual(['pedro']);
+    expect(publicState.correctOptionId).toBeNull();
+  });
+
+  it('never uses a Pokémon without shinySprite', () => {
+    const withoutShiny = (entry: Pokemon) => Object.fromEntries(Object.entries(entry).filter(([key]) => key !== 'shinySprite')) as unknown as Pokemon;
+    const mixed: Pokemon[] = pokemon.slice(0, 6).map((entry, index) => index === 3 ? entry : withoutShiny(entry));
+    const mixedCatalog: PokemonCatalog = { ...catalog, all: () => mixed, forGenerations: (generations) => mixed.filter((entry) => generations.includes(entry.generation)) };
+    const context: GameContext = { players: players.map((player) => ({ ...player })), pokemon: mixedCatalog, now: 1_000, random: () => 0.99, roomCode: 'PIKA42' };
+    const config = { ...defaultShinyVoteConfig, generations: [1], rounds: 3 };
+    let state = shinyVoteGame.start(shinyVoteGame.createInitialState(config, context), context);
+    expect(state.options.every((option) => option.pokemonId === 'pokemon-4')).toBe(true);
+    state = shinyVoteGame.handleTimeout(state, { ...context, now: state.roundEndsAt! });
+    expect(state.preparedOptions?.every((option) => option.pokemonId === 'pokemon-4')).toBe(true);
+    expect(() => shinyVoteGame.createInitialState({ ...config, candidateMode: 'DIFFERENT_POKEMON', optionCount: 4 }, context))
+      .toThrow('At least 4 Pokémon are required for the selected generations');
+  });
+
+  it('shuffles the decoy palettes each round', () => {
+    // Con random() = 0, Fisher–Yates rota la tabla: la primera paleta pasa a ser la segunda.
+    const fixture = setup();
+    const fakes = fixture.state.options.filter((option) => option.recolor !== null);
+    expect(fakes[0]?.recolor).not.toEqual(FAKE_SHINY_PALETTES[0]);
+    expect(fakes[0]?.recolor).toEqual(FAKE_SHINY_PALETTES[1]);
+    expect(fakes.every((option) => FAKE_SHINY_PALETTES.some((palette) => JSON.stringify(palette) === JSON.stringify(option.recolor)))).toBe(true);
   });
 
   it('does not wait for a disconnected non-voter and preserves an accepted vote after disconnect', () => {
@@ -177,7 +215,7 @@ describe('public shiny voting', () => {
   });
 
   it('restores the private accepted vote after disconnecting and reconnecting', () => {
-    const fixture = setup(2, 'SAME_POKEMON', 4, [1], false);
+    const fixture = setup(2, 'SAME_POKEMON', 4, [1], 'REVEAL');
     const state = vote(fixture.state, 'pedro', 'D', fixture.context).state;
     fixture.context.players[0]!.connected = false;
     expect(shinyVoteGame.getPublicState(state, fixture.context).votes).toEqual({});

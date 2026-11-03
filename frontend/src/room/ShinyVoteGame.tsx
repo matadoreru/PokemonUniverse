@@ -5,6 +5,7 @@ import { ShinyGameSidebar } from '../games/shiny-vote/ShinyGameSidebar';
 import { ShinyOptionCard } from '../games/shiny-vote/ShinyOptionCard';
 import { ShinyVoteStatus } from '../games/shiny-vote/ShinyVoteStatus';
 import { createShinyVoteAction, shinyOptionFromShortcut, updateShinyDraft } from '../games/shiny-vote/interaction';
+import { shinyVotersVisible } from '../games/shiny-vote/vote-visibility';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 
 function ignoresGameShortcuts(target: EventTarget | null): boolean {
@@ -28,6 +29,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
   const progress = game.phase === 'ROUND_ACTIVE' ? Math.min(100, Math.max(0, remainingMs / totalMs * 100)) : 0;
   const active = game.phase === 'ROUND_ACTIVE';
   const reveal = game.phase === 'ROUND_RESULTS';
+  const revealPhase = game.phase === 'ROUND_RESULTS' || game.phase === 'GAME_RESULTS';
   const transitionRemaining = Math.max(1, Math.ceil(transitionRemainingMs / 1_000));
   const transitionLabel = game.roundNumber >= game.totalRounds ? 'Resultados finales' : 'Siguiente ronda';
   const ownVote = playerState?.vote ?? game.votes[selfId] ?? null;
@@ -88,7 +90,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
       roundNumber={game.roundNumber}
       totalRounds={game.totalRounds}
       active={active}
-      showVotes={game.showVotes}
+      voteVisibility={game.voteVisibility}
       candidateMode={config.candidateMode}
       remainingSeconds={active ? remaining : transitionRemaining}
       progress={active ? progress : 100}
@@ -109,7 +111,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
             disabled={!canVote || submitting}
             reveal={reveal}
             correct={game.correctOptionId === option.id}
-            showVoters={game.showVotes}
+            showVoters={shinyVotersVisible(game.voteVisibility, revealPhase)}
             onSelect={() => selectOption(option.id)}
           />;
         })}</div> : <div className="grid grid-cols-2 gap-2.5 sm:gap-3" aria-label="Cargando opciones">{Array.from({ length: 4 }, (_, index) => <div key={index} className="shiny-option-card rounded-2xl border border-ink/10 bg-surface p-3"><div className="skeleton h-9 w-9" /><div className="skeleton mx-auto mt-3 h-44 w-44 max-w-full" /><div className="skeleton mx-auto mt-3 h-5 w-24 max-w-full" /></div>)}</div>}

@@ -16,10 +16,16 @@ public record ShinyVoteConfig(
     int rounds,
     CandidateMode candidateMode,
     int optionCount,
-    boolean showVotes) {
+    VoteVisibility voteVisibility) {
 
   /** {@code SHINY_CANDIDATE_MODES}. */
   public enum CandidateMode { SAME_POKEMON, DIFFERENT_POKEMON }
+
+  /**
+   * {@code SHINY_VOTE_VISIBILITIES}: {@code REVEAL} publica los votos al revelar la ronda; {@code LIVE} los muestra
+   * mientras sigue abierta (permite copiar).
+   */
+  public enum VoteVisibility { REVEAL, LIVE }
 
   public ShinyVoteConfig {
     generations = List.copyOf(generations);
@@ -28,7 +34,7 @@ public record ShinyVoteConfig(
   /** {@code defaultShinyVoteConfig}. */
   public static ShinyVoteConfig defaults() {
     var generations = ConfigReader.allGenerations();
-    return new ShinyVoteConfig(generations, 20, 10, CandidateMode.SAME_POKEMON, 4, true);
+    return new ShinyVoteConfig(generations, 20, 10, CandidateMode.SAME_POKEMON, 4, VoteVisibility.REVEAL);
   }
 
   /**
@@ -44,7 +50,7 @@ public record ShinyVoteConfig(
     var candidateMode = config.enumValue("candidateMode", CandidateMode.class,
         "candidateMode debe ser SAME_POKEMON o DIFFERENT_POKEMON");
     int optionCount = config.integer("optionCount", 3, 6);
-    boolean showVotes = config.bool("showVotes");
-    return new ShinyVoteConfig(generations, roundSeconds, rounds, candidateMode, optionCount, showVotes);
+    var voteVisibility = config.enumValue("voteVisibility", VoteVisibility.class);
+    return new ShinyVoteConfig(generations, roundSeconds, rounds, candidateMode, optionCount, voteVisibility);
   }
 }

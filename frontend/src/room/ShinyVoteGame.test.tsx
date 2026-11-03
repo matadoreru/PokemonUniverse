@@ -36,7 +36,7 @@ function publicGame(overrides: Partial<ShinyVotePublicState> = {}): ShinyVotePub
     options,
     votes: {},
     votedPlayerIds: [],
-    showVotes: true,
+    voteVisibility: 'LIVE',
     pendingPlayerIds: members.map((member) => member.id),
     scores: Object.fromEntries(members.map((member) => [member.id, 0])),
     roundStartedAt: 1_000,
@@ -64,7 +64,7 @@ function room(game: ShinyVotePublicState, playerState: ShinyVotePlayerState | nu
     members,
     availableGames: [],
     selectedGameId: 'shiny-vote',
-    selectedGameConfig: { generations: [1], rounds: 10, roundSeconds: 20, optionCount: game.options.length, candidateMode, showVotes: game.showVotes },
+    selectedGameConfig: { generations: [1], rounds: 10, roundSeconds: 20, optionCount: game.options.length, candidateMode, voteVisibility: game.voteVisibility },
     sessionMode: { type: 'INFINITE' },
     gameSelectionMode: { type: 'FIXED' },
     nextGameVote: null,
@@ -81,22 +81,24 @@ function render(game: ShinyVotePublicState, playerState: ShinyVotePlayerState | 
   return renderToStaticMarkup(createElement(MemoryRouter, {}, createElement(ShinyVoteGame, { room: room(game, playerState), selfId: 'p1', onAction: async () => undefined })));
 }
 
-function revealGame(showVotes = true): ShinyVotePublicState {
-  const votes = showVotes ? {
-    p1: { optionId: 'B' as const, votedAt: 2_000 },
-    p2: { optionId: 'A' as const, votedAt: 2_100 },
-  } : {};
+const revealVotes: ShinyVotePublicState['votes'] = {
+  p1: { optionId: 'B', votedAt: 2_000 },
+  p2: { optionId: 'A', votedAt: 2_100 },
+};
+
+function revealGame(voteVisibility: ShinyVotePublicState['voteVisibility'] = 'LIVE', votes = revealVotes): ShinyVotePublicState {
+  const correctPlayerIds = Object.keys(votes).filter((id) => votes[id]?.optionId === 'B');
   return publicGame({
     phase: 'ROUND_RESULTS',
-    showVotes,
+    voteVisibility,
     votes,
-    votedPlayerIds: ['p1', 'p2'],
+    votedPlayerIds: Object.keys(votes),
     pendingPlayerIds: ['p3', 'p4', 'p5'],
     scores: { p1: 4, p2: 0, p3: 0, p4: 0, p5: 0 },
     roundEndsAt: null,
     nextTransitionAt: 4_000,
     correctOptionId: 'B',
-    lastRound: { roundNumber: 1, correctOptionId: 'B', votes, correctPlayerIds: showVotes ? ['p1'] : [], missedPlayerIds: showVotes ? ['p2', 'p3', 'p4', 'p5'] : [] },
+    lastRound: { roundNumber: 1, correctOptionId: 'B', votes, correctPlayerIds, missedPlayerIds: members.map((member) => member.id).filter((id) => !correctPlayerIds.includes(id)) },
   });
 }
 
@@ -140,20 +142,26 @@ describe('Shiny Quiz UI', () => {
     expect(wrong).toContain('Respuesta correcta:');
     expect(wrong).toContain('C');
     expect(wrong).toContain('Simisear');
-    const timeout = render(revealGame(false), player({ canVote: false, vote: null, roundResult: { correct: false, points: 0 } }));
+    const timeout = render(revealGame('LIVE', { p2: revealVotes.p2! }), player({ canVote: false, vote: null, roundResult: { correct: false, points: 0 } }));
     expect(timeout).toContain('Tiempo agotado');
   });
 
-  it('shows bounded avatar summaries only when public voting is enabled', () => {
+  it('shows bounded avatar summaries live, or only after the reveal by default', () => {
     const allVotes = Object.fromEntries(members.map((member, index) => [member.id, { optionId: 'A' as const, votedAt: 2_000 + index }]));
     const visible = render(publicGame({ votes: allVotes, votedPlayerIds: members.map((member) => member.id), pendingPlayerIds: [] }), player({ canVote: false, vote: allVotes.p1! }));
     expect(visible).toContain('data-testid="shiny-voters-A"');
     expect(visible).toContain('5 votos');
     expect(visible).toContain('+2');
-    const hidden = render(publicGame({ showVotes: false, votes: {}, votedPlayerIds: members.map((member) => member.id), pendingPlayerIds: [] }), player({ canVote: false, vote: allVotes.p1! }));
+    expect(visible).toContain('Votos en directo');
+    const hidden = render(publicGame({ voteVisibility: 'REVEAL', votes: {}, votedPlayerIds: members.map((member) => member.id), pendingPlayerIds: [] }), player({ canVote: false, vote: allVotes.p1! }));
     expect(hidden).not.toContain('data-testid="shiny-voters-A"');
     expect(hidden).not.toContain('5 votos');
     expect(hidden).toContain('Elección privada');
+    expect(hidden).toContain('Votos al revelar');
+    const revealed = render(revealGame('REVEAL'), player({ canVote: false, vote: revealVotes.p1!, roundResult: { correct: true, points: 4 } }));
+    expect(revealed).toContain('data-testid="shiny-voters-A"');
+    expect(revealed).toContain('data-testid="shiny-voters-B"');
+    expect(revealed).not.toContain('Elección privada');
   });
 
   it('renders a non-interactive spectator state', () => {

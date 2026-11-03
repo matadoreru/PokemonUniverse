@@ -11,8 +11,11 @@ import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteConfig.CandidateMode;
+import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteConfig.VoteVisibility;
 import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteTypes.ShinyOptionId;
 import es.pokemonuniverse.domain.json.JsonTree;
+import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
+import es.pokemonuniverse.domain.pokemon.Pokemon;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
@@ -40,7 +43,7 @@ class ShinyVoteEngineTest {
   }
 
   private static ShinyVoteConfig config(List<Integer> generations, CandidateMode mode, int optionCount) {
-    return new ShinyVoteConfig(generations, 20, 2, mode, optionCount, true);
+    return new ShinyVoteConfig(generations, 20, 2, mode, optionCount, VoteVisibility.LIVE);
   }
 
   @Test
@@ -131,13 +134,42 @@ class ShinyVoteEngineTest {
     for (int index = 0; index < 8; index++) {
       try {
         assertTrue(JsonTree.equal(json(expected.get(index % 6)),
-            GoldenReplayer.tree(ShinyVoteFilters.fakeShinyPalette(index))), "paleta " + index);
+            GoldenReplayer.tree(ShinyVoteFilters.fakeShinyPalette(ShinyVoteFilters.FAKE_SHINY_PALETTES, index))),
+            "paleta " + index);
       } catch (IOException e) {
         throw new AssertionError(e);
       }
     }
     assertTrue(ShinyVoteFilters.useShinySpriteForFake(() -> 0.349));
     assertFalse(ShinyVoteFilters.useShinySpriteForFake(() -> 0.35));
+  }
+
+  private static Pokemon withoutShinySprite(Pokemon p) {
+    return new Pokemon(p.id(), p.nationalDexNumber(), p.name(), p.generation(), p.isDefault(), p.sprite(), null,
+        p.palette(), p.paletteWeights(), p.hp(), p.attack(), p.defense(), p.specialAttack(), p.specialDefense(),
+        p.speed(), p.baseStatTotal(), p.heightDecimeters(), p.weightHectograms(), p.evolutionStage(),
+        p.evolutionStageCount(), p.legendaryStatus(), p.color(), p.abilities(), p.names(), p.types());
+  }
+
+  /** El catálogo dorado tiene shiny en todos: el filtro del pool solo se prueba con un catálogo propio, como el TS. */
+  @Test
+  void neverUsesAPokemonWithoutShinySprite() {
+    var gen1 = GoldenCatalogs.load("gen1-2").forGenerations(List.of(1)).subList(0, 6);
+    var mixed = new ArrayList<Pokemon>();
+    for (int index = 0; index < gen1.size(); index++) {
+      mixed.add(index == 3 ? gen1.get(index) : withoutShinySprite(gen1.get(index)));
+    }
+    var withShiny = gen1.get(3).id();
+    var context = GameContext.builder(new InMemoryPokemonCatalog(mixed), () -> 0.99)
+        .players(List.of(new GamePlayer("p1", "Player 1"))).now(1000).roomCode("GOLD01").build();
+    var config = new ShinyVoteConfig(List.of(1), 20, 3, CandidateMode.SAME_POKEMON, 4, VoteVisibility.REVEAL);
+    var started = engine.start(engine.createInitialState(config, context), context);
+    assertTrue(started.options().stream().allMatch(option -> option.pokemonId().equals(withShiny)));
+    var revealed = engine.handleTimeout(started, context.withNow(started.roundEndsAt()));
+    assertTrue(revealed.preparedOptions().stream().allMatch(option -> option.pokemonId().equals(withShiny)));
+    var different = new ShinyVoteConfig(List.of(1), 20, 3, CandidateMode.DIFFERENT_POKEMON, 4, VoteVisibility.REVEAL);
+    var error = assertThrows(EngineException.class, () -> engine.createInitialState(different, context));
+    assertEquals("At least 4 Pokémon are required for the selected generations", error.getMessage());
   }
 
   @Test

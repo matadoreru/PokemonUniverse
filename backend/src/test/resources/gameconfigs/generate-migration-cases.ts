@@ -21,6 +21,8 @@ add('higher-lower: varias claves erróneas a la vez', 'higher-lower', { ...def('
 add('higher-lower: transformación al validar', 'higher-lower', { ...def('higher-lower'), generations: [3, 1, 1] });
 add('higher-lower: REALTIME guardado pasa a REVEAL', 'higher-lower', { ...def('higher-lower'), answerVisibility: 'REALTIME', rounds: 7 });
 add('higher-lower: LIVE guardado se conserva', 'higher-lower', { ...def('higher-lower'), answerVisibility: 'LIVE', rounds: 4 });
+add('shiny-vote: showVotes guardado se descarta', 'shiny-vote', { ...Object.fromEntries(Object.entries(def('shiny-vote')).filter(([key]) => key !== 'voteVisibility')), showVotes: true, rounds: 4 });
+add('shiny-vote: LIVE guardado se conserva', 'shiny-vote', { ...def('shiny-vote'), voteVisibility: 'LIVE', rounds: 6 });
 add('pokemon-bingo: clave obsoleta eliminada', 'pokemon-bingo', { ...def('pokemon-bingo'), legacy: true, width: 4 });
 add('pokemon-bingo: tipo erróneo sustituido por el defecto', 'pokemon-bingo', { ...def('pokemon-bingo'), durationSeconds: '120', width: 5 });
 add('pokemon-bingo: generations con un elemento inválido', 'pokemon-bingo', { ...def('pokemon-bingo'), generations: [1, 12], height: 4 });

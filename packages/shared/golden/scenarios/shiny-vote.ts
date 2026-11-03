@@ -1,6 +1,7 @@
 // Escenarios dorados de Shiny Quiz. El token de recursos es solo `now` en base 36 (sin random()). Las opciones de la
 // ronda 1 salen en start y las demás al revelar la ronda anterior (prepareNextRound): takeRandom, el índice correcto y
-// un random() por cada señuelo (useShinySpriteForFake). Cada señuelo lleva la paleta siguiente de FAKE_SHINY_PALETTES.
+// cinco random() para barajar FAKE_SHINY_PALETTES y un random() por cada señuelo (useShinySpriteForFake). Cada señuelo
+// lleva la paleta siguiente de la tabla barajada. El pool solo admite Pokémon con shinySprite (todos en gen1-2).
 import { shinyVoteGame } from '../../dist/index.js';
 import type { GamePlayer } from '../../dist/index.js';
 import type { GoldenEngineEntry } from './index.js';
@@ -10,7 +11,7 @@ const ana: GamePlayer = { id: 'p1', displayName: 'Ana' };
 const bruno: GamePlayer = { id: 'p2', displayName: 'Bruno' };
 const carla: GamePlayer = { id: 'p3', displayName: 'Carla' };
 
-const baseConfig = { generations: [1], roundSeconds: 20, rounds: 3, candidateMode: 'SAME_POKEMON', optionCount: 4, showVotes: true };
+const baseConfig = { generations: [1], roundSeconds: 20, rounds: 3, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE' };
 
 function vote(playerId: string, optionId: string, now: number): GoldenStep {
   return { kind: 'action', playerId, action: { type: 'VOTE', optionId }, now };
@@ -22,7 +23,7 @@ function asset(assetToken: string, roundNumber: number, assetId: string, now: nu
   return { kind: 'asset', assetToken, roundNumber, assetId, now };
 }
 
-// Seed 931 desde now = 1000 (token `rs`): Diglett (correcta A), Goldeen (C) y Weedle (D).
+// Seed 931 desde now = 1000 (token `rs`): Diglett (correcta A), Weedle (D) y Muk (B).
 const samePokemon: GoldenScenario = {
   name: 'same-pokemon-show-votes',
   seed: 931,
@@ -52,47 +53,76 @@ const samePokemon: GoldenScenario = {
     timeout(7_000),
     // Ronda 2 (7000–27000): la acción tardía revela la ronda (y prepara la siguiente) aunque se rechace.
     { kind: 'presence', players: [ana, bruno, carla], now: 7_500 },
-    vote('p1', 'C', 8_000),
-    vote('p3', 'C', 8_500),
+    vote('p1', 'D', 8_000),
+    vote('p3', 'D', 8_500),
     vote('p2', 'B', 27_000),
     asset('rs', 1, 'A', 27_100),
-    asset('rs', 2, 'C', 27_100),
+    asset('rs', 2, 'D', 27_100),
     timeout(30_000),
     // Ronda 3 (30000–50000): nadie vota.
     timeout(50_000),
     timeout(53_000),
-    asset('rs', 3, 'D', 53_100),
+    asset('rs', 3, 'B', 53_100),
   ],
 };
 
-// Seed 932 desde una fecha realista: seis Pokémon distintos (cinco paletas de señuelo) con votos ocultos.
+// Seed 932 desde una fecha realista: seis Pokémon distintos (cinco paletas de señuelo) con votos visibles solo al revelar.
 const t0 = 1_767_225_600_000;
 const token = t0.toString(36);
 const differentPokemon: GoldenScenario = {
-  name: 'different-pokemon-hidden-votes',
+  name: 'different-pokemon-reveal-votes',
   seed: 932,
   catalog: 'gen1-2',
   startNow: t0,
   players: [ana, bruno],
-  config: { generations: [2, 1], roundSeconds: 10, rounds: 3, candidateMode: 'DIFFERENT_POKEMON', optionCount: 6, showVotes: false },
+  config: { generations: [2, 1], roundSeconds: 10, rounds: 3, candidateMode: 'DIFFERENT_POKEMON', optionCount: 6, voteVisibility: 'REVEAL' },
   steps: [
     // Ronda 1: Moltres, Cloyster, Blissey, Mewtwo (correcta D), Snubbull y Flareon.
     ...['A', 'B', 'C', 'D', 'E', 'F'].map((optionId) => asset(token, 1, optionId, t0 + 500)),
     vote('p1', 'D', t0 + 1_000),
     vote('p2', 'A', t0 + 2_000),
     timeout(t0 + 5_000),
-    // Ronda 2 (correcta F): Bruno vota y la desconexión de Ana, la única pendiente, revela la ronda (y prepara la
+    // Ronda 2 (correcta C): Bruno vota y la desconexión de Ana, la única pendiente, revela la ronda (y prepara la
     // siguiente con random()).
-    vote('p2', 'F', t0 + 6_000),
+    vote('p2', 'C', t0 + 6_000),
     asset(token, 1, 'D', t0 + 6_100),
-    asset(token, 2, 'F', t0 + 6_100),
+    asset(token, 2, 'C', t0 + 6_100),
     { kind: 'presence', players: [{ ...ana, connected: false }, bruno], now: t0 + 7_000 },
     timeout(t0 + 10_000),
-    // Ronda 3 (10000–20000, correcta D): Ana vuelve; los dos aciertan y el orden de voto da el bonus.
+    // Ronda 3 (10000–20000, correcta A): Ana vuelve; los dos aciertan y el orden de voto da el bonus.
     { kind: 'presence', players: [ana, bruno], now: t0 + 10_500 },
-    vote('p2', 'D', t0 + 11_000),
-    vote('p1', 'D', t0 + 11_500),
+    vote('p2', 'A', t0 + 11_000),
+    vote('p1', 'A', t0 + 11_500),
     timeout(t0 + 14_500),
+  ],
+};
+
+// Seed 919, configuración por defecto (REVEAL): los votos se ven solo al revelar y cada ronda baraja las paletas.
+const revealDefault: GoldenScenario = {
+  name: 'reveal-default-shuffled-palettes',
+  seed: 919,
+  catalog: 'gen1-2',
+  players: [ana, bruno, carla],
+  config: { ...baseConfig, voteVisibility: 'REVEAL' },
+  steps: [
+    // Ronda 1 (1000–21000, Raticate, correcta C): los votos siguen ocultos hasta que vota la última.
+    ...['A', 'B', 'C', 'D'].map((optionId) => asset('rs', 1, optionId, 1_100)),
+    vote('p1', 'A', 2_000),
+    vote('p2', 'B', 3_000),
+    vote('p3', 'C', 4_000),
+    timeout(7_000),
+    // Ronda 2 (7000–27000, Clefable, correcta C): Carla no vota y la ronda se revela por tiempo.
+    ...['A', 'B', 'C', 'D'].map((optionId) => asset('rs', 2, optionId, 7_100)),
+    vote('p2', 'D', 8_000),
+    vote('p1', 'C', 9_000),
+    timeout(27_000),
+    timeout(30_000),
+    // Ronda 3 (30000–50000, Rhyhorn, correcta B): los tres aciertan y el orden de voto da 4/3/2.
+    ...['A', 'B', 'C', 'D'].map((optionId) => asset('rs', 3, optionId, 30_100)),
+    vote('p3', 'B', 31_000),
+    vote('p1', 'B', 32_000),
+    vote('p2', 'B', 33_000),
+    timeout(36_000),
   ],
 };
 
@@ -118,7 +148,7 @@ const threeOptions: GoldenScenario = {
 
 export const shinyVoteScenarios: GoldenEngineEntry = {
   module: shinyVoteGame,
-  scenarios: [samePokemon, differentPokemon, threeOptions],
+  scenarios: [samePokemon, differentPokemon, threeOptions, revealDefault],
   configCases: [
     // Válidos: normalización de generaciones, límites y claves desconocidas (el esquema no es .strict(): se quitan).
     { ...baseConfig, generations: [2, 1, 2] },
@@ -126,7 +156,7 @@ export const shinyVoteScenarios: GoldenEngineEntry = {
     { ...baseConfig, roundSeconds: 10, rounds: 1, optionCount: 3 },
     { ...baseConfig, roundSeconds: 60, rounds: 50, optionCount: 6 },
     { ...baseConfig, roundSeconds: 10.0 },
-    { ...baseConfig, candidateMode: 'DIFFERENT_POKEMON', showVotes: false },
+    { ...baseConfig, candidateMode: 'DIFFERENT_POKEMON', voteVisibility: 'REVEAL' },
     { ...baseConfig, unknownKey: 'se descarta' },
     // Inválidos: límites, enum en minúscula y tipos.
     { ...baseConfig, roundSeconds: 9 },
@@ -140,8 +170,10 @@ export const shinyVoteScenarios: GoldenEngineEntry = {
     { ...baseConfig, generations: [0] },
     { ...baseConfig, generations: [10] },
     { ...baseConfig, candidateMode: 'same_pokemon' },
-    { ...baseConfig, showVotes: 'true' },
-    { ...baseConfig, showVotes: undefined },
+    { ...baseConfig, voteVisibility: 'SHOW' },
+    { ...baseConfig, voteVisibility: undefined },
+    // La clave anterior al renombrado (§11.2) ya no vale por sí sola.
+    { ...baseConfig, voteVisibility: undefined, showVotes: true },
     [],
     null,
   ],
