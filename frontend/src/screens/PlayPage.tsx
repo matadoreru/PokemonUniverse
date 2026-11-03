@@ -1,7 +1,6 @@
 import { Crown, DoorOpen, Gamepad2, KeyRound, LogOut, Plus, Users } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HowToPlayCarousel } from '../components/HowToPlayCarousel';
 import { useRoom } from '../room/RoomContext';
 import { normalizeRoomCode, ROOM_CODE_LENGTH, roomErrorMessage } from '../room/roomCode';
 import { Field, Icon, Panel, Pill, StateBox } from '../ui';
@@ -15,8 +14,8 @@ function PanelTitle({ icon, children }: { icon: typeof Crown; children: string }
 }
 
 /**
- * Jugar (spec §6): crear una sala o unirse con su código, en dos paneles crema lado a lado (apilados en móvil), y la
- * guía «Cómo jugar» en la columna derecha. En escritorio cabe sin scroll: la guía se desplaza por dentro si hace falta.
+ * Jugar (spec §6): crear una sala o unirse con su código, en dos paneles crema lado a lado (apilados en móvil),
+ * centrados en la pantalla. En escritorio cabe sin scroll.
  * Si ya hay una sala activa, solo se ofrece volver a ella o salir.
  */
 export function PlayPage() {
@@ -91,7 +90,7 @@ export function PlayPage() {
 
   const off = busy !== null || !connected;
   return (
-    <div className="mx-auto grid w-full max-w-[1600px] gap-6 px-4 pb-6 pt-6 sm:px-6 lg:h-full lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)] lg:items-center lg:gap-10 lg:px-8 lg:py-6 2xl:gap-16">
+    <div className="mx-auto grid w-full max-w-[1100px] px-4 pb-6 pt-6 sm:px-6 lg:h-full lg:content-center lg:px-8 lg:py-6 2xl:max-w-[1300px]">
       <div className="flex min-w-0 flex-col gap-6">
         <header className="text-center lg:text-left">
           <h1 className="ol2 font-display text-34 font-extrabold text-[color:var(--white)] lg:text-44 2xl:text-68">Entrar en partida</h1>
@@ -106,7 +105,6 @@ export function PlayPage() {
             status={createError ? { kind: 'error', title: 'No se pudo crear la sala', text: createError, action: { label: 'Reintentar', onClick: () => void create() } } : null}
           >
             <div className="flex flex-1 flex-col gap-4 px-1 pb-1 pt-2 2xl:gap-5 2xl:px-3 2xl:pb-3 2xl:pt-4">
-              <p className="text-15 font-bold text-[color:var(--ink-2)] 2xl:text-18">Serás quien dirige la partida.</p>
               <ul className="flex flex-col gap-2 text-15 font-bold text-[color:var(--ink)] 2xl:gap-3 2xl:text-18">
                 <li className="flex items-center gap-2"><Icon icon={Gamepad2} size={18} className="shrink-0 text-[color:var(--blue-d)]" />Eliges el minijuego y sus ajustes</li>
                 <li className="flex items-center gap-2"><Icon icon={KeyRound} size={18} className="shrink-0 text-[color:var(--blue-d)]" />Compartes un código de 6 caracteres</li>
@@ -122,7 +120,7 @@ export function PlayPage() {
                 id={CODE_ID}
                 code
                 label="Código de sala"
-                hint="Seis letras o números. Te lo da quien creó la sala."
+                hint="Seis letras o números."
                 error={joinError || null}
                 value={code}
                 placeholder="······"
@@ -135,9 +133,6 @@ export function PlayPage() {
           </Panel>
         </div>
       </div>
-      <Panel title="Cómo jugar" right={<span className="text-[color:var(--sky-2)]">Guía rápida</span>} scroll flush className="lg:max-h-full" bodyClassName="flex flex-col [&>section]:flex-1">
-        <HowToPlayCarousel inDialog />
-      </Panel>
     </div>
   );
 }
