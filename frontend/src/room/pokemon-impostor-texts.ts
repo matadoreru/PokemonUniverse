@@ -1,4 +1,4 @@
-import { IMPOSTOR_CLUE_MAX_CODE_POINTS, IMPOSTOR_SKIP_TARGET, type ImpostorFinishReason, type ImpostorVoteResult } from '@pokemon-universe/shared/public';
+import { IMPOSTOR_CLUE_MAX_CODE_POINTS, IMPOSTOR_SKIP_TARGET, type ImpostorEliminationReveal, type ImpostorFinishReason, type ImpostorVoteResult } from '@pokemon-universe/shared/public';
 
 /** Titular del resultado de una votación según su tipo. */
 export function impostorVoteHeadline(result: ImpostorVoteResult, nameOf: (id: string) => string): string {
@@ -12,6 +12,15 @@ export function impostorVoteHeadline(result: ImpostorVoteResult, nameOf: (id: st
     case 'DEADLOCK':
       return '⚔️ Empate otra vez: nadie es expulsado';
   }
+}
+
+/**
+ * Cut-in de la expulsión: el nombre primero y el rol en la línea que aparece tras la pausa de 1 s.
+ * Solo se llama con la revelación que publica el motor en `ELIMINATION`.
+ */
+export function impostorEliminationCutIn(reveal: ImpostorEliminationReveal, name: string): { tone: 'berry' | 'aqua'; title: string; delayedLine: string } {
+  const impostor = reveal.role === 'IMPOSTOR';
+  return { tone: impostor ? 'berry' : 'aqua', title: name, delayedLine: impostor ? '…era el impostor' : '…era inocente' };
 }
 
 /** Título de la fase de pistas: sin nadie conectado el orden está vacío y no hay turno que anunciar. */

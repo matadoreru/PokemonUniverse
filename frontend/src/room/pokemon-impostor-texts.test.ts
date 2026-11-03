@@ -1,6 +1,6 @@
 import type { ImpostorVoteResult } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
-import { clampImpostorClue, impostorClueLength, impostorCluePhaseTitle, impostorFinishText, impostorVoteHeadline, impostorVoteTargetLabel } from './pokemon-impostor-texts';
+import { clampImpostorClue, impostorClueLength, impostorCluePhaseTitle, impostorEliminationCutIn, impostorFinishText, impostorVoteHeadline, impostorVoteTargetLabel } from './pokemon-impostor-texts';
 
 const nameOf = (id: string) => ({ p1: 'Ana', p2: 'Bruno' } as Record<string, string>)[id] ?? id;
 function result(overrides: Partial<ImpostorVoteResult>): ImpostorVoteResult {
@@ -82,5 +82,14 @@ describe('impostorCluePhaseTitle', () => {
   });
   it('does not announce a turn when nobody is connected to give clues', () => {
     expect(impostorCluePhaseTitle(null)).toBe('Nadie conectado para dar pistas');
+  });
+});
+
+describe('impostorEliminationCutIn', () => {
+  it('an impostor: berry tone, the name as title and the role after the pause', () => {
+    expect(impostorEliminationCutIn({ playerId: 'p1', role: 'IMPOSTOR' }, 'Ana')).toEqual({ tone: 'berry', title: 'Ana', delayedLine: '…era el impostor' });
+  });
+  it('an innocent: aqua tone', () => {
+    expect(impostorEliminationCutIn({ playerId: 'p2', role: 'INNOCENT' }, 'Bruno')).toEqual({ tone: 'aqua', title: 'Bruno', delayedLine: '…era inocente' });
   });
 });

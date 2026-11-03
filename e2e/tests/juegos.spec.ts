@@ -283,6 +283,85 @@ test('pokemon-impostor: votación con Saltar', async ({ browser }) => {
   }
 });
 
+test('pokemon-impostor: eliminación con cut-in', async ({ browser }) => {
+  test.setTimeout(150_000);
+  const sala = await crearSalaConJugadores(browser, 4);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const pages = jugadores.map((j) => j.page);
+    await seleccionarJuego(host.page, 'Pokémon Impostor');
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await saltarIntro(pages);
+
+    const campo = (page: Page) => page.getByPlaceholder('Escribe algo relacionado…');
+    for (let turno = 0; turno < jugadores.length; turno++) {
+      const page = await primeraVisible(pages, campo);
+      await campo(page).fill('pista');
+      await campo(page).press('Enter');
+      await expect(campo(page)).toBeHidden();
+    }
+
+    // Todos votan al primer invitado; él vota al host: 3 a 1, expulsión sin empate.
+    const expulsado = invitados[0]!;
+    const confirmar = (page: Page) => page.getByRole('button', { name: 'Confirmar voto' });
+    for (const page of pages) await expect(confirmar(page)).toBeVisible({ timeout: 20_000 });
+    for (const { page, name } of jugadores) {
+      await page.getByRole('button', { name: name === expulsado.name ? host.name : expulsado.name, exact: true }).click();
+      await confirmar(page).click();
+    }
+
+    // Resultado de la votación: el rol aún no está en ninguna parte de la página.
+    const banda = (page: Page) => page.locator('.reveal-cut-in[role="status"]');
+    await expect(host.page.getByText(`${expulsado.name} recibió más votos`)).toBeVisible({ timeout: 10_000 });
+    for (const page of pages) {
+      await expect(banda(page)).toHaveCount(0);
+      await expect(page.getByText(/era (el impostor|inocente|IMPOSTOR|INOCENTE)/)).toHaveCount(0);
+    }
+
+    // Cada página captura un tamaño a la vez, así las cuatro caben mientras se ve el cut-in (3,2 s de 4 s).
+    const nombre = 'juego-pokemon-impostor-eliminacion';
+    const capturas = [
+      { page: pages[0]!, w: 1280, h: 720, claro: false },
+      { page: pages[1]!, w: 1920, h: 1080, claro: false },
+      { page: pages[2]!, w: 390, h: 844, claro: false },
+      { page: pages[3]!, w: 1280, h: 720, claro: true },
+    ];
+    for (const { page, w, h, claro } of capturas) {
+      await page.setViewportSize({ width: w, height: h });
+      if (claro) await page.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
+    }
+    for (const page of pages) {
+      await expect(banda(page)).toBeVisible({ timeout: 10_000 });
+      await expect(banda(page)).toContainText(expulsado.name);
+      await expect(banda(page)).toContainText('…era');
+    }
+    const medidas = await Promise.all(capturas.map(({ page, claro }) => layoutProblems(page, claro ? `${nombre}-claro` : nombre, true)));
+    for (const page of pages) await expect(banda(page), 'el cut-in sigue a la vista tras la captura').toBeVisible({ timeout: 500 });
+    for (const { id, problems } of medidas) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
+
+    // La capa no intercepta: en su centro, el puntero llega al contenido de debajo.
+    const encima = await banda(host.page).evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return hit ? hit.closest('.reveal-cut-in') !== null : true;
+    });
+    expect(encima, 'el cut-in no intercepta el puntero').toBe(false);
+    expect(await animacionDe(banda(host.page)), 'cut-in con reducción de movimiento').toBe('none');
+    expect(await animacionDe(banda(host.page).getByText(/^…era/)), 'línea del rol con reducción de movimiento').toBe('none');
+
+    // Con reducción de movimiento la banda se va sola antes de que acabe la fase de 4 s.
+    await expect(banda(host.page)).toBeHidden({ timeout: 4_000 });
+    await expect(host.page.getByRole('heading', { name: 'Jugador eliminado' })).toBeVisible();
+    for (const { page, w, h, claro } of capturas) {
+      if (claro) await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
+      if (w !== 1280 || h !== 720) await page.setViewportSize({ width: 1280, height: 720 });
+    }
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
 test('pokemon-impostor: panel de configuración', async ({ browser }) => {
   const sala = await crearSalaConJugadores(browser, 3);
   try {
