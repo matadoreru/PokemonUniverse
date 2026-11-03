@@ -15,14 +15,18 @@ Cloudflare Tunnel → 127.0.0.1:8080 → pokemon-universe-web (nginx)
                            volumen pokemon_universe_postgres_data
 ```
 
-El servicio `backend` (Java, Micronaut) atiende solo las 11 rutas descritas en `docs/architecture.md`; nginx las
-enruta a él y el resto sigue en `server`. Comparte con `server` el volumen de avatares (`pokemon_universe_avatar_data`,
+El servicio `backend` (Java, Micronaut) atiende solo las rutas de la etapa 1 descritas en `docs/architecture.md` y,
+desde 2C, `GET /api/health`; nginx las enruta a él y el resto sigue en `server` (las demás rutas que Java ya porta,
+como administración, TCG, categorías, dilemas y subida de avatares, no se enrutan hasta el corte 2D). Comparte con `server` el volumen de avatares (`pokemon_universe_avatar_data`,
 uid/gid 1000 en ambos) y el secreto `PU_JWT_SECRET`. Arranca después de que `server` esté sano, porque Node aplica las
 migraciones Prisma y Flyway hace baseline sobre ese esquema. No hace falta ninguna variable nueva salvo `PU_BACKEND_IMAGE`
 (con valor por defecto igual al de `.env.example`). `PU_ROOMS_ENABLED` (`ROOMS_ENABLED` del backend) vale `false` por
 defecto: el `/ws` de Java cierra cada conexión con 4403 y las salas siguen en Node; el corte 2D lo pone a `true`.
 `PU_POKEMON_ARTWORK_DIR` (opcional, `/data/pokemon-artworks`) no tiene volumen montado, así que las salas Java no tienen
 artworks locales; solo importa a partir del corte 2D.
+El data-sync de Java (`BACKEND_DATA_SYNC_ENABLED`, no definido en compose, así que `false`) está apagado: PokéAPI y
+TCGdex los sigue sincronizando Node (`PU_DATA_SYNC_ENABLED`). Es una variable distinta a propósito, para que nunca
+sincronicen los dos procesos la misma BD; el corte 2D la pone a `true` en `backend` y apaga o retira la de Node.
 Para escribir avatares (WebP) el backend carga la libwebp nativa de `webp-imageio`: la extrae a `/tmp` y, si el tmpfs
 es `noexec`, escribe una vez «Failed to load native library…» en stderr y la carga desde `/app/native` (copiada en la
 imagen para la arquitectura de destino). No hace falta cambiar la base Alpine ni el `tmpfs` del compose.

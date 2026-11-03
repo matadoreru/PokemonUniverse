@@ -1,7 +1,9 @@
 /**
  * Utilidades comunes de los E2E: tamaños de captura, tema, errores de consola, `capture()` (PNG de
- * revisión + sin scroll horizontal + medición de encaje y legibilidad) y entrada como invitado.
+ * revisión + sin scroll horizontal + medición de encaje y legibilidad), entrada como invitado y
+ * cuentas registradas de prueba (con ADMIN promovido en la BD local).
  */
+import { execFileSync } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
 import { expect, type Browser, type BrowserContext, type Page } from '@playwright/test';
 import { measureLayout } from './layout.js';
@@ -200,4 +202,67 @@ export async function iniciarPartida(host: Page, invitados: readonly Page[]): Pr
   }
   await expect(host.locator('#start-help')).toHaveText('La sala está lista.');
   await host.getByRole('button', { name: 'Empezar partida' }).click();
+}
+
+/**
+ * Contenedor de PostgreSQL de `compose.local.yaml` (`npm run db:up`). Con otro nombre de proyecto,
+ * `PU_E2E_PG_CONTAINER=<nombre>`.
+ */
+const PG_CONTAINER = process.env.PU_E2E_PG_CONTAINER ?? 'pokemonuniverse_postgres_1';
+
+/**
+ * Ejecuta SQL contra la BD local de desarrollo con `psql` dentro del contenedor (el host no necesita
+ * `psql` ni el paquete `pg`) y devuelve la salida sin cabeceras. Solo para preparar y limpiar datos
+ * de prueba: los valores van como variables de `psql` (`:'nombre'`), nunca concatenados.
+ */
+export function psql(sql: string, vars: Record<string, string> = {}): string {
+  const args = ['exec', '-i', PG_CONTAINER, 'psql', '-U', 'pokemon', '-d', 'pokemon_universe', '-v', 'ON_ERROR_STOP=1', '-At'];
+  for (const [name, value] of Object.entries(vars)) args.push('-v', `${name}=${value}`);
+  return execFileSync('podman', args, { input: sql, encoding: 'utf8' }).trim();
+}
+
+/** Cuenta registrada de prueba: credenciales únicas por ejecución. */
+export interface CuentaE2E {
+  username: string;
+  email: string;
+  password: string;
+}
+
+/** Credenciales nuevas que cumplen el registro (usuario `[a-zA-Z0-9_]{3,24}`, contraseña ≥ 10). */
+export function nuevaCuenta(prefijo: string): CuentaE2E {
+  const sufijo = `${Date.now().toString(36)}${Math.floor(Math.random() * 1296).toString(36)}`;
+  const username = `${prefijo}_${sufijo}`.slice(0, 24);
+  return { username, email: `${username.toLowerCase()}@e2e.example.test`, password: 'contrasena-e2e-segura' };
+}
+
+/** Registra la cuenta por la API (la cookie de sesión queda en el contexto de `page`). */
+export async function registrarPorApi(page: Page, cuenta: CuentaE2E): Promise<void> {
+  const response = await page.request.post('/api/auth/register', { data: cuenta });
+  expect(response.status(), `registro de ${cuenta.username}`).toBe(201);
+}
+
+/**
+ * Da el rol ADMIN a una cuenta ya registrada y vuelve a iniciar sesión con ella. Las rutas
+ * `/api/admin/` releen el rol de la BD, pero `/api/auth/me` (y con él `RequireAdmin` de la web)
+ * devuelve el del token, que solo cambia con un login nuevo, en Node y en Java.
+ */
+export async function promoverAAdmin(page: Page, cuenta: CuentaE2E): Promise<void> {
+  psql(`UPDATE "User" SET role = 'ADMIN' WHERE email = :'email';`, { email: cuenta.email });
+  const response = await page.request.post('/api/auth/login', { data: { email: cuenta.email, password: cuenta.password } });
+  expect(response.status(), `login de ${cuenta.username} como ADMIN`).toBe(200);
+}
+
+/**
+ * Borra las cuentas de prueba (categorías, dilemas, estadísticas y configuraciones caen en cascada;
+ * el historial de salas queda sin anfitrión) y devuelve los ficheros de avatar personalizados que
+ * tenían, para que el spec los quite del almacenamiento.
+ */
+export function borrarCuentas(emails: readonly string[]): string[] {
+  const avatars: string[] = [];
+  for (const email of emails) {
+    const avatar = psql(`SELECT "avatarValue" FROM "User" WHERE email = :'email' AND "avatarType" = 'CUSTOM';`, { email });
+    if (avatar) avatars.push(avatar);
+    psql(`DELETE FROM "User" WHERE email = :'email';`, { email });
+  }
+  return avatars;
 }

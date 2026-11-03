@@ -57,7 +57,7 @@ Las salas admiten hasta 8 jugadores por defecto. Si alguien se desconecta, conse
 
 ### Backend Java (etapa 1)
 
-El backend Java convive con Node detrás del mismo origen y ambos firman y aceptan la misma cookie `pu_session` con `JWT_SECRET`. En esta etapa Java atiende `POST /api/auth/{register,login,guest,logout}`, `GET /api/auth/{me,profile}`, `GET /api/auth/avatars/*`, `GET /api/changelog`, `POST /api/feedback`, `GET /api/games`, `GET /api/health` y `GET /api/pokemon`. Todo lo demás (salas, Socket.IO, administración, TCG, categorías, subida de avatares…) sigue en Node. En desarrollo el reparto lo hace el proxy de Vite (`apps/web/vite.config.ts`); en contenedores, nginx.
+El backend Java convive con Node detrás del mismo origen y ambos firman y aceptan la misma cookie `pu_session` con `JWT_SECRET`. En esta etapa Java atiende `POST /api/auth/{register,login,guest,logout}`, `GET /api/auth/{me,profile}`, `GET /api/auth/avatars/*`, `GET /api/changelog`, `POST /api/feedback`, `GET /api/games`, `GET /api/health` y `GET /api/pokemon`. En producción todo lo demás (salas, Socket.IO, administración, TCG, categorías, subida de avatares…) sigue en Node. En desarrollo el reparto lo hace el proxy de Vite (`apps/web/vite.config.ts`); en contenedores, nginx.
 
 ### Salas en Java (etapas 2A y 2B, solo desarrollo)
 
@@ -67,7 +67,13 @@ El backend Java también puede alojar salas por un WebSocket propio en `/ws`. En
 VITE_REALTIME=java npm run dev
 ```
 
-Los 28 minijuegos están portados y verificados con fixtures doradas contra los motores TypeScript, y Java sirve también las imágenes y gritos de ronda (con la bandera, Vite le manda `/api/rooms/`). Dos no se pueden lanzar todavía en una sala Java porque faltan datos que trae el data-sync de la etapa 2C: **Higher or Lower: Cartas** (`tcg-higher-lower`, sin catálogo TCG) y **Adivina por la Paleta** (`pokemon-palette-guess`, sin paletas en la BD). No es apto para producción hasta el corte 2D.
+Los 28 minijuegos están portados y verificados con fixtures doradas contra los motores TypeScript, y Java sirve también las imágenes y gritos de ronda (con la bandera, Vite le manda `/api/rooms/`). **Higher or Lower: Cartas** (`tcg-higher-lower`) y **Adivina por la Paleta** (`pokemon-palette-guess`) necesitan cartas TCG y paletas en la BD, que trae el data-sync (ver abajo). No es apto para producción hasta el corte 2D.
+
+### Datos y administración en Java (etapa 2C, solo desarrollo)
+
+Con la misma bandera `VITE_REALTIME=java`, Vite manda también a Java las categorías personalizadas (`/api/categories`), los dilemas de Would You Rather (`/api/would-you-rather-prompts`), la subida y el borrado de avatares, el catálogo TCG (`/api/tcg/`) y la administración (`/api/admin/`). Sin la bandera, y en producción, esas rutas siguen en Node: cada proceso guarda en memoria lo que escribe y no vería las escrituras del otro. El corte 2D las moverá todas a la vez (lista en [docs/migracion-java-pendientes.md](docs/migracion-java-pendientes.md)).
+
+El data-sync de Java (PokéAPI y TCGdex) está apagado por defecto. Para cargar paletas y cartas en la BD local arranca el backend con `BACKEND_DATA_SYNC_ENABLED=true` (y deja `DATA_SYNC_ENABLED=false` en Node: nunca dos sincronizadores a la vez): al arrancar sincroniza PokéAPI si faltan paletas (≈ 1 min) y lanza la sincronización inicial de TCG si no hay cartas; un ADMIN puede repetirlas desde la pestaña «Datos» del panel.
 
 Los detalles de diseño están en [docs/architecture.md](docs/architecture.md).
 

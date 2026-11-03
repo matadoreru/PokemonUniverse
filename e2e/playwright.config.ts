@@ -58,7 +58,9 @@ export default defineConfig({
       env: { DATA_SYNC_ENABLED: 'false', RATE_LIMIT_DISABLED: 'true', COOKIE_SECURE: 'false', ROOM_MAX_PLAYERS: '8' },
     },
     {
-      // Backend Java: auth, perfil, novedades, feedback, juegos y Pokémon (ver vite.config.ts).
+      // Backend Java: auth, perfil, novedades, feedback, juegos, salud y Pokémon; con VITE_REALTIME=java también
+      // salas, contenido de cuenta, escrituras de avatar, TCG y admin (ver proxyFor de vite.config.ts). Su data-sync
+      // queda apagado salvo que el shell exporte BACKEND_DATA_SYNC_ENABLED=true.
       // PORT fijo porque el .env exporta PORT=3001 para Node; JWT_SECRET llega del .env cargado.
       command: 'npm run dev:backend',
       url: 'http://localhost:8080/health',

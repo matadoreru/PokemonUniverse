@@ -6,7 +6,7 @@ TOP 5 SURPRISES
 1. Admin `POST /api/admin/data-sync/all` returns 202 even when a sync is already running. `startAll` is async, so its 409 `SyncAlreadyRunningError` becomes a rejected promise that the route swallows with `void task.catch(()=>undefined)`. The per-source routes throw synchronously and do return 409.
 2. INCREMENTAL Pokémon sync can never detect changes once regional forms exist. It compares the remote species count (~1025) with `prisma.pokemon.count()`, which includes forms (>=1083). It short-circuits whenever palettes >= 100. The `updated` counter is also `min(before, after)`, so it is meaningless.
 3. `ensureInitialPokemon()` is awaited before `listen` with no try/catch. A first boot downloads the whole PokéAPI dataset and any failure crashes boot. Separately, `avatarRateLimit` (12 per 15 min per IP) ignores `RATE_LIMIT_DISABLED`.
-4. The global error handler maps any `entity.too.large` or 413 to the message 'La imagen supera el límite de 5 MB.', including a >32 kb JSON body. `GET /api/auth/avatars/<invalid name>` throws a plain Error and returns 500, not 404.
+4. Body-parser errors are `Error`s with a numeric `status`, so the global handler's generic branch answers first: a >32 kb JSON body (`express.json`) or a >5 MiB avatar body (`express.raw`) gives 413 `{error:'request entity too large'}`; the 'La imagen supera el límite de 5 MB.' branch for `entity.too.large`/413 is unreachable for them (that literal only comes from `AvatarValidationError`, e.g. an empty or oversized buffer checked by the service). (Corrected in 2C; the first extraction said the avatar literal.) `GET /api/auth/avatars/<invalid name>` throws a plain Error and returns 500, not 404.
 5. The socket per-connection rate limit (50 events per 10 s, except who-is-who cursor events) rejects through `next(Error('Rate limit exceeded'))`, not through the ack. The client's `sendCommand` ack then times out after 8 s with the generic 'No se pudo confirmar la acción…' message. The Node `game:action` ack error 'El minijuego ya ha cambiado.' is the only stale-round signal.
 
 # Stage 2: Node modules to port (behavioral specs)
@@ -375,7 +375,7 @@ Paths are relative to `/home/eru/Documents/Projects/PokemonUniverse`. `S` = `app
 ### Routes (`/api/auth/*`)
 - Global middleware: `/api/auth` is limited to 30 per 15 min per IP (skipped when rate limiting is disabled, and for `/avatars/*`). `avatarRateLimit` is a separate limiter of 12 per 15 min per IP; the same instance is shared by all four write routes (one shared counter), and it IGNORES `RATE_LIMIT_DISABLED`.
 - Auth cookie: `AUTH_COOKIE`, httpOnly, sameSite lax, secure from `COOKIE_SECURE`, path '/', 30 days. The JWT is re-signed after changes (`establish`).
-- Raw body: `express.raw({type:['image/jpeg','image/png','image/webp'], limit:5 MiB})`. Over the limit gives 413 'La imagen supera el límite de 5 MB.' via the global handler. If the body is not a Buffer (any other Content-Type), 415 `{error:'Usa una imagen JPEG, PNG o WEBP.'}`. On any error after storing, the new file is removed.
+- Raw body: `express.raw({type:['image/jpeg','image/png','image/webp'], limit:5 MiB})`. Over the limit gives 413 `{error:'request entity too large'}` via the global handler's numeric-`status` branch (not the avatar literal). If the body is not a Buffer (any other Content-Type), 415 `{error:'Usa una imagen JPEG, PNG o WEBP.'}`. On any error after storing, the new file is removed.
 - `POST /guest/custom-avatar?displayName=…`: rate limit, then raw body. `displayName` is validated with `guestSchema`. The guest identity is `{id:'guest_<uuid>', displayName, kind:'GUEST', avatar:CUSTOM}`. Sets the cookie, removes the previous guest custom avatar file (fire and forget), responds 201 `{user: AuthUser}`.
 - `PUT /profile/avatar/preset`: `requireUser` (401 'Registered account required'), rate limit; body strict `{presetId}` validated by `avatarPresetIdSchema`. Responds 200 `{user}`.
 - `DELETE /profile/avatar`: `requireUser`, rate limit; resets to DEFAULT_AVATAR. Responds 200 `{user}`.
@@ -427,7 +427,7 @@ Paths are relative to `/home/eru/Documents/Projects/PokemonUniverse`. `S` = `app
    - ZodError gives 400 `{error:first message, issues}`.
    - `AvatarValidationError` gives its status.
    - Any Error with a numeric `status` uses that status and `{error:message}`.
-   - A 413 or `entity.too.large` body gives 413 'La imagen supera el límite de 5 MB.'.
+   - A 413 or `entity.too.large` object without a numeric `status` gives 413 'La imagen supera el límite de 5 MB.'; body-parser's `PayloadTooLargeError` has `status: 413`, so it takes the previous branch and answers `{error:'request entity too large'}`.
    - Anything else is a 500 (message hidden in production as 'Internal server error').
 4. `http.createServer(app)` and socket.io `Server`:
    - CORS as above; transports ['websocket','polling'].

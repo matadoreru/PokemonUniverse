@@ -4,7 +4,7 @@ The repository is split into four boundaries (the Java backend is described in i
 
 - `packages/shared`: transport schemas, public types, scoring, game registry and deterministic game engines. It has no Express, Socket.IO, React or database dependency.
 - `apps/server`: authentication, PostgreSQL persistence, the live-room coordinator and Socket.IO transport. The coordinator sends intentions to a registered game module and publishes only its public projection.
-- `backend`: Java REST service for a subset of the HTTP API (stage 1 of the migration); since stages 2A–2B it can also host rooms with all 28 engines, for development and E2E only.
+- `backend`: Java REST service for a subset of the HTTP API (stage 1 of the migration); since stages 2A–2B it can also host rooms with all 28 engines, and since 2C it ports data-sync, the TCG catalog, custom content, avatar uploads, per-user game configs and the admin API. Rooms and the 2C routes are for development and E2E only until the 2D cutover.
 - `apps/web`: React screens and presentation. It never decides deadlines, winners, eliminations or whether a selection wins a race.
 
 ## Backend Java (etapa 1)
@@ -55,13 +55,54 @@ Plan: `docs/superpowers/plans/2026-10-31-etapa-2b-motores.md`. Sigue siendo solo
 
 **Catálogos visual y de audio.** `adapters/out/storage/FilesystemArtworkCatalog` escanea los PNG de `pu.artwork-dir` (`POKEMON_ARTWORK_DIR`; en dev, `../apps/server/assets/pokemon-artworks`, el mismo directorio que Node) cuyo nombre es un id del catálogo y con ≥ 0,2 % de píxeles visibles; sin directorio, catálogo vacío con un aviso. `adapters/out/persistence/JpaPokemonAudioCatalog` lee los gritos de `PokemonAssetReference` y de `metadata.cries` (solo `https://raw.githubusercontent.com/PokeAPI/cries/`). Los tres catálogos viajan juntos en `GameCatalogs` (`RoomCoordinator.replaceCatalog`). Las salas Java pasan como `tcgCards` el `application/tcg/CachedTcgCardCatalog` compartido (no se fija por partida, como en Node; `refresh()` sustituye la lista de una vez), que se carga al arrancar (`config/TcgCatalogStartup`, aunque el data-sync esté apagado) y tras cada sincronización TCGDEX completada (`onCompleted`, registrado en `config/DataSyncBeans`); `/api/tcg/options` y `/api/tcg/eligibility` (`adapters/in/rest/tcg/TcgController`) lo leen y, mientras Node sincronice, solo se enrutan a Java con `VITE_REALTIME=java`. Además, un `HostContentProvider` (`config/RoomBeans`) con las categorías activas del host de `CustomCategoryService` y sus pares activos de Would You Rather de `WouldYouRatherPromptService` (cachés de todos los usuarios cargadas al arrancar; cada mutación de `/api/categories` o `/api/would-you-rather-prompts` reemite `room:state` si el usuario es host, `config/HostContentWiring`). Los dilemas serializan las mutaciones de cada usuario (lock justo por usuario; un fallo no bloquea la siguiente), importan de 1 a 100 en una transacción (todo o nada) y editan en una transacción `SERIALIZABLE` (`adapters/out/persistence/WouldYouRatherPromptWriter`) con hasta 3 intentos ante `40001`/`40P01`; `23505` es el 409 de pareja duplicada. El refine «opciones distintas» compara con el colador ICU `es` de fuerza primaria, como `localeCompare(…, {sensitivity: 'base'})`.
 
-**Administración.** `/api/admin/**` (`adapters/in/rest/admin/`) porta `admin/routes.ts` y los routers admin de novedades y feedback; solo se enruta a Java con `VITE_REALTIME=java` (las salas activas son las del coordinador Java). `AdminGate` es un filtro de servidor (orden 200, tras `IdentityFilter` y el limitador): 401 sin cuenta registrada y 403 si el rol releído de la BD no es ADMIN, antes de validar nada, también en rutas inexistentes. Los controladores leen la query cruda (`AdminQueryParams` reproduce `z.coerce.number()` con `JsNumbers.fromString` y los arrays de `qs`), las búsquedas son `ILIKE '%…%'` sin escapar comodines, como Prisma (`JpaAdminRecords`, `JpaFeedbackSearch`), y `interruptedToday` cuenta desde la medianoche de la zona por defecto de la JVM (`TZ`, como el proceso Node). Con `pu.data-sync.enabled=false` las rutas de data-sync responden 503 aunque el servicio exista. `RoomStore.list()` sigue el orden de inserción, como el `Map` de Node.
-
 **Límite y AWT.** Las rutas `^/api/rooms/[^/]+/games/` quedan fuera de la política global de 120/min y tienen la suya, `gameAssets`, de 5000/min por IP (`RateLimitPolicy`). ImageIO necesita AWT sin pantalla: `Application.main` fija `java.awt.headless=true` y el `Dockerfile` lo repite en `JAVA_TOOL_OPTIONS`; la base sigue siendo `eclipse-temurin:25-jre-alpine`.
 
 **Enrutado.** Las URL de assets que emiten los motores son relativas (`/api/rooms/…`). En dev, `proxyFor` de `apps/web/vite.config.ts` manda `^/api/rooms/` a `:8080` **solo** con `VITE_REALTIME=java`. `infra/nginx.conf` no cambia hasta 2D, porque producción sigue en Node: es una excepción deliberada a la regla de cambiar nginx y Vite a la vez.
 
 **E2E por juego.** `e2e/tests/juegos.spec.ts` (`npm run test:e2e -- juegos` y `npm run test:e2e:java -- juegos`) lanza los 28 juegos en ambos transportes. `tcg-higher-lower` y `pokemon-palette-guess` se saltan solo si el servidor muestra su literal de no disponibilidad (sin cartas TCG o sin paletas en la BD). El encaje se anota y solo falla con `PU_LAYOUT_STRICT=1` (ver `e2e/README.md`).
+
+## Datos y administración en Java (etapa 2C)
+
+Plan: `docs/superpowers/plans/2026-11-02-etapa-2c-datos-administracion.md`; pendientes, decisiones y lista del corte 2D en
+`docs/migracion-java-pendientes.md`. Producción solo gana `GET /api/health` (nginx `location = /api/health`); el resto
+se enruta a Java en dev/E2E con `VITE_REALTIME=java` (`proxyFor('java')`), porque Node guarda en memoria lo mismo que
+Java cachea y cada proceso solo vería sus propias escrituras.
+
+**Qué hay y dónde.**
+- `domain/game/engine/infra/ConfigReader`: lector común de las 28 `<Juego>Config` (mismos mensajes que Zod; modo
+  «recoger todo» con rutas para la migración de configuraciones).
+- `application/gameconfigs/`: `UserGameConfigService` (lectura en `create()` de sala para identidades USER, debounce de
+  250 ms por usuario y juego, escrituras encadenadas por clave, `flush()` al apagar) y `StoredGameConfigMigration`
+  (`migrateStoredGameConfig`, hasta 24 intentos).
+- Contenido de cuenta: `/api/categories` (`CustomCategoryService`) y `/api/would-you-rather-prompts`
+  (`WouldYouRatherPromptService`, con `/import`), normalización `ContentNormalizer` (NFD, `\p{Diacritic}`, minúsculas
+  `es`) y colador ICU `es` primario; cada cambio del host reemite `room:state` (`config/HostContentWiring`).
+- Avatares: rutas de escritura y `AvatarImageProcessor` (ver «Avatares» en la etapa 1).
+- `application/datasync/`: `DataSyncService` (una ejecución por fuente, `DataSyncRun`/`DataSyncState`),
+  `DataSyncScheduler` (hora local `DATA_SYNC_HOUR`:`DATA_SYNC_MINUTE` en `DATA_SYNC_TIMEZONE`), cliente
+  `adapters/out/http/SyncHttpClient` (4 intentos, backoff con jitter, `Retry-After` con tope de 60 s, 30 s, 16 MiB),
+  `pokemon/` (sembrador de PokéAPI, normalización y paletas v3 de 8 colores) y `tcg/` (TCGdex por sets y cartas en
+  lotes de 20). Al completar POKEAPI se recargan el catálogo Pokémon y los catálogos de sala (`GameCatalogs`); al
+  completar TCGDEX, `CachedTcgCardCatalog`.
+- `/api/tcg/{options,eligibility}` (`adapters/in/rest/tcg/TcgController`) sobre `CachedTcgCardCatalog`.
+- `/api/admin/**` (`adapters/in/rest/admin/`), descrito abajo.
+
+**Interruptor del data-sync.** `pu.data-sync.enabled` (`BACKEND_DATA_SYNC_ENABLED`, por defecto `false`) es una
+variable distinta del `DATA_SYNC_ENABLED` de Node para que un `.env` compartido no arranque dos sincronizadores sobre la
+misma BD. Encendido, el arranque ejecuta `recoverInterrupted`, espera a `ensureInitialPokemon` (si faltan Pokémon o hay
+menos de 100 paletas sincroniza PokéAPI antes de aceptar peticiones), arma el planificador y lanza en segundo plano la
+sincronización inicial de TCG si no hay cartas. Apagado no hace nada de eso (tampoco `recoverInterrupted`, a
+diferencia de Node, para no marcar como fallida una ejecución viva de Node) y las rutas admin de data-sync responden
+503. `POKEAPI_BASE_URL`, `POKEAPI_SPRITE_BASE_URL` y `TCGDEX_BASE_URL` solo existen para las pruebas (https; http solo
+hacia loopback).
+
+**Administración.** `/api/admin/**` (`adapters/in/rest/admin/`) porta `admin/routes.ts` y los routers admin de novedades y feedback; solo se enruta a Java con `VITE_REALTIME=java` (las salas activas son las del coordinador Java). `AdminGate` es un filtro de servidor (orden 200, tras `IdentityFilter` y el limitador): 401 sin cuenta registrada y 403 si el rol releído de la BD no es ADMIN, antes de validar nada, también en rutas inexistentes. Los controladores leen la query cruda (`AdminQueryParams` reproduce `z.coerce.number()` con `JsNumbers.fromString` y los arrays de `qs`), las búsquedas son `ILIKE '%…%'` sin escapar comodines, como Prisma (`JpaAdminRecords`, `JpaFeedbackSearch`), y `interruptedToday` cuenta desde la medianoche de la zona por defecto de la JVM (`TZ`, como el proceso Node). Con `pu.data-sync.enabled=false` las rutas de data-sync responden 503 aunque el servicio exista. `RoomStore.list()` sigue el orden de inserción, como el `Map` de Node.
+
+**Marcas de tiempo.** El JDBC crudo enlaza `LocalDateTime` en UTC y Hibernate usa `hibernate.jdbc.time_zone=UTC`, como
+Prisma (`timestamp(3)` sin zona en UTC), también con la JVM en otra zona.
+
+**E2E.** `e2e/tests/contenido-y-admin.spec.ts` recorre categorías, dilemas, avatar y panel admin con Node
+(`npm run test:e2e -- contenido-y-admin`) y con Java (`npm run test:e2e:java -- contenido-y-admin`).
 
 ## Local data authority
 

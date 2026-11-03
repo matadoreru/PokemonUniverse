@@ -1,8 +1,8 @@
 # Migración a Java: pendientes tras la etapa 1
 
-Estado: etapa 1 implementada el 2026-10-31 en la rama `backend-java-etapa-1` (fusionada en `main` en local); 2A
-fusionada en `main`; 2B implementada el 2026-11-02 en la rama `etapa-2b-motores` (pendiente de la decisión de
-integración). Diseño en
+Estado: etapa 1 implementada el 2026-10-31 en la rama `backend-java-etapa-1` (fusionada en `main` en local); 2A y 2B
+fusionadas en `main`; 2C implementada el 2026-11-03 en la rama `etapa-2c-datos-administracion` (pendiente de la
+decisión de integración). Diseño en
 [`superpowers/specs/2026-10-31-separacion-frontend-backend-java-design.md`](superpowers/specs/2026-10-31-separacion-frontend-backend-java-design.md);
 estructura vigente en [`architecture.md`](architecture.md#backend-java-etapa-1).
 
@@ -28,8 +28,9 @@ derivados de él, métricas, logs JSON, límites de peticiones, imagen JVM en Co
 1. Salas, estado de sala y reconexión en Java.
 2. Los 28 motores de juego, cada uno con pruebas golden contra el comportamiento de los motores TypeScript (hecho en
    2A + 2B).
-3. `data-sync` (PokéAPI y TCGdex) y su planificador.
-4. Administración.
+3. `data-sync` (PokéAPI y TCGdex) y su planificador (hecho en 2C; apagado en Java con `BACKEND_DATA_SYNC_ENABLED=false`
+   hasta 2D).
+4. Administración (hecho en 2C; solo se enruta a Java con `VITE_REALTIME=java` hasta 2D).
 5. Escrituras de categorías personalizadas, pares de Would You Rather y avatares (subida) (hechas en 2C; solo se enrutan a
    Java con `VITE_REALTIME=java` hasta 2D).
    Cambio de comportamiento de 2B: con TwelveMonkeys en el classpath, el proxy de assets (`ImageTransforms.decode`) y el
@@ -70,39 +71,113 @@ Deuda de UI que destapa `juegos.spec.ts` (no es de 2B; seguimiento del responsab
 `text-[10px]`, iniciales de `Avatar` `xs` a `text-[9px]` y la cabecera fija que tapa contenido cuando el autofoco del
 buscador desplaza la página (Bingo); además, 8 juegos no muestran el título del manifest en pantalla.
 
-### 2C: lo que necesita
+### 2C: datos y administración (hecho el 2026-11-03)
 
-- Catálogo TCG real (hecho en 2C: `CachedTcgCardCatalog` sobre `JpaTcgCardRepository`; las salas Java ya lanzan
-  `tcg-higher-lower` si hay cartas). El filtro por generaciones lo cubren sus tests (el `cardsFor` del arnés lo ignora
-  en los dos lados).
-- Paletas calculadas por el data-sync: la BD local no tiene `metadata.palette` y `pokemon-palette-guess` no se puede
-  lanzar (en las fixtures llegan por `catalogPatch`).
-- `PokemonAssetReference` lo escribe el data-sync (gritos y referencias que lee `JpaPokemonAudioCatalog`).
-- `replaceCatalog` tras el sync debe recargar también visuales y audio (`GameCatalogs`), no solo el catálogo Pokémon;
-  hoy nadie lo llama en producción.
-- `HostContentProvider` respaldado por tablas: las categorías personalizadas ya salen de `CustomCategoryService`
-  y los pares de Would You Rather de `WouldYouRatherPromptService` (2C, `/api/categories` y
-  `/api/would-you-rather-prompts` en Java solo con `VITE_REALTIME=java`).
-- `/api/tcg/` a Java en nginx en el corte 2D: mientras Node sea el dueño de las sincronizaciones
-  (`BACKEND_DATA_SYNC_ENABLED=false`), el catálogo TCG en memoria de Java solo se recarga al arrancar y no vería los
-  precios que escriba Node; con el data-sync Java encendido se recarga tras cada TCGDEX completada.
-- `/api/categories` y `/api/would-you-rather-prompts` a Java en nginx en el corte 2D: mientras Node siga escribiendo
-  las tablas, las cachés Java solo ven las filas escritas por Java (se cargan al arrancar).
+Implementado en la rama `etapa-2c-datos-administracion` (plan
+`superpowers/plans/2026-11-02-etapa-2c-datos-administracion.md`; detalle en
+[`architecture.md`](architecture.md#datos-y-administración-en-java-etapa-2c)):
 
-### Corte 2D: Java dueño de las salas
+- `ConfigReader` común para las 28 `<Juego>Config` (deuda de 2B) con modo «recoger todo» para la migración de
+  configuraciones guardadas.
+- `GET /api/health` de Java, ya enrutado por nginx (`location = /api/health`): única ruta nueva en producción.
+- Categorías personalizadas (`/api/categories`) y dilemas de Would You Rather (`/api/would-you-rather-prompts`, con
+  importación), respaldando el `HostContentProvider` de las salas Java y reemitiendo `room:state` al host.
+- Configuraciones por usuario (`UserGameConfigService`: `migrateStoredGameConfig`, debounce y `flush()` al apagar).
+- Escritura de avatares (`POST /api/auth/guest/custom-avatar`, `PUT /api/auth/profile/avatar/{preset,custom}`,
+  `DELETE /api/auth/profile/avatar`) con WebP nativo de `webp-imageio`.
+- Data-sync: `DataSyncService`, planificador, `SyncHttpClient`, adaptadores PokéAPI (sembrador, normalización y
+  paletas) y TCGdex, catálogo TCG (`CachedTcgCardCatalog`) y `/api/tcg/{options,eligibility}`; recarga de los catálogos
+  de sala tras cada sincronización.
+- Administración: `/api/admin/**` (resumen, salas activas e historial, partidas, usuarios, data-sync, novedades y
+  feedback).
 
-- `VITE_REALTIME=java` por defecto en la imagen web y quitar `/socket.io/` de nginx.
-- `location` de `/api/rooms/` en `infra/nginx.conf` hacia el backend Java (imágenes y gritos de ronda; en dev ya lo
-  hace el proxy de Vite con `VITE_REALTIME=java`).
-- Directorio de artworks en el backend: compose define `POKEMON_ARTWORK_DIR` (`/data/pokemon-artworks`) pero no monta
-  nada; copiar los PNG a la imagen o compartir un volumen con Node (que los lleva dentro de la suya).
-- Imagen nativa: AWT (ImageIO) e ICU4J necesitan su `resource-config`/metadatos; ver el riesgo «Imagen nativa».
-- `PU_ROOMS_ENABLED=true` en el `.env` de compose (`ROOMS_ENABLED` del backend; hoy `false`, y `/ws` cierra con 4403).
-- Activar `pu.interrupt-stale-rooms=true` (`INTERRUPT_STALE_ROOMS=true`) en el backend Java. Al arrancar marca como
-  `INTERRUPTED`/`SERVER_STOPPED` las filas `RoomHistory` `ACTIVE` y `GameHistory` `IN_PROGRESS` que dejó el proceso
-  anterior (`interruptStaleActivity` de Node). Está desactivado por defecto porque, mientras Node sirva salas sobre la
-  misma base de datos, cada arranque de Java interrumpiría las salas vivas de Node y su `roomClosed` posterior ya no
-  encontraría la fila `ACTIVE`. Al activarlo en Java hay que dejar de servir salas desde Node.
+E2E: `contenido-y-admin.spec.ts` (un USER crea, edita y borra una categoría y un dilema y ve su avatar PNG en la sala; un
+ADMIN ve la sala activa) pasa con Node y con Java. Sin cambios de esquema (ninguna `V2__`). Suites completas el
+2026-11-03: `npm run test:e2e` 41/41; `npm run test:e2e:java` 40/41. Falla `acceso a 1280×720`, el primer test de la
+pasada: la captura de «Entrar en partida» coincide con el aviso «Conectando con la sala» (`RoomSessionLayout`) y el
+medidor lo cuenta como solape con la cabecera. Es la primera apertura de `/ws` tras arrancar Java en frío (≈ 0,7 s
+frente a 5 ms en caliente, medido igual en `main` antes de 2C: ≈ 0,9 s); con el backend ya caliente el spec pasa. Queda
+como deuda de E2E: esperar a la conexión antes de capturar, o calentar `/ws` en el arranque.
+
+#### Convivencia con Node hasta 2D
+
+- **Rutas solo en Vite.** `infra/nginx.conf` solo ganó `/api/health`. Las demás rutas de 2C van a Java **solo** con
+  `VITE_REALTIME=java` (`proxyFor('java')` de `apps/web/vite.config.ts`): Node guarda en memoria categorías, dilemas,
+  configuraciones y el catálogo TCG, que quedarían obsoletos si Java escribiera en producción.
+- **Cachés Java también en memoria.** Las de categorías, dilemas y configuraciones se cargan al arrancar y solo ven lo
+  que escribe Java; el catálogo TCG se recarga al arrancar y tras cada TCGDEX completada **por Java**. Con Node
+  escribiendo (producción), el estado de Java queda viejo hasta reiniciarlo; por eso no se enrutan en nginx.
+- **Un solo sincronizador.** Java usa su propio interruptor, `BACKEND_DATA_SYNC_ENABLED` (`pu.data-sync.enabled`, por
+  defecto `false`), y no el `DATA_SYNC_ENABLED` de Node (que `.env.example` pone a `true`): un `.env` o un shell
+  compartido no puede arrancar dos sincronizadores sobre la misma BD. Apagado, Java no programa nada, no hace la
+  sincronización inicial ni la de TCG, y las rutas admin de data-sync responden 503
+  `La sincronización de datos no está disponible`.
+- **`recoverInterrupted` también depende del interruptor** (en Node corre siempre): con Node sincronizando, Java
+  marcaría `FAILED` una ejecución viva de Node. Coste: una fila `RUNNING` que deje un Java caído solo se repara cuando
+  Java vuelva a arrancar con el data-sync encendido (apagado no sincroniza, así que no puede dejarla).
+- **Avatares.** Node y Java escriben en el mismo directorio (`apps/server/.data/avatars` en dev, volumen compartido en
+  Compose); el limitador de 12 escrituras por 15 min y IP es por proceso.
+
+#### Diferencias de Java con Node (decididas)
+
+- **Límite de cuerpo: 10 MB en Java, 32 kB en Node** (decisión deliberada; se mantiene). `express.json` de Node corta a
+  32 kB con 413 `{"error":"request entity too large"}` (el `PayloadTooLargeError` tiene `status` numérico y cae en la
+  rama genérica del manejador global, no en la del literal del avatar). Java deja el máximo por defecto de Micronaut
+  (10 MB), que necesita la subida de avatares (5 MiB en crudo); los cuerpos JSON los acotan los esquemas (textos de
+  160/180 caracteres, importación de 1 a 100 dilemas). Si se quisiera paridad exacta, haría falta un filtro de
+  tamaño por ruta, no un límite global.
+- **Avatar corrupto: 400 en Java, 500 en Node** (sharp lanza un error sin estado). Java responde 400
+  `El archivo no es una imagen JPEG, PNG o WEBP válida.`; además, un PNG con CRC erróneo o la orientación EXIF de
+  un formato que no sea JPEG se toleran donde sharp es más estricto.
+- **JSON mal formado de un anónimo: 401 en Java, 400 en Node** en las rutas admin: `express.json` de Node falla antes
+  que su guardia y `AdminGate` de Java rechaza antes de leer el cuerpo. (En `POST /api/feedback`, desde la etapa 1, es
+  al revés: 400 en Java y 401 en Node.)
+- **Precio TCG no canónico** junto a otro precio en una configuración guardada: el `safeParse` de Node lanza (su
+  migración y su arranque fallarían); Java repara ese precio al valor por defecto.
+- **Hueco del cambio de hora (DST)** al calcular la próxima sincronización: Java resuelve `02:30` de la noche de
+  primavera al instante de la transición (`03:00`); Node lanza. En otoño Java toma la primera de las dos `02:30`
+  (solo afecta a `DATA_SYNC_HOUR=2`).
+- **Cliente de sincronización**: una URI inválida no se reintenta ni se traduce, y un fallo de JSON tiene otro tipo y
+  mensaje que en Node.
+- **Orden de claves del usuario** en las respuestas de avatar: distinto del de Node (herencia de la etapa 1; mismo
+  contenido).
+- **Cabeceras `RateLimit`** en borrador 6 frente al borrador 7 de Node (todos los limitadores, desde la etapa 1).
+
+#### Comprobación con datos reales (2026-11-03)
+
+Sincronización real contra la BD local de desarrollo con el backend Java (`BACKEND_DATA_SYNC_ENABLED=true`, Node con
+`DATA_SYNC_ENABLED=false`): al arrancar, POKEAPI INITIAL completó en 48 s (1 025 paletas, antes 0; el catálogo ya
+estaba sembrado) y la TCGDEX INITIAL automática falló a los 21 s con `TCGdex set bw6 returned HTTP 503` tras los cuatro
+intentos (un 503 transitorio de TCGdex: la misma URL respondía 200 un minuto después). Relanzada desde
+`POST /api/admin/data-sync/tcg` con un ADMIN, la ejecución (`PRICE_REFRESH` sin cartas, que recorre los sets) completó
+en 7 min 29 s: 220 sets y 23 771 cartas, 18 986 con imagen y precio de mercado en `CachedTcgCardCatalog`, recargado al
+terminar. Con esos datos, `npm run test:e2e:java -- juegos` pasa 28/28: `tcg-higher-lower` y `pokemon-palette-guess`
+dejan de saltarse.
+
+### Corte 2D: Java dueño de las salas y de los datos
+
+Lista de comprobación (todo junto, en un mismo despliegue):
+
+- [ ] `VITE_REALTIME=java` por defecto en la imagen web y quitar `/socket.io/` de nginx.
+- [ ] Nuevos `location` hacia `backend:8080` en `infra/nginx.conf`, antes de `location /api/`: `/api/categories`,
+  `/api/would-you-rather-prompts`, `/api/admin/`, `/api/tcg/`,
+  `/api/auth/(guest/custom-avatar|profile/avatar)` (con `/preset`, `/custom` y el `DELETE`) y `/api/rooms/`
+  (imágenes y gritos de ronda); `location = /ws` ya existe. Quitar entonces la excepción de `proxyFor('java')`: las
+  reglas pasan a ser comunes a los dos modos (o desaparece el modo `node`).
+- [ ] `BACKEND_DATA_SYNC_ENABLED=true` en el servicio `backend` de compose (con `DATA_SYNC_HOUR`, `DATA_SYNC_MINUTE`,
+  `DATA_SYNC_TIMEZONE`) y `PU_DATA_SYNC_ENABLED=false` en Node, o Node retirado. Nunca los dos a la vez.
+- [ ] `PU_ROOMS_ENABLED=true` (`ROOMS_ENABLED` del backend; hoy `false`, y `/ws` cierra con 4403).
+- [ ] `INTERRUPT_STALE_ROOMS=true` (`pu.interrupt-stale-rooms`): al arrancar marca `INTERRUPTED`/`SERVER_STOPPED` las
+  filas `RoomHistory` `ACTIVE` y `GameHistory` `IN_PROGRESS` que dejó el proceso anterior (`interruptStaleActivity` de
+  Node). Apagado por defecto porque, mientras Node sirva salas sobre la misma BD, cada arranque de Java interrumpiría
+  las salas vivas de Node. Al activarlo hay que dejar de servir salas desde Node.
+- [ ] Artworks: compose define `POKEMON_ARTWORK_DIR` (`/data/pokemon-artworks`) pero no monta nada; copiar los PNG a la
+  imagen del backend o compartir un volumen con Node (que los lleva dentro de la suya).
+- [ ] Prueba de humo arm64 del codificador WebP: ejecutar una subida de avatar en la imagen `linux/arm64` (QEMU en CI o
+  máquina arm64); hoy solo se comprobó en amd64.
+- [ ] Imagen nativa: AWT (ImageIO), ICU4J, los SPI de TwelveMonkeys y `webp-imageio` (JNI con `System.load` y Kotlin
+  stdlib) necesitan metadatos; ver el riesgo «Imagen nativa». Sigue desplegándose la imagen JVM.
+- [ ] Repetir `contenido-y-admin.spec.ts` y `juegos.spec.ts` solo contra Java.
 
 ## Riesgos abiertos
 
@@ -222,6 +297,38 @@ buscador desplaza la página (Bingo); además, 8 juegos no muestran el título d
     ejecución como el upsert de Prisma, pero con otro mensaje. Los precios de una carta se escriben en una sola
     transacción (Node hace un upsert por precio).
   - Las peticiones de un lote de 20 cartas son concurrentes (como `Promise.all`): su orden de llegada no es fijo.
+
+- Deuda de 2C (aplazada en las revisiones):
+  - Persistencia del data-sync con un puerto y SQL nativo (`JpaPokemonCatalogStore`, `JpaTcgCardRepository`, sin una
+    entidad JPA por tabla Prisma): hasta 2D, cada cambio de esquema en Prisma obliga a revisar esas sentencias.
+  - `ImageIoReaders` retira el lector WebP nativo de `webp-imageio`; una llamada a `ImageIO.scanForPlugins()` lo
+    volvería a registrar (no la hay en `src/main`).
+  - Configuración: `ConfigMessagesSnapshotTest` no detecta entradas de motores que ya no existen y su propiedad de
+    reescritura tiene un nombre genérico (`-Dupdate`); el generador de casos de migración vive en
+    `src/test/resources`, sin lint y con ruta relativa; `UserGameConfigService` cachea fuera del cerrojo en la carga
+    (solo importa si una carga compite con un guardado).
+  - Contenido: `HostContentProvider` depende de los almacenes con `DataSource` (un contexto de test sin BD no puede
+    crear el coordinador); `updateHostWouldYouRatherPrompts` duplica el cuerpo de `updateHostCategories`; mezcla de
+    `@Transactional` de jakarta y de Micronaut; las divergencias del body-parser (JSON `null`, JSON mal formado,
+    raíz que no es objeto) solo están documentadas en los tests; la intersección con `additionalProperties` de
+    `ZodIssue` debilita el tipado TS generado.
+  - Avatares: cuerpos multipart o mal formados sobre `@Body byte[]` sin test; el cargador nativo prueba primero
+    `/tmp`; `ClientAddress` confía en el último salto de `X-Forwarded-For` (correcto solo detrás de nginx).
+  - Data-sync: `stop()` puede invocarse hasta tres veces (idempotente); `PokeApiPayloads` usa valores por defecto
+    donde Node lanzaría `TypeError` con una respuesta mal formada; `PokeApiUrls` deja pasar hosts ajenos a PokéAPI
+    (como Node); `dexIds` descarta elementos no enteros (Prisma fallaría); las fechas sin zona se rechazan; matiz de
+    salto de línea en la regex `IMAGE`; `loadComparableCards` hace dos consultas en READ COMMITTED (la misma ventana
+    que Node).
+  - Recarga tras el sync: `cache.replace` va antes de `rooms.replaceCatalog` (Node hace primero las salas; no es
+    atómico si `rooms.get()` lanza); sin test del arranque con data-sync encendido y catálogo vacío ni del fallo de la
+    recarga; el listener depende del `PokemonCatalogService` concreto.
+  - Administración: `ChangelogService` importa `org.hibernate.JDBCException` en la capa de aplicación; la carrera de
+    orden entre `remove` e inserción de `RoomStore` solo afecta al orden del listado admin; la sonda de normalización
+    de rutas de `AdminGate` no tiene test.
+  - Tests: cuentas admin y una sala del test de resumen quedan en la BD y el contexto de test compartidos;
+    `CatalogTables.clear` vacía tablas dependientes de la BD de test compartida; `NonUtcZone` cambia la zona por
+    defecto de la JVM (seguro solo con tests en serie); el generador de paridad puede dejar `pu_parity_pokeapi` en un
+    `DATABASE_URL` que no sea el contenedor.
 
 ## Métricas de CI
 

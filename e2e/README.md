@@ -73,7 +73,8 @@ consola y que a 1280×720 no hay scroll horizontal (`measureLayout` se anota, ve
 
 - **Saltos**: `tcg-higher-lower` (sin cartas TCG) y `pokemon-palette-guess` (sin `metadata.palette` en
   la BD) se saltan **solo** si el lobby muestra el literal de no disponibilidad del servidor; el motivo
-  queda en el skip. Con los datos cargados se prueban como los demás.
+  queda en el skip. Con los datos cargados se prueban como los demás: tras una sincronización con el backend Java
+  (`BACKEND_DATA_SYNC_ENABLED=true`, ver el README raíz) la pasada Java dio 28/28 sin saltos (2026-11-03).
 - **Capturas**: un juego de cada lote (`type-duel`, `poke-taboo`, `most-likely-to`, `learnset-guess`,
   `whos-that-pokemon`, `who-is-who-pokemon`, `pokemon-bingo`, `sketchmon`) se guarda como
   `screenshots/juego-<id>-<ancho>x<alto>.png` a los tres tamaños, antes de la aserción de encaje.
@@ -89,6 +90,25 @@ consola y que a 1280×720 no hay scroll horizontal (`measureLayout` se anota, ve
   los tres tamaños). `npm run` se come `--reporter`, así que para verlas lánzalo desde `e2e/`:
   `PLAYWRIGHT_JSON_OUTPUT_FILE=juegos.json npx playwright test juegos --reporter=list,json`
   (con `VITE_REALTIME=java` delante para la pasada Java).
+
+### Contenido de cuenta y administración: `contenido-y-admin.spec.ts`
+
+```sh
+npm run test:e2e -- contenido-y-admin        # rutas 2C servidas por Node
+npm run test:e2e:java -- contenido-y-admin   # las mismas servidas por Java (proxyFor('java') de Vite)
+```
+
+Un USER se registra por la interfaz, sube un PNG (generado en el test) desde «Cambiar avatar» del perfil y lo ve
+cargado en la lista de jugadores de su sala; en la configuración del lobby crea, edita y borra una categoría
+(One of Us Is Fake) y un dilema (Would You Rather Pokémon). Después un ADMIN abre `/admin` y ve la sala activa con
+su anfitrión. Para el ADMIN se registra una cuenta por la API, se promueve en la BD local y se vuelve a iniciar sesión
+(`/api/auth/me` devuelve el rol del token). Los helpers (`psql`, `nuevaCuenta`, `registrarPorApi`, `promoverAAdmin`,
+`borrarCuentas` en `src/helpers.ts`) ejecutan `psql` dentro del contenedor con `podman exec`
+(`pokemonuniverse_postgres_1`; otro nombre con `PU_E2E_PG_CONTAINER`). Al acabar, aunque falle, se borran las dos
+cuentas (`@e2e.example.test`) y el fichero del avatar de `apps/server/.data/avatars`.
+
+Ojo: el limitador de avatares (12 escrituras por 15 min y IP, por proceso) ignora `RATE_LIMIT_DISABLED`; cada
+ejecución hace una subida, así que más de 12 seguidas contra el mismo servidor dan 429 hasta reiniciarlo.
 
 `playwright.config.ts` hace lo siguiente por ti:
 
