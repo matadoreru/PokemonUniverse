@@ -62,9 +62,9 @@ export function ConfigRange({ label, value, min, max, step = 1, disabled, accent
 
   return (
     <label className="block min-w-0 rounded-2xl border border-ink/10 bg-surface-raised/55 p-4">
-      <span className="mb-3 flex items-baseline justify-between gap-3">
+      <span className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <span className="text-sm font-extrabold text-ink/65">{label}</span>
-        <output className="shrink-0 font-display text-lg font-bold text-ink" aria-live="polite">{formatValue(state.value)}</output>
+        <output className="shrink-0 font-display text-lg font-bold tabular-nums text-ink" aria-live="polite">{formatValue(state.value)}</output>
       </span>
       <input
         className={`config-range config-range-${accent}`}

@@ -162,7 +162,7 @@ export function GameSelectionConfig({ availableGames, mode, playerCount, disable
                   {active && <span className={`mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full ${skipReason ? 'bg-ink/30' : needsReview ? 'bg-berry' : 'bg-leaf'}`} title={skipReason ? 'Se omitirá con los jugadores actuales' : needsReview ? 'Requiere revisión' : 'Configuración lista'} />}
                 </div>
                 {active && <div className="mt-2 flex items-center justify-between gap-2 border-t border-ink/10 pt-2">
-                  <span className={`text-[.68rem] font-extrabold uppercase tracking-wide ${skipReason ? 'text-ink/55' : needsReview ? 'text-berry' : customized ? 'text-aqua' : 'text-ink/45'}`}>{skipReason ? 'Se omitirá' : needsReview ? 'Revisar' : customized ? 'Configurado' : 'Predeterminado'}</span>
+                  <span className={`text-xs font-extrabold uppercase tracking-wide ${skipReason ? 'text-ink/55' : needsReview ? 'text-berry' : customized ? 'text-aqua' : 'text-ink/45'}`}>{skipReason ? 'Se omitirá' : needsReview ? 'Revisar' : customized ? 'Configurado' : 'Predeterminado'}</span>
                   <button type="button" onPointerEnter={() => void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined)} onFocus={() => void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined)} onClick={() => openEditor(game)} className="inline-flex min-h-8 items-center gap-1.5 rounded-lg px-2 text-xs font-extrabold text-aqua hover:bg-aqua/10" aria-pressed={editing}><Settings2 size={14} /> Ajustar</button>
                 </div>}
               </article>;

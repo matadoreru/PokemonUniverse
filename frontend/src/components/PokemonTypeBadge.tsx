@@ -11,5 +11,5 @@ export const pokemonTypeVisuals: Record<PokemonType, { icon: string; color: stri
 
 export function PokemonTypeBadge({ type, compact = false, highlighted = false }: { type: PokemonType; compact?: boolean; highlighted?: boolean }) {
   const visual = pokemonTypeVisuals[type];
-  return <span aria-label={`Tipo ${pokemonTypeLabels[type]}`} className={`inline-flex items-center gap-1.5 rounded-xl border font-extrabold ${compact ? 'px-2 py-1 text-xs' : 'px-3 py-1.5'} ${highlighted ? 'ring-2 ring-electric/70' : ''}`} style={{ borderColor: `${visual.color}80`, backgroundColor: `${visual.color}1f` }}><span aria-hidden="true">{visual.icon}</span>{pokemonTypeLabels[type]}</span>;
+  return <span aria-label={`Tipo ${pokemonTypeLabels[type]}`} className={`type-badge type-badge-${type} inline-flex items-center gap-1.5 rounded-xl border font-extrabold ${compact ? 'px-2 py-1 text-xs' : 'px-3 py-1.5'} ${highlighted ? 'ring-2 ring-electric/70' : ''}`}><span aria-hidden="true">{visual.icon}</span>{pokemonTypeLabels[type]}</span>;
 }
