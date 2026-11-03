@@ -337,6 +337,12 @@ function FieldSection() {
       <Fig id="field-hint" caption="Texto · con ayuda" cream>
         <Field label="Código de sala" placeholder="PIKA42" hint="Seis letras o números." />
       </Fig>
+      <Fig id="field-code" caption="Código de sala (code)" cream>
+        <Field label="Código de sala" placeholder="PIKA42" hint="Seis letras o números." code />
+      </Fig>
+      <Fig id="field-code-error" caption="Código de sala · con error" cream>
+        <Field label="Código de sala" defaultValue="ZZZZZZ" error="No hay ninguna sala con ese código." code />
+      </Fig>
       <Fig id="field-focus" caption="Texto · foco" cream>
         <Field label="Nombre de entrenador" defaultValue="Misty" forced="focus" />
       </Fig>

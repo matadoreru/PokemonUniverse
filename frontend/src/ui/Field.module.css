@@ -46,6 +46,19 @@
   opacity: 0.45;
   cursor: not-allowed;
 }
+/* Código de sala: 26 px de display, centrado y espaciado; el relleno izquierdo compensa el espacio tras la última letra. */
+.code {
+  min-height: 60px;
+  padding-left: calc(var(--sp-4) + 0.3em);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font: 800 var(--fs-26) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+}
+.code::placeholder {
+  font-weight: 800;
+}
 .invalid {
   border-color: var(--red-text);
 }

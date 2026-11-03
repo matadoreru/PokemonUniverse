@@ -1,16 +1,20 @@
 import { useId } from 'react';
-import type { InputHTMLAttributes, ReactNode } from 'react';
+import type { InputHTMLAttributes, ReactNode, Ref } from 'react';
 import { cx } from './cx';
 import type { ForcedState } from './cx';
 import s from './Field.module.css';
 
 export interface FieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'className'> {
   label: string;
+  /** Referencia al `<input>` (para llevarle el foco). */
+  ref?: Ref<HTMLInputElement>;
   /** Error bajo el campo; el campo recibe `aria-invalid` y `aria-describedby`. */
   error?: string | null;
   hint?: string;
   /** Etiqueta solo para lectores de pantalla. */
   hideLabel?: boolean;
+  /** Código corto (sala): letra grande de display, centrada y espaciada, en mayúsculas y sin autocorrección. */
+  code?: boolean;
   className?: string;
   /** Solo galería: estado forzado. */
   forced?: ForcedState;
@@ -46,12 +50,13 @@ function describedBy(id: string, error?: string | null, hint?: string): string |
 }
 
 /** Campo de texto: crema con contorno de 3 px y texto en tinta. */
-export function Field({ label, error, hint, hideLabel, className, forced, id, ...rest }: FieldProps) {
+export function Field({ label, error, hint, hideLabel, code, className, forced, id, ...rest }: FieldProps) {
   const auto = useId();
   const fid = id ?? auto;
+  const codeProps = code ? { autoCapitalize: 'characters', autoComplete: 'off', autoCorrect: 'off', spellCheck: false } : {};
   return (
     <Shell id={fid} label={label} hideLabel={hideLabel} error={error} hint={hint} className={className}>
-      <input {...rest} id={fid} className={cx(s.input, error && s.invalid, forced && s[forced])} aria-invalid={error ? true : undefined} aria-describedby={describedBy(fid, error, hint)} />
+      <input {...codeProps} {...rest} id={fid} className={cx(s.input, code && s.code, error && s.invalid, forced && s[forced])} aria-invalid={error ? true : undefined} aria-describedby={describedBy(fid, error, hint)} />
     </Shell>
   );
 }

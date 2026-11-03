@@ -73,16 +73,44 @@ test('dos jugadores crean una sala, se unen y empiezan la partida', async ({ cre
   expect(guest.errors).toEqual([]);
 });
 
-test('un código inexistente muestra error', async ({ page }) => {
+for (const { w, h } of SIZES) {
+  test(`un código inexistente muestra el error en el campo a ${w}×${h}`, async ({ page }) => {
+    const errors = collectErrors(page);
+    await page.setViewportSize({ width: w, height: h });
+    await loginAsGuest(page, uniqueName('E2E'));
+    // Se pega en minúsculas y con guion: el campo lo normaliza.
+    await page.locator('#room-code').fill('zzz-zzz');
+    await expect(page.locator('#room-code')).toHaveValue('ZZZZZZ');
+    await page.getByRole('button', { name: 'Unirse a la sala' }).click();
+    // El servidor responde en inglés ('Room not found'); la pantalla lo da en español en el campo, que recibe el foco,
+    // y el aviso global de la sala no repite el texto en inglés.
+    const alerta = page.getByRole('alert').filter({ hasText: 'No hay ninguna sala con ese código.' });
+    await expect(alerta).toBeVisible();
+    await expect(page.locator('#room-code')).toHaveAttribute('aria-invalid', 'true');
+    await expect(page.locator('#room-code')).toBeFocused();
+    await expect(page.getByText(/room not found/i)).toHaveCount(0);
+    await expect(page).toHaveURL(/\/play$/);
+    await capture(page, 'entrar-en-partida-error', { minFontPx: 13, noPageScroll: true });
+
+    // Un código incompleto no viaja al servidor: el campo dice cuánto falta.
+    await page.locator('#room-code').fill('AB');
+    await page.getByRole('button', { name: 'Unirse a la sala' }).click();
+    await expect(page.getByRole('alert').filter({ hasText: 'Faltan 4 caracteres del código.' })).toBeVisible();
+    expect(errors).toEqual([]);
+  });
+}
+
+test('con una sala activa, Jugar ofrece volver o salir sin solaparse con la fila de la sala', async ({ page }) => {
   const errors = collectErrors(page);
   await loginAsGuest(page, uniqueName('E2E'));
-  await page.locator('#room-code').fill('ZZZZZZ');
-  await page.getByRole('button', { name: 'Unirse a la sala' }).click();
-  // Puede haber más de un alert (error de PlayPage y banner de conexión): se busca el del error.
-  // El servidor responde en inglés ('Room not found') y PlayPage lo muestra tal cual.
-  const alerta = page.getByRole('alert').filter({ hasText: /room not found/i }).first();
-  await expect(alerta).toBeVisible();
-  await expect(page).toHaveURL(/\/play$/);
+  await createRoom(page);
+  await page.goto('/play');
+  await expect(page.getByRole('heading', { name: 'Ya tienes una sala activa' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Volver a la sala' })).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'Salir de la sala' })).toBeEnabled();
+  await capture(page, 'entrar-en-partida-sala-activa', { minFontPx: 13, noPageScroll: true });
+  await page.getByRole('button', { name: 'Salir de la sala' }).click();
+  await expect(page.getByRole('heading', { name: 'Entrar en partida' })).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -166,7 +194,7 @@ test('una entrada normal en la sala no muestra el aviso de conexión', async ({ 
   const errors = collectErrors(page);
   await loginAsGuest(page, uniqueName('E2E'));
   // Primera conexión de calentamiento: el `/ws` en frío puede tardar más que el retardo del aviso.
-  await expect(page.getByRole('button', { name: 'Crear sala privada' })).toBeEnabled();
+  await expect(page.getByRole('button', { name: '¡Crear sala!' })).toBeEnabled();
   // Desde aquí se anota si el aviso llega a pintarse en algún momento, aunque sea un instante.
   await page.addInitScript(() => {
     const w = window as unknown as { avisoVisto: boolean };

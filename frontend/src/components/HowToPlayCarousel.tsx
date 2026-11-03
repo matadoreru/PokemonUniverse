@@ -11,7 +11,7 @@ const generalSlides: readonly HowToPlaySlide[] = [
     title: 'Crea una sala o entra con un código',
     description: 'La persona anfitriona comparte un código de seis caracteres y el resto se une desde esta misma pantalla.',
     visual: <div className="grid w-full max-w-sm gap-3" aria-hidden="true">
-      <div className="flex items-center gap-3 rounded-xl border border-aqua/25 bg-aqua/[.08] p-3"><Crown className="text-electric" /><span className="min-w-0 flex-1"><strong className="block">Crea la sala</strong><small className="font-bold text-ink/55">Tú eliges juego y ajustes</small></span></div>
+      <div className="flex items-center gap-3 rounded-xl border border-aqua/25 bg-aqua/[.08] p-3"><Crown className="text-electric" /><span className="min-w-0 flex-1"><strong className="block">Crea la sala</strong><small className="text-13 font-bold text-ink/55">Tú eliges juego y ajustes</small></span></div>
       <div className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-ink/20 bg-surface px-4 py-3 font-display text-xl tracking-[.28em]"><KeyRound className="text-aqua" size={20} /> PIKA42</div>
       <div className="flex justify-center -space-x-2"><span className="grid h-9 w-9 place-items-center rounded-full border-2 border-surface bg-berry text-sm font-black text-night">A</span><span className="grid h-9 w-9 place-items-center rounded-full border-2 border-surface bg-aqua text-sm font-black text-night">P</span><span className="grid h-9 w-9 place-items-center rounded-full border-2 border-surface bg-electric text-sm font-black text-night">+3</span></div>
     </div>,
@@ -22,7 +22,7 @@ const generalSlides: readonly HowToPlaySlide[] = [
     description: 'Recomendamos estar en una llamada de voz, por ejemplo en Discord, Zoom o vuestra app favorita. Muchos juegos ganan muchísimo cuando podéis comentar y reíros juntos.',
     visual: <div className="flex w-full max-w-sm items-center gap-4 rounded-xl border border-berry/20 bg-berry/[.07] p-4" aria-hidden="true">
       <span className="grid h-16 w-16 shrink-0 place-items-center rounded-xl bg-berry text-night shadow-card"><Headphones size={34} /></span>
-      <span><strong className="font-display text-xl">Llamada de voz</strong><small className="mt-1 block font-bold text-ink/70">Discord · Zoom · Meet · Telegram</small><span className="mt-2 inline-flex items-center gap-1 text-xs font-black text-leaf"><span className="h-2 w-2 rounded-full bg-leaf" /> Grupo conectado</span></span>
+      <span><strong className="font-display text-xl">Llamada de voz</strong><small className="mt-1 block text-13 font-bold text-ink/70">Discord · Zoom · Meet · Telegram</small><span className="mt-2 inline-flex items-center gap-1 text-13 font-black text-leaf"><span className="h-2 w-2 rounded-full bg-leaf" /> Grupo conectado</span></span>
     </div>,
   },
   {
@@ -30,7 +30,7 @@ const generalSlides: readonly HowToPlaySlide[] = [
     title: 'Elige juego, modo y configuración',
     description: 'En el lobby podéis leer cada juego antes de elegirlo. La persona anfitriona configura sus reglas (cada minijuego tiene las suyas propias) y decide cómo rota la sesión (los modos de rotacion random y votacion recomendamos configurar los minijuegos uno a uno para mejor experie).',
     visual: <div className="w-full max-w-sm overflow-hidden rounded-xl border border-ink/10 bg-surface" aria-hidden="true">
-      <div className="flex border-b border-ink/10 bg-surface-raised p-1.5 text-xs font-black"><span className="flex-1 rounded-lg bg-aqua px-2 py-2 text-center text-night">Minijuego</span><span className="flex-1 px-2 py-2 text-center text-ink/55">Configuración</span><span className="flex-1 px-2 py-2 text-center text-ink/55">Modo</span></div>
+      <div className="flex border-b border-ink/10 bg-surface-raised p-1.5 text-13 font-black"><span className="flex-1 rounded-lg bg-aqua px-2 py-2 text-center text-night">Minijuego</span><span className="flex-1 px-2 py-2 text-center text-ink/55">Configuración</span><span className="flex-1 px-2 py-2 text-center text-ink/55">Modo</span></div>
       <div className="space-y-2 p-3"><div className="flex items-center gap-2 rounded-lg bg-aqua/[.08] p-2"><Gamepad2 className="text-aqua" size={20} /><strong className="text-sm">Pokémon Connections</strong></div><div className="flex items-center gap-2 rounded-lg bg-ink/[.04] p-2"><SlidersHorizontal className="text-berry" size={20} /><span className="text-sm font-bold">4 grupos · 120 segundos</span></div></div>
     </div>,
   },
@@ -120,7 +120,7 @@ export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jug
   return <section className={inDialog ? 'flex flex-col' : `flex ${compact ? 'min-h-[24rem]' : 'min-h-[31rem]'} flex-col overflow-hidden rounded-2xl border border-aqua/20 bg-surface shadow-card`} {...(inDialog ? { 'aria-label': heading } : { 'aria-labelledby': titleId })} aria-roledescription="carrusel" onKeyDown={onKeyDown}>
     {!inDialog && <header className="flex items-start justify-between gap-3 border-b border-ink/10 bg-gradient-to-r from-aqua/[.12] to-berry/[.08] px-5 py-4 sm:px-6">
       <div className="min-w-0">
-        <span className="text-xs font-black uppercase tracking-[.18em] text-aqua">{kicker}</span>
+        <span className="text-13 font-black uppercase tracking-[.18em] text-aqua">{kicker}</span>
         <h2 id={titleId} className="font-display text-2xl sm:text-3xl">{heading}</h2>
       </div>
       {headerAction}
@@ -128,7 +128,7 @@ export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jug
     <div className={`flex flex-1 flex-col px-5 text-center sm:px-8 ${compact ? 'py-4' : 'py-6'}`} aria-live="polite">
       {slides.map((slide, index) => <div key={slide.eyebrow} id={`${idPrefix}-slide-${index + 1}`} role="group" aria-roledescription="diapositiva" aria-label={`${label} ${index + 1} de ${count}`} hidden={index !== active} className={`${index === active ? 'flex' : 'hidden'} flex-1 flex-col items-center justify-center ${direction === 'next' ? 'motion-enter-right' : 'motion-enter-left'}`}>
         <div className={`flex w-full items-center justify-center ${compact ? 'min-h-28' : 'min-h-48'}`}>{slide.visual}</div>
-        <span className="mt-4 text-xs font-black uppercase tracking-[.16em] text-berry">{slide.eyebrow}</span>
+        <span className="mt-4 text-13 font-black uppercase tracking-[.16em] text-berry">{slide.eyebrow}</span>
         <h3 className="mt-1 max-w-md font-display text-2xl leading-tight">{slide.title}</h3>
         <p className="mt-3 max-w-lg text-sm font-semibold leading-relaxed text-ink/70 sm:text-base">{slide.description}</p>
       </div>)}

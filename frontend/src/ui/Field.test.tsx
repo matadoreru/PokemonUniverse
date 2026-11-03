@@ -19,6 +19,14 @@ describe('Field', () => {
   it('sin error no marca invalidez', () => {
     expect(renderToStaticMarkup(createElement(Field, { label: 'Nombre' }))).not.toContain('aria-invalid');
   });
+  it('code agranda el texto del campo (código de sala) y lo marca para el teclado', () => {
+    const input = /<input[^>]*>/.exec(renderToStaticMarkup(createElement(Field, { label: 'Código', code: true })))?.[0] ?? '';
+    expect(input).toMatch(/class="[^"]*code/);
+    expect(input).toContain('autoCapitalize="characters"');
+    expect(input).toContain('spellCheck="false"');
+    const plain = /<input[^>]*>/.exec(renderToStaticMarkup(createElement(Field, { label: 'Nombre' })))?.[0] ?? '';
+    expect(plain).not.toMatch(/class="[^"]*code/);
+  });
   it('hideLabel deja la etiqueta solo para lectores', () => {
     const label = /<label[^>]*class="([^"]*)"/.exec(renderToStaticMarkup(createElement(Field, { label: 'Buscar', hideLabel: true })))?.[1] ?? '';
     expect(label).toMatch(/srOnly/);

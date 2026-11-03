@@ -141,7 +141,7 @@ export function uniqueName(prefix: string): string {
  * (lo está solo cuando el socket ya ha conectado).
  */
 export async function createRoom(page: Page): Promise<string> {
-  const crear = page.getByRole('button', { name: 'Crear sala privada' });
+  const crear = page.getByRole('button', { name: '¡Crear sala!' });
   await expect(crear).toBeEnabled();
   await crear.click();
   await expect(page).toHaveURL(/\/room$/);

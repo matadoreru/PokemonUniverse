@@ -48,7 +48,9 @@ for (const { w, h } of SIZES) {
 
     await loginAsGuest(page, uniqueName('E2E'));
     await expect(page.getByRole('heading', { name: 'Entrar en partida' })).toBeVisible();
-    await capture(page, 'entrar-en-partida');
+    // Con la sala conectada: el aviso «Conectando» de la cabecera no entra en la captura.
+    await expect(page.getByRole('button', { name: '¡Crear sala!' })).toBeEnabled();
+    await capture(page, 'entrar-en-partida', CAPTURA);
 
     // El login inválido provoca (a propósito) un 401 de `/api/auth/login`, que Chromium registra
     // como error de consola sin URL. Se descuenta exactamente una vez ese mensaje; el resto debe
