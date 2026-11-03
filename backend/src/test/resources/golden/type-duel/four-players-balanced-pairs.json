@@ -296,6 +296,7 @@
         "typeSelectionCompletedIds": [],
         "revealedTypes": {},
         "requiredTypes": null,
+        "solutionCount": null,
         "invalidCombinations": 0,
         "finalSelectionCycle": false,
         "attempts": [],
@@ -375,6 +376,7 @@
         "typeSelectionCompletedIds": [],
         "revealedTypes": {},
         "requiredTypes": null,
+        "solutionCount": null,
         "invalidCombinations": 0,
         "finalSelectionCycle": false,
         "attempts": [],
@@ -456,6 +458,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -545,6 +548,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -628,6 +632,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -711,6 +716,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -795,6 +801,7 @@
             ],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -886,6 +893,7 @@
               "ground",
               "steel"
             ],
+            "solutionCount": 2,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -976,6 +984,7 @@
               "ground",
               "steel"
             ],
+            "solutionCount": 2,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -1068,6 +1077,7 @@
               "ground",
               "steel"
             ],
+            "solutionCount": 2,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -1160,6 +1170,7 @@
               "ground",
               "steel"
             ],
+            "solutionCount": 2,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -1252,6 +1263,7 @@
               "ground",
               "steel"
             ],
+            "solutionCount": 2,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -1344,6 +1356,7 @@
               "ground",
               "steel"
             ],
+            "solutionCount": 2,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -1436,6 +1449,7 @@
               "ground",
               "steel"
             ],
+            "solutionCount": 2,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -1528,6 +1542,7 @@
               "ground",
               "steel"
             ],
+            "solutionCount": 2,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -1619,6 +1634,7 @@
               "ground",
               "steel"
             ],
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [
@@ -1749,6 +1765,7 @@
               "ground",
               "steel"
             ],
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [
@@ -1868,6 +1885,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -1949,6 +1967,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -2033,6 +2052,7 @@
             ],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -2118,6 +2138,7 @@
             ],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -2208,6 +2229,7 @@
             "requiredTypes": [
               "electric"
             ],
+            "solutionCount": 6,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -2299,6 +2321,7 @@
             "requiredTypes": [
               "electric"
             ],
+            "solutionCount": 6,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -2388,6 +2411,7 @@
             "requiredTypes": [
               "electric"
             ],
+            "solutionCount": 6,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -2477,6 +2501,7 @@
             "requiredTypes": [
               "electric"
             ],
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -2602,6 +2627,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -2685,6 +2711,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -2769,6 +2796,7 @@
             ],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -2854,6 +2882,7 @@
             ],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -2944,6 +2973,7 @@
             "requiredTypes": [
               "psychic"
             ],
+            "solutionCount": 9,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -3033,6 +3063,7 @@
             "requiredTypes": [
               "psychic"
             ],
+            "solutionCount": 9,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -3122,6 +3153,7 @@
             "requiredTypes": [
               "psychic"
             ],
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -3265,6 +3297,7 @@
             "requiredTypes": [
               "psychic"
             ],
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],

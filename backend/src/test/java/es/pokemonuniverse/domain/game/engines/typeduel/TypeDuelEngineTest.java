@@ -118,6 +118,30 @@ class TypeDuelEngineTest {
     assertEquals("El tiempo ha terminado.", result.error());
   }
 
+  @Test
+  void solutionCountIsPublicOnlyDuringTheRevealAndTheSearch() {
+    var context = context(2);
+    var state = engine.start(engine.createInitialState(engine.defaultConfig(), context), context);
+    assertNull(engine.getPublicState(state, context).solutionCount());
+    var first = engine.handleAction(state, "p1", new TypeDuelAction.SelectType("bug"), context).state();
+    assertNull(engine.getPublicState(first, context).solutionCount());
+    // Bicho y lucha: solo Heracross en gen 1–2. Se publica cuántos, nunca cuáles.
+    var revealed = engine.handleAction(first, "p2", new TypeDuelAction.SelectType("fighting"), context).state();
+    assertEquals(GamePhase.TYPE_REVEAL, revealed.phase());
+    assertEquals(1, engine.getPublicState(revealed, context).solutionCount());
+    var search = engine.handleTimeout(revealed, context.withNow(3_000));
+    assertEquals(GamePhase.POKEMON_SEARCH, search.phase());
+    assertEquals(1, engine.getPublicState(search, context).solutionCount());
+    var won = engine.handleAction(search, "p1", new TypeDuelAction.AttemptPokemon("heracross"), context.withNow(4_000));
+    assertEquals(GamePhase.ROUND_RESULTS, won.state().phase());
+    assertNull(engine.getPublicState(won.state(), context).solutionCount());
+    var impossible = engine.handleAction(
+        engine.handleAction(state, "p1", new TypeDuelAction.SelectType("dragon"), context).state(), "p2",
+        new TypeDuelAction.SelectType("fairy"), context).state();
+    assertEquals(GamePhase.INVALID_COMBINATION, impossible.phase());
+    assertNull(engine.getPublicState(impossible, context).solutionCount());
+  }
+
   private static GameContext without(GameContext context, Set<String> absent) {
     return context.withPlayers(context.players().stream()
         .map(player -> absent.contains(player.id()) ? new GamePlayer(player.id(), player.displayName(), false, null)

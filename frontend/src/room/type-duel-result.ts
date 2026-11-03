@@ -29,3 +29,8 @@ export function typeDuelResultText(lastRound: TypeDuelRoundResult, participants:
       return { title: 'Combinación imposible', detail: 'Ninguna combinación elegida tenía Pokémon válidos: el duelo cuenta sin puntos.' };
   }
 }
+
+/** Cuántos Pokémon cumplen la combinación revelada (el servidor publica el número, nunca cuáles). */
+export function typeDuelSolutionsText(count: number): string {
+  return count === 1 ? '1 Pokémon tiene esta combinación' : `${count} Pokémon tienen esta combinación`;
+}

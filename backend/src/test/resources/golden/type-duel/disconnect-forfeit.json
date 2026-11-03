@@ -238,6 +238,7 @@
         "typeSelectionCompletedIds": [],
         "revealedTypes": {},
         "requiredTypes": null,
+        "solutionCount": null,
         "invalidCombinations": 0,
         "finalSelectionCycle": false,
         "attempts": [],
@@ -307,6 +308,7 @@
         "typeSelectionCompletedIds": [],
         "revealedTypes": {},
         "requiredTypes": null,
+        "solutionCount": null,
         "invalidCombinations": 0,
         "finalSelectionCycle": false,
         "attempts": [],
@@ -378,6 +380,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -459,6 +462,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -540,6 +544,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -614,6 +619,7 @@
             ],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -695,6 +701,7 @@
               "fire",
               "flying"
             ],
+            "solutionCount": 3,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -775,6 +782,7 @@
               "fire",
               "flying"
             ],
+            "solutionCount": 3,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -856,6 +864,7 @@
               "fire",
               "flying"
             ],
+            "solutionCount": 3,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [
@@ -945,6 +954,7 @@
               "fire",
               "flying"
             ],
+            "solutionCount": 3,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [
@@ -1034,6 +1044,7 @@
               "fire",
               "flying"
             ],
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [
@@ -1148,6 +1159,7 @@
               "fire",
               "flying"
             ],
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [
@@ -1254,6 +1266,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -1328,6 +1341,7 @@
             ],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -1401,6 +1415,7 @@
             ],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],
@@ -1487,6 +1502,7 @@
             ],
             "revealedTypes": {},
             "requiredTypes": null,
+            "solutionCount": null,
             "invalidCombinations": 0,
             "finalSelectionCycle": false,
             "attempts": [],

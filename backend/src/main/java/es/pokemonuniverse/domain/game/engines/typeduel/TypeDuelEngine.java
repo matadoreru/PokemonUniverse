@@ -337,11 +337,15 @@ public final class TypeDuelEngine
     boolean reveal = state.participants().stream().allMatch(state.typeSelections()::containsKey)
         && state.phase() != GamePhase.SELECTING_TYPES;
     boolean resultsPhase = state.phase() == GamePhase.ROUND_RESULTS || state.phase() == GamePhase.GAME_RESULTS;
+    // Cuántos Pokémon cumplen la combinación (nunca cuáles), solo mientras se revela y se busca.
+    Integer solutionCount = state.phase() == GamePhase.TYPE_REVEAL || state.phase() == GamePhase.POKEMON_SEARCH
+        ? state.validPokemonIds().size() : null;
     return new TypeDuelPublicState(ID, state.phase(), state.playerIds(), state.completedRounds(), state.roundNumber(),
         state.config().rounds(), state.participants(), state.participationCounts(),
         new ArrayList<>(state.typeSelections().keySet()),
         reveal ? state.typeSelections() : Map.of(),
         reveal ? state.requiredTypes() : null,
+        solutionCount,
         state.invalidCombinations(),
         state.selectionCycles() >= state.config().rounds() * 2,
         state.attempts(), state.scores(), state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(),

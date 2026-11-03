@@ -1,6 +1,6 @@
 import type { TypeDuelRoundResult } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
-import { typeDuelResultText } from './type-duel-result';
+import { typeDuelResultText, typeDuelSolutionsText } from './type-duel-result';
 
 const participants = ['p1', 'p2'] as const;
 const nameOf = (id: string) => ({ p1: 'Ana', p2: 'Bruno' } as Record<string, string>)[id] ?? id;
@@ -32,5 +32,14 @@ describe('typeDuelResultText', () => {
   });
   it('INVALID_COMBINATION explains the three impossible tries', () => {
     expect(typeDuelResultText(round({ reason: 'INVALID_COMBINATION', requiredTypes: ['dragon', 'fairy'] }), participants, nameOf)).toEqual({ title: 'Combinación imposible', detail: 'Ninguna combinación elegida tenía Pokémon válidos: el duelo cuenta sin puntos.' });
+  });
+});
+
+describe('typeDuelSolutionsText', () => {
+  it('uses the singular for a single valid Pokémon', () => {
+    expect(typeDuelSolutionsText(1)).toBe('1 Pokémon tiene esta combinación');
+  });
+  it('uses the plural otherwise', () => {
+    expect(typeDuelSolutionsText(25)).toBe('25 Pokémon tienen esta combinación');
   });
 });

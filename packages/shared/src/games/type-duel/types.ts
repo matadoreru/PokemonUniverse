@@ -22,7 +22,7 @@ export type TypeDuelAction = z.infer<typeof typeDuelActionSchema>;
 export interface TypeDuelPublicState {
   gameId: 'type-duel'; phase: GamePhase; playerIds: string[]; completedRounds: number; roundNumber: number; totalRounds: number;
   participants: [string, string]; participationCounts: Record<string, number>; typeSelectionCompletedIds: string[];
-  revealedTypes: Record<string, PokemonType>; requiredTypes: PokemonType[] | null; invalidCombinations: number; finalSelectionCycle: boolean; attempts: TypeDuelAttempt[]; scores: Record<string, number>;
+  revealedTypes: Record<string, PokemonType>; requiredTypes: PokemonType[] | null; solutionCount: number | null; invalidCombinations: number; finalSelectionCycle: boolean; attempts: TypeDuelAttempt[]; scores: Record<string, number>;
   roundStartedAt: number | null; roundEndsAt: number | null; nextTransitionAt: number | null; lastRound: TypeDuelRoundResult | null; results: GameResults | null;
 }
 export interface TypeDuelPlayerState { participant: boolean; ownType: PokemonType | null; canSelectType: boolean; canAttempt: boolean; cooldownUntil: number; }

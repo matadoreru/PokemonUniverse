@@ -323,6 +323,44 @@ const forfeitOnRevealAndInvalidCombination: GoldenScenario = {
   ],
 };
 
+const solutionCount: GoldenScenario = {
+  name: 'solution-count',
+  seed: 921,
+  catalog: 'gen1-2',
+  players: [ana, bruno, carla],
+  config: { ...baseConfig, rounds: 3 },
+  steps: [
+    // solutionCount es público solo en TYPE_REVEAL y POKEMON_SEARCH (cuántos Pokémon valen, nunca cuáles).
+    // Duelo 1 (Ana contra Carla): bicho y lucha, una sola solución en gen 1–2; revelación, búsqueda y acierto.
+    selectType('p1', 'bug', 2_000),
+    selectType('p2', 'fighting', 2_200),
+    selectType('p3', 'fighting', 2_400),
+    timeout(4_400),
+    attempt('p1', 'heracross', 5_000),
+    attempt('p2', 'heracross', 5_100),
+    attempt('p3', 'heracross', 5_200),
+    timeout(15_200),
+    // Duelo 2 (Bruno contra Carla): una combinación imposible (sin contador) y después monotipo agua; se agota.
+    selectType('p1', 'fairy', 16_000),
+    selectType('p2', 'dragon', 16_100),
+    selectType('p3', 'fairy', 16_200),
+    timeout(19_200),
+    selectType('p1', 'water', 20_000),
+    selectType('p2', 'water', 20_100),
+    selectType('p3', 'water', 20_200),
+    timeout(22_200),
+    timeout(42_200),
+    continueRound('p1', 43_000),
+    // Duelo 3 (Ana contra Bruno): normal y volador; la búsqueda termina por tiempo y la partida acaba.
+    selectType('p1', 'normal', 44_000),
+    selectType('p2', 'flying', 44_100),
+    selectType('p3', 'flying', 44_200),
+    timeout(46_200),
+    timeout(66_200),
+    timeout(76_200),
+  ],
+};
+
 const invalidActionStops: GoldenScenario = {
   name: 'invalid-action-stops',
   seed: 404,
@@ -339,7 +377,7 @@ const invalidActionStops: GoldenScenario = {
 
 export const typeDuelScenarios: GoldenEngineEntry = {
   module: typeDuelGame,
-  scenarios: [twoDuelistsFullCycle, fourPlayersBalancedPairs, presenceAndEarlyFinish, invalidActionStops, absentDuelistsHardCap, invalidCombinationsAndRepeats, hardCapCutsImpossibleRetries, hardCapEndsBeforeLastRound, disconnectForfeit, forfeitOnRevealAndInvalidCombination],
+  scenarios: [twoDuelistsFullCycle, fourPlayersBalancedPairs, presenceAndEarlyFinish, invalidActionStops, absentDuelistsHardCap, invalidCombinationsAndRepeats, hardCapCutsImpossibleRetries, hardCapEndsBeforeLastRound, disconnectForfeit, forfeitOnRevealAndInvalidCombination, solutionCount],
   configCases: [
     // Válidos: normalización de generaciones, límites inferiores y superiores, clave extra ignorada.
     { ...baseConfig, generations: [2, 1, 2] },

@@ -211,6 +211,20 @@ test('type-duel: resultado con tipos', async ({ browser }) => {
     }
     expect(elegidos, 'duelistas que eligen tipo').toBe(2);
 
+    // Revelación (2 s) y búsqueda (20 s): enfrentamiento VS con cuántos Pokémon cumplen la combinación.
+    const versus = host.page.getByTestId('type-duel-versus');
+    await expect(versus).toBeVisible({ timeout: 10_000 });
+    const vs = versus.getByText('VS', { exact: true });
+    await expect(vs).toBeVisible();
+    await expect(versus.getByText(/^\d+ Pokémon tienen esta combinación$/)).toBeVisible();
+    for (const lado of ['.motion-enter-left', '.motion-enter-right']) await expect(versus.locator(`${lado} [aria-label="Tipo Fuego"]`)).toBeVisible();
+    await capturarTamanos(host.page, 'juego-type-duel-vs', { sigue: versus, claro: true });
+    expect(await animacionDe(vs), 'VS con reducción de movimiento').toBe('none');
+    await conMovimiento(host.page);
+    expect(await animacionDe(vs), 'VS con movimiento').toBe('motion-bump');
+    expect(await animacionDe(versus.locator('.motion-enter-left')), 'primer duelista con movimiento').toBe('motion-enter-left');
+    await host.page.emulateMedia({ reducedMotion: 'reduce' });
+
     // Nadie busca: la búsqueda de 20 s termina en «Tiempo agotado» y el host no pulsa «Siguiente ronda».
     const titulo = host.page.getByRole('heading', { name: 'Tiempo agotado' });
     await expect(titulo).toBeVisible({ timeout: 30_000 });
