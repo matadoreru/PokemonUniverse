@@ -163,10 +163,11 @@ export function FeedbackPage() {
                 <GroupLabel>Tipo de feedback</GroupLabel>
                 <Segmented label="Tipo de feedback" value={type} options={TYPE_OPTIONS} onChange={setType} className="w-full" />
               </div>
-              <div className="flex flex-wrap items-center gap-2" aria-label="Contexto incluido" role="group">
-                <Chip tone="info">Tema: {selectedGame?.name ?? FEEDBACK_REFERENCE_LABELS[reference]}</Chip>
-                {validRoomCode && <Chip tone="neutral">Sala: {validRoomCode}</Chip>}
-              </div>
+              {validRoomCode && (
+                <div className="flex flex-wrap items-center gap-2" aria-label="Contexto incluido" role="group">
+                  <Chip tone="neutral">Sala: {validRoomCode}</Chip>
+                </div>
+              )}
             </div>
             <div className="flex min-w-0 flex-col gap-4">
               <TextArea
