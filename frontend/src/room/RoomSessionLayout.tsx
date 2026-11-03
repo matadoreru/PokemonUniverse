@@ -2,6 +2,7 @@ import { MessageSquareWarning, WifiOff, X } from 'lucide-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, Outlet } from 'react-router-dom';
+import { useRoomMusic } from '../audio/useRoomMusic';
 import { HEADER_NOTICES_ID } from '../components/Layout';
 import { createConnectionNotice, type ConnectionNoticeKind } from './connection-notice';
 import { RoomProvider, useRoom } from './RoomContext';
@@ -39,6 +40,7 @@ function ConnectionNotice({ connected }: { connected: boolean }) {
 
 function RoomSessionContent() {
   const { connected, error, clearError, room, setGameSkipVote } = useRoom();
+  useRoomMusic(room?.phase ?? null);
   const feedbackUrl = room ? `/feedback?${new URLSearchParams({ game: (room.game as { gameId?: string } | null)?.gameId ?? room.selectedGameId, room: room.code })}` : '';
   const gameOwnsFeedbackLink = (room?.game as { gameId?: string } | null)?.gameId === 'shiny-vote' && room?.phase !== 'GAME_RESULTS';
   return <>

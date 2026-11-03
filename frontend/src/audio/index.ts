@@ -6,6 +6,7 @@
  */
 import { useSyncExternalStore } from 'react';
 import { createAudio, type Audio, type AudioContextLike, type AudioDeps, type AudioState } from './engine';
+import { createMusicPlayer, renderTrack } from './music';
 import { DEFAULT_SETTINGS, type AudioSettings, type StorageLike } from './settings';
 
 export type { Audio, AudioState, MusicControl, MusicTrack } from './engine';
@@ -38,6 +39,14 @@ function browserDeps(): AudioDeps {
       const ctx: AudioContextLike = new Ctor();
       return ctx;
     },
+    // Se llama al desbloquear, cuando `audio` ya existe: el reproductor sigue el silencio de los ajustes.
+    createMusic: (ctx, out, cfg) => createMusicPlayer(ctx, out, cfg, {
+      render: renderTrack,
+      isMuted: () => audio.settings().muted,
+      subscribe: (fn) => audio.subscribe(fn),
+      now: () => performance.now(),
+      after: (ms, fn) => { window.setTimeout(fn, ms); },
+    }),
   };
 }
 
