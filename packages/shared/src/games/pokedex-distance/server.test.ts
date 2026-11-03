@@ -11,13 +11,14 @@ const pokemon: Pokemon[] = [
   { ...battleData, id: 'chikorita', nationalDexNumber: 152, name: 'Chikorita', generation: 2, sprite: '/152.png' },
   { ...battleData, id: 'celebi', nationalDexNumber: 251, name: 'Celebi', generation: 2, sprite: '/251.png' },
   { ...battleData, id: 'treecko', nationalDexNumber: 252, name: 'Treecko', generation: 3, sprite: '/252.png' },
+  { ...battleData, id: 'raichu-alola', nationalDexNumber: 26, name: 'Raichu (Alola)', generation: 1, isDefault: false, sprite: '/26-alola.png' },
 ];
 
 const catalog: PokemonCatalog = {
   all: () => pokemon,
   byId: (id) => pokemon.find((entry) => entry.id === id),
-  byDexNumber: (number) => pokemon.find((entry) => entry.nationalDexNumber === number),
-  forGenerations: (generations) => pokemon.filter((entry) => generations.includes(entry.generation)),
+  byDexNumber: (number) => pokemon.find((entry) => entry.nationalDexNumber === number && entry.isDefault !== false),
+  forGenerations: (generations) => pokemon.filter((entry) => generations.includes(entry.generation) && entry.isDefault !== false),
 };
 
 const players = (count: number): GamePlayer[] => Array.from({ length: count }, (_, index) => ({ id: `p${index + 1}`, displayName: `Player ${index + 1}` }));
@@ -84,6 +85,43 @@ describe('Pokédex Distance rules', () => {
     expect(next.phase).toBe('ROUND_RESULTS');
     expect(next.lastRound?.eliminatedIds).toEqual(['p3']);
     expect(next.survivorIds).toEqual(['p1', 'p2']);
+  });
+
+  it('the player eliminated as FARTHEST does not add roundsSurvived', () => {
+    const { context, state } = setup(3, 0); // #1
+    let next = choose(state, 'p1', 'bulbasaur', context);
+    next = choose(next, 'p2', 'pikachu', context);
+    next = choose(next, 'p3', 'mew', context);
+    expect(next.lastRound?.eliminatedIds).toEqual(['p3']);
+    expect(next.playerStats.p1?.roundsSurvived).toBe(1);
+    expect(next.playerStats.p2?.roundsSurvived).toBe(1);
+    expect(next.playerStats.p3?.roundsSurvived).toBe(0);
+  });
+
+  it('a tie and its tiebreak count as one survived round', () => {
+    const fixture = setup(3, 0);
+    let state: PokedexDistanceState = { ...fixture.state, targetDexNumber: 126 };
+    state = choose(state, 'p1', 'bulbasaur', fixture.context);
+    state = choose(state, 'p2', 'celebi', fixture.context);
+    state = choose(state, 'p3', 'mew', fixture.context);
+    expect(state.lastRound?.reason).toBe('TIE');
+    expect(Object.values(state.playerStats).map((stats) => stats.roundsSurvived)).toEqual([0, 0, 0]);
+    state = advanceResults(state, fixture.context, fixture.setNow);
+    state = { ...state, targetDexNumber: 1 };
+    state = choose(state, 'p1', 'bulbasaur', fixture.context);
+    state = choose(state, 'p2', 'mew', fixture.context);
+    expect(state.lastRound?.eliminatedIds).toEqual(['p2']);
+    expect(state.playerStats.p1?.roundsSurvived).toBe(1);
+    expect(state.playerStats.p3?.roundsSurvived).toBe(1);
+    expect(state.playerStats.p2?.roundsSurvived).toBe(0);
+  });
+
+  it('rejects a non-default form', () => {
+    const { context, state } = setup(3, 0);
+    const result = pokedexDistanceGame.handleAction(state, 'p1', { type: 'SELECT_POKEMON', pokemonId: 'raichu-alola' }, context);
+    expect(result.accepted).toBe(false);
+    expect(result.error).toBe('Pokémon is not in the configured pool');
+    expect(result.state).toBe(state);
   });
 
   it('eliminates every non-responder and not an additional farthest responder', () => {
@@ -176,7 +214,7 @@ describe('Pokédex Distance rules', () => {
     expect(pokedexDistanceGame.getResults(state).standings.every((entry) => entry.points === 0)).toBe(true);
   });
 
-  it('publishes a rich four-second result with target, choices, distances and exact hits', () => {
+  it('publishes a rich six-second result with target, choices, distances and exact hits', () => {
     const fixture = setup(3, 0);
     let state = choose(fixture.state, 'p1', 'bulbasaur', fixture.context);
     state = choose(state, 'p2', 'pikachu', fixture.context);

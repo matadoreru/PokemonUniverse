@@ -32,16 +32,21 @@ public final class PokedexDistanceTypes {
 
   /**
    * {@code PlayerRoundStats}. Cuatro enteros contiguos: no se construye por posición fuera de este record, solo con
-   * {@link #ZERO} ({@code emptyPlayerStats}) y {@link #afterSelection}.
+   * {@link #ZERO} ({@code emptyPlayerStats}), {@link #afterSelection} y {@link #afterSurvival}.
    */
   public record PlayerRoundStats(int exactHits, int distanceTotal, int selections, int roundsSurvived) {
 
     static final PlayerRoundStats ZERO = new PlayerRoundStats(0, 0, 0, 0);
 
-    /** La actualización de {@code handleAction}: cada selección cuenta además como ronda superada. */
+    /** La actualización de {@code handleAction}: la selección no cuenta como ronda superada. */
     PlayerRoundStats afterSelection(int distance) {
       return new PlayerRoundStats(exactHits + (distance == 0 ? 1 : 0), distanceTotal + distance, selections + 1,
-          roundsSurvived + 1);
+          roundsSurvived);
+    }
+
+    /** La actualización de {@code eliminateAndContinue}: cada superviviente supera la ronda resuelta. */
+    PlayerRoundStats afterSurvival() {
+      return new PlayerRoundStats(exactHits, distanceTotal, selections, roundsSurvived + 1);
     }
   }
 

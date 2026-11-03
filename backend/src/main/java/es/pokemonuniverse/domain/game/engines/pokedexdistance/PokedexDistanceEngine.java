@@ -125,6 +125,10 @@ public final class PokedexDistanceEngine implements
     spectatorIds.addAll(playerIds);
     var eliminations = new ArrayList<EliminationRecord>(state.eliminations());
     eliminations.add(PokedexDistanceRules.elimination(playerIds, reason, state));
+    var playerStats = new LinkedHashMap<>(state.playerStats());
+    for (var id : survivorIds) {
+      playerStats.put(id, playerStats.getOrDefault(id, PokedexDistanceRules.emptyPlayerStats()).afterSurvival());
+    }
     return state.toBuilder()
         .phase(GamePhase.ROUND_RESULTS)
         .survivorIds(survivorIds)
@@ -135,6 +139,7 @@ public final class PokedexDistanceEngine implements
         .nextTransitionAt(context.now() + RESULTS_DURATION_MS)
         .pendingEligibleIds(survivorIds)
         .pendingTiebreakDepth(0)
+        .playerStats(playerStats)
         .build();
   }
 
@@ -215,7 +220,8 @@ public final class PokedexDistanceEngine implements
       return GameActionResult.reject(state, "Ese Pokémon ya ha sido elegido.");
     }
     Optional<Pokemon> found = context.pokemon().byId(action.pokemonId());
-    if (found.isEmpty() || !state.config().generations().contains(found.get().generation())) {
+    if (found.isEmpty() || !found.get().isDefault()
+        || !state.config().generations().contains(found.get().generation())) {
       return GameActionResult.reject(state, "Pokémon is not in the configured pool");
     }
     var pokemon = found.get();

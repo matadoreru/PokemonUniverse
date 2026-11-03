@@ -67,10 +67,10 @@ const repeatedTiebreaks: GoldenScenario = {
     select('p3', 'blissey', 11_000),
     select('p2', 'entei', 12_000),
     select('p1', 'magby', 13_000),
-    // Desempate 2 (19000–39000, objetivo #55): Raichu y su forma de Alola comparten número: tercer empate.
+    // Desempate 2 (19000–39000, objetivo #55): Raichu (#26) y Doduo (#84) quedan a 29: tercer empate.
     timeout(19_000),
     select('p1', 'raichu', 20_000),
-    select('p2', 'raichu-alola', 21_000),
+    select('p2', 'doduo', 21_000),
     // Desempate 3 (27000–47000, objetivo #125): Bruno no responde y cae por NO_RESPONSE.
     timeout(27_000),
     select('p1', 'electabuzz', 28_000),
@@ -127,6 +127,7 @@ const everyRejection: GoldenScenario = {
     select('p1', 'golduck', 2_500), // Selection already locked
     select('p2', 'psyduck', 3_000), // Ese Pokémon ya ha sido elegido.
     select('p2', 'chikorita', 3_500), // generación 2 fuera del pool
+    select('p2', 'raichu-alola', 3_750), // forma no por defecto fuera del pool
     select('p2', 'missingno', 4_000), // id desconocido
     select('p9', 'golduck', 4_500), // You are spectating this round
     select('p2', 'golduck', 5_000),
@@ -139,9 +140,9 @@ const everyRejection: GoldenScenario = {
     select('p3', 'flareon', 18_000),
     select('p1', 'gyarados', 19_000),
     select('p2', 'aerodactyl', 20_000),
-    // Desempate (26000–36000, objetivo #23): una forma regional de la generación 1 es válida (#26).
+    // Desempate (26000–36000, objetivo #23): Ana elige Raichu (#26) y Bruno acierta.
     timeout(26_000),
-    select('p1', 'raichu-alola', 27_000),
+    select('p1', 'raichu', 27_000),
     select('p2', 'ekans', 28_000),
     timeout(34_000),
     select('p1', 'golduck', 35_000), // No active round en GAME_RESULTS
@@ -162,9 +163,36 @@ const invalidActionStops: GoldenScenario = {
   ],
 };
 
+const roundsSurvivedAndForms: GoldenScenario = {
+  name: 'rounds-survived-and-forms',
+  seed: 606,
+  catalog: 'gen1-2',
+  players: [ana, bruno, carla],
+  config: baseConfig,
+  steps: [
+    // Ronda 1 (1000–21000, objetivo #250): la forma de Alola se rechaza; Carla (#240) es la más lejana y cae sin
+    // sumar roundsSurvived, mientras Ana y Bruno suman 1.
+    select('p3', 'raichu-alola', 2_000),
+    select('p1', 'ho-oh', 2_500),
+    select('p2', 'celebi', 3_000),
+    select('p3', 'magby', 4_000),
+    // Ronda 2 (10000–30000, objetivo #146): Carla es espectadora; Ana (#140) y Bruno (#152) empatan a 6 y el empate
+    // no suma.
+    timeout(10_000),
+    select('p3', 'kabuto', 11_000), // You are spectating this round
+    select('p1', 'kabuto', 12_000),
+    select('p2', 'chikorita', 13_000),
+    // Desempate (19000–39000, objetivo #225): Bruno (#200) cae; solo Ana suma la ronda 2 y gana con 2.
+    timeout(19_000),
+    select('p2', 'misdreavus', 20_000),
+    select('p1', 'delibird', 21_000),
+    timeout(27_000),
+  ],
+};
+
 export const pokedexDistanceScenarios: GoldenEngineEntry = {
   module: pokedexDistanceGame,
-  scenarios: [threePlayersFullGame, repeatedTiebreaks, presenceDisconnects, everyRejection, invalidActionStops],
+  scenarios: [threePlayersFullGame, repeatedTiebreaks, presenceDisconnects, everyRejection, invalidActionStops, roundsSurvivedAndForms],
   configCases: [
     // Válidos: generaciones deduplicadas y ordenadas, clave extra ignorada, límites de roundSeconds.
     { generations: [2, 1, 2], roundSeconds: 20 },

@@ -65,6 +65,15 @@
       "playerId": "p2",
       "action": {
         "type": "SELECT_POKEMON",
+        "pokemonId": "raichu-alola"
+      },
+      "now": 3750
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
         "pokemonId": "missingno"
       },
       "now": 4000
@@ -149,7 +158,7 @@
       "playerId": "p1",
       "action": {
         "type": "SELECT_POKEMON",
-        "pokemonId": "raichu-alola"
+        "pokemonId": "raichu"
       },
       "now": 27000
     },
@@ -422,6 +431,74 @@
       {
         "accepted": false,
         "error": "Ese Pokémon ya ha sido elegido.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 11000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 54,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "spectatorIds": [],
+            "selections": {
+              "p1": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000,
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "psyduck"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 11000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "psyduck",
+                "selectedAt": 2000
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Pokémon is not in the configured pool",
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_ACTIVE",
@@ -1462,14 +1539,14 @@
             ],
             "selections": {
               "p1": {
-                "pokemonId": "raichu-alola",
+                "pokemonId": "raichu",
                 "selectedAt": 27000,
-                "pokemonName": "Raichu de Alola",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                "pokemonName": "Raichu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
               }
             },
             "lockedPokemonIds": [
-              "raichu-alola"
+              "raichu"
             ],
             "roundStartedAt": 26000,
             "roundEndsAt": 36000,
@@ -1482,7 +1559,7 @@
             "p1": {
               "canSelect": false,
               "selection": {
-                "pokemonId": "raichu-alola",
+                "pokemonId": "raichu",
                 "selectedAt": 27000
               },
               "exactHit": false
@@ -1532,10 +1609,10 @@
             ],
             "selections": {
               "p1": {
-                "pokemonId": "raichu-alola",
+                "pokemonId": "raichu",
                 "selectedAt": 27000,
-                "pokemonName": "Raichu de Alola",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                "pokemonName": "Raichu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
               },
               "p2": {
                 "pokemonId": "ekans",
@@ -1545,7 +1622,7 @@
               }
             },
             "lockedPokemonIds": [
-              "raichu-alola",
+              "raichu",
               "ekans"
             ],
             "roundStartedAt": 26000,
@@ -1554,12 +1631,12 @@
               "targetDexNumber": 23,
               "selections": {
                 "p1": {
-                  "pokemonId": "raichu-alola",
+                  "pokemonId": "raichu",
                   "dexNumber": 26,
                   "distance": 3,
                   "selectedAt": 27000,
-                  "pokemonName": "Raichu de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                  "pokemonName": "Raichu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
                 },
                 "p2": {
                   "pokemonId": "ekans",
@@ -1594,7 +1671,7 @@
             "p1": {
               "canSelect": false,
               "selection": {
-                "pokemonId": "raichu-alola",
+                "pokemonId": "raichu",
                 "selectedAt": 27000
               },
               "exactHit": false
@@ -1643,10 +1720,10 @@
             ],
             "selections": {
               "p1": {
-                "pokemonId": "raichu-alola",
+                "pokemonId": "raichu",
                 "selectedAt": 27000,
-                "pokemonName": "Raichu de Alola",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                "pokemonName": "Raichu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
               },
               "p2": {
                 "pokemonId": "ekans",
@@ -1656,7 +1733,7 @@
               }
             },
             "lockedPokemonIds": [
-              "raichu-alola",
+              "raichu",
               "ekans"
             ],
             "roundStartedAt": 26000,
@@ -1665,12 +1742,12 @@
               "targetDexNumber": 23,
               "selections": {
                 "p1": {
-                  "pokemonId": "raichu-alola",
+                  "pokemonId": "raichu",
                   "dexNumber": 26,
                   "distance": 3,
                   "selectedAt": 27000,
-                  "pokemonName": "Raichu de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                  "pokemonName": "Raichu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
                 },
                 "p2": {
                   "pokemonId": "ekans",
@@ -1705,7 +1782,7 @@
                   "points": 6,
                   "stats": {
                     "exactHits": 1,
-                    "roundsSurvived": 3,
+                    "roundsSurvived": 2,
                     "selections": 3,
                     "averageDistance": 2.33
                   }
@@ -1716,7 +1793,7 @@
                   "points": 3,
                   "stats": {
                     "exactHits": 1,
-                    "roundsSurvived": 3,
+                    "roundsSurvived": 1,
                     "selections": 3,
                     "averageDistance": 3
                   }
@@ -1739,7 +1816,7 @@
             "p1": {
               "canSelect": false,
               "selection": {
-                "pokemonId": "raichu-alola",
+                "pokemonId": "raichu",
                 "selectedAt": 27000
               },
               "exactHit": false
@@ -1790,10 +1867,10 @@
             ],
             "selections": {
               "p1": {
-                "pokemonId": "raichu-alola",
+                "pokemonId": "raichu",
                 "selectedAt": 27000,
-                "pokemonName": "Raichu de Alola",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                "pokemonName": "Raichu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
               },
               "p2": {
                 "pokemonId": "ekans",
@@ -1803,7 +1880,7 @@
               }
             },
             "lockedPokemonIds": [
-              "raichu-alola",
+              "raichu",
               "ekans"
             ],
             "roundStartedAt": 26000,
@@ -1812,12 +1889,12 @@
               "targetDexNumber": 23,
               "selections": {
                 "p1": {
-                  "pokemonId": "raichu-alola",
+                  "pokemonId": "raichu",
                   "dexNumber": 26,
                   "distance": 3,
                   "selectedAt": 27000,
-                  "pokemonName": "Raichu de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                  "pokemonName": "Raichu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
                 },
                 "p2": {
                   "pokemonId": "ekans",
@@ -1852,7 +1929,7 @@
                   "points": 6,
                   "stats": {
                     "exactHits": 1,
-                    "roundsSurvived": 3,
+                    "roundsSurvived": 2,
                     "selections": 3,
                     "averageDistance": 2.33
                   }
@@ -1863,7 +1940,7 @@
                   "points": 3,
                   "stats": {
                     "exactHits": 1,
-                    "roundsSurvived": 3,
+                    "roundsSurvived": 1,
                     "selections": 3,
                     "averageDistance": 3
                   }
@@ -1886,7 +1963,7 @@
             "p1": {
               "canSelect": false,
               "selection": {
-                "pokemonId": "raichu-alola",
+                "pokemonId": "raichu",
                 "selectedAt": 27000
               },
               "exactHit": false
@@ -1918,7 +1995,7 @@
           "points": 6,
           "stats": {
             "exactHits": 1,
-            "roundsSurvived": 3,
+            "roundsSurvived": 2,
             "selections": 3,
             "averageDistance": 2.33
           }
@@ -1929,7 +2006,7 @@
           "points": 3,
           "stats": {
             "exactHits": 1,
-            "roundsSurvived": 3,
+            "roundsSurvived": 1,
             "selections": 3,
             "averageDistance": 3
           }

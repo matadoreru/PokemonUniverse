@@ -60,9 +60,15 @@ class PokedexDistanceRulesTest {
   }
 
   @Test
-  void selectionStatsCountExactHitsAndRoundsSurvived() {
+  void selectionStatsCountExactHitsButNotRoundsSurvived() {
     var stats = PokedexDistanceRules.emptyPlayerStats().afterSelection(0).afterSelection(7);
-    assertEquals(new PlayerRoundStats(1, 7, 2, 2), stats);
+    assertEquals(new PlayerRoundStats(1, 7, 2, 0), stats);
+  }
+
+  @Test
+  void survivalOnlyAddsOneRoundSurvived() {
+    var stats = PokedexDistanceRules.emptyPlayerStats().afterSelection(3).afterSurvival();
+    assertEquals(new PlayerRoundStats(0, 3, 1, 1), stats);
   }
 
   @Test

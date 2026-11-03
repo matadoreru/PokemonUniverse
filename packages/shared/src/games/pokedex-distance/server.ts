@@ -69,6 +69,11 @@ function eliminateAndContinue(
 ): PokedexDistanceState {
   const eliminatedSet = new Set(playerIds);
   const survivorIds = state.survivorIds.filter((id) => !eliminatedSet.has(id));
+  const playerStats = { ...state.playerStats };
+  for (const id of survivorIds) {
+    const stats = playerStats[id] ?? emptyPlayerStats();
+    playerStats[id] = { ...stats, roundsSurvived: stats.roundsSurvived + 1 };
+  }
   const next: PokedexDistanceState = {
     ...state,
     phase: 'ROUND_RESULTS',
@@ -80,6 +85,7 @@ function eliminateAndContinue(
     nextTransitionAt: context.now + RESULTS_DURATION_MS,
     pendingEligibleIds: survivorIds,
     pendingTiebreakDepth: 0,
+    playerStats,
   };
   return next;
 }
@@ -149,7 +155,7 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
     if (context.now >= (state.roundEndsAt ?? 0)) return { state: resolveRound(state, context), accepted: false, error: 'Round has ended' };
     if (state.lockedPokemonIds.includes(action.pokemonId)) return { state, accepted: false, error: 'Ese Pokémon ya ha sido elegido.' };
     const pokemon = context.pokemon.byId(action.pokemonId);
-    if (!pokemon || !state.config.generations.includes(pokemon.generation)) return { state, accepted: false, error: 'Pokémon is not in the configured pool' };
+    if (!pokemon || pokemon.isDefault === false || !state.config.generations.includes(pokemon.generation)) return { state, accepted: false, error: 'Pokémon is not in the configured pool' };
 
     const distance = distanceBetween(pokemon.nationalDexNumber, state.targetDexNumber!);
     const stats = state.playerStats[playerId] ?? emptyPlayerStats();
@@ -157,7 +163,7 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
       ...state,
       selections: { ...state.selections, [playerId]: { pokemonId: pokemon.id, dexNumber: pokemon.nationalDexNumber, distance, selectedAt: context.now } },
       lockedPokemonIds: [...state.lockedPokemonIds, pokemon.id],
-      playerStats: { ...state.playerStats, [playerId]: { ...stats, exactHits: stats.exactHits + (distance === 0 ? 1 : 0), distanceTotal: stats.distanceTotal + distance, selections: stats.selections + 1, roundsSurvived: stats.roundsSurvived + 1 } },
+      playerStats: { ...state.playerStats, [playerId]: { ...stats, exactHits: stats.exactHits + (distance === 0 ? 1 : 0), distanceTotal: stats.distanceTotal + distance, selections: stats.selections + 1 } },
     };
     next = resolveWhenRequiredPlayersComplete(next, context, next.eligibleIds, (id) => Boolean(next.selections[id]), resolveRound, next.phase);
     return { state: next, accepted: true };

@@ -101,7 +101,7 @@
       "playerId": "p2",
       "action": {
         "type": "SELECT_POKEMON",
-        "pokemonId": "raichu-alola"
+        "pokemonId": "doduo"
       },
       "now": 21000
     },
@@ -976,15 +976,15 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
               },
               "p2": {
-                "pokemonId": "raichu-alola",
+                "pokemonId": "doduo",
                 "selectedAt": 21000,
-                "pokemonName": "Raichu de Alola",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                "pokemonName": "Doduo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
               }
             },
             "lockedPokemonIds": [
               "raichu",
-              "raichu-alola"
+              "doduo"
             ],
             "roundStartedAt": 19000,
             "roundEndsAt": null,
@@ -1000,12 +1000,12 @@
                   "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
                 },
                 "p2": {
-                  "pokemonId": "raichu-alola",
-                  "dexNumber": 26,
+                  "pokemonId": "doduo",
+                  "dexNumber": 84,
                   "distance": 29,
                   "selectedAt": 21000,
-                  "pokemonName": "Raichu de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10100.png"
+                  "pokemonName": "Doduo",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
                 }
               },
               "eliminatedIds": [],
@@ -1041,7 +1041,7 @@
             "p2": {
               "canSelect": false,
               "selection": {
-                "pokemonId": "raichu-alola",
+                "pokemonId": "doduo",
                 "selectedAt": 21000
               },
               "exactHit": false
@@ -1674,7 +1674,7 @@
                   "points": 3,
                   "stats": {
                     "exactHits": 1,
-                    "roundsSurvived": 5,
+                    "roundsSurvived": 1,
                     "selections": 5,
                     "averageDistance": 8.4
                   }
@@ -1685,7 +1685,7 @@
                   "points": 2,
                   "stats": {
                     "exactHits": 0,
-                    "roundsSurvived": 3,
+                    "roundsSurvived": 0,
                     "selections": 3,
                     "averageDistance": 11.33
                   }
@@ -1740,7 +1740,7 @@
           "points": 3,
           "stats": {
             "exactHits": 1,
-            "roundsSurvived": 5,
+            "roundsSurvived": 1,
             "selections": 5,
             "averageDistance": 8.4
           }
@@ -1751,7 +1751,7 @@
           "points": 2,
           "stats": {
             "exactHits": 0,
-            "roundsSurvived": 3,
+            "roundsSurvived": 0,
             "selections": 3,
             "averageDistance": 11.33
           }

@@ -1,0 +1,1288 @@
+{
+  "engineId": "pokedex-distance",
+  "scenario": "rounds-survived-and-forms",
+  "seed": 606,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "roundSeconds": 20
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "raichu-alola"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "ho-oh"
+      },
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "celebi"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "magby"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "timeout",
+      "now": 10000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "kabuto"
+      },
+      "now": 11000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "kabuto"
+      },
+      "now": 12000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "chikorita"
+      },
+      "now": 13000
+    },
+    {
+      "kind": "timeout",
+      "now": 19000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "misdreavus"
+      },
+      "now": 20000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "delibird"
+      },
+      "now": 21000
+    },
+    {
+      "kind": "timeout",
+      "now": 27000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokedex-distance",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "tiebreakDepth": 0,
+        "targetDexNumber": null,
+        "eligibleIds": [],
+        "survivorIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "spectatorIds": [],
+        "selections": {},
+        "lockedPokemonIds": [],
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "lastRound": null,
+        "winnerId": null,
+        "nextTransitionAt": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canSelect": false,
+          "selection": null,
+          "exactHit": false
+        },
+        "p2": {
+          "canSelect": false,
+          "selection": null,
+          "exactHit": false
+        },
+        "p3": {
+          "canSelect": false,
+          "selection": null,
+          "exactHit": false
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokedex-distance",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "tiebreakDepth": 0,
+        "targetDexNumber": 250,
+        "eligibleIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "survivorIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "spectatorIds": [],
+        "selections": {},
+        "lockedPokemonIds": [],
+        "roundStartedAt": 1000,
+        "roundEndsAt": 21000,
+        "lastRound": null,
+        "winnerId": null,
+        "nextTransitionAt": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canSelect": true,
+          "selection": null,
+          "exactHit": false
+        },
+        "p2": {
+          "canSelect": true,
+          "selection": null,
+          "exactHit": false
+        },
+        "p3": {
+          "canSelect": true,
+          "selection": null,
+          "exactHit": false
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "Pokémon is not in the configured pool",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 250,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "spectatorIds": [],
+            "selections": {},
+            "lockedPokemonIds": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 250,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "spectatorIds": [],
+            "selections": {
+              "p1": {
+                "pokemonId": "ho-oh",
+                "selectedAt": 2500,
+                "pokemonName": "Ho Oh",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/250.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "ho-oh"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "ho-oh",
+                "selectedAt": 2500
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 250,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "spectatorIds": [],
+            "selections": {
+              "p1": {
+                "pokemonId": "ho-oh",
+                "selectedAt": 2500,
+                "pokemonName": "Ho Oh",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/250.png"
+              },
+              "p2": {
+                "pokemonId": "celebi",
+                "selectedAt": 3000,
+                "pokemonName": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "ho-oh",
+              "celebi"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "ho-oh",
+                "selectedAt": 2500
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "celebi",
+                "selectedAt": 3000
+              },
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 10000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 250,
+            "eligibleIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {
+              "p1": {
+                "pokemonId": "ho-oh",
+                "selectedAt": 2500,
+                "pokemonName": "Ho Oh",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/250.png"
+              },
+              "p2": {
+                "pokemonId": "celebi",
+                "selectedAt": 3000,
+                "pokemonName": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
+              },
+              "p3": {
+                "pokemonId": "magby",
+                "selectedAt": 4000,
+                "pokemonName": "Magby",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/240.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "ho-oh",
+              "celebi",
+              "magby"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "lastRound": {
+              "targetDexNumber": 250,
+              "selections": {
+                "p1": {
+                  "pokemonId": "ho-oh",
+                  "dexNumber": 250,
+                  "distance": 0,
+                  "selectedAt": 2500,
+                  "pokemonName": "Ho Oh",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/250.png"
+                },
+                "p2": {
+                  "pokemonId": "celebi",
+                  "dexNumber": 251,
+                  "distance": 1,
+                  "selectedAt": 3000,
+                  "pokemonName": "Celebi",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
+                },
+                "p3": {
+                  "pokemonId": "magby",
+                  "dexNumber": 240,
+                  "distance": 10,
+                  "selectedAt": 4000,
+                  "pokemonName": "Magby",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/240.png"
+                }
+              },
+              "eliminatedIds": [
+                "p3"
+              ],
+              "reason": "FARTHEST",
+              "tiedIds": [],
+              "eligibleIds": [
+                "p1",
+                "p2",
+                "p3"
+              ],
+              "targetPokemon": {
+                "id": "ho-oh",
+                "name": "Ho Oh",
+                "nationalDexNumber": 250,
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/250.png"
+              }
+            },
+            "winnerId": null,
+            "nextTransitionAt": 10000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "ho-oh",
+                "selectedAt": 2500
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "celebi",
+                "selectedAt": 3000
+              },
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "magby",
+                "selectedAt": 4000
+              },
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,10000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 146,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {},
+            "lockedPokemonIds": [],
+            "roundStartedAt": 10000,
+            "roundEndsAt": 30000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "You are spectating this round",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,10000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 146,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {},
+            "lockedPokemonIds": [],
+            "roundStartedAt": 10000,
+            "roundEndsAt": 30000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,10000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 146,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {
+              "p1": {
+                "pokemonId": "kabuto",
+                "selectedAt": 12000,
+                "pokemonName": "Kabuto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/140.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "kabuto"
+            ],
+            "roundStartedAt": 10000,
+            "roundEndsAt": 30000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "kabuto",
+                "selectedAt": 12000
+              },
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 19000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,10000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 146,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {
+              "p1": {
+                "pokemonId": "kabuto",
+                "selectedAt": 12000,
+                "pokemonName": "Kabuto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/140.png"
+              },
+              "p2": {
+                "pokemonId": "chikorita",
+                "selectedAt": 13000,
+                "pokemonName": "Chikorita",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "kabuto",
+              "chikorita"
+            ],
+            "roundStartedAt": 10000,
+            "roundEndsAt": null,
+            "lastRound": {
+              "targetDexNumber": 146,
+              "selections": {
+                "p1": {
+                  "pokemonId": "kabuto",
+                  "dexNumber": 140,
+                  "distance": 6,
+                  "selectedAt": 12000,
+                  "pokemonName": "Kabuto",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/140.png"
+                },
+                "p2": {
+                  "pokemonId": "chikorita",
+                  "dexNumber": 152,
+                  "distance": 6,
+                  "selectedAt": 13000,
+                  "pokemonName": "Chikorita",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"
+                }
+              },
+              "eliminatedIds": [],
+              "reason": "TIE",
+              "tiedIds": [
+                "p1",
+                "p2"
+              ],
+              "eligibleIds": [
+                "p1",
+                "p2"
+              ],
+              "targetPokemon": {
+                "id": "moltres",
+                "name": "Moltres",
+                "nationalDexNumber": 146,
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              }
+            },
+            "winnerId": null,
+            "nextTransitionAt": 19000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "kabuto",
+                "selectedAt": 12000
+              },
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "chikorita",
+                "selectedAt": 13000
+              },
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TIEBREAKER_ACTIVE",
+            "nextDeadline": 39000,
+            "actionEpoch": "[\"TIEBREAKER_ACTIVE\",2,19000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "TIEBREAKER_ACTIVE",
+            "roundNumber": 2,
+            "tiebreakDepth": 1,
+            "targetDexNumber": 225,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {},
+            "lockedPokemonIds": [],
+            "roundStartedAt": 19000,
+            "roundEndsAt": 39000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TIEBREAKER_ACTIVE",
+            "nextDeadline": 39000,
+            "actionEpoch": "[\"TIEBREAKER_ACTIVE\",2,19000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "TIEBREAKER_ACTIVE",
+            "roundNumber": 2,
+            "tiebreakDepth": 1,
+            "targetDexNumber": 225,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p1",
+              "p2"
+            ],
+            "spectatorIds": [
+              "p3"
+            ],
+            "selections": {
+              "p2": {
+                "pokemonId": "misdreavus",
+                "selectedAt": 20000,
+                "pokemonName": "Misdreavus",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "misdreavus"
+            ],
+            "roundStartedAt": 19000,
+            "roundEndsAt": 39000,
+            "lastRound": null,
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            },
+            "p2": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "misdreavus",
+                "selectedAt": 20000
+              },
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,19000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3",
+              "p2"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "tiebreakDepth": 1,
+            "targetDexNumber": 225,
+            "eligibleIds": [
+              "p1",
+              "p2"
+            ],
+            "survivorIds": [
+              "p1"
+            ],
+            "spectatorIds": [
+              "p3",
+              "p2"
+            ],
+            "selections": {
+              "p2": {
+                "pokemonId": "misdreavus",
+                "selectedAt": 20000,
+                "pokemonName": "Misdreavus",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png"
+              },
+              "p1": {
+                "pokemonId": "delibird",
+                "selectedAt": 21000,
+                "pokemonName": "Delibird",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/225.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "misdreavus",
+              "delibird"
+            ],
+            "roundStartedAt": 19000,
+            "roundEndsAt": null,
+            "lastRound": {
+              "targetDexNumber": 225,
+              "selections": {
+                "p2": {
+                  "pokemonId": "misdreavus",
+                  "dexNumber": 200,
+                  "distance": 25,
+                  "selectedAt": 20000,
+                  "pokemonName": "Misdreavus",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png"
+                },
+                "p1": {
+                  "pokemonId": "delibird",
+                  "dexNumber": 225,
+                  "distance": 0,
+                  "selectedAt": 21000,
+                  "pokemonName": "Delibird",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/225.png"
+                }
+              },
+              "eliminatedIds": [
+                "p2"
+              ],
+              "reason": "FARTHEST",
+              "tiedIds": [],
+              "eligibleIds": [
+                "p1",
+                "p2"
+              ],
+              "targetPokemon": {
+                "id": "delibird",
+                "name": "Delibird",
+                "nationalDexNumber": 225,
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/225.png"
+              }
+            },
+            "winnerId": null,
+            "nextTransitionAt": 27000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "delibird",
+                "selectedAt": 21000
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "misdreavus",
+                "selectedAt": 20000
+              },
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",2,19000,null,null,null,null,null]",
+            "spectatorIds": [
+              "p3",
+              "p2"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 2,
+            "tiebreakDepth": 1,
+            "targetDexNumber": 225,
+            "eligibleIds": [],
+            "survivorIds": [
+              "p1"
+            ],
+            "spectatorIds": [
+              "p3",
+              "p2"
+            ],
+            "selections": {
+              "p2": {
+                "pokemonId": "misdreavus",
+                "selectedAt": 20000,
+                "pokemonName": "Misdreavus",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png"
+              },
+              "p1": {
+                "pokemonId": "delibird",
+                "selectedAt": 21000,
+                "pokemonName": "Delibird",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/225.png"
+              }
+            },
+            "lockedPokemonIds": [
+              "misdreavus",
+              "delibird"
+            ],
+            "roundStartedAt": 19000,
+            "roundEndsAt": null,
+            "lastRound": {
+              "targetDexNumber": 225,
+              "selections": {
+                "p2": {
+                  "pokemonId": "misdreavus",
+                  "dexNumber": 200,
+                  "distance": 25,
+                  "selectedAt": 20000,
+                  "pokemonName": "Misdreavus",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png"
+                },
+                "p1": {
+                  "pokemonId": "delibird",
+                  "dexNumber": 225,
+                  "distance": 0,
+                  "selectedAt": 21000,
+                  "pokemonName": "Delibird",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/225.png"
+                }
+              },
+              "eliminatedIds": [
+                "p2"
+              ],
+              "reason": "FARTHEST",
+              "tiedIds": [],
+              "eligibleIds": [],
+              "targetPokemon": {
+                "id": "delibird",
+                "name": "Delibird",
+                "nationalDexNumber": 225,
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/225.png"
+              }
+            },
+            "winnerId": "p1",
+            "nextTransitionAt": null,
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 6,
+                  "stats": {
+                    "exactHits": 2,
+                    "roundsSurvived": 2,
+                    "selections": 3,
+                    "averageDistance": 2
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 3,
+                  "stats": {
+                    "exactHits": 0,
+                    "roundsSurvived": 1,
+                    "selections": 3,
+                    "averageDistance": 10.67
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 2,
+                  "stats": {
+                    "exactHits": 0,
+                    "roundsSurvived": 0,
+                    "selections": 1,
+                    "averageDistance": 10
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "delibird",
+                "selectedAt": 21000
+              },
+              "exactHit": true
+            },
+            "p2": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "misdreavus",
+                "selectedAt": 20000
+              },
+              "exactHit": false
+            },
+            "p3": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 6,
+          "stats": {
+            "exactHits": 2,
+            "roundsSurvived": 2,
+            "selections": 3,
+            "averageDistance": 2
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 3,
+          "stats": {
+            "exactHits": 0,
+            "roundsSurvived": 1,
+            "selections": 3,
+            "averageDistance": 10.67
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 2,
+          "stats": {
+            "exactHits": 0,
+            "roundsSurvived": 0,
+            "selections": 1,
+            "averageDistance": 10
+          }
+        }
+      ]
+    }
+  }
+}
