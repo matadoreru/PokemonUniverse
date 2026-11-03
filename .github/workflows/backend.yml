@@ -8,6 +8,7 @@ on:
       - main
     paths:
       - 'backend/**'
+      - 'compose.yaml'
       - '.github/workflows/backend.yml'
       - '.github/workflows/main.yml'
       - '.github/actions/**'
@@ -60,9 +61,42 @@ jobs:
           path: backend/build/reports/tests
           if-no-files-found: ignore
 
+  # Review Focus 5 del corte 2D: la libwebp nativa de los avatares tiene que cargar y codificar en linux/arm64. Se
+  # construye la imagen arm64 (Gradle en la plataforma del runner, el resto bajo QEMU) y se ejecuta
+  # es.pokemonuniverse.tools.WebpEncoderSmoke con el sistema de archivos de solo lectura y /tmp noexec, como en
+  # compose.yaml: así se prueba la carga desde /app/native que usa producción.
+  webp-arm64:
+    name: WebP encoder smoke test on linux/arm64
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build the arm64 backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          platforms: linux/arm64
+          load: true
+          tags: pokemon-universe-backend:arm64-smoke
+          cache-from: type=gha,scope=backend
+
+      - name: Encode a WebP avatar on arm64
+        run: |
+          docker run --rm --platform linux/arm64 --read-only --tmpfs /tmp:size=64m,noexec \
+            --entrypoint java pokemon-universe-backend:arm64-smoke \
+            --enable-native-access=ALL-UNNAMED -cp /app/app.jar es.pokemonuniverse.tools.WebpEncoderSmoke
+
   image:
     name: Publish backend JVM image
-    needs: check
+    needs: [check, webp-arm64]
     if: inputs.publish
     runs-on: ubuntu-latest
     steps:

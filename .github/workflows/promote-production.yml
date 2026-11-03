@@ -43,9 +43,9 @@ jobs:
       # retags unchanged images from :pre without rebuilding them, so the
       # PU_COMMIT_SHA baked into an image can lag behind its tag). PU_COMMIT_SHA
       # is only a fallback when the tag is not a SHA (e.g. a manual `:pre`).
-      # All three services must run the same tag: a half-deployed PRE is never
+      # Both services must run the same tag: a half-deployed PRE is never
       # promoted.
-      - name: Read PRE server image
+      - name: Read PRE web and backend images
         id: resolve
         shell: bash
         run: |
@@ -53,19 +53,17 @@ jobs:
           image_metadata=$(ssh -i "$HOME/.ssh/pokemon-universe" -p "$DEPLOY_PORT" \
             -o BatchMode=yes -o StrictHostKeyChecking=yes \
             "$DEPLOY_USER@$DEPLOY_HOST" \
-            "set -eu; cd '$DEPLOY_PATH'; for service in server web backend; do container=\$(docker compose ps -q \$service); test -n \"\$container\" || { echo \"PRE no tiene contenedor para \$service\" >&2; exit 1; }; docker inspect \"\$container\" --format \"image \$service {{.Config.Image}}\"; done; container=\$(docker compose ps -q server); docker inspect \"\$container\" --format '{{range .Config.Env}}{{println .}}{{end}}'")
-          image_ref=$(printf '%s\n' "$image_metadata" | sed -n 's/^image server //p')
+            "set -eu; cd '$DEPLOY_PATH'; for service in web backend; do container=\$(docker compose ps -q \$service); test -n \"\$container\" || { echo \"PRE no tiene contenedor para \$service\" >&2; exit 1; }; docker inspect \"\$container\" --format \"image \$service {{.Config.Image}}\"; done; container=\$(docker compose ps -q backend); docker inspect \"\$container\" --format '{{range .Config.Env}}{{println .}}{{end}}'")
+          image_ref=$(printf '%s\n' "$image_metadata" | sed -n 's/^image backend //p')
           web_ref=$(printf '%s\n' "$image_metadata" | sed -n 's/^image web //p')
-          backend_ref=$(printf '%s\n' "$image_metadata" | sed -n 's/^image backend //p')
           image_tag=${image_ref##*:}
           web_tag=${web_ref##*:}
-          backend_tag=${backend_ref##*:}
-          if [ -z "$image_ref" ] || [ -z "$web_ref" ] || [ -z "$backend_ref" ]; then
-            echo "No se pudo leer la imagen de server, web y backend en PRE" >&2
+          if [ -z "$image_ref" ] || [ -z "$web_ref" ]; then
+            echo "No se pudo leer la imagen de web y backend en PRE" >&2
             exit 1
           fi
-          if [ "$image_tag" != "$web_tag" ] || [ "$image_tag" != "$backend_tag" ]; then
-            echo "PRE está a medio desplegar: server=$image_ref, web=$web_ref, backend=$backend_ref; no se promociona" >&2
+          if [ "$image_tag" != "$web_tag" ]; then
+            echo "PRE está a medio desplegar: web=$web_ref, backend=$image_ref; no se promociona" >&2
             exit 1
           fi
           if printf '%s' "$image_tag" | grep -Eq '^[0-9a-f]{40}$'; then
@@ -127,9 +125,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          docker buildx imagetools create \
-            --tag "ghcr.io/${GITHUB_REPOSITORY_OWNER}/pokemon-universe-server:latest" \
-            "ghcr.io/${GITHUB_REPOSITORY_OWNER}/pokemon-universe-server:$IMAGE_SHA"
           docker buildx imagetools create \
             --tag "ghcr.io/${GITHUB_REPOSITORY_OWNER}/pokemon-universe-web:latest" \
             "ghcr.io/${GITHUB_REPOSITORY_OWNER}/pokemon-universe-web:$IMAGE_SHA"

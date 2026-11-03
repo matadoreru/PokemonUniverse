@@ -26,8 +26,8 @@ jobs:
   # run on main, not against the previous push: after a failed or superseded run,
   # every area changed since the last green run is rebuilt, so retag never copies
   # a stale :pre onto a newer SHA. With no green run yet (first run ever), a base
-  # that is not an ancestor of this commit, workflow_dispatch or a tag push, all
-  # three flags are forced to true.
+  # that is not an ancestor of this commit, workflow_dispatch or a tag push, both
+  # flags are forced to true.
   changes:
     name: Detect changed areas
     runs-on: ubuntu-latest
@@ -36,7 +36,6 @@ jobs:
       actions: read
     outputs:
       frontend: ${{ steps.base.outputs.force == 'true' || steps.filter.outputs.frontend == 'true' }}
-      node: ${{ steps.base.outputs.force == 'true' || steps.filter.outputs.node == 'true' }}
       backend: ${{ steps.base.outputs.force == 'true' || steps.filter.outputs.backend == 'true' }}
     steps:
       - uses: actions/checkout@v7
@@ -53,7 +52,7 @@ jobs:
         run: |
           set -euo pipefail
           force() {
-            echo "$1 → se construyen las tres imágenes" | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "$1 → se construyen las dos imágenes" | tee -a "$GITHUB_STEP_SUMMARY"
             echo 'force=true' >> "$GITHUB_OUTPUT"
             exit 0
           }
@@ -88,6 +87,9 @@ jobs:
               - 'package-lock.json'
               - 'scripts/export-game-registry.mjs'
               - 'scripts/check-public-boundary.mjs'
+              - 'apps/server/**'
+              - 'scripts/export-golden-*.mjs'
+              - 'backend/src/test/resources/golden/**'
               - 'Dockerfile'
               - 'infra/nginx.conf'
               - 'backend/openapi/**'
@@ -97,23 +99,9 @@ jobs:
               - '.github/workflows/frontend.yml'
               - '.github/workflows/main.yml'
               - '.github/actions/**'
-            node:
-              - 'apps/server/**'
-              - 'packages/shared/**'
-              - 'Dockerfile'
-              - 'scripts/start-server.sh'
-              - 'scripts/export-golden-*.mjs'
-              - 'backend/src/test/resources/golden/**'
-              - 'package.json'
-              - 'package-lock.json'
-              - 'tsconfig.base.json'
-              - 'eslint.config.mjs'
-              - '.dockerignore'
-              - '.github/workflows/node-server.yml'
-              - '.github/workflows/main.yml'
-              - '.github/actions/**'
             backend:
               - 'backend/**'
+              - 'compose.yaml'
               - '.github/workflows/backend.yml'
               - '.github/workflows/main.yml'
               - '.github/actions/**'
@@ -126,18 +114,6 @@ jobs:
       contents: read
       packages: write
     uses: ./.github/workflows/frontend.yml
-    with:
-      publish: true
-    secrets: inherit
-
-  node:
-    name: Node server
-    needs: changes
-    if: needs.changes.outputs.node == 'true'
-    permissions:
-      contents: read
-      packages: write
-    uses: ./.github/workflows/node-server.yml
     with:
       publish: true
     secrets: inherit
@@ -195,13 +171,12 @@ jobs:
   # that did run failed (or the run was cancelled).
   retag:
     name: Tag every image with the commit SHA
-    needs: [changes, frontend, node, backend]
-    if: ${{ !cancelled() && needs.changes.result == 'success' && needs.frontend.result != 'failure' && needs.node.result != 'failure' && needs.backend.result != 'failure' }}
+    needs: [changes, frontend, backend]
+    if: ${{ !cancelled() && needs.changes.result == 'success' && needs.frontend.result != 'failure' && needs.backend.result != 'failure' }}
     runs-on: ubuntu-latest
     env:
       REGISTRY: ghcr.io/${{ github.repository_owner }}
       BUILT_WEB: ${{ needs.changes.outputs.frontend }}
-      BUILT_SERVER: ${{ needs.changes.outputs.node }}
       BUILT_BACKEND: ${{ needs.changes.outputs.backend }}
     steps:
       - name: Set up Docker Buildx
@@ -228,7 +203,7 @@ jobs:
             echo "- \`$1\`: reetiquetada desde \`:pre\`" >> "$GITHUB_STEP_SUMMARY"
           }
           echo "### Imágenes de \`$GITHUB_SHA\`" >> "$GITHUB_STEP_SUMMARY"
-          for entry in "pokemon-universe-web:$BUILT_WEB" "pokemon-universe-server:$BUILT_SERVER" "pokemon-universe-backend:$BUILT_BACKEND"; do
+          for entry in "pokemon-universe-web:$BUILT_WEB" "pokemon-universe-backend:$BUILT_BACKEND"; do
             name="${entry%%:*}"
             built="${entry#*:}"
             if [ "$built" = 'true' ]; then
@@ -245,7 +220,7 @@ jobs:
           VERSION: ${{ github.ref_name }}
         run: |
           set -euo pipefail
-          for name in pokemon-universe-web pokemon-universe-server pokemon-universe-backend; do
+          for name in pokemon-universe-web pokemon-universe-backend; do
             docker buildx imagetools create --tag "$REGISTRY/$name:$VERSION" "$REGISTRY/$name:$GITHUB_SHA"
           done
           echo "### Versión \`$VERSION\` → \`$GITHUB_SHA\`" >> "$GITHUB_STEP_SUMMARY"

@@ -2,18 +2,29 @@
 
 > Para la instalación recomendada con PRE automático y promoción manual del mismo SHA a PRO, sigue primero [`docs/pre-production.md`](docs/pre-production.md). Este documento conserva el detalle operativo del stack.
 
-La publicación replica el modelo operativo de Tabi, adaptado a las tres imágenes de esta aplicación (`web`, `server` y `backend`):
+La publicación replica el modelo operativo de Tabi, adaptado a las dos imágenes de esta aplicación (`web` y `backend`):
 
 ```text
-Cloudflare Tunnel → 127.0.0.1:8080 → pokemon-universe-web (nginx)
-                                        ↓ 11 rutas        ↓ resto de /api y /socket.io
-                              pokemon-universe-backend   pokemon-universe-server
-                                  (Java, :8080)              (Node, :3001)
-                                        ↓                          ↓
-                                  pokemon-universe-postgres
-                                                ↓
+Cloudflare Tunnel → 127.0.0.1:8080 → pokemon-universe-web (nginx: SPA estática)
+                                        ↓ /api/ y /ws (WebSocket)
+                              pokemon-universe-backend (Java, :8080)
+                                        ↓
+                              pokemon-universe-postgres
+                                        ↓
                            volumen pokemon_universe_postgres_data
 ```
+
+`infra/nginx.conf` manda todo `/api/` (con `^~`, para que la regex de estáticos no le quite rutas como
+`/api/auth/avatars/<id>.webp`) y `location = /ws` (cabeceras de upgrade, 75 s de lectura) a `backend:8080`; el resto es
+la SPA. `proxy_pass` sin URI reenvía la ruta tal cual: las variantes de `/api/admin` (`//api/admin/users`,
+`/api/%61dmin/users`, `/api/ADMIN/users`, `/api/admin/../admin/users`…) llegan sin normalizar a Micronaut, que responde
+401/403 (guardia) o 404, nunca 200 (`AdminGateTest`). `client_max_body_size 10m` iguala el `max-request-size` de
+Micronaut, así que un avatar de más de 5 MiB recibe el 413 JSON del backend y no el de nginx. Añade
+`X-Content-Type-Options`, `X-Frame-Options` y `Referrer-Policy` (sin CSP).
+
+La imagen web sale del `Dockerfile` raíz (contexto la raíz del repositorio, única etapa final `web`): compila
+`packages/shared` y `frontend` en la plataforma del runner y copia `frontend/dist` a nginx. Node (`apps/server`) se
+queda en el repositorio como oráculo de pruebas: ni se compila en imagen ni se publica ni se despliega.
 
 Desde el corte 2D, `compose.yaml` ya no tiene el servicio `server` (Node): el `backend` (Java, Micronaut) es el único
 servidor. Solo depende de `postgres`: Flyway crea el esquema en una BD vacía o reconoce el de Prisma (baseline 1). Usa
@@ -27,7 +38,13 @@ que un `.env` anterior al corte, con `PU_ROOMS_ENABLED=false`, no los apague; `P
 van dentro de la imagen (`backend/assets/pokemon-artworks` → `/app/pokemon-artworks`, `POKEMON_ARTWORK_DIR`).
 Para escribir avatares (WebP) el backend carga la libwebp nativa de `webp-imageio`: la extrae a `/tmp` y, si el tmpfs
 es `noexec`, escribe una vez «Failed to load native library…» en stderr y la carga desde `/app/native` (copiada en la
-imagen para la arquitectura de destino). No hace falta cambiar la base Alpine ni el `tmpfs` del compose.
+imagen para la arquitectura de destino). No hace falta cambiar la base Alpine ni el `tmpfs` del compose. CI lo comprueba
+en `linux/arm64` bajo QEMU (job `webp-arm64` de `backend.yml`, con `--read-only` y `/tmp` `noexec`):
+
+```bash
+docker run --rm --platform linux/arm64 --read-only --tmpfs /tmp:size=64m,noexec --entrypoint java IMAGEN \
+  --enable-native-access=ALL-UNNAMED -cp /app/app.jar es.pokemonuniverse.tools.WebpEncoderSmoke
+```
 
 PostgreSQL no publica puertos. GitHub Actions valida el proyecto y publica imágenes `linux/amd64` y `linux/arm64` en
 GHCR con el SHA completo del commit y el tag móvil `pre`. El tag `latest` solo se mueve después de promocionar correctamente ese SHA a PRO. El servidor solo descarga imágenes ya verificadas; no compila.
@@ -38,33 +55,33 @@ Sube el proyecto a GitHub con rama principal `main`. La integración continua es
 
 | Workflow | Se dispara en PR cuando cambia | Valida | Imagen |
 | --- | --- | --- | --- |
-| `.github/workflows/frontend.yml` | `frontend/`, `packages/shared/`, `e2e/`, `package*.json`, `tsconfig.base.json`, `eslint.config.mjs`, `Dockerfile`, `.dockerignore`, `infra/nginx.conf`, `backend/openapi/` | lint, typecheck y tests en paralelo (incluye `check:boundaries` y `check:registry`), build Vite | `pokemon-universe-web` (target `web`) |
-| `.github/workflows/node-server.yml` (transitorio) | `apps/server/`, `packages/shared/`, `Dockerfile`, `.dockerignore`, `scripts/start-server.sh`, `package*.json`, `tsconfig.base.json`, `eslint.config.mjs` | migraciones sobre PostgreSQL de prueba, typecheck, lint, tests, build; `npm audit` no bloqueante en el resumen | `pokemon-universe-server` (target `server`) |
-| `.github/workflows/backend.yml` | `backend/` | `./gradlew check` (tests con Testcontainers y `verifyOpenApi`) | `pokemon-universe-backend` (JVM); `main.yml` añade `:<sha>-native` experimental, no bloqueante |
+| `.github/workflows/frontend.yml` | `frontend/`, `packages/shared/`, `e2e/`, `apps/server/`, `scripts/export-golden-*.mjs`, `backend/src/test/resources/golden/`, `package*.json`, `tsconfig.base.json`, `eslint.config.mjs`, `Dockerfile`, `.dockerignore`, `infra/nginx.conf`, `backend/openapi/` | lint, typecheck y tests en paralelo (incluye `check:boundaries` y `check:registry`); job `oracle`: oráculo Node (migraciones Prisma sobre una BD de prueba, typecheck, lint, tests, build) y `check:golden`; build Vite | `pokemon-universe-web` (target `web`) |
+| `.github/workflows/backend.yml` | `backend/`, `compose.yaml` | `./gradlew check` (tests con Testcontainers, `ComposeStartupTest` y `verifyOpenApi`); `webp-arm64`: codificador WebP en la imagen `linux/arm64` | `pokemon-universe-backend` (JVM); `main.yml` añade `:<sha>-native` experimental, no bloqueante |
+
+Desde el corte 2D no hay workflow ni imagen de Node: `node-server.yml` desapareció y los tests del oráculo pasaron al
+job `oracle` de `frontend.yml`, que bloquea la imagen web como antes bloqueaban la de Node.
 
 En cada push a `main`, `.github/workflows/main.yml` detecta qué zonas cambiaron desde el último Main verde en `main`
 (no desde el push anterior; sin ninguno, construye todo), llama solo a los workflows afectados
 con `publish: true` y reetiqueta las imágenes no afectadas de `:pre` a `:<commit-sha>`, de modo que **cada SHA de `main`
-tiene las tres imágenes**. Después despliega ese SHA en PRE (ver [`docs/pre-production.md`](docs/pre-production.md)).
-La promoción a PRO (`promote-production.yml`) toma como SHA el tag de imagen que ejecuta PRE (las tres imágenes deben
+tiene las dos imágenes**. Después despliega ese SHA en PRE (ver [`docs/pre-production.md`](docs/pre-production.md)).
+La promoción a PRO (`promote-production.yml`) toma como SHA el tag de imagen que ejecuta PRE (las dos imágenes deben
 compartirlo); el `PU_COMMIT_SHA` incorporado en una imagen reetiquetada puede ser de un commit anterior y solo se usa
 como respaldo si el tag no es un SHA.
 Las imágenes son `linux/amd64` y `linux/arm64` con caché de Buildx en GitHub Actions (`type=gha`, un `scope` por imagen):
 
 ```text
 ghcr.io/matadoreru/pokemon-universe-web:pre
-ghcr.io/matadoreru/pokemon-universe-server:pre
 ghcr.io/matadoreru/pokemon-universe-backend:pre
 ghcr.io/matadoreru/pokemon-universe-web:<commit-sha>
-ghcr.io/matadoreru/pokemon-universe-server:<commit-sha>
 ghcr.io/matadoreru/pokemon-universe-backend:<commit-sha>
 ghcr.io/matadoreru/pokemon-universe-backend:<commit-sha>-native   # experimental, solo amd64
 ```
 
-Un tag git `v*` (por ejemplo `v0.9.0`) reconstruye las tres imágenes y les añade ese tag; no despliega. Lanzar `main.yml`
-a mano (`workflow_dispatch`) fuerza las tres builds; solo hace falta si el job `retag` avisa de que falta un `:pre`
+Un tag git `v*` (por ejemplo `v0.9.0`) reconstruye las dos imágenes y les añade ese tag; no despliega. Lanzar `main.yml`
+a mano (`workflow_dispatch`) fuerza las dos builds; solo hace falta si el job `retag` avisa de que falta un `:pre`
 (la primera ejecución ya lo construye todo porque aún no hay ningún Main verde). Los cambios en `main.yml` o en
-`.github/actions/` reconstruyen las tres imágenes.
+`.github/actions/` reconstruyen las dos imágenes.
 
 ### Tiempos antes/después
 
@@ -73,8 +90,8 @@ ejecución real de `main.yml`.
 
 | Fase | Antes (medido) | Después (estimado) |
 | --- | --- | --- |
-| Validación Node | validate 2:43 (npm ci 47 s, typecheck 24 s, lint 11 s, test 30 s, build 25 s) | frontend ≈ 2:00 (install 45 s, lint/typecheck/test en paralelo ≈ 30 s, build 25 s); node-server ≈ 2:30 |
-| Imágenes | publish 4:13 (web + server multi-arch bajo QEMU, siempre) | web ≈ 1:00; server ≈ 2:30; backend JVM ≈ 2:00 tras check ≈ 2:30 (Gradle cacheado, Testcontainers ≈ 40 s); solo las que cambian |
+| Validación Node | validate 2:43 (npm ci 47 s, typecheck 24 s, lint 11 s, test 30 s, build 25 s) | frontend ≈ 2:00 (install 45 s, lint/typecheck/test en paralelo ≈ 30 s, build 25 s); oráculo Node (job `oracle`) ≈ 2:30 en paralelo |
+| Imágenes | publish 4:13 (web + server multi-arch bajo QEMU, siempre) | web ≈ 1:00; backend JVM ≈ 2:00 tras check ≈ 2:30 (Gradle cacheado, Testcontainers ≈ 40 s) y `webp-arm64` bajo QEMU; solo las que cambian |
 | Nativo backend | — | ≈ 10–15 min, job aparte en `main.yml`, no bloqueante y fuera de la cadena de `deploy-pre` |
 | Retag de imágenes no afectadas | — | ≈ 0:20 |
 | Despliegue PRE | 1:11 | ≈ 1:10 |
@@ -133,7 +150,7 @@ docker compose exec postgres pg_isready -U pokemon -d pokemon_universe
 
 Antes del primer despliegue la imagen `pokemon-universe-backend` tiene que existir en GHCR con el tag que vayas a usar
 (`pre`, `latest` o un SHA); `docker compose pull` falla si no está. La primera ejecución de `main.yml` tras fusionar la
-etapa 1 construye las tres imágenes (aún no hay Main verde), así que basta con esperar a que termine antes de desplegar.
+etapa 1 construyó todas las imágenes (aún no había Main verde), así que basta con esperar a que termine antes de desplegar.
 `latest` solo se mueve al promocionar a PRO (`promote-production.yml` reetiqueta también el backend); por eso un servidor
 con `PU_IMAGE_TAG=latest` no puede arrancar el backend hasta la primera promoción: despliega por SHA o `pre`.
 
@@ -150,8 +167,8 @@ PokéAPI lenta); un arranque sano pasa a healthy en el primer chequeo que respon
 tiene que superar `start_period` + `interval` × `retries` = 300 + 30 × 3 = 390 s más la descarga de imágenes: los 600 s
 de `PU_DEPLOY_WAIT_SECONDS` bastan; no lo bajes de 450 s.
 
-En Cloudflare Tunnel configura el hostname público para enviar tráfico HTTP a `http://127.0.0.1:8080`. Socket.IO usa
-el mismo origen y la ruta `/socket.io/`, por lo que no necesita otro túnel ni puerto. `PU_PUBLIC_ORIGIN` debe coincidir
+En Cloudflare Tunnel configura el hostname público para enviar tráfico HTTP a `http://127.0.0.1:8080`. Las salas usan
+el WebSocket `/ws` del mismo origen, por lo que no necesitan otro túnel ni puerto. `PU_PUBLIC_ORIGIN` debe coincidir
 exactamente con el hostname HTTPS, sin barra final.
 
 ## 4. Backups
@@ -184,11 +201,25 @@ cd /srv/docker/pokemon-universe
 ./scripts/deploy.sh SHA_COMPLETO_DEL_COMMIT
 ```
 
-El script crea y valida un backup, descarga las tres imágenes y espera mientras el servidor aplica migraciones y sincroniza
-el catálogo; después comprueba los healthchecks y, a través de nginx, `/api/health` y `/api/games` (Java) y `/api/tcg/options` (Node: responde 200 aunque el catálogo TCG esté vacío), para que una ruta rota de nginx hacia cualquiera de los dos dispare el rollback. Si falla, vuelve a las imágenes exactas anteriores. Si el despliegue que falla es el primero que incluye el backend
-(no hay contenedor `backend` previo), el rollback elimina el backend nuevo y restaura solo `server` y `web` con
-`--no-deps`, porque `web` depende de que el backend esté sano y el nginx anterior no tiene rutas hacia él. Flyway (backend) no aplica migraciones propias en la etapa 1: solo hace baseline del esquema Prisma. Una migración no se deshace
-automáticamente; antes de cambios incompatibles debe existir un procedimiento de migración inversa o restaurarse el dump.
+El script crea y valida un backup, descarga las imágenes `backend` y `web` y espera (`--wait-timeout`
+`PU_DEPLOY_WAIT_SECONDS`, 600 s; no menos de 450 s, ver §3) mientras el backend aplica migraciones y, con el catálogo
+vacío, sincroniza PokéAPI. Después ejecuta `scripts/smoke-check.sh` a través de nginx: `/api/health`, `/api/games` y
+`/api/tcg/options` en 200 (las tres responden aunque la sincronización inicial de TCGdex siga en segundo plano) y el
+handshake de `/ws` (101 y, sin sesión, cierre 4401 «Authentication required»; un 4403 «Rooms disabled» delataría
+`ROOMS_ENABLED=false`). Si algo falla, vuelve a las imágenes exactas anteriores de `backend` y `web`. El mismo script
+sirve a mano contra cualquier stack: `./scripts/smoke-check.sh http://127.0.0.1:8080 https://pokemon.example.com`.
+
+**Primer despliegue tras el corte 2D.** El contenedor Node (`server`) del despliegue anterior ya no está en
+`compose.yaml`, así que `docker compose up` lo deja vivo como huérfano; `deploy.sh` lo retira solo cuando el humo pasa.
+Si ese despliegue falla, el rollback vuelve a las imágenes `web` y `backend` anteriores con el `compose.yaml` nuevo:
+el nginx antiguo sigue encontrando `server:3001` porque Node no se ha parado, pero el backend antiguo arranca con los
+interruptores del compose nuevo (salas, interrupción de salas y sincronización encendidos). Para volver del todo al
+stack anterior despliega el SHA anterior con su propio `compose.yaml`
+(`git checkout --detach SHA_ANTERIOR && ./scripts/deploy.sh SHA_ANTERIOR`). Una imagen web anterior al corte no
+arranca sin un contenedor `server` en la red (`host not found in upstream "server"`).
+
+Una migración no se deshace automáticamente; antes de cambios incompatibles debe existir un procedimiento de migración
+inversa o restaurarse el dump.
 
 No uses `docker compose down -v`: elimina PostgreSQL. Mantén `PU_WATCHTOWER_ENABLE=false`; un despliegue automático sin
 backup ni healthcheck rompe las garantías anteriores.

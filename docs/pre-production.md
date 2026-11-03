@@ -18,7 +18,7 @@ PRE y PRO no comparten PostgreSQL, avatares, JWT, contraseñas, red Compose ni h
 
 Esto evita que el primer workflow intente conectarse a un PRE que aún no existe.
 
-> **Detección de cambios.** La detección de cambios compara con el último Main verde, no con el push anterior: `main.yml` reconstruye toda zona que haya cambiado desde la última ejecución correcta de **Main** en `main` y reetiqueta las demás desde `:pre`. Si un run falla o se cancela, el siguiente push vuelve a construir lo que quedó pendiente. Sin ningún Main verde todavía (la primera ejecución tras introducir estos workflows) se construyen las tres imágenes, así que `pokemon-universe-backend:pre` se crea sin intervención. Lanzar **Main** a mano con `workflow_dispatch` (fuerza las tres builds) queda solo como alternativa si el job `retag` avisa de que falta algún `:pre`.
+> **Detección de cambios.** La detección de cambios compara con el último Main verde, no con el push anterior: `main.yml` reconstruye toda zona que haya cambiado desde la última ejecución correcta de **Main** en `main` y reetiqueta las demás desde `:pre`. Si un run falla o se cancela, el siguiente push vuelve a construir lo que quedó pendiente. Sin ningún Main verde todavía (la primera ejecución tras introducir estos workflows) se construyen todas las imágenes, así que `pokemon-universe-backend:pre` se crea sin intervención. Lanzar **Main** a mano con `workflow_dispatch` (fuerza las dos builds) queda solo como alternativa si el job `retag` avisa de que falta algún `:pre`.
 
 ## 1. Preparar DNS y Cloudflare Tunnel
 
@@ -150,7 +150,7 @@ Cuando PRE ya esté preparado y todas las variables y secretos anteriores exista
 En **Settings → Branches → Add branch protection rule** para `main`:
 
 - exige pull request antes de fusionar;
-- no marques como obligatorios los jobs de `frontend.yml`, `node-server.yml` ni `backend.yml`: se filtran por rutas y un check obligatorio de un workflow que no se dispara deja el PR bloqueado en *pending*; revisa que los que sí se ejecutaron estén en verde;
+- no marques como obligatorios los jobs de `frontend.yml` ni `backend.yml`: se filtran por rutas y un check obligatorio de un workflow que no se dispara deja el PR bloqueado en *pending*; revisa que los que sí se ejecutaron estén en verde;
 - bloquea pushes forzados;
 - exige que la rama esté actualizada antes de fusionar.
 
@@ -158,14 +158,14 @@ En **Settings → Branches → Add branch protection rule** para `main`:
 
 ## 8. Primer despliegue y uso diario
 
-Con la infraestructura ya fusionada inicialmente con `PRE_DEPLOY_ENABLED=false`, termina de preparar los directorios y GitHub Environments, cambia la variable a `true` y vuelve a ejecutar **Main** (`main.yml`) manualmente sobre `main` con `workflow_dispatch` (fuerza las tres builds).
+Con la infraestructura ya fusionada inicialmente con `PRE_DEPLOY_ENABLED=false`, termina de preparar los directorios y GitHub Environments, cambia la variable a `true` y vuelve a ejecutar **Main** (`main.yml`) manualmente sobre `main` con `workflow_dispatch` (fuerza las dos builds).
 
 A partir de entonces, cada push a `main` ejecuta **Main** (`main.yml`), que:
 
 1. detecta qué zonas cambiaron (frontend, servidor Node, backend Java) desde el último Main verde;
-2. ejecuta solo los workflows afectados (`frontend.yml`, `node-server.yml`, `backend.yml`): migraciones sobre PostgreSQL de prueba, typecheck, lint, tests, build y `./gradlew check`; la auditoría de npm se publica en el resumen sin bloquear;
-3. publica las imágenes reconstruidas como `:<SHA>` y `:pre` y reetiqueta las no afectadas de `:pre` a `:<SHA>`, de modo que las tres imágenes existen para cada SHA;
-4. se conecta por SSH y despliega `:<SHA>` en PRE (solo en `main`; los tags `v*` añaden el tag de versión a las tres imágenes y no despliegan).
+2. ejecuta solo los workflows afectados (`frontend.yml`, `backend.yml`): typecheck, lint, tests, build, el oráculo Node con sus migraciones sobre PostgreSQL de prueba y `check:golden` (job `oracle`), `./gradlew check` y la prueba de humo WebP en `linux/arm64`;
+3. publica las imágenes reconstruidas como `:<SHA>` y `:pre` y reetiqueta las no afectadas de `:pre` a `:<SHA>`, de modo que las dos imágenes (`web` y `backend`) existen para cada SHA;
+4. se conecta por SSH y despliega `:<SHA>` en PRE (solo en `main`; los tags `v*` añaden el tag de versión a las dos imágenes y no despliegan).
 
 Comprueba PRE, incluyendo login, creación de sala, Socket.IO, minijuegos, reconexión y migraciones. Cuando quieras llevarlo a PRO:
 
@@ -195,7 +195,7 @@ el `PU_COMMIT_SHA` incorporado en la imagen: `main.yml` reetiqueta sin
 recompilar las imágenes que no cambian, así que ese valor puede ser de un commit
 anterior. Solo si el tag no es un SHA (por ejemplo, un reinicio manual que
 vuelve a mostrar el alias `:pre`) se usa `PU_COMMIT_SHA` como respaldo, y el
-resumen del workflow indica qué origen se usó. Si `server`, `web` y `backend`
+resumen del workflow indica qué origen se usó. Si `web` y `backend`
 no ejecutan el mismo tag, PRE está a medio desplegar y la promoción falla.
 
 ## 10. Rollback

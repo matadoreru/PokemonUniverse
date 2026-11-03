@@ -14,6 +14,9 @@ on:
       - 'package-lock.json'
       - 'scripts/export-game-registry.mjs'
       - 'scripts/check-public-boundary.mjs'
+      - 'apps/server/**'
+      - 'scripts/export-golden-*.mjs'
+      - 'backend/src/test/resources/golden/**'
       - 'Dockerfile'
       - 'infra/nginx.conf'
       - 'backend/openapi/**'
@@ -91,9 +94,60 @@ jobs:
       - name: Test web and shared
         run: npm test -w @pokemon-universe/web -w @pokemon-universe/shared
 
+  # Oráculo Node (apps/server): sin imagen ni despliegue desde el corte 2D, pero sus tests y las fixtures doradas
+  # (que el backend Java compara) siguen siendo parte de `npm test` y bloquean la imagen web como antes.
+  oracle:
+    name: Node oracle and golden fixtures
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: pokemon_universe_test
+          POSTGRES_USER: pokemon_test
+          POSTGRES_PASSWORD: pokemon_test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U pokemon_test -d pokemon_universe_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://pokemon_test:pokemon_test_password@127.0.0.1:5432/pokemon_universe_test?schema=public
+      TEST_DATABASE_URL: postgresql://pokemon_test:pokemon_test_password@127.0.0.1:5432/pokemon_universe_test?schema=public
+      JWT_SECRET: github-actions-only-secret-with-32-characters
+      WEB_ORIGIN: http://localhost:5173
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      # Esquema del modelo congelado del oráculo, solo en la BD de prueba de este job.
+      - name: Apply the oracle's Prisma migrations to the test database
+        run: npm run db:deploy -w @pokemon-universe/server
+      - name: Build shared contracts
+        run: npm run build -w @pokemon-universe/shared
+      - name: Typecheck
+        run: npm run typecheck -w @pokemon-universe/server
+      - name: Lint
+        run: npm run lint -w @pokemon-universe/server
+      - name: Test
+        run: npm test -w @pokemon-universe/server
+      - name: Build
+        run: npm run build -w @pokemon-universe/server
+      # The golden harness loads the catalog through the server dist built above.
+      - name: Typecheck and check golden fixtures
+        run: |
+          npx tsc -p packages/shared/golden/tsconfig.json
+          npm run check:golden
+
   build:
     name: Build
-    needs: [lint, typecheck, test]
+    needs: [lint, typecheck, test, oracle]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -139,16 +193,10 @@ jobs:
           target: web
           platforms: linux/amd64,linux/arm64
           push: true
-          build-args: |
-            PU_COMMIT_SHA=${{ github.sha }}
           tags: |
             ${{ github.ref == 'refs/heads/main' && format('ghcr.io/{0}/pokemon-universe-web:pre', github.repository_owner) || '' }}
             ghcr.io/${{ github.repository_owner }}/pokemon-universe-web:${{ github.sha }}
-          # Both targets share the root Dockerfile's build stages: read the other
-          # image's cache too so a packages/shared change is not compiled twice.
-          cache-from: |
-            type=gha,scope=web
-            type=gha,scope=server
+          cache-from: type=gha,scope=web
           cache-to: type=gha,mode=max,scope=web
           provenance: mode=max
           sbom: true
