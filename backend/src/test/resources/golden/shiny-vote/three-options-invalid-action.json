@@ -18,7 +18,8 @@
     "rounds": 3,
     "candidateMode": "SAME_POKEMON",
     "optionCount": 3,
-    "voteVisibility": "LIVE"
+    "voteVisibility": "LIVE",
+    "revealSeconds": 3
   },
   "steps": [
     {
@@ -91,7 +92,8 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 3,
-      "voteVisibility": "LIVE"
+      "voteVisibility": "LIVE",
+      "revealSeconds": 3
     },
     "initial": {
       "lifecycle": {

@@ -6,7 +6,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page, type Response } from '@playwright/test';
-import { crearSalaConJugadores, iniciarPartida, introDePartida, layoutProblems, psql, saltarIntro, seleccionarJuego, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
+import { animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, introDePartida, layoutProblems, psql, saltarIntro, seleccionarJuego, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
 
 interface Manifest {
   id: string;
@@ -671,8 +671,19 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     const { host, invitados, jugadores } = sala;
     const [invitado] = invitados as [Jugador];
     await seleccionarJuego(host.page, 'Shiny Quiz');
+    // Revelación de 6 s (la máxima): caben las capturas de la revelación.
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    const revelacion = host.page.getByRole('slider', { name: 'Duración de la revelación' });
+    await expect(revelacion).toHaveValue('4');
+    await revelacion.focus();
+    await revelacion.press('End');
+    await revelacion.blur();
+    await expect(revelacion).toHaveValue('6');
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, [invitado.page]);
     await saltarIntro([host.page, invitado.page]);
+    const normales: string[] = [];
+    for (const { page } of jugadores) page.on('request', (r) => { if (/^\/api\/pokemon\/[^/]+\/sprite$/.test(new URL(r.url()).pathname)) normales.push(r.url()); });
     const opcionA = (page: Page) => page.locator('[data-shiny-option="A"]');
     for (const { page } of jugadores) await expect(opcionA(page)).toBeEnabled({ timeout: 20_000 });
     const votantes = (page: Page) => page.locator('[data-testid^="shiny-voters-"]');
@@ -687,11 +698,30 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     await invitado.page.evaluate(() => window.scrollTo(0, 0));
     await capturarTamanos(invitado.page, 'juego-shiny-vote-votos-al-revelar', { sigue: invitado.page.getByRole('button', { name: 'Confirmar voto' }), claro: true });
 
-    // Vota el invitado: la ronda se revela y aparecen los votantes en las cartas.
+    // Antes de revelar nadie ha pedido el sprite normal: daría la respuesta.
+    expect(normales).toEqual([]);
+
+    // Vota el invitado: la ronda se revela y aparecen los votantes en las cartas. El host ve la animación.
+    await conMovimiento(host.page);
+    const spriteNormal = invitado.page.waitForResponse((r) => /^\/api\/pokemon\/[^/]+\/sprite$/.test(new URL(r.url()).pathname), { timeout: 15_000 });
     await opcionA(invitado.page).click();
     await invitado.page.getByRole('button', { name: 'Confirmar voto' }).click();
-    for (const { page } of jugadores) await expect(votantes(page).first()).toBeVisible({ timeout: 10_000 });
+    const franja = (page: Page) => page.getByTestId('shiny-before-after');
+    for (const { page } of jugadores) await expect(franja(page)).toBeVisible({ timeout: 10_000 });
+    expect((await spriteNormal).status()).toBe(200);
+    for (const { page } of jugadores) {
+      await expect(votantes(page).first()).toBeVisible();
+      await expect(franja(page).getByText('Normal', { exact: true })).toBeVisible();
+      await expect(franja(page).getByText('Shiny', { exact: true })).toBeVisible();
+    }
     await expect(votantes(host.page).filter({ hasText: '2 votos' })).toHaveCount(1);
+    const correcta = (page: Page) => page.locator('[data-shiny-option][data-correct="true"]');
+    expect(await animacionDe(correcta(host.page))).toBe('motion-flip');
+    expect(await animacionDe(correcta(invitado.page))).toBe('none');
+    expect(await animacionDe(franja(invitado.page))).toBe('none');
+    await invitado.page.evaluate(() => window.scrollTo(0, 0));
+    // Página completa: la franja «Antes / después» queda bajo la rejilla.
+    await capturarTamanos(invitado.page, 'juego-shiny-vote-revelacion', { sigue: franja(invitado.page), claro: true, completa: true });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

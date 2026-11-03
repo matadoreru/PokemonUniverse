@@ -1,8 +1,9 @@
-import { SHINY_VOTE_VISIBILITIES, type ShinyVoteConfig } from '@pokemon-universe/shared/public';
+import { SHINY_REVEAL_SECONDS_RANGE, SHINY_VOTE_VISIBILITIES, type ShinyVoteConfig } from '@pokemon-universe/shared/public';
 import { Layers3, Shuffle } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
+import { SHINY_REVEAL_DURATION_LABEL, shinyRevealSecondsLabel } from './reveal';
 import { SHINY_VOTE_VISIBILITY_LABEL, shinyVisibilityLabels } from './vote-visibility';
 
 export function ShinyVoteConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
@@ -27,6 +28,7 @@ export function ShinyVoteConfigPanel({ config, disabled, onChange }: { config: u
     <div className="mt-5 grid gap-4 md:grid-cols-2">
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} formatValue={(rounds) => `${rounds} rondas`} onCommit={(rounds) => onChange({ ...value, rounds })} />
+      <ConfigRange label={SHINY_REVEAL_DURATION_LABEL} value={value.revealSeconds} min={SHINY_REVEAL_SECONDS_RANGE.min} max={SHINY_REVEAL_SECONDS_RANGE.max} disabled={disabled} accent="electric" formatValue={shinyRevealSecondsLabel} onCommit={(revealSeconds) => onChange({ ...value, revealSeconds })} />
     </div>
   </fieldset>;
 }

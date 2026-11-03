@@ -635,7 +635,12 @@
     "optionCount 1e20": "Configuración de Shiny Quiz no válida: optionCount debe estar entre 3 y 6.",
     "optionCount -1": "Configuración de Shiny Quiz no válida: optionCount debe estar entre 3 y 6.",
     "voteVisibility ausente": "Configuración de Shiny Quiz no válida: falta voteVisibility.",
-    "voteVisibility tipo erróneo": "Configuración de Shiny Quiz no válida: voteVisibility tiene un valor no válido."
+    "voteVisibility tipo erróneo": "Configuración de Shiny Quiz no válida: voteVisibility tiene un valor no válido.",
+    "revealSeconds ausente": "Configuración de Shiny Quiz no válida: falta revealSeconds.",
+    "revealSeconds tipo erróneo": "Configuración de Shiny Quiz no válida: revealSeconds debe ser un número entero.",
+    "revealSeconds 10.5": "Configuración de Shiny Quiz no válida: revealSeconds debe ser un número entero.",
+    "revealSeconds 1e20": "Configuración de Shiny Quiz no válida: revealSeconds debe estar entre 3 y 6.",
+    "revealSeconds -1": "Configuración de Shiny Quiz no válida: revealSeconds debe estar entre 3 y 6."
   },
   "sketchmon": {
     "<raíz null>": "Configuración de Sketchmon no válida: la configuración debe ser un objeto.",

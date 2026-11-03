@@ -17,7 +17,6 @@ import {
   type ShinyVoteState,
 } from './types.js';
 
-const REVEAL_DURATION_MS = 3_000;
 const manifest = {
   id: 'shiny-vote',
   name: 'Shiny Quiz',
@@ -153,7 +152,7 @@ function revealRound(state: ShinyVoteState, context: GameContext): ShinyVoteStat
     scores,
     playerStats,
     roundEndsAt: null,
-    nextTransitionAt: context.now + REVEAL_DURATION_MS,
+    nextTransitionAt: context.now + state.config.revealSeconds * 1_000,
     lastRound: {
       roundNumber: state.roundNumber,
       correctOptionId: state.correctOptionId,

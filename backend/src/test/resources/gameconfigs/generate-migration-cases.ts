@@ -23,6 +23,8 @@ add('higher-lower: REALTIME guardado pasa a REVEAL', 'higher-lower', { ...def('h
 add('higher-lower: LIVE guardado se conserva', 'higher-lower', { ...def('higher-lower'), answerVisibility: 'LIVE', rounds: 4 });
 add('shiny-vote: showVotes guardado se descarta', 'shiny-vote', { ...Object.fromEntries(Object.entries(def('shiny-vote')).filter(([key]) => key !== 'voteVisibility')), showVotes: true, rounds: 4 });
 add('shiny-vote: LIVE guardado se conserva', 'shiny-vote', { ...def('shiny-vote'), voteVisibility: 'LIVE', rounds: 6 });
+add('shiny-vote: sin revealSeconds toma 4', 'shiny-vote', { ...Object.fromEntries(Object.entries(def('shiny-vote')).filter(([key]) => key !== 'revealSeconds')), rounds: 5 });
+add('shiny-vote: revealSeconds fuera de rango toma 4', 'shiny-vote', { ...def('shiny-vote'), revealSeconds: 9, rounds: 7 });
 add('pokedex-distance: sin selectionVisibility toma HIDDEN', 'pokedex-distance', { generations: [1, 2], roundSeconds: 25 });
 add('pokedex-distance: LIVE guardado se conserva', 'pokedex-distance', { ...def('pokedex-distance'), selectionVisibility: 'LIVE', roundSeconds: 30 });
 add('pokedex-distance: selectionVisibility inválido pasa a HIDDEN', 'pokedex-distance', { ...def('pokedex-distance'), selectionVisibility: 'SECRET', roundSeconds: 15 });

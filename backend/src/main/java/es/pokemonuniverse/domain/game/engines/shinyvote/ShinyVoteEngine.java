@@ -48,8 +48,6 @@ public final class ShinyVoteEngine
     implements GameEngine<ShinyVoteConfig, ShinyVoteState, ShinyVoteAction, ShinyVotePublicState> {
 
   public static final String ID = "shiny-vote";
-  /** {@code REVEAL_DURATION_MS}. */
-  public static final long REVEAL_MS = 3_000;
 
   private final GameManifest manifest;
 
@@ -220,7 +218,7 @@ public final class ShinyVoteEngine
         .scores(scores)
         .playerStats(playerStats)
         .roundEndsAt(null)
-        .nextTransitionAt(context.now() + REVEAL_MS)
+        .nextTransitionAt(context.now() + state.config().revealSeconds() * 1_000L)
         .lastRound(lastRound)
         .build();
   }

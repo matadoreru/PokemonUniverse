@@ -25,7 +25,8 @@
     "rounds": 3,
     "candidateMode": "SAME_POKEMON",
     "optionCount": 4,
-    "voteVisibility": "LIVE"
+    "voteVisibility": "LIVE",
+    "revealSeconds": 3
   },
   "roomCode": "A B/ü",
   "steps": [
@@ -252,7 +253,8 @@
       "rounds": 3,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "voteVisibility": "LIVE"
+      "voteVisibility": "LIVE",
+      "revealSeconds": 3
     },
     "initial": {
       "lifecycle": {

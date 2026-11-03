@@ -16,7 +16,12 @@ public record ShinyVoteConfig(
     int rounds,
     CandidateMode candidateMode,
     int optionCount,
-    VoteVisibility voteVisibility) {
+    VoteVisibility voteVisibility,
+    int revealSeconds) {
+
+  /** {@code SHINY_REVEAL_SECONDS_RANGE}: duración de la revelación de cada ronda, en segundos. */
+  public static final int REVEAL_SECONDS_MIN = 3;
+  public static final int REVEAL_SECONDS_MAX = 6;
 
   /** {@code SHINY_CANDIDATE_MODES}. */
   public enum CandidateMode { SAME_POKEMON, DIFFERENT_POKEMON }
@@ -34,7 +39,7 @@ public record ShinyVoteConfig(
   /** {@code defaultShinyVoteConfig}. */
   public static ShinyVoteConfig defaults() {
     var generations = ConfigReader.allGenerations();
-    return new ShinyVoteConfig(generations, 20, 10, CandidateMode.SAME_POKEMON, 4, VoteVisibility.REVEAL);
+    return new ShinyVoteConfig(generations, 20, 10, CandidateMode.SAME_POKEMON, 4, VoteVisibility.REVEAL, 4);
   }
 
   /**
@@ -51,6 +56,8 @@ public record ShinyVoteConfig(
         "candidateMode debe ser SAME_POKEMON o DIFFERENT_POKEMON");
     int optionCount = config.integer("optionCount", 3, 6);
     var voteVisibility = config.enumValue("voteVisibility", VoteVisibility.class);
-    return new ShinyVoteConfig(generations, roundSeconds, rounds, candidateMode, optionCount, voteVisibility);
+    int revealSeconds = config.integer("revealSeconds", REVEAL_SECONDS_MIN, REVEAL_SECONDS_MAX);
+    return new ShinyVoteConfig(generations, roundSeconds, rounds, candidateMode, optionCount, voteVisibility,
+        revealSeconds);
   }
 }

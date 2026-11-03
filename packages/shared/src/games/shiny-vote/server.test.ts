@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { GameAssetResolution, GameContext, GamePlayer, Pokemon, PokemonCatalog, ShinyCandidateMode, ShinyOptionId, ShinyVoteState, ShinyVoteVisibility } from '../../index.js';
-import { defaultShinyVoteConfig, FAKE_SHINY_PALETTES, shinyPointsForOrder, shinyVoteGame } from '../../index.js';
+import { defaultShinyVoteConfig, FAKE_SHINY_PALETTES, SHINY_REVEAL_SECONDS_RANGE, shinyPointsForOrder, shinyVoteGame } from '../../index.js';
 
 const pokemon: Pokemon[] = Array.from({ length: 8 }, (_, index) => ({
   id: `pokemon-${index + 1}`,
@@ -22,11 +22,11 @@ const players: GamePlayer[] = [
   { id: 'marta', displayName: 'Marta' },
 ];
 
-function setup(rounds = 2, candidateMode: ShinyCandidateMode = 'SAME_POKEMON', optionCount = 4, generations = [1], voteVisibility: ShinyVoteVisibility = 'LIVE', random: () => number = () => 0) {
+function setup(rounds = 2, candidateMode: ShinyCandidateMode = 'SAME_POKEMON', optionCount = 4, generations = [1], voteVisibility: ShinyVoteVisibility = 'LIVE', random: () => number = () => 0, revealSeconds = 4) {
   let now = 1_000;
   const preloadedAssets: GameAssetResolution[] = [];
   const context: GameContext = { players: players.map((player) => ({ ...player })), pokemon: catalog, get now() { return now; }, random, roomCode: 'PIKA42', preloadAsset: (asset) => preloadedAssets.push(asset) };
-  let state = shinyVoteGame.createInitialState({ generations, roundSeconds: 20, rounds, candidateMode, optionCount, voteVisibility }, context);
+  let state = shinyVoteGame.createInitialState({ generations, roundSeconds: 20, rounds, candidateMode, optionCount, voteVisibility, revealSeconds }, context);
   state = shinyVoteGame.start(state, context);
   return { state, context, preloadedAssets, setNow(value: number) { now = value; } };
 }
@@ -230,7 +230,7 @@ describe('public shiny voting', () => {
     state = vote(state, 'marta', 'A', fixture.context).state;
 
     expect(state.phase).toBe('ROUND_RESULTS');
-    expect(state.nextTransitionAt).toBe(fixture.context.now + 3_000);
+    expect(state.nextTransitionAt).toBe(fixture.context.now + 4_000);
     expect(state.scores).toEqual({ pedro: 4, ana: 0, marta: 3 });
     expect(state.lastRound?.correctPlayerIds).toEqual(['pedro', 'marta']);
     const publicState = shinyVoteGame.getPublicState(state, fixture.context);
@@ -240,7 +240,22 @@ describe('public shiny voting', () => {
     expect(shinyVoteGame.getPlayerState(state, 'ana', fixture.context)).toMatchObject({ roundResult: { correct: false, points: 0 } });
   });
 
-  it('reveals on timeout and automatically starts the next round after three seconds', () => {
+  it('reveal lasts revealSeconds', () => {
+    const fixture = setup(2, 'SAME_POKEMON', 4, [1], 'LIVE', () => 0, 6);
+    fixture.setNow(fixture.state.roundEndsAt!);
+    const state = shinyVoteGame.handleTimeout(fixture.state, fixture.context);
+    expect(state.phase).toBe('ROUND_RESULTS');
+    expect(state.nextTransitionAt).toBe(fixture.context.now + 6_000);
+  });
+
+  it('parses revealSeconds out of range as invalid', () => {
+    expect(defaultShinyVoteConfig.revealSeconds).toBe(4);
+    expect(SHINY_REVEAL_SECONDS_RANGE).toEqual({ min: 3, max: 6 });
+    for (const revealSeconds of [3, 6]) expect(shinyVoteGame.configSchema.safeParse({ ...defaultShinyVoteConfig, revealSeconds }).success).toBe(true);
+    for (const revealSeconds of [2, 7, 4.5]) expect(shinyVoteGame.configSchema.safeParse({ ...defaultShinyVoteConfig, revealSeconds }).success).toBe(false);
+  });
+
+  it('reveals on timeout and automatically starts the next round after revealSeconds', () => {
     const fixture = setup();
     let state = vote(fixture.state, 'pedro', 'A', fixture.context).state;
     fixture.setNow(state.roundEndsAt!);

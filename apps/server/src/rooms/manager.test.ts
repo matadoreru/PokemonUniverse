@@ -113,7 +113,7 @@ describe('room multi-game lifecycle', () => {
     const preferences = {
       forUser: vi.fn(() => new Map<string, unknown>([
         ['pokedex-distance', { generations: [1], roundSeconds: 25, selectionVisibility: 'HIDDEN' }],
-        ['shiny-vote', { generations: [1], roundSeconds: 15, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'REVEAL' }],
+        ['shiny-vote', { generations: [1], roundSeconds: 15, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'REVEAL', revealSeconds: 4 }],
       ])),
       save: vi.fn(),
     };
@@ -234,10 +234,10 @@ describe('room multi-game lifecycle', () => {
 
     (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 25, selectionVisibility: 'HIDDEN' });
     (manager as any).selectGame(host.id, 'shiny-vote');
-    (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 15, rounds: 1, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE' });
+    (manager as any).updateConfig(host.id, { generations: [1], roundSeconds: 15, rounds: 1, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE', revealSeconds: 4 });
     (manager as any).selectGame(host.id, 'pokedex-distance');
     expect(room.gameConfigs.get('pokedex-distance')).toEqual({ generations: [1], roundSeconds: 25, selectionVisibility: 'HIDDEN' });
-    expect(room.gameConfigs.get('shiny-vote')).toEqual({ generations: [1], roundSeconds: 15, rounds: 1, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE' });
+    expect(room.gameConfigs.get('shiny-vote')).toEqual({ generations: [1], roundSeconds: 15, rounds: 1, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE', revealSeconds: 4 });
 
     const originalMembers = [...room.members.values()];
     startReady(manager, room, host.id);
@@ -400,8 +400,8 @@ describe('room multi-game lifecycle', () => {
     expect(room.members.get(cohost.id)?.roomRole).toBe('CO_HOST');
     expect(transport.to().emit).toHaveBeenCalledWith('room:state', expect.objectContaining({ members: expect.arrayContaining([expect.objectContaining({ id: cohost.id, roomRole: 'CO_HOST' })]) }));
     (manager as any).selectGame(cohost.id, 'shiny-vote');
-    (manager as any).updateConfig(cohost.id, { generations: [1], roundSeconds: 20, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE' });
-    expect(() => (manager as any).updateConfig(cohost.id, { generations: [1], roundSeconds: 2, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE' })).toThrow();
+    (manager as any).updateConfig(cohost.id, { generations: [1], roundSeconds: 20, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE', revealSeconds: 4 });
+    expect(() => (manager as any).updateConfig(cohost.id, { generations: [1], roundSeconds: 2, rounds: 2, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE', revealSeconds: 4 })).toThrow();
     (manager as any).updateSession(cohost.id, { type: 'GAME_COUNT', target: 5 });
     expect(room.selectedGameId).toBe('shiny-vote'); expect(room.sessionMode).toEqual({ type: 'GAME_COUNT', target: 5 });
     expect(() => (manager as any).startGame(cohost.id)).toThrow(/No tienes permiso/);
@@ -829,7 +829,7 @@ describe('room multi-game lifecycle', () => {
     const room = manager.store.get(created.room.code)!;
     for (let index = 1; index < people.length; index += 1) (manager as any).join(sockets[index], people[index], room.code);
     (manager as any).selectGame('host', 'shiny-vote');
-    (manager as any).updateConfig('host', { generations: [1], roundSeconds: 20, rounds: 1, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'REVEAL' });
+    (manager as any).updateConfig('host', { generations: [1], roundSeconds: 20, rounds: 1, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'REVEAL', revealSeconds: 4 });
     startReady(manager, room, 'host');
     (manager as any).action('carlos', { type: 'VOTE', optionId: 'C' });
     (manager as any).disconnect('carlos', 'socket-carlos');

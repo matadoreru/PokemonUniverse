@@ -179,10 +179,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .connection-notice { animation: connection-notice-in 220ms cubic-bezier(.16,1,.3,1) both; }
 @keyframes connection-notice-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes reveal-pop { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
-.shiny-option-card { min-height: 15rem; transition: transform 160ms cubic-bezier(.2,.75,.25,1), border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, opacity 160ms ease; }
+.shiny-option-card { min-height: 15rem; backface-visibility: hidden; transition: transform 160ms cubic-bezier(.2,.75,.25,1), opacity 160ms ease; }
+/* Al revelar, las cartas incorrectas se apagan sin transición; la correcta gira (motion-flip) sobre la perspectiva de la rejilla. */
+.shiny-option-static { transition: none; }
+.shiny-option-grid { perspective: 1200px; }
+.shiny-before-after-stage { background: rgb(var(--color-night) / .12); }
 .shiny-option-interactive:hover { transform: translateY(-2px); border-color: rgb(var(--color-aqua) / .58); background: rgb(var(--color-surface-raised) / .72); }
-.shiny-option-selected { box-shadow: 0 8px 24px rgb(0 0 0 / .2), 0 0 0 3px rgb(var(--color-aqua) / .13); }
-.shiny-option-correct { z-index: 1; animation: shiny-correct-reveal 360ms cubic-bezier(.16,1,.3,1) both; box-shadow: 0 10px 28px rgb(0 0 0 / .22), 0 0 0 4px rgb(var(--color-leaf) / .15); }
+.shiny-option-selected { box-shadow: var(--shadow-card), 0 0 0 3px rgb(var(--color-aqua) / .13); }
+.shiny-option-correct { z-index: 1; box-shadow: var(--shadow-card), 0 0 0 4px rgb(var(--color-leaf) / .15); }
 .shiny-option-state { animation: shiny-state-in 180ms cubic-bezier(.16,1,.3,1) both; }
 .shiny-sprite-stage { flex: none; height: clamp(8.25rem, 37vw, 13rem); margin-block: .125rem; overflow: hidden; border-radius: .75rem; background: rgb(var(--color-night) / .12); }
 .shiny-sprite { image-rendering: crisp-edges; image-rendering: pixelated; }
@@ -190,7 +194,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .shiny-timer-critical { box-shadow: 0 4px 16px rgb(var(--color-berry) / .18); animation: shiny-timer-critical .4s ease-in-out infinite alternate; }
 .shiny-score-update { animation: shiny-score-update 360ms cubic-bezier(.16,1,.3,1) both; }
 .shiny-round-result { animation: shiny-result-in 280ms cubic-bezier(.16,1,.3,1) both; }
-@keyframes shiny-correct-reveal { from { transform: scale(.985); } to { transform: scale(1.012); } }
 @keyframes shiny-state-in { from { opacity: .25; transform: scale(.88); } to { opacity: 1; transform: scale(1); } }
 @keyframes shiny-timer-critical { to { transform: scale(1.045); } }
 @keyframes shiny-score-update { from { transform: translateY(3px); } to { transform: translateY(0); } }

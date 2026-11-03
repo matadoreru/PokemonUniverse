@@ -45,7 +45,7 @@ class ShinyVoteEngineTest {
   }
 
   private static ShinyVoteConfig config(List<Integer> generations, CandidateMode mode, int optionCount) {
-    return new ShinyVoteConfig(generations, 20, 2, mode, optionCount, VoteVisibility.LIVE);
+    return new ShinyVoteConfig(generations, 20, 2, mode, optionCount, VoteVisibility.LIVE, 4);
   }
 
   @Test
@@ -53,6 +53,22 @@ class ShinyVoteEngineTest {
     assertEquals("shiny-vote", engine.manifest().id());
     assertTrue(JsonTree.equal(GoldenReplayer.tree(engine.manifest().defaultConfig()),
         GoldenReplayer.tree(engine.defaultConfig())));
+  }
+
+  /** {@code revealSeconds} entre 3 y 6 (4 por defecto) fija la duración de la revelación. */
+  @Test
+  void revealLastsRevealSeconds() throws IOException {
+    assertEquals(4, engine.defaultConfig().revealSeconds());
+    var base = "{\"generations\":[1],\"roundSeconds\":20,\"rounds\":2,\"candidateMode\":\"SAME_POKEMON\","
+        + "\"optionCount\":4,\"voteVisibility\":\"REVEAL\",\"revealSeconds\":";
+    for (var invalid : List.of("2", "7", "4.5", "\"4\"")) {
+      assertThrows(ConfigValidationException.class, () -> engine.parseConfig(json(base + invalid + "}")), invalid);
+    }
+    var config = engine.parseConfig(json(base + "6}"));
+    var context = context(1);
+    var started = engine.start(engine.createInitialState(config, context), context);
+    var revealed = engine.handleTimeout(started, context.toBuilder().now(started.roundEndsAt()).build());
+    assertEquals(started.roundEndsAt() + 6_000, revealed.nextTransitionAt());
   }
 
   @Test
@@ -119,12 +135,12 @@ class ShinyVoteEngineTest {
     assertEquals(served(started, context), preloaded);
     var revealed = engine.handleTimeout(started, context.withNow(21_000));
     assertEquals(6, preloaded.size());
-    var second = engine.handleTimeout(revealed, context.withNow(24_000));
+    var second = engine.handleTimeout(revealed, context.withNow(25_000));
     assertEquals(2, second.roundNumber());
     assertEquals(served(second, context), preloaded.subList(3, 6));
     assertTrue(preloaded.stream().noneMatch(asset -> asset.transform() == AssetResolution.Transform.ORIGINAL));
     // Tras la última ronda no se prepara ni se precarga nada.
-    var last = engine.handleTimeout(second, context.withNow(44_000));
+    var last = engine.handleTimeout(second, context.withNow(45_000));
     assertEquals(null, last.preparedOptions());
     assertEquals(6, preloaded.size());
   }
@@ -173,12 +189,12 @@ class ShinyVoteEngineTest {
     var withShiny = gen1.get(3).id();
     var context = GameContext.builder(new InMemoryPokemonCatalog(mixed), () -> 0.99)
         .players(List.of(new GamePlayer("p1", "Player 1"))).now(1000).roomCode("GOLD01").build();
-    var config = new ShinyVoteConfig(List.of(1), 20, 3, CandidateMode.SAME_POKEMON, 4, VoteVisibility.REVEAL);
+    var config = new ShinyVoteConfig(List.of(1), 20, 3, CandidateMode.SAME_POKEMON, 4, VoteVisibility.REVEAL, 4);
     var started = engine.start(engine.createInitialState(config, context), context);
     assertTrue(started.options().stream().allMatch(option -> option.pokemonId().equals(withShiny)));
     var revealed = engine.handleTimeout(started, context.withNow(started.roundEndsAt()));
     assertTrue(revealed.preparedOptions().stream().allMatch(option -> option.pokemonId().equals(withShiny)));
-    var different = new ShinyVoteConfig(List.of(1), 20, 3, CandidateMode.DIFFERENT_POKEMON, 4, VoteVisibility.REVEAL);
+    var different = new ShinyVoteConfig(List.of(1), 20, 3, CandidateMode.DIFFERENT_POKEMON, 4, VoteVisibility.REVEAL, 4);
     var error = assertThrows(EngineException.class, () -> engine.createInitialState(different, context));
     assertEquals("At least 4 Pokémon are required for the selected generations", error.getMessage());
   }

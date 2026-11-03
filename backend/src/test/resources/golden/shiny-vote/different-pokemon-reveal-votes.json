@@ -22,7 +22,8 @@
     "rounds": 3,
     "candidateMode": "DIFFERENT_POKEMON",
     "optionCount": 6,
-    "voteVisibility": "REVEAL"
+    "voteVisibility": "REVEAL",
+    "revealSeconds": 3
   },
   "startNow": 1767225600000,
   "steps": [
@@ -179,7 +180,8 @@
       "rounds": 3,
       "candidateMode": "DIFFERENT_POKEMON",
       "optionCount": 6,
-      "voteVisibility": "REVEAL"
+      "voteVisibility": "REVEAL",
+      "revealSeconds": 3
     },
     "initial": {
       "lifecycle": {

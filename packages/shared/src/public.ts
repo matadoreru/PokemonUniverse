@@ -9,6 +9,7 @@ export * from './feedback.js';
 export * from './room.js';
 export * from './scoring.js';
 export * from './pokemon/types.js';
+export * from './pokemon/sprite-path.js';
 export * from './tcg/types.js';
 export * from './games/contracts.js';
 export * from './games/config.js';

@@ -9,6 +9,9 @@ export type ShinyCandidateMode = (typeof SHINY_CANDIDATE_MODES)[number];
 export const SHINY_VOTE_VISIBILITIES = ['REVEAL', 'LIVE'] as const;
 export type ShinyVoteVisibility = (typeof SHINY_VOTE_VISIBILITIES)[number];
 
+/** Duración de la revelación de cada ronda, en segundos. */
+export const SHINY_REVEAL_SECONDS_RANGE = { min: 3, max: 6 } as const;
+
 export const shinyVoteConfigSchema = z.object({
   generations: pokemonGenerationsSchema,
   roundSeconds: z.number().int().min(10).max(60),
@@ -16,6 +19,7 @@ export const shinyVoteConfigSchema = z.object({
   candidateMode: z.enum(SHINY_CANDIDATE_MODES),
   optionCount: z.number().int().min(3).max(6),
   voteVisibility: z.enum(SHINY_VOTE_VISIBILITIES),
+  revealSeconds: z.number().int().min(SHINY_REVEAL_SECONDS_RANGE.min).max(SHINY_REVEAL_SECONDS_RANGE.max),
 });
 
 export type ShinyVoteConfig = z.infer<typeof shinyVoteConfigSchema>;
@@ -27,4 +31,5 @@ export const defaultShinyVoteConfig: ShinyVoteConfig = {
   candidateMode: 'SAME_POKEMON',
   optionCount: 4,
   voteVisibility: 'REVEAL',
+  revealSeconds: 4,
 };

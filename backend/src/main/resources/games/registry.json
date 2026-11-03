@@ -107,7 +107,8 @@
       "rounds": 10,
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
-      "voteVisibility": "REVEAL"
+      "voteVisibility": "REVEAL",
+      "revealSeconds": 4
     }
   },
   {

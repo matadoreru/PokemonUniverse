@@ -1,5 +1,6 @@
 import type { ShinyOption, ShinyOptionId, ShinyVote } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Eye, Send, Sparkles, TimerOff, XCircle } from 'lucide-react';
+import { SHINY_CARDS_LOADING } from './reveal';
 
 function OptionIdentity({ option }: { option: ShinyOption }) {
   return <span className="inline-flex min-w-0 items-center gap-2">
@@ -8,8 +9,10 @@ function OptionIdentity({ option }: { option: ShinyOption }) {
   </span>;
 }
 
-export function ShinyVoteStatus({ active, reveal, participant, selectedOption, ownVote, correctOptionId, points, submitting, error, transitionLabel, transitionRemaining, onConfirm }: {
+export function ShinyVoteStatus({ active, loading = false, reveal, participant, selectedOption, ownVote, correctOptionId, points, submitting, error, transitionLabel, transitionRemaining, onConfirm }: {
   active: boolean;
+  /** Las cartas de la ronda aún se están cargando. */
+  loading?: boolean;
   reveal: boolean;
   participant: boolean;
   selectedOption: ShinyOption | null;
@@ -46,7 +49,7 @@ export function ShinyVoteStatus({ active, reveal, participant, selectedOption, o
   return <>
     <section className="shiny-confirmation mt-3 flex flex-col gap-3 rounded-2xl border border-ink/[.12] bg-surface px-3 py-3 shadow-card sm:flex-row sm:items-center sm:px-4" aria-label="Confirmar voto">
       <span className="min-w-0 flex-1 text-center sm:text-left">
-        <span className="block text-sm font-bold text-ink/60">{selectedOption ? 'Has seleccionado' : 'Selecciona uno de los Pokémon'}</span>
+        <span className="block text-sm font-bold text-ink/60" role={loading ? 'status' : undefined}>{loading ? SHINY_CARDS_LOADING : selectedOption ? 'Has seleccionado' : 'Selecciona uno de los Pokémon'}</span>
         {selectedOption && <OptionIdentity option={selectedOption} />}
         <span className="mt-0.5 hidden text-xs font-bold text-ink/45 md:block">Atajos: A–F o 1–6 · Enter confirma</span>
       </span>

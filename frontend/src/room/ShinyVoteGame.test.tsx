@@ -64,7 +64,7 @@ function room(game: ShinyVotePublicState, playerState: ShinyVotePlayerState | nu
     members,
     availableGames: [],
     selectedGameId: 'shiny-vote',
-    selectedGameConfig: { generations: [1], rounds: 10, roundSeconds: 20, optionCount: game.options.length, candidateMode, voteVisibility: game.voteVisibility },
+    selectedGameConfig: { generations: [1], rounds: 10, roundSeconds: 20, optionCount: game.options.length, candidateMode, voteVisibility: game.voteVisibility, revealSeconds: 4 },
     sessionMode: { type: 'INFINITE' },
     gameSelectionMode: { type: 'FIXED' },
     nextGameVote: null,
@@ -111,10 +111,25 @@ describe('Shiny Quiz UI', () => {
     expect(html).toContain('lg:grid-cols-[minmax(0,1fr)_18rem]');
     expect(html).toContain('aria-label="Opción A: Simisear"');
     expect(html).toContain('shiny-sprite');
-    expect(html).toContain('Selecciona uno de los Pokémon');
     expect(html).toContain('disabled=""');
     expect(html).not.toContain('Shiny verdadero');
     expect(html).not.toContain('—');
+  });
+
+  it('shows skeleton cards that cannot be voted until the sprites load', () => {
+    const html = render(publicGame());
+    expect(html).toContain('aria-busy="true"');
+    expect(html).toContain('Cargando cartas…');
+    expect(html).toContain('data-testid="shiny-card-skeleton"');
+    // La imagen sigue montada (para que cargue) bajo el esqueleto.
+    expect(html).toContain('/api/rooms/ABC234/games/token/rounds/1/options/A/sprite');
+    expect(html.match(/data-shiny-option="[A-D]"/g)).toHaveLength(4);
+    expect(html.match(/<button[^>]*disabled=""[^>]*data-shiny-option/g)).toHaveLength(4);
+  });
+
+  it('never fetches the normal sprite before the reveal', () => {
+    expect(render(publicGame())).not.toContain('/api/pokemon/');
+    expect(render(publicGame())).not.toContain('Antes / después');
   });
 
   it('restores and locks a confirmed vote after a fresh projection', () => {
@@ -128,7 +143,15 @@ describe('Shiny Quiz UI', () => {
 
   it('transforms the board into a successful reveal without a modal', () => {
     const html = render(revealGame(), player({ canVote: false, vote: { optionId: 'B', votedAt: 2_000 }, roundResult: { correct: true, points: 4 } }));
-    expect(html).toContain('Shiny verdadero');
+    expect(html).toContain('aria-label="Opción B: Simisear, shiny verdadero, tu voto acertado, +4 puntos"');
+    expect(html).toContain('motion-flip');
+    expect(html).toContain('✨');
+    expect(html).toContain('score-pop-leaf');
+    expect(html).not.toContain('aria-busy');
+    expect(html).toContain('Antes / después');
+    expect(html).toContain('/api/pokemon/simisear/sprite');
+    expect(html).toContain('>Normal</figcaption>');
+    expect(html).toContain('>Shiny</figcaption>');
     expect(html).toContain('¡Correcto!');
     expect(html).toContain('+4 puntos');
     expect(html).toContain('Respuesta correcta:');
@@ -138,6 +161,10 @@ describe('Shiny Quiz UI', () => {
   it('shows an incorrect choice and timeout without hiding the Pokémon', () => {
     const wrong = render(revealGame(), player({ canVote: false, vote: { optionId: 'C', votedAt: 2_000 }, roundResult: { correct: false, points: 0 } }));
     expect(wrong).toContain('No era ese shiny');
+    expect(wrong).toContain('aria-label="Opción C: Simisear, tu voto, incorrecta, +0 puntos"');
+    expect(wrong).toContain('score-pop-berry');
+    expect(wrong).toContain('grayscale');
+    expect(wrong).toContain('Shiny verdadero');
     expect(wrong).toContain('Tu elección:');
     expect(wrong).toContain('Respuesta correcta:');
     expect(wrong).toContain('C');

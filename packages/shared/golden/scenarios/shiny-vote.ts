@@ -11,7 +11,9 @@ const ana: GamePlayer = { id: 'p1', displayName: 'Ana' };
 const bruno: GamePlayer = { id: 'p2', displayName: 'Bruno' };
 const carla: GamePlayer = { id: 'p3', displayName: 'Carla' };
 
-const baseConfig = { generations: [1], roundSeconds: 20, rounds: 3, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE' };
+// revealSeconds: 3 conserva los tiempos de los escenarios escritos con la revelación fija de 3 s; reveal-seconds-six
+// cubre otra duración.
+const baseConfig = { generations: [1], roundSeconds: 20, rounds: 3, candidateMode: 'SAME_POKEMON', optionCount: 4, voteVisibility: 'LIVE', revealSeconds: 3 };
 
 function vote(playerId: string, optionId: string, now: number): GoldenStep {
   return { kind: 'action', playerId, action: { type: 'VOTE', optionId }, now };
@@ -75,7 +77,7 @@ const differentPokemon: GoldenScenario = {
   catalog: 'gen1-2',
   startNow: t0,
   players: [ana, bruno],
-  config: { generations: [2, 1], roundSeconds: 10, rounds: 3, candidateMode: 'DIFFERENT_POKEMON', optionCount: 6, voteVisibility: 'REVEAL' },
+  config: { generations: [2, 1], roundSeconds: 10, rounds: 3, candidateMode: 'DIFFERENT_POKEMON', optionCount: 6, voteVisibility: 'REVEAL', revealSeconds: 3 },
   steps: [
     // Ronda 1: Moltres, Cloyster, Blissey, Mewtwo (correcta D), Snubbull y Flareon.
     ...['A', 'B', 'C', 'D', 'E', 'F'].map((optionId) => asset(token, 1, optionId, t0 + 500)),
@@ -97,7 +99,7 @@ const differentPokemon: GoldenScenario = {
   ],
 };
 
-// Seed 919, configuración por defecto (REVEAL): los votos se ven solo al revelar y cada ronda baraja las paletas.
+// Seed 919, voteVisibility por defecto (REVEAL) con la revelación de 3 s de baseConfig: los votos se ven solo al revelar y cada ronda baraja las paletas.
 const revealDefault: GoldenScenario = {
   name: 'reveal-default-shuffled-palettes',
   seed: 919,
@@ -146,9 +148,33 @@ const threeOptions: GoldenScenario = {
   ],
 };
 
+// Seed 934, revelación de 6 s: cada ronda se revela durante 6000 ms antes de la siguiente.
+const revealSix: GoldenScenario = {
+  name: 'reveal-seconds-six',
+  seed: 934,
+  catalog: 'gen1-2',
+  players: [ana, bruno],
+  config: { ...baseConfig, voteVisibility: 'REVEAL', revealSeconds: 6 },
+  steps: [
+    // Ronda 1 (1000–21000, Rhydon, correcta C): los dos votan y la revelación dura de 4000 a 10000.
+    vote('p1', 'C', 2_000),
+    vote('p2', 'B', 4_000),
+    // Un timeout antes de que acabe la revelación no avanza la ronda.
+    timeout(9_000),
+    timeout(10_000),
+    // Ronda 2 (10000–30000, Rapidash, correcta A): nadie vota y la revelación dura de 30000 a 36000.
+    timeout(30_000),
+    timeout(36_000),
+    // Ronda 3 (36000–56000, Golduck, correcta D): solo vota Bruno, y acierta.
+    vote('p2', 'D', 37_000),
+    timeout(56_000),
+    timeout(62_000),
+  ],
+};
+
 export const shinyVoteScenarios: GoldenEngineEntry = {
   module: shinyVoteGame,
-  scenarios: [samePokemon, differentPokemon, threeOptions, revealDefault],
+  scenarios: [samePokemon, differentPokemon, threeOptions, revealDefault, revealSix],
   configCases: [
     // Válidos: normalización de generaciones, límites y claves desconocidas (el esquema no es .strict(): se quitan).
     { ...baseConfig, generations: [2, 1, 2] },
@@ -158,6 +184,8 @@ export const shinyVoteScenarios: GoldenEngineEntry = {
     { ...baseConfig, roundSeconds: 10.0 },
     { ...baseConfig, candidateMode: 'DIFFERENT_POKEMON', voteVisibility: 'REVEAL' },
     { ...baseConfig, unknownKey: 'se descarta' },
+    { ...baseConfig, revealSeconds: 4 },
+    { ...baseConfig, revealSeconds: 6.0 },
     // Inválidos: límites, enum en minúscula y tipos.
     { ...baseConfig, roundSeconds: 9 },
     { ...baseConfig, roundSeconds: 61 },
@@ -171,6 +199,11 @@ export const shinyVoteScenarios: GoldenEngineEntry = {
     { ...baseConfig, generations: [10] },
     { ...baseConfig, candidateMode: 'same_pokemon' },
     { ...baseConfig, voteVisibility: 'SHOW' },
+    { ...baseConfig, revealSeconds: 2 },
+    { ...baseConfig, revealSeconds: 7 },
+    { ...baseConfig, revealSeconds: 4.5 },
+    { ...baseConfig, revealSeconds: '4' },
+    { ...baseConfig, revealSeconds: undefined },
     { ...baseConfig, voteVisibility: undefined },
     // La clave anterior al renombrado (§11.2) ya no vale por sí sola.
     { ...baseConfig, voteVisibility: undefined, showVotes: true },
