@@ -240,7 +240,7 @@ Se porta el motor de Inazuma (`engine`, `mixer`, `synth`, `voices`, `variation`,
   - `M` silencia. Si la pestaña se oculta, el audio se suspende.
   - Al migrar se respeta la clave antigua `pokemon-universe-sfx`.
 - **Ajustes** (`AudioSettingsDialog`, abierto desde la placa del HUD): silencio, volumen general, música, efectos e
-  interfaz, en pasos de 0 · 25 · 50 · 75 · 100.
+  interfaz, con deslizadores de 0 a 100 en pasos de 5 (decisión del usuario del 2026-11-04; sin botón de prueba).
 - **Catálogo**:
 
 | Id | Cuándo | Dónde se dispara |

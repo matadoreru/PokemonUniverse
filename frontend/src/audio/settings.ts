@@ -1,10 +1,11 @@
 /**
- * Ajustes de audio del jugador (spec §8): silencio y cuatro volúmenes en pasos de 25. Apagado por
+ * Ajustes de audio del jugador (spec §8): silencio y cuatro volúmenes de 0 a 100 en pasos de 5. Apagado por
  * defecto en la primera visita. Viven en `localStorage`; toda lectura y escritura va en try/catch
  * para que el modo privado o un almacenamiento bloqueado nunca rompan la pantalla.
  */
 
-export type Step = 0 | 25 | 50 | 75 | 100;
+/** Volumen de 0 a 100, en múltiplos de `VOLUME_STEP` (los ajustes antiguos en pasos de 25 siguen valiendo). */
+export type Step = number;
 
 export interface AudioSettings {
   muted: boolean;
@@ -25,14 +26,15 @@ export const AUDIO_STORAGE_KEY = 'pokemon-universe-audio';
 /** Clave del sonido antiguo (el módulo de sonido anterior): `'on'` u `'off'`. */
 export const LEGACY_SFX_KEY = 'pokemon-universe-sfx';
 
-export const STEPS: readonly Step[] = [0, 25, 50, 75, 100];
+/** Paso de los deslizadores de volumen. */
+export const VOLUME_STEP = 5;
 
 export const DEFAULT_SETTINGS: AudioSettings = Object.freeze({ muted: true, master: 75, music: 75, sfx: 75, ui: 75 });
 
 const VOLUME_KEYS = ['master', 'music', 'sfx', 'ui'] as const;
 
 function isStep(x: unknown): x is Step {
-  return typeof x === 'number' && (STEPS as readonly number[]).includes(x);
+  return typeof x === 'number' && Number.isInteger(x) && x >= 0 && x <= 100 && x % VOLUME_STEP === 0;
 }
 
 /** Curva cuadrática: 50 suena a la mitad percibida, no a la mitad de amplitud. */

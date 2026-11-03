@@ -5,6 +5,7 @@ import {
   LEGACY_SFX_KEY,
   loadSettings,
   migrateLegacy,
+  sanitizeSettings,
   saveSettings,
   stepGain,
   type StorageLike,
@@ -77,5 +78,10 @@ describe('ajustes de audio', () => {
     expect(stepGain(100)).toBe(1);
     expect(stepGain(50)).toBe(0.25);
     expect(stepGain(75)).toBeCloseTo(0.5625, 6);
+  });
+
+  it('acepta volúmenes en pasos de 5 y descarta los que no lo son', () => {
+    expect(sanitizeSettings({ master: 35, music: 5, sfx: 100, ui: 0 })).toMatchObject({ master: 35, music: 5, sfx: 100, ui: 0 });
+    expect(sanitizeSettings({ master: 33, music: -5, sfx: 105, ui: 12.5 })).toMatchObject({ master: 75, music: 75, sfx: 75, ui: 75 });
   });
 });

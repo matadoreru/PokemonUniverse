@@ -631,7 +631,7 @@ function DialogSection({ onToast }: { onToast(): void }) {
         </Pill>
       </Fig>
       <Fig id="dialog-audio" caption="Ajustes de sonido (contenido del diálogo)" cream>
-        <AudioSettingsPanel settings={{ muted: false, master: 75, music: 50, sfx: 75, ui: 25 }} onPatch={noop} onTest={noop} />
+        <AudioSettingsPanel settings={{ muted: false, master: 75, music: 50, sfx: 75, ui: 25 }} onPatch={noop} />
       </Fig>
       <Dialog
         open={open}

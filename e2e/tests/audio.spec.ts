@@ -52,15 +52,16 @@ test('activar el sonido en los ajustes desbloquea y registra los efectos', async
   const avisos = avisosDeAudio(page);
   await page.goto('/');
   const dialogo = await abrirAjustes(page);
-  await expect(dialogo.getByRole('button', { name: 'Probar sonido' })).toBeDisabled();
+  await expect(dialogo.getByRole('slider', { name: 'Música' })).toBeDisabled();
 
   await dialogo.getByRole('switch', { name: 'Sonido' }).click();
   await expect(dialogo.getByRole('switch', { name: 'Sonido' })).toHaveAttribute('aria-checked', 'true');
   await expect.poll(() => estado(page).then((e) => e.muted)).toBe(false);
   await expect.poll(() => estado(page).then((e) => e.unlocked)).toBe(true);
 
-  await dialogo.getByRole('button', { name: 'Probar sonido' }).click();
-  await expect.poll(() => estado(page).then((e) => e.recent)).toContain('game.hit');
+  // Mover un deslizador de volumen suena como `ui.tick`.
+  await dialogo.getByRole('slider', { name: 'Música' }).fill('40');
+  await expect.poll(() => estado(page).then((e) => e.recent)).toContain('ui.tick');
 
   // Un botón de la cabecera hecho con `Pill` suena como `ui.tap` (cream) o `ui.confirm`.
   await dialogo.getByRole('button', { name: 'Cerrar' }).click();
@@ -90,14 +91,14 @@ test('los ajustes se recuerdan al recargar', async ({ page }) => {
   await page.goto('/');
   let dialogo = await abrirAjustes(page);
   await dialogo.getByRole('switch', { name: 'Sonido' }).click();
-  await dialogo.getByRole('radiogroup', { name: 'Música' }).getByRole('radio', { name: '25' }).click();
+  await dialogo.getByRole('slider', { name: 'Música' }).fill('35');
   await expect.poll(() => estado(page).then((e) => e.muted)).toBe(false);
 
   await page.reload();
   await expect.poll(() => estado(page).then((e) => e.muted)).toBe(false);
   dialogo = await abrirAjustes(page);
   await expect(dialogo.getByRole('switch', { name: 'Sonido' })).toHaveAttribute('aria-checked', 'true');
-  await expect(dialogo.getByRole('radiogroup', { name: 'Música' }).getByRole('radio', { name: '25' })).toHaveAttribute('aria-checked', 'true');
+  await expect(dialogo.getByRole('slider', { name: 'Música' })).toHaveValue('35');
   expect(errors).toEqual([]);
 });
 
@@ -107,7 +108,7 @@ test('los ajustes de sonido con sesión no dejan avisos de autoplay', async ({ p
   await loginAsGuest(page, uniqueName('Audio'));
   const dialogo = await abrirAjustes(page);
   await dialogo.getByRole('switch', { name: 'Sonido' }).click();
-  await dialogo.getByRole('button', { name: 'Probar sonido' }).click();
+  await dialogo.getByRole('slider', { name: 'Efectos' }).fill('60');
   await page.reload();
   await page.keyboard.press('m');
   await page.keyboard.press('m');
