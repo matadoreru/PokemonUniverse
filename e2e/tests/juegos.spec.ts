@@ -487,6 +487,60 @@ test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
   }
 });
 
+test('pokedex-distance: buscador sin coincidencias', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const sala = await crearSalaConJugadores(browser, 2);
+  try {
+    const { host, invitados } = sala;
+    const [invitado] = invitados as [Jugador];
+    await seleccionarJuego(host.page, 'Pokédex Distance');
+    // 60 s por ronda: caben las capturas a los tres tamaños y en claro.
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    const tiempo = host.page.getByRole('slider', { name: 'Tiempo por ronda' });
+    await tiempo.focus();
+    await tiempo.press('End');
+    await tiempo.blur();
+    await expect(tiempo).toHaveValue('60');
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+    // El invitado no recibe el catálogo hasta que se levanta el bloqueo (en desarrollo, StrictMode lo pide dos veces):
+    // ve el error con «Reintentar» y, al pulsarlo, el buscador funciona.
+    let bloqueado = true;
+    await invitado.page.route((url) => url.pathname === SELECTOR_PATH, async (route) => {
+      if (bloqueado) await route.abort('connectionrefused');
+      else await route.fallback();
+    });
+    await iniciarPartida(host.page, [invitado.page]);
+
+    const buscador = host.page.getByRole('textbox', { name: 'Buscar Pokémon' });
+    await expect(buscador).toBeVisible({ timeout: 20_000 });
+    // Autofoco sin desplazar la página: la cabecera fija no tapa nada.
+    await expect(buscador).toBeFocused();
+    expect(await host.page.evaluate(() => window.scrollY), 'desplazamiento tras el autofoco').toBe(0);
+    await buscador.fill('zzzz');
+    const vacio = host.page.getByText('No hay ningún Pokémon que coincida con “zzzz”.');
+    await expect(vacio).toBeVisible({ timeout: 10_000 });
+    const borrar = host.page.getByRole('button', { name: 'Borrar búsqueda' });
+    await expect(borrar).toBeVisible();
+    await capturarTamanos(host.page, 'juego-buscador-vacio', { sigue: vacio, claro: true });
+    await borrar.click();
+    await expect(buscador).toHaveValue('');
+    await expect(buscador).toBeFocused();
+    await expect(vacio).toHaveCount(0);
+
+    const alerta = invitado.page.getByRole('alert').filter({ hasText: 'No se pudo cargar el buscador de Pokémon.' });
+    await expect(alerta).toBeVisible({ timeout: 20_000 });
+    await capturarTamanos(invitado.page, 'juego-buscador-error', { sigue: alerta, claro: true });
+    bloqueado = false;
+    await alerta.getByRole('button', { name: 'Reintentar' }).click();
+    await expect(alerta).toHaveCount(0, { timeout: 10_000 });
+    await elegirPokemon(invitado.page, 'Pikachu');
+    await expect(invitado.page.getByRole('heading', { name: /Selección confirmada|EXACT HIT/ })).toBeVisible({ timeout: 10_000 });
+    expect(host.errors, host.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
 test('pokedex-distance: empate forzado tras tres desempates', async ({ browser }) => {
   test.setTimeout(120_000);
   const sala = await crearSalaConJugadores(browser, 2);

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { api } from '../lib/api';
 import type { PokemonSelectorResponse } from '../lib/api-contract';
 import type { PokemonSearchOption } from '../room/pokemon-search';
@@ -13,6 +13,8 @@ interface PokemonPoolResult {
   pokemon: PokemonSearchOption[];
   error: string;
   loading: boolean;
+  /** Vuelve a pedir el catálogo tras un error. */
+  retry(): void;
 }
 
 /** Catálogo reducido del buscador: solo id, nombre y sprite opaco, ordenado por nombre. */
@@ -20,6 +22,12 @@ export function pokemonPoolPath(generations: readonly number[], includeForms: bo
   const params = new URLSearchParams({ generations: generations.join(',') });
   if (includeForms) params.set('includeForms', 'true');
   return `/pokemon/selector?${params.toString()}`;
+}
+
+/** Mensaje del buscador: un fallo de red (`TypeError` de `fetch`) no llega en español, el del servidor sí. */
+export function poolErrorMessage(caught: unknown): string {
+  if (caught instanceof TypeError || !(caught instanceof Error) || !caught.message) return 'No se pudo cargar el buscador de Pokémon. Comprueba la conexión.';
+  return caught.message;
 }
 
 export async function fetchPokemonPool(path: string, signal: AbortSignal): Promise<PokemonSearchOption[]> {
@@ -37,6 +45,8 @@ export function usePokemonPool({ generations, includeForms = false, enabled = tr
   const [pokemon, setPokemon] = useState<PokemonSearchOption[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [attempt, setAttempt] = useState(0);
+  const retry = useCallback(() => setAttempt((value) => value + 1), []);
 
   useEffect(() => {
     if (!enabled) { setLoading(false); return undefined; }
@@ -46,10 +56,10 @@ export function usePokemonPool({ generations, includeForms = false, enabled = tr
     setLoading(true);
     void fetchPokemonPool(query, controller.signal)
       .then((entries) => { if (active) setPokemon(entries); })
-      .catch((caught: unknown) => { if (active) setError(caught instanceof Error ? caught.message : 'No se pudo cargar el buscador.'); })
+      .catch((caught: unknown) => { if (active) setError(poolErrorMessage(caught)); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; controller.abort(); };
-  }, [enabled, query]);
+  }, [attempt, enabled, query]);
 
-  return { pokemon, error, loading };
+  return { pokemon, error, loading, retry };
 }
