@@ -155,7 +155,15 @@ for (const manifest of registry) {
         await adivinar(turno!).click();
         const dialogo = turno!.getByRole('dialog', { name: 'Adivinar Pokémon' });
         await expect(dialogo).toBeVisible();
-        await capturarTamanos(turno!, 'dialogo-adivinar', { sigue: dialogo });
+        // Como las capturas del juego: el medidor ve también la pantalla de fondo (su insignia «SECRETO» es de 10 px,
+        // deuda previa), así que lo que mida solo se anota.
+        for (const { w, h } of SIZES) {
+          await turno!.setViewportSize({ width: w, height: h });
+          await expect(dialogo).toBeVisible();
+          const { id, problems } = await layoutProblems(turno!, 'dialogo-adivinar', true, false, { minFontPx: 12 });
+          if (problems.length) test.info().annotations.push({ type: 'encaje', description: `${id}: ${problems.join(' · ')}` });
+        }
+        await turno!.setViewportSize({ width: 1280, height: 720 });
         await turno!.keyboard.press('Escape');
         await expect(dialogo).toBeHidden();
       }

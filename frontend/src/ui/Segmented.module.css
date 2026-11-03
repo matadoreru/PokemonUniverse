@@ -7,6 +7,8 @@
   overflow: hidden;
   background: var(--cream);
   color: var(--ink);
+  /* El anillo va por dentro: azul noche sobre las opciones crema y amarillo (3,38:1) sobre la activa azul. */
+  --focus-ring: var(--navy);
 }
 .opt {
   flex: 1 1 0;
@@ -33,6 +35,7 @@
   /* De --blue a --blue-d: blanco a 4,88–7,33:1 (desde --blue-l bajaba a 2,53:1 arriba). */
   background: linear-gradient(180deg, var(--blue), var(--blue-d));
   color: var(--white);
+  --focus-ring: var(--yellow);
 }
 .opt:focus-visible,
 .opt.focus {
