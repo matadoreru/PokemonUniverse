@@ -298,6 +298,31 @@ const disconnectForfeit: GoldenScenario = {
   ],
 };
 
+const forfeitOnRevealAndInvalidCombination: GoldenScenario = {
+  name: 'forfeit-on-reveal-and-invalid-combination',
+  seed: 910,
+  catalog: 'gen1-2',
+  players: [ana, bruno],
+  config: { ...baseConfig, rounds: 3 },
+  steps: [
+    // Duelo 1: tipos revelados (TYPE_REVEAL) y Bruno no vuelve: Ana gana por abandono; luego reconecta.
+    selectType('p1', 'fire', 2_000),
+    selectType('p2', 'flying', 2_500),
+    { kind: 'presence', players: [ana, { ...bruno, connected: false }], now: 3_000 },
+    { kind: 'presence', players: [ana, bruno], now: 4_000 },
+    timeout(13_000),
+    // Duelo 2: combinación imposible (INVALID_COMBINATION) y Ana no vuelve: Bruno gana +5 por abandono.
+    selectType('p1', 'dragon', 14_000),
+    selectType('p2', 'fairy', 14_500),
+    { kind: 'presence', players: [{ ...ana, connected: false }, bruno], now: 15_000 },
+    { kind: 'presence', players: [ana, bruno], now: 16_000 },
+    continueRound('p1', 17_000),
+    // Duelo 3: nadie elige y la partida termina tras tres duelos.
+    timeout(27_000),
+    timeout(37_000),
+  ],
+};
+
 const invalidActionStops: GoldenScenario = {
   name: 'invalid-action-stops',
   seed: 404,
@@ -314,7 +339,7 @@ const invalidActionStops: GoldenScenario = {
 
 export const typeDuelScenarios: GoldenEngineEntry = {
   module: typeDuelGame,
-  scenarios: [twoDuelistsFullCycle, fourPlayersBalancedPairs, presenceAndEarlyFinish, invalidActionStops, absentDuelistsHardCap, invalidCombinationsAndRepeats, hardCapCutsImpossibleRetries, hardCapEndsBeforeLastRound, disconnectForfeit],
+  scenarios: [twoDuelistsFullCycle, fourPlayersBalancedPairs, presenceAndEarlyFinish, invalidActionStops, absentDuelistsHardCap, invalidCombinationsAndRepeats, hardCapCutsImpossibleRetries, hardCapEndsBeforeLastRound, disconnectForfeit, forfeitOnRevealAndInvalidCombination],
   configCases: [
     // Válidos: normalización de generaciones, límites inferiores y superiores, clave extra ignorada.
     { ...baseConfig, generations: [2, 1, 2] },

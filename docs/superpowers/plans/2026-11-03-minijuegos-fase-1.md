@@ -122,6 +122,7 @@ Se toman de las recomendaciones del propio documento. Si no hay ninguna, se elig
 10. **Type Duel: forfeit tras la gracia** (§6.3). Cuando el motor recibe el cambio de presencia (pasados los 10 s):
     - con **un** duelista ausente: motivo nuevo `'DISCONNECT_FORFEIT'`, `+5` al rival, cuenta como duelo jugado (estadísticas) y `disconnectedIds` igual a `[ausente]`;
     - con **los dos** ausentes: sigue siendo `'DISCONNECTED'` sin puntos.
+    - Resolución de la revisión (Task 8): el forfeit también vale en `TYPE_REVEAL` e `INVALID_COMBINATION`, incluida la última pantalla de combinación imposible: el rival recibe +5 porque el ausente abandonó; la regla no cambia.
     - Coste aceptado (vetable): durante la gracia, `selectPlayers` puede emparejar a quien acaba de caerse. Si no vuelve, a los 10 s su rival gana +5 por abandono. Es el precio de poner la gracia en la sala.
 11. **Impostor (pendiente de la Fase 0):** `beginCluePhase` fija siempre `roundEndsAt = now + clueSeconds·1000`. Con `clueOrder` vacío, el plazo vence y `advanceClueTurn` pasa a `VOTING` (votación vacía, `SKIPPED` y, a las tres, `STALEMATE`).
 12. **Catálogo reducido (§8.7).**
