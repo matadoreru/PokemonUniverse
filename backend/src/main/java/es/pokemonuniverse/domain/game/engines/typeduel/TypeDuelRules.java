@@ -21,6 +21,8 @@ public final class TypeDuelRules {
   public static final int WIN_POINTS = 5;
   public static final long ATTEMPT_COOLDOWN_MS = 1_000;
   public static final int MAX_SOLUTIONS = 8;
+  /** La tercera combinación imposible seguida cierra el duelo sin puntos ({@code INVALID_COMBINATION}). */
+  public static final int TYPE_DUEL_MAX_INVALID_COMBINATIONS = 3;
 
   private TypeDuelRules() {}
 

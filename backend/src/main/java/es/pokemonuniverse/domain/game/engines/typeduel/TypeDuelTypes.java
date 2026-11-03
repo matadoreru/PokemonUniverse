@@ -30,7 +30,7 @@ public final class TypeDuelTypes {
       "fighting", "poison", "ground", "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy");
 
   /** {@code TypeDuelRoundResult['reason']}. */
-  public enum TypeDuelRoundReason { WINNER, TIMEOUT, TYPE_TIMEOUT, TYPE_FORFEIT, DISCONNECTED }
+  public enum TypeDuelRoundReason { WINNER, TIMEOUT, TYPE_TIMEOUT, TYPE_FORFEIT, DISCONNECTED, INVALID_COMBINATION }
 
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -68,30 +68,35 @@ public final class TypeDuelTypes {
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record TypeDuelRoundResult(TypeDuelRoundReason reason, @Nullable String winnerId,
-      List<TypeDuelAttempt> attempts, List<TypeDuelSolution> solutions, @Nullable List<String> requiredTypes) {
+      List<TypeDuelAttempt> attempts, List<TypeDuelSolution> solutions, @Nullable List<String> requiredTypes,
+      Map<String, String> selectedTypes, List<String> disconnectedIds) {
 
     public TypeDuelRoundResult {
       attempts = frozenList(attempts);
       solutions = frozenList(solutions);
       requiredTypes = requiredTypes == null ? null : frozenList(requiredTypes);
+      selectedTypes = frozenMap(selectedTypes);
+      disconnectedIds = frozenList(disconnectedIds);
     }
   }
 
   /**
    * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
-   * {@link #toBuilder()} (setters con nombre: el constructor posicional de 19 campos no se usa en el motor).
+   * {@link #toBuilder()} (setters con nombre: el constructor posicional de 21 campos no se usa en el motor).
    */
   public record TypeDuelState(
       GamePhase phase,
       TypeDuelConfig config,
       List<String> playerIds,
       int completedRounds,
+      int selectionCycles,
       int roundNumber,
       List<String> participants,
       Map<String, Integer> participationCounts,
       @Nullable List<String> lastPair,
       Map<String, String> typeSelections,
       @Nullable List<String> requiredTypes,
+      int invalidCombinations,
       List<String> validPokemonIds,
       List<TypeDuelAttempt> attempts,
       Map<String, Long> cooldownUntil,
@@ -122,8 +127,9 @@ public final class TypeDuelTypes {
 
     public Builder toBuilder() {
       return new Builder().phase(phase).config(config).playerIds(playerIds).completedRounds(completedRounds)
-          .roundNumber(roundNumber).participants(participants).participationCounts(participationCounts)
-          .lastPair(lastPair).typeSelections(typeSelections).requiredTypes(requiredTypes)
+          .selectionCycles(selectionCycles).roundNumber(roundNumber).participants(participants)
+          .participationCounts(participationCounts).lastPair(lastPair).typeSelections(typeSelections)
+          .requiredTypes(requiredTypes).invalidCombinations(invalidCombinations)
           .validPokemonIds(validPokemonIds).attempts(attempts).cooldownUntil(cooldownUntil).scores(scores)
           .playerStats(playerStats).roundStartedAt(roundStartedAt).roundEndsAt(roundEndsAt)
           .nextTransitionAt(nextTransitionAt).lastRound(lastRound);
@@ -140,12 +146,14 @@ public final class TypeDuelTypes {
       private TypeDuelConfig config;
       private List<String> playerIds = List.of();
       private int completedRounds;
+      private int selectionCycles;
       private int roundNumber;
       private List<String> participants;
       private Map<String, Integer> participationCounts = Map.of();
       private List<String> lastPair;
       private Map<String, String> typeSelections = Map.of();
       private List<String> requiredTypes;
+      private int invalidCombinations;
       private List<String> validPokemonIds = List.of();
       private List<TypeDuelAttempt> attempts = List.of();
       private Map<String, Long> cooldownUntil = Map.of();
@@ -166,6 +174,8 @@ public final class TypeDuelTypes {
 
       public Builder completedRounds(int value) { completedRounds = value; return this; }
 
+      public Builder selectionCycles(int value) { selectionCycles = value; return this; }
+
       public Builder roundNumber(int value) { roundNumber = value; return this; }
 
       public Builder participants(List<String> value) { participants = value; return this; }
@@ -177,6 +187,8 @@ public final class TypeDuelTypes {
       public Builder typeSelections(Map<String, String> value) { typeSelections = value; return this; }
 
       public Builder requiredTypes(@Nullable List<String> value) { requiredTypes = value; return this; }
+
+      public Builder invalidCombinations(int value) { invalidCombinations = value; return this; }
 
       public Builder validPokemonIds(List<String> value) { validPokemonIds = value; return this; }
 
@@ -198,9 +210,10 @@ public final class TypeDuelTypes {
 
       public TypeDuelState build() {
         return new TypeDuelState(Objects.requireNonNull(phase, "phase"), Objects.requireNonNull(config, "config"),
-            playerIds, completedRounds, roundNumber, Objects.requireNonNull(participants, "participants"),
-            participationCounts, lastPair, typeSelections, requiredTypes, validPokemonIds, attempts, cooldownUntil,
-            scores, playerStats, roundStartedAt, roundEndsAt, nextTransitionAt, lastRound);
+            playerIds, completedRounds, selectionCycles, roundNumber,
+            Objects.requireNonNull(participants, "participants"), participationCounts, lastPair, typeSelections,
+            requiredTypes, invalidCombinations, validPokemonIds, attempts, cooldownUntil, scores, playerStats,
+            roundStartedAt, roundEndsAt, nextTransitionAt, lastRound);
       }
     }
   }
@@ -269,6 +282,7 @@ public final class TypeDuelTypes {
       List<String> typeSelectionCompletedIds,
       Map<String, String> revealedTypes,
       @Nullable List<String> requiredTypes,
+      int invalidCombinations,
       List<TypeDuelAttempt> attempts,
       Map<String, Integer> scores,
       @Nullable Long roundStartedAt,

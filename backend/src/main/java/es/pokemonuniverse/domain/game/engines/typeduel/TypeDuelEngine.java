@@ -78,12 +78,14 @@ public final class TypeDuelEngine
     for (var id : participants) counts.put(id, counts.getOrDefault(id, 0) + 1);
     return state.toBuilder()
         .phase(GamePhase.SELECTING_TYPES)
+        .selectionCycles(state.selectionCycles() + 1)
         .roundNumber(state.completedRounds() + 1)
         .participants(participants)
         .participationCounts(counts)
         .lastPair(participants)
         .typeSelections(Map.of())
         .requiredTypes(null)
+        .invalidCombinations(0)
         .validPokemonIds(List.of())
         .attempts(List.of())
         .cooldownUntil(Map.of())
@@ -105,6 +107,7 @@ public final class TypeDuelEngine
     return state.toBuilder()
         .phase(any ? GamePhase.TYPE_REVEAL : GamePhase.INVALID_COMBINATION)
         .requiredTypes(TypeDuelRules.requiredTypeCombination(typeA, typeB))
+        .invalidCombinations(any ? state.invalidCombinations() : state.invalidCombinations() + 1)
         .validPokemonIds(valid.stream().map(pokemon -> pokemon.id()).toList())
         .roundEndsAt(null)
         .nextTransitionAt(context.now() + (any ? TYPE_REVEAL_MS : INVALID_COMBINATION_MS))
@@ -124,11 +127,13 @@ public final class TypeDuelEngine
 
   private static TypeDuelState roundResult(TypeDuelState state, GameContext context, TypeDuelRoundReason reason,
       @Nullable String winnerId) {
-    boolean canceled = reason == TypeDuelRoundReason.TYPE_TIMEOUT || reason == TypeDuelRoundReason.DISCONNECTED;
-    int completed = canceled ? state.completedRounds() : state.completedRounds() + 1;
+    // Toda resolución consume duelo; las estadísticas solo cuentan los duelos que se llegaron a disputar.
+    boolean played = reason == TypeDuelRoundReason.WINNER || reason == TypeDuelRoundReason.TIMEOUT
+        || reason == TypeDuelRoundReason.TYPE_FORFEIT;
+    int completed = state.completedRounds() + 1;
     var stats = new LinkedHashMap<>(state.playerStats());
     var scores = new LinkedHashMap<>(state.scores());
-    if (!canceled) {
+    if (played) {
       for (var id : state.participants()) {
         stats.put(id, Objects.requireNonNull(stats.get(id), "playerStats").afterDuel(id.equals(winnerId)));
       }
@@ -147,6 +152,9 @@ public final class TypeDuelEngine
             .map(pokemon -> new TypeDuelSolution(pokemon.id(), pokemon.name(), pokemon.sprite()))
             .toList()
         : List.of();
+    List<String> disconnectedIds = reason == TypeDuelRoundReason.DISCONNECTED
+        ? state.participants().stream().filter(id -> !context.isPlayerRequired(id)).toList()
+        : List.of();
     return state.toBuilder()
         .phase(GamePhase.ROUND_RESULTS)
         .completedRounds(completed)
@@ -155,12 +163,15 @@ public final class TypeDuelEngine
         .roundEndsAt(null)
         .nextTransitionAt(context.now() + RESULT_MS)
         .lastRound(new TypeDuelRoundResult(reason, winnerId, new ArrayList<>(state.attempts()), solutions,
-            state.requiredTypes()))
+            state.requiredTypes(), new LinkedHashMap<>(state.typeSelections()), disconnectedIds))
         .build();
   }
 
   private static TypeDuelState advanceAfterResult(TypeDuelState state, GameContext context) {
-    return state.completedRounds() >= state.config().rounds() ? state.finished() : selectPlayers(state, context);
+    // Tope duro: como mucho rounds × 2 entradas en SELECTING_TYPES, reintentos incluidos.
+    boolean done = state.completedRounds() >= state.config().rounds()
+        || state.selectionCycles() >= state.config().rounds() * 2;
+    return done ? state.finished() : selectPlayers(state, context);
   }
 
   /** {@code context.now >= (deadline ?? Infinity)}. */
@@ -244,6 +255,10 @@ public final class TypeDuelEngine
       return GameActionResult.reject(state, "Pokémon fuera del pool.");
     }
     var pokemon = found.get();
+    if (state.attempts().stream()
+        .anyMatch(prev -> prev.playerId().equals(playerId) && prev.pokemonId().equals(pokemon.id()))) {
+      return GameActionResult.reject(state, "Ya lo probaste.");
+    }
     boolean correct = state.validPokemonIds().contains(pokemon.id());
     var attempt = new TypeDuelAttempt(playerId, pokemon.id(), pokemon.name(), pokemon.sprite(), correct, context.now());
     var prior = Objects.requireNonNull(state.playerStats().get(playerId), "playerStats");
@@ -274,8 +289,13 @@ public final class TypeDuelEngine
       return beginSearch(state, context);
     }
     if (state.phase() == GamePhase.INVALID_COMBINATION && reached(context, state.nextTransitionAt())) {
+      if (state.invalidCombinations() >= TypeDuelRules.TYPE_DUEL_MAX_INVALID_COMBINATIONS
+          || state.selectionCycles() >= state.config().rounds() * 2) {
+        return roundResult(state, context, TypeDuelRoundReason.INVALID_COMBINATION, null);
+      }
       return state.toBuilder()
           .phase(GamePhase.SELECTING_TYPES)
+          .selectionCycles(state.selectionCycles() + 1)
           .typeSelections(Map.of())
           .requiredTypes(null)
           .validPokemonIds(List.of())
@@ -315,6 +335,7 @@ public final class TypeDuelEngine
         new ArrayList<>(state.typeSelections().keySet()),
         reveal ? state.typeSelections() : Map.of(),
         reveal ? state.requiredTypes() : null,
+        state.invalidCombinations(),
         state.attempts(), state.scores(), state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(),
         resultsPhase ? state.lastRound() : null,
         state.phase() == GamePhase.GAME_RESULTS ? TypeDuelRules.buildTypeDuelResults(state) : null);

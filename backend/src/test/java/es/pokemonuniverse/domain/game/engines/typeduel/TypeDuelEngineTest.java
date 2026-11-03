@@ -95,6 +95,17 @@ class TypeDuelEngineTest {
     var locked = engine.handleAction(state, duelist, new TypeDuelAction.SelectType("fire"), context).state();
     assertEquals("Tu tipo ya está bloqueado.",
         engine.handleAction(locked, duelist, new TypeDuelAction.SelectType("water"), context).error());
+    var rival = state.participants().get(1);
+    var revealed = engine.handleAction(locked, rival, new TypeDuelAction.SelectType("fire"), context).state();
+    var search = engine.handleTimeout(revealed, context.withNow(3_000));
+    assertEquals(GamePhase.POKEMON_SEARCH, search.phase());
+    var pikachu = new TypeDuelAction.AttemptPokemon("pikachu");
+    var failed = engine.handleAction(search, duelist, pikachu, context.withNow(3_000));
+    assertTrue(failed.accepted());
+    var repeated = engine.handleAction(failed.state(), duelist, pikachu, context.withNow(4_000));
+    assertFalse(repeated.accepted());
+    assertEquals("Ya lo probaste.", repeated.error());
+    assertEquals(failed.state(), repeated.state());
     var late = context.withNow(state.roundEndsAt());
     var result = engine.handleAction(state, duelist, new TypeDuelAction.SelectType("fire"), late);
     assertFalse(result.accepted());

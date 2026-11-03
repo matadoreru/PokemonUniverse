@@ -27,7 +27,7 @@
     ],
     "typeSelectSeconds": 5,
     "searchSeconds": 15,
-    "rounds": 3
+    "rounds": 4
   },
   "steps": [
     {
@@ -262,7 +262,7 @@
       ],
       "typeSelectSeconds": 5,
       "searchSeconds": 15,
-      "rounds": 3
+      "rounds": 4
     },
     "initial": {
       "lifecycle": {
@@ -282,7 +282,7 @@
         ],
         "completedRounds": 0,
         "roundNumber": 0,
-        "totalRounds": 3,
+        "totalRounds": 4,
         "participants": [
           "p1",
           "p2"
@@ -296,6 +296,7 @@
         "typeSelectionCompletedIds": [],
         "revealedTypes": {},
         "requiredTypes": null,
+        "invalidCombinations": 0,
         "attempts": [],
         "scores": {
           "p1": 0,
@@ -359,7 +360,7 @@
         ],
         "completedRounds": 0,
         "roundNumber": 1,
-        "totalRounds": 3,
+        "totalRounds": 4,
         "participants": [
           "p1",
           "p2"
@@ -373,6 +374,7 @@
         "typeSelectionCompletedIds": [],
         "revealedTypes": {},
         "requiredTypes": null,
+        "invalidCombinations": 0,
         "attempts": [],
         "scores": {
           "p1": 0,
@@ -436,9 +438,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 0,
+            "completedRounds": 1,
             "roundNumber": 1,
-            "totalRounds": 3,
+            "totalRounds": 4,
             "participants": [
               "p1",
               "p2"
@@ -452,6 +454,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -467,7 +470,9 @@
               "winnerId": null,
               "attempts": [],
               "solutions": [],
-              "requiredTypes": null
+              "requiredTypes": null,
+              "selectedTypes": {},
+              "disconnectedIds": []
             },
             "results": null
           },
@@ -509,7 +514,7 @@
           "lifecycle": {
             "phase": "SELECTING_TYPES",
             "nextDeadline": 21000,
-            "actionEpoch": "[\"SELECTING_TYPES\",1,16000,null,null,null,null,null]",
+            "actionEpoch": "[\"SELECTING_TYPES\",2,16000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -521,9 +526,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 0,
-            "roundNumber": 1,
-            "totalRounds": 3,
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 4,
             "participants": [
               "p3",
               "p4"
@@ -537,6 +542,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -590,7 +596,7 @@
           "lifecycle": {
             "phase": "SELECTING_TYPES",
             "nextDeadline": 21000,
-            "actionEpoch": "[\"SELECTING_TYPES\",1,16000,null,null,null,null,null]",
+            "actionEpoch": "[\"SELECTING_TYPES\",2,16000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -602,9 +608,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 0,
-            "roundNumber": 1,
-            "totalRounds": 3,
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 4,
             "participants": [
               "p3",
               "p4"
@@ -618,6 +624,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -671,7 +678,7 @@
           "lifecycle": {
             "phase": "SELECTING_TYPES",
             "nextDeadline": 21000,
-            "actionEpoch": "[\"SELECTING_TYPES\",1,16000,null,null,null,null,null]",
+            "actionEpoch": "[\"SELECTING_TYPES\",2,16000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -683,9 +690,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 0,
-            "roundNumber": 1,
-            "totalRounds": 3,
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 4,
             "participants": [
               "p3",
               "p4"
@@ -699,6 +706,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -751,7 +759,7 @@
           "lifecycle": {
             "phase": "SELECTING_TYPES",
             "nextDeadline": 21000,
-            "actionEpoch": "[\"SELECTING_TYPES\",1,16000,null,null,null,null,null]",
+            "actionEpoch": "[\"SELECTING_TYPES\",2,16000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -763,9 +771,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 0,
-            "roundNumber": 1,
-            "totalRounds": 3,
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 4,
             "participants": [
               "p3",
               "p4"
@@ -781,6 +789,7 @@
             ],
             "revealedTypes": {},
             "requiredTypes": null,
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -833,7 +842,7 @@
           "lifecycle": {
             "phase": "TYPE_REVEAL",
             "nextDeadline": 19600,
-            "actionEpoch": "[\"TYPE_REVEAL\",1,16000,null,null,null,null,null]",
+            "actionEpoch": "[\"TYPE_REVEAL\",2,16000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -845,9 +854,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 0,
-            "roundNumber": 1,
-            "totalRounds": 3,
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 4,
             "participants": [
               "p3",
               "p4"
@@ -870,6 +879,7 @@
               "ground",
               "steel"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -921,7 +931,7 @@
           "lifecycle": {
             "phase": "POKEMON_SEARCH",
             "nextDeadline": 34600,
-            "actionEpoch": "[\"POKEMON_SEARCH\",1,19600,null,null,null,null,null]",
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,19600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -933,9 +943,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 0,
-            "roundNumber": 1,
-            "totalRounds": 3,
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 4,
             "participants": [
               "p3",
               "p4"
@@ -958,6 +968,7 @@
               "ground",
               "steel"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1011,7 +1022,7 @@
           "lifecycle": {
             "phase": "POKEMON_SEARCH",
             "nextDeadline": 34600,
-            "actionEpoch": "[\"POKEMON_SEARCH\",1,19600,null,null,null,null,null]",
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,19600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -1023,9 +1034,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 0,
-            "roundNumber": 1,
-            "totalRounds": 3,
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 4,
             "participants": [
               "p3",
               "p4"
@@ -1048,6 +1059,7 @@
               "ground",
               "steel"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1101,7 +1113,7 @@
           "lifecycle": {
             "phase": "POKEMON_SEARCH",
             "nextDeadline": 34600,
-            "actionEpoch": "[\"POKEMON_SEARCH\",1,19600,null,null,null,null,null]",
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,19600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -1113,9 +1125,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 0,
-            "roundNumber": 1,
-            "totalRounds": 3,
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 4,
             "participants": [
               "p3",
               "p4"
@@ -1138,6 +1150,7 @@
               "ground",
               "steel"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1191,7 +1204,7 @@
           "lifecycle": {
             "phase": "POKEMON_SEARCH",
             "nextDeadline": 34600,
-            "actionEpoch": "[\"POKEMON_SEARCH\",1,19600,null,null,null,null,null]",
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,19600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -1203,9 +1216,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 0,
-            "roundNumber": 1,
-            "totalRounds": 3,
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 4,
             "participants": [
               "p3",
               "p4"
@@ -1228,6 +1241,7 @@
               "ground",
               "steel"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1281,7 +1295,7 @@
           "lifecycle": {
             "phase": "POKEMON_SEARCH",
             "nextDeadline": 34600,
-            "actionEpoch": "[\"POKEMON_SEARCH\",1,19600,null,null,null,null,null]",
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,19600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -1293,9 +1307,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 0,
-            "roundNumber": 1,
-            "totalRounds": 3,
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 4,
             "participants": [
               "p3",
               "p4"
@@ -1318,6 +1332,7 @@
               "ground",
               "steel"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1371,7 +1386,7 @@
           "lifecycle": {
             "phase": "POKEMON_SEARCH",
             "nextDeadline": 34600,
-            "actionEpoch": "[\"POKEMON_SEARCH\",1,19600,null,null,null,null,null]",
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,19600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -1383,9 +1398,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 0,
-            "roundNumber": 1,
-            "totalRounds": 3,
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 4,
             "participants": [
               "p3",
               "p4"
@@ -1408,6 +1423,7 @@
               "ground",
               "steel"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1461,7 +1477,7 @@
           "lifecycle": {
             "phase": "POKEMON_SEARCH",
             "nextDeadline": 34600,
-            "actionEpoch": "[\"POKEMON_SEARCH\",1,19600,null,null,null,null,null]",
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,19600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -1473,9 +1489,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 0,
-            "roundNumber": 1,
-            "totalRounds": 3,
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 4,
             "participants": [
               "p3",
               "p4"
@@ -1498,6 +1514,7 @@
               "ground",
               "steel"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1550,7 +1567,7 @@
           "lifecycle": {
             "phase": "ROUND_RESULTS",
             "nextDeadline": 32200,
-            "actionEpoch": "[\"ROUND_RESULTS\",1,19600,null,null,null,null,null]",
+            "actionEpoch": "[\"ROUND_RESULTS\",2,19600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -1562,9 +1579,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 1,
-            "roundNumber": 1,
-            "totalRounds": 3,
+            "completedRounds": 2,
+            "roundNumber": 2,
+            "totalRounds": 4,
             "participants": [
               "p3",
               "p4"
@@ -1587,6 +1604,7 @@
               "ground",
               "steel"
             ],
+            "invalidCombinations": 0,
             "attempts": [
               {
                 "playerId": "p3",
@@ -1629,7 +1647,12 @@
               "requiredTypes": [
                 "ground",
                 "steel"
-              ]
+              ],
+              "selectedTypes": {
+                "p3": "ground",
+                "p4": "steel"
+              },
+              "disconnectedIds": []
             },
             "results": null
           },
@@ -1673,7 +1696,7 @@
           "lifecycle": {
             "phase": "ROUND_RESULTS",
             "nextDeadline": 32200,
-            "actionEpoch": "[\"ROUND_RESULTS\",1,19600,null,null,null,null,null]",
+            "actionEpoch": "[\"ROUND_RESULTS\",2,19600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -1685,9 +1708,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 1,
-            "roundNumber": 1,
-            "totalRounds": 3,
+            "completedRounds": 2,
+            "roundNumber": 2,
+            "totalRounds": 4,
             "participants": [
               "p3",
               "p4"
@@ -1710,6 +1733,7 @@
               "ground",
               "steel"
             ],
+            "invalidCombinations": 0,
             "attempts": [
               {
                 "playerId": "p3",
@@ -1752,7 +1776,12 @@
               "requiredTypes": [
                 "ground",
                 "steel"
-              ]
+              ],
+              "selectedTypes": {
+                "p3": "ground",
+                "p4": "steel"
+              },
+              "disconnectedIds": []
             },
             "results": null
           },
@@ -1794,7 +1823,7 @@
           "lifecycle": {
             "phase": "SELECTING_TYPES",
             "nextDeadline": 39600,
-            "actionEpoch": "[\"SELECTING_TYPES\",2,34600,null,null,null,null,null]",
+            "actionEpoch": "[\"SELECTING_TYPES\",3,34600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -1806,9 +1835,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 1,
-            "roundNumber": 2,
-            "totalRounds": 3,
+            "completedRounds": 2,
+            "roundNumber": 3,
+            "totalRounds": 4,
             "participants": [
               "p1",
               "p3"
@@ -1822,6 +1851,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1873,7 +1903,7 @@
           "lifecycle": {
             "phase": "SELECTING_TYPES",
             "nextDeadline": 39600,
-            "actionEpoch": "[\"SELECTING_TYPES\",2,34600,null,null,null,null,null]",
+            "actionEpoch": "[\"SELECTING_TYPES\",3,34600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -1885,9 +1915,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 1,
-            "roundNumber": 2,
-            "totalRounds": 3,
+            "completedRounds": 2,
+            "roundNumber": 3,
+            "totalRounds": 4,
             "participants": [
               "p1",
               "p3"
@@ -1901,6 +1931,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -1953,7 +1984,7 @@
           "lifecycle": {
             "phase": "SELECTING_TYPES",
             "nextDeadline": 39600,
-            "actionEpoch": "[\"SELECTING_TYPES\",2,34600,null,null,null,null,null]",
+            "actionEpoch": "[\"SELECTING_TYPES\",3,34600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -1965,9 +1996,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 1,
-            "roundNumber": 2,
-            "totalRounds": 3,
+            "completedRounds": 2,
+            "roundNumber": 3,
+            "totalRounds": 4,
             "participants": [
               "p1",
               "p3"
@@ -1983,6 +2014,7 @@
             ],
             "revealedTypes": {},
             "requiredTypes": null,
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2036,7 +2068,7 @@
           "lifecycle": {
             "phase": "SELECTING_TYPES",
             "nextDeadline": 39600,
-            "actionEpoch": "[\"SELECTING_TYPES\",2,34600,null,null,null,null,null]",
+            "actionEpoch": "[\"SELECTING_TYPES\",3,34600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -2048,9 +2080,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 1,
-            "roundNumber": 2,
-            "totalRounds": 3,
+            "completedRounds": 2,
+            "roundNumber": 3,
+            "totalRounds": 4,
             "participants": [
               "p1",
               "p3"
@@ -2066,6 +2098,7 @@
             ],
             "revealedTypes": {},
             "requiredTypes": null,
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2118,7 +2151,7 @@
           "lifecycle": {
             "phase": "TYPE_REVEAL",
             "nextDeadline": 40200,
-            "actionEpoch": "[\"TYPE_REVEAL\",2,34600,null,null,null,null,null]",
+            "actionEpoch": "[\"TYPE_REVEAL\",3,34600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -2130,9 +2163,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 1,
-            "roundNumber": 2,
-            "totalRounds": 3,
+            "completedRounds": 2,
+            "roundNumber": 3,
+            "totalRounds": 4,
             "participants": [
               "p1",
               "p3"
@@ -2154,6 +2187,7 @@
             "requiredTypes": [
               "electric"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2207,7 +2241,7 @@
           "lifecycle": {
             "phase": "TYPE_REVEAL",
             "nextDeadline": 40200,
-            "actionEpoch": "[\"TYPE_REVEAL\",2,34600,null,null,null,null,null]",
+            "actionEpoch": "[\"TYPE_REVEAL\",3,34600,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -2219,9 +2253,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 1,
-            "roundNumber": 2,
-            "totalRounds": 3,
+            "completedRounds": 2,
+            "roundNumber": 3,
+            "totalRounds": 4,
             "participants": [
               "p1",
               "p3"
@@ -2243,6 +2277,7 @@
             "requiredTypes": [
               "electric"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2294,7 +2329,7 @@
           "lifecycle": {
             "phase": "POKEMON_SEARCH",
             "nextDeadline": 55300,
-            "actionEpoch": "[\"POKEMON_SEARCH\",2,40300,null,null,null,null,null]",
+            "actionEpoch": "[\"POKEMON_SEARCH\",3,40300,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -2306,9 +2341,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 1,
-            "roundNumber": 2,
-            "totalRounds": 3,
+            "completedRounds": 2,
+            "roundNumber": 3,
+            "totalRounds": 4,
             "participants": [
               "p1",
               "p3"
@@ -2330,6 +2365,7 @@
             "requiredTypes": [
               "electric"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2381,7 +2417,7 @@
           "lifecycle": {
             "phase": "ROUND_RESULTS",
             "nextDeadline": 65300,
-            "actionEpoch": "[\"ROUND_RESULTS\",2,40300,null,null,null,null,null]",
+            "actionEpoch": "[\"ROUND_RESULTS\",3,40300,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -2393,9 +2429,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 2,
-            "roundNumber": 2,
-            "totalRounds": 3,
+            "completedRounds": 3,
+            "roundNumber": 3,
+            "totalRounds": 4,
             "participants": [
               "p1",
               "p3"
@@ -2417,6 +2453,7 @@
             "requiredTypes": [
               "electric"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2465,7 +2502,12 @@
               ],
               "requiredTypes": [
                 "electric"
-              ]
+              ],
+              "selectedTypes": {
+                "p1": "electric",
+                "p3": "electric"
+              },
+              "disconnectedIds": []
             },
             "results": null
           },
@@ -2507,7 +2549,7 @@
           "lifecycle": {
             "phase": "SELECTING_TYPES",
             "nextDeadline": 70300,
-            "actionEpoch": "[\"SELECTING_TYPES\",3,65300,null,null,null,null,null]",
+            "actionEpoch": "[\"SELECTING_TYPES\",4,65300,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -2519,9 +2561,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 2,
-            "roundNumber": 3,
-            "totalRounds": 3,
+            "completedRounds": 3,
+            "roundNumber": 4,
+            "totalRounds": 4,
             "participants": [
               "p2",
               "p4"
@@ -2535,6 +2577,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2588,7 +2631,7 @@
           "lifecycle": {
             "phase": "SELECTING_TYPES",
             "nextDeadline": 70300,
-            "actionEpoch": "[\"SELECTING_TYPES\",3,65300,null,null,null,null,null]",
+            "actionEpoch": "[\"SELECTING_TYPES\",4,65300,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -2600,9 +2643,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 2,
-            "roundNumber": 3,
-            "totalRounds": 3,
+            "completedRounds": 3,
+            "roundNumber": 4,
+            "totalRounds": 4,
             "participants": [
               "p2",
               "p4"
@@ -2616,6 +2659,7 @@
             "typeSelectionCompletedIds": [],
             "revealedTypes": {},
             "requiredTypes": null,
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2668,7 +2712,7 @@
           "lifecycle": {
             "phase": "SELECTING_TYPES",
             "nextDeadline": 70300,
-            "actionEpoch": "[\"SELECTING_TYPES\",3,65300,null,null,null,null,null]",
+            "actionEpoch": "[\"SELECTING_TYPES\",4,65300,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -2680,9 +2724,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 2,
-            "roundNumber": 3,
-            "totalRounds": 3,
+            "completedRounds": 3,
+            "roundNumber": 4,
+            "totalRounds": 4,
             "participants": [
               "p2",
               "p4"
@@ -2698,6 +2742,7 @@
             ],
             "revealedTypes": {},
             "requiredTypes": null,
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2751,7 +2796,7 @@
           "lifecycle": {
             "phase": "SELECTING_TYPES",
             "nextDeadline": 70300,
-            "actionEpoch": "[\"SELECTING_TYPES\",3,65300,null,null,null,null,null]",
+            "actionEpoch": "[\"SELECTING_TYPES\",4,65300,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -2763,9 +2808,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 2,
-            "roundNumber": 3,
-            "totalRounds": 3,
+            "completedRounds": 3,
+            "roundNumber": 4,
+            "totalRounds": 4,
             "participants": [
               "p2",
               "p4"
@@ -2781,6 +2826,7 @@
             ],
             "revealedTypes": {},
             "requiredTypes": null,
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2833,7 +2879,7 @@
           "lifecycle": {
             "phase": "TYPE_REVEAL",
             "nextDeadline": 68300,
-            "actionEpoch": "[\"TYPE_REVEAL\",3,65300,null,null,null,null,null]",
+            "actionEpoch": "[\"TYPE_REVEAL\",4,65300,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -2845,9 +2891,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 2,
-            "roundNumber": 3,
-            "totalRounds": 3,
+            "completedRounds": 3,
+            "roundNumber": 4,
+            "totalRounds": 4,
             "participants": [
               "p2",
               "p4"
@@ -2869,6 +2915,7 @@
             "requiredTypes": [
               "psychic"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -2920,7 +2967,7 @@
           "lifecycle": {
             "phase": "POKEMON_SEARCH",
             "nextDeadline": 83300,
-            "actionEpoch": "[\"POKEMON_SEARCH\",3,68300,null,null,null,null,null]",
+            "actionEpoch": "[\"POKEMON_SEARCH\",4,68300,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -2932,9 +2979,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 2,
-            "roundNumber": 3,
-            "totalRounds": 3,
+            "completedRounds": 3,
+            "roundNumber": 4,
+            "totalRounds": 4,
             "participants": [
               "p2",
               "p4"
@@ -2956,6 +3003,7 @@
             "requiredTypes": [
               "psychic"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -3007,7 +3055,7 @@
           "lifecycle": {
             "phase": "ROUND_RESULTS",
             "nextDeadline": 93300,
-            "actionEpoch": "[\"ROUND_RESULTS\",3,68300,null,null,null,null,null]",
+            "actionEpoch": "[\"ROUND_RESULTS\",4,68300,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -3019,9 +3067,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 3,
-            "roundNumber": 3,
-            "totalRounds": 3,
+            "completedRounds": 4,
+            "roundNumber": 4,
+            "totalRounds": 4,
             "participants": [
               "p2",
               "p4"
@@ -3043,6 +3091,7 @@
             "requiredTypes": [
               "psychic"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -3101,7 +3150,12 @@
               ],
               "requiredTypes": [
                 "psychic"
-              ]
+              ],
+              "selectedTypes": {
+                "p2": "psychic",
+                "p4": "psychic"
+              },
+              "disconnectedIds": []
             },
             "results": null
           },
@@ -3143,7 +3197,7 @@
           "lifecycle": {
             "phase": "GAME_RESULTS",
             "nextDeadline": null,
-            "actionEpoch": "[\"GAME_RESULTS\",3,68300,null,null,null,null,null]",
+            "actionEpoch": "[\"GAME_RESULTS\",4,68300,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -3155,9 +3209,9 @@
               "p3",
               "p4"
             ],
-            "completedRounds": 3,
-            "roundNumber": 3,
-            "totalRounds": 3,
+            "completedRounds": 4,
+            "roundNumber": 4,
+            "totalRounds": 4,
             "participants": [
               "p2",
               "p4"
@@ -3179,6 +3233,7 @@
             "requiredTypes": [
               "psychic"
             ],
+            "invalidCombinations": 0,
             "attempts": [],
             "scores": {
               "p1": 0,
@@ -3237,7 +3292,12 @@
               ],
               "requiredTypes": [
                 "psychic"
-              ]
+              ],
+              "selectedTypes": {
+                "p2": "psychic",
+                "p4": "psychic"
+              },
+              "disconnectedIds": []
             },
             "results": {
               "winnerId": "p3",
