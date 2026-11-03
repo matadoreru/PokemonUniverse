@@ -204,12 +204,12 @@ test('type-duel: resultado con tipos', async ({ browser }) => {
     await saltarIntro(jugadores.map((j) => j.page));
     for (const { page } of jugadores) await expect(page.getByRole('heading', { name: 'Elegid un tipo en secreto' })).toBeVisible({ timeout: 20_000 });
     // Los dos duelistas son las páginas con los botones de tipo; los dos eligen Fuego.
-    let elegidos = 0;
+    const duelistas: Page[] = [];
     for (const { page } of jugadores) {
       const fuego = page.getByRole('button', { name: 'Elegir tipo Fuego' });
-      if (await fuego.isVisible()) { await fuego.click(); elegidos++; }
+      if (await fuego.isVisible()) { await fuego.click(); duelistas.push(page); }
     }
-    expect(elegidos, 'duelistas que eligen tipo').toBe(2);
+    expect(duelistas.length, 'duelistas que eligen tipo').toBe(2);
 
     // Revelación (2 s) y búsqueda (20 s): enfrentamiento VS con cuántos Pokémon cumplen la combinación.
     const versus = host.page.getByTestId('type-duel-versus');
@@ -224,6 +224,12 @@ test('type-duel: resultado con tipos', async ({ browser }) => {
     expect(await animacionDe(vs), 'VS con movimiento').toBe('motion-bump');
     expect(await animacionDe(versus.locator('.motion-enter-left')), 'primer duelista con movimiento').toBe('motion-enter-left');
     await host.page.emulateMedia({ reducedMotion: 'reduce' });
+    // Con el bloque VS encima, el buscador del duelista sigue a la vista en móvil durante la búsqueda.
+    const buscador = duelistas[0]!.getByLabel('Buscar Pokémon con la combinación exacta');
+    await expect(buscador).toBeVisible({ timeout: 10_000 });
+    await duelistas[0]!.setViewportSize({ width: 390, height: 844 });
+    await expect(buscador).toBeInViewport();
+    await duelistas[0]!.setViewportSize({ width: 1280, height: 720 });
 
     // Nadie busca: la búsqueda de 20 s termina en «Tiempo agotado» y el host no pulsa «Siguiente ronda».
     const titulo = host.page.getByRole('heading', { name: 'Tiempo agotado' });
