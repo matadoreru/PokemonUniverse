@@ -31,6 +31,8 @@ export function GameHowToPlayDialog({ gameId, gameName, open, onClose }: Props) 
 
   if (!slides) return null;
   return <Dialog open={open} title={gameName} onClose={onClose} width={672} actions={[{ label: 'Cerrar', variant: 'blue', onClick: () => undefined }]}>
+    {/* Antetítulo del carrusel: el nombre accesible del diálogo sigue siendo su título (el nombre del juego). */}
+    <span className="text-xs font-black uppercase tracking-[.18em] text-ink/70">Cómo se juega</span>
     <HowToPlayCarousel slides={slides} heading={gameName} idPrefix={`how-to-play-${gameId}`} itemLabel="paso" loop={false} inDialog lastAction={<button type="button" className="btn-primary" onClick={onClose}>Entendido</button>} />
   </Dialog>;
 }

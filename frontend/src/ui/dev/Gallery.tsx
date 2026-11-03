@@ -681,7 +681,7 @@ export function Gallery() {
       <RowSection />
       <CardSection />
       <HudSection />
-      <DialogSection onToast={() => push('info', 'Aviso sobre el diálogo', 8000)} />
+      <DialogSection onToast={() => push('info', 'Aviso sobre el diálogo', 20_000)} />
       <ToastSection push={push} />
       <CutinSection />
       <ScorePopSection />

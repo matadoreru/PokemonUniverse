@@ -39,7 +39,7 @@ describe('HowToPlayCarousel', () => {
     expect(plain).not.toContain('data-autofocus');
   });
 
-    it('sin bucle no pasa del último paso ni del primero; con bucle da la vuelta', () => {
+  it('sin bucle no pasa del último paso ni del primero; con bucle da la vuelta', () => {
     expect(carouselStep(2, 3, false, 1)).toBe(2);
     expect(carouselStep(0, 3, false, -1)).toBe(0);
     expect(carouselStep(1, 3, false, 1)).toBe(2);

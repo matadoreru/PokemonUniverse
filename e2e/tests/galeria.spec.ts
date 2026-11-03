@@ -5,7 +5,7 @@
  */
 import { mkdirSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
-import { capture, collectErrors, SIZES } from '../src/helpers.js';
+import { collectErrors, layoutProblems, SIZES } from '../src/helpers.js';
 
 const DIR = 'screenshots/galeria';
 
@@ -47,8 +47,9 @@ for (const { w, h } of SIZES) {
     const errors = collectErrors(page);
     await page.setViewportSize({ width: w, height: h });
     await abrirGaleria(page);
-    // Sin scroll horizontal y `measureLayout(page, 13)` vacío (la página sí se desplaza en vertical).
-    await capture(page, 'galeria', { minFontPx: 13 });
+    // Captura de página completa, sin scroll horizontal y `measureLayout(page, 13)` vacío (la página sí se desplaza en vertical).
+    const { id, problems } = await layoutProblems(page, 'galeria', true, true, { minFontPx: 13 });
+    expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     expect(errors).toEqual([]);
   });
 }
@@ -66,17 +67,18 @@ test('el aviso queda encima del diálogo abierto y Esc devuelve el foco', async 
   await dialogo.getByRole('button', { name: 'Lanzar aviso' }).click();
   const aviso = page.locator('[popover]').getByText('Aviso sobre el diálogo');
   await expect(aviso).toBeVisible();
-  // El punto central del aviso cae dentro del aviso: el popover está por encima del `<dialog>` en la capa superior.
-  const encima = await aviso.evaluate((el) => {
-    const r = el.getBoundingClientRect();
-    const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-    const toast = el.closest('[popover] > *');
-    return hit !== null && toast !== null && toast.contains(hit);
-  });
-  expect(encima).toBe(true);
-
+  // Con el `<dialog>` modal abierto el resto del documento es inerte y `elementFromPoint` atraviesa el aviso: se compara
+  // por píxeles. Si el aviso quedara bajo el fondo del diálogo, el recorte con el diálogo abierto saldría oscurecido.
+  const caja = await aviso.locator('xpath=ancestor::*[parent::*[@popover]][1]').boundingBox();
+  expect(caja).not.toBeNull();
+  const clip = { x: caja!.x, y: caja!.y, width: caja!.width, height: caja!.height };
+  const conDialogo = await page.screenshot({ clip, animations: 'disabled' });
   await page.keyboard.press('Escape');
   await expect(dialogo).toBeHidden();
   await expect(abrir).toBeFocused();
+  // El aviso dura 20 s: sigue a la vista tras cerrar el diálogo.
+  await expect(aviso).toBeVisible();
+  const sinDialogo = await page.screenshot({ clip, animations: 'disabled' });
+  expect(Buffer.compare(conDialogo, sinDialogo), 'el aviso se ve igual con el diálogo abierto que sin él').toBe(0);
   expect(errors).toEqual([]);
 });
