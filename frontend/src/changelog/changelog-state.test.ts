@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ChangelogEntry } from '@pokemon-universe/shared';
-import { unreadChangelogCount } from './changelog-state.js';
+import { selectedChangelogEntry, unreadChangelogCount, unreadVersions } from './changelog-state.js';
 
 const entries = ['0.9.0', '0.8.1', '0.8.0'].map((version, index): ChangelogEntry => ({
   id: version, version, title: version, date: new Date(2026, 8, 10 - index).toISOString(), published: true,
@@ -17,5 +17,19 @@ describe('changelog unread state', () => {
     expect(unreadChangelogCount(entries, null)).toBe(3);
     expect(unreadChangelogCount(entries, '0.1.0')).toBe(3);
     expect(unreadChangelogCount([], null)).toBe(0);
+  });
+});
+
+describe('changelog page state', () => {
+  it('lists the versions that were unread on arrival', () => {
+    expect([...unreadVersions(entries, 1)]).toEqual(['0.9.0']);
+    expect([...unreadVersions(entries, 3)]).toEqual(['0.9.0', '0.8.1', '0.8.0']);
+    expect(unreadVersions(entries, 0).size).toBe(0);
+  });
+
+  it('opens the version named in the URL, or none when it is missing or unknown', () => {
+    expect(selectedChangelogEntry(entries, '0.8.1')?.version).toBe('0.8.1');
+    expect(selectedChangelogEntry(entries, null)).toBeNull();
+    expect(selectedChangelogEntry(entries, '7.0.0')).toBeNull();
   });
 });

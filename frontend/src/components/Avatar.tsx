@@ -2,7 +2,7 @@ import { avatarPreset, type AvatarRef, type PresenceStatus } from '@pokemon-univ
 import { useEffect, useState } from 'react';
 import { apiAsset } from '../lib/api';
 
-const sizeClasses = { xs: 'h-6 w-6 text-xs', sm: 'h-8 w-8 text-xs', md: 'h-11 w-11 text-sm', lg: 'h-16 w-16 text-xl', xl: 'h-24 w-24 text-3xl' } as const;
+const sizeClasses = { xs: 'h-6 w-6 text-xs', sm: 'h-8 w-8 text-xs', md: 'h-11 w-11 text-sm', lg: 'h-16 w-16 text-xl', xl: 'h-24 w-24 text-3xl', xxl: 'h-28 w-28 text-5xl lg:h-36 lg:w-36' } as const;
 const presenceClasses: Record<PresenceStatus, string> = { CONNECTED: 'bg-leaf', TEMPORARILY_DISCONNECTED: 'animate-pulse bg-electric', LEFT: 'bg-ink/30' };
 
 export function avatarSource(avatar: AvatarRef | undefined): string | null {

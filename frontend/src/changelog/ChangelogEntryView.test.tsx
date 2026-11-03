@@ -24,7 +24,9 @@ describe('ChangelogEntryView', () => {
     expect(markup).toContain('Última versión');
     expect(markup).toContain('3 cambios');
     expect(markup).toContain('2 categorías');
-    expect(markup).toContain('href="#version-0.8.0-NEW"');
+    expect(markup).toContain('id="version-0.8.0-NEW"');
     expect(markup).toContain('Correcciones');
+    // Sin las clases y los colores de alias de antes del rediseño.
+    expect(markup).not.toMatch(/text-ink\/|bg-berry|class="chip/);
   });
 });

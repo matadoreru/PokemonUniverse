@@ -1,28 +1,151 @@
-import type { ProfileDerivedMetricDefinition, ProfileMetricDefinition, UserProfileResponse } from '@pokemon-universe/shared/public';
-import { BarChart3, Gamepad2, Trophy } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import type { UserProfileResponse } from '@pokemon-universe/shared/public';
+import { ChevronDown } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { AvatarEditor } from '../components/AvatarEditor';
 import { api } from '../lib/api';
+import { formatDerivedMetric, formatStoredMetric, sortProfileGames, winRate } from '../profile/profileStats';
+import { cx, HudPlate, Panel, Pill, Row, StateBox, type StateBoxProps } from '../ui';
 
-export function ProfilePage() {
-  const { user, updateUser } = useAuth(); const [profile, setProfile] = useState<UserProfileResponse | null>(null); const [selectedGameId, setSelectedGameId] = useState(''); const [error, setError] = useState('');
-  useEffect(() => { if (user?.kind === 'USER') void api<{ profile: UserProfileResponse }>('/auth/profile').then((body) => { setProfile(body.profile); setSelectedGameId((current) => current || body.profile.games.find((game) => game.stats.gamesPlayed > 0)?.id || body.profile.games[0]?.id || ''); }).catch((caught) => setError(caught.message)); }, [user?.id]);
-  const selected = useMemo(() => profile?.games.find((game) => game.id === selectedGameId) ?? profile?.games[0], [profile, selectedGameId]);
-  if (user?.kind !== 'USER') return <Navigate to="/play" replace />;
-  if (!profile) return <section className="mx-auto max-w-6xl px-4 py-8 sm:px-5 sm:py-10">{error ? <p className="status-error mx-auto max-w-xl" role="alert">{error}</p> : <div aria-label="Cargando perfil" role="status" className="space-y-5"><div className="card flex items-center gap-5"><span className="skeleton h-20 w-20 shrink-0 rounded-full" /><div className="flex-1 space-y-3"><span className="skeleton block h-5 w-32" /><span className="skeleton block h-9 max-w-sm" /><span className="skeleton block h-4 max-w-xs" /></div></div><div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{[0, 1, 2].map((item) => <span key={item} className={`skeleton h-28 ${item === 2 ? 'col-span-2 sm:col-span-1' : ''}`} />)}</div><span className="skeleton block h-64" /></div>}</section>;
-  const winRate = profile.globalStats.gamesPlayed ? Math.round(profile.globalStats.gamesWon / profile.globalStats.gamesPlayed * 100) : 0;
-  return <section className="mx-auto max-w-6xl px-4 py-8 sm:px-5 sm:py-10">
-    <div className="card mb-6 flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left"><AvatarEditor name={profile.user.username} avatar={profile.user.avatar} onSaved={(nextUser) => { updateUser(nextUser); setProfile((current) => current ? { ...current, user: { ...current.user, avatar: nextUser.avatar } } : current); }} /><div className="min-w-0"><span className="label">Perfil de entrenador</span><h1 className="truncate font-display text-3xl font-bold sm:text-4xl">{profile.user.username}</h1><p className="font-semibold text-ink/65">Miembro desde {new Date(profile.user.createdAt).toLocaleDateString('es-ES')}</p><p className="mt-2 text-sm font-bold text-aqua">Pulsa el avatar para cambiarlo</p></div></div>
-    <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">{[[Gamepad2, 'Partidas', profile.globalStats.gamesPlayed], [Trophy, 'Victorias', profile.globalStats.gamesWon], [BarChart3, 'Winrate global', `${winRate}%`]].map(([Icon, label, value], index) => { const StatIcon = Icon as typeof Trophy; return <article className={`card !p-4 sm:!p-5 ${index === 2 ? 'col-span-2 sm:col-span-1' : ''}`} key={String(label)}><StatIcon className="text-berry" /><span className="label mt-3">{String(label)}</span><strong className="font-display text-3xl sm:text-4xl">{String(value)}</strong></article>; })}</div>
-    <div className="mb-3 flex flex-wrap items-end justify-between gap-2"><div><span className="label">Estadísticas por juego</span><h2 className="font-display text-3xl">Tu historial</h2></div><strong className="text-berry">{profile.globalStats.totalPoints} puntos totales</strong></div>
-    <div className="mb-4 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Seleccionar minijuego">{profile.games.map((game) => <button key={game.id} role="tab" aria-selected={selected?.id === game.id} onClick={() => setSelectedGameId(game.id)} className={`flex min-w-max items-center gap-2 rounded-2xl border px-4 py-3 text-left transition ${selected?.id === game.id ? 'border-berry bg-berry/10 text-ink' : 'border-ink/10 bg-surface-raised text-ink/70 hover:border-aqua'}`}><span className="text-xl" aria-hidden="true">{game.icon}</span><span><strong className="block font-display">{game.name}</strong><small className="font-bold">{game.stats.gamesPlayed ? `${game.stats.gamesPlayed} partidas` : 'Sin jugar'}</small></span></button>)}</div>
-    {selected && <article className="card"><div className="flex items-start gap-3"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-electric/20 text-2xl" aria-hidden="true">{selected.icon}</span><div><h3 className="font-display text-2xl font-bold">{selected.name}</h3><p className="font-semibold text-ink/65">{selected.description}</p></div></div>{selected.stats.gamesPlayed === 0 ? <div className="empty-state mt-6"><Gamepad2 className="mx-auto mb-3 text-ink/45" size={38} /><strong className="font-display text-xl text-ink">Todavía no has jugado ninguna partida.</strong><p className="mt-1 font-bold">Selecciona este juego en el lobby para estrenar tus estadísticas.</p></div> : <><div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4"><Metric label="Partidas" value={selected.stats.gamesPlayed} /><Metric label="Victorias" value={selected.stats.gamesWon} /><Metric label="Puntos históricos" value={selected.stats.points} accent /><Metric label="Winrate" value={`${Math.round(selected.stats.gamesWon / selected.stats.gamesPlayed * 100)}%`} /></div><div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3">{selected.profileStats.metrics.map((metric) => <Metric key={metric.key} label={metric.label} value={formatStoredMetric(metric, selected.stats.metrics[metric.key] ?? 0)} />)}{selected.profileStats.derivedMetrics?.map((metric) => <Metric key={metric.key} label={metric.label} value={formatDerivedMetric(metric, selected.stats.metrics)} />)}</div></>}</article>}
-  </section>;
+type ProfileGame = UserProfileResponse['games'][number];
+
+const memberSince = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+
+/** Dato grande del resumen: número en display con numerales tabulares y su etiqueta debajo. */
+function Stat({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="flex min-w-0 flex-col gap-1">
+      <strong className="ol font-display text-34 font-extrabold tabular-nums text-[color:var(--yellow)] lg:text-44">{value}</strong>
+      <span className="text-13 font-extrabold uppercase tracking-[.06em] text-[color:var(--sky-2)]">{label}</span>
+    </div>
+  );
 }
 
-function formatStoredMetric(metric: ProfileMetricDefinition, value: number): string | number { return metric.format === 'DURATION_MS' ? formatDuration(value) : value; }
-function formatDerivedMetric(metric: ProfileDerivedMetricDefinition, metrics: Record<string, number>): string { const denominator = metric.denominator.reduce((sum, key) => sum + (metrics[key] ?? 0), 0); if (!denominator) return metric.kind === 'PERCENT' ? '0%' : '—'; const value = (metrics[metric.numerator] ?? 0) / denominator; if (metric.kind === 'PERCENT') return `${Math.round(value * 100)}%`; return metric.format === 'DURATION_MS' ? formatDuration(value) : value.toFixed(1); }
-function formatDuration(milliseconds: number): string { return `${(milliseconds / 1000).toFixed(1)}s`; }
-function Metric({ label, value, accent = false }: { label: string; value: string | number; accent?: boolean }) { return <div className={`rounded-xl p-3.5 ${accent ? 'bg-berry/10' : 'bg-ink/[.06]'}`}><span className="block text-xs font-extrabold text-ink/60">{label}</span><strong className={`font-display text-2xl ${accent ? 'text-berry' : ''}`}>{value}</strong></div>; }
+/** Métricas de un juego, bajo su franja: las comunes y las propias del juego (con su formato). */
+function GameMetrics({ game, id }: { game: ProfileGame; id: string }) {
+  const { stats, profileStats } = game;
+  const items: [string, string][] = [
+    ['Victorias', String(stats.gamesWon)],
+    ['Winrate', winRate(stats.gamesWon, stats.gamesPlayed)],
+    ...profileStats.metrics.map((metric): [string, string] => [metric.label, formatStoredMetric(metric, stats.metrics[metric.key] ?? 0)]),
+    ...(profileStats.derivedMetrics ?? []).map((metric): [string, string] => [metric.label, formatDerivedMetric(metric, stats.metrics)]),
+  ];
+  return (
+    <dl id={id} className="mx-2 grid grid-cols-2 gap-x-4 gap-y-3 rounded-b-[var(--r-franja)] border-x-[2.5px] border-b-[2.5px] border-[color:var(--navy)] bg-[var(--cream-2)] px-4 pb-3 pt-4 text-[color:var(--ink)] sm:grid-cols-3">
+      {items.map(([label, value]) => (
+        <div key={label} className="min-w-0">
+          <dt className="text-13 font-bold text-[color:var(--ink-2)]">{label}</dt>
+          <dd className="font-display text-22 font-extrabold tabular-nums">{value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+/**
+ * Perfil (spec §2, página larga): a la izquierda (arriba en móvil) la placa con el avatar grande, su píldora de
+ * cámara para el editor, el nombre y la fecha de alta, y el resumen global; a la derecha (abajo en móvil) las
+ * estadísticas por juego en franjas que se abren para ver sus métricas, con scroll dentro del panel.
+ */
+export function ProfilePage() {
+  const { user, updateUser } = useAuth();
+  const navigate = useNavigate();
+  const [profile, setProfile] = useState<UserProfileResponse | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  const load = useCallback(() => {
+    setFailed(false);
+    void api<{ profile: UserProfileResponse }>('/auth/profile')
+      .then((body) => {
+        setProfile(body.profile);
+        setOpenId((current) => current ?? body.profile.games.find((game) => game.stats.gamesPlayed > 0)?.id ?? null);
+      })
+      .catch(() => setFailed(true));
+  }, []);
+  useEffect(() => { if (user?.kind === 'USER') load(); }, [user?.id, user?.kind, load]);
+  const games = useMemo(() => sortProfileGames(profile?.games ?? []), [profile]);
+
+  if (user?.kind !== 'USER') return <Navigate to="/play" replace />;
+
+  const status: StateBoxProps | null = failed
+    ? { kind: 'error', title: 'No se pudo cargar tu perfil', text: 'Comprueba la conexión y vuelve a intentarlo.', action: { label: 'Reintentar', onClick: load } }
+    : !profile ? { kind: 'loading', title: 'Cargando perfil' } : null;
+
+  if (status || !profile) {
+    return (
+      <div className="mx-auto grid w-full max-w-[1600px] px-4 pb-4 pt-6 sm:px-6 lg:px-8 lg:pt-5">
+        <Panel title="Perfil de entrenador" status={status} className="mx-auto w-full max-w-[40rem]" />
+      </div>
+    );
+  }
+
+  const { globalStats } = profile;
+  const played = games.filter((game) => game.stats.gamesPlayed > 0).length;
+  return (
+    <div className="mx-auto grid w-full max-w-[1600px] gap-5 px-4 pb-4 pt-6 sm:px-6 lg:h-full lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-8 lg:px-8 lg:py-5 2xl:gap-12">
+      <div className="flex min-w-0 flex-col gap-5 lg:min-h-0">
+        <HudPlate className="w-full !gap-5 !p-5 lg:!p-6">
+          <AvatarEditor
+            name={profile.user.username}
+            avatar={profile.user.avatar}
+            onSaved={(nextUser) => { updateUser(nextUser); setProfile((current) => current ? { ...current, user: { ...current.user, avatar: nextUser.avatar } } : current); }}
+          />
+          <div className="min-w-0">
+            <p className="text-13 font-extrabold uppercase tracking-[.08em] text-[color:var(--sky-2)]">Perfil de entrenador</p>
+            <h1 className="ol2 font-display text-26 font-extrabold text-[color:var(--white)] [overflow-wrap:anywhere] sm:text-34 2xl:text-44">{profile.user.username}</h1>
+            <p className="mt-1 text-15 font-bold text-[color:var(--sky-2)]">Miembro desde el {memberSince.format(new Date(profile.user.createdAt))}</p>
+          </div>
+        </HudPlate>
+        <Panel title="Resumen" variant="dark" right={`${played} de ${games.length} juegos`} bodyClassName="px-5 py-5">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+            <Stat label="Partidas" value={globalStats.gamesPlayed} />
+            <Stat label="Victorias" value={globalStats.gamesWon} />
+            <Stat label="Winrate" value={winRate(globalStats.gamesWon, globalStats.gamesPlayed)} />
+            <Stat label="Puntos" value={globalStats.totalPoints} />
+          </div>
+        </Panel>
+      </div>
+
+      <Panel title="Estadísticas por juego" right={played ? `${played} ${played === 1 ? 'jugado' : 'jugados'}` : undefined} scroll className="lg:min-h-0">
+        {played === 0 && (
+          <div className="mb-3">
+            <StateBox kind="empty" title="Todavía no has jugado ninguna partida" text="Crea una sala, invita a tus amigos y elige un minijuego: tus estadísticas aparecerán aquí." action={{ label: 'Ir a jugar', onClick: () => navigate('/play') }} />
+          </div>
+        )}
+        <ul className="grid grid-cols-[minmax(0,1fr)] gap-2 p-1" aria-label="Minijuegos">
+          {games.map((game) => {
+            const hasStats = game.stats.gamesPlayed > 0;
+            const open = hasStats && openId === game.id;
+            const detailId = `perfil-juego-${game.id}`;
+            return (
+              <li key={game.id}>
+                <Row
+                  avatar={<span className="grid h-9 w-9 place-items-center text-26" aria-hidden="true">{game.icon}</span>}
+                  name={game.name}
+                  meta={hasStats ? `${game.stats.gamesPlayed} ${game.stats.gamesPlayed === 1 ? 'partida' : 'partidas'} · ${game.stats.gamesWon} ${game.stats.gamesWon === 1 ? 'victoria' : 'victorias'}` : 'Sin jugar'}
+                  value={hasStats ? `${game.stats.points} pts` : undefined}
+                >
+                  {hasStats && (
+                    <Pill
+                      size="round"
+                      variant="cream"
+                      icon={ChevronDown}
+                      aria-expanded={open}
+                      aria-controls={open ? detailId : undefined}
+                      aria-label={`${open ? 'Ocultar' : 'Ver'} estadísticas de ${game.name}`}
+                      className={cx('shrink-0 [&_svg]:transition-transform', open && '[&_svg]:rotate-180')}
+                      onClick={() => setOpenId(open ? null : game.id)}
+                    />
+                  )}
+                </Row>
+                {open && <GameMetrics game={game} id={detailId} />}
+              </li>
+            );
+          })}
+        </ul>
+      </Panel>
+    </div>
+  );
+}

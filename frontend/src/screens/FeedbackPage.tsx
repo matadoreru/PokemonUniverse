@@ -1,19 +1,46 @@
 import {
   FEEDBACK_REFERENCES,
   FEEDBACK_REFERENCE_LABELS,
+  FEEDBACK_TYPE_LABELS,
   type FeedbackItem,
   type FeedbackReference,
   type FeedbackType,
   type MiniGameManifest,
 } from '@pokemon-universe/shared/public';
-import { ArrowLeft, Bug, CheckCircle2, Lightbulb, LoaderCircle, MessageSquarePlus, Send } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { ArrowLeft, Bug, CheckCircle2, Lightbulb, Send } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { feedbackErrorMessage } from '../feedback/feedbackErrors';
 import { api } from '../lib/api';
 import type { FeedbackCreateResponse } from '../lib/api-contract';
+import { Chip, Icon, Panel, Pill, PillLink, Segmented, SelectField, StateBox, TextArea } from '../ui';
 
 interface GameOption extends MiniGameManifest { defaultConfig: unknown }
 
+const DESCRIPTION_ID = 'feedback-description';
+const MAX_DESCRIPTION = 2_000;
+const MIN_DESCRIPTION = 10;
+
+const TYPE_OPTIONS: { value: FeedbackType; label: ReactNode }[] = [
+  { value: 'BUG', label: <span className="inline-flex items-center gap-2"><Icon icon={Bug} size={18} />{FEEDBACK_TYPE_LABELS.BUG}</span> },
+  { value: 'SUGGESTION', label: <span className="inline-flex items-center gap-2"><Icon icon={Lightbulb} size={18} />{FEEDBACK_TYPE_LABELS.SUGGESTION}</span> },
+];
+
+const PLACEHOLDER: Record<FeedbackType, string> = {
+  BUG: 'Explica qué ocurrió, qué esperabas y cómo podemos reproducirlo…',
+  SUGGESTION: 'Describe tu idea y cómo mejoraría Pokémon Universe…',
+};
+
+/** Etiqueta visible de un grupo sin `<label>` (el `Segmented` ya lleva su `aria-label`). */
+function GroupLabel({ children }: { children: string }) {
+  return <span className="font-display text-15 font-extrabold text-[color:var(--ink)]" aria-hidden="true">{children}</span>;
+}
+
+/**
+ * Feedback en un panel crema: el tema (y el minijuego si es de uno), el tipo en `Segmented`, la descripción con
+ * contador y «Enviar». Un fallo al enviar se ve en un `StateBox` en español; al acabar, el mismo panel da las gracias
+ * y ofrece volver a la partida (si se llegó desde una sala) o enviar otro. En escritorio cabe sin scroll de página.
+ */
 export function FeedbackPage() {
   const [params] = useSearchParams();
   const requestedGameId = params.get('game') ?? '';
@@ -29,30 +56,42 @@ export function FeedbackPage() {
   const [type, setType] = useState<FeedbackType>('BUG');
   const [description, setDescription] = useState('');
   const [loadingGames, setLoadingGames] = useState(initialReference === 'MINIGAME');
-  const [gameError, setGameError] = useState('');
+  const [gameError, setGameError] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
   const [sent, setSent] = useState<FeedbackItem | null>(null);
+  const errorBox = useRef<HTMLDivElement>(null);
+  const thanks = useRef<HTMLHeadingElement>(null);
 
   const loadGames = useCallback(() => {
     let active = true;
-    setLoadingGames(true); setGameError('');
+    setLoadingGames(true); setGameError(false);
     void api<{ games: GameOption[] }>('/games')
       .then((response) => { if (active) setGames(response.games); })
-      .catch((caught: Error) => { if (active) setGameError(caught.message); })
+      .catch(() => { if (active) setGameError(true); })
       .finally(() => { if (active) setLoadingGames(false); });
     return () => { active = false; };
   }, []);
   useEffect(() => {
     if (reference !== 'MINIGAME') {
       setLoadingGames(false);
-      setGameError('');
+      setGameError(false);
       return;
     }
     return loadGames();
   }, [loadGames, reference]);
 
+  // Foco inicial en la descripción solo con ratón: en el móvil abriría el teclado sin pedirlo.
+  useEffect(() => {
+    if (sent || !window.matchMedia?.('(pointer: fine)').matches) return;
+    document.getElementById(DESCRIPTION_ID)?.focus();
+  }, [sent]);
+  useEffect(() => { if (error) errorBox.current?.focus(); }, [error]);
+  useEffect(() => { if (sent) thanks.current?.focus(); }, [sent]);
+
   const selectedGame = useMemo(() => games.find((game) => game.id === gameId), [gameId, games]);
+  const backTo = validRoomCode ? '/room' : '/';
+  const backLabel = validRoomCode ? 'Volver a la partida' : 'Volver al inicio';
 
   async function submit(event: FormEvent) {
     event.preventDefault(); setSending(true); setError('');
@@ -68,47 +107,88 @@ export function FeedbackPage() {
         }),
       });
       setSent(response.feedback);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudo enviar el feedback.'); }
+    } catch (caught) { setError(feedbackErrorMessage(caught)); }
     finally { setSending(false); }
   }
 
-  if (sent) return <section className="mx-auto w-full max-w-2xl px-4 py-10 sm:px-5 sm:py-16">
-    <div className="panel p-6 text-center sm:p-9">
-      <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-leaf/10 text-leaf"><CheckCircle2 size={30} /></span>
-      <h1 className="mt-5 font-display text-3xl font-bold">Gracias por avisar</h1>
-      <p className="mx-auto mt-2 max-w-lg font-semibold leading-relaxed text-ink/65">Tu {sent.type === 'BUG' ? 'reporte' : 'sugerencia'} sobre <strong className="text-ink">{sent.gameName ?? FEEDBACK_REFERENCE_LABELS[sent.reference]}</strong> ya está en la bandeja de administración.</p>
-      <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-        {validRoomCode && <Link className="btn-primary" to="/room">Volver a la partida</Link>}
-        <button className="btn-ghost" type="button" onClick={() => { setDescription(''); setSent(null); }}>Enviar otro comentario</button>
-        {!validRoomCode && <Link className="btn-primary" to="/">Volver al inicio</Link>}
-      </div>
-    </div>
-  </section>;
+  const canSend = description.trim().length >= MIN_DESCRIPTION && !(reference === 'MINIGAME' && (loadingGames || !selectedGame));
 
-  return <section className="mx-auto w-full max-w-3xl px-4 py-7 sm:px-5 sm:py-12">
-    <Link className="mb-5 inline-flex min-h-11 items-center gap-2 font-extrabold text-ink/65 underline decoration-ink/25 underline-offset-4 hover:text-ink" to={validRoomCode ? '/room' : '/'}><ArrowLeft size={18} />{validRoomCode ? 'Volver a la partida' : 'Volver al inicio'}</Link>
-    <div className="panel overflow-hidden">
-      <header className="border-b border-ink/10 p-5 sm:p-7">
-        <div className="flex items-start gap-4"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-aqua/10 text-aqua"><MessageSquarePlus size={25} /></span><div><h1 className="font-display text-3xl font-bold sm:text-4xl">Enviar feedback</h1><p className="mt-2 max-w-[65ch] font-semibold leading-relaxed text-ink/65">Cuéntanos qué ha fallado o qué mejorarías en Pokémon Universe. Puedes hablar del proyecto en general o añadir contexto si lo necesitas.</p></div></div>
-      </header>
-      <form className="space-y-6 p-5 sm:p-7" onSubmit={(event) => void submit(event)}>
-        <div className="space-y-4">
-          <label><span className="label">¿Sobre qué nos escribes? <span className="font-bold text-ink/50">(opcional)</span></span><select className="field" value={reference} onChange={(event) => { const nextReference = event.target.value as FeedbackReference; setReference(nextReference); if (nextReference !== 'MINIGAME') setGameId(''); }}>{FEEDBACK_REFERENCES.map((value) => <option key={value} value={value}>{FEEDBACK_REFERENCE_LABELS[value]}</option>)}</select></label>
-          {reference === 'MINIGAME' && <div><label><span className="label">Minijuego</span><select className="field" value={gameId} onChange={(event) => setGameId(event.target.value)} disabled={loadingGames} required><option value="">{loadingGames ? 'Cargando minijuegos…' : 'Selecciona un minijuego'}</option>{games.map((game) => <option key={game.id} value={game.id}>{game.name}</option>)}</select></label>{gameError && <div className="status-error mt-3 flex flex-wrap items-center justify-between gap-3" role="alert"><span>{gameError}</span><button className="btn-ghost text-sm" type="button" onClick={loadGames}>Volver a intentar</button></div>}</div>}
-          <p className="text-sm font-semibold text-ink/55">Déjalo en “Pokémon Universe en general” si no necesitas concretar el tema.</p>
+  return (
+    <div className="mx-auto grid w-full max-w-[1600px] gap-4 px-4 pb-4 pt-6 sm:px-6 lg:h-full lg:grid-rows-[auto_minmax(0,1fr)] lg:gap-5 lg:px-8 lg:pt-5">
+      <header className="mx-auto flex w-full max-w-[76rem] flex-wrap items-end justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="ol2 font-display text-34 font-extrabold text-[color:var(--white)] lg:text-44">Enviar feedback</h1>
+          <p className="mt-2 text-15 font-bold text-[color:var(--sky-2)] lg:text-18">Cuéntanos qué ha fallado o qué mejorarías. Lo lee el equipo de administración.</p>
         </div>
+        {!sent && <PillLink to={backTo} variant="cream" icon={ArrowLeft}>{backLabel}</PillLink>}
+      </header>
 
-        <fieldset><legend className="label">Tipo de feedback</legend><div className="grid gap-3 sm:grid-cols-2">
-          <button type="button" aria-pressed={type === 'BUG'} className={`flex min-h-20 items-center gap-3 rounded-xl border p-4 text-left transition-colors ${type === 'BUG' ? 'border-berry bg-berry/10' : 'border-ink/10 bg-surface-raised hover:border-ink/25'}`} onClick={() => setType('BUG')}><Bug className={type === 'BUG' ? 'text-berry' : 'text-ink/50'} size={23} /><span><strong className="block font-display text-lg">Reportar problema</strong><span className="block text-sm font-semibold text-ink/60">Algo no funciona como debería.</span></span></button>
-          <button type="button" aria-pressed={type === 'SUGGESTION'} className={`flex min-h-20 items-center gap-3 rounded-xl border p-4 text-left transition-colors ${type === 'SUGGESTION' ? 'border-electric bg-electric/10' : 'border-ink/10 bg-surface-raised hover:border-ink/25'}`} onClick={() => setType('SUGGESTION')}><Lightbulb className={type === 'SUGGESTION' ? 'text-electric' : 'text-ink/50'} size={23} /><span><strong className="block font-display text-lg">Enviar sugerencia</strong><span className="block text-sm font-semibold text-ink/60">Una idea para mejorar la experiencia.</span></span></button>
-        </div></fieldset>
-
-        <label><span className="mb-1.5 flex items-center justify-between gap-3"><span className="label !mb-0">Descripción</span><span className="text-xs font-extrabold tabular-nums text-ink/50">{description.length}/2000</span></span><textarea className="field min-h-40 resize-y" value={description} onChange={(event) => setDescription(event.target.value.slice(0, 2_000))} minLength={10} maxLength={2_000} placeholder={type === 'BUG' ? 'Explica qué ocurrió, qué esperabas y cómo podemos reproducirlo…' : 'Describe tu idea y cómo mejoraría Pokémon Universe…'} required /></label>
-
-        <div className="flex flex-wrap gap-2 text-xs font-extrabold text-ink/60" aria-label="Contexto incluido"><span className="permission-chip">Tema: {selectedGame?.name ?? FEEDBACK_REFERENCE_LABELS[reference]}</span>{validRoomCode && <span className="permission-chip">Sala: {validRoomCode}</span>}</div>
-        {error && <p className="status-error" role="alert">{error}</p>}
-        <div className="flex justify-end"><button className="btn-primary w-full sm:w-auto" disabled={sending || description.trim().length < 10 || (reference === 'MINIGAME' && (loadingGames || !selectedGame))} aria-busy={sending}>{sending ? <LoaderCircle className="animate-spin" size={18} /> : <Send size={18} />}{sending ? 'Enviando…' : 'Enviar feedback'}</button></div>
-      </form>
+      {sent ? (
+        <Panel variant="cream" title="Mensaje enviado" className="mx-auto w-full max-w-[44rem] lg:self-center" bodyClassName="px-5 py-7 sm:px-8">
+          <div className="flex flex-col items-center text-center" role="status">
+            <span className="grid h-16 w-16 place-items-center rounded-full border-[3px] border-[color:var(--navy)] bg-[var(--ok)] text-[color:var(--navy)]" aria-hidden="true"><Icon icon={CheckCircle2} size={32} /></span>
+            <h2 ref={thanks} tabIndex={-1} className="mt-4 font-display text-34 font-extrabold text-[color:var(--ink)] outline-none">Gracias por avisar</h2>
+            <p className="mt-2 max-w-[48ch] text-18 font-semibold text-[color:var(--ink-2)]">
+              Tu {sent.type === 'BUG' ? 'reporte' : 'sugerencia'} sobre <strong className="text-[color:var(--ink)]">{sent.gameName ?? FEEDBACK_REFERENCE_LABELS[sent.reference]}</strong> ya está en la bandeja de administración.
+            </p>
+            <div className="mt-6 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
+              <PillLink to={backTo} variant="yellow">{backLabel}</PillLink>
+              <Pill variant="cream" onClick={() => { setDescription(''); setSent(null); }}>Enviar otro comentario</Pill>
+            </div>
+          </div>
+        </Panel>
+      ) : (
+        <Panel variant="cream" title="Tu mensaje" scroll className="mx-auto w-full max-w-[76rem] lg:self-start lg:max-h-full" bodyClassName="px-4 py-5 sm:px-6 lg:px-7 lg:py-4">
+          <form className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-8" onSubmit={(event) => void submit(event)} noValidate>
+            <div className="flex min-w-0 flex-col gap-5">
+              <div className="flex flex-col gap-2">
+                <SelectField
+                  label="¿Sobre qué nos escribes?"
+                  value={reference}
+                  options={FEEDBACK_REFERENCES.map((value) => ({ value, label: FEEDBACK_REFERENCE_LABELS[value] }))}
+                  onChange={(value) => { const next = value as FeedbackReference; setReference(next); if (next !== 'MINIGAME') setGameId(''); }}
+                />
+                <p className="text-13 font-semibold text-[color:var(--ink-2)]">Déjalo en «{FEEDBACK_REFERENCE_LABELS.GENERAL}» si no necesitas concretar.</p>
+              </div>
+              {reference === 'MINIGAME' && (gameError
+                ? <StateBox kind="error" title="No se pudieron cargar los minijuegos" text="Comprueba la conexión y vuelve a intentarlo." action={{ label: 'Reintentar', onClick: () => { loadGames(); } }} onCream />
+                : <SelectField
+                    label="Minijuego"
+                    value={gameId}
+                    disabled={loadingGames}
+                    options={[{ value: '', label: loadingGames ? 'Cargando minijuegos…' : 'Selecciona un minijuego' }, ...games.map((game) => ({ value: game.id, label: game.name }))]}
+                    onChange={setGameId}
+                  />)}
+              <div className="flex flex-col gap-2">
+                <GroupLabel>Tipo de feedback</GroupLabel>
+                <Segmented label="Tipo de feedback" value={type} options={TYPE_OPTIONS} onChange={setType} className="w-full" />
+              </div>
+              <div className="flex flex-wrap items-center gap-2" aria-label="Contexto incluido" role="group">
+                <Chip tone="info">Tema: {selectedGame?.name ?? FEEDBACK_REFERENCE_LABELS[reference]}</Chip>
+                {validRoomCode && <Chip tone="neutral">Sala: {validRoomCode}</Chip>}
+              </div>
+            </div>
+            <div className="flex min-w-0 flex-col gap-4">
+              <TextArea
+                id={DESCRIPTION_ID}
+                label="Descripción"
+                value={description}
+                onChange={setDescription}
+                maxLength={MAX_DESCRIPTION}
+                rows={5}
+                hint={`Mínimo ${MIN_DESCRIPTION} caracteres.`}
+                placeholder={PLACEHOLDER[type]}
+              />
+              {error && (
+                <div ref={errorBox} tabIndex={-1} className="rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[color:var(--navy)]">
+                  <StateBox kind="error" title="No se pudo enviar el feedback" text={error} onCream />
+                </div>
+              )}
+              <Pill type="submit" variant="yellow" icon={Send} loading={sending} disabled={!canSend} className="self-stretch sm:self-end">Enviar</Pill>
+            </div>
+          </form>
+        </Panel>
+      )}
     </div>
-  </section>;
+  );
 }

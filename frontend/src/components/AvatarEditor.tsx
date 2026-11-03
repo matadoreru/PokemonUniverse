@@ -2,17 +2,18 @@ import { AVATAR_PRESETS, type AuthUser, type AvatarRef } from '@pokemon-universe
 import { Camera, Check, ImagePlus, RotateCcw, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { api } from '../lib/api';
-import { Dialog } from '../ui';
+import { authErrorMessage } from '../auth/authErrors';
+import { Card, Dialog, Pill, Slider } from '../ui';
 import { Avatar } from './Avatar';
 
 const MAX_CLIENT_BYTES = 5 * 1024 * 1024;
 
 export function AvatarEditor({ name, avatar, onSaved }: { name: string; avatar: AvatarRef; onSaved(user: AuthUser): void }) {
-  const [open, setOpen] = useState(false); const [source, setSource] = useState<string | null>(null); const [zoom, setZoom] = useState(1); const [offsetX, setOffsetX] = useState(0); const [offsetY, setOffsetY] = useState(0); const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const imageRef = useRef<HTMLImageElement>(null);
+  const [open, setOpen] = useState(false); const [source, setSource] = useState<string | null>(null); const [zoom, setZoom] = useState(1); const [offsetX, setOffsetX] = useState(0); const [offsetY, setOffsetY] = useState(0); const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const imageRef = useRef<HTMLImageElement>(null); const fileInput = useRef<HTMLInputElement>(null);
   useEffect(() => () => { if (source) URL.revokeObjectURL(source); }, [source]);
 
   function chooseFile(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0]; setError('');
+    const file = event.target.files?.[0]; event.target.value = ''; setError('');
     if (!file) return;
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) { setError('Selecciona una imagen JPEG, PNG o WEBP.'); return; }
     if (file.size > MAX_CLIENT_BYTES) { setError('La imagen supera el límite de 5 MB.'); return; }
@@ -23,14 +24,14 @@ export function AvatarEditor({ name, avatar, onSaved }: { name: string; avatar: 
   async function selectPreset(presetId: string) {
     setBusy(true); setError('');
     try { const body = await api<{ user: AuthUser }>('/auth/profile/avatar/preset', { method: 'PUT', body: JSON.stringify({ presetId }) }); onSaved(body.user); setSource(null); setOpen(false); }
-    catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudo guardar el avatar.'); }
+    catch (caught) { setError(authErrorMessage(caught)); }
     finally { setBusy(false); }
   }
 
   async function removeAvatar() {
     setBusy(true); setError('');
     try { const body = await api<{ user: AuthUser }>('/auth/profile/avatar', { method: 'DELETE' }); onSaved(body.user); setSource(null); setOpen(false); }
-    catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudo eliminar el avatar.'); }
+    catch (caught) { setError(authErrorMessage(caught)); }
     finally { setBusy(false); }
   }
 
@@ -49,17 +50,48 @@ export function AvatarEditor({ name, avatar, onSaved }: { name: string; avatar: 
       if (!blob) throw new Error('No se pudo procesar la imagen.');
       const body = await api<{ user: AuthUser }>('/auth/profile/avatar/custom', { method: 'PUT', headers: { 'Content-Type': blob.type || 'image/webp' }, body: blob });
       onSaved(body.user); if (source) URL.revokeObjectURL(source); setSource(null); setOpen(false);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudo subir el avatar.'); }
+    } catch (caught) { setError(authErrorMessage(caught)); }
     finally { setBusy(false); }
   }
 
+  const current = avatar.type === 'PRESET' ? avatar.value : null;
   return <>
-    <button type="button" onClick={() => setOpen(true)} className="group relative rounded-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-aqua/40" aria-label="Cambiar avatar"><Avatar name={name} avatar={avatar} size="xl" /><span className="absolute bottom-0 right-0 grid h-8 w-8 place-items-center rounded-full border border-surface bg-berry text-night shadow"><Camera size={15} /></span></button>
-    <Dialog open={open} title="Elige tu avatar" onClose={() => setOpen(false)} width={672} actions={[{ label: 'Cerrar', variant: 'blue', onClick: () => undefined, autoFocus: true }]}><span className="label">Foto de perfil</span>
-      <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">{AVATAR_PRESETS.map((preset) => <button key={preset.id} disabled={busy} onClick={() => void selectPreset(preset.id)} className={`relative grid min-h-28 place-items-center rounded-2xl border p-3 transition ${avatar.type === 'PRESET' && avatar.value === preset.id ? 'border-berry bg-berry/10' : 'border-ink/10 hover:border-aqua'}`}><Avatar name={preset.label} avatar={{ type: 'PRESET', value: preset.id }} size="lg" /><span className="mt-2 text-xs font-extrabold">{preset.label.replace('Entrenador ', '').replace('Entrenadora ', '')}</span>{avatar.type === 'PRESET' && avatar.value === preset.id && <Check className="absolute right-2 top-2 text-berry" size={17} />}</button>)}</div>
-      <div className="my-6 border-t border-ink/10" />
-      {!source ? <label className="flex min-h-20 cursor-pointer items-center justify-center gap-3 rounded-2xl border border-dashed border-aqua/40 bg-aqua/5 font-extrabold text-aqua hover:bg-aqua/10"><ImagePlus /> Subir mi propia imagen<input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={chooseFile} /></label> : <div className="grid gap-5 sm:grid-cols-[256px_1fr]"><div className="mx-auto h-64 w-64 overflow-hidden rounded-full border-4 border-aqua bg-night"><img ref={imageRef} src={source} alt="Previsualización del recorte" className="h-full w-full object-cover" style={{ transform: `translate(${offsetX * .35}%, ${offsetY * .35}%) scale(${zoom})` }} /></div><div className="space-y-4"><label className="block"><span className="label">Zoom · {zoom.toFixed(1)}x</span><input className="w-full accent-berry" type="range" min="1" max="3" step="0.1" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} /></label><label className="block"><span className="label">Mover horizontalmente</span><input className="w-full accent-aqua" type="range" min="-100" max="100" value={offsetX} onChange={(event) => setOffsetX(Number(event.target.value))} /></label><label className="block"><span className="label">Mover verticalmente</span><input className="w-full accent-electric" type="range" min="-100" max="100" value={offsetY} onChange={(event) => setOffsetY(Number(event.target.value))} /></label><button className="btn-primary w-full" disabled={busy} onClick={() => void uploadCrop()}><Check /> {busy ? 'Procesando…' : 'Recortar y guardar'}</button><button className="btn-ghost w-full" disabled={busy} onClick={() => setSource(null)}><RotateCcw /> Elegir otra</button></div></div>}
-      {avatar.type === 'CUSTOM' && !source && <button className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl font-extrabold text-berry hover:bg-berry/10" disabled={busy} onClick={() => void removeAvatar()}><Trash2 size={17} /> Eliminar foto personalizada</button>}
-      {error && <p className="status-error mt-4" role="alert">{error}</p>}<p className="mt-4 text-center text-xs font-bold text-ink/70">JPEG, PNG o WEBP · máximo 5 MB · resultado cuadrado de 256px</p></Dialog>
+    <span className="relative inline-flex shrink-0">
+      <Avatar name={name} avatar={avatar} size="xxl" className="border-[3px] border-[color:var(--navy)]" />
+      <span className="absolute -bottom-1 -right-1" data-layer>
+        <Pill size="round" variant="yellow" icon={Camera} aria-label="Cambiar avatar" title="Cambiar avatar" onClick={() => setOpen(true)} />
+      </span>
+    </span>
+    <Dialog open={open} title="Elige tu avatar" onClose={() => setOpen(false)} width={672} actions={[{ label: 'Cerrar', variant: 'blue', onClick: () => undefined, autoFocus: true }]}>
+      {/* Mientras se recorta una imagen propia, solo el recorte: los predefinidos vuelven con «Elegir otra». */}
+      {!source && <>
+        <h3 className="font-display text-15 font-extrabold text-[color:var(--ink)]">Avatares del universo</h3>
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4" aria-busy={busy || undefined}>
+          {AVATAR_PRESETS.map((preset) => <Card key={preset.id} sprite={preset.asset} photo name={preset.label.replace(/^Entrenadora? /, '')} state={current === preset.id ? 'selected' : 'idle'} onSelect={() => { if (!busy && current !== preset.id) void selectPreset(preset.id); }} />)}
+        </div>
+        <div className="my-5 border-t-[3px] border-dashed border-[color:var(--ink-2)] opacity-40" aria-hidden="true" />
+      </>}
+      <h3 className="font-display text-15 font-extrabold text-[color:var(--ink)]">Tu propia imagen</h3>
+      <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" tabIndex={-1} aria-hidden="true" onChange={chooseFile} />
+      {!source
+        ? <div className="mt-3 flex flex-wrap gap-3">
+            <Pill variant="cream" icon={ImagePlus} disabled={busy} onClick={() => fileInput.current?.click()}>Subir mi propia imagen</Pill>
+            {avatar.type === 'CUSTOM' && <Pill variant="danger" icon={Trash2} loading={busy} onClick={() => void removeAvatar()}>Eliminar foto personalizada</Pill>}
+          </div>
+        : <div className="mt-3 grid gap-5 sm:grid-cols-[14rem_minmax(0,1fr)]">
+            <div className="mx-auto h-56 w-56 overflow-hidden rounded-full border-[3px] border-[color:var(--navy)] bg-[var(--navy)]"><img ref={imageRef} src={source} alt="Previsualización del recorte" className="h-full w-full object-cover" style={{ transform: `translate(${offsetX * .35}%, ${offsetY * .35}%) scale(${zoom})` }} /></div>
+            <div className="flex min-w-0 flex-col gap-3">
+              <Slider label="Zoom" value={zoom} onChange={setZoom} min={1} max={3} step={0.1} valueText={(v) => `${v.toFixed(1)}×`} disabled={busy} />
+              <Slider label="Mover horizontalmente" value={offsetX} onChange={setOffsetX} min={-100} max={100} step={1} disabled={busy} />
+              <Slider label="Mover verticalmente" value={offsetY} onChange={setOffsetY} min={-100} max={100} step={1} disabled={busy} />
+              <div className="mt-1 flex flex-wrap gap-3">
+                <Pill variant="yellow" icon={Check} loading={busy} onClick={() => void uploadCrop()}>Recortar y guardar</Pill>
+                <Pill variant="cream" icon={RotateCcw} disabled={busy} onClick={() => setSource(null)}>Elegir otra</Pill>
+              </div>
+            </div>
+          </div>}
+      {error && <p className="mt-4 text-15 font-bold text-[color:var(--red-d)]" role="alert">{error}</p>}
+      <p className="mt-4 text-13 font-semibold text-[color:var(--ink-2)]">JPEG, PNG o WEBP · máximo 5 MB · se guarda como un cuadrado de 256 px.</p>
+    </Dialog>
   </>;
 }

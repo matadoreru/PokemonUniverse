@@ -1,4 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { Link } from 'react-router-dom';
+import { uiSound } from '../audio/uiSound';
 import { cx } from './cx';
 import s from './Row.module.css';
 
@@ -37,5 +39,21 @@ export function Row({ rank, avatar, name, meta, value, color, self, disconnected
       {value != null && <span className={s.value}>{value}</span>}
       {children}
     </div>
+  );
+}
+
+export interface RowLinkProps extends RowProps {
+  /** Ruta de la aplicación (enlace de React Router). */
+  to: string;
+  /** Es la franja abierta ahora: amarilla y con `aria-current`. */
+  current?: boolean;
+}
+
+/** Franja que navega (lista de una página con detalle): toda la franja es el enlace; la abierta va en amarillo. */
+export function RowLink({ to, current, self, ...row }: RowLinkProps) {
+  return (
+    <Link to={to} className={s.link} aria-current={current ? 'true' : undefined} onClick={() => uiSound('tap')}>
+      <Row {...row} self={Boolean(current || self)} />
+    </Link>
   );
 }

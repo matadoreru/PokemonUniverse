@@ -1,8 +1,9 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { Card } from './Card';
-import { Row } from './Row';
+import { Row, RowLink } from './Row';
 
 describe('Row', () => {
   it('desconectado dice «Sin conexión» y el nombre lleva title', () => {
@@ -13,7 +14,26 @@ describe('Row', () => {
   });
 });
 
+describe('RowLink', () => {
+  const link = (current?: boolean) =>
+    renderToStaticMarkup(createElement(MemoryRouter, null, createElement(RowLink, { to: '/changelog?v=0.9.0', name: 'v0.9.0', ...(current ? { current } : {}) })));
+  it('es un enlace con la franja dentro', () => {
+    const html = link();
+    expect(html).toContain('<a ');
+    expect(html).toContain('href="/changelog?v=0.9.0"');
+    expect(html).not.toContain('aria-current');
+  });
+  it('la abierta lleva aria-current', () => {
+    expect(link(true)).toContain('aria-current="true"');
+  });
+});
+
 describe('Card', () => {
+  it('con foto la imagen es decorativa: el nombre ya va escrito', () => {
+    const html = renderToStaticMarkup(createElement(Card, { name: 'Aqua', sprite: '/a.webp', photo: true, onSelect: () => undefined }));
+    expect(html).toContain('alt=""');
+    expect(renderToStaticMarkup(createElement(Card, { name: 'Pikachu', sprite: '/p.png' }))).toContain('alt="Pikachu"');
+  });
   it('seleccionable es un botón con aria-pressed', () => {
     const html = renderToStaticMarkup(createElement(Card, { name: 'Pikachu', state: 'selected', onSelect: () => undefined }));
     expect(html).toContain('<button');

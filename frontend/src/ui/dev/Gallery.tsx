@@ -24,7 +24,7 @@ import { HudPlate } from '../HudPlate';
 import { Icon } from '../Icon';
 import { Panel } from '../Panel';
 import { Pill, PillLink } from '../Pill';
-import { Row } from '../Row';
+import { Row, RowLink } from '../Row';
 import { ScorePop } from '../ScorePop';
 import { ScreenSplit } from '../ScreenSplit';
 import { ScreenTransition } from '../ScreenTransition';
@@ -532,6 +532,14 @@ function RowSection() {
       <Fig id="row-long" caption="Nombre largo recortado" wide>
         <Row rank={4} name="Entrenadora con un nombre larguísimo de verdad" value="0 pts" color="var(--red)" />
       </Fig>
+      <Fig id="row-link" caption="Enlace (lista con detalle)" wide>
+        <RowLink to="/dev/ui" name="v0.9.0 · Pantalla de título" meta="3 de noviembre de 2026">
+          <Badge>Nueva</Badge>
+        </RowLink>
+      </Fig>
+      <Fig id="row-link-current" caption="Enlace · abierta ahora" wide>
+        <RowLink to="/dev/ui" name="v0.8.0 · Una sala más completa" meta="11 de septiembre de 2026" current />
+      </Fig>
     </Section>
   );
 }
@@ -560,6 +568,12 @@ function CardSection() {
       ))}
       <Fig id="card-button" caption="Seleccionable (botón)">
         <Card name="Bulbasaur" number={1} types={BULBASAUR_TYPES} state={selected ? 'selected' : 'idle'} onSelect={() => setSelected((v) => !v)} />
+      </Fig>
+      <Fig id="card-photo" caption="Avatar (ilustración en círculo)">
+        <Card name="Aqua" sprite="/avatars/presets/trainer-aqua.webp" photo onSelect={() => undefined} />
+      </Fig>
+      <Fig id="card-photo-selected" caption="Avatar · elegido">
+        <Card name="Berry" sprite="/avatars/presets/trainer-berry.webp" photo state="selected" onSelect={() => undefined} />
       </Fig>
     </Section>
   );

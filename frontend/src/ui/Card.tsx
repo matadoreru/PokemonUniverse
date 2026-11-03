@@ -15,12 +15,17 @@ export interface CardProps {
   number?: number;
   types?: { type: PokemonType; label: string }[];
   state?: CardState;
+  /**
+   * La imagen es una ilustración o foto (avatar), no un sprite: se escala suave, va en círculo y es decorativa
+   * (`alt=""`), porque el nombre ya va escrito debajo.
+   */
+  photo?: boolean;
   onSelect?: () => void;
   children?: ReactNode;
 }
 
 /** Carta de Pokémon; con `onSelect` es un botón conmutador. Correcta/incorrecta llevan icono y texto además del color. */
-export function Card({ sprite, name, number, types, state = 'idle', onSelect, children }: CardProps) {
+export function Card({ sprite, name, number, types, state = 'idle', photo, onSelect, children }: CardProps) {
   // Suena al pasar a `revealing` (la carta se da la vuelta).
   const before = useRef<CardState>(state);
   useEffect(() => {
@@ -29,8 +34,8 @@ export function Card({ sprite, name, number, types, state = 'idle', onSelect, ch
   }, [state]);
   const body = (
     <>
-      <span className={s.art}>
-        {sprite ? <img src={sprite} alt={name} loading="lazy" decoding="async" className={s.img} /> : <span className={s.placeholder} aria-hidden="true">?</span>}
+      <span className={cx(s.art, photo && s.photoArt)}>
+        {sprite ? <img src={sprite} alt={photo ? '' : name} loading="lazy" decoding="async" className={cx(s.img, photo && s.photo)} /> : <span className={s.placeholder} aria-hidden="true">?</span>}
       </span>
       <span className={s.name}>{name}</span>
       {number != null && <span className={s.num}>Nº {String(number).padStart(3, '0')}</span>}

@@ -1,19 +1,78 @@
-import { ArrowLeft, Newspaper } from 'lucide-react';
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { changelogEntryId, ChangelogEntryView } from '../changelog/ChangelogEntryView';
+import type { ChangelogEntry } from '@pokemon-universe/shared/public';
+import { ArrowLeft } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { ChangelogEntryView, formatChangelogDate } from '../changelog/ChangelogEntryView';
 import { useChangelog } from '../changelog/ChangelogContext';
+import { selectedChangelogEntry, unreadVersions } from '../changelog/changelog-state';
+import { Badge, cx, Panel, PillLink, RowLink, type StateBoxProps } from '../ui';
 
-export function ChangelogPage() {
-  const { entries, loading, error, markAllRead, refresh } = useChangelog();
+const NONE: ReadonlySet<string> = new Set();
+
+/**
+ * Versiones sin leer al llegar a la página. Se guardan una sola vez, con la primera lista cargada, antes de
+ * `markAllRead()`: después el contador del contexto baja a 0 y las insignias «Nueva» desaparecerían.
+ */
+function useUnreadOnArrival(entries: readonly ChangelogEntry[], loading: boolean, unreadCount: number, markAllRead: () => void): ReadonlySet<string> {
+  const snapshot = useRef<ReadonlySet<string> | null>(null);
+  if (snapshot.current === null && !loading && entries.length > 0) snapshot.current = unreadVersions(entries, unreadCount);
   useEffect(() => { if (!loading && entries.length) markAllRead(); }, [entries.length, loading, markAllRead]);
+  return snapshot.current ?? NONE;
+}
 
-  return <section className="page-shell max-w-6xl">
-    <Link className="mb-7 inline-flex min-h-11 items-center gap-2 font-extrabold text-ink/65 underline decoration-ink/25 underline-offset-4 hover:text-ink" to="/"><ArrowLeft size={18} />Volver al inicio</Link>
-    <header className="mb-9 max-w-3xl"><h1 className="font-display text-4xl font-bold tracking-[-.025em] sm:text-5xl">Novedades de Pokémon Universe</h1><p className="mt-4 max-w-[68ch] text-lg font-semibold leading-relaxed text-ink/65">Descubre de un vistazo qué ha cambiado en cada versión: nuevos minijuegos, ajustes, mejoras y correcciones.</p></header>
-    {error ? <div className="status-error flex flex-wrap items-center justify-between gap-3" role="alert"><span>{error}</span><button className="btn-ghost text-sm" onClick={() => void refresh()}>Volver a intentar</button></div>
-      : loading ? <div className="space-y-8" role="status" aria-label="Cargando novedades">{Array.from({ length: 2 }, (_, index) => <div className="space-y-4 border-b border-ink/10 pb-8" key={index}><span className="skeleton block h-9 w-32" /><span className="skeleton block h-5 w-64" /><span className="skeleton block h-24 w-full" /></div>)}</div>
-        : entries.length === 0 ? <div className="empty-state py-14"><Newspaper className="mx-auto mb-3 text-aqua" size={32} /><h2 className="font-display text-2xl font-bold text-ink">Todavía no hay notas publicadas</h2><p className="mx-auto mt-2 max-w-lg font-semibold">Las próximas versiones aparecerán aquí en cuanto estén listas.</p></div>
-          : <><nav className="mb-12 flex flex-col gap-3 border-y border-ink/10 py-4 sm:flex-row sm:items-center" aria-label="Versiones publicadas"><strong className="shrink-0 text-sm font-extrabold text-ink/60">Ir a una versión</strong><div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">{entries.map((entry, index) => <a className={`inline-flex min-h-10 shrink-0 items-center rounded-xl px-3 text-sm font-extrabold no-underline transition-colors ${index === 0 ? 'bg-berry text-night hover:bg-berry/90' : 'bg-ink/[.07] text-ink/70 hover:bg-ink/[.12] hover:text-ink'}`} href={`#${changelogEntryId(entry)}`} key={entry.id}>v{entry.version}</a>)}</div></nav><div className="space-y-12">{entries.map((entry, index) => <ChangelogEntryView entry={entry} latest={index === 0} key={entry.id} />)}</div></>}
-  </section>;
+/**
+ * Novedades como página de lista y detalle (spec §2). En escritorio, la lista de versiones a la izquierda y la versión
+ * abierta en un panel crema a la derecha, cada uno con su scroll y sin scroll de página. En móvil se ve la lista y, al
+ * tocar una versión, solo su detalle con «Volver». La versión abierta va en la URL (`?v=0.9.0`), así que el botón atrás
+ * del navegador también vuelve a la lista; sin `?v` (o con una que no existe) el escritorio enseña la última.
+ */
+export function ChangelogPage() {
+  const { entries, loading, error, unreadCount, markAllRead, refresh } = useChangelog();
+  const unread = useUnreadOnArrival(entries, loading, unreadCount, markAllRead);
+  const [params] = useSearchParams();
+  const selected = selectedChangelogEntry(entries, params.get('v'));
+  const shown = selected ?? entries[0];
+
+  // El error del servidor puede llegar en inglés («Failed to fetch»): el texto es fijo y en español.
+  const status: StateBoxProps | null = error
+    ? { kind: 'error', title: 'No se pudieron cargar las novedades', text: 'Comprueba la conexión y vuelve a intentarlo.', action: { label: 'Reintentar', onClick: () => void refresh() } }
+    : loading
+      ? { kind: 'loading', title: 'Cargando novedades' }
+      : !shown
+        ? { kind: 'empty', title: 'Todavía no hay notas publicadas', text: 'Las próximas versiones aparecerán aquí en cuanto estén listas. Mientras tanto, crea una sala y juega con tus amigos.' }
+        : null;
+
+  return (
+    <div className="mx-auto grid w-full max-w-[1600px] gap-4 px-4 pb-4 pt-6 sm:px-6 lg:h-full lg:grid-rows-[auto_minmax(0,1fr)] lg:gap-5 lg:px-8 lg:pt-5">
+      <header>
+        <h1 className="ol2 font-display text-34 font-extrabold text-[color:var(--white)] lg:text-44">Novedades</h1>
+        <p className="mt-2 text-15 font-bold text-[color:var(--sky-2)] lg:text-18">Qué ha cambiado en cada versión: minijuegos nuevos, ajustes, mejoras y correcciones.</p>
+      </header>
+      {status || !shown ? (
+        <Panel title="Versiones publicadas" status={status} className="lg:max-w-[40rem] lg:self-start" />
+      ) : (
+        <div className="grid gap-4 lg:min-h-0 lg:grid-cols-[minmax(20rem,26rem)_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-6 2xl:grid-cols-[minmax(22rem,30rem)_minmax(0,1fr)]">
+          <Panel title="Versiones" right={`${entries.length} ${entries.length === 1 ? 'versión' : 'versiones'}`} scroll className={cx(selected && 'max-lg:hidden')}>
+            <nav aria-label="Versiones publicadas">
+              <ul className="grid grid-cols-[minmax(0,1fr)] gap-2 p-1">
+                {entries.map((entry) => (
+                  <li key={entry.id}>
+                    <RowLink to={`/changelog?v=${encodeURIComponent(entry.version)}`} current={entry.id === shown.id} name={`v${entry.version} · ${entry.title}`} meta={formatChangelogDate(entry.date)}>
+                      {unread.has(entry.version) && <Badge tone="yellow">Nueva</Badge>}
+                    </RowLink>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </Panel>
+          <div className={cx('flex min-h-0 flex-col gap-3', !selected && 'max-lg:hidden')}>
+            <PillLink to="/changelog" variant="cream" icon={ArrowLeft} className="self-start lg:hidden">Volver</PillLink>
+            <Panel variant="cream" title={`Versión ${shown.version}`} scroll className="lg:min-h-0 lg:flex-1" bodyClassName="lg:px-6 lg:py-5">
+              <ChangelogEntryView entry={shown} latest={shown.id === entries[0]?.id} />
+            </Panel>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
