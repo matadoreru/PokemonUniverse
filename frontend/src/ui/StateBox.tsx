@@ -26,7 +26,7 @@ export function StateBox({ kind, title, text, action, onCream }: StateBoxProps) 
   }
   return (
     <div className={cx(s.box, onCream && s.onCream, kind === 'error' && s.error)} role={kind === 'error' ? 'alert' : 'status'}>
-      <Icon icon={kind === 'error' ? TriangleAlert : kind === 'empty' ? Inbox : Hourglass} size={32} />
+      <Icon icon={kind === 'error' ? TriangleAlert : kind === 'empty' ? Inbox : Hourglass} size={32} className={s.icon} />
       <strong className={s.title}>{title}</strong>
       {text && <p className={s.text}>{text}</p>}
       {action && (

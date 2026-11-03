@@ -1,5 +1,12 @@
-/* Campos de formulario: crema con contorno de 3 px y texto en tinta (AA sobre crema). */
+/*
+ * Campos de formulario: crema con contorno de 3 px y texto en tinta (AA sobre crema). Solo van sobre crema (panel
+ * crema, diálogo, pestañas): etiqueta, ayuda (--ink-2) y error (--red-d) están pensados para ese fondo, así que el
+ * envoltorio fija la tinta y el anillo de foco azul noche en lugar de heredarlos.
+ */
 .field {
+  color: var(--ink);
+  --focus-ring: var(--navy);
+  --focus-ring-on-yellow: var(--navy);
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
@@ -43,7 +50,8 @@
   border-color: var(--red-text);
 }
 .error {
-  color: var(--red-text);
+  /* --red-d: 5,57:1 sobre crema con rayas (--red-text se queda en 4,34:1). */
+  color: var(--red-d);
   font: 700 var(--fs-13) / 1.3 var(--font-text);
 }
 .hint {
@@ -74,7 +82,7 @@
   font-variant-numeric: tabular-nums;
 }
 .full {
-  color: var(--red-text);
+  color: var(--red-d);
 }
 /* Etiqueta solo para lectores de pantalla. */
 .srOnly {

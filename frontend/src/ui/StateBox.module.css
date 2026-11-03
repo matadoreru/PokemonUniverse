@@ -21,11 +21,16 @@
   font: 600 var(--fs-15) / var(--lh-text) var(--font-text);
   max-width: 360px;
 }
-.error {
-  color: var(--red-l);
+/*
+ * Error: fuera del crema el texto sigue blanco (--red-l sobre azul se queda en 2,18:1) y el icono va en amarillo;
+ * sobre crema, todo en --red-d (5,57:1 con las rayas crema; --red-text se queda en 4,34:1).
+ */
+.error .icon {
+  color: var(--yellow);
 }
-.onCream.error {
-  color: var(--red-text);
+.onCream.error,
+.onCream.error .icon {
+  color: var(--red-d);
 }
 .action {
   margin-top: 6px;

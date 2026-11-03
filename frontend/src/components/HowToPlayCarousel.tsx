@@ -22,7 +22,7 @@ const generalSlides: readonly HowToPlaySlide[] = [
     description: 'Recomendamos estar en una llamada de voz, por ejemplo en Discord, Zoom o vuestra app favorita. Muchos juegos ganan muchísimo cuando podéis comentar y reíros juntos.',
     visual: <div className="flex w-full max-w-sm items-center gap-4 rounded-xl border border-berry/20 bg-berry/[.07] p-4" aria-hidden="true">
       <span className="grid h-16 w-16 shrink-0 place-items-center rounded-xl bg-berry text-night shadow-card"><Headphones size={34} /></span>
-      <span><strong className="font-display text-xl">Llamada de voz</strong><small className="mt-1 block font-bold text-ink/60">Discord · Zoom · Meet · Telegram</small><span className="mt-2 inline-flex items-center gap-1 text-xs font-black text-leaf"><span className="h-2 w-2 rounded-full bg-leaf" /> Grupo conectado</span></span>
+      <span><strong className="font-display text-xl">Llamada de voz</strong><small className="mt-1 block font-bold text-ink/70">Discord · Zoom · Meet · Telegram</small><span className="mt-2 inline-flex items-center gap-1 text-xs font-black text-leaf"><span className="h-2 w-2 rounded-full bg-leaf" /> Grupo conectado</span></span>
     </div>,
   },
   {
@@ -130,12 +130,12 @@ export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jug
         <div className={`flex w-full items-center justify-center ${compact ? 'min-h-28' : 'min-h-48'}`}>{slide.visual}</div>
         <span className="mt-4 text-xs font-black uppercase tracking-[.16em] text-berry">{slide.eyebrow}</span>
         <h3 className="mt-1 max-w-md font-display text-2xl leading-tight">{slide.title}</h3>
-        <p className="mt-3 max-w-lg text-sm font-semibold leading-relaxed text-ink/65 sm:text-base">{slide.description}</p>
+        <p className="mt-3 max-w-lg text-sm font-semibold leading-relaxed text-ink/70 sm:text-base">{slide.description}</p>
       </div>)}
     </div>
     <nav className="flex items-center justify-between gap-2 border-t border-ink/10 px-4 py-3 sm:px-5" aria-label={`${label}s de ${heading}`}>
       <button type="button" className="btn-ghost !px-3 aria-disabled:cursor-not-allowed aria-disabled:opacity-45" onClick={previous} aria-disabled={isFirst || undefined} aria-label={`${label} anterior`}><ArrowLeft size={18} /> <span className="hidden sm:inline">Anterior</span></button>
-      <div className="flex items-center" role="group" aria-label={`${label} ${active + 1} de ${count}`}>{slides.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => go(index, index < active ? 'previous' : 'next')} aria-label={`Ver ${itemLabel} ${index + 1}`} aria-controls={`${idPrefix}-slide-${index + 1}`} aria-current={index === active ? 'step' : undefined} className="group grid min-h-11 min-w-11 place-items-center rounded-full"><span className={`block h-2.5 w-2.5 rounded-full ${index === active ? 'scale-x-[2.6] bg-aqua' : 'bg-ink/40 group-hover:bg-ink/60'}`} /></button>)}</div>
+      <div className="flex items-center" role="group" aria-label={`${label} ${active + 1} de ${count}`}>{slides.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => go(index, index < active ? 'previous' : 'next')} aria-label={`Ver ${itemLabel} ${index + 1}`} aria-controls={`${idPrefix}-slide-${index + 1}`} aria-current={index === active ? 'step' : undefined} className="group grid min-h-11 min-w-11 place-items-center rounded-full"><span className={`block h-2.5 w-2.5 rounded-full ${index === active ? 'scale-x-[2.6] bg-aqua' : 'bg-ink/50 group-hover:bg-ink/70'}`} /></button>)}</div>
       {showLastAction
         ? <span ref={lastActionRef} className="flex">{lastAction}</span>
         : <button type="button" className="btn-ghost !px-3 aria-disabled:cursor-not-allowed aria-disabled:opacity-45" onClick={next} aria-disabled={isLast || undefined} aria-label={`Siguiente ${itemLabel}`} data-carousel-next="" {...(inDialog ? { 'data-autofocus': '' } : {})}><span className="hidden sm:inline">Siguiente</span> <ArrowRight size={18} /></button>}

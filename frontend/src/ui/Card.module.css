@@ -10,6 +10,9 @@
   border-radius: var(--r-card);
   background: var(--cream);
   color: var(--navy);
+  /* Sobre crema el anillo amarillo no se ve (1,36:1): azul noche, también sobre la píldora amarilla. */
+  --focus-ring: var(--navy);
+  --focus-ring-on-yellow: var(--navy);
   font-family: var(--font-text);
   text-align: center;
   box-shadow: var(--sh-hard-4);

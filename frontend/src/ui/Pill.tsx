@@ -9,6 +9,9 @@ import s from './Pill.module.css';
 export type PillVariant = 'blue' | 'yellow' | 'red' | 'danger' | 'ghost' | 'cream';
 export type PillSize = 'std' | 'small' | 'main' | 'round';
 
+/** Tonos con tinta blanca: su etiqueta lleva el contorno de texto `.ol` (spec §3.1, texto blanco sobre degradado). */
+export const WHITE_INK_PILLS: readonly PillVariant[] = ['blue', 'red', 'danger', 'ghost'];
+
 interface PillBase extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
   children?: ReactNode;
   icon?: LucideIcon;
@@ -52,7 +55,7 @@ export function Pill(props: PillProps) {
       onClick={pillClickHandler(props)}
     >
       {icon && <Icon icon={icon} size={size === 'small' ? 18 : size === 'round' ? 22 : 24} className={s.icon} />}
-      {children != null && children !== false && <span className={s.label}>{children}</span>}
+      {children != null && children !== false && <span className={cx(s.label, WHITE_INK_PILLS.includes(variant) && 'ol')}>{children}</span>}
       {badge && <span className={s.badge}>{badge}</span>}
       {loading && (
         <span className={s.dots} aria-hidden="true">

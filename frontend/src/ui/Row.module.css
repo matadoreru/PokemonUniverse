@@ -22,8 +22,13 @@
 .self {
   background: var(--yellow);
 }
+/* Sin conexión (manda sobre la fila propia): la franja no se atenúa, el texto sigue en AA; solo la banda y el avatar. */
 .off {
-  opacity: 0.6;
+  background: var(--cream-2);
+}
+.off .band,
+.off .avatar {
+  opacity: 0.45;
 }
 .rank {
   min-width: 2ch;
@@ -54,6 +59,7 @@
   color: var(--ink-2);
 }
 .offLabel {
+  color: var(--ink);
   font-weight: 800;
 }
 .value {

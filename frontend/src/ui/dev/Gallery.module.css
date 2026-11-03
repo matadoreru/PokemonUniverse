@@ -66,6 +66,9 @@
   border-radius: var(--r-panel);
   background: var(--cream);
   color: var(--ink);
+  /* Como en toda superficie crema: anillo de foco azul noche. */
+  --focus-ring: var(--navy);
+  --focus-ring-on-yellow: var(--navy);
 }
 .cream > * {
   flex: 1 1 100%;
@@ -99,11 +102,16 @@
   min-width: var(--sp-6);
   min-height: var(--sp-6);
 }
-/* La pantalla doble ocupa toda la vista por debajo de 1024 px: aquí va en un marco de alto fijo con su propio scroll. */
+/* La pantalla doble ocupa toda la vista por debajo de 1024 px: ahí va en un marco de alto fijo con su propio scroll. */
 .splitFrame {
-  height: calc(var(--sp-6) * 12);
+  height: auto;
   overflow: auto;
   border: var(--ol-2) solid var(--navy-3);
   border-radius: var(--r-card);
   background: var(--band);
+}
+@media (max-width: 1023.98px) {
+  .splitFrame {
+    height: calc(var(--sp-6) * 12);
+  }
 }

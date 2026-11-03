@@ -95,6 +95,28 @@ describe('contraste AA de las parejas de texto (§3.1)', () => {
   });
 });
 
+describe('rayas de fondo (§3.3)', () => {
+  /** Opacidad de la raya clara de `--stripes-<nombre>` y su color, leídos de tokens.css. */
+  function stripe(name: string): { hex: string; alpha: number } {
+    const m = rootBlock.match(new RegExp(`--stripes-${name}:\\s*repeating-linear-gradient\\(135deg, rgb\\((\\d+) (\\d+) (\\d+) / ([\\d.]+)\\)`));
+    if (!m) throw new Error(`--stripes-${name} no encontrado en tokens.css`);
+    const hex = `#${[m[1], m[2], m[3]].map((v) => Number(v).toString(16).padStart(2, '0')).join('')}`.toUpperCase();
+    return { hex, alpha: Number(m[4]) };
+  }
+  it('blanco sobre azul con rayas ≥ 4,5:1', () => {
+    const { hex, alpha } = stripe('blue');
+    expect(hex).toBe(colors.white);
+    expect(contrast(colors.white, mix(hex, colors.blue, alpha))).toBeGreaterThanOrEqual(4.5);
+  });
+  it('red-d sobre crema con rayas ≥ 4,5:1 (texto de error en crema)', () => {
+    const { hex, alpha } = stripe('cream');
+    expect(hex).toBe(colors.navy);
+    const fondo = mix(hex, colors.cream, alpha);
+    expect(contrast(colors.redD, fondo)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(colors.ink2, fondo)).toBeGreaterThanOrEqual(4.5);
+  });
+});
+
 describe('capas (§3.5)', () => {
   it('orden: content < hud < sticky < cutin < toast', () => {
     expect(layers.content).toBeLessThan(layers.hud);
@@ -133,6 +155,39 @@ describe('alias de Tailwind (§11)', () => {
   });
   it('blanco sobre red-text ≥ 4,5:1 (botón principal)', () => {
     expect(contrast(colors.white, colors.redText)).toBeGreaterThanOrEqual(4.5);
+  });
+});
+
+describe('.on-cream (§11): los alias vuelven a la tinta oscura dentro del crema', () => {
+  const block = styles.match(/\n\.on-cream\s*\{([^}]*)\}/)?.[1] ?? '';
+  const triplet = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(' ');
+  /** Color del alias en `.on-cream` como `#RRGGBB`. */
+  function alias(name: string): string {
+    const m = block.match(new RegExp(`--color-${name}:\\s*(\\d+) (\\d+) (\\d+);`));
+    if (!m) throw new Error(`--color-${name} no está en .on-cream`);
+    return `#${[m[1], m[2], m[3]].map((v) => Number(v).toString(16).padStart(2, '0')).join('')}`.toUpperCase();
+  }
+  it('reasigna ink, surface, surface-raised, berry y aqua a tokens del sistema', () => {
+    expect(block).toMatch(new RegExp(`--color-ink:\\s*${triplet(colors.ink)};`));
+    expect(block).toMatch(new RegExp(`--color-surface:\\s*${triplet(colors.cream)};`));
+    expect(block).toMatch(new RegExp(`--color-surface-raised:\\s*${triplet(colors.cream2)};`));
+    expect(block).toMatch(new RegExp(`--color-berry:\\s*${triplet(colors.redD)};`));
+    expect(block).toMatch(new RegExp(`--color-aqua:\\s*${triplet(colors.blueD)};`));
+  });
+  it('anillo de foco azul noche, también sobre amarillo', () => {
+    expect(block).toMatch(/--focus-ring:\s*var\(--navy\);/);
+    expect(block).toMatch(/--focus-ring-on-yellow:\s*var\(--navy\);/);
+    expect(contrast(colors.navy, colors.cream)).toBeGreaterThanOrEqual(3);
+  });
+  it.each([
+    ['ink/70 sobre surface', () => contrast(mix(alias('ink'), alias('surface'), 0.7), alias('surface'))],
+    ['ink/70 sobre surface-raised', () => contrast(mix(alias('ink'), alias('surface-raised'), 0.7), alias('surface-raised'))],
+    ['ink sobre surface-raised (.btn-ghost, .field)', () => contrast(alias('ink'), alias('surface-raised'))],
+    ['berry sobre berry/10 (.status-error)', () => contrast(alias('berry'), mix(alias('berry'), alias('surface'), 0.1))],
+    ['berry sobre berry/15 (tono berry de «Cómo se juega»)', () => contrast(alias('berry'), mix(alias('berry'), alias('surface'), 0.15))],
+    ['aqua sobre aqua/5', () => contrast(alias('aqua'), mix(alias('aqua'), alias('surface'), 0.05))],
+  ])('%s ≥ 4,5:1', (_n, ratio) => {
+    expect(ratio()).toBeGreaterThanOrEqual(4.5);
   });
 });
 

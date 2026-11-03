@@ -192,6 +192,18 @@ function PanelSection() {
       <Fig id="panel-error" caption="Error" wide>
         <Panel title="Historial" status={{ kind: 'error', title: 'No se pudo cargar', text: 'Comprueba tu conexión.', action: { label: 'Reintentar', onClick: noop } }} />
       </Fig>
+      <Fig id="panel-empty-cream" caption="Crema · vacío" wide>
+        <Panel title="Ajustes" variant="cream" status={{ kind: 'empty', title: 'Sin ajustes', text: 'Este juego no tiene opciones.' }} />
+      </Fig>
+      <Fig id="panel-error-cream" caption="Crema · error" wide>
+        <Panel title="Ajustes" variant="cream" status={{ kind: 'error', title: 'No se pudo guardar', text: 'Comprueba tu conexión.', action: { label: 'Reintentar', onClick: noop } }} />
+      </Fig>
+      <Fig id="panel-empty-dark" caption="Oscuro · vacío" wide>
+        <Panel title="Marcador" variant="dark" status={{ kind: 'empty', title: 'Sin puntos', text: 'Nadie ha puntuado todavía.' }} />
+      </Fig>
+      <Fig id="panel-error-dark" caption="Oscuro · error" wide>
+        <Panel title="Marcador" variant="dark" status={{ kind: 'error', title: 'No se pudo cargar', text: 'Comprueba tu conexión.', action: { label: 'Reintentar', onClick: noop } }} />
+      </Fig>
     </Section>
   );
 }
@@ -349,6 +361,12 @@ function SliderSection() {
       <Fig id="slider-disabled" caption="deshabilitado">
         <SliderDemo disabled />
       </Fig>
+      <Fig id="slider-cream" caption="Sobre crema" cream>
+        <SliderDemo />
+      </Fig>
+      <Fig id="slider-cream-focus" caption="Sobre crema · foco" cream>
+        <SliderDemo forced="focus" />
+      </Fig>
     </Section>
   );
 }
@@ -374,6 +392,12 @@ function ToggleSection() {
       ))}
       <Fig id="toggle-disabled" caption="Deshabilitado">
         <ToggleDemo initial={false} disabled />
+      </Fig>
+      <Fig id="toggle-cream" caption="Sobre crema con ayuda" cream>
+        <ToggleDemo initial hint="Suena en el lobby." />
+      </Fig>
+      <Fig id="toggle-cream-focus" caption="Sobre crema · foco" cream>
+        <ToggleDemo initial={false} forced="focus" hint="Suena en el lobby." />
       </Fig>
     </Section>
   );

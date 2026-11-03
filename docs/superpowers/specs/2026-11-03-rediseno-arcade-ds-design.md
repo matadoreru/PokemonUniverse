@@ -131,8 +131,9 @@ sobre `--navy-2`.
   barras. Un elemento dentro de otro puede bajar un escalón, nunca subir.
 - Solo dos sombras, y ninguna se anima. Dura: `0 5px 0 var(--navy-2)` en paneles y píldoras grandes, `0 4px 0` en
   cartas y `0 3px 0` en píldoras pequeñas y franjas. Ambiental: `--sh-panel` y `--sh-dialog`.
-- Degradados verticales de tres paradas en las píldoras. Rayas diagonales de 10 px (`--stripes-blue` al 7 % de
-  blanco y `--stripes-cream` al 4 % de azul noche). Prohibidos los degradados en el texto y los brillos animados.
+- Degradados verticales de tres paradas en las píldoras. Rayas diagonales de 10 px (`--stripes-blue` al 4 % de
+  blanco, para que el texto blanco sobre `--blue` con rayas siga en 4,55:1, y `--stripes-cream` al 4 % de azul noche;
+  sobre crema con rayas el texto de error va en `--red-d`, 5,57:1, porque `--red-text` se queda en 4,34:1). Prohibidos los degradados en el texto y los brillos animados.
 - **Objetivos táctiles de 44 px como mínimo** (≠ los 32 de Inazuma). La píldora pequeña (34 px) solo se usa en
   escritorio y con relleno que lleve el área pulsable a 44.
 
@@ -162,7 +163,9 @@ de la escena. `aria-hidden`, sin animación.
 ### 3.7 Barra de desplazamiento y foco
 
 - Barra de desplazamiento amarilla sobre azul noche (`scrollbar-color`), como en Inazuma.
-- Foco visible siempre: anillo `--yellow` de 3 px con 2 px de separación; sobre amarillo, blanco.
+- Foco visible siempre: anillo `--yellow` de 3 px con 2 px de separación; sobre amarillo, blanco. Sobre crema
+  (diálogo, panel crema, cuerpo de pestañas, campos y cartas) el amarillo no se ve (1,36:1): esas superficies fijan
+  `--focus-ring` y `--focus-ring-on-yellow` en `--navy`.
 
 ## 4. Catálogo de componentes (`frontend/src/ui/`)
 
@@ -292,7 +295,8 @@ de 0 a 3, con un máximo de 24. Para integrar: **≥19 y ningún 0**. Capturas a
 - Se mantienen Tailwind (solo para maquetación), `lucide-react` (dentro de `Icon`) y los textos en español.
 - Durante la migración, Tailwind reasigna los colores actuales por papel (`cream` → `--navy-2`, `ink` → blanco,
   `surface` → `--navy`, `surface-raised` → `--navy-3`, `berry` → `--red-l` (texto legible sobre azul noche; `.btn-primary` va en `--red-text` con texto blanco), `electric` → `--yellow`, `aqua` →
-  `--info`, `leaf` → `--ok`) y `.on-cream` devuelve la tinta oscura dentro del crema. Los alias y las clases antiguas
+  `--info`, `leaf` → `--ok`) y `.on-cream` devuelve la tinta oscura dentro del crema (`ink` → `--ink`, `surface` → `--cream`, `surface-raised` →
+  `--cream-2`, `berry` → `--red-d`, `aqua` → `--blue-d`, anillo de foco `--navy`); `Dialog` la lleva siempre. Los alias y las clases antiguas
   se borran en F9.
 - Nada de assets de Inazuma ni de LEVEL-5 (emblemas, retratos, fondos ni OST). Solo fuentes OFL y música propia.
 - Sprites de Pokémon: los de siempre, por el proxy del backend, enmarcados en `Card` o en el avatar.

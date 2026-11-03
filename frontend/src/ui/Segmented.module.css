@@ -26,11 +26,12 @@
   border-right: 0;
 }
 .opt:hover:not(.on):not(:disabled),
-.opt.hover {
+.opt.hover:not(.on) {
   background: var(--cream-2);
 }
 .on {
-  background: linear-gradient(180deg, var(--blue-l), var(--blue));
+  /* De --blue a --blue-d: blanco a 4,88–7,33:1 (desde --blue-l bajaba a 2,53:1 arriba). */
+  background: linear-gradient(180deg, var(--blue), var(--blue-d));
   color: var(--white);
 }
 .opt:focus-visible,

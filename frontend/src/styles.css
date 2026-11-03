@@ -59,6 +59,23 @@
     0 5px 0 var(--navy-2);
 }
 
+/*
+ * Alias de migración (spec §11), se borra en F9: dentro del crema (diálogos, figuras crema de la galería) los alias
+ * de Tailwind vuelven a la tinta oscura. `berry` va en `--red-d` y no en `--red-text`: `.status-error` (texto sobre
+ * berry/10) se queda en 4,06:1 con `--red-text` y llega a 5,11:1 con `--red-d`. `aqua` → `--blue-d` (6,90:1).
+ * `electric` y `leaf` no cambian: sus rellenos llevan texto azul noche y sus iconos son decorativos.
+ */
+.on-cream {
+  color-scheme: light;
+  --color-ink: 30 34 56; /* --ink */
+  --color-surface: 255 248 225; /* --cream */
+  --color-surface-raised: 243 230 190; /* --cream-2 */
+  --color-berry: 185 30 44; /* --red-d */
+  --color-aqua: 30 79 184; /* --blue-d */
+  --focus-ring: var(--navy);
+  --focus-ring-on-yellow: var(--navy);
+}
+
 /* Barra de desplazamiento amarilla sobre azul noche (§3.7). */
 * { box-sizing: border-box; scrollbar-color: var(--yellow) var(--navy-2); scrollbar-width: thin; }
 html { min-width: 320px; overflow-x: clip; }

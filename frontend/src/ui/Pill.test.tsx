@@ -17,6 +17,13 @@ describe('Pill', () => {
     expect(base).not.toContain('main');
   });
 
+  it('la etiqueta de los tonos de tinta blanca lleva el contorno .ol', () => {
+    const label = (html: string) => /<span class="([^"]*)">[^<]*<\/span>/.exec(html)?.[1]?.split(' ') ?? [];
+    for (const variant of ['blue', 'danger', 'ghost'] as const) expect(label(renderToStaticMarkup(createElement(Pill, { variant }, 'Ok'))), variant).toContain('ol');
+    expect(label(renderToStaticMarkup(createElement(Pill, { variant: 'red', size: 'main' }, 'Ok')))).toContain('ol');
+    for (const variant of ['yellow', 'cream'] as const) expect(label(renderToStaticMarkup(createElement(Pill, { variant }, 'Ok'))), variant).not.toContain('ol');
+  });
+
   it('la roja solo existe en tamaño principal (regla de tipos)', () => {
     // @ts-expect-error roja sin tamaño main
     createElement(Pill, { variant: 'red' }, 'x');

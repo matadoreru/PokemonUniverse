@@ -52,7 +52,7 @@ describe('HowToPlayCarousel', () => {
   it('los pasos de un juego no dan la vuelta: «Anterior» inactivo en el primero y puntos inactivos visibles', () => {
     const markup = renderToStaticMarkup(createElement(HowToPlayCarousel, { slides: gameHowToPlay['type-duel']!, loop: false, lastAction: createElement('button', { type: 'button' }, 'Entendido') }));
     expect(markup).toMatch(/aria-disabled="true"[^>]*aria-label="Consejo anterior"|aria-label="Consejo anterior"[^>]*aria-disabled="true"/);
-    expect(markup).toContain('bg-ink/40');
+    expect(markup).toContain('bg-ink/50');
     expect(markup).not.toContain('Entendido');
   });
 });

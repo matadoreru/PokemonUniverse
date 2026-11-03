@@ -23,7 +23,8 @@
   font: 800 var(--fs-15) / 1.2 var(--font-display);
 }
 .hint {
-  color: var(--ink-2);
+  /* Hereda la tinta de la superficie (blanco en azul, tinta en crema): --ink-2 fijo daba 2,18:1 sobre navy-2. */
+  color: inherit;
   font: 600 var(--fs-13) / 1.3 var(--font-text);
 }
 .switch {
