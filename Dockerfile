@@ -1,55 +1,26 @@
-# TypeScript/Vite output is architecture-independent. Building it on the native
-# runner avoids running npm, Prisma generation and Vite under ARM64 QEMU.
-FROM --platform=$BUILDPLATFORM node:22-alpine AS build
-ARG PU_COMMIT_SHA=""
+# Imagen web (nginx + SPA estática). Desde el corte 2D es la única imagen de este Dockerfile: el servidor es el backend
+# Java (backend/Dockerfile) y Node (apps/server) queda solo como oráculo de pruebas, sin imagen.
+# Nombres completos (docker.io/...): podman no resuelve nombres cortos sin TTY.
+
+# La salida de TypeScript/Vite no depende de la arquitectura: se compila en la plataforma del runner para no ejecutar
+# npm ni Vite bajo QEMU al publicar la imagen ARM64.
+FROM --platform=$BUILDPLATFORM docker.io/library/node:22-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json* tsconfig.base.json eslint.config.mjs ./
 COPY packages/shared/package.json packages/shared/tsconfig.json ./packages/shared/
-COPY apps/server/package.json apps/server/tsconfig.json ./apps/server/
-COPY frontend/package.json frontend/tsconfig*.json frontend/vite.config.ts frontend/tailwind.config.js frontend/postcss.config.js ./frontend/
+# apps/server sigue siendo un workspace: su package.json mantiene `npm ci` en línea con el lockfile y su esquema
+# Prisma alimenta el postinstall (`db:generate`). No se compila ni se copia a la imagen.
+COPY apps/server/package.json ./apps/server/
 COPY apps/server/prisma ./apps/server/prisma
-# The build stage intentionally runs on BUILDPLATFORM so TypeScript/Vite do not
-# execute through QEMU. Sharp is the one runtime-native dependency: retain the
-# native musl package for ARM64 as well as the host package so the same cached
-# build output remains valid for both published Alpine images.
-# The second npm reification replaces @prisma/client while lifecycle scripts
-# are disabled, so regenerate the typed client before compiling.
-RUN npm ci \
-    && npm install --no-save --package-lock=false --ignore-scripts --force \
-      @img/sharp-linuxmusl-arm64@0.35.4 \
-      @img/sharp-libvips-linuxmusl-arm64@1.3.3 \
-    && npm run db:generate
+COPY frontend/package.json frontend/tsconfig*.json frontend/vite.config.ts frontend/tailwind.config.js frontend/postcss.config.js ./frontend/
+RUN npm ci
 COPY packages/shared/src ./packages/shared/src
-COPY apps/server/src ./apps/server/src
 COPY frontend/src ./frontend/src
 COPY frontend/public ./frontend/public
 COPY frontend/index.html ./frontend/index.html
-RUN npm run build
+RUN npm run build -w @pokemon-universe/shared && npm run build -w @pokemon-universe/web
 
-FROM node:22-alpine AS server
-ARG PU_COMMIT_SHA=""
-WORKDIR /app
-ENV NODE_ENV=production \
-    PU_COMMIT_SHA=${PU_COMMIT_SHA} \
-    CHECKPOINT_DISABLE=1 \
-    PRISMA_HIDE_UPDATE_MESSAGE=true
-COPY --from=build /app/package.json /app/package-lock.json* ./
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/packages/shared/package.json ./packages/shared/package.json
-COPY --from=build /app/packages/shared/dist ./packages/shared/dist
-COPY --from=build /app/apps/server/package.json ./apps/server/package.json
-COPY --from=build /app/apps/server/node_modules ./apps/server/node_modules
-COPY --from=build /app/apps/server/dist ./apps/server/dist
-COPY --from=build /app/apps/server/prisma ./apps/server/prisma
-COPY --chmod=755 scripts/start-server.sh /usr/local/bin/start-pokemon-universe
-RUN mkdir -p /data/avatars && chown -R node:node /data
-USER node
-EXPOSE 3001
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5m --retries=3 \
-  CMD ["node", "-e", "fetch('http://127.0.0.1:3001/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
-CMD ["start-pokemon-universe"]
-
-FROM nginxinc/nginx-unprivileged:1.27-alpine AS web
+FROM docker.io/nginxinc/nginx-unprivileged:1.27-alpine AS web
 COPY infra/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/frontend/dist /usr/share/nginx/html
 EXPOSE 8080

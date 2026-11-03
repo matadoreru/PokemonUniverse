@@ -1,6 +1,6 @@
 # El jar es independiente de la arquitectura: se compila en la plataforma del
 # runner para no ejecutar Gradle bajo QEMU al publicar la imagen ARM64.
-FROM --platform=$BUILDPLATFORM eclipse-temurin:25-jdk-alpine AS build
+FROM --platform=$BUILDPLATFORM docker.io/library/eclipse-temurin:25-jdk-alpine AS build
 WORKDIR /src
 COPY gradlew settings.gradle.kts build.gradle.kts gradle.properties ./
 COPY gradle ./gradle
@@ -18,7 +18,7 @@ RUN case "${TARGETARCH:-amd64}" in amd64) arch=x86_64 ;; arm64) arch=aarch64 ;; 
  && jar xf "$(ls /src/build/docker/main/layers/libs/webp-imageio-*.jar)" "native/Linux/${arch}/libwebp-imageio.so" \
  && cp "native/Linux/${arch}/libwebp-imageio.so" /src/native/
 
-FROM eclipse-temurin:25-jre-alpine
+FROM docker.io/library/eclipse-temurin:25-jre-alpine
 ARG PU_COMMIT_SHA=""
 ENV PU_COMMIT_SHA=${PU_COMMIT_SHA} \
     JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75 -XX:+UseSerialGC -Djava.awt.headless=true -Dlogback.configurationFile=logback-prod.xml -Djava.library.path=/app/native"

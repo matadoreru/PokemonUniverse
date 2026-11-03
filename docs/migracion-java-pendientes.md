@@ -180,12 +180,13 @@ Lista de comprobación (todo junto, en un mismo despliegue):
 
 - [x] La web habla solo con Java (Tarea 2 de 2D): fuera el adaptador Socket.IO, `socket.io-client` y la bandera
   `VITE_REALTIME`; Vite manda todo `/api` y `/ws` a `:8080` y los E2E corren solo contra Java.
-- [ ] Quitar `/socket.io/` de nginx.
-- [ ] Nuevos `location` hacia `backend:8080` en `infra/nginx.conf`, antes de `location /api/`: `/api/categories`,
+- [x] Quitar `/socket.io/` de nginx. (Tarea 5 de 2D.)
+- [x] Nuevos `location` hacia `backend:8080` en `infra/nginx.conf`, antes de `location /api/`: `/api/categories`,
   `/api/would-you-rather-prompts`, `/api/admin/`, `/api/tcg/`,
   `/api/auth/(guest/custom-avatar|profile/avatar)` (con `/preset`, `/custom` y el `DELETE`) y `/api/rooms/`
   (imágenes y gritos de ronda); `location = /ws` ya existe. La excepción de `proxyFor('java')` ya no existe
-  (Tarea 2 de 2D: un único modo).
+  (Tarea 2 de 2D: un único modo). (Tarea 5 de 2D: en su lugar, una sola `location ^~ /api/` y `location = /ws` hacia
+  `backend:8080`.)
 - [x] `BACKEND_DATA_SYNC_ENABLED=true` en el servicio `backend` de compose (con `DATA_SYNC_HOUR`, `DATA_SYNC_MINUTE`,
   `DATA_SYNC_TIMEZONE`) y `PU_DATA_SYNC_ENABLED=false` en Node, o Node retirado. Nunca los dos a la vez. (Tarea 4 de
   2D: Node fuera de compose; el valor es fijo, sin variable `PU_…`.)
@@ -194,10 +195,12 @@ Lista de comprobación (todo junto, en un mismo despliegue):
   cuya migración cambia algo), de las cachés de categorías y dilemas y del catálogo TCG: Node tiene que haber dejado de
   escribir esas tablas en el mismo despliegue. (Tarea 4 de 2D: `ROOMS_ENABLED: "true"` fijo en compose, para que un
   `.env` antiguo con `PU_ROOMS_ENABLED=false` no lo apague; Node ya no está en compose.)
-- [ ] Antes de añadir `location /api/admin/` en nginx, sondear la normalización de rutas del `AdminGate` a través de
+- [x] Antes de añadir `location /api/admin/` en nginx, sondear la normalización de rutas del `AdminGate` a través de
   nginx y de Micronaut: barra final (`/api/admin/`, `/api/admin/users/`), dobles barras (`//api/admin/users`,
   `/api//admin/users`), escapes (`/api/%61dmin/users`) y mayúsculas (`/api/ADMIN/users`). Cada variante debe acabar en
-  401/403 o en 404, nunca en un 200 sin guardia ni en Node.
+  401/403 o en 404, nunca en un 200 sin guardia ni en Node. (Tarea 5 de 2D: nginx reenvía la ruta sin normalizar,
+  comprobado con un backend de eco y con el stack completo; `AdminGateTest` envía las variantes por socket: 401/403 las
+  que Micronaut enruta al filtro, 404 `%61dmin`, `ADMIN`, `/./` y `admin%2F`.)
 - [x] Arranque con el data-sync encendido y el catálogo vacío (`ensureInitialPokemon` sincroniza PokéAPI antes de
   aceptar peticiones y la TCG inicial corre en segundo plano): sin probar de punta a punta en Java, y en 2D pasa a ser
   el camino de producción (healthcheck y `--wait-timeout` del despliegue incluidos). (Tarea 4 de 2D:
@@ -205,8 +208,9 @@ Lista de comprobación (todo junto, en un mismo despliegue):
   readiness y `start_period: 5m` en `DEPLOY.md`; `--wait-timeout` ≥ 450 s, hoy 600 s.)
 - [ ] `ClientAddress` toma el último salto de `X-Forwarded-For`: solo es fiable detrás de nginx, que lo fija. Exponer el
   backend directamente, o añadir otro proxy a la cadena, lo invalida para los limitadores.
-- [ ] La ruta de humo de Node de `scripts/deploy.sh` (`/api/tcg/options`) pasa a Java: elegir otra ruta de Node o
-  quitar la comprobación si Node se retira.
+- [x] La ruta de humo de Node de `scripts/deploy.sh` (`/api/tcg/options`) pasa a Java: elegir otra ruta de Node o
+  quitar la comprobación si Node se retira. (Tarea 5 de 2D: `scripts/smoke-check.sh` comprueba `/api/health`,
+  `/api/games`, `/api/tcg/options` y el handshake de `/ws`, todo Java.)
 - [x] `INTERRUPT_STALE_ROOMS=true` (`pu.interrupt-stale-rooms`): al arrancar marca `INTERRUPTED`/`SERVER_STOPPED` las
   filas `RoomHistory` `ACTIVE` y `GameHistory` `IN_PROGRESS` que dejó el proceso anterior (`interruptStaleActivity` de
   Node). Apagado por defecto porque, mientras Node sirva salas sobre la misma BD, cada arranque de Java interrumpiría
