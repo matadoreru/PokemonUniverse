@@ -536,13 +536,13 @@ test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
     await host.page.evaluate(() => window.scrollTo(0, 0));
     await capturarTamanos(host.page, 'juego-pokedex-distance-ronda-oculta', { sigue: enLaRonda, claro: true });
 
-    // El tercero recarga: la app le ofrece «Volver a la sala» y vuelve al buscador antes de que venza la gracia de 10 s,
+    // El tercero recarga: la app le ofrece «Volver a la sala» y vuelve al buscador antes de que venza la gracia de 8 s,
     // con la ronda aún abierta.
     const inicio = Date.now();
     await tercero.page.reload();
     await tercero.page.getByRole('button', { name: 'Volver a la sala' }).click({ timeout: 8_000 });
     await expect(buscador(tercero.page)).toBeVisible({ timeout: 8_000 });
-    expect(Date.now() - inicio, 'vuelta al buscador tras recargar (ms)').toBeLessThan(10_000);
+    expect(Date.now() - inicio, 'vuelta al buscador tras recargar (ms)').toBeLessThan(8_000);
     await expect(tercero.page.getByText('Estás observando')).toHaveCount(0);
     await expect(host.page.getByText('Resultado de la ronda')).toHaveCount(0);
     await expect(enLaRonda).toBeVisible();

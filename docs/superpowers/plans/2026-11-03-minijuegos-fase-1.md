@@ -76,6 +76,8 @@ El documento es anterior a la etapa 2D. Lo que manda es lo de aquí:
 
 ## Decisiones
 
+- Gracia: el usuario la bajó a 8 s el 2026-11-03.
+
 Se toman de las recomendaciones del propio documento. Si no hay ninguna, se elige la opción mínima que cumple el criterio de aceptación. Las marcadas **(más allá del documento)** o **(se desvía del documento)** las puede vetar el usuario.
 
 1. **§11.2, renombrar en vez de migrar.** Es la recomendación del documento.

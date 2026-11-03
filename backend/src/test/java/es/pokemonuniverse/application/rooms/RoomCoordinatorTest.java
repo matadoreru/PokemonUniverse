@@ -285,7 +285,7 @@ class RoomCoordinatorTest {
     assertTrue(kit.manager.context(room).isPlayerRequired("p3"));
     select(kit, "p1", "bulbasaur");
     select(kit, "p2", "charmander");
-    kit.time.advance(9_999);
+    kit.time.advance(7_999);
     assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
     kit.time.advance(1);
     assertEquals(RoomPhase.ROUND_RESULTS, room.phase);
@@ -310,7 +310,7 @@ class RoomCoordinatorTest {
     assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
     kit.time.advance(1 + RoomCoordinator.DEADLINE_TOLERANCE_MS);
     assertEquals(RoomPhase.ROUND_RESULTS, room.phase);
-    assertTrue(kit.time.now() < room.members.get("p3").disconnectedAt + 10_000);
+    assertTrue(kit.time.now() < room.members.get("p3").disconnectedAt + 8_000);
     var lastRound = kit.publicGame(room, "p1").get("lastRound");
     assertEquals("NO_RESPONSE", lastRound.get("reason").getStringValue());
     assertTrue(JsonTree.equal(json("[\"p3\"]"), lastRound.get("eliminatedIds")));
@@ -385,9 +385,9 @@ class RoomCoordinatorTest {
   void presenceGraceReconnectKeepsTheDuelAlive() {
     var kit = typeDuelKit();
     var room = typeDuelRoom(kit);
-    // Elección de tipos: se cae y vuelve a los 9 s.
+    // Elección de tipos: se cae y vuelve a los 7 s.
     kit.manager.disconnect("p2", "socket-p2");
-    kit.time.advance(9_000);
+    kit.time.advance(7_000);
     assertTrue(kit.manager.connect(guest("p2", "Dos"), "socket-p2-b"));
     kit.time.advance(5_000);
     assertDuelAlive(kit, room, "SELECTING_TYPES");
@@ -397,7 +397,7 @@ class RoomCoordinatorTest {
     kit.passDeadline(room);
     assertDuelAlive(kit, room, "POKEMON_SEARCH");
     kit.manager.disconnect("p2", "socket-p2-b");
-    kit.time.advance(9_000);
+    kit.time.advance(7_000);
     assertTrue(kit.manager.connect(guest("p2", "Dos"), "socket-p2-c"));
     kit.time.advance(5_000);
     assertDuelAlive(kit, room, "POKEMON_SEARCH");
@@ -409,7 +409,7 @@ class RoomCoordinatorTest {
     var kit = typeDuelKit();
     var room = typeDuelRoom(kit);
     kit.manager.disconnect("p2", "socket-p2");
-    kit.time.advance(9_999);
+    kit.time.advance(7_999);
     assertDuelAlive(kit, room, "SELECTING_TYPES");
     kit.time.advance(1);
     var game = kit.publicGame(room, "p1");
@@ -433,7 +433,7 @@ class RoomCoordinatorTest {
     kit.manager.disconnect("p4", "socket-p4");
     select(kit, "p1", "bulbasaur");
     select(kit, "p2", "charmander");
-    kit.time.advance(6_000);
+    kit.time.advance(4_000);
     assertFalse(kit.manager.context(room).isPlayerRequired("p3"));
     assertTrue(kit.manager.context(room).isPlayerRequired("p4"));
     assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
@@ -479,7 +479,7 @@ class RoomCoordinatorTest {
     assertSame(game, room.game);
     assertNull(game.finishReason);
     kit.manager.disconnect("skip-p3", "skip-socket-3b");
-    kit.time.advance(10_000);
+    kit.time.advance(8_000);
     assertSame(game, room.game);
     assertNull(game.finishReason);
   }

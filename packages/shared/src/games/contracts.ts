@@ -112,7 +112,7 @@ export interface GameActionResult<TState> {
 }
 
 /** Gracia de presencia (§8.3) de los minijuegos que la declaran en su manifiesto. */
-export const PRESENCE_GRACE_MS = 10_000;
+export const PRESENCE_GRACE_MS = 8_000;
 
 /** Intro de partida (§8.1): ms que la sala espera en `GAME_STARTING` mostrando los pasos, salvo que todos salten. */
 export const GAME_INTRO_MS = 10_000;
