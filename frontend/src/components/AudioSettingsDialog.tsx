@@ -53,6 +53,7 @@ export function AudioSettingsPanel({ settings, onPatch, onTest }: AudioSettingsP
 
 export function AudioSettingsDialog({ open, onClose }: { open: boolean; onClose(): void }) {
   const settings = useAudioSettings();
+  // «Cerrar» no necesita hacer nada: `Dialog` se cierra (llama a `onClose`) después de ejecutar cualquier acción.
   return (
     <Dialog open={open} title="Ajustes de sonido" onClose={onClose} actions={[{ label: 'Cerrar', variant: 'ghost', onClick: () => undefined }]}>
       <AudioSettingsPanel

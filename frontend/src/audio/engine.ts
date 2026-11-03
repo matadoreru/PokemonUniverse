@@ -39,6 +39,12 @@ export interface AudioDeps {
   /** Reloj en milisegundos (enfriamiento y voces). */
   now(): number;
   document?: DocumentLike;
+  /**
+   * ¿Hay activación de usuario ahora mismo (`navigator.userActivation.isActive`)? Un `pointerdown` táctil no la da
+   * (solo `pointerup`, `touchend` o `click`): sin ella el contexto nacería suspendido, así que se espera al siguiente
+   * evento que sí active. Sin la API se asume que sí.
+   */
+  hasActivation?(): boolean;
   /** Crea el reproductor de música al desbloquear, conectado al canal de música. */
   createMusic?(ctx: AudioContextLike, out: GainLike, cfg: SfxFile['music']): MusicPlayerLike;
 }
@@ -52,7 +58,7 @@ export interface AudioState {
 
 export interface Audio {
   play(id: SoundId): void;
-  /** Llamar solo desde un gesto del usuario (`pointerdown`, `keydown`). */
+  /** Llamar solo desde un gesto del usuario (`pointerdown`, `pointerup`, `click`, `keydown`); es idempotente. */
   unlock(): void;
   settings(): AudioSettings;
   update(patch: Partial<AudioSettings>): void;
@@ -102,9 +108,19 @@ export function createAudio(deps: AudioDeps, cfg: SfxFile = loadSfx()): Audio {
     }
   }
 
+  function safeActivation(): boolean {
+    try {
+      return deps.hasActivation?.() ?? true;
+    } catch {
+      return true;
+    }
+  }
+
   /** Crea el contexto y el grafo de canales; solo tras un gesto y con el sonido activado. */
   function ensureContext(): void {
     if (ctx || !gestured || settings.muted) return;
+    // Sin activación real (p. ej. el `pointerdown` de un toque) el navegador lo dejaría suspendido: se espera al siguiente gesto.
+    if (deps.hasActivation && !safeActivation()) return;
     let created: AudioContextLike | null = null;
     try {
       created = deps.createContext();
@@ -172,6 +188,8 @@ export function createAudio(deps: AudioDeps, cfg: SfxFile = loadSfx()): Audio {
       recent.push(id);
       if (recent.length > RECENT_MAX) recent.shift();
       if (!ctx || !channels || hidden) return;
+      // Contexto suspendido (sin activación o interrumpido): no se encolan voces que sonarían todas juntas al reanudar.
+      if (ctx.state !== 'running') return;
       if (!pool.tryAcquire(id, deps.now() / 1000, soundDuration(s), s.priority, s.cooldownMs)) return;
       try {
         playSound(ctx, channels[s.channel], s, ctx.currentTime, variationFor(++seed, cfg.variation));

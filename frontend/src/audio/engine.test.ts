@@ -69,7 +69,7 @@ function memoryStorage(initial: Record<string, string> = {}): StorageLike & { da
 
 const UNMUTED = JSON.stringify({ ...DEFAULT_SETTINGS, muted: false });
 
-function setup(opts: { muted?: boolean; createMusic?: AudioDeps['createMusic']; hidden?: boolean } = {}) {
+function setup(opts: { muted?: boolean; createMusic?: AudioDeps['createMusic']; hidden?: boolean; hasActivation?: () => boolean } = {}) {
   const contexts: FakeContext[] = [];
   let clock = 1000;
   const storage = memoryStorage(opts.muted === false ? { [AUDIO_STORAGE_KEY]: UNMUTED } : {});
@@ -80,6 +80,7 @@ function setup(opts: { muted?: boolean; createMusic?: AudioDeps['createMusic']; 
     now: () => clock,
     document: doc,
     ...(opts.createMusic ? { createMusic: opts.createMusic } : {}),
+    ...(opts.hasActivation ? { hasActivation: opts.hasActivation } : {}),
   };
   const audio = createAudio(deps);
   return {
@@ -154,6 +155,28 @@ describe('motor de audio', () => {
     const sfx = fire(t, 'game.hit');
     expect(sfx.length).toBeGreaterThan(0);
     for (const n of sfx) expect(channelOf(t.ctx(), n)).toBe('sfx');
+  });
+
+  it('sin activación real (pointerdown táctil) no crea el contexto; el siguiente gesto con activación sí', () => {
+    let active = false;
+    const t = setup({ muted: false, hasActivation: () => active });
+    t.audio.unlock();
+    expect(t.contexts).toHaveLength(0);
+    expect(t.audio.state().unlocked).toBe(false);
+    active = true;
+    t.audio.unlock();
+    expect(t.contexts).toHaveLength(1);
+    expect(t.audio.state().unlocked).toBe(true);
+  });
+
+  it('un contexto suspendido no programa voces (no se acumulan para el reanudar)', () => {
+    const t = setup({ muted: false });
+    t.audio.unlock();
+    t.ctx().state = 'suspended';
+    expect(fire(t, 'game.hit')).toHaveLength(0);
+    expect(t.audio.state().recent).toEqual(['game.hit']);
+    t.ctx().state = 'running';
+    expect(fire(t, 'game.hit').length).toBeGreaterThan(0);
   });
 
   it('las ganancias de canal siguen los ajustes y el silencio las lleva a 0', () => {

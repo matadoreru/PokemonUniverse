@@ -29,7 +29,9 @@ Fuente del motor: `/home/eru/Documents/Projects/InazumaElevenManager/src/audio/`
   cuadrática. **Apagado por defecto** en la primera visita. Persistencia en `localStorage` (clave `pokemon-universe-audio`),
   con migración de la clave antigua `pokemon-universe-sfx` (`'on'` → sonido activado con los volúmenes por defecto).
   Toda lectura y escritura de `localStorage` va en try/catch.
-- El `AudioContext` solo se crea dentro de un gesto del usuario (`pointerdown` o `keydown`); si el sonido estaba activado,
+- El `AudioContext` solo se crea dentro de un gesto del usuario con activación real (se escuchan `pointerdown`,
+  `pointerup`, `click` y `keydown`; mientras `navigator.userActivation.isActive` sea `false`, como en el `pointerdown`
+  de un toque, se espera al siguiente evento) y con un contexto suspendido no se programan efectos; si el sonido estaba activado,
   lo pedido antes del gesto (música) se aplica al desbloquear y los efectos de antes se descartan. Nunca hay avisos de
   autoplay en consola. Pestaña oculta → `suspend()`; visible → `resume()`.
 - Música: 3 temas originales compuestos con el tracker (`lobby`, `game`, `results`), renderizados una vez con
