@@ -48,6 +48,16 @@ export interface DialogController {
   close(): void;
   /** Avisa a `onClose` una sola vez por apertura (Esc, fondo, acción o cierre nativo). */
   dismiss(reason: DialogCloseReason, onClose: (reason: DialogCloseReason) => void): void;
+  /**
+   * Evento `close` nativo (el segundo Esc de Chrome no se puede cancelar). Llega en una tarea aparte: si el
+   * `<dialog>` vuelve a estar abierto (StrictMode cierra y reabre al montar), es un evento viejo y se ignora.
+   */
+  nativeClose(onClose: (reason: DialogCloseReason) => void): void;
+}
+
+/** El punto (coordenadas de cliente) cae fuera del rectángulo: el clic fue en el fondo y no en el borde de la caja. */
+export function isOutsideRect(rect: { left: number; top: number; right: number; bottom: number }, x: number, y: number): boolean {
+  return x < rect.left || x > rect.right || y < rect.top || y > rect.bottom;
 }
 
 /**
@@ -80,6 +90,10 @@ export function createDialogController(dialog: DialogLike, getActive: () => unkn
       if (!shown || notified) return;
       notified = true;
       onClose(reason);
+    },
+    nativeClose(onClose) {
+      if (dialog.open) return;
+      this.dismiss('escape', onClose);
     },
   };
 }
@@ -126,12 +140,14 @@ export function Dialog({ open, title, onClose, children, actions = [], width }: 
         e.preventDefault();
         if (dialogCloseReason(e) === 'escape') dismiss('escape');
       }}
-      onClose={() => dismiss('escape')}
+      onClose={() => ctrl.current?.nativeClose((r) => onCloseRef.current(r))}
       onPointerDown={(e) => {
-        downOnBackdrop.current = e.target === e.currentTarget;
+        downOnBackdrop.current = e.target === e.currentTarget && isOutsideRect(e.currentTarget.getBoundingClientRect(), e.clientX, e.clientY);
       }}
       onClick={(e) => {
-        if (dialogCloseReason(e) === 'backdrop' && downOnBackdrop.current) dismiss('backdrop');
+        // El destino es el `<dialog>` también al pulsar su borde de 3 px: solo cuenta fuera de su rectángulo.
+        const outside = isOutsideRect(e.currentTarget.getBoundingClientRect(), e.clientX, e.clientY);
+        if (dialogCloseReason(e) === 'backdrop' && outside && downOnBackdrop.current) dismiss('backdrop');
         downOnBackdrop.current = false;
       }}
     >
@@ -151,11 +167,11 @@ export function Dialog({ open, title, onClose, children, actions = [], width }: 
                 const focus = a.autoFocus ? { 'data-autofocus': '' } : {};
                 const variant = a.variant ?? (i === 0 ? 'yellow' : 'blue');
                 return variant === 'red' ? (
-                  <Pill key={a.label} {...focus} variant="red" size="main" onClick={onClick}>
+                  <Pill key={`${i}-${a.label}`} {...focus} variant="red" size="main" onClick={onClick}>
                     {a.label}
                   </Pill>
                 ) : (
-                  <Pill key={a.label} {...focus} variant={variant} onClick={onClick}>
+                  <Pill key={`${i}-${a.label}`} {...focus} variant={variant} onClick={onClick}>
                     {a.label}
                   </Pill>
                 );

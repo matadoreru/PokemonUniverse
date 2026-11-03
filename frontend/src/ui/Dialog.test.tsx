@@ -2,7 +2,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { setUiSoundSink } from '../audio/uiSound';
-import { createDialogController, Dialog, dialogCloseReason } from './Dialog';
+import { createDialogController, Dialog, dialogCloseReason, isOutsideRect } from './Dialog';
 
 afterEach(() => setUiSoundSink(null));
 
@@ -30,6 +30,16 @@ describe('dialogCloseReason', () => {
     expect(dialogCloseReason({ type: 'click', target: el, currentTarget: el })).toBe('backdrop');
     expect(dialogCloseReason({ type: 'click', target: {}, currentTarget: el })).toBeNull();
     expect(dialogCloseReason({ type: 'keydown', target: el, currentTarget: el })).toBeNull();
+  });
+});
+
+describe('isOutsideRect', () => {
+  it('el borde de la caja no es el fondo', () => {
+    const rect = { left: 10, top: 10, right: 110, bottom: 60 };
+    expect(isOutsideRect(rect, 10, 30)).toBe(false);
+    expect(isOutsideRect(rect, 60, 60)).toBe(false);
+    expect(isOutsideRect(rect, 9, 30)).toBe(true);
+    expect(isOutsideRect(rect, 60, 61)).toBe(true);
   });
 });
 
@@ -85,6 +95,35 @@ describe('createDialogController', () => {
     ctrl.close();
     expect(dialog.close).not.toHaveBeenCalled();
     expect(opener.focus).toHaveBeenCalledTimes(1);
+  });
+
+  it('un evento close tras reabrir no avisa', () => {
+    // StrictMode: el efecto cierra (encola un `close` nativo) y vuelve a abrir antes de que llegue el evento.
+    const dialog = fakeDialog();
+    const ctrl = createDialogController(dialog, () => null);
+    const onClose = vi.fn();
+    ctrl.open();
+    ctrl.close();
+    ctrl.open();
+    ctrl.nativeClose(onClose);
+    expect(onClose).not.toHaveBeenCalled();
+    expect(dialog.open).toBe(true);
+  });
+
+  it('el close nativo con el diálogo ya cerrado por el navegador avisa una vez como escape', () => {
+    const dialog = fakeDialog();
+    const ctrl = createDialogController(dialog, () => null);
+    const onClose = vi.fn();
+    ctrl.open();
+    ctrl.dismiss('escape', onClose);
+    dialog.open = false;
+    ctrl.nativeClose(onClose);
+    expect(onClose.mock.calls).toEqual([['escape']]);
+    const other = vi.fn();
+    const ctrl2 = createDialogController(fakeDialog(), () => null);
+    ctrl2.open();
+    ctrl2.nativeClose(other);
+    expect(other).not.toHaveBeenCalled();
   });
 
   it('al reabrir vuelve a avisar', () => {

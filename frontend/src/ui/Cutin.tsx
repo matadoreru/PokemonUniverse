@@ -46,7 +46,21 @@ export interface CutinBandProps extends CutinContent {
  * Presentación pura del cut-in. Oculto deja montada la región `status` vacía (sin las clases de la losa), así el
  * siguiente anuncio cae en una región viva que ya existe. La `delayedLine` no está en el DOM hasta `delayedShown`.
  */
-export function CutinBand({ visible, delayedShown, reduced, tone, title, subtitle, media, delayedLine, delayedTone, holdMs = CUTIN_HOLD_MS, onSkip, className, layer = 'cutin' }: CutinBandProps) {
+export function CutinBand({
+  visible,
+  delayedShown,
+  reduced,
+  tone,
+  title,
+  subtitle,
+  media,
+  delayedLine,
+  delayedTone,
+  holdMs = CUTIN_HOLD_MS,
+  onSkip,
+  className,
+  layer = 'cutin',
+}: CutinBandProps) {
   if (!visible) return <div className={s.srOnly} role="status" aria-live="assertive" data-layer={layer} />;
   const shownTone = delayedTone && delayedShown ? delayedTone : tone;
   const extra = typeof className === 'function' ? className(shownTone) : className;
@@ -79,11 +93,23 @@ export function CutinBand({ visible, delayedShown, reduced, tone, title, subtitl
   );
 }
 
-/** Espacio salta el cut-in salvo que se esté escribiendo en un campo. */
-function isSkipKey(e: KeyboardEvent): boolean {
+const SKIP_IGNORED_TAGS = new Set(['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A', 'SUMMARY']);
+
+/**
+ * Espacio salta el cut-in: sin repetición ni modificadores, y no si el foco está en un campo, botón o enlace (ahí
+ * Espacio ya tiene su propio efecto).
+ */
+export function isSkipKey(e: Pick<KeyboardEvent, 'key' | 'code' | 'repeat' | 'altKey' | 'ctrlKey' | 'metaKey' | 'shiftKey' | 'target'>): boolean {
   if (e.key !== ' ' && e.code !== 'Space') return false;
-  const t = e.target as { tagName?: string; isContentEditable?: boolean } | null;
-  return !(t && (t.isContentEditable || t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT'));
+  if (e.repeat || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return false;
+  const t = e.target as {
+    tagName?: string;
+    isContentEditable?: boolean;
+    getAttribute?: (name: string) => string | null;
+  } | null;
+  if (!t) return true;
+  if (t.isContentEditable || SKIP_IGNORED_TAGS.has(t.tagName ?? '')) return false;
+  return t.getAttribute?.('role') !== 'button';
 }
 
 /**

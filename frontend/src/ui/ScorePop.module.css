@@ -5,7 +5,7 @@
   font-variant-numeric: tabular-nums;
   color: var(--player, var(--white));
 }
-/* 400 ms fijos: es lo que dura en pantalla (SCORE_POP_MS). */
+/* 400 ms fijos (no hay token): debe coincidir con `SCORE_POP_MS` de ScorePop.tsx, que lo desmonta a ese tiempo. */
 .anim {
   animation: rise 400ms var(--ease) both;
 }

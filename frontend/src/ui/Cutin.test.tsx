@@ -2,7 +2,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { cutInToneMap } from '../components/RevealCutIn';
-import { Cutin, CutinBand } from './Cutin';
+import { Cutin, CutinBand, isSkipKey } from './Cutin';
 
 const classes = (html: string) => (/class="([^"]*)"/.exec(html)?.[1] ?? '').split(' ').map((c) => c.replace(/^_/, '').replace(/_[0-9a-z]+$/i, ''));
 
@@ -48,6 +48,21 @@ describe('Cutin', () => {
     expect(classes(after)).toContain('red');
     expect(after).toContain('…era impostor');
     expect(after).toContain('motion-enter-up');
+  });
+});
+
+describe('isSkipKey', () => {
+  const key = (over: Partial<Parameters<typeof isSkipKey>[0]> = {}) => ({ key: ' ', code: 'Space', repeat: false, altKey: false, ctrlKey: false, metaKey: false, shiftKey: false, target: { tagName: 'BODY' }, ...over }) as Parameters<typeof isSkipKey>[0];
+  it('Espacio limpio salta', () => {
+    expect(isSkipKey(key())).toBe(true);
+  });
+  it('ignora repetición, modificadores, otras teclas y el foco en campos, botones o enlaces', () => {
+    expect(isSkipKey(key({ repeat: true }))).toBe(false);
+    expect(isSkipKey(key({ shiftKey: true }))).toBe(false);
+    expect(isSkipKey(key({ ctrlKey: true }))).toBe(false);
+    expect(isSkipKey(key({ key: 'Enter', code: 'Enter' }))).toBe(false);
+    for (const tagName of ['INPUT', 'TEXTAREA', 'BUTTON', 'A']) expect(isSkipKey(key({ target: { tagName } as never }))).toBe(false);
+    expect(isSkipKey(key({ target: { tagName: 'DIV', getAttribute: () => 'button' } as never }))).toBe(false);
   });
 });
 
