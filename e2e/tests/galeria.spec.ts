@@ -5,7 +5,7 @@
  */
 import { mkdirSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
-import { collectErrors, layoutProblems, SIZES } from '../src/helpers.js';
+import { capture, collectErrors, SIZES } from '../src/helpers.js';
 
 const DIR = 'screenshots/galeria';
 
@@ -48,8 +48,7 @@ for (const { w, h } of SIZES) {
     await page.setViewportSize({ width: w, height: h });
     await abrirGaleria(page);
     // Captura de página completa, sin scroll horizontal y `measureLayout(page, 13)` vacío (la página sí se desplaza en vertical).
-    const { id, problems } = await layoutProblems(page, 'galeria', true, true, { minFontPx: 13 });
-    expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
+    await capture(page, 'galeria', { minFontPx: 13, fullPage: true });
     expect(errors).toEqual([]);
   });
 }
@@ -71,7 +70,16 @@ test('el aviso queda encima del diálogo abierto y Esc devuelve el foco', async 
   // por píxeles. Si el aviso quedara bajo el fondo del diálogo, el recorte con el diálogo abierto saldría oscurecido.
   const caja = await aviso.locator('xpath=ancestor::*[parent::*[@popover]][1]').boundingBox();
   expect(caja).not.toBeNull();
-  const clip = { x: caja!.x, y: caja!.y, width: caja!.width, height: caja!.height };
+  // Rectángulo interior: fuera quedan las esquinas redondeadas de la píldora, transparentes, por donde se ve el fondo del
+  // diálogo con él abierto.
+  const { x, y, width, height } = caja!;
+  const left = Math.ceil(x + height / 2 + 2);
+  const right = Math.floor(x + width - height / 2 - 2);
+  const top = Math.ceil(y + 4);
+  const bottom = Math.floor(y + height - 4);
+  expect(right - left).toBeGreaterThan(0);
+  expect(bottom - top).toBeGreaterThan(0);
+  const clip = { x: left, y: top, width: right - left, height: bottom - top };
   const conDialogo = await page.screenshot({ clip, animations: 'disabled' });
   await page.keyboard.press('Escape');
   await expect(dialogo).toBeHidden();

@@ -59,6 +59,8 @@ export interface CaptureOptions {
   minFontPx?: number;
   /** En vistas de 1024 px de ancho o más, la página no se desplaza en vertical (`scrollHeight ≤ innerHeight`). */
   noPageScroll?: boolean;
+  /** Captura de página completa en lugar de solo la vista (por defecto, `false`). */
+  fullPage?: boolean;
 }
 
 /**
@@ -75,7 +77,7 @@ export async function capture(page: Page, name: string, opts: CaptureOptions = {
  * horizontal y `measureLayout` vacío (o anotado en `PU_LAYOUT_LOG`).
  */
 export async function checkLayout(page: Page, name: string, screenshot = false, opts: CaptureOptions = {}): Promise<void> {
-  const { id, problems } = await layoutProblems(page, name, screenshot, false, opts);
+  const { id, problems } = await layoutProblems(page, name, screenshot, opts.fullPage ?? false, opts);
   const log = process.env.PU_LAYOUT_LOG;
   if (log) {
     if (problems.length) appendFileSync(log, `## ${id}\n${problems.map((p) => `- ${p}`).join('\n')}\n`);
