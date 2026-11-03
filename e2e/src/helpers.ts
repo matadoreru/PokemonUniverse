@@ -54,21 +54,28 @@ export async function expectNoHorizontalScroll(page: Page, name: string): Promis
   expect(over, `${name}: scroll horizontal de página`).toBeLessThanOrEqual(0);
 }
 
+export interface CaptureOptions {
+  /** Tamaño mínimo de letra que exige `measureLayout` (12 px por defecto). */
+  minFontPx?: number;
+  /** En vistas de 1024 px de ancho o más, la página no se desplaza en vertical (`scrollHeight ≤ innerHeight`). */
+  noPageScroll?: boolean;
+}
+
 /**
  * Captura de revisión: espera a las fuentes, comprueba que no hay scroll horizontal, guarda el PNG
  * en `e2e/screenshots/<name>-<w>x<h>.png` y mide encaje y legibilidad.
  * Con `PU_LAYOUT_LOG=<fichero>` solo anota los problemas (barrido sin cortar los specs).
  */
-export async function capture(page: Page, name: string): Promise<void> {
-  await checkLayout(page, name, true);
+export async function capture(page: Page, name: string, opts: CaptureOptions = {}): Promise<void> {
+  await checkLayout(page, name, true, opts);
 }
 
 /**
  * Lo mismo que `capture()`, sin guardar el PNG cuando `screenshot` es `false`: sin scroll
  * horizontal y `measureLayout` vacío (o anotado en `PU_LAYOUT_LOG`).
  */
-export async function checkLayout(page: Page, name: string, screenshot = false): Promise<void> {
-  const { id, problems } = await layoutProblems(page, name, screenshot);
+export async function checkLayout(page: Page, name: string, screenshot = false, opts: CaptureOptions = {}): Promise<void> {
+  const { id, problems } = await layoutProblems(page, name, screenshot, false, opts);
   const log = process.env.PU_LAYOUT_LOG;
   if (log) {
     if (problems.length) appendFileSync(log, `## ${id}\n${problems.map((p) => `- ${p}`).join('\n')}\n`);
@@ -82,15 +89,19 @@ export async function checkLayout(page: Page, name: string, screenshot = false):
  * `e2e/screenshots/<name>-<w>x<h>.png` (de página completa con `fullPage`; el nombre lleva el tamaño de la vista) y
  * devuelve lo que encuentra `measureLayout` sin fallar.
  */
-export async function layoutProblems(page: Page, name: string, screenshot: boolean, fullPage = false): Promise<{ id: string; problems: string[] }> {
+export async function layoutProblems(page: Page, name: string, screenshot: boolean, fullPage = false, opts: CaptureOptions = {}): Promise<{ id: string; problems: string[] }> {
   const vp = page.viewportSize();
   if (!vp) throw new Error('layoutProblems: la página no tiene viewport');
   const id = `${name}-${vp.width}x${vp.height}`;
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
   await page.waitForTimeout(250);
   await expectNoHorizontalScroll(page, id);
+  if (opts.noPageScroll && vp.width >= 1024) {
+    const over = await page.evaluate(() => Math.max(document.documentElement.scrollHeight, document.body.scrollHeight) - window.innerHeight);
+    expect(over, `${id}: scroll vertical de página`).toBeLessThanOrEqual(0);
+  }
   if (screenshot) await page.screenshot({ path: `screenshots/${id}.png`, animations: 'disabled', fullPage });
-  const m = await measureLayout(page);
+  const m = await measureLayout(page, opts.minFontPx);
   const problems = [
     ...m.small.map((x) => `< 12 px: ${x}`),
     ...m.overlaps.map((x) => `solape: ${x}`),

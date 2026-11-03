@@ -1,4 +1,4 @@
-import { lazy, StrictMode, type ReactNode } from 'react';
+import { lazy, StrictMode, Suspense, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
@@ -19,6 +19,10 @@ const AdminPage = lazy(() => import('./screens/AdminPage').then((module) => ({ d
 const ChangelogPage = lazy(() => import('./screens/ChangelogPage').then((module) => ({ default: module.ChangelogPage })));
 const FeedbackPage = lazy(() => import('./screens/FeedbackPage').then((module) => ({ default: module.FeedbackPage })));
 
+// Galería del catálogo (solo desarrollo): el `import()` va dentro de la rama DEV para que no entre en el bundle.
+const Gallery = import.meta.env.DEV ? lazy(() => import('./ui/dev/Gallery').then((module) => ({ default: module.Gallery }))) : null;
+const devRoutes = Gallery ? [{ path: '/dev/ui', element: <Suspense fallback={null}><Gallery /></Suspense> }] : [];
+
 const protectedPage = (page: ReactNode) => <RequireAuth>{page}</RequireAuth>;
 const router = createBrowserRouter([{ element: <Layout />, children: [
   { path: '/', element: <HomePage /> }, { path: '/auth', element: <AuthPage /> },
@@ -30,6 +34,6 @@ const router = createBrowserRouter([{ element: <Layout />, children: [
   { element: protectedPage(<RoomSessionLayout />), children: [
     { path: '/play', element: <PlayPage /> }, { path: '/room', element: <RoomPage /> },
   ] },
-] }]);
+] }, ...devRoutes]);
 
 createRoot(document.getElementById('root')!).render(<StrictMode><AuthProvider><ChangelogProvider><RouterProvider router={router} /></ChangelogProvider></AuthProvider></StrictMode>);

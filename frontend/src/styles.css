@@ -122,7 +122,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .connection-notice { @apply mb-2.5 flex items-center gap-3 rounded-xl border border-electric/35 bg-electric/10 px-4 py-2.5 font-bold text-ink; }
   /* Barra de acción fija abajo: la acción principal sigue a la vista aunque el contenido no quepa (voto, intro). */
   .sticky-action-bar { @apply sticky bottom-3 z-sticky flex flex-col gap-3 rounded-xl border border-ink/10 bg-surface/95 p-3 sm:flex-row; }
-  .modal-dialog { @apply m-auto max-h-[calc(100dvh-2rem)] w-[min(42rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-ink/10 bg-surface p-0 text-ink shadow-card; }
 }
 
 /* Insignia de tipo Pokémon: borde y fondo con el token del tipo (`--type-*`), texto con `ink`.
@@ -147,8 +146,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .type-badge-dark { --type-rgb: var(--type-dark-rgb); box-shadow: 0 0 0 2px var(--white); }
 .type-badge-steel { --type-rgb: var(--type-steel-rgb); }
 .type-badge-fairy { --type-rgb: var(--type-fairy-rgb); }
-
-.modal-dialog::backdrop { background: rgb(var(--color-night) / .78); }
 
 .pokemon-selector-results { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
 .sketchmon-canvas { display: block; width: 100%; aspect-ratio: 4 / 3; touch-action: none; background: white; }

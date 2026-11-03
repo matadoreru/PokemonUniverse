@@ -65,6 +65,11 @@ interface Props {
   lastAction?: ReactNode;
   /** Más bajo (intro de partida): el carrusel, su navegación y la cabecera caben juntos a 1280×720 y 390×844. */
   compact?: boolean;
+  /**
+   * Dentro de un `Dialog`: sin cabecera ni marco propios (el título lo pone el diálogo y la región se nombra con
+   * `heading`), y «Siguiente» recibe el foco al abrir (`data-autofocus`).
+   */
+  inDialog?: boolean;
 }
 
 /** Índice tras moverse `delta` posiciones: da la vuelta con bucle, se para en los extremos sin él y nunca sale de rango. */
@@ -78,7 +83,7 @@ export function carouselStep(active: number, count: number, loop: boolean, delta
  * Carrusel accesible sin reproducción automática: flechas, puntos de 44 px y teclas ← → sobre la región.
  * Pinta todas las diapositivas y oculta las inactivas con `hidden`, así el contenido existe sin JavaScript.
  */
-export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jugar', kicker = 'Guía rápida', footer, headerAction, idPrefix = 'how-to-play', itemLabel = 'consejo', loop = true, lastAction, compact = false }: Props) {
+export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jugar', kicker = 'Guía rápida', footer, headerAction, idPrefix = 'how-to-play', itemLabel = 'consejo', loop = true, lastAction, compact = false, inDialog = false }: Props) {
   const [storedActive, setActive] = useState(0);
   const [direction, setDirection] = useState<'next' | 'previous'>('next');
   // Otras diapositivas (otro juego) vuelven a empezar por la primera.
@@ -112,14 +117,14 @@ export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jug
   const label = itemLabel.charAt(0).toLocaleUpperCase('es') + itemLabel.slice(1);
   const titleId = `${idPrefix}-title`;
 
-  return <section className={`flex ${compact ? 'min-h-[24rem]' : 'min-h-[31rem]'} flex-col overflow-hidden rounded-2xl border border-aqua/20 bg-surface shadow-card`} aria-labelledby={titleId} aria-roledescription="carrusel" onKeyDown={onKeyDown}>
-    <header className="flex items-start justify-between gap-3 border-b border-ink/10 bg-gradient-to-r from-aqua/[.12] to-berry/[.08] px-5 py-4 sm:px-6">
+  return <section className={inDialog ? 'flex flex-col' : `flex ${compact ? 'min-h-[24rem]' : 'min-h-[31rem]'} flex-col overflow-hidden rounded-2xl border border-aqua/20 bg-surface shadow-card`} {...(inDialog ? { 'aria-label': heading } : { 'aria-labelledby': titleId })} aria-roledescription="carrusel" onKeyDown={onKeyDown}>
+    {!inDialog && <header className="flex items-start justify-between gap-3 border-b border-ink/10 bg-gradient-to-r from-aqua/[.12] to-berry/[.08] px-5 py-4 sm:px-6">
       <div className="min-w-0">
         <span className="text-xs font-black uppercase tracking-[.18em] text-aqua">{kicker}</span>
         <h2 id={titleId} className="font-display text-2xl sm:text-3xl">{heading}</h2>
       </div>
       {headerAction}
-    </header>
+    </header>}
     <div className={`flex flex-1 flex-col px-5 text-center sm:px-8 ${compact ? 'py-4' : 'py-6'}`} aria-live="polite">
       {slides.map((slide, index) => <div key={slide.eyebrow} id={`${idPrefix}-slide-${index + 1}`} role="group" aria-roledescription="diapositiva" aria-label={`${label} ${index + 1} de ${count}`} hidden={index !== active} className={`${index === active ? 'flex' : 'hidden'} flex-1 flex-col items-center justify-center ${direction === 'next' ? 'motion-enter-right' : 'motion-enter-left'}`}>
         <div className={`flex w-full items-center justify-center ${compact ? 'min-h-28' : 'min-h-48'}`}>{slide.visual}</div>
@@ -133,7 +138,7 @@ export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jug
       <div className="flex items-center" role="group" aria-label={`${label} ${active + 1} de ${count}`}>{slides.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => go(index, index < active ? 'previous' : 'next')} aria-label={`Ver ${itemLabel} ${index + 1}`} aria-controls={`${idPrefix}-slide-${index + 1}`} aria-current={index === active ? 'step' : undefined} className="group grid min-h-11 min-w-11 place-items-center rounded-full"><span className={`block h-2.5 w-2.5 rounded-full ${index === active ? 'scale-x-[2.6] bg-aqua' : 'bg-ink/40 group-hover:bg-ink/60'}`} /></button>)}</div>
       {showLastAction
         ? <span ref={lastActionRef} className="flex">{lastAction}</span>
-        : <button type="button" className="btn-ghost !px-3 aria-disabled:cursor-not-allowed aria-disabled:opacity-45" onClick={next} aria-disabled={isLast || undefined} aria-label={`Siguiente ${itemLabel}`} data-carousel-next=""><span className="hidden sm:inline">Siguiente</span> <ArrowRight size={18} /></button>}
+        : <button type="button" className="btn-ghost !px-3 aria-disabled:cursor-not-allowed aria-disabled:opacity-45" onClick={next} aria-disabled={isLast || undefined} aria-label={`Siguiente ${itemLabel}`} data-carousel-next="" {...(inDialog ? { 'data-autofocus': '' } : {})}><span className="hidden sm:inline">Siguiente</span> <ArrowRight size={18} /></button>}
     </nav>
     {footer && <div className="border-t border-ink/10 px-4 py-3 sm:px-5">{footer}</div>}
   </section>;

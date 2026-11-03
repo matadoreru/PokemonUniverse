@@ -26,7 +26,20 @@ describe('HowToPlayCarousel', () => {
     expect(markup.match(/hidden="" class="hidden /g)).toHaveLength(2);
   });
 
-  it('sin bucle no pasa del último paso ni del primero; con bucle da la vuelta', () => {
+  it('dentro de un diálogo no pinta cabecera, nombra la región y da el foco inicial a «Siguiente»', () => {
+    const props = { slides: gameHowToPlay['type-duel']!, heading: 'Type Duel', idPrefix: 'how-to-type-duel', itemLabel: 'paso', loop: false };
+    const inDialog = renderToStaticMarkup(createElement(HowToPlayCarousel, { ...props, inDialog: true }));
+    expect(inDialog).not.toContain('<h2');
+    expect(inDialog).toContain('aria-label="Type Duel"');
+    expect(inDialog).not.toContain('aria-labelledby="how-to-type-duel-title"');
+    expect(inDialog).toMatch(/data-carousel-next="" data-autofocus=""/);
+    const plain = renderToStaticMarkup(createElement(HowToPlayCarousel, props));
+    expect(plain).toContain('<h2 id="how-to-type-duel-title"');
+    expect(plain).toContain('aria-labelledby="how-to-type-duel-title"');
+    expect(plain).not.toContain('data-autofocus');
+  });
+
+    it('sin bucle no pasa del último paso ni del primero; con bucle da la vuelta', () => {
     expect(carouselStep(2, 3, false, 1)).toBe(2);
     expect(carouselStep(0, 3, false, -1)).toBe(0);
     expect(carouselStep(1, 3, false, 1)).toBe(2);

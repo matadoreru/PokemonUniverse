@@ -1,5 +1,5 @@
 import type { RoomMemberView, RoomView, WhoIsWhoCursorEvent, WhoIsWhoPlayerState, WhoIsWhoPokemonCard, WhoIsWhoPublicState, WhoIsWhoTeam } from '@pokemon-universe/shared/public';
-import { Check, EyeOff, Flag, MousePointer2, Search, Target, X } from 'lucide-react';
+import { Check, EyeOff, Flag, MousePointer2, Search, Target } from 'lucide-react';
 import { memo, useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
 import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';
@@ -7,6 +7,7 @@ import { useServerOffset } from '../hooks/useServerTime';
 import { clearWhoIsWhoCursor, sendWhoIsWhoCursor, subscribeWhoIsWhoCursors } from './who-is-who-cursor-channel';
 import { normalizeBoardPointer, projectBoardCursor } from './who-is-who-cursor-position';
 import { searchPokemonOptions } from './pokemon-search';
+import { Dialog } from '../ui';
 
 const teamName: Record<WhoIsWhoTeam, string> = { BLUE: 'Equipo Azul', RED: 'Equipo Rojo' };
 const otherTeam = (team: WhoIsWhoTeam): WhoIsWhoTeam => team === 'BLUE' ? 'RED' : 'BLUE';
@@ -61,13 +62,13 @@ function SecretPanel({ secret, team, canChoose, canGuess, canEndTurn, busy, onCh
 }
 
 function GuessDialog({ open, cards, busy, choosing = false, onClose, onConfirm }: { open: boolean; cards: WhoIsWhoPokemonCard[]; busy: boolean; choosing?: boolean; onClose(): void; onConfirm(id: string): Promise<void> }) {
-  const dialogRef = useRef<HTMLDialogElement>(null); const [query, setQuery] = useState(''); const [selectedId, setSelectedId] = useState<string | null>(null); const results = useMemo(() => searchPokemonOptions(cards, query, 24), [cards, query]);
-  useEffect(() => { const dialog = dialogRef.current; if (!dialog) return; if (open && !dialog.open) dialog.showModal(); if (!open && dialog.open) dialog.close(); if (!open) { setQuery(''); setSelectedId(null); } }, [open]);
+  const [query, setQuery] = useState(''); const [selectedId, setSelectedId] = useState<string | null>(null); const results = useMemo(() => searchPokemonOptions(cards, query, 24), [cards, query]);
+  useEffect(() => { if (!open) { setQuery(''); setSelectedId(null); } }, [open]);
   const selected = cards.find(({ id }) => id === selectedId);
-  return <dialog ref={dialogRef} className="modal-dialog" aria-labelledby="guess-title" onCancel={(event) => { event.preventDefault(); onClose(); }} onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}><div className="p-4 sm:p-5"><header className="flex items-center justify-between gap-3"><div><h2 id="guess-title" className="font-display text-2xl">{choosing ? 'Elige tu Pokémon secreto' : 'Adivinar Pokémon'}</h2><p className="text-sm font-bold text-ink/60">{choosing ? 'Solo tu equipo podrá verlo después de confirmar.' : 'Elige un candidato y confirma tu intento.'}</p></div><button type="button" className="icon-button" onClick={onClose} aria-label="Cerrar"><X /></button></header>
-    <label className="relative mt-4 block"><span className="sr-only">Buscar candidato</span><Search className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/50" size={18} /><input autoFocus className="field !pl-10" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar Pokémon…" /></label>
+  return <Dialog open={open} title={choosing ? 'Elige tu Pokémon secreto' : 'Adivinar Pokémon'} onClose={onClose} width={672} actions={[{ label: 'Cerrar', variant: 'blue', onClick: () => undefined }]}><p className="text-sm font-bold text-ink/60">{choosing ? 'Solo tu equipo podrá verlo después de confirmar.' : 'Elige un candidato y confirma tu intento.'}</p>
+    <label className="relative mt-4 block"><span className="sr-only">Buscar candidato</span><Search className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/50" size={18} /><input data-autofocus="" className="field !pl-10" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar Pokémon…" /></label>
     <div className="mt-3 grid max-h-[45dvh] grid-cols-2 gap-2 overflow-y-auto sm:grid-cols-3">{results.map((pokemon) => <button type="button" key={pokemon.id} aria-pressed={selectedId === pokemon.id} onClick={() => setSelectedId(pokemon.id)} className={`relative rounded-xl border p-2 text-center ${selectedId === pokemon.id ? 'border-electric bg-electric/10' : 'border-ink/10 bg-surface-raised hover:border-aqua/60'}`}><img src={pokemon.sprite} alt="" className="mx-auto h-20 w-20 object-contain" /><strong className="block truncate text-sm">{pokemon.name}</strong>{selectedId === pokemon.id && <Check className="absolute right-2 top-2 text-electric" size={17} />}</button>)}</div>
-    <button type="button" className="btn-primary mt-4 w-full" disabled={!selected || busy} onClick={() => selected && void onConfirm(selected.id).catch(() => undefined)}>Confirmar {selected?.name ?? (choosing ? 'elección' : 'intento')}</button></div></dialog>;
+    <button type="button" className="btn-primary mt-4 w-full" disabled={!selected || busy} onClick={() => selected && void onConfirm(selected.id).catch(() => undefined)}>Confirmar {selected?.name ?? (choosing ? 'elección' : 'intento')}</button></Dialog>;
 }
 
 export function WhoIsWhoPokemonGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {

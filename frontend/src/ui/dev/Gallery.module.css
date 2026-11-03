@@ -1,0 +1,109 @@
+/* Galería del catálogo (solo desarrollo): página propia que se desplaza, con una rejilla de figuras por sección. */
+.page {
+  display: grid;
+  gap: var(--sp-6);
+  max-width: 1600px;
+  margin-inline: auto;
+  padding: var(--sp-5) var(--sp-4) var(--sp-6);
+  color: var(--white);
+}
+.head {
+  display: grid;
+  gap: var(--sp-2);
+}
+.title {
+  margin: 0;
+  font: 800 var(--fs-34) / var(--lh-display) var(--font-display);
+}
+.section {
+  display: grid;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.sectionTitle {
+  margin: 0;
+  padding-bottom: var(--sp-2);
+  border-bottom: var(--ol-2) solid var(--navy-3);
+  font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--sp-6) * 9)), 1fr));
+  gap: var(--sp-3);
+}
+.fig {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: var(--sp-2);
+  min-width: 0;
+  margin: 0;
+  padding: var(--sp-3);
+  border: var(--ol-2) solid var(--navy-3);
+  border-radius: var(--r-card);
+  background: var(--navy-2);
+}
+.wide {
+  grid-column: 1 / -1;
+}
+.cap {
+  font: 700 var(--fs-13) / var(--lh-text) var(--font-text);
+  color: var(--white);
+}
+.box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  min-width: 0;
+  /* Hueco para el anillo de foco y la sombra dura de los interactivos. */
+  padding: var(--sp-3);
+}
+.wide > .box {
+  display: block;
+}
+.cream {
+  border-radius: var(--r-panel);
+  background: var(--cream);
+  color: var(--ink);
+}
+.cream > * {
+  flex: 1 1 100%;
+}
+.text {
+  margin: 0;
+  font: 700 var(--fs-15) / var(--lh-text) var(--font-text);
+  color: var(--white);
+}
+.textInk {
+  margin: 0;
+  font: 700 var(--fs-15) / var(--lh-text) var(--font-text);
+  color: var(--ink);
+}
+.stack {
+  display: grid;
+}
+.iconRow {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.barBox {
+  display: block;
+  width: 100%;
+}
+.popSlot {
+  display: inline-flex;
+  align-items: center;
+  min-width: var(--sp-6);
+  min-height: var(--sp-6);
+}
+/* La pantalla doble ocupa toda la vista por debajo de 1024 px: aquí va en un marco de alto fijo con su propio scroll. */
+.splitFrame {
+  height: calc(var(--sp-6) * 12);
+  overflow: auto;
+  border: var(--ol-2) solid var(--navy-3);
+  border-radius: var(--r-card);
+  background: var(--band);
+}
