@@ -29,9 +29,13 @@ on:
   workflow_call:
     inputs:
       publish:
-        description: Build and push the web image to GHCR.
+        description: Build and push the web image to GHCR as :<sha> (main.yml moves :pre once every job passed).
         type: boolean
         default: false
+      platforms:
+        description: Image platforms. main.yml passes linux/amd64 on pushes to main and adds linux/arm64 for v* tags.
+        type: string
+        default: linux/amd64
 
 permissions:
   contents: read
@@ -176,8 +180,10 @@ jobs:
           npx tsc -p packages/shared/golden/tsconfig.json
           npm run check:golden
 
+  # Solo en PRs: al publicar, la build del Dockerfile ya compila shared y web.
   build:
     name: Build
+    if: ${{ !inputs.publish }}
     needs: [lint, typecheck, test, oracle]
     runs-on: ubuntu-latest
     steps:
@@ -193,15 +199,17 @@ jobs:
           npm run build -w @pokemon-universe/shared
           npm run build -w @pokemon-universe/web
 
+  # En paralelo con lint, typecheck, test y oracle: solo publica :<sha>. main.yml no despliega ni mueve :pre si alguno
+  # de ellos falla.
   image:
     name: Publish web image
-    needs: build
     if: inputs.publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
       - name: Set up QEMU
+        if: contains(inputs.platforms, 'arm64')
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
@@ -214,19 +222,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # :pre only moves on main, so a tag push on an older commit or a manual
-      # run from another branch never rewinds the image main.yml retags from.
       - name: Build and push web image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           target: web
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ inputs.platforms }}
           push: true
-          tags: |
-            ${{ github.ref == 'refs/heads/main' && format('ghcr.io/{0}/pokemon-universe-web:pre', github.repository_owner) || '' }}
-            ghcr.io/${{ github.repository_owner }}/pokemon-universe-web:${{ github.sha }}
+          tags: ghcr.io/${{ github.repository_owner }}/pokemon-universe-web:${{ github.sha }}
           cache-from: type=gha,scope=web
           cache-to: type=gha,mode=max,scope=web
           provenance: mode=max

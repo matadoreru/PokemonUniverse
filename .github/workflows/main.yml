@@ -1,9 +1,11 @@
 name: Main
 
-# Every push to main builds only what changed, gives every image the commit SHA
-# (unchanged images are retagged from :pre) and deploys that SHA to PRE.
-# The experimental native backend image is built alongside and never delays PRE.
-# v* tags rebuild everything and add the tag name; they never deploy.
+# Every push to main builds only what changed (linux/amd64, the PRE/PRO host), in
+# parallel with the tests; gives every image the commit SHA (unchanged images are
+# retagged from :pre), moves :pre once everything passed and deploys that SHA to PRE.
+# v* tags and manual runs rebuild everything for linux/amd64 and linux/arm64 (with
+# the arm64 WebP smoke test) and add the tag name; they never deploy.
+# The experimental native backend image is built by hand (backend-native.yml).
 on:
   push:
     branches:
@@ -116,6 +118,7 @@ jobs:
     uses: ./.github/workflows/frontend.yml
     with:
       publish: true
+      platforms: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'linux/amd64' || 'linux/amd64,linux/arm64' }}
     secrets: inherit
 
   backend:
@@ -128,47 +131,13 @@ jobs:
     uses: ./.github/workflows/backend.yml
     with:
       publish: true
+      platforms: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'linux/amd64' || 'linux/amd64,linux/arm64' }}
     secrets: inherit
 
-  # Experimental (stage 1): the native binary still crashes at runtime. Not a
-  # dependency of retag or deploy-pre, so it never blocks or delays PRE.
-  backend-native:
-    name: Publish backend native image (experimental)
-    needs: [changes, backend]
-    if: ${{ !cancelled() && needs.changes.outputs.backend == 'true' && needs.backend.result == 'success' }}
-    continue-on-error: true
-    timeout-minutes: 25
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push native image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile.native
-          platforms: linux/amd64
-          push: true
-          build-args: |
-            PU_COMMIT_SHA=${{ github.sha }}
-          tags: ghcr.io/${{ github.repository_owner }}/pokemon-universe-backend:${{ github.sha }}-native
-          cache-from: type=gha,scope=backend-native
-          cache-to: type=gha,mode=max,scope=backend-native
-          provenance: mode=max
-          sbom: true
-
   # Skipped builds count as "skipped", not "failure": retag runs unless a build
-  # that did run failed (or the run was cancelled).
+  # that did run failed (or the run was cancelled). The images are pushed as
+  # :<sha> in parallel with the tests; :pre only moves here, after every test of
+  # this run passed, so it never points at a red commit.
   retag:
     name: Tag every image with the commit SHA
     needs: [changes, frontend, backend]
@@ -207,7 +176,14 @@ jobs:
             name="${entry%%:*}"
             built="${entry#*:}"
             if [ "$built" = 'true' ]; then
-              echo "- \`$name\`: construida en esta ejecución" >> "$GITHUB_STEP_SUMMARY"
+              # :pre only moves on main, so a tag push on an older commit or a manual
+              # run from another branch never rewinds the image this job retags from.
+              if [ "$GITHUB_REF" = 'refs/heads/main' ]; then
+                docker buildx imagetools create --tag "$REGISTRY/$name:pre" "$REGISTRY/$name:$GITHUB_SHA"
+                echo "- \`$name\`: construida en esta ejecución; \`:pre\` apunta a ella" >> "$GITHUB_STEP_SUMMARY"
+              else
+                echo "- \`$name\`: construida en esta ejecución" >> "$GITHUB_STEP_SUMMARY"
+              fi
             else
               retag "$name"
             fi

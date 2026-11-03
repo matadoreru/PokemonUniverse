@@ -21,12 +21,15 @@ for smoke_path in /api/health /api/games /api/tcg/options; do
   fi
 done
 
+# El handshake lleva el Host del origen, como un navegador en el dominio público. Con Host 127.0.0.1 y un Origin que no
+# es local, Micronaut (CorsFilter, protección drive-by-localhost con CORS sin configurar) responde 403.
 # Tras el 101 el backend manda el cierre 4401 y corta; --max-time acota el caso de que no lo haga (curl sale con 28).
+origin_host=$(printf '%s' "$origin" | sed -E 's#^[A-Za-z][A-Za-z0-9+.-]*://##; s#/.*$##')
 ws_output=$(mktemp)
 trap 'rm -f "$ws_output"' EXIT
 ws_status=$(curl --silent --max-time 10 --http1.1 --output "$ws_output" --write-out '%{http_code}' \
   -H 'Connection: Upgrade' -H 'Upgrade: websocket' -H 'Sec-WebSocket-Version: 13' \
-  -H 'Sec-WebSocket-Key: cG9rZW1vbi11bml2ZXJzZQ==' -H "Origin: $origin" \
+  -H 'Sec-WebSocket-Key: cG9rZW1vbi11bml2ZXJzZQ==' -H "Origin: $origin" -H "Host: $origin_host" \
   "$base_url/ws") || true
 if [ "$ws_status" != 101 ]; then
   echo "Humo: /ws respondió $ws_status al handshake, se esperaba 101" >&2

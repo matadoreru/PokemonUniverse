@@ -42,15 +42,17 @@ van dentro de la imagen (`backend/assets/pokemon-artworks` → `/app/pokemon-art
 Para escribir avatares (WebP) el backend carga la libwebp nativa de `webp-imageio`: la extrae a `/tmp` y, si el tmpfs
 es `noexec`, escribe una vez «Failed to load native library…» en stderr y la carga desde `/app/native` (copiada en la
 imagen para la arquitectura de destino). No hace falta cambiar la base Alpine ni el `tmpfs` del compose. CI lo comprueba
-en `linux/arm64` bajo QEMU (job `webp-arm64` de `backend.yml`, con `--read-only` y `/tmp` `noexec`):
+en `linux/arm64` bajo QEMU (job `webp-arm64` de `backend.yml`, con `--read-only` y `/tmp` `noexec`) en los PRs del
+backend y en las ejecuciones que publican arm64 (tags `v*` y manuales); un push normal a `main` no lo ejecuta:
 
 ```bash
 docker run --rm --platform linux/arm64 --read-only --tmpfs /tmp:size=64m,noexec --entrypoint java IMAGEN \
   --enable-native-access=ALL-UNNAMED -cp /app/app.jar es.pokemonuniverse.tools.WebpEncoderSmoke
 ```
 
-PostgreSQL no publica puertos. GitHub Actions valida el proyecto y publica imágenes `linux/amd64` y `linux/arm64` en
-GHCR con el SHA completo del commit y el tag móvil `pre`. El tag `latest` solo se mueve después de promocionar correctamente ese SHA a PRO. El servidor solo descarga imágenes ya verificadas; no compila.
+PostgreSQL no publica puertos. GitHub Actions valida el proyecto y publica imágenes en GHCR con el SHA completo del
+commit y el tag móvil `pre`: solo `linux/amd64` (la arquitectura del servidor de PRE/PRO) en cada push a `main`, y
+`linux/amd64` + `linux/arm64` en los tags `v*` y al lanzar `main.yml` a mano. El tag `latest` solo se mueve después de promocionar correctamente ese SHA a PRO. El servidor solo descarga imágenes ya verificadas; no compila.
 
 ## 1. Publicar las imágenes
 
@@ -59,7 +61,7 @@ Sube el proyecto a GitHub con rama principal `main`. La integración continua es
 | Workflow | Se dispara en PR cuando cambia | Valida | Imagen |
 | --- | --- | --- | --- |
 | `.github/workflows/frontend.yml` | `frontend/`, `packages/shared/`, `e2e/`, `apps/server/`, `scripts/export-golden-*.mjs`, `backend/src/test/resources/golden/`, `package*.json`, `tsconfig.base.json`, `eslint.config.mjs`, `Dockerfile`, `.dockerignore`, `infra/nginx.conf`, `backend/openapi/` | lint, typecheck y tests en paralelo (incluye `check:boundaries` y `check:registry`); job `oracle`: oráculo Node (migraciones Prisma sobre una BD de prueba, typecheck, lint, tests, build) y `check:golden`; build Vite | `pokemon-universe-web` (target `web`) |
-| `.github/workflows/backend.yml` | `backend/`, `compose.yaml` | `./gradlew check` (tests con Testcontainers, `ComposeStartupTest` y `verifyOpenApi`); `webp-arm64`: codificador WebP en la imagen `linux/arm64` | `pokemon-universe-backend` (JVM); `main.yml` añade `:<sha>-native` experimental, no bloqueante |
+| `.github/workflows/backend.yml` | `backend/`, `compose.yaml` | `./gradlew check` (tests con Testcontainers, `ComposeStartupTest` y `verifyOpenApi`); `webp-arm64`: codificador WebP en la imagen `linux/arm64` | `pokemon-universe-backend` (JVM); `:<sha>-native` experimental solo a mano con `backend-native.yml` |
 
 `.github/workflows/deploy-scripts.yml` (en PR y push a `main` cuando cambian `scripts/**` o `compose.yaml`) pasa
 shellcheck a los scripts y `scripts/test-deploy-rollback.sh`; no construye imágenes ni forma parte de `main.yml`.
@@ -70,26 +72,38 @@ job `oracle` de `frontend.yml`, que bloquea la imagen web como antes bloqueaban 
 En cada push a `main`, `.github/workflows/main.yml` detecta qué zonas cambiaron desde el último Main verde en `main`
 (no desde el push anterior; sin ninguno, construye todo), llama solo a los workflows afectados
 con `publish: true` y reetiqueta las imágenes no afectadas de `:pre` a `:<commit-sha>`, de modo que **cada SHA de `main`
-tiene las dos imágenes**. Después despliega ese SHA en PRE (ver [`docs/pre-production.md`](docs/pre-production.md)).
+tiene las dos imágenes**. Las imágenes se construyen en paralelo con los tests y se publican solo como `:<commit-sha>`;
+el job `retag` mueve `:pre` a las recién construidas únicamente cuando todos los tests de la ejecución han pasado, así
+que `:pre` nunca apunta a un commit en rojo (un `:<commit-sha>` de un commit en rojo puede existir, pero no se
+despliega). Después despliega ese SHA en PRE (ver [`docs/pre-production.md`](docs/pre-production.md)).
 La promoción a PRO (`promote-production.yml`) toma como SHA el tag de imagen que ejecuta PRE (las dos imágenes deben
 compartirlo); el `PU_COMMIT_SHA` incorporado en una imagen reetiquetada puede ser de un commit anterior y solo se usa
 como respaldo si el tag no es un SHA.
-Las imágenes son `linux/amd64` y `linux/arm64` con caché de Buildx en GitHub Actions (`type=gha`, un `scope` por imagen):
+Caché de Buildx en GitHub Actions (`type=gha`, un `scope` por imagen):
 
 ```text
 ghcr.io/matadoreru/pokemon-universe-web:pre
 ghcr.io/matadoreru/pokemon-universe-backend:pre
 ghcr.io/matadoreru/pokemon-universe-web:<commit-sha>
 ghcr.io/matadoreru/pokemon-universe-backend:<commit-sha>
-ghcr.io/matadoreru/pokemon-universe-backend:<commit-sha>-native   # experimental, solo amd64
+ghcr.io/matadoreru/pokemon-universe-backend:<commit-sha>-native   # experimental, solo amd64, a mano
 ```
 
-Un tag git `v*` (por ejemplo `v0.9.0`) reconstruye las dos imágenes y les añade ese tag; no despliega. Lanzar `main.yml`
+Un tag git `v*` (por ejemplo `v0.9.0`) reconstruye las dos imágenes para amd64 y arm64 y les añade ese tag; no
+despliega. La imagen nativa experimental (GraalVM, ≈ 10 min) se construye solo a mano: Actions → «Backend native image
+(experimental)» → Run workflow. Lanzar `main.yml`
 a mano (`workflow_dispatch`) fuerza las dos builds; solo hace falta si el job `retag` avisa de que falta un `:pre`
 (la primera ejecución ya lo construye todo porque aún no hay ningún Main verde). Los cambios en `main.yml` o en
 `.github/actions/` reconstruyen las dos imágenes.
 
-### Tiempos antes/después
+### Tiempos del despliegue a PRE
+
+Desde noviembre de 2026 (medido antes del cambio en la ejecución 41657262671): `Gradle check` 3:30 → `webp-arm64` bajo
+QEMU 6:12 → imagen backend multi-arch 3:25 → retag → deploy, **≈ 14 min**. Ahora la imagen amd64 se construye a la vez
+que `check`, sin QEMU ni `webp-arm64` ni nativa: camino crítico ≈ `check` (3:30) + retag + deploy ≈ **5–6 min**
+(estimado; corregir con la primera ejecución).
+
+### Tiempos antes/después (separación frontend/backend)
 
 Antes: un único workflow (`docker.yml`) en cada push, medido. Después: **estimaciones**, a corregir con la primera
 ejecución real de `main.yml`.

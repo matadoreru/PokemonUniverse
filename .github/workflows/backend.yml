@@ -15,9 +15,13 @@ on:
   workflow_call:
     inputs:
       publish:
-        description: Build and push the backend JVM image to GHCR (the native image is built by main.yml).
+        description: Build and push the backend JVM image to GHCR as :<sha> (main.yml moves :pre once every job passed).
         type: boolean
         default: false
+      platforms:
+        description: Image platforms. main.yml passes linux/amd64 on pushes to main and adds linux/arm64 for v* tags.
+        type: string
+        default: linux/amd64
 
 permissions:
   contents: read
@@ -65,9 +69,11 @@ jobs:
   # construye la imagen arm64 (Gradle en la plataforma del runner, el resto bajo QEMU) y se ejecuta
   # es.pokemonuniverse.tools.WebpEncoderSmoke con el sistema de archivos de solo lectura y /tmp noexec, como en
   # compose.yaml: así se prueba la carga desde /app/native que usa producción.
+  # Solo en PRs y cuando se publica arm64 (tags v*, ejecución manual): un push normal a main publica solo amd64 y no
+  # espera a QEMU. Va en paralelo con check.
   webp-arm64:
     name: WebP encoder smoke test on linux/arm64
-    needs: check
+    if: github.event_name == 'pull_request' || contains(inputs.platforms, 'arm64')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -94,9 +100,9 @@ jobs:
             --entrypoint java pokemon-universe-backend:arm64-smoke \
             --enable-native-access=ALL-UNNAMED -cp /app/app.jar es.pokemonuniverse.tools.WebpEncoderSmoke
 
+  # En paralelo con check: solo publica :<sha>. main.yml no despliega ni mueve :pre si check o webp-arm64 fallan.
   image:
     name: Publish backend JVM image
-    needs: [check, webp-arm64]
     if: inputs.publish
     runs-on: ubuntu-latest
     steps:
@@ -105,6 +111,7 @@ jobs:
       # The Gradle stage runs on the build platform; the arm64 runtime stage
       # still executes RUN under emulation.
       - name: Set up QEMU
+        if: contains(inputs.platforms, 'arm64')
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
@@ -117,19 +124,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # :pre only moves on main (see frontend.yml).
       - name: Build and push backend image
         uses: docker/build-push-action@v6
         with:
           context: ./backend
           file: ./backend/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ inputs.platforms }}
           push: true
           build-args: |
             PU_COMMIT_SHA=${{ github.sha }}
-          tags: |
-            ${{ github.ref == 'refs/heads/main' && format('ghcr.io/{0}/pokemon-universe-backend:pre', github.repository_owner) || '' }}
-            ghcr.io/${{ github.repository_owner }}/pokemon-universe-backend:${{ github.sha }}
+          tags: ghcr.io/${{ github.repository_owner }}/pokemon-universe-backend:${{ github.sha }}
           cache-from: type=gha,scope=backend
           cache-to: type=gha,mode=max,scope=backend
           provenance: mode=max
