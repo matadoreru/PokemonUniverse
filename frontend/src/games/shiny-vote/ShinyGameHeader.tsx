@@ -26,7 +26,7 @@ export function ShinyGameHeader({ roundNumber, totalRounds, active, voteVisibili
       <span className="permission-chip">{candidateMode === 'SAME_POKEMON' ? <Layers3 size={14} aria-hidden="true" /> : <Shuffle size={14} aria-hidden="true" />}{candidateMode === 'SAME_POKEMON' ? 'Mismo Pokémon' : 'Pokémon diferentes'}</span>
       {active && <span className="ml-auto hidden items-center gap-1.5 text-xs font-extrabold text-ink/55 sm:inline-flex"><Clock3 size={14} aria-hidden="true" />El tiempo lo controla el servidor</span>}
     </div>
-    <div className="mt-3 h-2.5 overflow-hidden rounded-full border border-ink/15 bg-night" role="progressbar" aria-label="Tiempo restante de la ronda" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}>
+    <div className="timer-track mt-3 h-2.5 overflow-hidden rounded-full" role="progressbar" aria-label="Tiempo restante de la ronda" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}>
       <div className={`shiny-timer-bar h-full w-full origin-left ${active ? urgent ? 'bg-berry' : 'bg-aqua' : 'bg-leaf'}`} style={{ transform: `scaleX(${progress / 100})` }} />
     </div>
   </header>;

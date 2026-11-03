@@ -193,19 +193,48 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .pokeddle-feedback { height: 100%; transition: background-color .18s ease, color .18s ease; }
 .pokeddle-row-enter { animation: pokeddle-row-enter .38s cubic-bezier(.2,.8,.3,1); }
 @keyframes pokeddle-row-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-.pokeddle-timer-urgent { animation: pokeddle-timer-urgent .8s ease-in-out infinite alternate; }
-@keyframes pokeddle-timer-urgent { to { text-shadow: 0 0 16px rgba(255,92,130,.7); opacity: .78; } }
+.pokeddle-timer-urgent { animation: pokeddle-timer-urgent .4s ease-in-out infinite alternate; }
+@keyframes pokeddle-timer-urgent { to { transform: scale(1.06); } }
 .who-silhouette-stage { background: radial-gradient(circle at 50% 44%, rgba(232,237,247,.92), rgba(82,199,232,.56) 52%, rgba(27,36,54,.95) 72%); box-shadow: inset 0 0 60px rgba(5,8,17,.42), 0 18px 45px rgba(0,0,0,.22); }
 .who-silhouette-stage img { filter: drop-shadow(0 5px 1px rgba(255,255,255,.18)); }
 .who-reveal-stage { background-image: radial-gradient(circle at center, rgba(98,201,149,.2), transparent 68%); }
 .zoomed-viewport { box-shadow: inset 0 0 70px rgba(5,8,17,.55), 0 18px 45px rgba(0,0,0,.24); }
 .zoomed-image { transition: transform 300ms cubic-bezier(.2,.75,.25,1); will-change: transform; }
 @media (max-width: 640px) { .zoomed-answer { position: sticky; bottom: .5rem; z-index: 10; border-radius: .75rem; border: 1px solid rgb(var(--color-ink) / .1); background: rgb(var(--color-surface) / .97); padding: .75rem; } }
+/* Vocabulario de movimiento común: solo transform/opacity y ≤400 ms. La reducción de movimiento se apaga abajo, en una sola regla. */
+.timer-track { border: 1px solid rgb(var(--color-ink) / .15); background: rgb(var(--color-ink) / .12); }
+.motion-bump { animation: motion-bump 300ms cubic-bezier(.2,.8,.3,1); }
+.motion-enter-up { animation: motion-enter-up 260ms cubic-bezier(.16,1,.3,1) both; }
+.motion-enter-left { animation: motion-enter-left 320ms cubic-bezier(.16,1,.3,1) both; }
+.motion-enter-right { animation: motion-enter-right 320ms cubic-bezier(.16,1,.3,1) both; }
+.motion-grow-x { transform-origin: left; animation: motion-grow-x 400ms cubic-bezier(.16,1,.3,1) both; }
+.motion-flip { animation: motion-flip 360ms cubic-bezier(.16,1,.3,1) both; }
+.motion-delay-1s { animation-delay: 1s; animation-fill-mode: both; }
+@keyframes motion-bump { 50% { transform: scale(1.12); } }
+@keyframes motion-enter-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes motion-enter-left { from { opacity: 0; transform: translateX(-1.5rem); } to { opacity: 1; transform: translateX(0); } }
+@keyframes motion-enter-right { from { opacity: 0; transform: translateX(1.5rem); } to { opacity: 1; transform: translateX(0); } }
+@keyframes motion-grow-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes motion-flip { from { transform: rotateY(90deg); } to { transform: rotateY(0); } }
+/* Cut-in de cartucho: banda a todo el ancho, centrada en vertical, que no bloquea la pantalla. */
+.reveal-cut-in { position: fixed; inset-inline: 0; top: 0; bottom: 0; z-index: 50; height: fit-content; margin-block: auto; padding: 1rem; pointer-events: none; text-align: center; border-block: 4px solid rgb(var(--cut-in-tone)); background: rgb(var(--color-surface) / .97); box-shadow: var(--shadow-card); }
+.reveal-cut-in-title { color: rgb(var(--cut-in-text)); }
+.reveal-cut-in-electric, .score-pop-electric { --cut-in-tone: var(--color-electric); --cut-in-text: var(--color-electric); }
+.reveal-cut-in-berry, .score-pop-berry { --cut-in-tone: var(--color-berry); --cut-in-text: var(--color-berry); }
+.reveal-cut-in-aqua, .score-pop-aqua { --cut-in-tone: var(--color-aqua); --cut-in-text: var(--color-aqua); }
+.reveal-cut-in-leaf, .score-pop-leaf { --cut-in-tone: var(--color-leaf); --cut-in-text: var(--color-leaf); }
+:root[data-theme='light'] .reveal-cut-in-electric, :root[data-theme='light'] .score-pop-electric { --cut-in-text: 139 91 0; }
+:root[data-theme='light'] .reveal-cut-in-berry, :root[data-theme='light'] .score-pop-berry { --cut-in-text: 188 39 75; }
+:root[data-theme='light'] .reveal-cut-in-aqua, :root[data-theme='light'] .score-pop-aqua { --cut-in-text: 12 111 141; }
+:root[data-theme='light'] .reveal-cut-in-leaf, :root[data-theme='light'] .score-pop-leaf { --cut-in-text: 31 123 79; }
+.reveal-cut-in-enter { animation: reveal-cut-in-enter 280ms cubic-bezier(.16,1,.3,1) both; }
+@keyframes reveal-cut-in-enter { from { opacity: 0; transform: translateX(-8%); } to { opacity: 1; transform: translateX(0); } }
+/* Puntos flotantes: sube y se desvanece; el cambio de marcador se anuncia en el texto de la pantalla. */
+.score-pop { @apply inline-block text-sm font-black tabular-nums; color: rgb(var(--cut-in-text, var(--color-ink))); }
+.score-pop-anim { animation: score-pop 400ms cubic-bezier(.16,1,.3,1) both; }
+@keyframes score-pop { 0% { opacity: 0; transform: translateY(0); } 35% { opacity: 1; } 100% { opacity: 0; transform: translateY(-.75rem); } }
+/* Reducción de movimiento global: apaga todas las animaciones y transiciones en un único sitio. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; }
-  .reveal-pop, .connection-notice, .timer-pulse, .pokeddle-row-enter, .pokeddle-timer-urgent, .shiny-option-correct, .shiny-option-state, .shiny-timer-critical, .shiny-score-update, .shiny-round-result { animation: none !important; }
-  .skeleton { animation: none !important; }
-  .zoomed-image { transition: none !important; }
-  .shiny-option-card, .shiny-timer-bar { transition: none !important; }
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .shiny-option-interactive:hover { transform: none; }
 }

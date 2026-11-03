@@ -5,7 +5,7 @@
  */
 import { execFileSync } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
-import { expect, type Browser, type BrowserContext, type Page, type WebSocket } from '@playwright/test';
+import { expect, type Browser, type BrowserContext, type Locator, type Page, type WebSocket } from '@playwright/test';
 import { measureLayout } from './layout.js';
 
 /** Tamaños de las capturas de revisión: dos de escritorio y un móvil. */
@@ -21,6 +21,19 @@ export type Theme = 'dark' | 'light';
 /** Fija el tema antes de que cargue la página (`index.html` lo lee de `localStorage`). */
 export async function pinTheme(context: BrowserContext, theme: Theme): Promise<void> {
   await context.addInitScript((t) => localStorage.setItem('pokemon-universe-theme', t), theme);
+}
+
+/**
+ * Nombre del `@keyframes` que tiene el elemento (`'none'` si no anima). Es determinista: lee el
+ * estilo calculado, así que no depende de que la animación siga en curso.
+ */
+export async function animacionDe(locator: Locator): Promise<string> {
+  return locator.evaluate((el) => getComputedStyle(el).animationName);
+}
+
+/** Quita la reducción de movimiento que la suite fija por defecto para comprobar que la animación existe. */
+export async function conMovimiento(page: Page): Promise<void> {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
 }
 
 /**
