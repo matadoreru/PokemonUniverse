@@ -94,6 +94,37 @@ jobs:
       - name: Test web and shared
         run: npm test -w @pokemon-universe/web -w @pokemon-universe/shared
 
+  # No bloqueante: un aviso de terceros no frena el despliegue. Solo las dependencias de producción de la web (lo que
+  # acaba en el bundle); el resultado va al resumen.
+  audit:
+    name: Audit web production dependencies
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: npm audit
+        shell: bash
+        run: |
+          set -uo pipefail
+          status=0
+          npm audit --omit=dev --audit-level=high -w @pokemon-universe/web > audit.txt 2>&1 || status=$?
+          cat audit.txt
+          {
+            if [ "$status" -eq 0 ]; then
+              echo "### npm audit (web): sin vulnerabilidades altas o críticas"
+            else
+              echo "### npm audit (web): vulnerabilidades altas o críticas (no bloqueante)"
+            fi
+            echo
+            echo '```text'
+            tail -n 60 audit.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
+
   # Oráculo Node (apps/server): sin imagen ni despliegue desde el corte 2D, pero sus tests y las fixtures doradas
   # (que el backend Java compara) siguen siendo parte de `npm test` y bloquean la imagen web como antes.
   oracle:

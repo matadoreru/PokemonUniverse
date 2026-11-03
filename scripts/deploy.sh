@@ -17,6 +17,9 @@ if [ -f .env ]; then
 fi
 
 new_tag=$1
+# Interna (compose.yaml): los interruptores de salas y sincronización de Java valen true salvo en el rollback del corte.
+# Se fija aquí para que ni el entorno ni un .env la cambien.
+export PU_CUTOVER_ROLLBACK_JAVA=true
 configured_tag=${PU_IMAGE_TAG:-latest}
 # Con la BD vacía el backend sincroniza PokéAPI antes de estar sano (107 s medidos; start_period 5 min). El
 # --wait-timeout debe superar start_period + interval × retries = 390 s más la descarga: no bajar de 450 s.
@@ -56,6 +59,9 @@ rollback() {
   echo "El despliegue falló. Estado y últimos logs del backend:" >&2
   docker compose ps -a >&2 || true
   docker compose logs --no-color --tail=200 backend web >&2 || true
+  if [ -n "$legacy_server_container" ]; then
+    rollback_across_cutover
+  fi
   if [ "$rollback_snapshot" -eq 1 ]; then
     echo "Restaurando las imágenes exactas anteriores: $previous_backend_ref / $previous_web_ref" >&2
     export PU_WEB_IMAGE="$rollback_web_image"
@@ -65,16 +71,33 @@ rollback() {
     echo "No se pudo crear el snapshot local; restaurando el tag $previous_tag" >&2
     export PU_IMAGE_TAG="$previous_tag"
   fi
-  if [ -n "$legacy_server_container" ]; then
-    # Primer despliegue tras el corte: Node vuelve antes que la web anterior, que lo resuelve al arrancar; las imágenes
-    # anteriores vuelven con el compose.yaml nuevo. Para recuperar también el compose anterior:
-    # git checkout --detach <SHA anterior> && ./scripts/deploy.sh <SHA anterior>.
-    echo "Arrancando de nuevo Node (server); para volver del todo al stack anterior al corte despliega su SHA con su compose.yaml" >&2
-    # shellcheck disable=SC2086
-    docker start $legacy_server_container >&2 || true
-  fi
   docker compose up -d --wait --wait-timeout "$deploy_wait_seconds" backend web || true
   exit 1
+}
+
+# Rollback del primer despliegue tras el corte 2D (había un contenedor Node `server`). Node vuelve a servir salas y a
+# sincronizar, así que Java no puede tener encendidos sus interruptores.
+# 1. Si el SHA anterior está en el checkout (deploy-ssh hace `git fetch` y despliega por SHA), se levanta su propio
+#    compose.yaml con sus imágenes: server, backend y web exactamente como antes del corte.
+# 2. Si no, se arranca de nuevo Node y rollback() restaura las imágenes anteriores con el compose.yaml nuevo y
+#    PU_CUTOVER_ROLLBACK_JAVA=false (salas, interrupción de salas y sincronización de Java apagadas).
+rollback_across_cutover() {
+  previous_compose=$(mktemp)
+  if printf '%s' "$previous_tag" | grep -Eq '^[0-9a-f]{40}$' \
+    && git -C "$project_dir" show "$previous_tag:compose.yaml" > "$previous_compose" 2>/dev/null \
+    && grep -q '^  server:' "$previous_compose"; then
+    echo "Volviendo al stack anterior al corte con el compose.yaml de $previous_tag" >&2
+    export PU_IMAGE_TAG="$previous_tag"
+    docker compose -f "$previous_compose" --project-directory "$project_dir" \
+      up -d --wait --wait-timeout "$deploy_wait_seconds" server backend web || true
+    rm -f "$previous_compose"
+    exit 1
+  fi
+  rm -f "$previous_compose"
+  echo "Sin el compose.yaml de $previous_tag: Node vuelve y Java arranca con salas y sincronización apagadas" >&2
+  export PU_CUTOVER_ROLLBACK_JAVA=false
+  # shellcheck disable=SC2086
+  docker start $legacy_server_container >&2 || true
 }
 
 postgres_container=$(docker compose ps -q postgres 2>/dev/null || true)

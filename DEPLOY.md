@@ -29,11 +29,12 @@ queda en el repositorio como oráculo de pruebas: ni se compila en imagen ni se 
 Desde el corte 2D, `compose.yaml` ya no tiene el servicio `server` (Node): el `backend` (Java, Micronaut) es el único
 servidor. Solo depende de `postgres`: Flyway crea el esquema en una BD vacía o reconoce el de Prisma (baseline 1). Usa
 el volumen de avatares (`pokemon_universe_avatar_data`, uid/gid 1000, el mismo que tenía Node) y el secreto
-`PU_JWT_SECRET`. Lleva fijos en compose, sin variable `PU_…`, tres interruptores que en el código valen `false`:
+`PU_JWT_SECRET`. Enciende en compose tres interruptores que en el código valen `false` (solo los apaga
+`PU_CUTOVER_ROLLBACK_JAVA`, interna del rollback de `deploy.sh`, §5):
 `ROOMS_ENABLED=true` (salas en `/ws`), `INTERRUPT_STALE_ROOMS=true` (al arrancar marca `INTERRUPTED`/`SERVER_STOPPED`
 las salas `ACTIVE` y las partidas `IN_PROGRESS` que dejó el proceso anterior) y `BACKEND_DATA_SYNC_ENABLED=true`
-(PokéAPI y TCGdex, a diario a `PU_DATA_SYNC_HOUR`:`PU_DATA_SYNC_MINUTE` en `PU_DATA_SYNC_TIMEZONE`). Son fijos para
-que un `.env` anterior al corte, con `PU_ROOMS_ENABLED=false`, no los apague; `PU_ROOMS_ENABLED`,
+(PokéAPI y TCGdex, a diario a `PU_DATA_SYNC_HOUR`:`PU_DATA_SYNC_MINUTE` en `PU_DATA_SYNC_TIMEZONE`). No dependen de
+las variables de antes del corte: un `.env` anterior, con `PU_ROOMS_ENABLED=false`, no los apaga; `PU_ROOMS_ENABLED`,
 `PU_DATA_SYNC_ENABLED` y `PU_SERVER_IMAGE` ya no se leen y se pueden borrar del `.env`. Los artworks del modo Artwork
 van dentro de la imagen (`backend/assets/pokemon-artworks` → `/app/pokemon-artworks`, `POKEMON_ARTWORK_DIR`).
 Para escribir avatares (WebP) el backend carga la libwebp nativa de `webp-imageio`: la extrae a `/tmp` y, si el tmpfs
@@ -211,14 +212,22 @@ sirve a mano contra cualquier stack: `./scripts/smoke-check.sh http://127.0.0.1:
 
 **Primer despliegue tras el corte 2D.** El contenedor Node (`server`) del despliegue anterior ya no está en
 `compose.yaml`. `deploy.sh` lo localiza por las etiquetas de compose, lo **para** (sin borrarlo) justo antes de arrancar
-el backend nuevo, para que Node no siga sirviendo salas ni sincronizando mientras Java enciende salas, interrupción de
-salas y sincronización, y lo borra cuando el humo pasa. Si ese despliegue falla, el rollback arranca de nuevo Node (el
-nginx antiguo exige `server:3001` al arrancar) y vuelve a las imágenes `web` y `backend` anteriores con el
-`compose.yaml` nuevo, así que el backend antiguo arranca con los interruptores del compose nuevo (salas, interrupción
-de salas y sincronización encendidos) junto a Node. Para volver del todo al
-stack anterior despliega el SHA anterior con su propio `compose.yaml`
-(`git checkout --detach SHA_ANTERIOR && ./scripts/deploy.sh SHA_ANTERIOR`). Una imagen web anterior al corte no
-arranca sin un contenedor `server` en la red (`host not found in upstream "server"`).
+el backend nuevo, para que Node no siga sirviendo salas ni sincronizando mientras Java las enciende, y lo borra cuando
+el humo pasa. Si ese despliegue falla, Node y Java nunca quedan a la vez con salas o sincronización:
+
+1. Si el SHA anterior (el tag de la imagen `backend` que corría) está en el checkout del servidor (`deploy-ssh` hace
+   `git fetch` y despliega por SHA), el rollback levanta su propio `compose.yaml` (`git show SHA:compose.yaml`,
+   `--project-directory` el del despliegue) con `server`, `backend` y `web` de ese SHA: el stack anterior al corte
+   tal cual, con el `.env` de siempre.
+2. Si no (tag que no es un SHA o commit ausente), arranca de nuevo Node y restaura las imágenes `web` y `backend`
+   anteriores con el `compose.yaml` nuevo y `PU_CUTOVER_ROLLBACK_JAVA=false`, que apaga en Java salas,
+   interrupción de salas y sincronización. Esa variable es interna de `deploy.sh` (la fija a `true` en cada
+   despliegue): no la pongas en `.env`.
+
+`scripts/test-deploy-rollback.sh` simula `deploy.sh` con `docker` y `git` falsos (y la configuración real de
+`docker compose config`) en seis escenarios, con y sin Node previo, y falla si algún `compose up` deja a Node en marcha
+con un interruptor de Java encendido. Una imagen web anterior al corte no arranca sin un contenedor `server` en la red
+(`host not found in upstream "server"`).
 
 En ese mismo despliegue compose recrea una vez el contenedor `postgres` (sin tocar el volumen): la imagen pasó de
 `postgres:17-alpine` a `docker.io/library/postgres:17-alpine` (nombre completo, para podman) y cambia el hash de su
