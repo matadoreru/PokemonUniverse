@@ -9,13 +9,63 @@ for (const { w, h } of SIZES) {
     await page.goto('/');
     const empezar = page.getByRole('link', { name: 'Empezar a jugar' });
     await expect(empezar).toBeVisible();
-    await capture(page, 'portada');
+    await capture(page, 'portada', { minFontPx: 13, noPageScroll: true });
 
     await empezar.click();
     await expect(page).toHaveURL(/\/auth$/);
     await expect(page.getByRole('tab', { name: 'Entrar' })).toBeVisible();
 
     expect(errors).toEqual([]);
+  });
+}
+
+/** Una versión publicada con más cambios de los que caben: el panel se desplaza por dentro y la página no. */
+const NOVEDAD = {
+  id: 'e2e-novedad',
+  version: '0.9.0',
+  title: 'Pantalla de título Arcade DS',
+  date: '2026-11-03T00:00:00.000Z',
+  published: true,
+  content: [
+    { type: 'NEW', text: 'La portada es ahora una pantalla de título con el logotipo grande y las píldoras de inicio.' },
+    { type: 'NEW', text: 'Cabecera de placas con el sonido, las novedades y el perfil siempre a mano.' },
+    { type: 'INTERFACE', text: 'Las pantallas entran con una transición corta que respeta la reducción de movimiento.' },
+    { type: 'BUGS', text: 'Los avisos se ven por encima de los diálogos abiertos.' },
+    { type: 'BUGS', text: 'El perfil del administrador vuelve a estar accesible en el móvil.' },
+  ],
+  createdAt: '2026-11-03T00:00:00.000Z',
+  updatedAt: '2026-11-03T00:00:00.000Z',
+};
+
+// Panel «Lo último en el universo» con una versión y con error (respuestas simuladas), a los tres tamaños.
+for (const { w, h } of SIZES) {
+  test(`portada con novedades y con error a ${w}×${h}`, async ({ page }) => {
+    const errors = collectErrors(page);
+    await page.setViewportSize({ width: w, height: h });
+    let falla = false;
+    await page.route('**/api/changelog', (route) => falla
+      ? route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: 'Service Unavailable' }) })
+      : route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ entries: [NOVEDAD] }) }));
+
+    await page.goto('/');
+    const panel = page.getByRole('region', { name: 'Lo último en el universo' });
+    await expect(panel.getByText('Pantalla de título Arcade DS')).toBeVisible();
+    await expect(panel.getByRole('link', { name: 'Ver todas' })).toHaveAttribute('href', '/changelog');
+    await capture(page, 'portada-novedades', { minFontPx: 13, noPageScroll: true });
+
+    falla = true;
+    await page.reload();
+    const alerta = panel.getByRole('alert');
+    await expect(alerta).toContainText('No se pudieron cargar las novedades');
+    await expect(alerta).not.toContainText('Service Unavailable');
+    await capture(page, 'portada-error', { minFontPx: 13, noPageScroll: true });
+
+    falla = false;
+    await alerta.getByRole('button', { name: 'Reintentar' }).click();
+    await expect(panel.getByText('Pantalla de título Arcade DS')).toBeVisible();
+
+    // La consola registra el 503 simulado; no es un error de la página.
+    expect(errors.filter((e) => !/503|Service Unavailable/.test(e))).toEqual([]);
   });
 }
 

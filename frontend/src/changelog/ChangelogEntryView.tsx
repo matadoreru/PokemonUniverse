@@ -1,5 +1,6 @@
 import { CHANGELOG_CATEGORIES, CHANGELOG_CATEGORY_LABELS, type ChangelogCategory, type ChangelogEntry } from '@pokemon-universe/shared/public';
 import { Bug, Code2, Gamepad2, Palette, Scale, Sparkles, Wrench } from 'lucide-react';
+import { Badge, Chip, Icon as UiIcon, type ChipProps } from '../ui';
 
 const categoryIcons = {
   NEW: Sparkles,
@@ -10,6 +11,17 @@ const categoryIcons = {
   BUGS: Bug,
   TECHNICAL: Code2,
 } satisfies Record<ChangelogCategory, typeof Sparkles>;
+
+/** Tono del chip de categoría en la vista compacta (Arcade DS). */
+const categoryChipTones: Record<ChangelogCategory, NonNullable<ChipProps['tone']>> = {
+  NEW: 'ok',
+  MINIGAMES: 'info',
+  BALANCE: 'warn',
+  INTERFACE: 'info',
+  IMPROVEMENTS: 'neutral',
+  BUGS: 'bad',
+  TECHNICAL: 'neutral',
+};
 
 const categoryTones: Record<ChangelogCategory, string> = {
   NEW: 'text-electric bg-electric/10',
@@ -32,18 +44,18 @@ export function changelogEntryId(entry: ChangelogEntry): string {
 export function ChangelogEntryView({ entry, compact = false, latest = false }: { entry: ChangelogEntry; compact?: boolean; latest?: boolean }) {
   const groups = CHANGELOG_CATEGORIES.map((type) => ({ type, changes: entry.content.filter((change) => change.type === type) })).filter((group) => group.changes.length > 0);
   if (compact) return <article>
-    <header className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-      <div><h2 className="font-display text-2xl font-bold">v{entry.version}</h2><p className="mt-1 font-extrabold text-ink/80">{entry.title}</p></div>
-      <time className="shrink-0 text-sm font-bold text-ink/55" dateTime={entry.date}>{formatChangelogDate(entry.date)}</time>
+    <header className="flex flex-wrap items-center gap-x-3 gap-y-2">
+      <Badge tone="yellow">v{entry.version}</Badge>
+      <h3 className="min-w-0 font-display text-22 font-extrabold">{entry.title}</h3>
+      <time className="ml-auto text-13 font-extrabold text-[color:var(--sky-2)]" dateTime={entry.date}>{formatChangelogDate(entry.date)}</time>
     </header>
-    <div className="mt-5 grid gap-x-10 gap-y-6 sm:grid-cols-2">
-      {groups.map(({ type, changes }) => {
-        const Icon = categoryIcons[type];
-        return <section key={type} aria-labelledby={`${entry.id}-compact-${type}`}>
-          <h3 id={`${entry.id}-compact-${type}`} className="flex items-center gap-2 font-display text-lg font-bold"><span className={`grid h-8 w-8 place-items-center rounded-lg ${categoryTones[type]}`}><Icon size={17} aria-hidden="true" /></span>{CHANGELOG_CATEGORY_LABELS[type]}</h3>
-          <ul className="mt-3 space-y-2 pl-5 font-semibold leading-relaxed text-ink/75 marker:text-ink/35">{changes.map((change, index) => <li key={`${type}-${index}`}>{change.text}</li>)}</ul>
-        </section>;
-      })}
+    <div className="mt-4 grid gap-4 xl:grid-cols-2">
+      {groups.map(({ type, changes }) => <section key={type} aria-labelledby={`${entry.id}-compact-${type}`}>
+        <h4 id={`${entry.id}-compact-${type}`}><Chip tone={categoryChipTones[type]} icon={<UiIcon icon={categoryIcons[type]} size={18} />}>{CHANGELOG_CATEGORY_LABELS[type]}</Chip></h4>
+        <ul className="mt-2 grid gap-1.5 text-15">
+          {changes.map((change, index) => <li className="flex gap-2" key={`${type}-${index}`}><span className="mt-[.55em] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--yellow)]" aria-hidden="true" /><span>{change.text}</span></li>)}
+        </ul>
+      </section>)}
     </div>
   </article>;
 
