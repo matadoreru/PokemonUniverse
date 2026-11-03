@@ -17,6 +17,13 @@ import java.util.Map;
 /** Traducción literal de {@code pokemon-impostor/rules.ts}. */
 public final class PokemonImpostorRules {
 
+  /** {@code IMPOSTOR_MAX_VOTING_ROUNDS}: solo una revotación; un empate en la segunda es {@code DEADLOCK}. */
+  public static final int IMPOSTOR_MAX_VOTING_ROUNDS = 2;
+  /** {@code IMPOSTOR_MAX_ROUNDS_WITHOUT_ELIMINATION}: rondas seguidas sin expulsión que dan {@code STALEMATE}. */
+  public static final int IMPOSTOR_MAX_ROUNDS_WITHOUT_ELIMINATION = 3;
+  /** {@code IMPOSTOR_CLUE_MAX_CODE_POINTS}: longitud máxima de una pista en puntos de código. */
+  public static final int IMPOSTOR_CLUE_MAX_CODE_POINTS = 25;
+
   private PokemonImpostorRules() {}
 
   /** Sin impostores vivos ganan los inocentes; con tantos impostores como inocentes, los impostores. */

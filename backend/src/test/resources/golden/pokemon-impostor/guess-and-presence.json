@@ -467,6 +467,7 @@
         "lastVoteResult": null,
         "eliminationReveal": null,
         "winnerTeam": null,
+        "finishReason": null,
         "results": null
       },
       "playerStates": {
@@ -588,6 +589,7 @@
         "lastVoteResult": null,
         "eliminationReveal": null,
         "winnerTeam": null,
+        "finishReason": null,
         "results": null
       },
       "playerStates": {
@@ -711,6 +713,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -847,6 +850,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -991,152 +995,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
-            "results": null
-          },
-          "playerStates": {
-            "p1": {
-              "role": "INNOCENT",
-              "secretPokemon": {
-                "name": "Weedle",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
-              },
-              "revealedRoles": null,
-              "alive": true,
-              "canSubmitClue": false,
-              "ownClue": null,
-              "canGuessPokemon": false,
-              "guessUsed": false,
-              "guessCorrect": null,
-              "canVote": false,
-              "ownVote": null
-            },
-            "p2": {
-              "role": "INNOCENT",
-              "secretPokemon": {
-                "name": "Weedle",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
-              },
-              "revealedRoles": null,
-              "alive": true,
-              "canSubmitClue": false,
-              "ownClue": null,
-              "canGuessPokemon": false,
-              "guessUsed": false,
-              "guessCorrect": null,
-              "canVote": false,
-              "ownVote": null
-            },
-            "p3": {
-              "role": "INNOCENT",
-              "secretPokemon": {
-                "name": "Weedle",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
-              },
-              "revealedRoles": null,
-              "alive": true,
-              "canSubmitClue": false,
-              "ownClue": null,
-              "canGuessPokemon": false,
-              "guessUsed": false,
-              "guessCorrect": null,
-              "canVote": false,
-              "ownVote": null
-            },
-            "p4": {
-              "role": "IMPOSTOR",
-              "secretPokemon": null,
-              "revealedRoles": null,
-              "alive": true,
-              "canSubmitClue": false,
-              "ownClue": null,
-              "canGuessPokemon": false,
-              "guessUsed": false,
-              "guessCorrect": null,
-              "canVote": false,
-              "ownVote": null
-            },
-            "p5": {
-              "role": "IMPOSTOR",
-              "secretPokemon": null,
-              "revealedRoles": null,
-              "alive": true,
-              "canSubmitClue": false,
-              "ownClue": null,
-              "canGuessPokemon": false,
-              "guessUsed": false,
-              "guessCorrect": null,
-              "canVote": false,
-              "ownVote": null
-            },
-            "p9": {
-              "role": null,
-              "secretPokemon": null,
-              "revealedRoles": null,
-              "alive": false,
-              "canSubmitClue": false,
-              "ownClue": null,
-              "canGuessPokemon": false,
-              "guessUsed": false,
-              "guessCorrect": null,
-              "canVote": false,
-              "ownVote": null
-            }
-          },
-          "finished": false
-        }
-      },
-      {
-        "accepted": false,
-        "error": "No estás conectado como participante.",
-        "snapshot": {
-          "lifecycle": {
-            "phase": "CLUE_PHASE",
-            "nextDeadline": null,
-            "actionEpoch": "[\"CLUE_PHASE\",1,6000,null,0,null,0,null]",
-            "spectatorIds": []
-          },
-          "publicState": {
-            "gameId": "pokemon-impostor",
-            "phase": "CLUE_PHASE",
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3",
-              "p4",
-              "p5"
-            ],
-            "aliveIds": [
-              "p1",
-              "p2",
-              "p3",
-              "p4",
-              "p5"
-            ],
-            "eliminatedIds": [],
-            "spectatorIds": [],
-            "roundNumber": 1,
-            "clues": {
-              "1": {}
-            },
-            "clueOrder": [],
-            "currentClueTurnIndex": 0,
-            "currentCluePlayerId": null,
-            "cluePendingIds": [],
-            "voteCompletedIds": [],
-            "voteCandidateIds": [
-              "p1",
-              "p2",
-              "p3",
-              "p4",
-              "p5"
-            ],
-            "votingRound": 0,
-            "roundStartedAt": 6000,
-            "roundEndsAt": null,
-            "nextTransitionAt": null,
-            "lastVoteResult": null,
-            "eliminationReveal": null,
-            "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1283,6 +1142,154 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Weedle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p9": {
+              "role": null,
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No estás conectado como participante.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CLUE_PHASE",
+            "nextDeadline": null,
+            "actionEpoch": "[\"CLUE_PHASE\",1,6000,null,0,null,0,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "CLUE_PHASE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "eliminatedIds": [],
+            "spectatorIds": [],
+            "roundNumber": 1,
+            "clues": {
+              "1": {}
+            },
+            "clueOrder": [],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": null,
+            "cluePendingIds": [],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 6000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1435,6 +1442,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1587,6 +1595,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1739,6 +1748,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1897,6 +1907,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2065,6 +2076,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2241,6 +2253,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2420,6 +2433,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2603,6 +2617,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2790,6 +2805,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2981,6 +2997,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -3193,11 +3210,13 @@
                 "p4": 3,
                 "p5": 0
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p4"
             },
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -3415,6 +3434,7 @@
                 "p4": 3,
                 "p5": 0
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p4"
             },
@@ -3423,6 +3443,7 @@
               "role": "IMPOSTOR"
             },
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -3649,6 +3670,7 @@
                 "p4": 3,
                 "p5": 0
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p4"
             },
@@ -3657,6 +3679,7 @@
               "role": "IMPOSTOR"
             },
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -3861,6 +3884,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -4041,6 +4065,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -4219,6 +4244,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": "IMPOSTORS",
+            "finishReason": "GUESS",
             "results": {
               "winnerId": null,
               "standings": [
@@ -4523,6 +4549,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": "IMPOSTORS",
+            "finishReason": "GUESS",
             "results": {
               "winnerId": null,
               "standings": [

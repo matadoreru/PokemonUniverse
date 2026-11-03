@@ -1,6 +1,13 @@
 import type { GameResults, GameStanding } from '../contracts.js';
 import type { ImpostorRole, ImpostorWinner, PokemonImpostorState } from './types.js';
 
+/** Solo una revotación: un empate en la segunda votación es `DEADLOCK`. */
+export const IMPOSTOR_MAX_VOTING_ROUNDS = 2;
+/** Rondas seguidas sin expulsión (`SKIPPED` o `DEADLOCK`) que dan la victoria a los impostores (`STALEMATE`). */
+export const IMPOSTOR_MAX_ROUNDS_WITHOUT_ELIMINATION = 3;
+/** Longitud máxima de una pista, en puntos de código tras `trim()` y NFC. */
+export const IMPOSTOR_CLUE_MAX_CODE_POINTS = 25;
+
 export function impostorWinner(aliveIds: readonly string[], roles: Readonly<Record<string, ImpostorRole>>): ImpostorWinner | null {
   const impostors = aliveIds.filter((id) => roles[id] === 'IMPOSTOR').length;
   const innocents = aliveIds.length - impostors;

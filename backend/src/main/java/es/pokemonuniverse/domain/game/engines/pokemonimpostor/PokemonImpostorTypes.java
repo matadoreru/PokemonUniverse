@@ -38,8 +38,14 @@ public final class PokemonImpostorTypes {
   /** {@code ImpostorClue.status}. */
   public enum ClueStatus { SUBMITTED, TIMEOUT, DISCONNECTED }
 
+  /** {@code ImpostorFinishReason}: motivo del final de la partida. */
+  public enum ImpostorFinishReason { GUESS, PARITY, IMPOSTORS_ELIMINATED, STALEMATE }
+
+  /** {@code IMPOSTOR_SKIP_TARGET}: el {@code targetId} de un voto a «Saltar». */
+  public static final String IMPOSTOR_SKIP_TARGET = "SKIP";
+
   /** {@code ImpostorVoteResult.kind}. */
-  public enum VoteResultKind { TIE, ELIMINATION }
+  public enum VoteResultKind { TIE, ELIMINATION, SKIPPED, DEADLOCK }
 
   /** Pista enviada o turno saltado ({@code text} y {@code submittedAt} nulos). */
   @Serdeable
@@ -66,7 +72,7 @@ public final class PokemonImpostorTypes {
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record ImpostorVoteResult(VoteResultKind kind, Map<String, ImpostorVote> votes, Map<String, Integer> tallies,
-      List<String> tiedIds, @Nullable String eliminatedId) {
+      int skipVotes, List<String> tiedIds, @Nullable String eliminatedId) {
 
     public ImpostorVoteResult {
       votes = frozenMap(votes);
@@ -117,12 +123,14 @@ public final class PokemonImpostorTypes {
       Map<String, ImpostorVote> votes,
       List<String> voteCandidateIds,
       int votingRound,
+      int roundsWithoutElimination,
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
       @Nullable ImpostorVoteResult lastVoteResult,
       @Nullable ImpostorEliminationReveal eliminationReveal,
       @Nullable ImpostorWinner winnerTeam,
+      @Nullable ImpostorFinishReason finishReason,
       Map<String, ImpostorPlayerStats> playerStats) implements TimedGameState {
 
     public PokemonImpostorState {
@@ -163,9 +171,11 @@ public final class PokemonImpostorTypes {
           .secretPokemonId(secretPokemonId).aliveIds(aliveIds).eliminatedIds(eliminatedIds)
           .spectatorIds(spectatorIds).roundNumber(roundNumber).clues(clues).clueOrder(clueOrder)
           .currentClueTurnIndex(currentClueTurnIndex).guessAttempts(guessAttempts).votes(votes)
-          .voteCandidateIds(voteCandidateIds).votingRound(votingRound).roundStartedAt(roundStartedAt)
+          .voteCandidateIds(voteCandidateIds).votingRound(votingRound)
+          .roundsWithoutElimination(roundsWithoutElimination).roundStartedAt(roundStartedAt)
           .roundEndsAt(roundEndsAt).nextTransitionAt(nextTransitionAt).lastVoteResult(lastVoteResult)
-          .eliminationReveal(eliminationReveal).winnerTeam(winnerTeam).playerStats(playerStats);
+          .eliminationReveal(eliminationReveal).winnerTeam(winnerTeam).finishReason(finishReason)
+          .playerStats(playerStats);
     }
 
     /** Listas y mapas vacíos por defecto; el resto de campos obligatorios los valida {@link #build()}. */
@@ -186,12 +196,14 @@ public final class PokemonImpostorTypes {
       private Map<String, ImpostorVote> votes = Map.of();
       private List<String> voteCandidateIds = List.of();
       private int votingRound;
+      private int roundsWithoutElimination;
       private Long roundStartedAt;
       private Long roundEndsAt;
       private Long nextTransitionAt;
       private ImpostorVoteResult lastVoteResult;
       private ImpostorEliminationReveal eliminationReveal;
       private ImpostorWinner winnerTeam;
+      private ImpostorFinishReason finishReason;
       private Map<String, ImpostorPlayerStats> playerStats = Map.of();
 
       private Builder() {}
@@ -228,6 +240,8 @@ public final class PokemonImpostorTypes {
 
       public Builder votingRound(int value) { votingRound = value; return this; }
 
+      public Builder roundsWithoutElimination(int value) { roundsWithoutElimination = value; return this; }
+
       public Builder roundStartedAt(@Nullable Long value) { roundStartedAt = value; return this; }
 
       public Builder roundEndsAt(@Nullable Long value) { roundEndsAt = value; return this; }
@@ -243,6 +257,8 @@ public final class PokemonImpostorTypes {
 
       public Builder winnerTeam(@Nullable ImpostorWinner value) { winnerTeam = value; return this; }
 
+      public Builder finishReason(@Nullable ImpostorFinishReason value) { finishReason = value; return this; }
+
       public Builder playerStats(Map<String, ImpostorPlayerStats> value) { playerStats = value; return this; }
 
       public PokemonImpostorState build() {
@@ -250,8 +266,8 @@ public final class PokemonImpostorTypes {
             Objects.requireNonNull(config, "config"), playerIds, roles,
             Objects.requireNonNull(secretPokemonId, "secretPokemonId"), aliveIds, eliminatedIds, spectatorIds,
             roundNumber, new TreeMap<>(clues), clueOrder, currentClueTurnIndex, guessAttempts, votes,
-            voteCandidateIds, votingRound, roundStartedAt, roundEndsAt, nextTransitionAt, lastVoteResult,
-            eliminationReveal, winnerTeam, playerStats);
+            voteCandidateIds, votingRound, roundsWithoutElimination, roundStartedAt, roundEndsAt, nextTransitionAt,
+            lastVoteResult, eliminationReveal, winnerTeam, finishReason, playerStats);
       }
     }
   }
@@ -337,6 +353,7 @@ public final class PokemonImpostorTypes {
       @Nullable ImpostorVoteResult lastVoteResult,
       @Nullable ImpostorEliminationReveal eliminationReveal,
       @Nullable ImpostorWinner winnerTeam,
+      @Nullable ImpostorFinishReason finishReason,
       @Nullable GameResults results) {
 
     public static Builder builder() {
@@ -365,6 +382,7 @@ public final class PokemonImpostorTypes {
       private ImpostorVoteResult lastVoteResult;
       private ImpostorEliminationReveal eliminationReveal;
       private ImpostorWinner winnerTeam;
+      private ImpostorFinishReason finishReason;
       private GameResults results;
 
       private Builder() {}
@@ -414,6 +432,8 @@ public final class PokemonImpostorTypes {
 
       public Builder winnerTeam(@Nullable ImpostorWinner value) { winnerTeam = value; return this; }
 
+      public Builder finishReason(@Nullable ImpostorFinishReason value) { finishReason = value; return this; }
+
       public Builder results(@Nullable GameResults value) { results = value; return this; }
 
       public PokemonImpostorPublicState build() {
@@ -421,7 +441,7 @@ public final class PokemonImpostorTypes {
             Objects.requireNonNull(phase, "phase"), playerIds, aliveIds, eliminatedIds, spectatorIds, roundNumber,
             clues, clueOrder, currentClueTurnIndex, currentCluePlayerId, cluePendingIds, voteCompletedIds,
             voteCandidateIds, votingRound, roundStartedAt, roundEndsAt, nextTransitionAt, lastVoteResult,
-            eliminationReveal, winnerTeam, results);
+            eliminationReveal, winnerTeam, finishReason, results);
       }
     }
   }

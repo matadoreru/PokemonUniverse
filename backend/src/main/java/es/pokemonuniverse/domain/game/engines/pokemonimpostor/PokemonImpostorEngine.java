@@ -16,6 +16,7 @@ import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorTypes.ClueStatus;
 import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorTypes.ImpostorClue;
 import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorTypes.ImpostorEliminationReveal;
+import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorTypes.ImpostorFinishReason;
 import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorTypes.ImpostorGuess;
 import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorTypes.ImpostorPlayerStats;
 import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorTypes.ImpostorRole;
@@ -39,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.TreeMap;
 import java.util.function.DoubleSupplier;
 
@@ -54,8 +54,8 @@ public final class PokemonImpostorEngine implements
   public static final long VOTE_RESULTS_MS = 3_000;
   /** {@code ELIMINATION_MS}. */
   public static final long ELIMINATION_MS = 4_000;
-  /** {@code [...text].length > 25}: puntos de código, no unidades UTF-16. */
-  static final int MAX_CLUE_CODE_POINTS = 25;
+  /** {@code [...text].length > IMPOSTOR_CLUE_MAX_CODE_POINTS}: puntos de código, no unidades UTF-16. */
+  static final int MAX_CLUE_CODE_POINTS = PokemonImpostorRules.IMPOSTOR_CLUE_MAX_CODE_POINTS;
 
   private final GameManifest manifest;
 
@@ -193,22 +193,39 @@ public final class PokemonImpostorEngine implements
         .build();
   }
 
-  /** Recuento sobre los candidatos; más de un máximo es empate ({@code tiedIds}), uno solo es expulsión. */
+  /**
+   * Recuento sobre los candidatos; los votos a «Saltar» van a {@code skipVotes}. «Saltar» gana si iguala o supera el
+   * máximo (incluido el 0–0); más de un máximo es empate ({@code TIE}), o {@code DEADLOCK} en la revotación; uno solo
+   * es expulsión.
+   */
   private static PokemonImpostorState resolveVoting(PokemonImpostorState state, GameContext context) {
     if (state.phase() != GamePhase.VOTING) return state;
     var tallies = new LinkedHashMap<String, Integer>();
     for (var id : state.voteCandidateIds()) tallies.put(id, 0);
-    for (var vote : state.votes().values()) tallies.put(vote.targetId(), tallies.getOrDefault(vote.targetId(), 0) + 1);
-    OptionalInt maximum = tallies.values().stream().mapToInt(Integer::intValue).max();
-    var tiedIds = state.voteCandidateIds().stream()
-        .filter(id -> maximum.isPresent() && tallies.get(id) == maximum.getAsInt())
-        .toList();
+    int skipVotes = 0;
+    for (var vote : state.votes().values()) {
+      if (PokemonImpostorTypes.IMPOSTOR_SKIP_TARGET.equals(vote.targetId())) {
+        skipVotes += 1;
+      } else {
+        tallies.put(vote.targetId(), tallies.getOrDefault(vote.targetId(), 0) + 1);
+      }
+    }
+    int maximum = skipVotes;
+    for (int count : tallies.values()) maximum = Math.max(maximum, count);
+    int max = maximum;
+    var tied = state.voteCandidateIds().stream().filter(id -> tallies.get(id) == max).toList();
+    VoteResultKind kind = skipVotes == maximum ? VoteResultKind.SKIPPED
+        : tied.size() > 1
+            ? (state.votingRound() >= PokemonImpostorRules.IMPOSTOR_MAX_VOTING_ROUNDS ? VoteResultKind.DEADLOCK
+                : VoteResultKind.TIE)
+            : VoteResultKind.ELIMINATION;
     var result = new ImpostorVoteResult(
-        tiedIds.size() > 1 ? VoteResultKind.TIE : VoteResultKind.ELIMINATION,
+        kind,
         state.votes(),
         tallies,
-        tiedIds.size() > 1 ? tiedIds : List.of(),
-        tiedIds.size() == 1 ? tiedIds.getFirst() : null);
+        skipVotes,
+        kind == VoteResultKind.TIE || kind == VoteResultKind.DEADLOCK ? tied : List.of(),
+        kind == VoteResultKind.ELIMINATION ? tied.getFirst() : null);
     return state.toBuilder()
         .phase(GamePhase.VOTE_RESULTS)
         .roundEndsAt(null)
@@ -217,20 +234,42 @@ public final class PokemonImpostorEngine implements
         .build();
   }
 
+  /** Una ronda sin expulsión: la tercera seguida termina la partida con victoria de los impostores. */
+  private static PokemonImpostorState afterNoElimination(PokemonImpostorState state, GameContext context) {
+    int roundsWithoutElimination = state.roundsWithoutElimination() + 1;
+    if (roundsWithoutElimination >= PokemonImpostorRules.IMPOSTOR_MAX_ROUNDS_WITHOUT_ELIMINATION) {
+      return finishGame(state.toBuilder()
+          .roundsWithoutElimination(roundsWithoutElimination)
+          .winnerTeam(ImpostorWinner.IMPOSTORS)
+          .finishReason(ImpostorFinishReason.STALEMATE)
+          .build());
+    }
+    return beginCluePhase(state.toBuilder().roundsWithoutElimination(roundsWithoutElimination).build(), context);
+  }
+
+  private static @Nullable ImpostorFinishReason eliminationFinishReason(@Nullable ImpostorWinner winnerTeam) {
+    if (winnerTeam == ImpostorWinner.INNOCENTS) return ImpostorFinishReason.IMPOSTORS_ELIMINATED;
+    if (winnerTeam == ImpostorWinner.IMPOSTORS) return ImpostorFinishReason.PARITY;
+    return null;
+  }
+
   private static PokemonImpostorState beginElimination(PokemonImpostorState state, GameContext context) {
     var playerId = state.lastVoteResult() == null ? null : state.lastVoteResult().eliminatedId();
     if (playerId == null || playerId.isEmpty()) return state;
     var aliveIds = state.aliveIds().stream().filter(id -> !id.equals(playerId)).toList();
     var eliminatedIds = new ArrayList<>(state.eliminatedIds());
     eliminatedIds.add(playerId);
+    var winnerTeam = PokemonImpostorRules.impostorWinner(aliveIds, state.roles());
     return state.toBuilder()
         .phase(GamePhase.ELIMINATION)
         .aliveIds(aliveIds)
         .eliminatedIds(eliminatedIds)
         .spectatorIds(eliminatedIds)
+        .roundsWithoutElimination(0)
         .eliminationReveal(new ImpostorEliminationReveal(playerId,
             Objects.requireNonNull(state.roles().get(playerId), "role")))
-        .winnerTeam(PokemonImpostorRules.impostorWinner(aliveIds, state.roles()))
+        .winnerTeam(winnerTeam)
+        .finishReason(eliminationFinishReason(winnerTeam))
         .roundEndsAt(null)
         .nextTransitionAt(context.now() + ELIMINATION_MS)
         .build();
@@ -277,6 +316,7 @@ public final class PokemonImpostorEngine implements
         .roundNumber(0)
         .currentClueTurnIndex(0)
         .votingRound(0)
+        .roundsWithoutElimination(0)
         .playerStats(playerStats)
         .build();
   }
@@ -332,6 +372,7 @@ public final class PokemonImpostorEngine implements
     return GameActionResult.accept(state.toBuilder()
         .guessAttempts(guessAttempts)
         .winnerTeam(correct ? ImpostorWinner.IMPOSTORS : state.winnerTeam())
+        .finishReason(correct ? ImpostorFinishReason.GUESS : state.finishReason())
         .phase(correct ? GamePhase.GAME_RESULTS : state.phase())
         .roundEndsAt(correct ? null : state.roundEndsAt())
         .nextTransitionAt(correct ? null : state.nextTransitionAt())
@@ -375,7 +416,8 @@ public final class PokemonImpostorEngine implements
     }
     if (state.votes().containsKey(playerId)) return GameActionResult.reject(state, "Tu voto ya está bloqueado.");
     if (targetId.equals(playerId)) return GameActionResult.reject(state, "No puedes votarte a ti mismo.");
-    if (!state.voteCandidateIds().contains(targetId) || !state.aliveIds().contains(targetId)) {
+    if (!PokemonImpostorTypes.IMPOSTOR_SKIP_TARGET.equals(targetId)
+        && (!state.voteCandidateIds().contains(targetId) || !state.aliveIds().contains(targetId))) {
       return GameActionResult.reject(state, "Ese jugador no es candidato.");
     }
     var votes = new LinkedHashMap<>(state.votes());
@@ -400,10 +442,10 @@ public final class PokemonImpostorEngine implements
       return resolveVoting(state, context);
     }
     if (state.phase() == GamePhase.VOTE_RESULTS && Timing.deadlineReached(now, state.nextTransitionAt())) {
-      var lastVoteResult = state.lastVoteResult();
-      return lastVoteResult != null && lastVoteResult.kind() == VoteResultKind.TIE
-          ? beginVoting(state, context, lastVoteResult.tiedIds())
-          : beginElimination(state, context);
+      var kind = state.lastVoteResult() == null ? null : state.lastVoteResult().kind();
+      if (kind == VoteResultKind.TIE) return beginVoting(state, context, state.lastVoteResult().tiedIds());
+      if (kind == VoteResultKind.SKIPPED || kind == VoteResultKind.DEADLOCK) return afterNoElimination(state, context);
+      return beginElimination(state, context);
     }
     if (state.phase() == GamePhase.ELIMINATION && Timing.deadlineReached(now, state.nextTransitionAt())) {
       return state.winnerTeam() != null ? finishGame(state) : beginCluePhase(state, context);
@@ -472,6 +514,7 @@ public final class PokemonImpostorEngine implements
         .lastVoteResult(showsVoteResult ? state.lastVoteResult() : null)
         .eliminationReveal(showsReveal ? state.eliminationReveal() : null)
         .winnerTeam(state.winnerTeam())
+        .finishReason(state.finishReason())
         .results(state.phase() == GamePhase.GAME_RESULTS ? PokemonImpostorRules.buildPokemonImpostorResults(state)
             : null)
         .build();

@@ -292,6 +292,7 @@
         "lastVoteResult": null,
         "eliminationReveal": null,
         "winnerTeam": null,
+        "finishReason": null,
         "results": null
       },
       "playerStates": {
@@ -398,6 +399,7 @@
         "lastVoteResult": null,
         "eliminationReveal": null,
         "winnerTeam": null,
+        "finishReason": null,
         "results": null
       },
       "playerStates": {
@@ -523,6 +525,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -654,6 +657,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -793,6 +797,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -940,6 +945,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1094,6 +1100,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1254,6 +1261,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1418,6 +1426,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1584,6 +1593,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1762,6 +1772,7 @@
                 "p3": 0,
                 "p4": 0
               },
+              "skipVotes": 0,
               "tiedIds": [
                 "p1",
                 "p2"
@@ -1770,6 +1781,7 @@
             },
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1931,6 +1943,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2089,6 +2102,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2251,6 +2265,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2417,6 +2432,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2603,11 +2619,13 @@
                 "p1": 3,
                 "p2": 1
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p1"
             },
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2801,6 +2819,7 @@
                 "p1": 3,
                 "p2": 1
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p1"
             },
@@ -2809,6 +2828,7 @@
               "role": "INNOCENT"
             },
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2991,6 +3011,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -3151,6 +3172,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -3319,6 +3341,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -3493,6 +3516,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -3673,6 +3697,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -3854,6 +3879,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -4050,11 +4076,13 @@
                 "p3": 0,
                 "p4": 2
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p4"
             },
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -4255,6 +4283,7 @@
                 "p3": 0,
                 "p4": 2
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p4"
             },
@@ -4263,6 +4292,7 @@
               "role": "IMPOSTOR"
             },
             "winnerTeam": "INNOCENTS",
+            "finishReason": "IMPOSTORS_ELIMINATED",
             "results": null
           },
           "playerStates": {
@@ -4471,6 +4501,7 @@
                 "p3": 0,
                 "p4": 2
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p4"
             },
@@ -4479,6 +4510,7 @@
               "role": "IMPOSTOR"
             },
             "winnerTeam": "INNOCENTS",
+            "finishReason": "IMPOSTORS_ELIMINATED",
             "results": null
           },
           "playerStates": {
@@ -4676,6 +4708,7 @@
               "role": "IMPOSTOR"
             },
             "winnerTeam": "INNOCENTS",
+            "finishReason": "IMPOSTORS_ELIMINATED",
             "results": {
               "winnerId": null,
               "standings": [

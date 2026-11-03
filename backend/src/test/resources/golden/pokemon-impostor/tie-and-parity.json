@@ -468,13 +468,25 @@
       "now": 104000
     },
     {
+      "kind": "timeout",
+      "now": 114000
+    },
+    {
+      "kind": "timeout",
+      "now": 124000
+    },
+    {
+      "kind": "timeout",
+      "now": 134000
+    },
+    {
       "kind": "action",
       "playerId": "p1",
       "action": {
         "type": "VOTE",
         "targetId": "p2"
       },
-      "now": 105000
+      "now": 135000
     },
     {
       "kind": "action",
@@ -483,7 +495,7 @@
         "type": "VOTE",
         "targetId": "p2"
       },
-      "now": 105500
+      "now": 135500
     },
     {
       "kind": "action",
@@ -492,15 +504,15 @@
         "type": "VOTE",
         "targetId": "p4"
       },
-      "now": 106000
+      "now": 136000
     },
     {
       "kind": "timeout",
-      "now": 109000
+      "now": 139000
     },
     {
       "kind": "timeout",
-      "now": 113000
+      "now": 143000
     }
   ],
   "expected": {
@@ -553,6 +565,7 @@
         "lastVoteResult": null,
         "eliminationReveal": null,
         "winnerTeam": null,
+        "finishReason": null,
         "results": null
       },
       "playerStates": {
@@ -677,6 +690,7 @@
         "lastVoteResult": null,
         "eliminationReveal": null,
         "winnerTeam": null,
+        "finishReason": null,
         "results": null
       },
       "playerStates": {
@@ -805,6 +819,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -933,6 +948,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1061,6 +1077,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1189,6 +1206,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1315,6 +1333,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1461,6 +1480,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1609,6 +1629,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1757,6 +1778,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -1909,6 +1931,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2066,6 +2089,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2223,6 +2247,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2383,6 +2408,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2546,6 +2572,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2713,6 +2740,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -2889,6 +2917,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -3072,6 +3101,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -3260,6 +3290,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -3448,6 +3479,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -3637,6 +3669,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -3830,6 +3863,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -4023,6 +4057,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -4216,6 +4251,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -4413,6 +4449,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -4614,6 +4651,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -4841,6 +4879,7 @@
                 "p4": 2,
                 "p5": 2
               },
+              "skipVotes": 0,
               "tiedIds": [
                 "p4",
                 "p5"
@@ -4849,6 +4888,7 @@
             },
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -5078,6 +5118,7 @@
                 "p4": 2,
                 "p5": 2
               },
+              "skipVotes": 0,
               "tiedIds": [
                 "p4",
                 "p5"
@@ -5086,6 +5127,7 @@
             },
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -5284,6 +5326,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -5469,6 +5512,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -5655,6 +5699,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -5845,6 +5890,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -6039,6 +6085,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -6237,6 +6284,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -6439,6 +6487,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -6655,11 +6704,13 @@
                 "p4": 1,
                 "p5": 3
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p5"
             },
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -6881,6 +6932,7 @@
                 "p4": 1,
                 "p5": 3
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p5"
             },
@@ -6889,6 +6941,7 @@
               "role": "INNOCENT"
             },
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -7118,6 +7171,7 @@
                 "p4": 1,
                 "p5": 3
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p5"
             },
@@ -7126,6 +7180,7 @@
               "role": "INNOCENT"
             },
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -7339,6 +7394,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -7522,6 +7578,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -7705,6 +7762,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -7887,6 +7945,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -8070,6 +8129,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -8257,6 +8317,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -8449,6 +8510,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -8645,6 +8707,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -8848,6 +8911,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -9058,6 +9122,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -9274,6 +9339,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -9494,6 +9560,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -9718,6 +9785,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -9964,11 +10032,13 @@
                 "p3": 3,
                 "p4": 1
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p3"
             },
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -10219,6 +10289,7 @@
                 "p3": 3,
                 "p4": 1
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p3"
             },
@@ -10227,6 +10298,7 @@
               "role": "INNOCENT"
             },
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -10463,6 +10535,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -10676,6 +10749,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -10897,6 +10971,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -11125,6 +11200,7 @@
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -11355,22 +11431,20 @@
             "roundEndsAt": null,
             "nextTransitionAt": 104000,
             "lastVoteResult": {
-              "kind": "TIE",
+              "kind": "SKIPPED",
               "votes": {},
               "tallies": {
                 "p1": 0,
                 "p2": 0,
                 "p4": 0
               },
-              "tiedIds": [
-                "p1",
-                "p2",
-                "p4"
-              ],
+              "skipVotes": 0,
+              "tiedIds": [],
               "eliminatedId": null
             },
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -11482,9 +11556,9 @@
       {
         "snapshot": {
           "lifecycle": {
-            "phase": "VOTING",
+            "phase": "CLUE_PHASE",
             "nextDeadline": 114000,
-            "actionEpoch": "[\"VOTING\",3,104000,null,3,null,2,null]",
+            "actionEpoch": "[\"CLUE_PHASE\",4,104000,null,0,null,0,null]",
             "spectatorIds": [
               "p5",
               "p3"
@@ -11492,7 +11566,7 @@
           },
           "publicState": {
             "gameId": "pokemon-impostor",
-            "phase": "VOTING",
+            "phase": "CLUE_PHASE",
             "playerIds": [
               "p1",
               "p2",
@@ -11513,7 +11587,7 @@
               "p5",
               "p3"
             ],
-            "roundNumber": 3,
+            "roundNumber": 4,
             "clues": {
               "1": {
                 "p4": {
@@ -11580,11 +11654,732 @@
                   "submittedAt": null,
                   "status": "TIMEOUT"
                 }
+              },
+              "4": {}
+            },
+            "clueOrder": [
+              "p1",
+              "p2",
+              "p4"
+            ],
+            "currentClueTurnIndex": 0,
+            "currentCluePlayerId": "p1",
+            "cluePendingIds": [
+              "p1",
+              "p2",
+              "p4"
+            ],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p4"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 104000,
+            "roundEndsAt": 114000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "finishReason": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Voltorb",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": true,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Voltorb",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Voltorb",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "INNOCENT"
+              },
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": true,
+              "guessCorrect": false,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Voltorb",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "INNOCENT"
+              },
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CLUE_PHASE",
+            "nextDeadline": 124000,
+            "actionEpoch": "[\"CLUE_PHASE\",4,114000,null,1,null,0,null]",
+            "spectatorIds": [
+              "p5",
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "CLUE_PHASE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p4"
+            ],
+            "eliminatedIds": [
+              "p5",
+              "p3"
+            ],
+            "spectatorIds": [
+              "p5",
+              "p3"
+            ],
+            "roundNumber": 4,
+            "clues": {
+              "1": {
+                "p4": {
+                  "text": "Ratón  ÉLÉCTRICO",
+                  "submittedAt": 7000,
+                  "status": "SUBMITTED"
+                },
+                "p3": {
+                  "text": "🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥",
+                  "submittedAt": 8000,
+                  "status": "SUBMITTED"
+                },
+                "p5": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p2": {
+                  "text": "Redondo",
+                  "submittedAt": 18500,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": "Pokébola",
+                  "submittedAt": 19000,
+                  "status": "SUBMITTED"
+                }
+              },
+              "2": {
+                "p4": {
+                  "text": "Bola",
+                  "submittedAt": 41500,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p2": {
+                  "text": "Chispa",
+                  "submittedAt": 52000,
+                  "status": "SUBMITTED"
+                },
+                "p3": {
+                  "text": "Imán",
+                  "submittedAt": 52500,
+                  "status": "SUBMITTED"
+                }
+              },
+              "3": {
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p4": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                }
+              },
+              "4": {
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                }
               }
             },
             "clueOrder": [
-              "p2",
               "p1",
+              "p2",
+              "p4"
+            ],
+            "currentClueTurnIndex": 1,
+            "currentCluePlayerId": "p2",
+            "cluePendingIds": [
+              "p2",
+              "p4"
+            ],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p4"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 114000,
+            "roundEndsAt": 124000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "finishReason": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Voltorb",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "TIMEOUT"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Voltorb",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": true,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Voltorb",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "INNOCENT"
+              },
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": true,
+              "guessCorrect": false,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Voltorb",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "INNOCENT"
+              },
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "CLUE_PHASE",
+            "nextDeadline": 134000,
+            "actionEpoch": "[\"CLUE_PHASE\",4,124000,null,2,null,0,null]",
+            "spectatorIds": [
+              "p5",
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "CLUE_PHASE",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p4"
+            ],
+            "eliminatedIds": [
+              "p5",
+              "p3"
+            ],
+            "spectatorIds": [
+              "p5",
+              "p3"
+            ],
+            "roundNumber": 4,
+            "clues": {
+              "1": {
+                "p4": {
+                  "text": "Ratón  ÉLÉCTRICO",
+                  "submittedAt": 7000,
+                  "status": "SUBMITTED"
+                },
+                "p3": {
+                  "text": "🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥",
+                  "submittedAt": 8000,
+                  "status": "SUBMITTED"
+                },
+                "p5": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p2": {
+                  "text": "Redondo",
+                  "submittedAt": 18500,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": "Pokébola",
+                  "submittedAt": 19000,
+                  "status": "SUBMITTED"
+                }
+              },
+              "2": {
+                "p4": {
+                  "text": "Bola",
+                  "submittedAt": 41500,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p2": {
+                  "text": "Chispa",
+                  "submittedAt": 52000,
+                  "status": "SUBMITTED"
+                },
+                "p3": {
+                  "text": "Imán",
+                  "submittedAt": 52500,
+                  "status": "SUBMITTED"
+                }
+              },
+              "3": {
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p4": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                }
+              },
+              "4": {
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                }
+              }
+            },
+            "clueOrder": [
+              "p1",
+              "p2",
+              "p4"
+            ],
+            "currentClueTurnIndex": 2,
+            "currentCluePlayerId": "p4",
+            "cluePendingIds": [
+              "p4"
+            ],
+            "voteCompletedIds": [],
+            "voteCandidateIds": [
+              "p1",
+              "p2",
+              "p4"
+            ],
+            "votingRound": 0,
+            "roundStartedAt": 124000,
+            "roundEndsAt": 134000,
+            "nextTransitionAt": null,
+            "lastVoteResult": null,
+            "eliminationReveal": null,
+            "winnerTeam": null,
+            "finishReason": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Voltorb",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "TIMEOUT"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p2": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Voltorb",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+              },
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": false,
+              "ownClue": {
+                "text": null,
+                "submittedAt": null,
+                "status": "TIMEOUT"
+              },
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p3": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Voltorb",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "INNOCENT"
+              },
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p4": {
+              "role": "IMPOSTOR",
+              "secretPokemon": null,
+              "revealedRoles": null,
+              "alive": true,
+              "canSubmitClue": true,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": true,
+              "guessCorrect": false,
+              "canVote": false,
+              "ownVote": null
+            },
+            "p5": {
+              "role": "INNOCENT",
+              "secretPokemon": {
+                "name": "Voltorb",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+              },
+              "revealedRoles": {
+                "p1": "INNOCENT",
+                "p2": "INNOCENT",
+                "p3": "INNOCENT",
+                "p4": "IMPOSTOR",
+                "p5": "INNOCENT"
+              },
+              "alive": false,
+              "canSubmitClue": false,
+              "ownClue": null,
+              "canGuessPokemon": false,
+              "guessUsed": false,
+              "guessCorrect": null,
+              "canVote": false,
+              "ownVote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 144000,
+            "actionEpoch": "[\"VOTING\",4,134000,null,3,null,1,null]",
+            "spectatorIds": [
+              "p5",
+              "p3"
+            ]
+          },
+          "publicState": {
+            "gameId": "pokemon-impostor",
+            "phase": "VOTING",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4",
+              "p5"
+            ],
+            "aliveIds": [
+              "p1",
+              "p2",
+              "p4"
+            ],
+            "eliminatedIds": [
+              "p5",
+              "p3"
+            ],
+            "spectatorIds": [
+              "p5",
+              "p3"
+            ],
+            "roundNumber": 4,
+            "clues": {
+              "1": {
+                "p4": {
+                  "text": "Ratón  ÉLÉCTRICO",
+                  "submittedAt": 7000,
+                  "status": "SUBMITTED"
+                },
+                "p3": {
+                  "text": "🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥",
+                  "submittedAt": 8000,
+                  "status": "SUBMITTED"
+                },
+                "p5": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p2": {
+                  "text": "Redondo",
+                  "submittedAt": 18500,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": "Pokébola",
+                  "submittedAt": 19000,
+                  "status": "SUBMITTED"
+                }
+              },
+              "2": {
+                "p4": {
+                  "text": "Bola",
+                  "submittedAt": 41500,
+                  "status": "SUBMITTED"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p2": {
+                  "text": "Chispa",
+                  "submittedAt": 52000,
+                  "status": "SUBMITTED"
+                },
+                "p3": {
+                  "text": "Imán",
+                  "submittedAt": 52500,
+                  "status": "SUBMITTED"
+                }
+              },
+              "3": {
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p4": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                }
+              },
+              "4": {
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p4": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                }
+              }
+            },
+            "clueOrder": [
+              "p1",
+              "p2",
               "p4"
             ],
             "currentClueTurnIndex": 3,
@@ -11596,13 +12391,14 @@
               "p2",
               "p4"
             ],
-            "votingRound": 2,
-            "roundStartedAt": 104000,
-            "roundEndsAt": 114000,
+            "votingRound": 1,
+            "roundStartedAt": 134000,
+            "roundEndsAt": 144000,
             "nextTransitionAt": null,
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -11716,8 +12512,8 @@
         "snapshot": {
           "lifecycle": {
             "phase": "VOTING",
-            "nextDeadline": 114000,
-            "actionEpoch": "[\"VOTING\",3,104000,null,3,null,2,null]",
+            "nextDeadline": 144000,
+            "actionEpoch": "[\"VOTING\",4,134000,null,3,null,1,null]",
             "spectatorIds": [
               "p5",
               "p3"
@@ -11746,7 +12542,7 @@
               "p5",
               "p3"
             ],
-            "roundNumber": 3,
+            "roundNumber": 4,
             "clues": {
               "1": {
                 "p4": {
@@ -11813,11 +12609,28 @@
                   "submittedAt": null,
                   "status": "TIMEOUT"
                 }
+              },
+              "4": {
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p4": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                }
               }
             },
             "clueOrder": [
-              "p2",
               "p1",
+              "p2",
               "p4"
             ],
             "currentClueTurnIndex": 3,
@@ -11831,13 +12644,14 @@
               "p2",
               "p4"
             ],
-            "votingRound": 2,
-            "roundStartedAt": 104000,
-            "roundEndsAt": 114000,
+            "votingRound": 1,
+            "roundStartedAt": 134000,
+            "roundEndsAt": 144000,
             "nextTransitionAt": null,
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -11861,7 +12675,7 @@
               "canVote": false,
               "ownVote": {
                 "targetId": "p2",
-                "votedAt": 105000
+                "votedAt": 135000
               }
             },
             "p2": {
@@ -11954,8 +12768,8 @@
         "snapshot": {
           "lifecycle": {
             "phase": "VOTING",
-            "nextDeadline": 114000,
-            "actionEpoch": "[\"VOTING\",3,104000,null,3,null,2,null]",
+            "nextDeadline": 144000,
+            "actionEpoch": "[\"VOTING\",4,134000,null,3,null,1,null]",
             "spectatorIds": [
               "p5",
               "p3"
@@ -11984,7 +12798,7 @@
               "p5",
               "p3"
             ],
-            "roundNumber": 3,
+            "roundNumber": 4,
             "clues": {
               "1": {
                 "p4": {
@@ -12051,11 +12865,28 @@
                   "submittedAt": null,
                   "status": "TIMEOUT"
                 }
+              },
+              "4": {
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p4": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                }
               }
             },
             "clueOrder": [
-              "p2",
               "p1",
+              "p2",
               "p4"
             ],
             "currentClueTurnIndex": 3,
@@ -12070,13 +12901,14 @@
               "p2",
               "p4"
             ],
-            "votingRound": 2,
-            "roundStartedAt": 104000,
-            "roundEndsAt": 114000,
+            "votingRound": 1,
+            "roundStartedAt": 134000,
+            "roundEndsAt": 144000,
             "nextTransitionAt": null,
             "lastVoteResult": null,
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -12100,7 +12932,7 @@
               "canVote": false,
               "ownVote": {
                 "targetId": "p2",
-                "votedAt": 105000
+                "votedAt": 135000
               }
             },
             "p2": {
@@ -12162,7 +12994,7 @@
               "canVote": false,
               "ownVote": {
                 "targetId": "p2",
-                "votedAt": 105500
+                "votedAt": 135500
               }
             },
             "p5": {
@@ -12196,8 +13028,8 @@
         "snapshot": {
           "lifecycle": {
             "phase": "VOTE_RESULTS",
-            "nextDeadline": 109000,
-            "actionEpoch": "[\"VOTE_RESULTS\",3,104000,null,3,null,2,null]",
+            "nextDeadline": 139000,
+            "actionEpoch": "[\"VOTE_RESULTS\",4,134000,null,3,null,1,null]",
             "spectatorIds": [
               "p5",
               "p3"
@@ -12226,7 +13058,7 @@
               "p5",
               "p3"
             ],
-            "roundNumber": 3,
+            "roundNumber": 4,
             "clues": {
               "1": {
                 "p4": {
@@ -12293,11 +13125,28 @@
                   "submittedAt": null,
                   "status": "TIMEOUT"
                 }
+              },
+              "4": {
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p4": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                }
               }
             },
             "clueOrder": [
-              "p2",
               "p1",
+              "p2",
               "p4"
             ],
             "currentClueTurnIndex": 3,
@@ -12309,24 +13158,24 @@
               "p2",
               "p4"
             ],
-            "votingRound": 2,
-            "roundStartedAt": 104000,
+            "votingRound": 1,
+            "roundStartedAt": 134000,
             "roundEndsAt": null,
-            "nextTransitionAt": 109000,
+            "nextTransitionAt": 139000,
             "lastVoteResult": {
               "kind": "ELIMINATION",
               "votes": {
                 "p1": {
                   "targetId": "p2",
-                  "votedAt": 105000
+                  "votedAt": 135000
                 },
                 "p4": {
                   "targetId": "p2",
-                  "votedAt": 105500
+                  "votedAt": 135500
                 },
                 "p2": {
                   "targetId": "p4",
-                  "votedAt": 106000
+                  "votedAt": 136000
                 }
               },
               "tallies": {
@@ -12334,11 +13183,13 @@
                 "p2": 2,
                 "p4": 1
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p2"
             },
             "eliminationReveal": null,
             "winnerTeam": null,
+            "finishReason": null,
             "results": null
           },
           "playerStates": {
@@ -12362,7 +13213,7 @@
               "canVote": false,
               "ownVote": {
                 "targetId": "p2",
-                "votedAt": 105000
+                "votedAt": 135000
               }
             },
             "p2": {
@@ -12385,7 +13236,7 @@
               "canVote": false,
               "ownVote": {
                 "targetId": "p4",
-                "votedAt": 106000
+                "votedAt": 136000
               }
             },
             "p3": {
@@ -12427,7 +13278,7 @@
               "canVote": false,
               "ownVote": {
                 "targetId": "p2",
-                "votedAt": 105500
+                "votedAt": 135500
               }
             },
             "p5": {
@@ -12460,8 +13311,8 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ELIMINATION",
-            "nextDeadline": 113000,
-            "actionEpoch": "[\"ELIMINATION\",3,104000,null,3,null,2,null]",
+            "nextDeadline": 143000,
+            "actionEpoch": "[\"ELIMINATION\",4,134000,null,3,null,1,null]",
             "spectatorIds": [
               "p5",
               "p3",
@@ -12492,7 +13343,7 @@
               "p3",
               "p2"
             ],
-            "roundNumber": 3,
+            "roundNumber": 4,
             "clues": {
               "1": {
                 "p4": {
@@ -12559,11 +13410,28 @@
                   "submittedAt": null,
                   "status": "TIMEOUT"
                 }
+              },
+              "4": {
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p4": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                }
               }
             },
             "clueOrder": [
-              "p2",
               "p1",
+              "p2",
               "p4"
             ],
             "currentClueTurnIndex": 3,
@@ -12575,24 +13443,24 @@
               "p2",
               "p4"
             ],
-            "votingRound": 2,
-            "roundStartedAt": 104000,
+            "votingRound": 1,
+            "roundStartedAt": 134000,
             "roundEndsAt": null,
-            "nextTransitionAt": 113000,
+            "nextTransitionAt": 143000,
             "lastVoteResult": {
               "kind": "ELIMINATION",
               "votes": {
                 "p1": {
                   "targetId": "p2",
-                  "votedAt": 105000
+                  "votedAt": 135000
                 },
                 "p4": {
                   "targetId": "p2",
-                  "votedAt": 105500
+                  "votedAt": 135500
                 },
                 "p2": {
                   "targetId": "p4",
-                  "votedAt": 106000
+                  "votedAt": 136000
                 }
               },
               "tallies": {
@@ -12600,6 +13468,7 @@
                 "p2": 2,
                 "p4": 1
               },
+              "skipVotes": 0,
               "tiedIds": [],
               "eliminatedId": "p2"
             },
@@ -12608,6 +13477,7 @@
               "role": "INNOCENT"
             },
             "winnerTeam": "IMPOSTORS",
+            "finishReason": "PARITY",
             "results": null
           },
           "playerStates": {
@@ -12631,7 +13501,7 @@
               "canVote": false,
               "ownVote": {
                 "targetId": "p2",
-                "votedAt": 105000
+                "votedAt": 135000
               }
             },
             "p2": {
@@ -12660,7 +13530,7 @@
               "canVote": false,
               "ownVote": {
                 "targetId": "p4",
-                "votedAt": 106000
+                "votedAt": 136000
               }
             },
             "p3": {
@@ -12702,7 +13572,7 @@
               "canVote": false,
               "ownVote": {
                 "targetId": "p2",
-                "votedAt": 105500
+                "votedAt": 135500
               }
             },
             "p5": {
@@ -12736,7 +13606,7 @@
           "lifecycle": {
             "phase": "GAME_RESULTS",
             "nextDeadline": null,
-            "actionEpoch": "[\"GAME_RESULTS\",3,104000,null,3,null,2,null]",
+            "actionEpoch": "[\"GAME_RESULTS\",4,134000,null,3,null,1,null]",
             "spectatorIds": [
               "p5",
               "p3",
@@ -12767,7 +13637,7 @@
               "p3",
               "p2"
             ],
-            "roundNumber": 3,
+            "roundNumber": 4,
             "clues": {
               "1": {
                 "p4": {
@@ -12834,11 +13704,28 @@
                   "submittedAt": null,
                   "status": "TIMEOUT"
                 }
+              },
+              "4": {
+                "p1": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p2": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                },
+                "p4": {
+                  "text": null,
+                  "submittedAt": null,
+                  "status": "TIMEOUT"
+                }
               }
             },
             "clueOrder": [
-              "p2",
               "p1",
+              "p2",
               "p4"
             ],
             "currentClueTurnIndex": 3,
@@ -12850,8 +13737,8 @@
               "p2",
               "p4"
             ],
-            "votingRound": 2,
-            "roundStartedAt": 104000,
+            "votingRound": 1,
+            "roundStartedAt": 134000,
             "roundEndsAt": null,
             "nextTransitionAt": null,
             "lastVoteResult": null,
@@ -12860,6 +13747,7 @@
               "role": "INNOCENT"
             },
             "winnerTeam": "IMPOSTORS",
+            "finishReason": "PARITY",
             "results": {
               "winnerId": "p4",
               "standings": [
@@ -12978,7 +13866,7 @@
               "canVote": false,
               "ownVote": {
                 "targetId": "p2",
-                "votedAt": 105000
+                "votedAt": 135000
               }
             },
             "p2": {
@@ -13007,7 +13895,7 @@
               "canVote": false,
               "ownVote": {
                 "targetId": "p4",
-                "votedAt": 106000
+                "votedAt": 136000
               }
             },
             "p3": {
@@ -13058,7 +13946,7 @@
               "canVote": false,
               "ownVote": {
                 "targetId": "p2",
-                "votedAt": 105500
+                "votedAt": 135500
               }
             },
             "p5": {

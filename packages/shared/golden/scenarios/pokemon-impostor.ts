@@ -105,17 +105,22 @@ const tieAndParity: GoldenScenario = {
     vote('p4', 'p3', 54_000),
     timeout(57_000),
     timeout(61_000),
-    // Ronda 3: nadie da pistas ni vota; el empate entre todos repite la votación y Dani gana por paridad.
+    // Ronda 3: nadie da pistas ni vota; el 0–0 es «Saltar» (SKIPPED) y empieza la ronda 4 sin expulsión.
     timeout(71_000),
     timeout(81_000),
     timeout(91_000),
     timeout(101_000),
     timeout(104_000),
-    vote('p1', 'p2', 105_000),
-    vote('p4', 'p2', 105_500),
-    vote('p2', 'p4', 106_000),
-    timeout(109_000),
-    timeout(113_000),
+    // Ronda 4 (104000–134000): pistas agotadas; la expulsión de Bruno reinicia las rondas sin expulsión y Dani gana
+    // por paridad.
+    timeout(114_000),
+    timeout(124_000),
+    timeout(134_000),
+    vote('p1', 'p2', 135_000),
+    vote('p4', 'p2', 135_500),
+    vote('p2', 'p4', 136_000),
+    timeout(139_000),
+    timeout(143_000),
   ],
 };
 
@@ -211,9 +216,60 @@ const invalidActionStops: GoldenScenario = {
   ],
 };
 
+// Cuatro jugadores. Ronda 1: dos «Saltar» igualan el máximo (SKIPPED). Ronda 2: empate, revotación con un voto a un
+// jugador vivo que no es candidato y el mismo empate (DEADLOCK). Ronda 3: nadie da pistas ni vota (SKIPPED): tres
+// rondas seguidas sin expulsión terminan la partida con victoria de los impostores (STALEMATE). Los turnos de pista se
+// agotan con timeouts para no depender del orden barajado.
+const skipDeadlockStalemate: GoldenScenario = {
+  name: 'skip-deadlock-stalemate',
+  seed: 1513,
+  catalog: 'gen1-2',
+  players: [ana, bruno, carla, dani],
+  config: baseConfig,
+  steps: [
+    timeout(6_000),
+    // Ronda 1 (6000–46000): Ana y Bruno votan a Carla; Carla y Dani votan «Saltar».
+    timeout(16_000),
+    timeout(26_000),
+    timeout(36_000),
+    timeout(46_000),
+    vote('p1', 'p3', 47_000),
+    vote('p2', 'p3', 47_500),
+    vote('p3', 'SKIP', 48_000),
+    vote('p3', 'p1', 48_100),
+    vote('p4', 'SKIP', 48_500),
+    timeout(51_500),
+    // Ronda 2 (51500–91500): empate 2–2 entre Ana y Bruno.
+    timeout(61_500),
+    timeout(71_500),
+    timeout(81_500),
+    timeout(91_500),
+    vote('p1', 'p2', 92_000),
+    vote('p2', 'p1', 92_500),
+    vote('p3', 'p1', 93_000),
+    vote('p4', 'p2', 93_500),
+    // Revotación (96500–106500) entre Ana y Bruno: Carla no es candidata y el empate se repite.
+    timeout(96_500),
+    vote('p1', 'p3', 97_000),
+    vote('p1', 'p2', 97_500),
+    vote('p2', 'p1', 98_000),
+    vote('p3', 'p1', 98_500),
+    vote('p4', 'p2', 99_000),
+    timeout(102_000),
+    // Ronda 3 (102000–142000): ausentes; 0 votos.
+    timeout(112_000),
+    timeout(122_000),
+    timeout(132_000),
+    timeout(142_000),
+    timeout(152_000),
+    timeout(155_000),
+    vote('p1', 'p2', 156_000),
+  ],
+};
+
 export const pokemonImpostorScenarios: GoldenEngineEntry = {
   module: pokemonImpostorGame,
-  scenarios: [tieAndParity, guessAndPresence, innocentsWin, invalidActionStops],
+  scenarios: [tieAndParity, guessAndPresence, innocentsWin, invalidActionStops, skipDeadlockStalemate],
   configCases: [
     { generations: [1, 2, 3, 4, 5, 6, 7, 8, 9], impostorCount: 1, clueSeconds: 15, voteSeconds: 20 },
     // Válidos: normalización de generaciones, cada límite en el borde, enteros con decimal cero y claves desconocidas

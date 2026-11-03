@@ -4,6 +4,11 @@ import type { PokemonImpostorConfig } from './config.js';
 
 export type ImpostorRole = 'INNOCENT' | 'IMPOSTOR';
 export type ImpostorWinner = 'INNOCENTS' | 'IMPOSTORS';
+/** Motivo del final: acierto de un impostor, paridad, todos los impostores expulsados o rondas seguidas sin expulsión. */
+export type ImpostorFinishReason = 'GUESS' | 'PARITY' | 'IMPOSTORS_ELIMINATED' | 'STALEMATE';
+
+/** `targetId` de un voto a «Saltar». Nunca choca con un id de jugador (cuid o `guest_<uuid>`). */
+export const IMPOSTOR_SKIP_TARGET = 'SKIP';
 
 export interface ImpostorClue {
   text: string | null;
@@ -23,9 +28,10 @@ export interface ImpostorVote {
 }
 
 export interface ImpostorVoteResult {
-  kind: 'TIE' | 'ELIMINATION';
+  kind: 'TIE' | 'ELIMINATION' | 'SKIPPED' | 'DEADLOCK';
   votes: Record<string, ImpostorVote>;
   tallies: Record<string, number>;
+  skipVotes: number;
   tiedIds: string[];
   eliminatedId: string | null;
 }
@@ -57,12 +63,14 @@ export interface PokemonImpostorState {
   votes: Record<string, ImpostorVote>;
   voteCandidateIds: string[];
   votingRound: number;
+  roundsWithoutElimination: number;
   roundStartedAt: number | null;
   roundEndsAt: number | null;
   nextTransitionAt: number | null;
   lastVoteResult: ImpostorVoteResult | null;
   eliminationReveal: ImpostorEliminationReveal | null;
   winnerTeam: ImpostorWinner | null;
+  finishReason: ImpostorFinishReason | null;
   playerStats: Record<string, ImpostorPlayerStats>;
 }
 
@@ -95,6 +103,7 @@ export interface PokemonImpostorPublicState {
   lastVoteResult: ImpostorVoteResult | null;
   eliminationReveal: ImpostorEliminationReveal | null;
   winnerTeam: ImpostorWinner | null;
+  finishReason: ImpostorFinishReason | null;
   results: GameResults | null;
 }
 

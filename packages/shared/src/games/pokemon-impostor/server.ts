@@ -3,9 +3,17 @@ import type { Pokemon } from '../../pokemon/types.js';
 import { connectedRequiredPlayerIds, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultPokemonImpostorConfig, pokemonImpostorConfigSchema, type PokemonImpostorConfig } from './config.js';
-import { buildPokemonImpostorResults, impostorWinner } from './rules.js';
 import {
+  buildPokemonImpostorResults,
+  IMPOSTOR_CLUE_MAX_CODE_POINTS,
+  IMPOSTOR_MAX_ROUNDS_WITHOUT_ELIMINATION,
+  IMPOSTOR_MAX_VOTING_ROUNDS,
+  impostorWinner,
+} from './rules.js';
+import {
+  IMPOSTOR_SKIP_TARGET,
   pokemonImpostorActionSchema,
+  type ImpostorFinishReason,
   type ImpostorClue,
   type ImpostorPlayerStats,
   type ImpostorRole,
@@ -129,18 +137,42 @@ function beginVoting(state: PokemonImpostorState, context: GameContext, candidat
 
 function resolveVoting(state: PokemonImpostorState, context: GameContext): PokemonImpostorState {
   if (state.phase !== 'VOTING') return state;
-  const tallies = Object.fromEntries(state.voteCandidateIds.map((id) => [id, 0]));
-  for (const vote of Object.values(state.votes)) tallies[vote.targetId] = (tallies[vote.targetId] ?? 0) + 1;
-  const maximum = Math.max(...Object.values(tallies));
-  const tiedIds = state.voteCandidateIds.filter((id) => tallies[id] === maximum);
+  const tallies: Record<string, number> = Object.fromEntries(state.voteCandidateIds.map((id) => [id, 0]));
+  let skipVotes = 0;
+  for (const vote of Object.values(state.votes)) {
+    if (vote.targetId === IMPOSTOR_SKIP_TARGET) skipVotes += 1;
+    else tallies[vote.targetId] = (tallies[vote.targetId] ?? 0) + 1;
+  }
+  const maximum = Math.max(skipVotes, ...Object.values(tallies));
+  const tied = state.voteCandidateIds.filter((id) => tallies[id] === maximum);
+  // «Saltar» gana si iguala o supera el máximo (incluido el 0–0); un empate repetido no abre una tercera votación.
+  const kind: ImpostorVoteResult['kind'] = skipVotes === maximum ? 'SKIPPED'
+    : tied.length > 1 ? (state.votingRound >= IMPOSTOR_MAX_VOTING_ROUNDS ? 'DEADLOCK' : 'TIE')
+      : 'ELIMINATION';
   const result: ImpostorVoteResult = {
-    kind: tiedIds.length > 1 ? 'TIE' : 'ELIMINATION',
+    kind,
     votes: { ...state.votes },
     tallies,
-    tiedIds: tiedIds.length > 1 ? tiedIds : [],
-    eliminatedId: tiedIds.length === 1 ? tiedIds[0]! : null,
+    skipVotes,
+    tiedIds: kind === 'TIE' || kind === 'DEADLOCK' ? tied : [],
+    eliminatedId: kind === 'ELIMINATION' ? tied[0]! : null,
   };
   return { ...state, phase: 'VOTE_RESULTS', roundEndsAt: null, nextTransitionAt: context.now + VOTE_RESULTS_MS, lastVoteResult: result };
+}
+
+/** Una ronda sin expulsión: la tercera seguida termina la partida con victoria de los impostores. */
+function afterNoElimination(state: PokemonImpostorState, context: GameContext): PokemonImpostorState {
+  const roundsWithoutElimination = state.roundsWithoutElimination + 1;
+  if (roundsWithoutElimination >= IMPOSTOR_MAX_ROUNDS_WITHOUT_ELIMINATION) {
+    return finishGame({ ...state, roundsWithoutElimination, winnerTeam: 'IMPOSTORS', finishReason: 'STALEMATE' });
+  }
+  return beginCluePhase({ ...state, roundsWithoutElimination }, context);
+}
+
+function eliminationFinishReason(winnerTeam: PokemonImpostorState['winnerTeam']): ImpostorFinishReason | null {
+  if (winnerTeam === 'INNOCENTS') return 'IMPOSTORS_ELIMINATED';
+  if (winnerTeam === 'IMPOSTORS') return 'PARITY';
+  return null;
 }
 
 function beginElimination(state: PokemonImpostorState, context: GameContext): PokemonImpostorState {
@@ -148,14 +180,17 @@ function beginElimination(state: PokemonImpostorState, context: GameContext): Po
   if (!playerId) return state;
   const aliveIds = state.aliveIds.filter((id) => id !== playerId);
   const eliminatedIds = [...state.eliminatedIds, playerId];
+  const winnerTeam = impostorWinner(aliveIds, state.roles);
   return {
     ...state,
     phase: 'ELIMINATION',
     aliveIds,
     eliminatedIds,
     spectatorIds: [...eliminatedIds],
+    roundsWithoutElimination: 0,
     eliminationReveal: { playerId, role: state.roles[playerId]! },
-    winnerTeam: impostorWinner(aliveIds, state.roles),
+    winnerTeam,
+    finishReason: eliminationFinishReason(winnerTeam),
     roundEndsAt: null,
     nextTransitionAt: context.now + ELIMINATION_MS,
   };
@@ -187,8 +222,9 @@ export const pokemonImpostorGame: MiniGameModule<PokemonImpostorConfig, PokemonI
     return {
       phase: 'GAME_STARTING', config: parsed, playerIds: context.players.map((player) => player.id), roles,
       secretPokemonId: secretPokemon.id, aliveIds: context.players.map((player) => player.id), eliminatedIds: [], spectatorIds: [],
-      roundNumber: 0, clues: {}, clueOrder: [], currentClueTurnIndex: 0, guessAttempts: {}, votes: {}, voteCandidateIds: [], votingRound: 0, roundStartedAt: null,
-      roundEndsAt: null, nextTransitionAt: null, lastVoteResult: null, eliminationReveal: null, winnerTeam: null, playerStats,
+      roundNumber: 0, clues: {}, clueOrder: [], currentClueTurnIndex: 0, guessAttempts: {}, votes: {}, voteCandidateIds: [], votingRound: 0, roundsWithoutElimination: 0,
+      roundStartedAt: null, roundEndsAt: null, nextTransitionAt: null, lastVoteResult: null, eliminationReveal: null, winnerTeam: null,
+      finishReason: null, playerStats,
     };
   },
 
@@ -213,6 +249,7 @@ export const pokemonImpostorGame: MiniGameModule<PokemonImpostorConfig, PokemonI
         ...state,
         guessAttempts: { ...state.guessAttempts, [playerId]: { pokemonId: pokemon.id, correct, guessedAt: context.now } },
         winnerTeam: correct ? 'IMPOSTORS' : state.winnerTeam,
+        finishReason: correct ? 'GUESS' : state.finishReason,
         phase: correct ? 'GAME_RESULTS' : state.phase,
         roundEndsAt: correct ? null : state.roundEndsAt,
         nextTransitionAt: correct ? null : state.nextTransitionAt,
@@ -227,7 +264,7 @@ export const pokemonImpostorGame: MiniGameModule<PokemonImpostorConfig, PokemonI
       if (roundClues[playerId] !== undefined) return { state, accepted: false, error: 'Tu pista ya está bloqueada.' };
       const text = normalizedClue(action.text);
       if (!text) return { state, accepted: false, error: 'Escribe una pista.' };
-      if ([...text].length > 25) return { state, accepted: false, error: 'La pista no puede superar 25 caracteres.' };
+      if ([...text].length > IMPOSTOR_CLUE_MAX_CODE_POINTS) return { state, accepted: false, error: 'La pista no puede superar 25 caracteres.' };
       const clue: ImpostorClue = { text, submittedAt: context.now, status: 'SUBMITTED' };
       const stats = state.playerStats[playerId]!;
       const next: PokemonImpostorState = {
@@ -242,7 +279,7 @@ export const pokemonImpostorGame: MiniGameModule<PokemonImpostorConfig, PokemonI
     if (context.now >= (state.roundEndsAt ?? 0)) return { state, accepted: false, error: 'El tiempo para votar ha terminado.' };
     if (state.votes[playerId]) return { state, accepted: false, error: 'Tu voto ya está bloqueado.' };
     if (action.targetId === playerId) return { state, accepted: false, error: 'No puedes votarte a ti mismo.' };
-    if (!state.voteCandidateIds.includes(action.targetId) || !state.aliveIds.includes(action.targetId)) return { state, accepted: false, error: 'Ese jugador no es candidato.' };
+    if (action.targetId !== IMPOSTOR_SKIP_TARGET && (!state.voteCandidateIds.includes(action.targetId) || !state.aliveIds.includes(action.targetId))) return { state, accepted: false, error: 'Ese jugador no es candidato.' };
     const stats = state.playerStats[playerId]!;
     let next: PokemonImpostorState = {
       ...state,
@@ -258,7 +295,10 @@ export const pokemonImpostorGame: MiniGameModule<PokemonImpostorConfig, PokemonI
     if (state.phase === 'CLUE_PHASE' && context.now >= (state.roundEndsAt ?? Infinity)) return advanceClueTurn(state, context, 'TIMEOUT');
     if (state.phase === 'VOTING' && context.now >= (state.roundEndsAt ?? Infinity)) return resolveVoting(state, context);
     if (state.phase === 'VOTE_RESULTS' && context.now >= (state.nextTransitionAt ?? Infinity)) {
-      return state.lastVoteResult?.kind === 'TIE' ? beginVoting(state, context, state.lastVoteResult.tiedIds) : beginElimination(state, context);
+      const kind = state.lastVoteResult?.kind;
+      if (kind === 'TIE') return beginVoting(state, context, state.lastVoteResult!.tiedIds);
+      if (kind === 'SKIPPED' || kind === 'DEADLOCK') return afterNoElimination(state, context);
+      return beginElimination(state, context);
     }
     if (state.phase === 'ELIMINATION' && context.now >= (state.nextTransitionAt ?? Infinity)) {
       return state.winnerTeam ? finishGame(state) : beginCluePhase(state, context);
@@ -298,6 +338,7 @@ export const pokemonImpostorGame: MiniGameModule<PokemonImpostorConfig, PokemonI
       nextTransitionAt: state.nextTransitionAt, lastVoteResult: state.phase === 'VOTE_RESULTS' || state.phase === 'ELIMINATION' ? state.lastVoteResult : null,
       eliminationReveal: state.phase === 'ELIMINATION' || state.phase === 'GAME_RESULTS' ? state.eliminationReveal : null,
       winnerTeam: state.winnerTeam,
+      finishReason: state.finishReason,
       results: state.phase === 'GAME_RESULTS' ? buildPokemonImpostorResults(state) : null,
     };
   },

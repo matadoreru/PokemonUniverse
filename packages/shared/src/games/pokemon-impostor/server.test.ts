@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { GameContext, GamePlayer, Pokemon, PokemonCatalog, PokemonImpostorPlayerState, PokemonImpostorState } from '../../index.js';
-import { impostorWinner, pokemonImpostorGame } from '../../index.js';
+import { IMPOSTOR_SKIP_TARGET, impostorWinner, pokemonImpostorGame } from '../../index.js';
 
 const pokemon: Pokemon[] = [
   { id: 'lucario', nationalDexNumber: 448, name: 'Lucario', generation: 4, sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/448.png', hp: 70, attack: 110, defense: 70, specialAttack: 115, specialDefense: 70, speed: 90, baseStatTotal: 525, types: ['fighting', 'steel'] },
@@ -163,7 +163,8 @@ describe('Pokémon Impostor', () => {
 
     const fresh = startClues(setup());
     const correct = pokemonImpostorGame.handleAction(fresh, 'p1', { type: 'GUESS_POKEMON', pokemonId: 'lucario' }, fixture.context);
-    expect(correct.state).toMatchObject({ phase: 'GAME_RESULTS', winnerTeam: 'IMPOSTORS' });
+    expect(correct.state).toMatchObject({ phase: 'GAME_RESULTS', winnerTeam: 'IMPOSTORS', finishReason: 'GUESS' });
+    expect(pokemonImpostorGame.getPublicState(correct.state, fixture.context).finishReason).toBe('GUESS');
   });
 
   it('moves to voting on clue timeout without eliminating non-responders', () => {
@@ -274,6 +275,13 @@ describe('Pokémon Impostor', () => {
     expect(impostorWinner(['p1', 'p2'], roles)).toBe('IMPOSTORS');
     expect(impostorWinner(['p1', 'p2', 'p3'], roles)).toBeNull();
     expect(impostorWinner(['p1', 'p2', 'p3', 'p4'], roles)).toBe('IMPOSTORS');
+
+    const fixture = setup();
+    let state = fillClues(startClues(fixture), fixture.context);
+    state = cast(state, 'p1', 'p2', fixture.context).state;
+    for (const id of ['p2', 'p3', 'p4', 'p5']) state = cast(state, id, 'p1', fixture.context).state;
+    state = timeout(fixture, state);
+    expect(state).toMatchObject({ phase: 'ELIMINATION', winnerTeam: 'INNOCENTS', finishReason: 'IMPOSTORS_ELIMINATED' });
   });
 
   it('applies impostor parity after an innocent elimination', () => {
@@ -285,12 +293,15 @@ describe('Pokémon Impostor', () => {
       eliminatedIds: ['p4', 'p5'],
       spectatorIds: ['p4', 'p5'],
       nextTransitionAt: fixture.context.now,
-      lastVoteResult: { kind: 'ELIMINATION', votes: {}, tallies: { p3: 2 }, tiedIds: [], eliminatedId: 'p3' },
+      lastVoteResult: { kind: 'ELIMINATION', votes: {}, tallies: { p3: 2 }, skipVotes: 0, tiedIds: [], eliminatedId: 'p3' },
     };
     const eliminated = pokemonImpostorGame.handleTimeout(state, fixture.context);
     expect(eliminated.phase).toBe('ELIMINATION');
     expect(eliminated.aliveIds).toEqual(['p1', 'p2']);
     expect(eliminated.winnerTeam).toBe('IMPOSTORS');
+    expect(eliminated.finishReason).toBe('PARITY');
+    const finished = timeout(fixture, eliminated);
+    expect(pokemonImpostorGame.getPublicState(finished, fixture.context)).toMatchObject({ phase: 'GAME_RESULTS', finishReason: 'PARITY' });
   });
 
   it('finishes after the elimination reveal with team standings', () => {
@@ -302,5 +313,126 @@ describe('Pokémon Impostor', () => {
     state = timeout(fixture, state);
     expect(state.phase).toBe('GAME_RESULTS');
     expect(pokemonImpostorGame.getResults(state).standings.filter((entry) => entry.position === 1).map((entry) => entry.playerId)).toEqual(['p2', 'p3', 'p4', 'p5']);
+  });
+
+  it('accepts SKIP as a vote, never as a candidate, and counts it in votesCast', () => {
+    const fixture = setup();
+    let state = fillClues(startClues(fixture), fixture.context);
+    expect(state.voteCandidateIds).not.toContain(IMPOSTOR_SKIP_TARGET);
+    const skipped = cast(state, 'p1', IMPOSTOR_SKIP_TARGET, fixture.context);
+    expect(skipped.accepted).toBe(true);
+    state = skipped.state;
+    expect(state.voteCandidateIds).not.toContain(IMPOSTOR_SKIP_TARGET);
+    expect(state.playerStats.p1?.votesCast).toBe(1);
+    state = timeout(fixture, state);
+    expect(state.lastVoteResult).toMatchObject({ kind: 'SKIPPED', skipVotes: 1 });
+    expect(Object.keys(state.lastVoteResult!.tallies)).not.toContain(IMPOSTOR_SKIP_TARGET);
+  });
+
+  it('nobody voting skips to the next clue round without eliminating', () => {
+    const fixture = setup();
+    let state = fillClues(startClues(fixture), fixture.context);
+    state = timeout(fixture, state);
+    expect(state.phase).toBe('VOTE_RESULTS');
+    expect(state.lastVoteResult).toMatchObject({ kind: 'SKIPPED', skipVotes: 0, tiedIds: [], eliminatedId: null });
+    state = timeout(fixture, state);
+    expect(state.phase).toBe('CLUE_PHASE');
+    expect(state.roundNumber).toBe(2);
+    expect(state.eliminatedIds).toEqual([]);
+    expect(state.roundsWithoutElimination).toBe(1);
+  });
+
+  it('SKIP tying the maximum eliminates nobody', () => {
+    // Cuatro vivos conectados (p5 desconectado): votos A, A, SKIP, SKIP.
+    const fixture = setup();
+    fixture.context.players[4]!.connected = false;
+    let state = fillClues(startClues(fixture), fixture.context);
+    state = cast(state, 'p1', 'p2', fixture.context).state;
+    state = cast(state, 'p3', 'p2', fixture.context).state;
+    state = cast(state, 'p2', IMPOSTOR_SKIP_TARGET, fixture.context).state;
+    state = cast(state, 'p4', IMPOSTOR_SKIP_TARGET, fixture.context).state;
+    expect(state.phase).toBe('VOTE_RESULTS');
+    expect(state.lastVoteResult).toMatchObject({ kind: 'SKIPPED', skipVotes: 2, tallies: { p2: 2 }, tiedIds: [], eliminatedId: null });
+    state = timeout(fixture, state);
+    expect(state.phase).toBe('CLUE_PHASE');
+    expect(state.eliminatedIds).toEqual([]);
+  });
+
+  it('a repeated tie ends in DEADLOCK without elimination', () => {
+    const fixture = setup();
+    let state = fillClues(startClues(fixture), fixture.context);
+    const tie = (current: PokemonImpostorState) => {
+      let next = cast(current, 'p1', 'p2', fixture.context).state;
+      next = cast(next, 'p2', 'p1', fixture.context).state;
+      next = cast(next, 'p3', 'p1', fixture.context).state;
+      return cast(next, 'p4', 'p2', fixture.context).state;
+    };
+    state = timeout(fixture, tie(state));
+    expect(state.lastVoteResult).toMatchObject({ kind: 'TIE', tiedIds: ['p1', 'p2'] });
+    state = timeout(fixture, state);
+    expect(state.votingRound).toBe(2);
+    state = timeout(fixture, tie(state));
+    expect(state.lastVoteResult?.kind).toBe('DEADLOCK');
+    expect(state.lastVoteResult?.tiedIds).toHaveLength(2);
+    expect(state.lastVoteResult?.eliminatedId).toBeNull();
+    state = timeout(fixture, state);
+    expect(state.phase).toBe('CLUE_PHASE');
+    expect(state.eliminatedIds).toEqual([]);
+    expect(state.votingRound).toBe(0);
+  });
+
+  it('a disconnect during the revote resolves it without a third voting round', () => {
+    const fixture = setup();
+    let state = fillClues(startClues(fixture), fixture.context);
+    const tie = (current: PokemonImpostorState) => {
+      let next = cast(current, 'p1', 'p2', fixture.context).state;
+      next = cast(next, 'p2', 'p1', fixture.context).state;
+      next = cast(next, 'p3', 'p1', fixture.context).state;
+      return cast(next, 'p4', 'p2', fixture.context).state;
+    };
+    state = timeout(fixture, tie(state));
+    state = timeout(fixture, state);
+    expect(state.phase).toBe('VOTING');
+    state = tie(state);
+    expect(state.phase).toBe('VOTING');
+    fixture.context.players[4]!.connected = false;
+    state = pokemonImpostorGame.handlePresenceChange!(state, fixture.context);
+    expect(state.phase).toBe('VOTE_RESULTS');
+    expect(state.lastVoteResult?.kind).toBe('DEADLOCK');
+    state = timeout(fixture, state);
+    expect(state.phase).toBe('CLUE_PHASE');
+    expect(state.eliminatedIds).toEqual([]);
+  });
+
+  it('ends with STALEMATE after three rounds without elimination', () => {
+    const fixture = setup();
+    let state = startClues(fixture);
+    for (let round = 1; round <= 3; round += 1) {
+      expect(state.phase).toBe('CLUE_PHASE');
+      expect(state.roundNumber).toBe(round);
+      while (state.phase === 'CLUE_PHASE') state = timeout(fixture, state);
+      expect(state.phase).toBe('VOTING');
+      state = timeout(fixture, state);
+      expect(state.lastVoteResult).toMatchObject({ kind: 'SKIPPED', skipVotes: 0 });
+      state = timeout(fixture, state);
+    }
+    expect(state.phase).toBe('GAME_RESULTS');
+    expect(state.winnerTeam).toBe('IMPOSTORS');
+    expect(state.roundsWithoutElimination).toBe(3);
+    expect(state.eliminatedIds).toEqual([]);
+    expect(pokemonImpostorGame.getPublicState(state, fixture.context)).toMatchObject({ phase: 'GAME_RESULTS', winnerTeam: 'IMPOSTORS', finishReason: 'STALEMATE' });
+  });
+
+  it('an elimination resets the rounds-without-elimination counter', () => {
+    const fixture = setup();
+    let state = fillClues(startClues(fixture), fixture.context);
+    state = timeout(fixture, timeout(fixture, state));
+    expect(state.roundsWithoutElimination).toBe(1);
+    state = fillClues(state, fixture.context);
+    for (const id of state.aliveIds) state = cast(state, id, id === 'p5' ? 'p4' : 'p5', fixture.context).state;
+    state = timeout(fixture, state);
+    expect(state.phase).toBe('ELIMINATION');
+    expect(state.roundsWithoutElimination).toBe(0);
+    expect(state.finishReason).toBeNull();
   });
 });
