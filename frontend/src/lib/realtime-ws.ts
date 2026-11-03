@@ -67,6 +67,15 @@ export class WebSocketRealtime implements RealtimeClient {
     try { this.socket.send(JSON.stringify({ event, payload })); } catch { /* fire-and-forget */ }
   }
 
+  reconnect(): void {
+    if (this.stopped) return;
+    const state = this.socket?.readyState;
+    if (state === this.WebSocketImpl.OPEN || state === this.WebSocketImpl.CONNECTING) return;
+    if (this.reconnectTimer) { clearTimeout(this.reconnectTimer); this.reconnectTimer = null; }
+    this.attempt = 0;
+    this.connect();
+  }
+
   disconnect(): void {
     this.stopped = true;
     if (this.reconnectTimer) { clearTimeout(this.reconnectTimer); this.reconnectTimer = null; }

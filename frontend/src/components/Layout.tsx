@@ -8,6 +8,9 @@ import { Avatar } from './Avatar';
 import { RouteLoadingFallback } from './LoadingFallback';
 import { ThemeToggle } from './ThemeToggle';
 
+/** Hueco de la cabecera (fija) para avisos de toda la página, como el de conexión de la sala: van bajo la fila de marca, nunca encima. */
+export const HEADER_NOTICES_ID = 'app-header-notices';
+
 export function AppHeader({ user, onLogout, unreadChangelogCount = 0 }: { user: AuthUser | null; onLogout(): void; unreadChangelogCount?: number }) {
   return <header className="sticky top-0 z-40 border-b border-ink/10 bg-cream/95" data-layout="centered-brand"><div className="mx-auto grid w-full max-w-[96rem] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center px-3 py-2.5 sm:px-5 md:px-8">
     <span className="justify-self-start"><ThemeToggle /></span>
@@ -23,7 +26,7 @@ export function AppHeader({ user, onLogout, unreadChangelogCount = 0 }: { user: 
       <button aria-label="Cerrar sesión" title="Cerrar sesión" className="icon-button" onClick={onLogout}><LogOut size={19} /></button>
       </>}
     </div>
-  </div></header>;
+  </div><div id={HEADER_NOTICES_ID} /></header>;
 }
 
 export function Layout() {

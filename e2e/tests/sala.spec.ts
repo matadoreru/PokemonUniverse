@@ -1,5 +1,5 @@
 import { expect, test as base, type Browser, type BrowserContext, type Page } from '@playwright/test';
-import { capture, collectErrors, createRoom, joinRoom, loginAsGuest, SIZES, uniqueName } from '../src/helpers.js';
+import { capture, collectErrors, createRoom, joinRoom, loginAsGuest, pinTheme, SIZES, uniqueName, type Theme } from '../src/helpers.js';
 
 interface Jugador {
   context: BrowserContext;
@@ -77,7 +77,7 @@ test('un código inexistente muestra error', async ({ page }) => {
   await page.locator('#room-code').fill('ZZZZZZ');
   await page.getByRole('button', { name: 'Unirse a la sala' }).click();
   // Puede haber más de un alert (error de PlayPage y banner de conexión): se busca el del error.
-  // El servidor responde en inglés: manager.ts lanza 'Room not found' y PlayPage lo muestra tal cual.
+  // El servidor responde en inglés ('Room not found') y PlayPage lo muestra tal cual.
   const alerta = page.getByRole('alert').filter({ hasText: /room not found/i }).first();
   await expect(alerta).toBeVisible();
   await expect(page).toHaveURL(/\/play$/);
@@ -97,3 +97,81 @@ for (const { w, h } of SIZES) {
     expect(guest.errors).toEqual([]);
   });
 }
+
+/**
+ * Fija el aviso de conexión sin depender de lo que tarde el backend en frío. Con `perdida = false` el `/ws` de la sala
+ * se queda en CONNECTING para siempre («Conectando con la sala»); con `perdida = true` el primero abre y se cae al
+ * momento y los siguientes intentos se quedan en CONNECTING («Conexión perdida»). El resto de WebSockets (HMR de
+ * Vite) usan el nativo.
+ */
+async function salaSinConexion(page: Page, perdida: boolean): Promise<void> {
+  await page.addInitScript((perderLaPrimera) => {
+    const Native = window.WebSocket;
+    let intentos = 0;
+    class Pending extends EventTarget {
+      readyState: number = Native.CONNECTING;
+      onopen: ((event: Event) => void) | null = null;
+      onmessage = null;
+      onclose: ((event: CloseEvent) => void) | null = null;
+      onerror = null;
+      constructor(readonly url: string, abreYCae: boolean) {
+        super();
+        if (!abreYCae) return;
+        setTimeout(() => { this.readyState = Native.OPEN; this.onopen?.(new Event('open')); }, 50);
+        setTimeout(() => { this.readyState = Native.CLOSED; this.onclose?.(new CloseEvent('close', { code: 1006 })); }, 150);
+      }
+      send(): void {}
+      close(): void {}
+    }
+    class Pendiente extends Native {
+      constructor(url: string | URL, protocols?: string | string[]) {
+        if (new URL(String(url), location.href).pathname === '/ws') return new Pending(String(url), perderLaPrimera && intentos++ === 0) as unknown as Pendiente;
+        super(url, protocols);
+      }
+    }
+    window.WebSocket = Pendiente;
+  }, perdida);
+}
+
+async function avisoDeConexion(page: Page, theme: Theme, perdida = false): Promise<void> {
+  if (theme === 'light') await pinTheme(page.context(), 'light');
+  const errors = collectErrors(page);
+  await loginAsGuest(page, uniqueName('E2E'));
+  await salaSinConexion(page, perdida);
+  await page.goto('/play');
+  const aviso = page.getByRole('status').filter({ hasText: perdida ? 'Conexión perdida' : 'Conectando con la sala' });
+  await expect(aviso).toBeVisible();
+  const reintentar = aviso.getByRole('button', { name: 'Reintentar ahora' });
+  if (perdida) await expect(reintentar).toBeEnabled();
+  else await expect(reintentar).toHaveCount(0);
+  // El aviso nunca tapa la fila de marca y navegación de la cabecera: empieza donde ella acaba o más abajo.
+  const marca = await page.locator('header > div').first().boundingBox();
+  const caja = await aviso.locator('.connection-notice').boundingBox();
+  expect(marca && caja && caja.y >= marca.y + marca.height - 1, 'el aviso queda bajo la fila de marca').toBe(true);
+  await capture(page, `sala-${perdida ? 'conexion-perdida' : 'conectando'}${theme === 'light' ? '-claro' : ''}`);
+  if (perdida) {
+    await reintentar.click();
+    await expect(aviso).toContainText('Conexión perdida');
+  }
+  expect(errors).toEqual([]);
+}
+
+for (const { w, h } of SIZES) {
+  test(`aviso de conexión de la sala a ${w}×${h}`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: h });
+    await avisoDeConexion(page, 'dark');
+  });
+
+  test(`aviso de conexión perdida a ${w}×${h}`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: h });
+    await avisoDeConexion(page, 'dark', true);
+  });
+}
+
+test('aviso de conexión de la sala en tema claro a 1280×720', async ({ page }) => {
+  await avisoDeConexion(page, 'light');
+});
+
+test('aviso de conexión perdida en tema claro a 1280×720', async ({ page }) => {
+  await avisoDeConexion(page, 'light', true);
+});

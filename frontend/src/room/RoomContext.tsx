@@ -11,6 +11,7 @@ interface RoomContextValue {
   connected: boolean;
   error: string | null;
   clearError(): void;
+  reconnect(): void;
   createRoom(): Promise<RoomView>;
   joinRoom(code: string): Promise<RoomView>;
   leaveRoom(): Promise<void>;
@@ -78,6 +79,7 @@ export function RoomProvider({ children }: PropsWithChildren) {
 
   const value = useMemo<RoomContextValue>(() => ({
     room, connected, error, clearError: () => setError(null),
+    reconnect: () => socketRef.current?.reconnect(),
     async createRoom() { const response = await emit('room:create', {}); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
     async joinRoom(code) { const response = await emit('room:join', { code }); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
     async leaveRoom() { await emit('room:leave', {}); setRoom(projectionRef.current.setAuthoritative(null, true)); },

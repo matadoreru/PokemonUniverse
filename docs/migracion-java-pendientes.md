@@ -99,7 +99,8 @@ medidor lo cuenta como solape con la cabecera. Es la primera apertura de `/ws` t
 ≈ 0,7 s frente a 5 ms en caliente); con el backend ya caliente el spec pasa. **Es previo a 2C:** en un worktree de
 `main` (3d0ef85) sin ningún servidor levantado, `npm run test:e2e:java -- acceso` falla igual (1 fallo y 3 pasados;
 mismo solape «Pokémon Universe» ⟷ «Conectando con la sala», 903 px²; en esa pasada no se midió la latencia de `/ws`).
-Queda como deuda de E2E: esperar a la conexión antes de capturar, o calentar `/ws` en el arranque.
+Resuelto en la Tarea 2 de 2D: el aviso vive ahora en un hueco de la cabecera fija, bajo la fila de marca, y
+`sala.spec.ts` fija el estado «Conectando» (un `/ws` que nunca abre) para comprobarlo sin depender del tiempo.
 
 #### Convivencia con Node hasta 2D
 
@@ -175,12 +176,14 @@ dejan de saltarse.
 
 Lista de comprobación (todo junto, en un mismo despliegue):
 
-- [ ] `VITE_REALTIME=java` por defecto en la imagen web y quitar `/socket.io/` de nginx.
+- [x] La web habla solo con Java (Tarea 2 de 2D): fuera el adaptador Socket.IO, `socket.io-client` y la bandera
+  `VITE_REALTIME`; Vite manda todo `/api` y `/ws` a `:8080` y los E2E corren solo contra Java.
+- [ ] Quitar `/socket.io/` de nginx.
 - [ ] Nuevos `location` hacia `backend:8080` en `infra/nginx.conf`, antes de `location /api/`: `/api/categories`,
   `/api/would-you-rather-prompts`, `/api/admin/`, `/api/tcg/`,
   `/api/auth/(guest/custom-avatar|profile/avatar)` (con `/preset`, `/custom` y el `DELETE`) y `/api/rooms/`
-  (imágenes y gritos de ronda); `location = /ws` ya existe. Quitar entonces la excepción de `proxyFor('java')`: las
-  reglas pasan a ser comunes a los dos modos (o desaparece el modo `node`).
+  (imágenes y gritos de ronda); `location = /ws` ya existe. La excepción de `proxyFor('java')` ya no existe
+  (Tarea 2 de 2D: un único modo).
 - [ ] `BACKEND_DATA_SYNC_ENABLED=true` en el servicio `backend` de compose (con `DATA_SYNC_HOUR`, `DATA_SYNC_MINUTE`,
   `DATA_SYNC_TIMEZONE`) y `PU_DATA_SYNC_ENABLED=false` en Node, o Node retirado. Nunca los dos a la vez.
 - [ ] `PU_ROOMS_ENABLED=true` (`ROOMS_ENABLED` del backend; hoy `false`, y `/ws` cierra con 4403). Encenderlo

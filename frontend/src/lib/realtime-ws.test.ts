@@ -46,6 +46,33 @@ describe('native WebSocket realtime client', () => {
     expect(listener).toHaveBeenLastCalledWith(false);
   });
 
+  it('reconnects now on demand after losing the connection, skipping the backoff wait', () => {
+    const client = create();
+    latest().open();
+    latest().serverClose(1006);
+    expect(FakeWebSocket.instances).toHaveLength(1);
+    client.reconnect();
+    expect(FakeWebSocket.instances).toHaveLength(2);
+    // The pending backoff timer was cancelled: no third socket appears when it would have fired.
+    vi.advanceTimersByTime(10_000);
+    expect(FakeWebSocket.instances).toHaveLength(2);
+    latest().open();
+    expect(client.connected).toBe(true);
+  });
+
+  it('ignores reconnect while connecting, open or after disconnect()', () => {
+    const client = create();
+    client.reconnect();
+    expect(FakeWebSocket.instances).toHaveLength(1);
+    latest().open();
+    client.reconnect();
+    expect(FakeWebSocket.instances).toHaveLength(1);
+    client.disconnect();
+    latest().serverClose(1000);
+    client.reconnect();
+    expect(FakeWebSocket.instances).toHaveLength(1);
+  });
+
   it('stops notifying after the connection listener unsubscribes', () => {
     const client = create();
     const listener = vi.fn();
