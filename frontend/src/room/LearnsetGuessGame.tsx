@@ -21,7 +21,7 @@ export function LearnsetGuessGame({ room, selfId, onAction }: { room: RoomView; 
   const transitionRemaining = Math.ceil(useRemainingMs(game.nextTransitionAt, offset) / 1_000);
   const cooldownRemaining = useRemainingMs(player.cooldownUntil, offset); const active = game.phase === 'ROUND_ACTIVE';
   const self = room.members.find((member) => member.id === selfId); const participating = self?.role === 'PLAYER';
-  const lastWarningText = active ? learnsetLastWarningText(game.lastWarning, player.solved || !participating || !player.canGuess) : null;
+  const lastWarningText = active ? learnsetLastWarningText(game.lastWarning, player.solved || !participating || !player.canGuess, roundRemaining) : null;
 
   if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} remaining={transitionRemaining} />;
   return <section className="mx-auto max-w-7xl px-4 py-5 md:px-7">

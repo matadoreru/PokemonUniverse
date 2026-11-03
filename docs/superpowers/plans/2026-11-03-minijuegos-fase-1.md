@@ -111,6 +111,7 @@ Se toman de las recomendaciones del propio documento. Si no hay ninguna, se elig
      - Se fija un `lastWarning: true` para que lo pinte la UI.
      - Si la pista pendiente (`nextTransitionAt`) cae en o después del nuevo final, pasa a `null`.
      - Se comprueba tras cada acierto y en `handlePresenceChange`. Nunca alarga la ronda.
+     - Una vez saltado el aviso, el cierre recortado se mantiene aunque un jugador reconecte y vuelvan a faltar dos (nunca se alarga).
 9. **Gracia de presencia (§8.3 y §11.5, con 10 s fijos y sin configurar por sala).**
    - Campo opcional del manifiesto `presenceGraceMs`, con la constante `PRESENCE_GRACE_MS = 10_000` en `contracts.ts`, en los 6 juegos del documento.
    - **Se desvía de §6.7:** la gracia vive en la sala, no en el motor de Type Duel (sin `disconnectedSince`). §8.3 dice «ningún motor tiene que cambiar» y §6.7 propone un campo en el motor. Se toma §8.3: un solo mecanismo para los 6 juegos.
