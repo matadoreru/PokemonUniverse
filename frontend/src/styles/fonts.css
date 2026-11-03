@@ -1,0 +1,18 @@
+/*
+ * Fuentes autoalojadas (spec Arcade DS §3.2): Baloo 2 y Nunito, OFL, subconjunto latino en
+ * woff2 variable (eje wght). Se precargan en index.html.
+ */
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('/fonts/baloo-2-latin.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Nunito';
+  src: url('/fonts/nunito-latin.woff2') format('woff2');
+  font-weight: 200 1000;
+  font-style: normal;
+  font-display: block;
+}

@@ -7,6 +7,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import tailwind from '../../tailwind.config.js';
 import { bestInk, colors, contrast, cssName, fontSizes, layers, typeColors, typeInk, type PokemonType } from './tokens';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -132,5 +133,14 @@ describe('alias de Tailwind (§11)', () => {
   });
   it('blanco sobre red-text ≥ 4,5:1 (botón principal)', () => {
     expect(contrast(colors.white, colors.redText)).toBeGreaterThanOrEqual(4.5);
+  });
+});
+
+describe('escala tipográfica (§3.2)', () => {
+  it('la escala de Tailwind es la de la spec', () => {
+    const sizes = (tailwind.theme.extend.fontSize ?? {}) as Record<string, [string, { lineHeight: string }]>;
+    const claves = Object.keys(sizes).filter((k) => /^\d+$/.test(k)).map(Number).sort((a, b) => a - b);
+    expect(claves).toEqual([...fontSizes]);
+    for (const n of fontSizes) expect(sizes[String(n)]![0]).toBe(`${n}px`);
   });
 });

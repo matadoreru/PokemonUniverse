@@ -1,3 +1,4 @@
+@import './styles/fonts.css';
 @import './styles/tokens.css';
 
 @tailwind base;
@@ -26,8 +27,40 @@
   color: rgb(var(--color-ink));
   /* Fondo del lienzo (rebote del desplazamiento, zonas fuera del body): nunca blanco. */
   background: var(--band);
-  font-family: Nunito, system-ui, sans-serif;
+  font-family: var(--font-text);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
   font-synthesis: none;
+}
+
+/* Contorno de texto (§3.1): 1,5 px en texto sobre degradado, césped o color de club... */
+.ol {
+  text-shadow:
+    1.5px 0 var(--navy),
+    -1.5px 0 var(--navy),
+    0 1.5px var(--navy),
+    0 -1.5px var(--navy),
+    1px 1px var(--navy),
+    -1px -1px var(--navy),
+    1px -1px var(--navy),
+    -1px 1px var(--navy);
+}
+/* ...y 2,5 px más sombra dura de 5 px en títulos grandes. */
+.ol2 {
+  text-shadow:
+    2.5px 0 var(--navy),
+    -2.5px 0 var(--navy),
+    0 2.5px var(--navy),
+    0 -2.5px var(--navy),
+    2px 2px var(--navy),
+    -2px -2px var(--navy),
+    2px -2px var(--navy),
+    -2px 2px var(--navy),
+    0 5px 0 var(--navy-2);
+}
+/* Títulos de display: interlineado compacto (los que ya fijan su `leading-*` lo conservan, al ir después). */
+@layer utilities {
+  .font-display { line-height: var(--lh-display); }
 }
 
 /* Barra de desplazamiento amarilla sobre azul noche (§3.7). */

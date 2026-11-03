@@ -97,6 +97,8 @@
   --fs-34: 34px;
   --fs-44: 44px;
   --fs-68: 68px;
+  --font-display: 'Baloo 2', Nunito, system-ui, sans-serif;
+  --font-text: Nunito, system-ui, sans-serif;
   --lh-text: 1.3;
   --lh-display: 1;
 
