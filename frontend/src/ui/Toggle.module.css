@@ -51,7 +51,7 @@
   transition: transform var(--t-press) var(--ease);
 }
 .on .knob {
-  transform: translateX(24px);
+  transform: translateX(26px);
 }
 .toggle:hover:not(:disabled) .switch,
 .toggle.hover .switch {

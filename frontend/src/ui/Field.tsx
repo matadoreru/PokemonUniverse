@@ -115,7 +115,7 @@ export function TextArea({ label, value, onChange, maxLength, rows = 4, error, h
       className={className}
       extra={
         maxLength != null && (
-          <span className={cx(s.count, value.length >= maxLength && s.full)} aria-live="polite">
+          <span className={cx(s.count, value.length >= maxLength && s.full)}>
             {value.length} / {maxLength}
           </span>
         )

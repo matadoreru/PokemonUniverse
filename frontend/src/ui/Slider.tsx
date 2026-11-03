@@ -50,8 +50,10 @@ export function Slider({ label, value, onChange, min, max, step, valueText, disa
           disabled={disabled}
           aria-valuetext={text}
           onChange={(e) => {
+            const next = Number(e.target.value);
+            if (next === value) return;
             uiSound('tick');
-            onChange(Number(e.target.value));
+            onChange(next);
           }}
         />
       </div>
