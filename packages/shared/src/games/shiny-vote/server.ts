@@ -1,6 +1,6 @@
 import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
-import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
+import { isPlayerRequired, type GameActionResult, type GameAssetResolution, type GameContext, type MiniGameModule } from '../contracts.js';
 import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultShinyVoteConfig, shinyVoteConfigSchema, type ShinyVoteConfig } from './config.js';
 import { shuffled } from '../infrastructure/random.js';
@@ -81,17 +81,32 @@ function createOptions(state: ShinyVoteState, context: GameContext): { options: 
   };
 }
 
+/** La resolución con la que se sirve la opción: el shiny oficial en `PIXEL_ART` y los señuelos recoloreados. */
+function optionResolution(option: ShinyOptionState): GameAssetResolution {
+  return option.recolor
+    ? { source: option.sprite, transform: 'PALETTE_RECOLOR', recolor: option.recolor }
+    : { source: option.sprite, transform: 'PIXEL_ART' };
+}
+
+/** Precarga lo mismo que servirá `resolveAsset`; es un efecto lateral y no toca el estado ni el azar. */
+function preloadOptions(options: readonly ShinyOptionState[], context: GameContext): void {
+  for (const option of options) context.preloadAsset?.(optionResolution(option));
+}
+
 function prepareNextRound(state: ShinyVoteState, context: GameContext): Pick<ShinyVoteState, 'preparedOptions' | 'preparedCorrectOptionId'> {
   if (state.roundNumber >= state.config.rounds) return { preparedOptions: null, preparedCorrectOptionId: null };
   const generated = createOptions(state, context);
-  for (const option of generated.options) context.preloadImage?.(option.sprite);
+  preloadOptions(generated.options, context);
   return { preparedOptions: generated.options, preparedCorrectOptionId: generated.correctOptionId };
 }
 
 function beginRound(state: ShinyVoteState, context: GameContext): ShinyVoteState {
-  const generated = state.preparedOptions && state.preparedCorrectOptionId
+  const prepared = state.preparedOptions && state.preparedCorrectOptionId
     ? { options: state.preparedOptions, correctOptionId: state.preparedCorrectOptionId }
-    : createOptions(state, context);
+    : null;
+  const generated = prepared ?? createOptions(state, context);
+  // Sin opciones preparadas (la primera ronda) aún no se ha precargado nada.
+  if (!prepared) preloadOptions(generated.options, context);
   return {
     ...state,
     phase: 'ROUND_ACTIVE',
@@ -264,10 +279,7 @@ export const shinyVoteGame: MiniGameModule<ShinyVoteConfig, ShinyVoteState, Shin
   resolveAsset(state, request) {
     if (state.assetToken !== request.assetToken || state.roundNumber !== request.roundNumber) return null;
     const option = state.options.find((candidate) => candidate.id === request.assetId);
-    if (!option) return null;
-    return option.recolor
-      ? { source: option.sprite, transform: 'PALETTE_RECOLOR', recolor: option.recolor }
-      : { source: option.sprite, transform: 'PIXEL_ART' };
+    return option ? optionResolution(option) : null;
   },
   isFinished(state) { return state.phase === 'GAME_RESULTS'; },
   getResults(state) { return buildShinyResults(state); },

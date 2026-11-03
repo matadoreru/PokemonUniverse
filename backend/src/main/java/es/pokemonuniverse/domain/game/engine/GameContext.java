@@ -26,7 +26,8 @@ public record GameContext(
     @Nullable TcgCardCatalog tcgCards,
     @Nullable PokemonVisualCatalog pokemonVisuals,
     @Nullable PokemonAudioCatalog pokemonAudio,
-    @Nullable Consumer<String> preloadImage) {
+    @Nullable Consumer<String> preloadImage,
+    @Nullable Consumer<AssetResolution> preloadAsset) {
 
   public GameContext {
     Objects.requireNonNull(pokemon, "GameContext necesita un catálogo de Pokémon (pokemon)");
@@ -44,7 +45,8 @@ public record GameContext(
   public Builder toBuilder() {
     return new Builder(pokemon, random).players(players).now(now).roomCode(roomCode).hostId(hostId)
         .hostCustomCategories(hostCustomCategories).hostWouldYouRatherPrompts(hostWouldYouRatherPrompts)
-        .tcgCards(tcgCards).pokemonVisuals(pokemonVisuals).pokemonAudio(pokemonAudio).preloadImage(preloadImage);
+        .tcgCards(tcgCards).pokemonVisuals(pokemonVisuals).pokemonAudio(pokemonAudio).preloadImage(preloadImage)
+        .preloadAsset(preloadAsset);
   }
 
   public GameContext withNow(long value) {
@@ -87,6 +89,7 @@ public record GameContext(
     private PokemonVisualCatalog pokemonVisuals;
     private PokemonAudioCatalog pokemonAudio;
     private Consumer<String> preloadImage;
+    private Consumer<AssetResolution> preloadAsset;
 
     private Builder(PokemonCatalog pokemon, DoubleSupplier random) {
       this.pokemon = Objects.requireNonNull(pokemon, "GameContext necesita un catálogo de Pokémon (pokemon)");
@@ -116,9 +119,12 @@ public record GameContext(
 
     public Builder preloadImage(@Nullable Consumer<String> value) { preloadImage = value; return this; }
 
+    /** Precarga, sin efecto en el estado, de la resolución exacta que servirá {@code resolveAsset}. */
+    public Builder preloadAsset(@Nullable Consumer<AssetResolution> value) { preloadAsset = value; return this; }
+
     public GameContext build() {
       return new GameContext(players, pokemon, now, random, roomCode, hostId, hostCustomCategories,
-          hostWouldYouRatherPrompts, tcgCards, pokemonVisuals, pokemonAudio, preloadImage);
+          hostWouldYouRatherPrompts, tcgCards, pokemonVisuals, pokemonAudio, preloadImage, preloadAsset);
     }
   }
 }

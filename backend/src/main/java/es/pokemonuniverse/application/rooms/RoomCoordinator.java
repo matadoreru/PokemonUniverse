@@ -1199,13 +1199,14 @@ public class RoomCoordinator {
         .build();
   }
 
-  /** Catálogos fijados más la precarga de imágenes ({@code preloadGameImage} de Node). */
+  /** Catálogos fijados y precargas: la imagen original ({@code preloadGameImage} de Node) y la transformada. */
   private GameContext.Builder contextBuilder(GameCatalogSnapshot catalog) {
     return GameContext.builder(catalog.pokemon(), random::next)
         .pokemonVisuals(catalog.visuals())
         .pokemonAudio(catalog.audio())
         .tcgCards(tcgCards)
-        .preloadImage(assets::preload);
+        .preloadImage(assets::preload)
+        .preloadAsset(assets::preload);
   }
 
   private List<SubjectiveCategory> hostCustomCategories(LiveRoom room) {

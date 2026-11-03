@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { GameContext, GamePlayer, Pokemon, PokemonCatalog, ShinyCandidateMode, ShinyOptionId, ShinyVoteState, ShinyVoteVisibility } from '../../index.js';
+import type { GameAssetResolution, GameContext, GamePlayer, Pokemon, PokemonCatalog, ShinyCandidateMode, ShinyOptionId, ShinyVoteState, ShinyVoteVisibility } from '../../index.js';
 import { defaultShinyVoteConfig, FAKE_SHINY_PALETTES, shinyPointsForOrder, shinyVoteGame } from '../../index.js';
 
 const pokemon: Pokemon[] = Array.from({ length: 8 }, (_, index) => ({
@@ -24,11 +24,11 @@ const players: GamePlayer[] = [
 
 function setup(rounds = 2, candidateMode: ShinyCandidateMode = 'SAME_POKEMON', optionCount = 4, generations = [1], voteVisibility: ShinyVoteVisibility = 'LIVE', random: () => number = () => 0) {
   let now = 1_000;
-  const preloadedImages: string[] = [];
-  const context: GameContext = { players: players.map((player) => ({ ...player })), pokemon: catalog, get now() { return now; }, random, roomCode: 'PIKA42', preloadImage: (source) => preloadedImages.push(source) };
+  const preloadedAssets: GameAssetResolution[] = [];
+  const context: GameContext = { players: players.map((player) => ({ ...player })), pokemon: catalog, get now() { return now; }, random, roomCode: 'PIKA42', preloadAsset: (asset) => preloadedAssets.push(asset) };
   let state = shinyVoteGame.createInitialState({ generations, roundSeconds: 20, rounds, candidateMode, optionCount, voteVisibility }, context);
   state = shinyVoteGame.start(state, context);
-  return { state, context, preloadedImages, setNow(value: number) { now = value; } };
+  return { state, context, preloadedAssets, setNow(value: number) { now = value; } };
 }
 
 function vote(state: ShinyVoteState, playerId: string, optionId: ShinyOptionId, context: GameContext) {
@@ -248,7 +248,8 @@ describe('public shiny voting', () => {
     expect(state.phase).toBe('ROUND_RESULTS');
     expect(state.lastRound?.missedPlayerIds).toEqual(['ana', 'marta']);
     expect(state.preparedOptions).toHaveLength(4);
-    expect(fixture.preloadedImages).toEqual(state.preparedOptions?.map((option) => option.sprite));
+    // Las cuatro primeras son las de la ronda 1, precargadas al empezar.
+    expect(fixture.preloadedAssets.slice(4).map((asset) => asset.source)).toEqual(state.preparedOptions?.map((option) => option.sprite));
 
     fixture.setNow(state.nextTransitionAt!);
     const preparedOptions = state.preparedOptions;
@@ -259,6 +260,29 @@ describe('public shiny voting', () => {
     expect(state.preparedOptions).toBeNull();
     expect(state.votes).toEqual({});
     expect(shinyVoteGame.getPublicState(state, fixture.context).correctOptionId).toBeNull();
+  });
+
+  it('preloads the exact resolution each option is served with', () => {
+    const fixture = setup(2, 'DIFFERENT_POKEMON', 3, [1], 'LIVE', () => 0.4);
+    const served = (state: ShinyVoteState) => state.options.map((option) => shinyVoteGame.resolveAsset!(
+      state,
+      { assetToken: state.assetToken, roundNumber: state.roundNumber, assetId: option.id },
+      fixture.context,
+    ));
+    expect(fixture.preloadedAssets).toHaveLength(3);
+    expect(fixture.preloadedAssets).toEqual(served(fixture.state));
+
+    fixture.setNow(fixture.state.roundEndsAt!);
+    let state = shinyVoteGame.handleTimeout(fixture.state, fixture.context);
+    expect(state.phase).toBe('ROUND_RESULTS');
+    expect(fixture.preloadedAssets).toHaveLength(6);
+    fixture.setNow(state.nextTransitionAt!);
+    state = shinyVoteGame.handleTimeout(state, fixture.context);
+    expect(state.roundNumber).toBe(2);
+    expect(fixture.preloadedAssets.slice(3)).toEqual(served(state));
+    expect(fixture.preloadedAssets.every((asset) => asset.transform !== 'ORIGINAL')).toBe(true);
+    expect(fixture.preloadedAssets.some((asset) => asset.transform === 'PALETTE_RECOLOR')).toBe(true);
+    expect(fixture.preloadedAssets.some((asset) => asset.transform === 'PIXEL_ART')).toBe(true);
   });
 
   it('finishes after the configured rounds with cumulative standings', () => {

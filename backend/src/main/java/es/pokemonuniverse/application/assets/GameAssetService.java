@@ -40,9 +40,20 @@ public class GameAssetService {
 
   /** Precarga asíncrona de una fuente original; los fallos solo se registran. */
   public void preload(String source) {
+    preload(AssetResolution.original(source));
+  }
+
+  /**
+   * Precarga asíncrona de una resolución con su transformación, en la misma clave que {@link #load}: la ronda la sirve
+   * desde la caché. Nunca bloquea a quien la pide; los fallos solo se registran y el tope de pendientes de la caché
+   * la acota (por encima, la precarga se descarta).
+   */
+  public void preload(AssetResolution asset) {
     Thread.ofVirtual().name("game-asset-preload").start(() -> {
       try {
-        load(AssetResolution.original(source));
+        load(asset);
+      } catch (ResourceCapacityException e) {
+        LOG.warn("Skipped game image preload: asset cache at capacity");
       } catch (RuntimeException e) {
         LOG.error("Failed to preload game image", e);
       }

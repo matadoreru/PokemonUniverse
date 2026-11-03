@@ -61,6 +61,8 @@ export interface GameContext {
   roomCode?: string;
   hostId?: string;
   preloadImage?: (source: string) => void;
+  /** Best-effort warm-up of the exact transformed asset `resolveAsset` will serve. Never affects game state. */
+  preloadAsset?: (asset: GameAssetResolution) => void;
   /** Server-owned visual sources. Local artwork paths never enter public game state. */
   pokemonVisuals?: PokemonVisualCatalog;
   /** PostgreSQL-backed cry references. Raw source URLs never enter game projections. */

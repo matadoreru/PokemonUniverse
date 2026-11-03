@@ -136,20 +136,35 @@ public final class ShinyVoteEngine
     return new ShinyGeneratedOptions(options, optionIds.get(correctIndex));
   }
 
-  /** {@code prepareNextRound}: nulo tras la última ronda; precarga cada sprite si el contexto lo trae. */
+  /** {@code optionResolution}: el shiny oficial en {@code PIXEL_ART} y los señuelos en {@code PALETTE_RECOLOR}. */
+  private static AssetResolution optionResolution(ShinyOptionState option) {
+    return option.recolor() != null
+        ? new AssetResolution(option.sprite(), AssetResolution.Transform.PALETTE_RECOLOR, null, null, option.recolor())
+        : new AssetResolution(option.sprite(), AssetResolution.Transform.PIXEL_ART, null, null, null);
+  }
+
+  /** Precarga lo mismo que servirá {@code resolveAsset}: efecto lateral sin estado ni azar. */
+  private static void preloadOptions(List<ShinyOptionState> options, GameContext context) {
+    var preload = context.preloadAsset();
+    if (preload == null) return;
+    for (var option : options) preload.accept(optionResolution(option));
+  }
+
+  /** {@code prepareNextRound}: nulo tras la última ronda; precarga cada opción si el contexto lo trae. */
   private static @Nullable ShinyGeneratedOptions prepareNextRound(ShinyVoteState state, GameContext context) {
     if (state.roundNumber() >= state.config().rounds()) return null;
     var generated = createOptions(state, context);
-    if (context.preloadImage() != null) {
-      for (var option : generated.options()) context.preloadImage().accept(option.sprite());
-    }
+    preloadOptions(generated.options(), context);
     return generated;
   }
 
   private static ShinyVoteState beginRound(ShinyVoteState state, GameContext context) {
-    var generated = state.preparedOptions() != null && state.preparedCorrectOptionId() != null
+    boolean prepared = state.preparedOptions() != null && state.preparedCorrectOptionId() != null;
+    var generated = prepared
         ? new ShinyGeneratedOptions(state.preparedOptions(), state.preparedCorrectOptionId())
         : createOptions(state, context);
+    // Sin opciones preparadas (la primera ronda) aún no se ha precargado nada.
+    if (!prepared) preloadOptions(generated.options(), context);
     return state.toBuilder()
         .phase(GamePhase.ROUND_ACTIVE)
         .roundNumber(state.roundNumber() + 1)
@@ -339,10 +354,7 @@ public final class ShinyVoteEngine
     return state.options().stream()
         .filter(candidate -> candidate.id().name().equals(request.assetId()))
         .findFirst()
-        .map(option -> option.recolor() != null
-            ? new AssetResolution(option.sprite(), AssetResolution.Transform.PALETTE_RECOLOR, null, null,
-                option.recolor())
-            : new AssetResolution(option.sprite(), AssetResolution.Transform.PIXEL_ART, null, null, null));
+        .map(ShinyVoteEngine::optionResolution);
   }
 
   @Override

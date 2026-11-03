@@ -3,6 +3,7 @@ package es.pokemonuniverse.application.assets;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.domain.game.engine.AssetResolution;
 import es.pokemonuniverse.domain.game.engine.AssetResolution.Recolor;
@@ -12,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Test;
@@ -78,5 +81,35 @@ class GameAssetServiceTest {
     assertSame(service.load(silhouette), service.load(silhouette));
     service.load(AssetResolution.original(SOURCE));
     assertEquals(2, calls.get());
+  }
+
+  /** La precarga calienta la clave de la resolución que se sirve, no la del original. */
+  @Test
+  void preloadUsesTheServedCacheKey() throws IOException, InterruptedException {
+    var calls = new AtomicInteger();
+    var fetched = new CountDownLatch(1);
+    var bytes = sprite();
+    var service = new GameAssetService(source -> {
+      calls.incrementAndGet();
+      fetched.countDown();
+      return new LoadedAsset(bytes, "image/png");
+    }, GameAssetService.defaultCache());
+    var recolored = new AssetResolution(SOURCE, Transform.PALETTE_RECOLOR, null, null, new Recolor(120, 1, 1, 1));
+    service.preload(recolored);
+    assertTrue(fetched.await(5, TimeUnit.SECONDS));
+    assertEquals(192, width(service.load(recolored)));
+    assertEquals(1, calls.get());
+  }
+
+  /** Una precarga que falla solo se registra: nunca llega a quien la pidió. */
+  @Test
+  void failedPreloadIsSwallowed() throws InterruptedException {
+    var fetched = new CountDownLatch(1);
+    var service = new GameAssetService(source -> {
+      fetched.countDown();
+      throw new IllegalStateException("boom");
+    }, GameAssetService.defaultCache());
+    service.preload(new AssetResolution(SOURCE, Transform.PIXEL_ART, null, null, null));
+    assertTrue(fetched.await(5, TimeUnit.SECONDS));
   }
 }

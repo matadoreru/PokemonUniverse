@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import es.pokemonuniverse.domain.game.engine.AssetRequest;
+import es.pokemonuniverse.domain.game.engine.AssetResolution;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
@@ -107,20 +109,29 @@ class ShinyVoteEngineTest {
     }
   }
 
+  /** Se precarga exactamente la resolución que servirá {@code resolveAsset}, también la de la primera ronda. */
   @Test
-  void preloadsThePreparedOptionsWhenTheRoundIsRevealed() {
-    var preloaded = new ArrayList<String>();
-    var context = context(1).toBuilder().preloadImage(preloaded::add).build();
+  void preloadsEveryOptionResolution() {
+    var preloaded = new ArrayList<AssetResolution>();
+    var context = context(1).toBuilder().preloadAsset(preloaded::add).build();
     var started = engine.start(
         engine.createInitialState(config(List.of(1), CandidateMode.DIFFERENT_POKEMON, 3), context), context);
-    assertTrue(preloaded.isEmpty());
+    assertEquals(served(started, context), preloaded);
     var revealed = engine.handleTimeout(started, context.withNow(21_000));
-    assertEquals(revealed.preparedOptions().stream().map(ShinyVoteTypes.ShinyOptionState::sprite).toList(),
-        preloaded);
-    // Tras la última ronda no se prepara nada.
-    var last = engine.handleTimeout(engine.handleTimeout(revealed, context.withNow(24_000)), context.withNow(44_000));
+    assertEquals(6, preloaded.size());
+    var second = engine.handleTimeout(revealed, context.withNow(24_000));
+    assertEquals(2, second.roundNumber());
+    assertEquals(served(second, context), preloaded.subList(3, 6));
+    assertTrue(preloaded.stream().noneMatch(asset -> asset.transform() == AssetResolution.Transform.ORIGINAL));
+    // Tras la última ronda no se prepara ni se precarga nada.
+    var last = engine.handleTimeout(second, context.withNow(44_000));
     assertEquals(null, last.preparedOptions());
-    assertEquals(3, preloaded.size());
+    assertEquals(6, preloaded.size());
+  }
+
+  private List<AssetResolution> served(ShinyVoteTypes.ShinyVoteState state, GameContext context) {
+    return state.options().stream().map(option -> engine.resolveAsset(state,
+        new AssetRequest(state.assetToken(), state.roundNumber(), option.id().name()), context).orElseThrow()).toList();
   }
 
   @Test
