@@ -49,6 +49,20 @@ describe('lobby information hierarchy', () => {
   });
 });
 
+describe('lobby how to play', () => {
+  it('offers «Cómo se juega» beside each game card that has steps, also for guests', () => {
+    const markup = renderToStaticMarkup(<MemoryRouter><Lobby
+      room={room} selfId="guest" onLeave={() => undefined} onReady={noOp} onStart={noOp}
+      onSelectGame={noOp} onConfig={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
+      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
+    /></MemoryRouter>);
+    expect(markup).toContain('aria-label="Cómo se juega a Pokédex Distance"');
+    expect(markup).toContain('aria-label="Cómo se juega a Shiny Quiz"');
+    expect(markup).toContain('class="lobby-game-cell"');
+    expect(markup).not.toMatch(/<button[^>]*disabled=""[^>]*aria-label="Cómo se juega/);
+  });
+});
+
 describe('lobby impostor parity', () => {
   const impostorManifest = { id: 'pokemon-impostor', name: 'Pokémon Impostor', icon: '🕵️', description: 'Encuentra al impostor.', minPlayers: 3, profileStats: { metrics: [] } };
   const members = ['host', 'p2', 'p3', 'p4'].map((id) => ({

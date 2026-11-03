@@ -1,9 +1,11 @@
 import { formatPendingReadyNames, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
-import { ArrowRight, Check, CheckCircle2, Copy, Gamepad2, Headphones, LockKeyhole, LogOut, MessageSquareWarning, Play, Search, Settings2, Shuffle, UsersRound, WifiOff } from 'lucide-react';
+import { ArrowRight, BookOpen, Check, CheckCircle2, Copy, Gamepad2, Headphones, LockKeyhole, LogOut, MessageSquareWarning, Play, Search, Settings2, Shuffle, UsersRound, WifiOff, X } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GameLoadingFallback } from '../components/LoadingFallback';
+import { gameHowToPlay } from '../games/how-to-play';
 import { clientGameRegistry } from '../games/registry';
+import { GameHowToPlayDialog } from './GameHowToPlayDialog';
 import { GameSelectionConfig } from './GameSelectionConfig';
 import { PlayerList } from './PlayerList';
 
@@ -51,6 +53,7 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
   const [starting, setStarting] = useState(false);
   const [gameQuery, setGameQuery] = useState('');
   const [activeTab, setActiveTab] = useState<LobbyTab>('games');
+  const [howToPlay, setHowToPlay] = useState<{ gameId: string; gameName: string } | null>(null);
 
   useEffect(() => {
     const preloadTimer = window.setTimeout(() => { void gameClient.preloadGameplay().catch(() => undefined); }, 600);
@@ -209,7 +212,7 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
                   const selected = game.id === room.selectedGameId;
                   const candidate = clientGameRegistry.get(game.id);
                   const preloadConfig = () => { void candidate.preloadConfig().catch(() => undefined); };
-                  return <button key={game.id} type="button" disabled={!canChangeGame} aria-pressed={selected} onClick={() => selectGame(game.id)} onPointerEnter={preloadConfig} onFocus={preloadConfig} className={`lobby-game-option ${selected ? 'lobby-game-option-selected' : ''}`}>
+                  const option = <button type="button" disabled={!canChangeGame} aria-pressed={selected} onClick={() => selectGame(game.id)} onPointerEnter={preloadConfig} onFocus={preloadConfig} className={`lobby-game-option ${selected ? 'lobby-game-option-selected' : ''}`}>
                     <span className="flex items-start justify-between gap-3">
                       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-ink/[.07] text-xl" aria-hidden="true">{game.icon}</span>
                       <span className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1.5">
@@ -222,10 +225,16 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
                       <strong className="block font-display text-lg leading-tight">{game.name}</strong>
                       <span className="mt-1.5 block text-sm font-bold leading-snug text-ink/65">{game.description}</span>
                     </span>
-                    <small className="mt-3 block text-xs font-extrabold text-ink/50">{game.minPlayers}{game.maxPlayers ? `–${game.maxPlayers}` : '+'} jugadores</small>
+                    <small className="mt-3 block text-xs font-extrabold tabular-nums text-ink/50">{game.minPlayers}{game.maxPlayers ? `–${game.maxPlayers}` : '+'} jugadores</small>
                   </button>;
+                  // El carrusel no cabe dentro de la tarjeta (es un <button>): «Cómo se juega» va debajo y funciona también en solo lectura.
+                  if (!gameHowToPlay[game.id]) return <div key={game.id} className="lobby-game-cell">{option}</div>;
+                  return <div key={game.id} className="lobby-game-cell">
+                    {option}
+                    <button type="button" className="btn-ghost min-h-11 w-full text-sm" aria-label={`Cómo se juega a ${game.name}`} onClick={() => setHowToPlay({ gameId: game.id, gameName: game.name })}><BookOpen size={17} className="text-aqua" /> Cómo se juega</button>
+                  </div>;
                 })}
-                {visibleGames.length === 0 && <div className="empty-state col-span-full !p-4"><Gamepad2 className="mx-auto mb-1 text-ink/45" size={22} /><p className="font-bold">No hay minijuegos que coincidan con “{gameQuery.trim()}”.</p></div>}
+                {visibleGames.length === 0 && <div className="empty-state col-span-full !p-4"><Gamepad2 className="mx-auto mb-1 text-ink/45" size={22} /><p className="font-bold">No hay minijuegos que coincidan con “{gameQuery.trim()}”.</p><p className="mt-1 text-sm font-bold">Busca por nombre o por lo que se hace en el juego, como «tipo» o «shiny».</p><button type="button" className="btn-ghost mt-3" onClick={() => setGameQuery('')}><X size={17} /> Borrar búsqueda</button></div>}
               </div>
               {!canChangeGame && <p id="game-permission-help" className="permission-help">Solo el host y los co-hosts pueden cambiar el minijuego.</p>}
             </section>
@@ -273,19 +282,21 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
         <aside className="card !p-4 lg:sticky lg:top-20">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div><span className="label !mb-0">Sala</span><h2 className="font-display text-xl font-bold">Jugadores</h2></div>
-            <span className="chip"><UsersRound className="mr-1.5" size={15} /> {connectedPlayers} / {room.maxPlayers}</span>
+            <span className="chip tabular-nums"><UsersRound className="mr-1.5" size={15} /> {connectedPlayers} / {room.maxPlayers}</span>
           </div>
           <PlayerList members={room.members} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(report)} onTransferHost={transferHost} onKick={kick} />
 
           <div className="mt-4 border-t border-ink/10 pt-4">
             <div className="mb-3"><span className="label !mb-0">{startReason ? 'Falta algo' : 'Todo listo'}</span><h2 className="font-display text-xl font-bold">Iniciar partida</h2></div>
+            {/* Errores de cualquier acción del lobby, junto a la acción principal (la columna es fija en escritorio). */}
+            {error && <div role="alert" className="status-error motion-enter-up mb-3 flex items-start justify-between gap-2"><span className="min-w-0 py-0.5">{error}</span><button type="button" className="icon-button -my-2 -mr-2 shrink-0" onClick={() => setError('')} aria-label="Cerrar aviso"><X size={18} /></button></div>}
             {self?.roomRole !== 'HOST' && <button type="button" className={`mb-2 w-full ${self?.ready ? 'btn-ghost border-leaf/40 text-leaf' : 'btn-secondary'}`} disabled={readyBusy || self?.presence !== 'CONNECTED'} aria-pressed={Boolean(self?.ready)} onClick={() => void toggleReady()}><CheckCircle2 size={18} /> {readyBusy ? 'Guardando…' : self?.ready ? 'Estoy listo' : 'Marcarme listo'}</button>}
             <button className="btn-primary w-full" disabled={Boolean(startReason) || starting} onClick={() => void start()} aria-describedby="start-help"><Play size={18} fill="currentColor" /> {starting ? 'Iniciando…' : 'Empezar partida'}</button>
             <p id="start-help" className={`mt-2 text-sm font-bold ${startReason ? 'text-berry' : 'text-leaf'}`}>{startReason ?? 'La sala está lista.'}</p>
           </div>
         </aside>
       </div>
-      {error && <p role="alert" className="fixed bottom-5 left-1/2 z-50 -translate-x-1/2 rounded-xl bg-berry px-5 py-3 font-bold text-white shadow-card">{error}</p>}
+      {howToPlay && <GameHowToPlayDialog gameId={howToPlay.gameId} gameName={howToPlay.gameName} open onClose={() => setHowToPlay(null)} />}
     </section>
   );
 }

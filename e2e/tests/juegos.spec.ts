@@ -309,6 +309,66 @@ test('lobby: rotación con Impostor omitido por paridad', async ({ browser }) =>
   }
 });
 
+test('lobby: cómo se juega', async ({ browser }) => {
+  const sala = await crearSalaConJugadores(browser, 2);
+  try {
+    const { jugadores } = sala;
+    // Un invitado no puede elegir juego, pero sí leer cómo se juega.
+    const page = sala.invitados[0]!.page;
+    const abrir = page.getByRole('button', { name: 'Cómo se juega a Type Duel' });
+    await expect(abrir).toBeEnabled();
+    // La rejilla del invitado: tarjetas atenuadas (solo lectura) y «Cómo se juega» activo debajo. Página completa desde arriba.
+    await capturarTamanos(page, 'lobby-como-se-juega-rejilla', { completa: true });
+    await abrir.click();
+    const dialogo = page.getByRole('dialog', { name: 'Type Duel' });
+    await expect(dialogo).toBeVisible();
+    await expect(dialogo.getByText('Paso 1 de 3')).toBeVisible();
+    const siguiente = dialogo.getByRole('button', { name: 'Siguiente' });
+    await expect(siguiente).toBeFocused();
+    // ← → sobre la región y el botón «Siguiente» avanzan; sin reproducción automática.
+    await page.keyboard.press('ArrowRight');
+    await expect(dialogo.getByText('Paso 2 de 3')).toBeVisible();
+    await expect(dialogo.getByText('Paso 1 de 3')).toBeHidden();
+    await siguiente.click();
+    await expect(dialogo.getByText('Paso 3 de 3')).toBeVisible();
+    await expect(dialogo.getByText('Paso 2 de 3')).toBeHidden();
+    await expect(dialogo.getByText('El primero que acierte gana 5 puntos')).toBeVisible();
+    // Abrir desplaza la página hasta la tarjeta y la cabecera fija pisaría el lobby de fondo: se captura desde arriba.
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(page, 'lobby-como-se-juega', { sigue: dialogo, claro: true });
+    await page.keyboard.press('Escape');
+    await expect(dialogo).toBeHidden();
+    await expect(abrir).toBeFocused();
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+test('lobby: rotación', async ({ browser }) => {
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, jugadores } = sala;
+    const page = host.page;
+    await page.getByRole('tab', { name: 'Modo y sesión' }).click();
+    const aleatorio = page.getByRole('button', { name: /^Aleatorio/ });
+    await aleatorio.click();
+    await expect(aleatorio).toHaveAttribute('aria-pressed', 'true');
+    // Búsqueda sin resultados: estado vacío con acción para volver a la lista.
+    const buscar = page.getByLabel('Buscar en la rotación');
+    await buscar.fill('zzzz');
+    await expect(page.getByText('Ningún minijuego coincide con “zzzz”.')).toBeVisible();
+    await page.getByRole('button', { name: 'Borrar búsqueda' }).click();
+    await expect(buscar).toHaveValue('');
+    await expect(page.getByRole('region', { name: 'Juegos de la rotación' }).locator('article').first()).toBeVisible();
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(page, 'lobby-rotacion', { claro: true, completa: true });
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
 test('higher-lower: revelado y clasificación', async ({ browser }) => {
   test.setTimeout(120_000);
   const sala = await crearSalaConJugadores(browser, 3);
