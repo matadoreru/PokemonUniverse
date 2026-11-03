@@ -12,6 +12,12 @@ export function higherLowerOutcomeLine(outcome: HigherLowerOutcome): string {
   return outcome.speedBonus ? `${streak} · +${outcome.speedBonus} rapidez` : streak;
 }
 
+/** Resultado de un jugador en texto (junto al ✓/✗ y el color): «acierto», «Fallo» o «Sin respuesta». */
+export function higherLowerOutcomeStatus(outcome: HigherLowerOutcome | undefined): 'acierto' | 'Fallo' | 'Sin respuesta' {
+  if (outcome?.correct) return 'acierto';
+  return outcome?.choice ? 'Fallo' : 'Sin respuesta';
+}
+
 const STREAK_MILESTONES: readonly number[] = [3, 5, 10];
 
 /** Hito de racha propio (3, 5 o 10 aciertos seguidos) para el cut-in, o `null` si no toca. */

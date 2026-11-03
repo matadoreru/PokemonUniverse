@@ -22,7 +22,7 @@ export function HigherLowerBars({ previous, current }: HigherLowerBarsProps) {
     {rows.map(({ side, label, name, value, scale }) => <div key={side}>
       <div className="mb-1 flex items-center gap-2">
         <span className="min-w-0 flex-1 truncate font-extrabold" title={`${label}: ${name}`}><span className="text-sm text-ink/70">{label} · </span>{name}</span>
-        {side === 'current' && <span className={`chip tabular-nums ${bars.leader === 'tie' ? '!bg-electric/20' : bars.leader === 'current' ? '!bg-leaf/15' : ''}`} aria-label={`Diferencia ${bars.diffLabel}`}>{bars.diffLabel}</span>}
+        {side === 'current' && <span className={`chip tabular-nums ${bars.leader === 'tie' ? '!bg-electric/20' : bars.leader === 'current' ? '!bg-leaf/15' : ''}`}><span className="sr-only">Diferencia </span>{bars.diffLabel}</span>}
         <strong className="font-display text-xl tabular-nums">{value}</strong>
       </div>
       <div className="timer-track h-3 overflow-hidden rounded-full">

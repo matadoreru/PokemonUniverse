@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { HigherLowerOutcome } from '@pokemon-universe/shared/public';
-import { higherLowerBars, higherLowerChoiceLabels, higherLowerOutcomeLine, higherLowerRevealCountdown, higherLowerStatsLine, higherLowerStreakMilestone, higherLowerVisibilityLabels } from './higher-lower-labels';
+import { higherLowerBars, higherLowerChoiceLabels, higherLowerOutcomeLine, higherLowerOutcomeStatus, higherLowerRevealCountdown, higherLowerStatsLine, higherLowerStreakMilestone, higherLowerVisibilityLabels } from './higher-lower-labels';
 
 describe('higherLowerChoiceLabels', () => {
   it('traduce las tres respuestas al español', () => {
@@ -73,5 +73,14 @@ describe('higherLowerStreakMilestone', () => {
   it('no celebra otras rachas ni un fallo', () => {
     expect(higherLowerStreakMilestone(outcome(4, 1, 0))).toBeNull();
     expect(higherLowerStreakMilestone(outcome(5, 2, 0, false))).toBeNull();
+  });
+});
+
+describe('higherLowerOutcomeStatus', () => {
+  it('nombra el resultado con texto, no solo con color o glifo', () => {
+    expect(higherLowerOutcomeStatus(outcome(1, 0, 0))).toBe('acierto');
+    expect(higherLowerOutcomeStatus(outcome(0, 0, 0, false))).toBe('Fallo');
+    expect(higherLowerOutcomeStatus({ ...outcome(0, 0, 0, false), choice: null })).toBe('Sin respuesta');
+    expect(higherLowerOutcomeStatus(undefined)).toBe('Sin respuesta');
   });
 });

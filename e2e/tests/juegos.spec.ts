@@ -522,6 +522,7 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     // Las barras solo existen al revelar: antes no hay ningún valor del actual en la página.
     const barras = (page: Page) => page.getByTestId('higher-lower-bars');
     await expect(barras(host.page)).toHaveCount(0);
+    await expect(host.page.locator('article.card').nth(1).getByText('???', { exact: true })).toBeVisible();
     await capturarTamanos(host.page, 'juego-higher-lower', { sigue: mayor(host.page), claro: true });
 
     // Todos responden: la ronda se revela en cuanto contesta el último y el revelado dura 3 s. Para que quepan los
@@ -532,11 +533,37 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
       { page: movil, w: SIZES[2].w, h: SIZES[2].h },
     ];
     for (const { page, w, h } of capturas) await page.setViewportSize({ width: w, height: h });
-    for (const { page } of jugadores) await mayor(page).click({ timeout: 20_000 });
+    // Cada jugador elige una respuesta distinta: exactamente uno acierta. Un observador anota si a alguien le sale el
+    // «+N» (`ScorePop`), que solo dura 400 ms.
+    for (const { page } of jugadores) {
+      await page.evaluate(() => {
+        const w = window as unknown as { scorePopVisto?: boolean };
+        w.scorePopVisto = false;
+        new MutationObserver(() => { if (document.querySelector('.score-pop')) w.scorePopVisto = true; }).observe(document.body, { childList: true, subtree: true });
+      });
+    }
+    const elecciones = ['Mayor', 'Igual', 'Menor'];
+    for (const [i, { page }] of jugadores.entries()) await page.getByRole('button', { name: elecciones[i]!, exact: true }).click({ timeout: 20_000 });
     for (const { page } of capturas) await page.evaluate(() => window.scrollTo(0, 0));
     const revelado = (page: Page) => page.getByText(/^Respuesta: (Mayor|Igual|Menor)$/);
     for (const { page } of capturas) await expect(barras(page)).toBeVisible({ timeout: 10_000 });
     await expect(host.page.getByText(/^Clasificación en \ds…$/)).toBeVisible();
+    // Movimiento antes de capturar: con la reducción no anima nada; con movimiento, el relleno de la barra crece y la
+    // racha del que acierta salta (solo transform).
+    const barra = barras(host.page).locator('[data-bar="current"]');
+    const racha = host.page.locator('[data-streak].motion-bump');
+    await expect(racha, 'solo salta la racha del que acierta').toHaveCount(1);
+    expect(await animacionDe(barra), 'barra con reducción de movimiento').toBe('none');
+    expect(await animacionDe(racha), 'racha con reducción de movimiento').toBe('none');
+    await conMovimiento(host.page);
+    expect(await animacionDe(barra), 'barra con movimiento').toBe('motion-grow-x');
+    expect(await animacionDe(racha), 'racha con movimiento').toBe('motion-bump');
+    await host.page.emulateMedia({ reducedMotion: 'reduce' });
+    // Resultado con texto, no solo con color o glifo: un acierto (con su racha) y dos fallos.
+    await expect(host.page.locator('[data-outcome="hit"]')).toHaveCount(1);
+    await expect(host.page.locator('[data-outcome="hit"]')).toHaveText(/^✓ \+\d+ acierto$/);
+    await expect(host.page.locator('[data-outcome="miss"]')).toHaveText(['✗ Fallo', '✗ Fallo']);
+    await expect(host.page.locator('p', { hasText: /Racha 1( · \+\d+ rapidez)?$/ })).toHaveCount(1);
     const nombre = 'juego-higher-lower-revelacion';
     const medidas = await Promise.all(capturas.map(async ({ page }) => {
       const oscuro = await layoutProblems(page, nombre, true);
@@ -548,12 +575,8 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     }));
     for (const { page } of capturas) await expect(revelado(page), 'el revelado sigue en pantalla tras la captura').toBeVisible({ timeout: 500 });
     for (const { id, problems } of medidas.flat()) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
-    // Barras: con la reducción no animan; con movimiento, el relleno crece (solo transform).
-    const barra = barras(host.page).locator('[data-bar="current"]');
-    expect(await animacionDe(barra), 'barra con reducción de movimiento').toBe('none');
-    await conMovimiento(host.page);
-    expect(await animacionDe(barra), 'barra con movimiento').toBe('motion-grow-x');
-    await host.page.emulateMedia({ reducedMotion: 'reduce' });
+    const vistos = await Promise.all(jugadores.map(({ page }) => page.evaluate(() => (window as unknown as { scorePopVisto?: boolean }).scorePopVisto === true)));
+    expect(vistos.filter(Boolean), 'el «+N» sale solo a quien acierta').toHaveLength(1);
     for (const { page } of capturas) await page.setViewportSize({ width: 1280, height: 720 });
 
     const clasificacion = host.page.getByRole('heading', { name: 'Clasificación Higher or Lower' });

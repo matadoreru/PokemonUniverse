@@ -11,6 +11,8 @@ describe('HigherLowerBars', () => {
     expect(html).toMatch(/motion-grow-x bg-ink\/30/);
     expect(html).toMatch(/motion-grow-x bg-leaf/);
     expect(html).toContain('>+40<');
+    expect(html).toContain('<span class="sr-only">Diferencia </span>');
+    expect(html).not.toContain('aria-label');
   });
   it('paints both bars electric on a tie and never divides by zero', () => {
     const html = renderToStaticMarkup(<HigherLowerBars previous={{ name: 'Pidgey', value: 0 }} current={{ name: 'Onix', value: 0 }} />);
