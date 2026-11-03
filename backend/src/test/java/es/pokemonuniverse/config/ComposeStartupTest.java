@@ -169,6 +169,9 @@ class ComposeStartupTest {
     env.put("POKEAPI_BASE_URL", pokeapi.urls().base());
     env.put("POKEAPI_SPRITE_BASE_URL", pokeapi.spriteBase());
     env.put("TCGDEX_BASE_URL", tcgdex.urls().base());
+    // Las claves de compose llegan por la fuente «compose», pero la del entorno real del SO sigue activa por debajo
+    // (deduceEnvironment(false) solo desactiva la deducción de entornos): una variable exportada en el shell que lanza
+    // Gradle y que compose no define (p. ej. RATE_LIMIT_DISABLED) también llega al contexto.
     var context = ApplicationContext.builder()
         .deduceEnvironment(false)
         .environments(environments)
