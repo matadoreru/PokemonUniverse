@@ -88,9 +88,11 @@ consola y que a 1280×720 no hay scroll horizontal (`measureLayout` se anota, ve
   `e2e/` con `npx playwright test juegos -g …`: `npm run` lee `-g` como `--global`). Estado de la pasada estricta
   (2026-11-03, Fase 2 de minijuegos): los 6 minijuegos de la fase (`pokedex-distance`, `shiny-vote`,
   `pokemon-impostor`, `higher-lower`, `type-duel`, `learnset-guess`) y sus tests propios pasan limpios. De los otros 22,
-  6 fallan solo por texto de 10–11 px de su propia pantalla (`pokeddle-race`, `whos-that-pokemon`,
-  `pokedex-entry-guess`, `type-chain`, `guess-from-stats`, `who-is-who-pokemon`) y `most-likely-to` lo tiene solo a
-  390; ninguno tiene solapes ni recortes, y la cabecera fija ya no tapa nada (el buscador enfoca sin desplazar).
+  según las anotaciones `encaje` de la suite completa (no una pasada estricta de los 22), 6 fallarían a 1280×720 solo
+  por texto de 10–11 px de su propia pantalla (`pokeddle-race`, `whos-that-pokemon`, `pokedex-entry-guess`,
+  `type-chain`, `guess-from-stats`, `who-is-who-pokemon`) y `most-likely-to` lo tiene solo a 390. Ninguno anota
+  solapes ni recortes (a 1280×720; a los tres tamaños en los juegos con capturas), y la cabecera fija ya no tapa nada
+  (el buscador enfoca sin desplazar).
   Además, 9 juegos no muestran el título del manifest en pantalla (anotación `pantalla`): los 6 de la fase usan un
   título propio. Es deuda de UI de esos juegos, apuntada en `docs/visual-review.md` («Seguimientos»).
 - **Detalle por juego**: el spec deja anotaciones (recurso comprobado, título visible y encaje a

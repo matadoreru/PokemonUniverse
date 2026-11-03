@@ -767,6 +767,47 @@ test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
   }
 });
 
+test('pokedex-distance: acierto exacto con cut-in', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const sala = await crearSalaConJugadores(browser, 2);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const [invitado] = invitados as [Jugador];
+    await seleccionarJuego(host.page, 'Pokédex Distance');
+    // Reloj controlado en el host: la banda dura 1,6 s y se detiene el tiempo mientras se captura.
+    await host.page.clock.install();
+    await iniciarPartida(host.page, [invitado.page]);
+    await saltarIntro(jugadores.map((j) => j.page));
+
+    // El objetivo es público («Objetivo #N»): el host elige el Pokémon de ese número (forma por defecto, de la BD local).
+    const objetivo = host.page.locator('.label', { hasText: 'Objetivo' }).locator('xpath=following-sibling::div[1]');
+    await expect(host.page.getByRole('textbox', { name: 'Buscar Pokémon' })).toBeVisible({ timeout: 20_000 });
+    const numero = Number((await objetivo.innerText()).replace(/\D/g, ''));
+    expect(numero, 'número del objetivo').toBeGreaterThan(0);
+    const exacto = psql(`SELECT name FROM "Pokemon" WHERE "nationalDexNumber" = :'n'::int AND "isDefault" ORDER BY id LIMIT 1;`, { n: String(numero) });
+    expect(exacto, `Pokémon #${numero} en la BD`).not.toBe('');
+    await elegirPokemon(host.page, exacto);
+
+    const banda = host.page.locator('.reveal-cut-in[role="status"]');
+    await expect(banda).toContainText('¡Acierto exacto!', { timeout: 5_000 });
+    // Se detiene un poco por delante del reloj de la página (detenerlo en el pasado falla) y se captura a los tres
+    // tamaños y en claro con la banda quieta.
+    await host.page.clock.pauseAt(await host.page.evaluate(() => Date.now() + 100));
+    try {
+      await expect(banda).toContainText(`#${String(numero).padStart(3, '0')}`);
+      await host.page.evaluate(() => window.scrollTo(0, 0));
+      await capturarTamanos(host.page, 'juego-pokedex-distance-acierto-exacto', { sigue: banda, claro: true });
+    } finally {
+      await host.page.clock.resume();
+    }
+    // Sin el reloj detenido, la banda se va sola.
+    await expect(banda).toBeHidden({ timeout: 5_000 });
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
 test('pokedex-distance: buscador sin coincidencias', async ({ browser }) => {
   test.setTimeout(120_000);
   const sala = await crearSalaConJugadores(browser, 2);

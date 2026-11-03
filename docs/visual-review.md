@@ -122,6 +122,8 @@ Resueltos en la Fase 2 de minijuegos (las notas de arriba no se han vuelto a pun
   ciclo y solo cambian `transform`/`opacity`; la regla global de `prefers-reduced-motion` de `styles.css` los apaga.
 - Entrar en partida (g, f): puntos del carrusel (`HowToPlayCarousel`) con `scale-x` en vez de `transition-[width]` y
   puntos y flechas de 44 px.
-- Juego (b): `ServerTimer`, `Avatar` `xs` y las insignias de Shiny, Pokédle Race y Learnset ya no bajan de 12 px.
-  Siguen a `text-[9px]`–`text-[11px]` partes de juegos fuera de la Fase 2 (Pokédle, Who's That, Guess from Stats,
-  Pokédex Entry, Type Chain, Team/Bluff Auction, Most Likely To, One of Us Is Fake, Quién es Quién).
+- Juego (b): `ServerTimer`, `Avatar` `xs`, las cartas de Shiny, la insignia de jugador de Pokédle Race
+  (`PokeddleRaceGame.tsx:56`) y las insignias de los resultados de Learnset ya no bajan de 12 px.
+  Siguen a `text-[9px]`–`text-[11px]` partes de juegos fuera de la Fase 2: Pokédle Race (cabecera, tableros y
+  marcador), el tablero de Pokédle, Who's That, Guess from Stats, Pokédex Entry, Type Chain, Team/Bluff Auction,
+  Most Likely To, One of Us Is Fake y Quién es Quién.
