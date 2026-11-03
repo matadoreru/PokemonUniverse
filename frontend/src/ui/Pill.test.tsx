@@ -8,12 +8,25 @@ afterEach(() => setUiSoundSink(null));
 
 describe('Pill', () => {
   it('usa el tono y el tamaño', () => {
-    const html = renderToStaticMarkup(createElement(Pill, { variant: 'yellow', size: 'main' }, 'Jugar'));
-    expect(html).toContain('yellow');
-    expect(html).toContain('main');
-    expect(html).toContain('Jugar');
-    const base = renderToStaticMarkup(createElement(Pill, null, 'Ok'));
-    expect(base).toContain('blue');
+    const classes = (html: string) => (/class="([^"]*)"/.exec(html)?.[1] ?? '').split(' ').map((c) => c.replace(/^_/, '').replace(/_[0-9a-f]+$/, ''));
+    const main = classes(renderToStaticMarkup(createElement(Pill, { variant: 'yellow', size: 'main' }, 'Jugar')));
+    expect(main).toEqual(expect.arrayContaining(['pill', 'yellow', 'main']));
+    const base = classes(renderToStaticMarkup(createElement(Pill, null, 'Ok')));
+    expect(base).toContain('pill');
+    expect(base).not.toContain('yellow');
+    expect(base).not.toContain('main');
+  });
+
+  it('la roja solo existe en tamaño principal (regla de tipos)', () => {
+    // @ts-expect-error roja sin tamaño main
+    createElement(Pill, { variant: 'red' }, 'x');
+    // @ts-expect-error roja pequeña
+    createElement(Pill, { variant: 'red', size: 'small' }, 'x');
+    // @ts-expect-error main no admite azul
+    createElement(Pill, { variant: 'blue', size: 'main' }, 'x');
+    createElement(Pill, { variant: 'red', size: 'main' }, 'x');
+    createElement(Pill, { variant: 'yellow', size: 'main' }, 'x');
+    expect(true).toBe(true);
   });
 
   it('deshabilitada y cargando no responden', () => {

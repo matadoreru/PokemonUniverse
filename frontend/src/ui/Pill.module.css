@@ -130,6 +130,11 @@
   width: 100%;
 }
 
+/* Cargando: la atenuación la lleva solo la etiqueta; los puntos se ven enteros. */
+.loading:disabled {
+  opacity: 1;
+}
+
 /* Insignia de número en la esquina. */
 .badge {
   position: absolute;

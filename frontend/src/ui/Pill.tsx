@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import type { ButtonHTMLAttributes, MouseEvent } from 'react';
+import type { ButtonHTMLAttributes, MouseEvent, ReactNode } from 'react';
 import { uiSound } from '../audio/uiSound';
 import { cx } from './cx';
 import type { ForcedState } from './cx';
@@ -9,9 +9,8 @@ import s from './Pill.module.css';
 export type PillVariant = 'blue' | 'yellow' | 'red' | 'danger' | 'ghost' | 'cream';
 export type PillSize = 'std' | 'small' | 'main' | 'round';
 
-export interface PillProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: PillVariant;
-  size?: PillSize;
+interface PillBase extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
+  children?: ReactNode;
   icon?: LucideIcon;
   loading?: boolean;
   block?: boolean;
@@ -21,8 +20,16 @@ export interface PillProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   forced?: ForcedState;
 }
 
+/** Regla del sistema: la roja solo con texto de 24 px o más (tamaño `main`), y `main` solo para roja o amarilla. */
+export type PillProps = PillBase &
+  (
+    | { variant: 'red'; size: 'main' }
+    | { variant: 'yellow'; size?: PillSize }
+    | { variant?: 'blue' | 'danger' | 'ghost' | 'cream'; size?: Exclude<PillSize, 'main'> }
+  );
+
 /** Manejador de pulsación: no existe si la píldora está deshabilitada o cargando; si no, suena y llama a onClick. */
-export function pillClickHandler(props: Pick<PillProps, 'variant' | 'disabled' | 'loading' | 'onClick'>) {
+export function pillClickHandler(props: Pick<PillBase, 'disabled' | 'loading' | 'onClick'> & { variant?: PillVariant }) {
   if (props.disabled || props.loading) return undefined;
   const { variant = 'blue', onClick } = props;
   return (e: MouseEvent<HTMLButtonElement>) => {
