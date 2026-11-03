@@ -1,0 +1,15 @@
+.plate {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-4);
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-hud);
+  background: var(--navy);
+  color: var(--white);
+  box-shadow: var(--sh-hard-4);
+}
+.right {
+  flex-direction: row-reverse;
+  text-align: right;
+}

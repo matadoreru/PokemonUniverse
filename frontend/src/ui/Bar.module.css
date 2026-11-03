@@ -1,0 +1,45 @@
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  width: 100%;
+}
+.bar {
+  position: relative;
+  display: block;
+  flex: 1 1 48px;
+  min-width: 24px;
+  height: 12px;
+  border-radius: var(--r-badge);
+  border: var(--ol-2) solid var(--navy);
+  background: var(--navy-2);
+  overflow: hidden;
+}
+.fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform: scaleX(var(--ratio, 0));
+  transition: transform var(--t-reveal) var(--ease);
+}
+.yellow {
+  background: linear-gradient(180deg, var(--yellow-l), var(--yellow));
+}
+.ok {
+  background: var(--ok);
+}
+.bad {
+  background: var(--bad);
+}
+.info {
+  background: var(--info);
+}
+.player {
+  background: var(--player, var(--yellow));
+}
+.val {
+  font: 800 var(--fs-13) / 1 var(--font-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

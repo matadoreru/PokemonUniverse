@@ -1,0 +1,63 @@
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: 44px;
+  padding: var(--sp-2) var(--sp-3) var(--sp-2) calc(var(--sp-3) + 6px);
+  border: var(--ol-2-5) solid var(--navy);
+  border-radius: var(--r-franja);
+  background: var(--cream);
+  color: var(--navy);
+  overflow: hidden;
+}
+.band {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--player);
+}
+.self {
+  background: var(--yellow);
+}
+.off {
+  opacity: 0.6;
+}
+.rank {
+  min-width: 2ch;
+  font: 800 var(--fs-18) / 1 var(--font-display);
+  text-align: center;
+}
+.avatar {
+  flex: none;
+  display: inline-flex;
+}
+.text {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.name {
+  font: 800 var(--fs-15) / 1.2 var(--font-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.meta {
+  display: flex;
+  gap: var(--sp-2);
+  font: 700 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+.offLabel {
+  font-weight: 800;
+}
+.value {
+  flex: none;
+  font: 800 var(--fs-18) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+}

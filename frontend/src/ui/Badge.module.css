@@ -1,0 +1,65 @@
+.badge,
+.type,
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: 22px;
+  padding: 0 var(--sp-2);
+  border: var(--ol-2) solid var(--navy);
+  font: 800 var(--fs-13) / 1 var(--font-text);
+  white-space: nowrap;
+}
+.badge {
+  border-radius: var(--r-badge);
+  font-variant-numeric: tabular-nums;
+}
+.yellow {
+  background: var(--yellow);
+  color: var(--navy);
+}
+.navy {
+  background: var(--navy);
+  color: var(--white);
+}
+.cream {
+  background: var(--cream);
+  color: var(--navy);
+}
+
+.type {
+  min-height: 26px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-pill);
+  background: var(--type-bg);
+  color: var(--type-fg);
+  font-family: var(--font-display);
+}
+.sm {
+  min-height: 22px;
+  padding: 0 var(--sp-2);
+}
+/* Tinta blanca: anillo blanco de 2 px para separarla del fondo oscuro. */
+.ring {
+  box-shadow: 0 0 0 var(--ol-2) var(--white);
+}
+
+.chip {
+  border-radius: var(--r-pill);
+  color: var(--navy);
+}
+.ok {
+  background: var(--ok);
+}
+.warn {
+  background: var(--warn);
+}
+.bad {
+  background: var(--bad);
+}
+.info {
+  background: var(--info);
+}
+.neutral {
+  background: var(--cream-2);
+}

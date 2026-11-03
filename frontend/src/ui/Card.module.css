@@ -1,0 +1,104 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 44px;
+  padding: var(--sp-3);
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--cream);
+  color: var(--navy);
+  font-family: var(--font-text);
+  text-align: center;
+  box-shadow: var(--sh-hard-4);
+}
+.button {
+  cursor: pointer;
+  transition: transform var(--t-press) var(--ease);
+}
+.button:hover {
+  transform: translateY(-1px);
+}
+.button:focus-visible {
+  outline: var(--ol-3) solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.button:active {
+  transform: translateY(4px);
+}
+.selected {
+  background: var(--yellow-l);
+  border-color: var(--yellow-d);
+  outline: var(--ol-3) solid var(--navy);
+  outline-offset: 1px;
+}
+.correct {
+  background: var(--cream);
+  border-color: var(--ok);
+}
+.wrong {
+  background: var(--cream);
+  border-color: var(--bad);
+}
+.revealing {
+  animation: reveal var(--t-reveal) var(--ease) both;
+}
+@keyframes reveal {
+  from {
+    transform: rotateY(90deg);
+  }
+  to {
+    transform: rotateY(0deg);
+  }
+}
+.art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  border-radius: var(--r-badge);
+  background: var(--sky-2);
+}
+.img {
+  max-width: 100%;
+  max-height: 100%;
+  image-rendering: pixelated;
+}
+.placeholder {
+  font: 800 var(--fs-34) / 1 var(--font-display);
+  color: var(--ink-2);
+}
+.name {
+  font: 800 var(--fs-15) / 1.2 var(--font-display);
+}
+.num {
+  font: 700 var(--fs-13) / 1 var(--font-text);
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.types {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-1);
+}
+.verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+.okText {
+  color: var(--navy);
+}
+.badText {
+  color: var(--red-text);
+}
+@media (prefers-reduced-motion: reduce) {
+  .revealing {
+    animation: none;
+  }
+}
