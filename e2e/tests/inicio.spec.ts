@@ -31,27 +31,12 @@ test('ignora un tema claro guardado', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test('botón de sonido apagado por defecto que se recuerda al recargar', async ({ page }) => {
-  const errors = collectErrors(page);
-  await page.goto('/');
-  const activar = page.getByRole('button', { name: 'Activar sonido' });
-  await expect(activar).toHaveAttribute('aria-pressed', 'false');
-
-  await activar.click();
-  const silenciar = page.getByRole('button', { name: 'Silenciar sonido' });
-  await expect(silenciar).toHaveAttribute('aria-pressed', 'true');
-
-  await page.reload();
-  await expect(page.getByRole('button', { name: 'Silenciar sonido' })).toHaveAttribute('aria-pressed', 'true');
-  expect(errors).toEqual([]);
-});
-
 for (const { w, h } of SIZES) {
   test(`cabecera con el botón de sonido a ${w}×${h}`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: h });
     // Con sesión la cabecera lleva también el perfil y «Cerrar sesión»: es la fila más llena.
     await loginAsGuest(page, uniqueName('Sonido'));
-    await expect(page.getByRole('button', { name: 'Activar sonido' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Ajustes de sonido' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Cerrar sesión' })).toBeVisible();
     const { id, problems } = await layoutProblems(page, 'cabecera-sonido', true);
     expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
