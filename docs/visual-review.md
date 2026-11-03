@@ -88,6 +88,12 @@ la app).
 
 ## Seguimientos
 
+**Línea base Arcade DS F0 (2026-11-03).** Tokens del sistema Arcade DS, tema único azul noche con escena de Poké
+Balls, Baloo 2 y Nunito autoalojadas y capas por token
+(`docs/superpowers/specs/2026-11-03-rediseno-arcade-ds-design.md`). Ninguna pantalla se ha rediseñado todavía, así
+que las notas de abajo no se han vuelto a puntuar; cada pantalla se puntúa con la rúbrica nueva en su fase (F3–F9).
+Capturas de `inicio`, `acceso`, `sala` y `contenido-y-admin`, y de Distance, Shiny y Type Duel, regeneradas en verde.
+
 Pendientes de la línea base (ninguna pantalla llega a 19; no son cambios de esta rama).
 
 Notas actuales (a Jerarquía, b Legibilidad, c Componentes, d Relieve/color, e Encaje, f Interacción, g Movimiento, h Estados):
