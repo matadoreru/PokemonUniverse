@@ -1,6 +1,6 @@
 import type { ImpostorVoteResult } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
-import { clampImpostorClue, impostorClueLength, impostorFinishText, impostorVoteHeadline, impostorVoteTargetLabel } from './pokemon-impostor-texts';
+import { clampImpostorClue, impostorClueLength, impostorCluePhaseTitle, impostorFinishText, impostorVoteHeadline, impostorVoteTargetLabel } from './pokemon-impostor-texts';
 
 const nameOf = (id: string) => ({ p1: 'Ana', p2: 'Bruno' } as Record<string, string>)[id] ?? id;
 function result(overrides: Partial<ImpostorVoteResult>): ImpostorVoteResult {
@@ -73,5 +73,14 @@ describe('impostorClueLength', () => {
   it('counts code points of the trimmed, NFC-normalized clue', () => {
     expect(impostorClueLength('  abc  ')).toBe(3);
     expect(impostorClueLength('E\u0301\u{1F525}')).toBe(2);
+  });
+});
+
+describe('impostorCluePhaseTitle', () => {
+  it('names whose turn it is', () => {
+    expect(impostorCluePhaseTitle('Ana')).toBe('Turno de Ana');
+  });
+  it('does not announce a turn when nobody is connected to give clues', () => {
+    expect(impostorCluePhaseTitle(null)).toBe('Nadie conectado para dar pistas');
   });
 });

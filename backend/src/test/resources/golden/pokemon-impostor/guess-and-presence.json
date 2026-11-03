@@ -949,7 +949,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "CLUE_PHASE",
-            "nextDeadline": null,
+            "nextDeadline": 126000,
             "actionEpoch": "[\"CLUE_PHASE\",1,6000,null,0,null,0,null]",
             "spectatorIds": []
           },
@@ -990,7 +990,7 @@
             ],
             "votingRound": 0,
             "roundStartedAt": 6000,
-            "roundEndsAt": null,
+            "roundEndsAt": 126000,
             "nextTransitionAt": null,
             "lastVoteResult": null,
             "eliminationReveal": null,
@@ -1096,7 +1096,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "CLUE_PHASE",
-            "nextDeadline": null,
+            "nextDeadline": 126000,
             "actionEpoch": "[\"CLUE_PHASE\",1,6000,null,0,null,0,null]",
             "spectatorIds": []
           },
@@ -1137,7 +1137,7 @@
             ],
             "votingRound": 0,
             "roundStartedAt": 6000,
-            "roundEndsAt": null,
+            "roundEndsAt": 126000,
             "nextTransitionAt": null,
             "lastVoteResult": null,
             "eliminationReveal": null,
@@ -1243,7 +1243,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "CLUE_PHASE",
-            "nextDeadline": null,
+            "nextDeadline": 126000,
             "actionEpoch": "[\"CLUE_PHASE\",1,6000,null,0,null,0,null]",
             "spectatorIds": []
           },
@@ -1284,7 +1284,7 @@
             ],
             "votingRound": 0,
             "roundStartedAt": 6000,
-            "roundEndsAt": null,
+            "roundEndsAt": 126000,
             "nextTransitionAt": null,
             "lastVoteResult": null,
             "eliminationReveal": null,

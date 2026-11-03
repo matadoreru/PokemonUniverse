@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { PokemonSelector } from './PokemonSelector';
-import { clampImpostorClue, impostorClueLength, impostorVoteHeadline, impostorVoteTargetLabel } from './pokemon-impostor-texts';
+import { clampImpostorClue, impostorClueLength, impostorCluePhaseTitle, impostorVoteHeadline, impostorVoteTargetLabel } from './pokemon-impostor-texts';
 
 function memberName(members: Map<string, RoomMemberView>, id: string): string {
   return members.get(id)?.displayName ?? id;
@@ -65,13 +65,14 @@ export function PokemonImpostorGame({ room, selfId, onAction }: { room: RoomView
   }
 
   const phaseTitle = game.phase === 'ROLE_REVEAL' ? 'Descubre tu rol'
-    : game.phase === 'CLUE_PHASE' ? `Turno de ${game.currentCluePlayerId ? memberName(members, game.currentCluePlayerId) : 'pistas'}`
+    : game.phase === 'CLUE_PHASE' ? impostorCluePhaseTitle(game.currentCluePlayerId ? memberName(members, game.currentCluePlayerId) : null)
       : game.phase === 'VOTING' ? (game.votingRound > 1 ? 'Votación de desempate' : '¿Quién es el impostor?')
         : game.phase === 'VOTE_RESULTS' ? 'Resultado de la votación' : 'Jugador eliminado';
 
   return <section className="mx-auto max-w-7xl px-4 py-5 md:px-8">
     <div className="mb-5 flex flex-wrap items-end justify-between gap-3"><div><span className="label">Ronda {Math.max(1, game.roundNumber)}</span><h1 className="font-display text-3xl font-bold sm:text-4xl">{phaseTitle}</h1></div>{deadline && <span className={`chip text-lg tabular-nums ${remaining <= 5 ? 'timer-pulse text-berry' : ''}`}><Clock3 size={18} /> {remaining}s</span>}</div>
     {game.phase === 'ROLE_REVEAL' && <div className="mb-5 rounded-2xl border border-electric/40 bg-electric/10 p-3 text-center font-bold">Esta información es privada. La fase de pistas comenzará automáticamente.</div>}
+    {game.phase === 'CLUE_PHASE' && game.clueOrder.length === 0 && <div className="mb-5 rounded-2xl border border-electric/40 bg-electric/10 p-3 text-center font-bold">Nadie puede dar pistas ahora. La votación empezará cuando se acabe el tiempo.</div>}
     {game.phase === 'VOTE_RESULTS' && game.lastVoteResult && <div className={`mb-5 rounded-2xl border p-4 text-center ${game.lastVoteResult.kind === 'ELIMINATION' ? 'border-aqua bg-aqua/15' : 'border-electric bg-electric/15'}`}><strong className="font-display text-2xl">{impostorVoteHeadline(game.lastVoteResult, (id) => memberName(members, id))}</strong><div className="mt-3 flex flex-wrap justify-center gap-2">{Object.entries(game.lastVoteResult.tallies).filter(([, count]) => count > 0).map(([id, count]) => <span key={id} className="chip tabular-nums">{memberName(members, id)} · {count} {count === 1 ? 'voto' : 'votos'}</span>)}{game.lastVoteResult.skipVotes > 0 && <span className="chip tabular-nums">Saltar · {game.lastVoteResult.skipVotes} {game.lastVoteResult.skipVotes === 1 ? 'voto' : 'votos'}</span>}</div><div className="mx-auto mt-3 grid max-w-2xl gap-2 sm:grid-cols-2">{game.aliveIds.map((voterId) => { const vote = game.lastVoteResult!.votes[voterId]; return <div key={voterId} className="rounded-xl bg-surface/70 px-3 py-2 text-sm font-bold">{memberName(members, voterId)} → {vote ? impostorVoteTargetLabel(vote.targetId, (id) => memberName(members, id)) : 'Sin voto'}</div>; })}</div></div>}
     {game.phase === 'ELIMINATION' && game.eliminationReveal && <div className="reveal-pop mb-5 rounded-2xl border border-berry bg-berry/10 p-5 text-center"><Skull className="mx-auto text-berry" size={44} /><strong className="mt-2 block font-display text-3xl">{memberName(members, game.eliminationReveal.playerId)}</strong><p className="font-display text-xl">era {game.eliminationReveal.role === 'IMPOSTOR' ? 'IMPOSTOR' : 'INOCENTE'}</p>{game.winnerTeam && <p className="mt-2 font-extrabold text-berry">Partida terminada: ganan {game.winnerTeam === 'IMPOSTORS' ? 'los impostores' : 'los inocentes'}.</p>}</div>}
     <div className="grid gap-5 lg:grid-cols-[280px_1fr]"><aside><RoleCard player={player} game={game} /></aside><div className={`flex min-w-0 flex-col gap-5 ${game.phase === 'VOTING' ? 'order-first lg:order-none' : ''}`}>

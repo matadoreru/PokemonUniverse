@@ -84,7 +84,8 @@ function beginCluePhase(state: PokemonImpostorState, context: GameContext): Poke
     voteCandidateIds: [...state.aliveIds],
     votingRound: 0,
     roundStartedAt: context.now,
-    roundEndsAt: clueOrder.length > 0 ? context.now + state.config.clueSeconds * 1_000 : null,
+    // Siempre con plazo: un orden vacío (nadie conectado) vence a la votación en vez de congelar la partida.
+    roundEndsAt: context.now + state.config.clueSeconds * 1_000,
     nextTransitionAt: null,
     lastVoteResult: null,
     eliminationReveal: null,

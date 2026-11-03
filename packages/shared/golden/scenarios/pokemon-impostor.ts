@@ -135,7 +135,8 @@ const guessAndPresence: GoldenScenario = {
     presence([ana, bruno, carla, dani, eva, intruso], 2_000),
     presence([offline(ana), offline(bruno), offline(carla), offline(dani), offline(eva), intruso], 5_000),
     timeout(6_000),
-    // Ronda 1 sin nadie conectado: el orden queda vacío y sin plazo hasta que vuelven Ana, Bruno y Carla.
+    // Ronda 1 sin nadie conectado: el orden queda vacío, con plazo, hasta que vuelven Ana, Bruno y Carla y el plazo se
+    // reinicia.
     guess('p5', 'weedle', 6_500),
     clue('p1', 'Gusano', 6_600),
     presence([ana, bruno, carla, offline(dani), offline(eva), intruso], 7_000),
@@ -267,9 +268,35 @@ const skipDeadlockStalemate: GoldenScenario = {
   ],
 };
 
+// Todos se desconectan durante el revelado: la ronda 1 empieza con el orden vacío pero con plazo, así que su
+// vencimiento abre la votación en vez de congelar la partida. Luego vuelven todos y votan hasta una expulsión.
+const emptyClueOrderDeadline: GoldenScenario = {
+  name: 'empty-clue-order-deadline',
+  seed: 1717,
+  catalog: 'gen1-2',
+  players: [ana, bruno, carla, dani],
+  config: baseConfig,
+  steps: [
+    // Revelado (1000–6000): se desconectan los cuatro.
+    presence([offline(ana), offline(bruno), offline(carla), offline(dani)], 3_000),
+    // Ronda 1 (6000–16000) sin nadie conectado: orden vacío y plazo de 10 s.
+    timeout(6_000),
+    timeout(15_999),
+    timeout(16_000),
+    // Votación (16000–26000): vuelven todos y votan a Bruno.
+    presence([ana, bruno, carla, dani], 17_000),
+    vote('p1', 'p2', 17_500),
+    vote('p3', 'p2', 18_000),
+    vote('p4', 'p2', 18_500),
+    vote('p2', 'p1', 19_000),
+    timeout(22_000),
+    timeout(26_000),
+  ],
+};
+
 export const pokemonImpostorScenarios: GoldenEngineEntry = {
   module: pokemonImpostorGame,
-  scenarios: [tieAndParity, guessAndPresence, innocentsWin, invalidActionStops, skipDeadlockStalemate],
+  scenarios: [tieAndParity, guessAndPresence, innocentsWin, invalidActionStops, skipDeadlockStalemate, emptyClueOrderDeadline],
   configCases: [
     { generations: [1, 2, 3, 4, 5, 6, 7, 8, 9], impostorCount: 1, clueSeconds: 15, voteSeconds: 20 },
     // Válidos: normalización de generaciones, cada límite en el borde, enteros con decimal cero y claves desconocidas

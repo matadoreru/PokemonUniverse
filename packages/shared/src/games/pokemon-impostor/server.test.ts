@@ -436,6 +436,40 @@ describe('Pokémon Impostor', () => {
     expect(state.finishReason).toBeNull();
   });
 
+  it('an empty clue order still has a deadline and reaches voting', () => {
+    let now = 1_000;
+    const contextPlayers = players.slice(0, 4).map((player) => ({ ...player }));
+    const context: GameContext = { players: contextPlayers, pokemon: catalog, get now() { return now; }, random: () => 0 };
+    const fixture = { context, setNow(value: number) { now = value; } } as ReturnType<typeof setup>;
+    let state = pokemonImpostorGame.createInitialState({ generations: [4], impostorCount: 1, clueSeconds: 15, voteSeconds: 20 }, context);
+    state = pokemonImpostorGame.start(state, context);
+    expect(state.phase).toBe('ROLE_REVEAL');
+    for (const player of contextPlayers) player.connected = false;
+    state = pokemonImpostorGame.handlePresenceChange!(state, context);
+
+    state = timeout(fixture, state);
+    expect(state.phase).toBe('CLUE_PHASE');
+    expect(state.clueOrder).toEqual([]);
+    expect(state.roundEndsAt).toBe(now + 15 * 1_000);
+    expect(pokemonImpostorGame.getPublicState(state, context)).toMatchObject({ currentCluePlayerId: null, cluePendingIds: [] });
+
+    state = timeout(fixture, state);
+    expect(state.phase).toBe('VOTING');
+
+    // Sin nadie conectado, cada ronda acaba en «Saltar» y la tercera termina en STALEMATE.
+    for (let round = 1; round <= 3; round += 1) {
+      if (round > 1) {
+        expect(state).toMatchObject({ phase: 'CLUE_PHASE', roundNumber: round, clueOrder: [] });
+        state = timeout(fixture, state);
+      }
+      expect(state.phase).toBe('VOTING');
+      state = timeout(fixture, state);
+      expect(state.lastVoteResult).toMatchObject({ kind: 'SKIPPED', skipVotes: 0 });
+      state = timeout(fixture, state);
+    }
+    expect(state).toMatchObject({ phase: 'GAME_RESULTS', winnerTeam: 'IMPOSTORS', finishReason: 'STALEMATE', eliminatedIds: [] });
+  });
+
   it('skip, elimination, skip, skip does not end with STALEMATE because the elimination resets the counter', () => {
     const fixture = setup();
     const skipRound = (current: PokemonImpostorState) => timeout(fixture, timeout(fixture, fillClues(current, fixture.context)));

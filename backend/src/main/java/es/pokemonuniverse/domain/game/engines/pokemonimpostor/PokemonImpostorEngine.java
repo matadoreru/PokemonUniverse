@@ -143,7 +143,8 @@ public final class PokemonImpostorEngine implements
         .voteCandidateIds(state.aliveIds())
         .votingRound(0)
         .roundStartedAt(context.now())
-        .roundEndsAt(!clueOrder.isEmpty() ? context.now() + state.config().clueSeconds() * 1_000L : null)
+        // Siempre con plazo: un orden vacío (nadie conectado) vence a la votación en vez de congelar la partida.
+        .roundEndsAt(context.now() + state.config().clueSeconds() * 1_000L)
         .nextTransitionAt(null)
         .lastVoteResult(null)
         .eliminationReveal(null)

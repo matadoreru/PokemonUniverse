@@ -14,6 +14,11 @@ export function impostorVoteHeadline(result: ImpostorVoteResult, nameOf: (id: st
   }
 }
 
+/** Título de la fase de pistas: sin nadie conectado el orden está vacío y no hay turno que anunciar. */
+export function impostorCluePhaseTitle(currentName: string | null): string {
+  return currentName ? `Turno de ${currentName}` : 'Nadie conectado para dar pistas';
+}
+
 /** Destino de un voto: «Saltar» o el nombre del jugador. */
 export function impostorVoteTargetLabel(targetId: string, nameOf: (id: string) => string): string {
   return targetId === IMPOSTOR_SKIP_TARGET ? 'Saltar' : nameOf(targetId);
