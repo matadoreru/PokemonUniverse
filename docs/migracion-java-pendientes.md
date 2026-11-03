@@ -95,9 +95,11 @@ E2E: `contenido-y-admin.spec.ts` (un USER crea, edita y borra una categoría y u
 ADMIN ve la sala activa) pasa con Node y con Java. Sin cambios de esquema (ninguna `V2__`). Suites completas el
 2026-11-03: `npm run test:e2e` 41/41; `npm run test:e2e:java` 40/41. Falla `acceso a 1280×720`, el primer test de la
 pasada: la captura de «Entrar en partida» coincide con el aviso «Conectando con la sala» (`RoomSessionLayout`) y el
-medidor lo cuenta como solape con la cabecera. Es la primera apertura de `/ws` tras arrancar Java en frío (≈ 0,7 s
-frente a 5 ms en caliente, medido igual en `main` antes de 2C: ≈ 0,9 s); con el backend ya caliente el spec pasa. Queda
-como deuda de E2E: esperar a la conexión antes de capturar, o calentar `/ws` en el arranque.
+medidor lo cuenta como solape con la cabecera. Es la primera apertura de `/ws` tras arrancar Java en frío (en 2C,
+≈ 0,7 s frente a 5 ms en caliente); con el backend ya caliente el spec pasa. **Es previo a 2C:** en un worktree de
+`main` (3d0ef85) sin ningún servidor levantado, `npm run test:e2e:java -- acceso` falla igual (1 fallo y 3 pasados;
+mismo solape «Pokémon Universe» ⟷ «Conectando con la sala», 903 px²; en esa pasada no se midió la latencia de `/ws`).
+Queda como deuda de E2E: esperar a la conexión antes de capturar, o calentar `/ws` en el arranque.
 
 #### Convivencia con Node hasta 2D
 
@@ -115,6 +117,15 @@ como deuda de E2E: esperar a la conexión antes de capturar, o calentar `/ws` en
 - **`recoverInterrupted` también depende del interruptor** (en Node corre siempre): con Node sincronizando, Java
   marcaría `FAILED` una ejecución viva de Node. Coste: una fila `RUNNING` que deje un Java caído solo se repara cuando
   Java vuelva a arrancar con el data-sync encendido (apagado no sincroniza, así que no puede dejarla).
+- **Cargas de arranque solo con las salas encendidas.** `UserGameConfigLoader` (migra y reescribe filas de
+  `UserGameConfig`), la carga de las cachés de categorías y dilemas (`HostContentWiring.CacheLoader`) y el
+  `refresh()` del catálogo TCG (`TcgCatalogStartup`) llevan `@Requires(property = "pu.rooms.enabled", value = "true")`.
+  Con las salas apagadas (producción) Java no lee ni escribe esas tablas al arrancar: antes migraba y reescribía
+  `UserGameConfig` en cada arranque de producción, sin ningún lector (el `create()` de sala es inalcanzable) y con
+  una ventana de escrituras perdidas frente a Node. Sin cargar, `GET /api/categories` y
+  `GET /api/would-you-rather-prompts` devuelven solo lo que Java haya escrito desde que arrancó (normalmente `[]`), las
+  mutaciones escriben en la BD (la unicidad sigue dando 409) y `/api/tcg/*` responde 500 «El catálogo TCG todavía no
+  está disponible.»; nginx no enruta ninguna hasta 2D.
 - **Avatares.** Node y Java escriben en el mismo directorio (`apps/server/.data/avatars` en dev, volumen compartido en
   Compose); el limitador de 12 escrituras por 15 min y IP es por proceso.
 
@@ -139,6 +150,12 @@ como deuda de E2E: esperar a la conexión antes de capturar, o calentar `/ws` en
   (solo afecta a `DATA_SYNC_HOUR=2`).
 - **Cliente de sincronización**: una URI inválida no se reintenta ni se traduce, y un fallo de JSON tiene otro tipo y
   mensaje que en Node.
+- **Cuerpos JSON `null`, mal formados o que no son objeto** (`/api/categories`, `/api/would-you-rather-prompts` y
+  demás rutas que leen el cuerpo como árbol): `express.json` de Node (modo `strict`) los rechaza antes de la ruta con
+  un 400 `{"error": <mensaje de body-parser>}`. Java responde también 400, con otro cuerpo: `null` se enlaza como
+  cuerpo ausente (`{}`, el mismo error de Zod que un objeto vacío), el JSON roto da `{"error":"Invalid JSON"}` y un
+  valor que no es objeto pasa por Zod (`Invalid input: expected object, received string`, con `issues`). Fijado en
+  `CustomCategoryControllerTest.missingBodyIsAnEmptyObjectLikeExpress`.
 - **Orden de claves del usuario** en las respuestas de avatar: distinto del de Node (herencia de la etapa 1; mismo
   contenido).
 - **Cabeceras `RateLimit`** en borrador 6 frente al borrador 7 de Node (todos los limitadores, desde la etapa 1).
@@ -166,7 +183,21 @@ Lista de comprobación (todo junto, en un mismo despliegue):
   reglas pasan a ser comunes a los dos modos (o desaparece el modo `node`).
 - [ ] `BACKEND_DATA_SYNC_ENABLED=true` en el servicio `backend` de compose (con `DATA_SYNC_HOUR`, `DATA_SYNC_MINUTE`,
   `DATA_SYNC_TIMEZONE`) y `PU_DATA_SYNC_ENABLED=false` en Node, o Node retirado. Nunca los dos a la vez.
-- [ ] `PU_ROOMS_ENABLED=true` (`ROOMS_ENABLED` del backend; hoy `false`, y `/ws` cierra con 4403).
+- [ ] `PU_ROOMS_ENABLED=true` (`ROOMS_ENABLED` del backend; hoy `false`, y `/ws` cierra con 4403). Encenderlo
+  enciende también las cargas de arranque de `UserGameConfigLoader` (que **reescribe** las filas de `UserGameConfig`
+  cuya migración cambia algo), de las cachés de categorías y dilemas y del catálogo TCG: Node tiene que haber dejado de
+  escribir esas tablas en el mismo despliegue.
+- [ ] Antes de añadir `location /api/admin/` en nginx, sondear la normalización de rutas del `AdminGate` a través de
+  nginx y de Micronaut: barra final (`/api/admin/`, `/api/admin/users/`), dobles barras (`//api/admin/users`,
+  `/api//admin/users`), escapes (`/api/%61dmin/users`) y mayúsculas (`/api/ADMIN/users`). Cada variante debe acabar en
+  401/403 o en 404, nunca en un 200 sin guardia ni en Node.
+- [ ] Arranque con el data-sync encendido y el catálogo vacío (`ensureInitialPokemon` sincroniza PokéAPI antes de
+  aceptar peticiones y la TCG inicial corre en segundo plano): sin probar de punta a punta en Java, y en 2D pasa a ser
+  el camino de producción (healthcheck y `--wait-timeout` del despliegue incluidos).
+- [ ] `ClientAddress` toma el último salto de `X-Forwarded-For`: solo es fiable detrás de nginx, que lo fija. Exponer el
+  backend directamente, o añadir otro proxy a la cadena, lo invalida para los limitadores.
+- [ ] La ruta de humo de Node de `scripts/deploy.sh` (`/api/tcg/options`) pasa a Java: elegir otra ruta de Node o
+  quitar la comprobación si Node se retira.
 - [ ] `INTERRUPT_STALE_ROOMS=true` (`pu.interrupt-stale-rooms`): al arrancar marca `INTERRUPTED`/`SERVER_STOPPED` las
   filas `RoomHistory` `ACTIVE` y `GameHistory` `IN_PROGRESS` que dejó el proceso anterior (`interruptStaleActivity` de
   Node). Apagado por defecto porque, mientras Node sirva salas sobre la misma BD, cada arranque de Java interrumpiría
@@ -305,29 +336,29 @@ Lista de comprobación (todo junto, en un mismo despliegue):
     volvería a registrar (no la hay en `src/main`).
   - Configuración: `ConfigMessagesSnapshotTest` no detecta entradas de motores que ya no existen y su propiedad de
     reescritura tiene un nombre genérico (`-Dupdate`); el generador de casos de migración vive en
-    `src/test/resources`, sin lint y con ruta relativa; `UserGameConfigService` cachea fuera del cerrojo en la carga
-    (solo importa si una carga compite con un guardado).
+    `src/test/resources`, sin lint y con ruta relativa.
   - Contenido: `HostContentProvider` depende de los almacenes con `DataSource` (un contexto de test sin BD no puede
     crear el coordinador); `updateHostWouldYouRatherPrompts` duplica el cuerpo de `updateHostCategories`; mezcla de
-    `@Transactional` de jakarta y de Micronaut; las divergencias del body-parser (JSON `null`, JSON mal formado,
-    raíz que no es objeto) solo están documentadas en los tests; la intersección con `additionalProperties` de
-    `ZodIssue` debilita el tipado TS generado.
+    `@Transactional` de jakarta y de Micronaut; la intersección con `additionalProperties` de `ZodIssue` debilita el
+    tipado TS generado (las divergencias del body-parser están en «Diferencias de Java con Node»).
   - Avatares: cuerpos multipart o mal formados sobre `@Body byte[]` sin test; el cargador nativo prueba primero
-    `/tmp`; `ClientAddress` confía en el último salto de `X-Forwarded-For` (correcto solo detrás de nginx).
+    `/tmp`; `ClientAddress` confía en el último salto de `X-Forwarded-For` (correcto solo detrás de nginx; en la lista
+    del corte 2D).
   - Data-sync: `stop()` puede invocarse hasta tres veces (idempotente); `PokeApiPayloads` usa valores por defecto
     donde Node lanzaría `TypeError` con una respuesta mal formada; `PokeApiUrls` deja pasar hosts ajenos a PokéAPI
     (como Node); `dexIds` descarta elementos no enteros (Prisma fallaría); las fechas sin zona se rechazan; matiz de
     salto de línea en la regex `IMAGE`; `loadComparableCards` hace dos consultas en READ COMMITTED (la misma ventana
     que Node).
   - Recarga tras el sync: `cache.replace` va antes de `rooms.replaceCatalog` (Node hace primero las salas; no es
-    atómico si `rooms.get()` lanza); sin test del arranque con data-sync encendido y catálogo vacío ni del fallo de la
-    recarga; el listener depende del `PokemonCatalogService` concreto.
-  - Administración: `ChangelogService` importa `org.hibernate.JDBCException` en la capa de aplicación; la carrera de
-    orden entre `remove` e inserción de `RoomStore` solo afecta al orden del listado admin; la sonda de normalización
-    de rutas de `AdminGate` no tiene test.
+    atómico si `rooms.get()` lanza); sin test del arranque con data-sync encendido y catálogo vacío (en la lista del
+    corte 2D) ni del fallo de la recarga; el listener depende del `PokemonCatalogService` concreto.
+  - Administración: la carrera de orden entre `remove` e inserción de `RoomStore` solo afecta al orden del listado
+    admin; la sonda de normalización de rutas de `AdminGate` no tiene test (en la lista del corte 2D).
   - Tests: cuentas admin y una sala del test de resumen quedan en la BD y el contexto de test compartidos;
-    `CatalogTables.clear` vacía tablas dependientes de la BD de test compartida; `NonUtcZone` cambia la zona por
-    defecto de la JVM (seguro solo con tests en serie); el generador de paridad puede dejar `pu_parity_pokeapi` en un
+    `CatalogTables.clear` y `TcgTables` vacían con `CASCADE` tablas de las que dependen otras clases de la BD de test
+    compartida y `NonUtcZone` cambia la zona por defecto de toda la JVM: hoy las clases corren en serie, pero si se
+    activa el paralelismo de pruebas ambos pasan a ser de arreglo obligatorio (zona por prueba, datos aislados por
+    clase); el generador de paridad puede dejar `pu_parity_pokeapi` en un
     `DATABASE_URL` que no sea el contenedor.
 
 ## Métricas de CI
