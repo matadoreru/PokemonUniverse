@@ -1,5 +1,5 @@
 import { expect, test as base, type Browser, type BrowserContext, type Page } from '@playwright/test';
-import { capture, collectErrors, createRoom, joinRoom, loginAsGuest, pinTheme, SIZES, uniqueName, type Theme } from '../src/helpers.js';
+import { capture, collectErrors, createRoom, joinRoom, loginAsGuest, pinTheme, saltarIntro, SIZES, uniqueName, type Theme } from '../src/helpers.js';
 
 interface Jugador {
   context: BrowserContext;
@@ -63,6 +63,8 @@ test('dos jugadores crean una sala, se unen y empiezan la partida', async ({ cre
   await expect(host.page.locator('#start-help')).toHaveText('La sala está lista.');
   await capture(host.page, 'lobby-host-lista');
   await host.page.getByRole('button', { name: 'Empezar partida' }).click();
+  // Pokédex Distance (el juego por defecto) empieza con su intro: los dos la saltan.
+  await saltarIntro([host.page, guest.page]);
   await expect(host.page.getByRole('heading', { name: 'En la ronda' })).toBeVisible({ timeout: 20_000 });
   await expect(guest.page.getByRole('heading', { name: 'En la ronda' })).toBeVisible({ timeout: 20_000 });
   await capture(host.page, 'juego-pokedex-distance');

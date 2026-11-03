@@ -6,7 +6,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page, type Response } from '@playwright/test';
-import { crearSalaConJugadores, iniciarPartida, layoutProblems, psql, seleccionarJuego, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
+import { crearSalaConJugadores, iniciarPartida, introDePartida, layoutProblems, psql, saltarIntro, seleccionarJuego, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
 
 interface Manifest {
   id: string;
@@ -52,6 +52,8 @@ async function avisos(page: Page): Promise<string> {
 /** Espera a que la pantalla de juego esté pintada: sin lobby, sin esqueleto de carga y con contenido. */
 async function esperarPantallaDeJuego(page: Page): Promise<void> {
   await expect(page.getByRole('heading', { name: 'Lobby de la sala' })).toBeHidden({ timeout: 15_000 });
+  // Intro de partida de los 6 primeros juegos: «Saltar» y, si nadie más salta, el plazo de 10 s.
+  if (await introDePartida(page).isVisible()) await saltarIntro([page]);
   await expect(page.getByText('Cargando minijuego…')).toHaveCount(0, { timeout: 15_000 });
   await expect(page.getByRole('heading').first()).toBeVisible({ timeout: 15_000 });
 }
@@ -108,6 +110,7 @@ for (const manifest of registry) {
       // Si el servidor rechaza el arranque, que el fallo diga por qué.
       const lobby = host.page.getByRole('heading', { name: 'Lobby de la sala' });
       await expect.poll(async () => (await lobby.isVisible()) ? `lobby; avisos: ${await avisos(host.page)}` : 'fuera del lobby', { timeout: 15_000 }).toBe('fuera del lobby');
+      await saltarIntro(jugadores.map((j) => j.page));
 
       for (const jugador of jugadores) await esperarPantallaDeJuego(jugador.page);
       // La sala va por el `/ws` de Java y nadie abre Socket.IO.
@@ -198,6 +201,7 @@ test('type-duel: resultado con tipos', async ({ browser }) => {
     const { host, invitados, jugadores } = sala;
     await seleccionarJuego(host.page, 'Type Duel');
     await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await saltarIntro(jugadores.map((j) => j.page));
     for (const { page } of jugadores) await expect(page.getByRole('heading', { name: 'Elegid un tipo en secreto' })).toBeVisible({ timeout: 20_000 });
     // Los dos duelistas son las páginas con los botones de tipo; los dos eligen Fuego.
     let elegidos = 0;
@@ -227,6 +231,7 @@ test('pokemon-impostor: votación con Saltar', async ({ browser }) => {
     const pages = jugadores.map((j) => j.page);
     await seleccionarJuego(host.page, 'Pokémon Impostor');
     await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await saltarIntro(jugadores.map((j) => j.page));
 
     // Tres turnos de pista: cada vez, la página con el campo visible escribe y envía.
     const campo = (page: Page) => page.getByPlaceholder('Escribe algo relacionado…');
@@ -390,6 +395,7 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     await expect(rondas).toHaveValue('1');
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await saltarIntro(jugadores.map((j) => j.page));
 
     // Todos responden: la ronda se revela en cuanto contesta el último y el revelado dura 3 s. Se captura un solo
     // tamaño (390×844, el de los botones de respuesta), fijado antes de la última respuesta; la pantalla activa ya está
@@ -445,6 +451,7 @@ test('pokedex-distance: elección de los rivales oculta y panel de visibilidad',
     await expect(aviso).toHaveCount(0);
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await saltarIntro(jugadores.map((j) => j.page));
 
     // Un invitado elige: él ve su confirmación (estado privado) y el host solo ve que ya ha elegido, nunca el Pokémon.
     const [eligeAntes] = invitados;
@@ -507,6 +514,7 @@ test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
     for (const { page } of jugadores) page.on('request', (r) => { if (new URL(r.url()).pathname === '/api/pokemon') antiguas.push(r.url()); });
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await saltarIntro(jugadores.map((j) => j.page));
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<Record<string, unknown>> };
     expect(catalogo.length, 'entradas del catálogo').toBeGreaterThan(0);
     for (const entrada of catalogo) {
@@ -576,6 +584,7 @@ test('pokedex-distance: buscador sin coincidencias', async ({ browser }) => {
       else await route.fallback();
     });
     await iniciarPartida(host.page, [invitado.page]);
+    await saltarIntro([host.page, invitado.page]);
 
     const buscador = host.page.getByRole('textbox', { name: 'Buscar Pokémon' });
     await expect(buscador).toBeVisible({ timeout: 20_000 });
@@ -615,6 +624,7 @@ test('pokedex-distance: empate forzado tras tres desempates', async ({ browser }
     const [invitado] = invitados as [Jugador];
     await seleccionarJuego(host.page, 'Pokédex Distance');
     await iniciarPartida(host.page, [invitado.page]);
+    await saltarIntro([host.page, invitado.page]);
     // Con las elecciones ocultas no hay bloqueo: los dos eligen el mismo Pokémon, siempre a la misma distancia.
     // Ronda inicial y tres desempates; en el tercero cae quien eligió el último (el invitado).
     const titulo = (texto: string) => host.page.getByRole('heading', { name: texto });
@@ -645,6 +655,7 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     const [invitado] = invitados as [Jugador];
     await seleccionarJuego(host.page, 'Shiny Quiz');
     await iniciarPartida(host.page, [invitado.page]);
+    await saltarIntro([host.page, invitado.page]);
     const opcionA = (page: Page) => page.locator('[data-shiny-option="A"]');
     for (const { page } of jugadores) await expect(opcionA(page)).toBeEnabled({ timeout: 20_000 });
     const votantes = (page: Page) => page.locator('[data-testid^="shiny-voters-"]');
@@ -767,6 +778,7 @@ test('learnset-guess: último aviso a 390', async ({ browser }) => {
     for (const ws of host.sockets.filter((s) => JAVA_WS.test(s.url()))) ws.on('framereceived', ({ payload }) => { estado = learnsetEnTrama(payload) ?? estado; });
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, [invitado.page]);
+    await saltarIntro([host.page, invitado.page]);
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
     const nombres = new Map(catalogo.map((p) => [p.id, p.name]));
 
@@ -799,6 +811,44 @@ test('learnset-guess: último aviso a 390', async ({ browser }) => {
     await invitado.page.evaluate(() => window.scrollTo(0, 0));
     await expect(chip).toBeInViewport();
     await capturarAnotando(invitado.page, 'juego-learnset-guess-ultimo-aviso', chip, [SIZES[2]]);
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+test('intro: los pasos antes de la primera ronda', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const [primero, segundo] = invitados as [Jugador, Jugador];
+    const pages = jugadores.map((j) => j.page);
+    await seleccionarJuego(host.page, 'Learnset Guess');
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+
+    // La sala espera en GAME_STARTING con los 3 pasos del juego, la cuenta atrás y nadie listo.
+    for (const page of pages) await expect(introDePartida(page)).toBeVisible({ timeout: 15_000 });
+    const intro = introDePartida(host.page);
+    await expect(intro.getByRole('heading', { name: 'Cómo se juega a Learnset Guess' })).toBeVisible();
+    await expect(intro.getByText('Paso 1 de 3', { exact: true })).toBeVisible();
+    await expect(intro.getByRole('timer')).toBeVisible();
+    await expect(intro.getByText('0 de 3 listos')).toBeVisible();
+    await capturarTamanos(host.page, 'juego-intro', { sigue: intro, claro: true });
+
+    // Salta uno: él espera al resto y los demás ven el recuento.
+    const saltar = (page: Page) => introDePartida(page).getByRole('button', { name: 'Saltar', exact: true });
+    await saltar(primero.page).click();
+    await expect(introDePartida(primero.page).getByRole('button', { name: 'Esperando al resto' })).toBeDisabled();
+    await expect(intro.getByText('1 de 3 listos')).toBeVisible();
+
+    // Saltan los otros dos y empieza la primera ronda sin esperar al plazo.
+    await saltar(host.page).click();
+    await saltar(segundo.page).click();
+    for (const page of pages) {
+      await expect(introDePartida(page)).toBeHidden({ timeout: 5_000 });
+      await expect(page.getByRole('textbox', { name: 'Buscar Pokémon' })).toBeVisible({ timeout: 15_000 });
+    }
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

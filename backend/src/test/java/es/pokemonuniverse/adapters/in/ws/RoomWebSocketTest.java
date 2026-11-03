@@ -124,6 +124,14 @@ class RoomWebSocketTest {
     assertEquals(Map.of(), asMap(selected.get("data")));
     assertOk(host.command("room:start-game", null));
 
+    // Intro de partida (Fase 2): GAME_STARTING hasta que los dos pulsan «Saltar» por el socket.
+    var intro = host.awaitPush("room:state", view -> "GAME_STARTING".equals(text(view, "phase")));
+    var skip = "{\"gameInstanceId\":\"" + intro.get("gameIntro").get("gameInstanceId").getStringValue() + "\"}";
+    assertOk(host.command("game:intro:skip", skip));
+    assertError("El minijuego ya ha cambiado.",
+        guest.command("game:intro:skip", "{\"gameInstanceId\":\"00000000-0000-4000-8000-000000000000\"}"));
+    assertOk(guest.command("game:intro:skip", skip));
+
     var hostState = host.awaitPush("room:state", view -> "ROUND_ACTIVE".equals(text(view, "phase")));
     guest.awaitPush("room:state", view -> "ROUND_ACTIVE".equals(text(view, "phase")));
 

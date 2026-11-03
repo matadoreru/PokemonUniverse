@@ -114,6 +114,9 @@ export interface GameActionResult<TState> {
 /** Gracia de presencia (§8.3) de los minijuegos que la declaran en su manifiesto. */
 export const PRESENCE_GRACE_MS = 10_000;
 
+/** Intro de partida (§8.1): ms que la sala espera en `GAME_STARTING` mostrando los pasos, salvo que todos salten. */
+export const GAME_INTRO_MS = 10_000;
+
 export interface MiniGameManifest {
   id: string;
   name: string;
@@ -127,6 +130,8 @@ export interface MiniGameManifest {
   maxPlayers?: number;
   /** Ms durante los que una desconexión no llega al motor; nunca alarga un plazo. */
   presenceGraceMs?: number;
+  /** Ms de intro antes de la primera ronda, solo la primera vez que se juega en la sesión de la sala. */
+  introMs?: number;
   profileStats: ProfileStatsDefinition;
 }
 

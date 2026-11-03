@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { GameLoadingFallback } from '../components/LoadingFallback';
+import { GameIntro } from '../room/GameIntro';
 import { Lobby } from '../room/Lobby';
 import { NextGameVote } from '../room/NextGameVote';
 import { SessionResults } from '../room/SessionResults';
@@ -18,6 +19,7 @@ export function RoomPage() {
   if (room.phase === 'LOBBY') return <Lobby room={room} selfId={user.id} onLeave={() => run(context.leaveRoom().then(() => navigate('/play')))} onReady={context.setReady} onStart={context.startGame} onSelectGame={context.selectGame} onConfig={context.updateConfig} onGameConfig={context.updateGameConfig} onSession={context.updateSession} onGameSelection={context.updateGameSelection} onSetRoomRole={context.setRoomRole} onTransferHost={context.transferHost} onKick={context.kick} onEndSession={() => run(context.endSession())} />;
   if (room.phase === 'NEXT_GAME_VOTE' || room.phase === 'NEXT_GAME_VOTE_RESULTS') return <NextGameVote room={room} selfId={user.id} onVote={context.voteNextGame} onEnd={() => run(context.endSession())} />;
   if (room.phase === 'GAME_RESULTS') return <Suspense fallback={<GameLoadingFallback />}><gameClient.Results room={room} selfId={user.id} onLobby={() => run(context.continueSession())} onEnd={() => run(context.endSession())} /></Suspense>;
+  if (room.phase === 'GAME_STARTING' && room.gameIntro) return <GameIntro key={room.gameIntro.gameInstanceId} room={room} intro={room.gameIntro} selfId={user.id} onSkip={context.skipIntro} />;
   if (room.phase === 'SESSION_RESULTS') return <SessionResults room={room} selfId={user.id} onLobby={() => run(context.returnLobby())} />;
   return <Suspense fallback={<GameLoadingFallback />}><gameClient.ActiveGame key={room.gameSkipState?.gameInstanceId} room={room} selfId={user.id} onAction={context.gameAction} /></Suspense>;
 }

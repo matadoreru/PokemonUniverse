@@ -3,6 +3,7 @@ package es.pokemonuniverse.application.rooms;
 import es.pokemonuniverse.adapters.out.resources.ClasspathGameRegistryLoader;
 import es.pokemonuniverse.application.assets.GameAssetService;
 import es.pokemonuniverse.application.assets.LoadedAsset;
+import es.pokemonuniverse.domain.game.GameManifest;
 import es.pokemonuniverse.domain.game.GameRegistry;
 import es.pokemonuniverse.domain.game.engine.GameEngine;
 import es.pokemonuniverse.domain.identity.AuthUser;
@@ -29,6 +30,8 @@ final class RoomTestKit {
 
   static final ObjectMapper MAPPER = ObjectMapper.getDefault();
   static final GameRegistry REAL_REGISTRY = ClasspathGameRegistryLoader.loadFromClasspath(MAPPER);
+  /** {@link #REAL_REGISTRY} sin {@code introMs}: los juegos con intro arrancan al momento, como antes de la Fase 2. */
+  static final GameRegistry NO_INTRO_REGISTRY = withoutIntro(REAL_REGISTRY);
   static final InMemoryPokemonCatalog CATALOG = GoldenCatalogs.load("gen1-2");
   static final String HIGHER_LOWER_1_ROUND = """
       {"generations":[1],"categories":["ATTACK"],"showPreviousValue":true,"answerVisibility":"LIVE",
@@ -71,11 +74,26 @@ final class RoomTestKit {
         time, settings, () -> GameCatalogs.of(CATALOG), ASSETS);
   }
 
+  /**
+   * Registro de los tests de sala: sin {@code introMs}, así las partidas arrancan al momento como antes de la intro
+   * (Fase 2). {@link RoomIntroTest} usa {@link #withIntro()}.
+   */
   static GameRegistry registry(String... fakeGames) {
     var engines = new LinkedHashMap<String, GameEngine<?, ?, ?, ?>>();
     for (var id : List.of("higher-lower", "pokedex-distance")) engines.put(id, REAL_REGISTRY.engine(id).orElseThrow());
     for (var id : fakeGames) engines.put(id, new FakeEngine(REAL_REGISTRY.get(id).orElseThrow()));
-    return REAL_REGISTRY.withEngines(engines);
+    return NO_INTRO_REGISTRY.withEngines(engines);
+  }
+
+  /** Coordinador con el registro real completo: los 28 motores y los manifiestos con {@code introMs}. */
+  static RoomTestKit withIntro() {
+    return new RoomTestKit(50_000, UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, REAL_REGISTRY);
+  }
+
+  static GameRegistry withoutIntro(GameRegistry registry) {
+    return new GameRegistry(registry.list().stream().map(game -> new GameManifest(game.id(), game.name(), game.icon(),
+        game.description(), game.experimental(), game.recommended(), game.minPlayers(), game.maxPlayers(),
+        game.presenceGraceMs(), null, game.profileStats(), game.defaultConfig())).toList());
   }
 
   static AuthUser guest(String id, String displayName) {

@@ -1,4 +1,4 @@
-import type { GameSelectionMode, RoomView, SessionMode, SetGameSkipVoteRequest } from '@pokemon-universe/shared/public';
+import type { GameSelectionMode, RoomView, SessionMode, SetGameSkipVoteRequest, SkipGameIntroRequest } from '@pokemon-universe/shared/public';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import type { CommandEvent, CommandPayload, RealtimeClient } from '../lib/realtime';
@@ -29,6 +29,7 @@ interface RoomContextValue {
   returnLobby(): Promise<void>;
   endSession(): Promise<void>;
   setGameSkipVote(request: SetGameSkipVoteRequest): Promise<void>;
+  skipIntro(request: SkipGameIntroRequest): Promise<void>;
   gameAction(action: unknown): Promise<void>;
 }
 
@@ -108,6 +109,7 @@ export function RoomProvider({ children }: PropsWithChildren) {
     async returnLobby() { await emit('room:return-lobby', {}); },
     async endSession() { await emit('room:end-session', {}); },
     async setGameSkipVote(request) { await emit('game:skip-vote:set', request); },
+    async skipIntro(request) { await emit('game:intro:skip', request); },
     async gameAction(action) {
       const gameInstanceId = room?.gameSkipState?.gameInstanceId;
       if (!gameInstanceId) throw new Error('No hay un minijuego activo.');

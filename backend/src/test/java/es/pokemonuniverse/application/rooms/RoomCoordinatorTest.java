@@ -369,7 +369,7 @@ class RoomCoordinatorTest {
       engines.put(id, RoomTestKit.REAL_REGISTRY.engine(id).orElseThrow());
     }
     return new RoomTestKit(50_000, UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY,
-        RoomTestKit.REAL_REGISTRY.withEngines(engines));
+        RoomTestKit.NO_INTRO_REGISTRY.withEngines(engines));
   }
 
   private static void assertDuelAlive(RoomTestKit kit, LiveRoom room, String phase) {
@@ -1087,7 +1087,7 @@ class RoomCoordinatorTest {
       engines.put(id, RoomTestKit.REAL_REGISTRY.engine(id).orElseThrow());
     }
     return new RoomTestKit(50_000, UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY,
-        RoomTestKit.REAL_REGISTRY.withEngines(engines));
+        RoomTestKit.NO_INTRO_REGISTRY.withEngines(engines));
   }
 
   @Test
@@ -1375,13 +1375,14 @@ class RoomCoordinatorTest {
     var keys = RoomTestKit.asMap(second).keySet();
     assertEquals(Set.of("code", "phase", "hostId", "maxPlayers", "members", "availableGames", "selectedGameId",
         "selectedGameConfig", "gameConfigs", "customizedGameIds", "sessionMode", "gameSelectionMode", "nextGameVote",
-        "gameSkipState", "gamesPlayed", "sessionStandings", "sessionHistory", "roomInstanceId", "revision",
+        "gameSkipState", "gameIntro", "gamesPlayed", "sessionStandings", "sessionHistory", "roomInstanceId", "revision",
         "gameCatalogVersion", "gameActionEpoch", "game", "gamePlayerState", "serverNow", "hostCustomCategoryCount",
         "hostWouldYouRatherPromptCount"), keys);
     var serialized = serialize(second);
     assertTrue(serialized.contains("\"gameCatalogVersion\":null"));
     assertTrue(serialized.contains("\"game\":null"));
     assertTrue(serialized.contains("\"gameSkipState\":null"));
+    assertTrue(serialized.contains("\"gameIntro\":null"));
     assertTrue(serialized.contains("\"sessionMode\":{\"type\":\"INFINITE\"}"));
     assertTrue(serialized.contains("\"gameSelectionMode\":{\"type\":\"FIXED\"}"));
     assertTrue(serialized.contains("\"isHost\":true"));
@@ -1416,7 +1417,7 @@ class RoomCoordinatorTest {
     engines.put("higher-lower", CountingEngine.wrap(RoomTestKit.REAL_REGISTRY.engine("higher-lower").orElseThrow(),
         publicCalls, privateCalls));
     var kit = new RoomTestKit(50_000, UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY,
-        RoomTestKit.REAL_REGISTRY.withEngines(engines));
+        RoomTestKit.NO_INTRO_REGISTRY.withEngines(engines));
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
     kit.selectHigherLower("host");
     kit.startReady(room, "host");

@@ -63,7 +63,7 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
       })}
     </div>
 
-    {canVote && <div className="sticky bottom-3 z-10 mx-auto mt-5 flex max-w-xl flex-col items-center gap-3 rounded-xl border border-ink/10 bg-surface/95 p-3 sm:flex-row">
+    {canVote && <div className="sticky-action-bar mx-auto mt-5 max-w-xl items-center">
       <p className="flex-1 text-center font-bold sm:text-left">{draft ? <>Has elegido <strong className="text-aqua">{vote.options.find((game) => game.id === draft)?.name}</strong>.</> : 'Selecciona una opción para preparar tu voto.'}</p>
       <button type="button" className="btn-primary w-full whitespace-nowrap sm:w-auto" disabled={!draft || submitting} onClick={() => void confirmVote()}>{submitting ? <LoaderCircle className="animate-spin" size={18} /> : <Vote size={18} />}{submitting ? 'Confirmando…' : 'Confirmar voto'}</button>
     </div>}

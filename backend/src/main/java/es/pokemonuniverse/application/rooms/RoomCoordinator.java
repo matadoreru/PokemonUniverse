@@ -27,6 +27,7 @@ import es.pokemonuniverse.domain.identity.AvatarRef;
 import es.pokemonuniverse.domain.room.ErasedEngine;
 import es.pokemonuniverse.domain.room.GameCatalogSnapshot;
 import es.pokemonuniverse.domain.room.GameFinishReason;
+import es.pokemonuniverse.domain.room.GameIntro;
 import es.pokemonuniverse.domain.room.GameRuntime;
 import es.pokemonuniverse.domain.room.GameSelectionMode;
 import es.pokemonuniverse.domain.room.GameSkip;
@@ -178,6 +179,7 @@ public class RoomCoordinator {
     for (var room : store.list()) {
       locked(room, () -> {
         room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
+        room.introTimer = RoomTimer.cancel(room.introTimer);
         for (var member : room.members.values()) {
           member.disconnectTimer = RoomTimer.cancel(member.disconnectTimer);
           member.presenceGraceTimer = RoomTimer.cancel(member.presenceGraceTimer);
@@ -435,6 +437,7 @@ public class RoomCoordinator {
     if (room.hostId.equals(playerId)) transferHost(room);
     if (room.members.values().stream().noneMatch(candidate -> candidate.presence != PresenceStatus.LEFT)) {
       room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
+      clearIntro(room);
       store.delete(room.code);
       track(audit.roomClosed(new RoomClosed(room.historyId, explicit ? "EMPTY_AFTER_LEAVE" : "EMPTY_AFTER_TIMEOUT",
           room.game != null && room.game.finishReason == null ? room.game.resultId : null, clock.now())),
@@ -739,7 +742,9 @@ public class RoomCoordinator {
     var availabilityReason = engine.checkAvailability(config, context);
     if (availabilityReason.isPresent()) throw new RoomException(module.name() + ": " + availabilityReason.get());
     var state = engine.createInitialState(config, context);
-    state = engine.start(state, context);
+    boolean withIntro = module.introMs() != null && module.introMs() > 0
+        && !room.introducedGameIds.contains(module.id());
+    if (!withIntro) state = engine.start(state, context);
     for (var member : room.members.values()) {
       member.role = member.presence == PresenceStatus.CONNECTED ? MemberRole.PLAYER : MemberRole.SPECTATOR;
       member.ready = false;
@@ -751,8 +756,96 @@ public class RoomCoordinator {
     room.game = new GameRuntime(catalog, resultId, module.id(), players.stream().map(GamePlayer::id).toList(), engine,
         config, configTree, state, context.now(), auditReady);
     resetWhoIsWhoCursors(room);
+    room.introducedGameIds.add(module.id());
+    clearIntro(room);
+    if (withIntro) startIntro(room, room.game, context.now() + module.introMs());
     room.phase = RoomPhase.of(engine.getLifecycle(state).phase());
     syncAndBroadcast(room);
+  }
+
+  // ------------------------------------------------------------------------------------------------- intro
+
+  /**
+   * Deja la partida en {@code GAME_STARTING} sin arrancar el motor y programa el fin de la intro, con la guardia de
+   * identidad de {@code presenceGraceTimer}: el callback no hace nada si la intro ya terminó o la partida cambió.
+   */
+  private void startIntro(LiveRoom room, GameRuntime game, long endsAt) {
+    var intro = new GameIntro(game.resultId, endsAt);
+    room.intro = intro;
+    var timer = new RoomTimer();
+    room.introTimer = timer;
+    timer.bind(schedulers.schedule(Math.max(0, endsAt - clock.now()), () -> timerCallback(room, () -> {
+      if (room.introTimer != timer || room.intro != intro || room.game != game || game.finishReason != null) return;
+      room.introTimer = null;
+      beginIntroducedGame(room);
+    })));
+  }
+
+  /** La intro deja de pertenecer a la sala: la partida terminó, se sustituyó o la sala se cierra. */
+  private static void clearIntro(LiveRoom room) {
+    room.introTimer = RoomTimer.cancel(room.introTimer);
+    room.intro = null;
+  }
+
+  /** Fin de la intro (plazo o «Saltar» unánime): arranca el motor con el contexto de ahora. */
+  void beginIntroducedGame(LiveRoom room) {
+    var game = room.game;
+    var intro = room.intro;
+    clearIntro(room);
+    if (intro == null || game == null || game.finishReason != null || !game.resultId.equals(intro.gameInstanceId)) {
+      return;
+    }
+    try {
+      var context = context(room);
+      game.state = game.engine.start(game.state, context);
+      // Los cambios de presencia durante la intro no llegaron al motor sin arrancar: se le entregan ahora.
+      if (game.engine.hasPresenceHandler()) game.state = game.engine.handlePresenceChange(game.state, context(room));
+    } catch (RuntimeException error) {
+      // Una partida que no puede arrancar nunca deja la sala colgada en GAME_STARTING: se abandona como saltada.
+      LOG.error("Failed to start game {} after its intro", game.resultId, error);
+      skipGame(room, game);
+      return;
+    }
+    syncAndBroadcast(room, game);
+  }
+
+  /** Quienes deciden la intro: participantes con rol PLAYER y conexión activa (la gracia de presencia no cuenta). */
+  private static List<String> introDeciderIds(LiveRoom room) {
+    var game = room.game;
+    if (game == null) return List.of();
+    return game.participantIds.stream().filter(playerId -> {
+      var member = room.members.get(playerId);
+      return member != null && member.role == MemberRole.PLAYER && member.presence == PresenceStatus.CONNECTED;
+    }).toList();
+  }
+
+  /** Arranca la partida si todos los que deciden la intro (al menos uno) han saltado; {@code true} si arrancó. */
+  private boolean resolveUnanimousIntroSkip(LiveRoom room) {
+    var intro = room.intro;
+    if (intro == null) return false;
+    var deciderIds = introDeciderIds(room);
+    if (deciderIds.isEmpty() || !intro.skippedIds.containsAll(deciderIds)) return false;
+    beginIntroducedGame(room);
+    return true;
+  }
+
+  /** {@code game:intro:skip}; {@code payload} crudo {@code { gameInstanceId }}. */
+  public void skipGameIntro(String playerId, @Nullable JsonNode payload) {
+    var request = RoomCommandParsers.skipGameIntroRequest(payload);
+    inRequiredRoom(playerId, room -> {
+      var intro = room.intro;
+      var game = room.game;
+      if (intro == null || game == null || game.finishReason != null
+          || !intro.gameInstanceId.equals(request.gameInstanceId())) {
+        throw new RoomException("El minijuego ya ha cambiado.");
+      }
+      if (!introDeciderIds(room).contains(playerId)) {
+        throw new RoomException("Solo los jugadores de la partida pueden saltar la intro.");
+      }
+      intro.skippedIds.add(playerId);
+      if (!resolveUnanimousIntroSkip(room)) broadcast(room);
+      return null;
+    });
   }
 
   // ---------------------------------------------------------------------------------------------- partida
@@ -785,6 +878,7 @@ public class RoomCoordinator {
     inRequiredRoom(playerId, room -> {
       var game = room.game;
       if (game == null || game.finishReason != null) throw new RoomException("No game in progress");
+      if (room.intro != null) throw new RoomException("La partida todavía no ha empezado.");
       var member = room.members.get(playerId);
       if (member == null || member.presence != PresenceStatus.CONNECTED || member.role != MemberRole.PLAYER) {
         throw new RoomException("You cannot act in the current game");
@@ -848,6 +942,7 @@ public class RoomCoordinator {
     if (room.game != game || game.finishReason != null) return false;
     game.finishReason = reason;
     room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
+    clearIntro(room);
     cancelPresenceGraces(room);
     return true;
   }
@@ -987,7 +1082,7 @@ public class RoomCoordinator {
       return;
     }
     var game = room.game;
-    if (game == null || game.finishReason != null) return;
+    if (game == null || game.finishReason != null || room.intro != null) return;
     var previousEpoch = game.engine.getLifecycle(game.state).actionEpoch();
     game.state = game.engine.handleTimeout(game.state, context(room));
     if (game.engine.hasCursorChannel() && (!game.engine.getLifecycle(game.state).actionEpoch().equals(previousEpoch)
@@ -1014,6 +1109,11 @@ public class RoomCoordinator {
     }
     var game = room.game;
     if (game != null && game.finishReason == null && resolveUnanimousGameSkip(room, game)) return;
+    if (room.intro != null) {
+      // El motor aún no ha arrancado: solo cambia quién falta por saltar la intro.
+      if (!resolveUnanimousIntroSkip(room)) broadcast(room);
+      return;
+    }
     if (game != null && game.engine.hasPresenceHandler()) {
       game.state = game.engine.handlePresenceChange(game.state, context(room));
       syncAndBroadcast(room, game);
@@ -1129,6 +1229,7 @@ public class RoomCoordinator {
     }
     if (resetSession) {
       room.gamesPlayed = 0;
+      room.introducedGameIds.clear();
       room.sessionHistory = new ArrayList<>();
       var participants = new LinkedHashMap<String, SessionParticipant>();
       for (var member : room.members.values()) {
@@ -1137,6 +1238,7 @@ public class RoomCoordinator {
       room.sessionParticipants = participants;
     }
     cancelPresenceGraces(room);
+    clearIntro(room);
     room.game = null;
     room.nextGameVote = null;
     room.phase = RoomPhase.LOBBY;
@@ -1174,6 +1276,7 @@ public class RoomCoordinator {
         room.sessionParticipants.values().stream().map(participant -> participant.sessionPoints).toList())) {
       room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
       cancelPresenceGraces(room);
+      clearIntro(room);
       room.game = null;
       room.nextGameVote = null;
       room.phase = RoomPhase.SESSION_RESULTS;

@@ -20,6 +20,8 @@ public record GameManifest(
     @Nullable Integer maxPlayers,
     /** Ms durante los que una desconexión no llega al motor; nunca alarga un plazo. */
     @Nullable Integer presenceGraceMs,
+    /** Ms de intro en {@code GAME_STARTING} antes de arrancar el motor, la primera vez en la sesión de la sala. */
+    @Nullable Long introMs,
     ProfileStatsDefinition profileStats,
     Map<String, Object> defaultConfig) {
 

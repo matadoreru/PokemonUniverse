@@ -220,6 +220,30 @@ export async function iniciarPartida(host: Page, invitados: readonly Page[]): Pr
   await host.getByRole('button', { name: 'Empezar partida' }).click();
 }
 
+/** Pantalla de intro de partida (`frontend/src/room/GameIntro.tsx`): una región «Intro de <juego>». */
+export function introDePartida(page: Page): Locator {
+  return page.getByRole('region', { name: /^Intro de / });
+}
+
+/**
+ * Intro de partida (Fase 2): los 6 primeros minijuegos esperan en `GAME_STARTING` hasta que todos los jugadores
+ * conectados pulsan «Saltar» (o 10 s). Espera a que cada página salga del lobby, pulsa «Saltar» en las que muestran
+ * la intro y espera a que todas la dejen atrás, en 15 s como máximo en total. Sin intro, vuelve enseguida.
+ */
+export async function saltarIntro(pages: readonly Page[]): Promise<void> {
+  const limite = Date.now() + 15_000;
+  const resto = () => Math.max(1, limite - Date.now());
+  // Al salir del lobby la página pinta la intro o el juego en el mismo render: no hay estado intermedio.
+  for (const page of pages) await expect(page.getByRole('heading', { name: 'Lobby de la sala' })).toBeHidden({ timeout: resto() });
+  for (const page of pages) {
+    const intro = introDePartida(page);
+    if (!(await intro.isVisible())) continue;
+    // La intro puede acabar entre la comprobación y el clic (plazo o el último en saltar): no es un fallo.
+    await intro.getByRole('button', { name: 'Saltar', exact: true }).click({ timeout: Math.min(3_000, resto()) }).catch(() => undefined);
+  }
+  for (const page of pages) await expect(introDePartida(page)).toBeHidden({ timeout: resto() });
+}
+
 /**
  * Contenedor de PostgreSQL de `compose.local.yaml` (`npm run db:up`). Con otro nombre de proyecto,
  * `PU_E2E_PG_CONTAINER=<nombre>`.

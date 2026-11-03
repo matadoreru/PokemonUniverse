@@ -4,8 +4,10 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -32,6 +34,11 @@ public final class LiveRoom {
   public List<SessionGameSummary> sessionHistory = new ArrayList<>();
   public @Nullable GameRuntime game;
   public @Nullable RoomTimer transitionTimer;
+  /** Intro de {@link #game} mientras la sala espera en {@code GAME_STARTING}; {@code null} sin intro. */
+  public @Nullable GameIntro intro;
+  public @Nullable RoomTimer introTimer;
+  /** Juegos ya presentados en esta sesión: la intro solo sale la primera vez. Se vacía al empezar sesión nueva. */
+  public final Set<String> introducedGameIds = new LinkedHashSet<>();
   public final long createdAt;
   public long updatedAt;
 
