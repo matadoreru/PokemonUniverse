@@ -16,6 +16,6 @@ pu:
   rate-limit-disabled: true
   # Directorio temporal (existe, así que no hay aviso de directorio ausente) sin PNG con ids del catálogo de pruebas.
   artwork-dir: ${java.io.tmpdir}
-  # Salas Java en /ws activas (en producción están apagadas hasta el corte 2D).
+  # Salas Java en /ws activas (en producción las enciende compose.yaml).
   rooms:
     enabled: true

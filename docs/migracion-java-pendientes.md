@@ -186,29 +186,35 @@ Lista de comprobación (todo junto, en un mismo despliegue):
   `/api/auth/(guest/custom-avatar|profile/avatar)` (con `/preset`, `/custom` y el `DELETE`) y `/api/rooms/`
   (imágenes y gritos de ronda); `location = /ws` ya existe. La excepción de `proxyFor('java')` ya no existe
   (Tarea 2 de 2D: un único modo).
-- [ ] `BACKEND_DATA_SYNC_ENABLED=true` en el servicio `backend` de compose (con `DATA_SYNC_HOUR`, `DATA_SYNC_MINUTE`,
-  `DATA_SYNC_TIMEZONE`) y `PU_DATA_SYNC_ENABLED=false` en Node, o Node retirado. Nunca los dos a la vez.
-- [ ] `PU_ROOMS_ENABLED=true` (`ROOMS_ENABLED` del backend; hoy `false`, y `/ws` cierra con 4403). Encenderlo
+- [x] `BACKEND_DATA_SYNC_ENABLED=true` en el servicio `backend` de compose (con `DATA_SYNC_HOUR`, `DATA_SYNC_MINUTE`,
+  `DATA_SYNC_TIMEZONE`) y `PU_DATA_SYNC_ENABLED=false` en Node, o Node retirado. Nunca los dos a la vez. (Tarea 4 de
+  2D: Node fuera de compose; el valor es fijo, sin variable `PU_…`.)
+- [x] `PU_ROOMS_ENABLED=true` (`ROOMS_ENABLED` del backend; hoy `false`, y `/ws` cierra con 4403). Encenderlo
   enciende también las cargas de arranque de `UserGameConfigLoader` (que **reescribe** las filas de `UserGameConfig`
   cuya migración cambia algo), de las cachés de categorías y dilemas y del catálogo TCG: Node tiene que haber dejado de
-  escribir esas tablas en el mismo despliegue.
+  escribir esas tablas en el mismo despliegue. (Tarea 4 de 2D: `ROOMS_ENABLED: "true"` fijo en compose, para que un
+  `.env` antiguo con `PU_ROOMS_ENABLED=false` no lo apague; Node ya no está en compose.)
 - [ ] Antes de añadir `location /api/admin/` en nginx, sondear la normalización de rutas del `AdminGate` a través de
   nginx y de Micronaut: barra final (`/api/admin/`, `/api/admin/users/`), dobles barras (`//api/admin/users`,
   `/api//admin/users`), escapes (`/api/%61dmin/users`) y mayúsculas (`/api/ADMIN/users`). Cada variante debe acabar en
   401/403 o en 404, nunca en un 200 sin guardia ni en Node.
-- [ ] Arranque con el data-sync encendido y el catálogo vacío (`ensureInitialPokemon` sincroniza PokéAPI antes de
+- [x] Arranque con el data-sync encendido y el catálogo vacío (`ensureInitialPokemon` sincroniza PokéAPI antes de
   aceptar peticiones y la TCG inicial corre en segundo plano): sin probar de punta a punta en Java, y en 2D pasa a ser
-  el camino de producción (healthcheck y `--wait-timeout` del despliegue incluidos).
+  el camino de producción (healthcheck y `--wait-timeout` del despliegue incluidos). (Tarea 4 de 2D:
+  `config/ComposeStartupTest` con el entorno de compose y PokéAPI/TCGdex grabados; medida real de 107 s hasta la
+  readiness y `start_period: 5m` en `DEPLOY.md`; `--wait-timeout` ≥ 450 s, hoy 600 s.)
 - [ ] `ClientAddress` toma el último salto de `X-Forwarded-For`: solo es fiable detrás de nginx, que lo fija. Exponer el
   backend directamente, o añadir otro proxy a la cadena, lo invalida para los limitadores.
 - [ ] La ruta de humo de Node de `scripts/deploy.sh` (`/api/tcg/options`) pasa a Java: elegir otra ruta de Node o
   quitar la comprobación si Node se retira.
-- [ ] `INTERRUPT_STALE_ROOMS=true` (`pu.interrupt-stale-rooms`): al arrancar marca `INTERRUPTED`/`SERVER_STOPPED` las
+- [x] `INTERRUPT_STALE_ROOMS=true` (`pu.interrupt-stale-rooms`): al arrancar marca `INTERRUPTED`/`SERVER_STOPPED` las
   filas `RoomHistory` `ACTIVE` y `GameHistory` `IN_PROGRESS` que dejó el proceso anterior (`interruptStaleActivity` de
   Node). Apagado por defecto porque, mientras Node sirva salas sobre la misma BD, cada arranque de Java interrumpiría
-  las salas vivas de Node. Al activarlo hay que dejar de servir salas desde Node.
-- [ ] Artworks: compose define `POKEMON_ARTWORK_DIR` (`/data/pokemon-artworks`) pero no monta nada; copiar los PNG a la
-  imagen del backend o compartir un volumen con Node (que los lleva dentro de la suya).
+  las salas vivas de Node. Al activarlo hay que dejar de servir salas desde Node. (Tarea 4 de 2D: fijo en compose;
+  `ComposeStartupTest` siembra filas abiertas y comprueba que un arranque las interrumpe.)
+- [x] Artworks: compose define `POKEMON_ARTWORK_DIR` (`/data/pokemon-artworks`) pero no monta nada; copiar los PNG a la
+  imagen del backend o compartir un volumen con Node (que los lleva dentro de la suya). (Tarea 4 de 2D:
+  `backend/assets/pokemon-artworks` → `/app/pokemon-artworks` en la imagen.)
 - [ ] Prueba de humo arm64 del codificador WebP: ejecutar una subida de avatar en la imagen `linux/arm64` (QEMU en CI o
   máquina arm64); hoy solo se comprobó en amd64.
 - [ ] Imagen nativa: AWT (ImageIO), ICU4J, los SPI de TwelveMonkeys y `webp-imageio` (JNI con `System.load` y Kotlin

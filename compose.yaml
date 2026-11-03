@@ -33,51 +33,6 @@ services:
         max-size: 10m
         max-file: "3"
 
-  server:
-    image: "${PU_SERVER_IMAGE:-ghcr.io/matadoreru/pokemon-universe-server}:${PU_IMAGE_TAG:-latest}"
-    container_name: "${PU_COMPOSE_PROJECT_NAME:-pokemon-universe}-server"
-    restart: unless-stopped
-    environment:
-      NODE_ENV: production
-      PORT: "3001"
-      WEB_ORIGIN: "${PU_PUBLIC_ORIGIN:?Define PU_PUBLIC_ORIGIN en .env}"
-      DATABASE_URL: "postgresql://${PU_POSTGRES_USER:-pokemon}:${PU_POSTGRES_PASSWORD:?Define PU_POSTGRES_PASSWORD en .env}@postgres:5432/${PU_POSTGRES_DB:-pokemon_universe}?schema=public"
-      JWT_SECRET: "${PU_JWT_SECRET:?Define PU_JWT_SECRET en .env}"
-      COOKIE_SECURE: "${PU_SECURE_COOKIE:-true}"
-      ROOM_MAX_PLAYERS: "${PU_ROOM_MAX_PLAYERS:-8}"
-      RECONNECT_GRACE_MS: "${PU_RECONNECT_GRACE_MS:-30000}"
-      AVATAR_STORAGE_DIR: "/data/avatars"
-      DATA_SYNC_ENABLED: "${PU_DATA_SYNC_ENABLED:-true}"
-      DATA_SYNC_HOUR: "${PU_DATA_SYNC_HOUR:-6}"
-      DATA_SYNC_MINUTE: "${PU_DATA_SYNC_MINUTE:-0}"
-      DATA_SYNC_TIMEZONE: "${PU_DATA_SYNC_TIMEZONE:-Europe/Madrid}"
-    volumes:
-      - pokemon_universe_avatar_data:/data/avatars
-    depends_on:
-      postgres:
-        condition: service_healthy
-    read_only: true
-    tmpfs:
-      - /tmp:size=32m,mode=1777
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    pids_limit: 150
-    labels:
-      - "com.centurylinklabs.watchtower.enable=${PU_WATCHTOWER_ENABLE:-false}"
-    healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
-      interval: 30s
-      timeout: 5s
-      # The first boot populates normalized learnsets and evolution metadata.
-      # Healthy responses still complete startup immediately; failures are only
-      # ignored while that one-off synchronization is running.
-      start_period: 5m
-      retries: 3
-    stop_grace_period: 20s
-    logging: *logging
-
   backend:
     image: "${PU_BACKEND_IMAGE:-ghcr.io/matadoreru/pokemon-universe-backend}:${PU_IMAGE_TAG:-latest}"
     container_name: "${PU_COMPOSE_PROJECT_NAME:-pokemon-universe}-backend"
@@ -92,19 +47,24 @@ services:
       WEB_ORIGIN: "${PU_PUBLIC_ORIGIN:?Define PU_PUBLIC_ORIGIN en .env}"
       COOKIE_SECURE: "${PU_SECURE_COOKIE:-true}"
       AVATAR_STORAGE_DIR: "/data/avatars"
-      # PNG del modo Artwork (local-artwork:<id>). Opcional: si el directorio no existe, el catálogo visual de Java
-      # queda vacío con un aviso (Node los lleva dentro de su imagen); hasta el corte 2D solo afecta a salas Java.
-      POKEMON_ARTWORK_DIR: "${PU_POKEMON_ARTWORK_DIR:-/data/pokemon-artworks}"
-      # Salas Java en /ws: apagadas (cierre 4403) hasta el corte 2D, que pone PU_ROOMS_ENABLED=true.
-      ROOMS_ENABLED: "${PU_ROOMS_ENABLED:-false}"
+      ROOM_MAX_PLAYERS: "${PU_ROOM_MAX_PLAYERS:-8}"
+      RECONNECT_GRACE_MS: "${PU_RECONNECT_GRACE_MS:-30000}"
+      # PNG del modo Artwork (local-artwork:<id>), copiados en la imagen desde backend/assets/pokemon-artworks.
+      POKEMON_ARTWORK_DIR: "/app/pokemon-artworks"
+      # Java es el único servidor: salas en /ws, salas y partidas abiertas por el proceso anterior marcadas
+      # INTERRUPTED al arrancar, y sincronización con PokéAPI y TCGdex. Valores fijos, no ${PU_…}: un .env antiguo
+      # con PU_ROOMS_ENABLED=false (el valor de antes del corte 2D) no puede volver a apagarlos.
+      ROOMS_ENABLED: "true"
+      INTERRUPT_STALE_ROOMS: "true"
+      BACKEND_DATA_SYNC_ENABLED: "true"
+      DATA_SYNC_HOUR: "${PU_DATA_SYNC_HOUR:-6}"
+      DATA_SYNC_MINUTE: "${PU_DATA_SYNC_MINUTE:-0}"
+      DATA_SYNC_TIMEZONE: "${PU_DATA_SYNC_TIMEZONE:-Europe/Madrid}"
     volumes:
       - pokemon_universe_avatar_data:/data/avatars
+    # Flyway crea o reconoce el esquema al arrancar: solo hace falta PostgreSQL.
     depends_on:
       postgres:
-        condition: service_healthy
-      # Node aplica las migraciones Prisma antes de estar sano; Flyway hace
-      # baseline sobre ese esquema, así que el backend arranca después.
-      server:
         condition: service_healthy
     read_only: true
     tmpfs:
@@ -120,7 +80,10 @@ services:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health/readiness"]
       interval: 30s
       timeout: 5s
-      start_period: 60s
+      # Con el catálogo vacío (despliegue nuevo), ensureInitialPokemon sincroniza PokéAPI antes de abrir el puerto:
+      # 107 s medidos en local (DEPLOY.md); 5 min dan margen para arm64 y una PokéAPI lenta. Un arranque sano pasa
+      # a healthy en el primer chequeo que responde, sin esperar al final del periodo.
+      start_period: 5m
       retries: 3
     stop_grace_period: 20s
     logging: *logging
@@ -132,8 +95,6 @@ services:
     ports:
       - "127.0.0.1:${PU_HOST_PORT:-8080}:8080"
     depends_on:
-      server:
-        condition: service_healthy
       backend:
         condition: service_healthy
     read_only: true

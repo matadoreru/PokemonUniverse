@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 
 /**
@@ -17,22 +18,23 @@ import java.util.concurrent.Executors;
  * ({@code /v2/en/cards/base1-4} → {@code api/v2/en/cards/base1-4.json}). Con {@link #refreshPrices(boolean)} las
  * respuestas de {@code refresh/api/} tienen prioridad (precios nuevos para PRICE_REFRESH). Registra cada ruta pedida.
  */
-final class TcgDexFixtureServer implements AutoCloseable {
+public final class TcgDexFixtureServer implements AutoCloseable {
 
   private static final String ROOT = "/datasync/tcgdex";
 
   private final HttpServer server;
   private final List<String> requests = Collections.synchronizedList(new ArrayList<>());
   private volatile boolean refresh;
+  private volatile CountDownLatch gate = new CountDownLatch(0);
 
-  TcgDexFixtureServer() throws IOException {
+  public TcgDexFixtureServer() throws IOException {
     server = HttpServer.create(new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0);
     server.createContext("/", this::handle);
     server.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
     server.start();
   }
 
-  TcgDexUrls urls() {
+  public TcgDexUrls urls() {
     return new TcgDexUrls("http://127.0.0.1:" + server.getAddress().getPort() + "/v2/en");
   }
 
@@ -50,10 +52,21 @@ final class TcgDexFixtureServer implements AutoCloseable {
     refresh = value;
   }
 
+  /** Retiene cada respuesta hasta que se abra {@code value} (la inicial de TCG queda en curso mientras tanto). */
+  public void hold(CountDownLatch value) {
+    gate = value;
+  }
+
   private void handle(HttpExchange exchange) throws IOException {
     var path = exchange.getRequestURI().getPath();
     requests.add(exchange.getRequestURI().getRawPath());
     try (exchange) {
+      try {
+        gate.await();
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        return;
+      }
       byte[] body = null;
       for (var prefix : refresh ? List.of("/refresh/api", "/api") : List.of("/api")) {
         try (InputStream in = TcgDexFixtureServer.class.getResourceAsStream(ROOT + prefix + path + ".json")) {

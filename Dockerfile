@@ -21,7 +21,6 @@ RUN npm ci \
     && npm run db:generate
 COPY packages/shared/src ./packages/shared/src
 COPY apps/server/src ./apps/server/src
-COPY apps/server/assets ./apps/server/assets
 COPY frontend/src ./frontend/src
 COPY frontend/public ./frontend/public
 COPY frontend/index.html ./frontend/index.html
@@ -41,7 +40,6 @@ COPY --from=build /app/packages/shared/dist ./packages/shared/dist
 COPY --from=build /app/apps/server/package.json ./apps/server/package.json
 COPY --from=build /app/apps/server/node_modules ./apps/server/node_modules
 COPY --from=build /app/apps/server/dist ./apps/server/dist
-COPY --from=build /app/apps/server/assets ./apps/server/assets
 COPY --from=build /app/apps/server/prisma ./apps/server/prisma
 COPY --chmod=755 scripts/start-server.sh /usr/local/bin/start-pokemon-universe
 RUN mkdir -p /data/avatars && chown -R node:node /data

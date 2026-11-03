@@ -17,7 +17,8 @@ import javax.sql.DataSource;
  * Sincronización de Pokémon ({@code PokemonDataSync} de {@code index.ts}): el adaptador {@code POKEAPI} del data-sync y
  * el recuento de paletas que usa {@code ensureInitialPokemon}. Construirlos no hace ninguna petición; solo
  * {@link DataSyncStartup} (con {@code pu.data-sync.enabled}) o la administración los ponen en marcha. Producción usa
- * los totales de Node ({@link SeederLimits#PRODUCTION}).
+ * los totales de Node ({@link SeederLimits#PRODUCTION}), expuestos como bean para que las pruebas de arranque los
+ * sustituyan por los de la PokéAPI grabada.
  */
 @Factory
 @Requires(beans = DataSource.class)
@@ -36,9 +37,14 @@ public class PokemonDataSyncBeans {
   }
 
   @Singleton
+  SeederLimits seederLimits() {
+    return SeederLimits.PRODUCTION;
+  }
+
+  @Singleton
   PokemonDataSync pokemonDataSync(PokemonCatalogStore store, PokemonCatalogSeeder seeder, PokemonPaletteSync palettes,
-      SyncHttpClient http, Clock clock, PuConfig.DataSync config) {
-    return new PokemonDataSync(store, seeder, palettes, http, new PokeApiUrls(config.pokeapiBaseUrl()),
-        SeederLimits.PRODUCTION, clock);
+      SyncHttpClient http, Clock clock, PuConfig.DataSync config, SeederLimits limits) {
+    return new PokemonDataSync(store, seeder, palettes, http, new PokeApiUrls(config.pokeapiBaseUrl()), limits,
+        clock);
   }
 }

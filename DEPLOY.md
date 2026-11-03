@@ -15,18 +15,16 @@ Cloudflare Tunnel → 127.0.0.1:8080 → pokemon-universe-web (nginx)
                            volumen pokemon_universe_postgres_data
 ```
 
-El servicio `backend` (Java, Micronaut) atiende solo las rutas de la etapa 1 descritas en `docs/architecture.md` y,
-desde 2C, `GET /api/health`; nginx las enruta a él y el resto sigue en `server` (las demás rutas que Java ya porta,
-como administración, TCG, categorías, dilemas y subida de avatares, no se enrutan hasta el corte 2D). Comparte con `server` el volumen de avatares (`pokemon_universe_avatar_data`,
-uid/gid 1000 en ambos) y el secreto `PU_JWT_SECRET`. Arranca después de que `server` esté sano, porque Node aplica las
-migraciones Prisma y Flyway hace baseline sobre ese esquema. No hace falta ninguna variable nueva salvo `PU_BACKEND_IMAGE`
-(con valor por defecto igual al de `.env.example`). `PU_ROOMS_ENABLED` (`ROOMS_ENABLED` del backend) vale `false` por
-defecto: el `/ws` de Java cierra cada conexión con 4403 y las salas siguen en Node; el corte 2D lo pone a `true`.
-`PU_POKEMON_ARTWORK_DIR` (opcional, `/data/pokemon-artworks`) no tiene volumen montado, así que las salas Java no tienen
-artworks locales; solo importa a partir del corte 2D.
-El data-sync de Java (`BACKEND_DATA_SYNC_ENABLED`, no definido en compose, así que `false`) está apagado: PokéAPI y
-TCGdex los sigue sincronizando Node (`PU_DATA_SYNC_ENABLED`). Es una variable distinta a propósito, para que nunca
-sincronicen los dos procesos la misma BD; el corte 2D la pone a `true` en `backend` y apaga o retira la de Node.
+Desde el corte 2D, `compose.yaml` ya no tiene el servicio `server` (Node): el `backend` (Java, Micronaut) es el único
+servidor. Solo depende de `postgres`: Flyway crea el esquema en una BD vacía o reconoce el de Prisma (baseline 1). Usa
+el volumen de avatares (`pokemon_universe_avatar_data`, uid/gid 1000, el mismo que tenía Node) y el secreto
+`PU_JWT_SECRET`. Lleva fijos en compose, sin variable `PU_…`, tres interruptores que en el código valen `false`:
+`ROOMS_ENABLED=true` (salas en `/ws`), `INTERRUPT_STALE_ROOMS=true` (al arrancar marca `INTERRUPTED`/`SERVER_STOPPED`
+las salas `ACTIVE` y las partidas `IN_PROGRESS` que dejó el proceso anterior) y `BACKEND_DATA_SYNC_ENABLED=true`
+(PokéAPI y TCGdex, a diario a `PU_DATA_SYNC_HOUR`:`PU_DATA_SYNC_MINUTE` en `PU_DATA_SYNC_TIMEZONE`). Son fijos para
+que un `.env` anterior al corte, con `PU_ROOMS_ENABLED=false`, no los apague; `PU_ROOMS_ENABLED`,
+`PU_DATA_SYNC_ENABLED` y `PU_SERVER_IMAGE` ya no se leen y se pueden borrar del `.env`. Los artworks del modo Artwork
+van dentro de la imagen (`backend/assets/pokemon-artworks` → `/app/pokemon-artworks`, `POKEMON_ARTWORK_DIR`).
 Para escribir avatares (WebP) el backend carga la libwebp nativa de `webp-imageio`: la extrae a `/tmp` y, si el tmpfs
 es `noexec`, escribe una vez «Failed to load native library…» en stderr y la carga desde `/app/native` (copiada en la
 imagen para la arquitectura de destino). No hace falta cambiar la base Alpine ni el `tmpfs` del compose.
@@ -107,7 +105,6 @@ Usa los dos valores aleatorios como contraseña PostgreSQL y secreto JWT. Config
 ```env
 PU_HOST_PORT=8080
 PU_IMAGE_TAG=latest
-PU_SERVER_IMAGE=ghcr.io/matadoreru/pokemon-universe-server
 PU_WEB_IMAGE=ghcr.io/matadoreru/pokemon-universe-web
 PU_BACKEND_IMAGE=ghcr.io/matadoreru/pokemon-universe-backend
 PU_POSTGRES_DB=pokemon_universe
@@ -116,7 +113,6 @@ PU_POSTGRES_PASSWORD=CONTRASENA_HEXADECIMAL_ALEATORIA
 PU_JWT_SECRET=SECRETO_HEXADECIMAL_ALEATORIO
 PU_PUBLIC_ORIGIN=https://pokemon.example.com
 PU_SECURE_COOKIE=true
-PU_ROOMS_ENABLED=false
 PU_WATCHTOWER_ENABLE=false
 ```
 
@@ -141,8 +137,18 @@ etapa 1 construye las tres imágenes (aún no hay Main verde), así que basta co
 `latest` solo se mueve al promocionar a PRO (`promote-production.yml` reetiqueta también el backend); por eso un servidor
 con `PU_IMAGE_TAG=latest` no puede arrancar el backend hasta la primera promoción: despliega por SHA o `pre`.
 
-Al arrancar, `server` aplica las migraciones Prisma antes de aceptar tráfico y descarga una sola vez las 1.025 especies.
-En reinicios posteriores detecta el catálogo completo y continúa sin consultar PokéAPI.
+Al arrancar, el `backend` aplica las migraciones Flyway y, con el catálogo vacío, sincroniza PokéAPI
+(`ensureInitialPokemon`) **antes** de abrir el puerto, así que `/health/readiness` no responde hasta que termina; la
+sincronización inicial de TCGdex sigue después en segundo plano y no retrasa el arranque. En reinicios posteriores
+detecta el catálogo completo (≥ 1.025 especies y suficientes paletas persistidas) y continúa sin consultar PokéAPI.
+
+Medida (2026-11-03, BD vacía desechable, PokéAPI real, jar de producción con `MICRONAUT_ENVIRONMENTS=prod` en un
+escritorio x86-64 de 12 núcleos): PokéAPI INITIAL 100,8 s (1.083 Pokémon con formas), `/health/readiness` en 200 a los
+106,7 s de lanzar el proceso; la inicial de TCGdex, ya en segundo plano, tardó 434,6 s (23.771 cartas). Por eso el healthcheck del
+backend (compose y `HEALTHCHECK` de la imagen) usa `start_period: 5m` (≈ 2,8 veces lo medido, margen para arm64 y una
+PokéAPI lenta); un arranque sano pasa a healthy en el primer chequeo que responde. El `--wait-timeout` del despliegue
+tiene que superar `start_period` + `interval` × `retries` = 300 + 30 × 3 = 390 s más la descarga de imágenes: los 600 s
+de `PU_DEPLOY_WAIT_SECONDS` bastan; no lo bajes de 450 s.
 
 En Cloudflare Tunnel configura el hostname público para enviar tráfico HTTP a `http://127.0.0.1:8080`. Socket.IO usa
 el mismo origen y la ruta `/socket.io/`, por lo que no necesita otro túnel ni puerto. `PU_PUBLIC_ORIGIN` debe coincidir
@@ -189,8 +195,8 @@ backup ni healthcheck rompe las garantías anteriores.
 
 ### Salas activas
 
-En la arquitectura actual las salas y sus temporizadores viven en memoria. Reiniciar `server` conserva cuentas y
-estadísticas, pero termina las salas activas. Programa el despliegue entre sesiones y avisa a los jugadores. Para hacer
+En la arquitectura actual las salas y sus temporizadores viven en memoria. Reiniciar `backend` conserva cuentas y
+estadísticas, pero termina las salas activas: al arrancar, el proceso nuevo las marca `INTERRUPTED` en el historial. Programa el despliegue entre sesiones y avisa a los jugadores. Para hacer
 rolling deployments sin perder salas hay que implementar el adaptador Redis documentado en `docs/architecture.md`.
 
 ## 6. Desarrollo local con Docker

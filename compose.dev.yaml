@@ -1,10 +1,4 @@
 services:
-  server:
-    build:
-      context: .
-      target: server
-    image: pokemon-universe-server:dev
-
   web:
     build:
       context: .

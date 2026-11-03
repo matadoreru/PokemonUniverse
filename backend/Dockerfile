@@ -33,13 +33,16 @@ COPY --from=build ${LAYERS}/project_libs /app/libs
 COPY --from=build ${LAYERS}/resources /app/resources
 COPY --from=build ${LAYERS}/app/application.jar /app/app.jar
 COPY --from=build /src/native /app/native
-# uid/gid 1000 coincide con el usuario `node` de la imagen del servidor Node,
-# que escribe los avatares en el volumen compartido con modo 0600: el backend
-# necesita el mismo uid para leerlos y borrarlos.
+# PNG del modo Artwork (POKEMON_ARTWORK_DIR=/app/pokemon-artworks en compose). De root y solo lectura: COPY deja
+# 644/755, legibles por el uid 1000.
+COPY assets/pokemon-artworks /app/pokemon-artworks
+# uid/gid 1000: el del usuario `node` de la antigua imagen de Node, dueño de los
+# avatares ya guardados (modo 0600) en el volumen; el backend los lee y borra.
 RUN mkdir -p /data/avatars && chown -R 1000:1000 /data
 USER 1000:1000
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+# start-period como compose.yaml: la primera sincronización de PokéAPI (BD vacía) precede a la readiness.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5m --retries=3 \
   CMD wget -qO- http://127.0.0.1:8080/health/readiness || exit 1
 # webp-imageio llama a System.load: acceso nativo explícito (sin el aviso de Java 24+ y sin fallo cuando se bloquee).
 ENTRYPOINT ["java", "--enable-native-access=ALL-UNNAMED", "-jar", "/app/app.jar"]

@@ -67,23 +67,25 @@ pu:
   web-origin: ${WEB_ORIGIN:http://localhost:5173}
   rate-limit-disabled: ${RATE_LIMIT_DISABLED:false}
   avatar-storage-dir: ${AVATAR_STORAGE_DIR:.data/avatars}
-  # PNG del modo Artwork (local-artwork:<id>); en dev, el mismo directorio que indexa Node.
-  artwork-dir: ${POKEMON_ARTWORK_DIR:../apps/server/assets/pokemon-artworks}
+  # PNG del modo Artwork (local-artwork:<id>). Relativo a backend/, desde donde se ejecuta dev:backend; la imagen los
+  # copia en /app/pokemon-artworks y compose fija POKEMON_ARTWORK_DIR.
+  artwork-dir: ${POKEMON_ARTWORK_DIR:assets/pokemon-artworks}
   commit-sha: ${PU_COMMIT_SHA:}
   room-max-players: ${ROOM_MAX_PLAYERS:8}
   reconnect-grace-ms: ${RECONNECT_GRACE_MS:30000}
-  # Marca INTERRUPTED las salas/partidas abiertas al arrancar. Activar en el cutover 2D cuando Java sea el único
-  # dueño de las salas; antes rompería el historial de las salas vivas de Node sobre la misma base de datos.
+  # Los tres interruptores de producción (INTERRUPT_STALE_ROOMS, ROOMS_ENABLED y BACKEND_DATA_SYNC_ENABLED) valen
+  # false por defecto y compose.yaml los fija a true: un arranque suelto (pruebas, ./gradlew run, un jar en otra BD)
+  # no interrumpe salas ajenas, no abre /ws ni sincroniza PokéAPI sin pedirlo. dev y test encienden las salas.
+  # Marca INTERRUPTED las salas/partidas que dejó abiertas el proceso anterior (interruptStaleActivity de Node).
   interrupt-stale-rooms: ${INTERRUPT_STALE_ROOMS:false}
   rooms:
-    # Salas en Java (/ws). Apagadas en producción durante la etapa 2A: /ws cierra con 4403 sin tocar el coordinador.
-    # Activas en dev y test; el corte 2D pone ROOMS_ENABLED=true en compose.
+    # Salas en Java (/ws); apagadas, /ws cierra con 4403 sin tocar el coordinador.
     enabled: ${ROOMS_ENABLED:false}
   data-sync:
-    # Sincronización con PokéAPI y TCGdex. Apagada mientras Node sea el dueño (etapa 2C): con false no corre el
-    # planificador, ni la sincronización inicial, ni se marcan como fallidas las ejecuciones de otro proceso.
-    # Variable propia (no DATA_SYNC_ENABLED, que es la de Node): exportar el .env de Node al proceso Java no arranca
-    # un segundo sincronizador sobre la misma BD. En el corte 2D pasa a true y Node deja de sincronizar.
+    # Sincronización con PokéAPI y TCGdex: con false no corre el planificador, ni la sincronización inicial
+    # (ensureInitialPokemon, que bloquea el arranque con el catálogo vacío), ni se marcan como fallidas ejecuciones
+    # interrumpidas. En dev se enciende a mano (npm run db:seed) para no sincronizar en cada arranque. Variable propia
+    # (no DATA_SYNC_ENABLED, la del oráculo Node): exportar un .env de Node al proceso Java no la enciende.
     enabled: ${BACKEND_DATA_SYNC_ENABLED:false}
     hour: ${DATA_SYNC_HOUR:6}
     minute: ${DATA_SYNC_MINUTE:0}
