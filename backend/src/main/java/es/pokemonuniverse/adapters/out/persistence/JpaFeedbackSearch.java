@@ -1,10 +1,8 @@
 package es.pokemonuniverse.adapters.out.persistence;
 
-import es.pokemonuniverse.domain.feedback.FeedbackReference;
+import es.pokemonuniverse.application.feedback.FeedbackFilters;
 import es.pokemonuniverse.domain.feedback.FeedbackStatus;
-import es.pokemonuniverse.domain.feedback.FeedbackType;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.core.annotation.Nullable;
 import jakarta.inject.Singleton;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -24,10 +22,6 @@ import javax.sql.DataSource;
 @Requires(beans = DataSource.class)
 public class JpaFeedbackSearch {
 
-  /** Filtros de la lista; {@code search} vacío no filtra. */
-  public record Filters(@Nullable FeedbackReference reference, @Nullable FeedbackStatus status,
-      @Nullable FeedbackType type, String search) {}
-
   private final EntityManager entityManager;
 
   public JpaFeedbackSearch(EntityManager entityManager) {
@@ -35,7 +29,7 @@ public class JpaFeedbackSearch {
   }
 
   @Transactional
-  public List<FeedbackEntity> list(Filters filters, int offset, int limit) {
+  public List<FeedbackEntity> list(FeedbackFilters filters, int offset, int limit) {
     return query("select f from FeedbackEntity f", " order by f.createdAt desc", filters, FeedbackEntity.class)
         .setFirstResult(offset)
         .setMaxResults(limit)
@@ -43,7 +37,7 @@ public class JpaFeedbackSearch {
   }
 
   @Transactional
-  public long count(Filters filters) {
+  public long count(FeedbackFilters filters) {
     return query("select count(f) from FeedbackEntity f", "", filters, Long.class).getSingleResult();
   }
 
@@ -57,7 +51,7 @@ public class JpaFeedbackSearch {
     return Optional.of(entity);
   }
 
-  private <T> TypedQuery<T> query(String select, String order, Filters filters, Class<T> type) {
+  private <T> TypedQuery<T> query(String select, String order, FeedbackFilters filters, Class<T> type) {
     var clauses = new ArrayList<String>();
     Map<String, Object> params = new LinkedHashMap<>();
     if (filters.reference() != null) {

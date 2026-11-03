@@ -5,7 +5,10 @@ import static es.pokemonuniverse.adapters.in.rest.admin.AdminTestSupport.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import es.pokemonuniverse.adapters.out.persistence.ChangelogEntity;
+import es.pokemonuniverse.adapters.out.persistence.ChangelogRepository;
 import es.pokemonuniverse.application.auth.IdentityTokens;
+import es.pokemonuniverse.application.changelog.ChangelogService;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.client.HttpClient;
@@ -33,6 +36,7 @@ class AdminChangelogControllerTest {
   @Inject ObjectMapper mapper;
   @Inject DataSource dataSource;
   @Inject DataSourceResolver resolver;
+  @Inject ChangelogRepository repository;
 
   private AdminTestSupport support;
   private AdminTestSupport.Account admin;
@@ -191,5 +195,17 @@ class AdminChangelogControllerTest {
         admin.cookie());
     assertTrue(body(longId).startsWith("{\"error\":\"Too big: expected string to have <=128 characters\""),
         body(longId));
+  }
+
+  /** La carrera de versiones (comprobación previa superada, INSERT rechazado por la unicidad) también es 409. */
+  @Test
+  void aUniqueViolationOnSaveIsAConflict() throws Exception {
+    var v = version();
+    var now = java.time.Instant.now();
+    repository.save(ChangelogEntity.create("race-a-" + v, v, "Primera", now, false, List.of(Map.of("type", "NEW",
+        "text", "abc")), now));
+    var thrown = org.junit.jupiter.api.Assertions.assertThrows(RuntimeException.class, () -> repository.save(
+        ChangelogEntity.create("race-b-" + v, v, "Segunda", now, false, List.of(), now)));
+    assertTrue(ChangelogService.isUniqueViolation(thrown), thrown.toString());
   }
 }

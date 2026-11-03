@@ -5,10 +5,8 @@ import es.pokemonuniverse.adapters.out.persistence.ChangelogRepository;
 import es.pokemonuniverse.application.errors.ConflictException;
 import es.pokemonuniverse.application.errors.NotFoundException;
 import es.pokemonuniverse.application.time.Clock;
-import io.micronaut.data.exceptions.DataAccessException;
 import io.micronaut.json.tree.JsonNode;
 import jakarta.inject.Singleton;
-import jakarta.persistence.PersistenceException;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -54,7 +52,7 @@ public class ChangelogService {
         input.published(), stored(input.content()), now);
     try {
       return view(repository.save(entity));
-    } catch (DataAccessException | PersistenceException e) {
+    } catch (RuntimeException e) {
       if (isUniqueViolation(e)) throw new ConflictException(DUPLICATE_VERSION);
       throw e;
     }
@@ -71,7 +69,7 @@ public class ChangelogService {
         input.content() == null ? null : stored(input.content()), Instant.ofEpochMilli(clock.now()));
     try {
       return view(repository.update(entity));
-    } catch (DataAccessException | PersistenceException e) {
+    } catch (RuntimeException e) {
       if (isUniqueViolation(e)) throw new ConflictException(DUPLICATE_VERSION);
       throw e;
     }
@@ -96,7 +94,8 @@ public class ChangelogService {
     }).toList();
   }
 
-  private static boolean isUniqueViolation(Throwable error) {
+  /** {@code 23505} en la cadena de causas (P2002 de Prisma). */
+  public static boolean isUniqueViolation(Throwable error) {
     for (Throwable cause = error; cause != null && cause.getCause() != cause; cause = cause.getCause()) {
       if (cause instanceof SQLException sql && UNIQUE_VIOLATION.equals(sql.getSQLState())) return true;
       if (cause instanceof org.hibernate.JDBCException jdbc && UNIQUE_VIOLATION.equals(jdbc.getSQLState())) return true;

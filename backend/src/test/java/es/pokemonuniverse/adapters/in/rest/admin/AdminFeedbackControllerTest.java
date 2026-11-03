@@ -17,6 +17,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.time.LocalDateTime;
 import javax.sql.DataSource;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,6 +43,12 @@ class AdminFeedbackControllerTest {
     support = new AdminTestSupport(client, tokens, mapper, dataSource, resolver);
     admin = support.admin();
     tag = AdminTestSupport.tag();
+  }
+
+  /** La BD de test-resources sobrevive entre ejecuciones: se borra lo sembrado con la etiqueta de la prueba. */
+  @AfterEach
+  void removeSeeds() throws Exception {
+    support.execute("DELETE FROM \"Feedback\" WHERE id LIKE ?", "%-" + tag);
   }
 
   private void feedback(String id, String reference, String gameId, String roomCode, String type, String status,

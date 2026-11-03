@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 import javax.sql.DataSource;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -54,6 +55,16 @@ class AdminReadRoutesTest {
     support = new AdminTestSupport(client, tokens, mapper, dataSource, resolver);
     admin = support.admin();
     tag = AdminTestSupport.tag();
+  }
+
+  /** La BD de test-resources sobrevive entre ejecuciones: se borra lo sembrado con la etiqueta de la prueba. */
+  @AfterEach
+  void removeSeeds() throws Exception {
+    var suffix = "%" + tag;
+    support.execute("DELETE FROM \"GameHistory\" WHERE id LIKE ? OR \"roomCode\" LIKE ?", suffix, suffix + "%");
+    support.execute("DELETE FROM \"RoomHistory\" WHERE id LIKE ? OR \"hostDisplayName\" LIKE ?", suffix,
+        suffix + "%");
+    support.execute("DELETE FROM \"User\" WHERE username LIKE ?", suffix);
   }
 
   /** Marca de tiempo UTC para columnas {@code timestamp(3)} sin zona (como escribe Prisma). */

@@ -62,7 +62,7 @@ public class FeedbackService {
   }
 
   /** Página de la lista de administración, por {@code createdAt} descendente. */
-  public AdminPage<Submitted> list(JpaFeedbackSearch.Filters filters, long page) {
+  public AdminPage<Submitted> list(FeedbackFilters filters, long page) {
     var total = search.count(filters);
     long offset = (page - 1) * AdminPage.PAGE_SIZE;
     if (offset >= total) return new AdminPage<>(java.util.List.of(), page, total);
@@ -72,10 +72,10 @@ public class FeedbackService {
 
   public Overview overview() {
     return new Overview(
-        search.count(new JpaFeedbackSearch.Filters(null, FeedbackStatus.NEW, FeedbackType.BUG, "")),
-        search.count(new JpaFeedbackSearch.Filters(null, FeedbackStatus.NEW, FeedbackType.SUGGESTION, "")),
-        search.count(new JpaFeedbackSearch.Filters(null, FeedbackStatus.REVIEWING, null, "")),
-        search.count(new JpaFeedbackSearch.Filters(null, FeedbackStatus.RESOLVED, null, "")));
+        search.count(new FeedbackFilters(null, FeedbackStatus.NEW, FeedbackType.BUG, "")),
+        search.count(new FeedbackFilters(null, FeedbackStatus.NEW, FeedbackType.SUGGESTION, "")),
+        search.count(new FeedbackFilters(null, FeedbackStatus.REVIEWING, null, "")),
+        search.count(new FeedbackFilters(null, FeedbackStatus.RESOLVED, null, "")));
   }
 
   public Submitted updateStatus(String id, FeedbackStatus status) {

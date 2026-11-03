@@ -6,9 +6,9 @@ import static es.pokemonuniverse.adapters.in.rest.UserContentRequests.validId;
 import es.pokemonuniverse.adapters.in.rest.ApiError;
 import es.pokemonuniverse.adapters.in.rest.ValidationErrorResponse;
 import es.pokemonuniverse.adapters.in.rest.feedback.FeedbackItemResponse;
-import es.pokemonuniverse.adapters.out.persistence.JpaFeedbackSearch;
 import es.pokemonuniverse.application.admin.AdminPage;
 import es.pokemonuniverse.application.errors.InvalidInputException;
+import es.pokemonuniverse.application.feedback.FeedbackFilters;
 import es.pokemonuniverse.application.feedback.FeedbackService;
 import es.pokemonuniverse.application.validation.ZodIssues;
 import es.pokemonuniverse.domain.feedback.FeedbackReference;
@@ -81,7 +81,7 @@ public class AdminFeedbackController {
     var status = query.enumValue("status", STATUSES);
     var type = query.enumValue("type", TYPES);
     query.done();
-    var filters = new JpaFeedbackSearch.Filters(reference == null ? null : FeedbackReference.valueOf(reference),
+    var filters = new FeedbackFilters(reference == null ? null : FeedbackReference.valueOf(reference),
         status == null ? null : FeedbackStatus.valueOf(status), type == null ? null : FeedbackType.valueOf(type),
         search);
     var result = service.list(filters, page);
