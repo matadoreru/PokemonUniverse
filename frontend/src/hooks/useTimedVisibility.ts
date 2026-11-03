@@ -22,3 +22,18 @@ export function useTimedVisibility(holdMs: number, armKey: string, onDone?: () =
   useEffect(() => scheduleHide(holdMs, () => { setHiddenKey(armKey); onDoneRef.current?.(); }), [holdMs, armKey]);
   return isArmedVisible(hiddenKey, armKey);
 }
+
+/** El contenido diferido ya puede mostrarse: su temporizador se cumplió para esta clave, o no hay pausa (`immediate`). */
+export function isDelayElapsed(elapsedKey: string | null, armKey: string, immediate: boolean): boolean {
+  return immediate || elapsedKey === armKey;
+}
+
+/**
+ * `true` cuando han pasado `delayMs` desde que se armó `armKey` (o enseguida con `immediate`). Sirve para
+ * montar un contenido tras una pausa en vez de ocultarlo con CSS: hasta entonces no está en el DOM.
+ */
+export function useDelayElapsed(delayMs: number, armKey: string, immediate: boolean): boolean {
+  const [elapsedKey, setElapsedKey] = useState<string | null>(null);
+  useEffect(() => (immediate ? undefined : scheduleHide(delayMs, () => setElapsedKey(armKey))), [delayMs, armKey, immediate]);
+  return isDelayElapsed(elapsedKey, armKey, immediate);
+}

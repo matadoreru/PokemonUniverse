@@ -20,7 +20,7 @@ export function impostorVoteHeadline(result: ImpostorVoteResult, nameOf: (id: st
  */
 export function impostorEliminationCutIn(reveal: ImpostorEliminationReveal, name: string): { tone: 'berry' | 'aqua'; title: string; delayedLine: string } {
   const impostor = reveal.role === 'IMPOSTOR';
-  return { tone: impostor ? 'berry' : 'aqua', title: name, delayedLine: impostor ? '…era el impostor' : '…era inocente' };
+  return { tone: impostor ? 'berry' : 'aqua', title: name, delayedLine: impostor ? '…era impostor' : '…era inocente' };
 }
 
 /** Título de la fase de pistas: sin nadie conectado el orden está vacío y no hay turno que anunciar. */

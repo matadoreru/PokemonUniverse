@@ -230,7 +230,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @keyframes motion-grow-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes motion-flip { from { transform: rotateY(90deg); } to { transform: rotateY(0); } }
 /* Cut-in de cartucho: banda a todo el ancho, centrada en vertical, que no bloquea la pantalla. */
-.reveal-cut-in { position: fixed; inset-inline: 0; top: 0; bottom: 0; z-index: 50; height: fit-content; margin-block: auto; padding: 1rem; pointer-events: none; text-align: center; border-block: 4px solid rgb(var(--cut-in-tone)); background: rgb(var(--color-surface) / .97); box-shadow: var(--shadow-card); }
+.reveal-cut-in { position: fixed; inset-inline: 0; top: 0; bottom: 0; z-index: 50; height: fit-content; margin-block: auto; padding: 1rem; pointer-events: none; text-align: center; border-block: 4px solid rgb(var(--cut-in-tone)); background: rgb(var(--color-surface)); box-shadow: var(--shadow-card); }
 .reveal-cut-in-title { color: rgb(var(--cut-in-text)); }
 .reveal-cut-in-electric, .score-pop-electric { --cut-in-tone: var(--color-electric); --cut-in-text: var(--color-electric); }
 .reveal-cut-in-berry, .score-pop-berry { --cut-in-tone: var(--color-berry); --cut-in-text: var(--color-berry); }

@@ -22,9 +22,23 @@ describe('RevealCutIn', () => {
     expect(markup).toContain('Ash');
   });
 
-  it('renders the delayed line with the 1 s delay class', () => {
-    const markup = renderToStaticMarkup(createElement(RevealCutIn, { tone: 'aqua', title: 'Era…', delayedLine: '…inocente', reducedMotion: false }));
-    expect(markup).toMatch(/class="[^"]*motion-delay-1s[^"]*"[^>]*>…inocente/);
+  it('keeps the delayed line out of the DOM (and the live region) until the 1 s pause ends', () => {
+    const markup = renderToStaticMarkup(createElement(RevealCutIn, { tone: 'aqua', title: 'Ana', delayedLine: '…era inocente', reducedMotion: false }));
+    expect(markup).toContain('Ana');
+    expect(markup).not.toContain('…era inocente');
+  });
+
+  it('renders the delayed line at once with reduced motion', () => {
+    const markup = renderToStaticMarkup(createElement(RevealCutIn, { tone: 'aqua', title: 'Ana', delayedLine: '…era inocente', reducedMotion: true }));
+    expect(markup).toContain('…era inocente');
+  });
+
+  it('switches to the delayed tone only together with the delayed line', () => {
+    const before = renderToStaticMarkup(createElement(RevealCutIn, { tone: 'electric', delayedTone: 'berry', title: 'Ana', delayedLine: '…era impostor', reducedMotion: false }));
+    expect(before).toContain('reveal-cut-in-electric');
+    expect(before).not.toContain('berry');
+    const reduced = renderToStaticMarkup(createElement(RevealCutIn, { tone: 'electric', delayedTone: 'berry', title: 'Ana', delayedLine: '…era impostor', reducedMotion: true }));
+    expect(reduced).toContain('reveal-cut-in-berry');
   });
 
   it('builds the class name from the tone and the motion preference', () => {

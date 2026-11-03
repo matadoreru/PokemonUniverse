@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { isArmedVisible, scheduleHide } from './useTimedVisibility';
+import { isArmedVisible, isDelayElapsed, scheduleHide } from './useTimedVisibility';
 
 describe('useTimedVisibility helpers', () => {
   beforeEach(() => { vi.useFakeTimers(); });
@@ -27,5 +27,12 @@ describe('useTimedVisibility helpers', () => {
     expect(isArmedVisible(null, 'electric|¡Acierto!')).toBe(true);
     expect(isArmedVisible('electric|¡Acierto!', 'electric|¡Acierto!')).toBe(false);
     expect(isArmedVisible('electric|¡Acierto!', 'berry|Eliminado')).toBe(true);
+  });
+
+  it('the delayed content only counts as elapsed for the key whose timer fired, or at once if immediate', () => {
+    expect(isDelayElapsed(null, 'aqua|Ana', false)).toBe(false);
+    expect(isDelayElapsed('aqua|Ana', 'aqua|Ana', false)).toBe(true);
+    expect(isDelayElapsed('aqua|Ana', 'berry|Bruno', false)).toBe(false);
+    expect(isDelayElapsed(null, 'aqua|Ana', true)).toBe(true);
   });
 });
