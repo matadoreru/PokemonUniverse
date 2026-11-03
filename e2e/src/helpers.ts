@@ -103,9 +103,10 @@ export async function layoutProblems(page: Page, name: string, screenshot: boole
     expect(over, `${id}: scroll vertical de página`).toBeLessThanOrEqual(0);
   }
   if (screenshot) await page.screenshot({ path: `screenshots/${id}.png`, animations: 'disabled', fullPage });
-  const m = await measureLayout(page, opts.minFontPx);
+  const minFontPx = opts.minFontPx ?? 12;
+  const m = await measureLayout(page, minFontPx);
   const problems = [
-    ...m.small.map((x) => `< 12 px: ${x}`),
+    ...m.small.map((x) => `< ${minFontPx} px: ${x}`),
     ...m.overlaps.map((x) => `solape: ${x}`),
     ...m.cuts.map((x) => `recorte sin title: ${x}`),
     ...m.clipped.map((x) => `fuera de su caja: ${x}`),

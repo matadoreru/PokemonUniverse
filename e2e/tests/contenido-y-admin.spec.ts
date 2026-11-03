@@ -7,8 +7,8 @@
 import { rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { crc32, deflateSync } from 'node:zlib';
-import { expect, test, type BrowserContext, type Page } from '@playwright/test';
-import { borrarCuentas, collectErrors, comprobarBdE2E, createRoom, nuevaCuenta, promoverAAdmin, registrarPorApi, seleccionarJuego } from '../src/helpers.js';
+import { expect, test, type BrowserContext, type Locator, type Page } from '@playwright/test';
+import { borrarCuentas, capture, collectErrors, comprobarBdE2E, createRoom, nuevaCuenta, promoverAAdmin, registrarPorApi, seleccionarJuego, SIZES } from '../src/helpers.js';
 
 /** Almacén de avatares de desarrollo del backend Java (`application-dev.yml`). */
 const AVATAR_DIR = fileURLToPath(new URL('../../apps/server/.data/avatars/', import.meta.url));
@@ -53,6 +53,16 @@ test.beforeAll(() => {
   comprobarBdE2E();
 });
 
+/** Capturas de revisión del diálogo abierto a los tres tamaños; vuelve a 1280×720 al acabar. */
+async function capturarDialogo(page: Page, nombre: string, dialogo: Locator): Promise<void> {
+  for (const { w, h } of SIZES) {
+    await page.setViewportSize({ width: w, height: h });
+    await expect(dialogo).toBeVisible();
+    await capture(page, nombre, { minFontPx: 12 });
+  }
+  await page.setViewportSize({ width: 1280, height: 720 });
+}
+
 test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa', async ({ browser }) => {
   test.setTimeout(120_000);
   const usuario = nuevaCuenta('e2e_user');
@@ -77,8 +87,12 @@ test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa
     await page.getByRole('button', { name: 'Cambiar avatar' }).click();
     const dialogo = page.getByRole('dialog', { name: 'Elige tu avatar' });
     await expect(dialogo).toBeVisible();
+    // Capturas del diálogo abierto (crema con `.on-cream`), con los presets y luego con el recorte; el contenido
+    // antiguo aún lleva texto de 12 px hasta F9.
+    await capturarDialogo(page, 'dialogo-avatar', dialogo);
     await dialogo.locator('input[type="file"]').setInputFiles({ name: 'avatar.png', mimeType: 'image/png', buffer: png(160) });
     await expect(dialogo.getByAltText('Previsualización del recorte')).toBeVisible();
+    await capturarDialogo(page, 'dialogo-avatar-recorte', dialogo);
     const [subida] = await Promise.all([
       page.waitForResponse((r) => new URL(r.url()).pathname === '/api/auth/profile/avatar/custom' && r.request().method() === 'PUT'),
       dialogo.getByRole('button', { name: 'Recortar y guardar' }).click(),

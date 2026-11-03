@@ -144,6 +144,21 @@ for (const manifest of registry) {
         }
         await host.page.setViewportSize({ width: 1280, height: 720 });
       }
+      if (manifest.id === 'who-is-who-pokemon') {
+        // Con el secreto aleatorio (por defecto) solo se llega a «Adivinar Pokémon»: lo abre quien tenga el turno.
+        const adivinar = (page: Page) => page.getByRole('button', { name: 'Adivinar Pokémon' });
+        let turno: Page | undefined;
+        await expect.poll(async () => {
+          for (const { page } of jugadores) if (await adivinar(page).isEnabled().catch(() => false)) { turno = page; return true; }
+          return false;
+        }, { timeout: 20_000 }).toBe(true);
+        await adivinar(turno!).click();
+        const dialogo = turno!.getByRole('dialog', { name: 'Adivinar Pokémon' });
+        await expect(dialogo).toBeVisible();
+        await capturarTamanos(turno!, 'dialogo-adivinar', { sigue: dialogo });
+        await turno!.keyboard.press('Escape');
+        await expect(dialogo).toBeHidden();
+      }
       for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
 
       // A 1280×720 el scroll horizontal siempre falla; lo que mida `measureLayout` se anota (deuda de
@@ -440,6 +455,10 @@ test('lobby: cómo se juega', async ({ browser }) => {
     await expect(dialogo).toBeVisible();
     await expect(dialogo.getByText('Paso 1 de 3')).toBeVisible();
     const siguiente = dialogo.getByRole('button', { name: 'Siguiente' });
+    await expect(siguiente).toBeFocused();
+    // El diálogo abierto en el primer paso (crema con `.on-cream`), capturado desde arriba como el de más abajo.
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(page, 'dialogo-como-se-juega', { sigue: dialogo });
     await expect(siguiente).toBeFocused();
     // ← → sobre la región y el botón «Siguiente» avanzan; sin reproducción automática.
     await page.keyboard.press('ArrowRight');
