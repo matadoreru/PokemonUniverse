@@ -24,7 +24,11 @@ export function learnsetStakeText(visibleGroups: readonly { stage: number }[], s
   return `Ahora vale ${points} ${points === 1 ? 'pt' : 'pts'}`;
 }
 
-/** Cómo acaba cada jugador en la revelación: quien no acertó y no está conectado sale «Sin conexión», no como fallo. */
+/**
+ * Cómo acaba cada jugador en la revelación. `connected` es si estaba presente al cerrar la ronda (no está en
+ * `lastRound.absentIds`, la misma regla con la que el motor suma `missed`): quien no acertó y no lo estaba sale
+ * «Sin conexión», no como fallo.
+ */
 export function learnsetRevealStatus(solved: boolean, connected: boolean): 'solved' | 'missed' | 'offline' {
   if (solved) return 'solved';
   return connected ? 'missed' : 'offline';

@@ -623,7 +623,8 @@
                   "revealStage": 1,
                   "points": 5
                 }
-              }
+              },
+              "absentIds": []
             },
             "scores": {
               "p2": 6,
@@ -1188,7 +1189,8 @@
                   "revealStage": 7,
                   "points": 3
                 }
-              }
+              },
+              "absentIds": []
             },
             "scores": {
               "p2": 6,
@@ -1735,7 +1737,8 @@
                   "category": "physical"
                 }
               ],
-              "solves": {}
+              "solves": {},
+              "absentIds": []
             },
             "scores": {
               "p2": 6,

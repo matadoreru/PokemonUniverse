@@ -1,0 +1,2248 @@
+{
+  "engineId": "learnset-guess",
+  "scenario": "absent-at-resolution",
+  "seed": 927,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "showLevels": true,
+    "showEvolution": true,
+    "roundSeconds": 30,
+    "rounds": 3
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 1500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 2000
+    },
+    {
+      "kind": "timeout",
+      "now": 31000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 32000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 33000
+    },
+    {
+      "kind": "timeout",
+      "now": 35000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 36000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 40000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 41000
+    },
+    {
+      "kind": "timeout",
+      "now": 65000
+    },
+    {
+      "kind": "timeout",
+      "now": 69000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 70000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 71000
+    },
+    {
+      "kind": "timeout",
+      "now": 99000
+    },
+    {
+      "kind": "timeout",
+      "now": 103000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "learnset-guess",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "referenceGeneration": 1,
+        "referenceSource": "Pokémon Yellow",
+        "visibleGroups": [],
+        "evolutionHint": null,
+        "attempts": [],
+        "solvedPlayers": [],
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastWarning": false,
+        "lastRound": null,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p2": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p3": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 8000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "learnset-guess",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "referenceGeneration": 1,
+        "referenceSource": "Pokémon Yellow",
+        "visibleGroups": [
+          {
+            "level": 1,
+            "moves": [
+              {
+                "moveId": "growl",
+                "name": "Gruñido",
+                "level": 1,
+                "type": "normal",
+                "category": "status"
+              }
+            ],
+            "stage": 0
+          },
+          {
+            "level": 10,
+            "moves": [
+              {
+                "moveId": "bone-club",
+                "name": "Hueso Palo",
+                "level": 10,
+                "type": "ground",
+                "category": "physical"
+              }
+            ],
+            "stage": 0
+          },
+          {
+            "level": 13,
+            "moves": [
+              {
+                "moveId": "tail-whip",
+                "name": "Agitacola",
+                "level": 13,
+                "type": "normal",
+                "category": "status"
+              }
+            ],
+            "stage": 0
+          }
+        ],
+        "evolutionHint": "Pokémon base · etapa 1 de 2",
+        "attempts": [],
+        "solvedPlayers": [],
+        "roundStartedAt": 1000,
+        "roundEndsAt": 31000,
+        "nextTransitionAt": 8000,
+        "lastWarning": false,
+        "lastRound": null,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p2": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p3": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "growl",
+                    "name": "Gruñido",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 10,
+                "moves": [
+                  {
+                    "moveId": "bone-club",
+                    "name": "Hueso Palo",
+                    "level": 10,
+                    "type": "ground",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 13,
+                "moves": [
+                  {
+                    "moveId": "tail-whip",
+                    "name": "Agitacola",
+                    "level": 13,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Pokémon base · etapa 1 de 2",
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "pikachu",
+                "pokemonName": "Pikachu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                "attemptedAt": 1500
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 8000,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 2500,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "growl",
+                    "name": "Gruñido",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 10,
+                "moves": [
+                  {
+                    "moveId": "bone-club",
+                    "name": "Hueso Palo",
+                    "level": 10,
+                    "type": "ground",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 13,
+                "moves": [
+                  {
+                    "moveId": "tail-whip",
+                    "name": "Agitacola",
+                    "level": 13,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Pokémon base · etapa 1 de 2",
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "pikachu",
+                "pokemonName": "Pikachu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                "attemptedAt": 1500
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 8000,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 2500,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 35000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "pikachu",
+                "pokemonName": "Pikachu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                "attemptedAt": 1500
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 35000,
+            "lastWarning": false,
+            "lastRound": {
+              "pokemon": {
+                "id": "cubone",
+                "name": "Cubone",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/104.png",
+                "nationalDexNumber": 104,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "growl",
+                  "name": "Gruñido",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "bone-club",
+                  "name": "Hueso Palo",
+                  "level": 10,
+                  "type": "ground",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "tail-whip",
+                  "name": "Agitacola",
+                  "level": 13,
+                  "type": "normal",
+                  "category": "status"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "growl",
+                  "name": "Gruñido",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "bone-club",
+                  "name": "Hueso Palo",
+                  "level": 10,
+                  "type": "ground",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "tail-whip",
+                  "name": "Agitacola",
+                  "level": 13,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "headbutt",
+                  "name": "Golpe Cabeza",
+                  "level": 18,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "leer",
+                  "name": "Malicioso",
+                  "level": 25,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "focus-energy",
+                  "name": "Foco Energía",
+                  "level": 31,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "thrash",
+                  "name": "Saña",
+                  "level": 38,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "bonemerang",
+                  "name": "Huesomerang",
+                  "level": 43,
+                  "type": "ground",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "rage",
+                  "name": "Furia",
+                  "level": 46,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "solves": {},
+              "absentIds": [
+                "p3"
+              ]
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 2500,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 35000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "pikachu",
+                "pokemonName": "Pikachu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                "attemptedAt": 1500
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 35000,
+            "lastWarning": false,
+            "lastRound": {
+              "pokemon": {
+                "id": "cubone",
+                "name": "Cubone",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/104.png",
+                "nationalDexNumber": 104,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "growl",
+                  "name": "Gruñido",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "bone-club",
+                  "name": "Hueso Palo",
+                  "level": 10,
+                  "type": "ground",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "tail-whip",
+                  "name": "Agitacola",
+                  "level": 13,
+                  "type": "normal",
+                  "category": "status"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "growl",
+                  "name": "Gruñido",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "bone-club",
+                  "name": "Hueso Palo",
+                  "level": 10,
+                  "type": "ground",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "tail-whip",
+                  "name": "Agitacola",
+                  "level": 13,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "headbutt",
+                  "name": "Golpe Cabeza",
+                  "level": 18,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "leer",
+                  "name": "Malicioso",
+                  "level": 25,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "focus-energy",
+                  "name": "Foco Energía",
+                  "level": 31,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "thrash",
+                  "name": "Saña",
+                  "level": 38,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "bonemerang",
+                  "name": "Huesomerang",
+                  "level": 43,
+                  "type": "ground",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "rage",
+                  "name": "Furia",
+                  "level": 46,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "solves": {},
+              "absentIds": [
+                "p3"
+              ]
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 2500,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 35000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "pikachu",
+                "pokemonName": "Pikachu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                "attemptedAt": 1500
+              }
+            ],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 35000,
+            "lastWarning": false,
+            "lastRound": {
+              "pokemon": {
+                "id": "cubone",
+                "name": "Cubone",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/104.png",
+                "nationalDexNumber": 104,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "growl",
+                  "name": "Gruñido",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "bone-club",
+                  "name": "Hueso Palo",
+                  "level": 10,
+                  "type": "ground",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "tail-whip",
+                  "name": "Agitacola",
+                  "level": 13,
+                  "type": "normal",
+                  "category": "status"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "growl",
+                  "name": "Gruñido",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "bone-club",
+                  "name": "Hueso Palo",
+                  "level": 10,
+                  "type": "ground",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "tail-whip",
+                  "name": "Agitacola",
+                  "level": 13,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "headbutt",
+                  "name": "Golpe Cabeza",
+                  "level": 18,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "leer",
+                  "name": "Malicioso",
+                  "level": 25,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "focus-energy",
+                  "name": "Foco Energía",
+                  "level": 31,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "thrash",
+                  "name": "Saña",
+                  "level": 38,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "bonemerang",
+                  "name": "Huesomerang",
+                  "level": 43,
+                  "type": "ground",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "rage",
+                  "name": "Furia",
+                  "level": 46,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "solves": {},
+              "absentIds": [
+                "p3"
+              ]
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 2500,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,35000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "karate-chop",
+                    "name": "Golpe Kárate",
+                    "level": 1,
+                    "type": "fighting",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "leer",
+                    "name": "Malicioso",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "low-kick",
+                    "name": "Patada Baja",
+                    "level": 1,
+                    "type": "fighting",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "scratch",
+                    "name": "Arañazo",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 9,
+                "moves": [
+                  {
+                    "moveId": "low-kick",
+                    "name": "Patada Baja",
+                    "level": 9,
+                    "type": "fighting",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 15,
+                "moves": [
+                  {
+                    "moveId": "karate-chop",
+                    "name": "Golpe Kárate",
+                    "level": 15,
+                    "type": "fighting",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución intermedia · etapa 2 de 3",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 35000,
+            "roundEndsAt": 65000,
+            "nextTransitionAt": 42000,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,35000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "karate-chop",
+                    "name": "Golpe Kárate",
+                    "level": 1,
+                    "type": "fighting",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "leer",
+                    "name": "Malicioso",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "low-kick",
+                    "name": "Patada Baja",
+                    "level": 1,
+                    "type": "fighting",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "scratch",
+                    "name": "Arañazo",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 9,
+                "moves": [
+                  {
+                    "moveId": "low-kick",
+                    "name": "Patada Baja",
+                    "level": 9,
+                    "type": "fighting",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 15,
+                "moves": [
+                  {
+                    "moveId": "karate-chop",
+                    "name": "Golpe Kárate",
+                    "level": 15,
+                    "type": "fighting",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución intermedia · etapa 2 de 3",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 35000,
+            "roundEndsAt": 65000,
+            "nextTransitionAt": 42000,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,35000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "karate-chop",
+                    "name": "Golpe Kárate",
+                    "level": 1,
+                    "type": "fighting",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "leer",
+                    "name": "Malicioso",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "low-kick",
+                    "name": "Patada Baja",
+                    "level": 1,
+                    "type": "fighting",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "scratch",
+                    "name": "Arañazo",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 9,
+                "moves": [
+                  {
+                    "moveId": "low-kick",
+                    "name": "Patada Baja",
+                    "level": 9,
+                    "type": "fighting",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 15,
+                "moves": [
+                  {
+                    "moveId": "karate-chop",
+                    "name": "Golpe Kárate",
+                    "level": 15,
+                    "type": "fighting",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución intermedia · etapa 2 de 3",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 35000,
+            "roundEndsAt": 65000,
+            "nextTransitionAt": 42000,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,35000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "karate-chop",
+                    "name": "Golpe Kárate",
+                    "level": 1,
+                    "type": "fighting",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "leer",
+                    "name": "Malicioso",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "low-kick",
+                    "name": "Patada Baja",
+                    "level": 1,
+                    "type": "fighting",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "scratch",
+                    "name": "Arañazo",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 9,
+                "moves": [
+                  {
+                    "moveId": "low-kick",
+                    "name": "Patada Baja",
+                    "level": 9,
+                    "type": "fighting",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 15,
+                "moves": [
+                  {
+                    "moveId": "karate-chop",
+                    "name": "Golpe Kárate",
+                    "level": 15,
+                    "type": "fighting",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución intermedia · etapa 2 de 3",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 35000,
+            "roundEndsAt": 65000,
+            "nextTransitionAt": 42000,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 69000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,35000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 35000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 69000,
+            "lastWarning": false,
+            "lastRound": {
+              "pokemon": {
+                "id": "primeape",
+                "name": "Primeape",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/57.png",
+                "nationalDexNumber": 57,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "karate-chop",
+                  "name": "Golpe Kárate",
+                  "level": 1,
+                  "type": "fighting",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "leer",
+                  "name": "Malicioso",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "low-kick",
+                  "name": "Patada Baja",
+                  "level": 1,
+                  "type": "fighting",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "scratch",
+                  "name": "Arañazo",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "low-kick",
+                  "name": "Patada Baja",
+                  "level": 9,
+                  "type": "fighting",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "karate-chop",
+                  "name": "Golpe Kárate",
+                  "level": 15,
+                  "type": "fighting",
+                  "category": "physical"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "karate-chop",
+                  "name": "Golpe Kárate",
+                  "level": 1,
+                  "type": "fighting",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "leer",
+                  "name": "Malicioso",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "low-kick",
+                  "name": "Patada Baja",
+                  "level": 1,
+                  "type": "fighting",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "scratch",
+                  "name": "Arañazo",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "low-kick",
+                  "name": "Patada Baja",
+                  "level": 9,
+                  "type": "fighting",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "karate-chop",
+                  "name": "Golpe Kárate",
+                  "level": 15,
+                  "type": "fighting",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "fury-swipes",
+                  "name": "Golpes Furia",
+                  "level": 21,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "focus-energy",
+                  "name": "Foco Energía",
+                  "level": 27,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "rage",
+                  "name": "Furia",
+                  "level": 28,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "seismic-toss",
+                  "name": "Sísmico",
+                  "level": 37,
+                  "type": "fighting",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "screech",
+                  "name": "Chirrido",
+                  "level": 45,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "thrash",
+                  "name": "Saña",
+                  "level": 46,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "solves": {},
+              "absentIds": []
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 76000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,69000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "bubble",
+                    "name": "Burbuja",
+                    "level": 1,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Pokémon base · etapa 1 de 3",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 69000,
+            "roundEndsAt": 99000,
+            "nextTransitionAt": 76000,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 76000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,69000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "bubble",
+                    "name": "Burbuja",
+                    "level": 1,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Pokémon base · etapa 1 de 3",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 69000,
+            "roundEndsAt": 99000,
+            "nextTransitionAt": 76000,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 76000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,69000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "bubble",
+                    "name": "Burbuja",
+                    "level": 1,
+                    "type": "water",
+                    "category": "special"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Pokémon base · etapa 1 de 3",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 69000,
+            "roundEndsAt": 99000,
+            "nextTransitionAt": 76000,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 103000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,69000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 69000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 103000,
+            "lastWarning": false,
+            "lastRound": {
+              "pokemon": {
+                "id": "horsea",
+                "name": "Horsea",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png",
+                "nationalDexNumber": 116,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "bubble",
+                  "name": "Burbuja",
+                  "level": 1,
+                  "type": "water",
+                  "category": "special"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "bubble",
+                  "name": "Burbuja",
+                  "level": 1,
+                  "type": "water",
+                  "category": "special"
+                },
+                {
+                  "moveId": "smokescreen",
+                  "name": "Pantalla de Humo",
+                  "level": 19,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "leer",
+                  "name": "Malicioso",
+                  "level": 24,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "water-gun",
+                  "name": "Pistola Agua",
+                  "level": 30,
+                  "type": "water",
+                  "category": "special"
+                },
+                {
+                  "moveId": "agility",
+                  "name": "Agilidad",
+                  "level": 37,
+                  "type": "psychic",
+                  "category": "status"
+                },
+                {
+                  "moveId": "hydro-pump",
+                  "name": "Hidrobomba",
+                  "level": 45,
+                  "type": "water",
+                  "category": "special"
+                }
+              ],
+              "solves": {},
+              "absentIds": [
+                "p1",
+                "p2"
+              ]
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,69000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 69000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": {
+              "winnerId": null,
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 0,
+                  "won": true,
+                  "stats": {
+                    "correct": 0,
+                    "missed": 2,
+                    "initialSolves": 0,
+                    "incorrectGuesses": 0,
+                    "pointsFromSolves": 0,
+                    "bestRoundPoints": 0
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 0,
+                  "won": true,
+                  "stats": {
+                    "correct": 0,
+                    "missed": 2,
+                    "initialSolves": 0,
+                    "incorrectGuesses": 1,
+                    "pointsFromSolves": 0,
+                    "bestRoundPoints": 0
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 0,
+                  "won": true,
+                  "stats": {
+                    "correct": 0,
+                    "missed": 2,
+                    "initialSolves": 0,
+                    "incorrectGuesses": 0,
+                    "pointsFromSolves": 0,
+                    "bestRoundPoints": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": null,
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 0,
+          "won": true,
+          "stats": {
+            "correct": 0,
+            "missed": 2,
+            "initialSolves": 0,
+            "incorrectGuesses": 0,
+            "pointsFromSolves": 0,
+            "bestRoundPoints": 0
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 0,
+          "won": true,
+          "stats": {
+            "correct": 0,
+            "missed": 2,
+            "initialSolves": 0,
+            "incorrectGuesses": 1,
+            "pointsFromSolves": 0,
+            "bestRoundPoints": 0
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 1,
+          "points": 0,
+          "won": true,
+          "stats": {
+            "correct": 0,
+            "missed": 2,
+            "initialSolves": 0,
+            "incorrectGuesses": 0,
+            "pointsFromSolves": 0,
+            "bestRoundPoints": 0
+          }
+        }
+      ]
+    }
+  }
+}

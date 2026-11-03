@@ -841,7 +841,8 @@
                   "revealStage": 0,
                   "points": 6
                 }
-              }
+              },
+              "absentIds": []
             },
             "scores": {
               "p1": 7,
@@ -1319,7 +1320,10 @@
                   "revealStage": 1,
                   "points": 5
                 }
-              }
+              },
+              "absentIds": [
+                "p2"
+              ]
             },
             "scores": {
               "p1": 14,
@@ -1971,7 +1975,8 @@
                   "revealStage": 0,
                   "points": 6
                 }
-              }
+              },
+              "absentIds": []
             },
             "scores": {
               "p1": 14,

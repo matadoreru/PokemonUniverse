@@ -108,8 +108,9 @@ function resolveRound(state: LearnsetGuessState, context: GameContext): Learnset
   const pokemon = context.pokemon.byId(state.correctPokemonId!);
   if (!pokemon) throw new Error('Learnset Guess answer is missing from the catalog');
   const visibleMoves = groupsForState(state).slice(0, visibleGroupCount(state)).flat().map((entry) => hint(entry, state.config.showLevels));
-  const playerStats = { ...state.playerStats };
-  for (const playerId of state.playerIds) if (!state.solves[playerId] && isPlayerRequired(context, playerId)) {
+  const playerStats = { ...state.playerStats }; const absentIds: string[] = [];
+  for (const playerId of state.playerIds) if (!state.solves[playerId]) {
+    if (!isPlayerRequired(context, playerId)) { absentIds.push(playerId); continue; }
     const stats = playerStats[playerId] ?? emptyLearnsetStats(); playerStats[playerId] = { ...stats, missed: stats.missed + 1 };
   }
   return {
@@ -117,7 +118,7 @@ function resolveRound(state: LearnsetGuessState, context: GameContext): Learnset
     lastRound: {
       pokemon: { id: pokemon.id, name: pokemon.name, sprite: pokemon.sprite, nationalDexNumber: pokemon.nationalDexNumber, generation: pokemon.generation },
       referenceGeneration: state.referenceGeneration, referenceSource: GENERATION_LEARNSET_SOURCES[state.referenceGeneration].label,
-      revealedMoves: visibleMoves, learnset: state.learnset.map((entry) => hint(entry, state.config.showLevels)), solves: { ...state.solves },
+      revealedMoves: visibleMoves, learnset: state.learnset.map((entry) => hint(entry, state.config.showLevels)), solves: { ...state.solves }, absentIds,
     },
   };
 }

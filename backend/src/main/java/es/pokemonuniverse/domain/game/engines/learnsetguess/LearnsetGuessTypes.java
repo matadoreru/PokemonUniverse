@@ -99,13 +99,16 @@ public final class LearnsetGuessTypes {
 
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
+  /** {@code absentIds}: jugadores sin acierto que no estaban obligados a jugar al cerrar la ronda (no suman missed). */
   public record LearnsetRoundResult(LearnsetRoundPokemon pokemon, int referenceGeneration, String referenceSource,
-      List<LearnsetMoveHint> revealedMoves, List<LearnsetMoveHint> learnset, Map<String, LearnsetGuessSolve> solves) {
+      List<LearnsetMoveHint> revealedMoves, List<LearnsetMoveHint> learnset, Map<String, LearnsetGuessSolve> solves,
+      List<String> absentIds) {
 
     public LearnsetRoundResult {
       revealedMoves = frozenList(revealedMoves);
       learnset = frozenList(learnset);
       solves = frozenMap(solves);
+      absentIds = frozenList(absentIds);
     }
   }
 

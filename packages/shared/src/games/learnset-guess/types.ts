@@ -44,6 +44,8 @@ export interface LearnsetRoundResult {
   revealedMoves: LearnsetMoveHint[];
   learnset: LearnsetMoveHint[];
   solves: Record<string, LearnsetGuessSolve>;
+  /** Jugadores sin acierto que no estaban obligados a jugar al cerrar la ronda (desconectados o inactivos): no suman `missed`. */
+  absentIds: string[];
 }
 
 export interface LearnsetGuessState {

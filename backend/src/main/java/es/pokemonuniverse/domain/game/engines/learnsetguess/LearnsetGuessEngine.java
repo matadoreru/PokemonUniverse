@@ -260,15 +260,20 @@ public final class LearnsetGuessEngine
         .map(entry -> hint(entry, showLevels))
         .toList();
     var playerStats = new LinkedHashMap<>(state.playerStats());
-    // Solo falla quien debía jugar la ronda: un desconectado no suma missed.
+    var absentIds = new ArrayList<String>();
+    // Solo falla quien debía jugar la ronda: un desconectado no suma missed y queda como ausente en la revelación.
     for (var playerId : state.playerIds()) {
-      if (!state.solves().containsKey(playerId) && context.isPlayerRequired(playerId)) {
-        playerStats.put(playerId, playerStats.getOrDefault(playerId, LearnsetGuessPlayerStats.ZERO).afterMiss());
+      if (state.solves().containsKey(playerId)) continue;
+      if (!context.isPlayerRequired(playerId)) {
+        absentIds.add(playerId);
+        continue;
       }
+      playerStats.put(playerId, playerStats.getOrDefault(playerId, LearnsetGuessPlayerStats.ZERO).afterMiss());
     }
     var lastRound = new LearnsetRoundResult(LearnsetRoundPokemon.of(pokemon), state.referenceGeneration(),
         GenerationLearnsetSources.label(state.referenceGeneration()), visibleMoves,
-        state.learnset().stream().map(entry -> hint(entry, showLevels)).toList(), new LinkedHashMap<>(state.solves()));
+        state.learnset().stream().map(entry -> hint(entry, showLevels)).toList(), new LinkedHashMap<>(state.solves()),
+        absentIds);
     return state.toBuilder()
         .phase(GamePhase.ROUND_RESULTS)
         .playerStats(playerStats)

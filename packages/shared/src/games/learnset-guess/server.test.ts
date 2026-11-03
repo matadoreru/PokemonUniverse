@@ -110,6 +110,21 @@ describe('Learnset Guess', () => {
     expect(state.phase).toBe('ROUND_RESULTS'); expect(state.playerStats.p1?.missed).toBe(0); expect(state.playerStats.p2?.missed).toBe(1); expect(state.playerStats.p3?.missed).toBe(0);
   });
 
+  it('records who was absent at resolution and keeps it when presence changes during the results', () => {
+    const context: GameContext = { players: [{ id: 'p1', displayName: 'Pedro' }, { id: 'p2', displayName: 'Ana' }, { id: 'p3', displayName: 'Luis' }, { id: 'p4', displayName: 'Eva' }], pokemon: catalog, now: 1_000, random: () => 0 };
+    let state = learnsetGuessGame.createInitialState({ ...defaultLearnsetGuessConfig, generations: [1], rounds: 2 }, context); state = learnsetGuessGame.start(state, context);
+    // p1 acierta y luego se va (acertado, no ausente); p3 se va sin acertar (ausente); p2 sigue conectado (falla); p4 se va y vuelve antes del cierre.
+    state = guess(state, 'p1', 'pikachu', context).state;
+    context.players[3]!.connected = false; state = learnsetGuessGame.handlePresenceChange!(state, context);
+    context.players[3]!.connected = true; state = learnsetGuessGame.handlePresenceChange!(state, context);
+    context.players[0]!.connected = false; context.players[2]!.connected = false; state = learnsetGuessGame.handlePresenceChange!(state, context);
+    context.now = state.roundEndsAt!; state = learnsetGuessGame.handleTimeout(state, context);
+    expect(state.phase).toBe('ROUND_RESULTS'); expect(state.lastRound?.absentIds).toEqual(['p3']);
+    // Volver (o irse) durante la revelación no cambia quién estaba ausente al cerrar.
+    context.players[2]!.connected = true; context.players[1]!.connected = false; state = learnsetGuessGame.handlePresenceChange!(state, context);
+    expect(learnsetGuessGame.getPublicState(state, context).lastRound?.absentIds).toEqual(['p3']);
+  });
+
   it('rejects disconnected players and guesses received at the authoritative deadline', () => {
     const disconnected = setup(); disconnected.context.players[0]!.connected = false;
     expect(guess(disconnected.state, 'p1', 'pikachu', disconnected.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/conectado/) });

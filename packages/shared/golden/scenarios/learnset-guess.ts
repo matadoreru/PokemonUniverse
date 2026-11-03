@@ -193,9 +193,38 @@ const orderBonusLastWarning: GoldenScenario = {
   ],
 };
 
+const absentAtResolution: GoldenScenario = {
+  name: 'absent-at-resolution',
+  seed: 927,
+  catalog: 'gen1-2',
+  players: [ana, bruno, carla],
+  config: baseConfig,
+  steps: [
+    // Ronda 1 (1000–31000): Carla se va sin acertar y la ronda cierra por tiempo: absentIds = [p3].
+    guess('p2', 'pikachu', 1_500),
+    { kind: 'presence', players: [ana, bruno, { ...carla, connected: false }], now: 2_000 },
+    timeout(31_000),
+    // Durante la revelación Carla vuelve y Bruno se va: lastRound.absentIds no cambia.
+    { kind: 'presence', players: [ana, bruno, carla], now: 32_000 },
+    { kind: 'presence', players: [ana, { ...bruno, connected: false }, carla], now: 33_000 },
+    timeout(35_000),
+    // Ronda 2 (35000–65000): Bruno vuelve y Ana se va y vuelve antes del cierre: absentIds = [].
+    { kind: 'presence', players: [ana, bruno, carla], now: 36_000 },
+    { kind: 'presence', players: [{ ...ana, connected: false }, bruno, carla], now: 40_000 },
+    { kind: 'presence', players: [ana, bruno, carla], now: 41_000 },
+    timeout(65_000),
+    timeout(69_000),
+    // Ronda 3 (69000–99000): Ana y Bruno se van; solo Carla sigue sin acertar: absentIds = [p1, p2] en el orden de playerIds.
+    { kind: 'presence', players: [ana, { ...bruno, connected: false }, carla], now: 70_000 },
+    { kind: 'presence', players: [{ ...ana, connected: false }, { ...bruno, connected: false }, carla], now: 71_000 },
+    timeout(99_000),
+    timeout(103_000),
+  ],
+};
+
 export const learnsetGuessScenarios: GoldenEngineEntry = {
   module: learnsetGuessGame,
-  scenarios: [hintsAndRace, hiddenLevels, exhaustedHints, invalidActionStops, disconnectedNotMissed, orderBonusLastWarning],
+  scenarios: [hintsAndRace, hiddenLevels, exhaustedHints, invalidActionStops, disconnectedNotMissed, orderBonusLastWarning, absentAtResolution],
   configCases: [
     // Válidos: normalización de generaciones y límites.
     { ...baseConfig, generations: [2, 1, 2] },

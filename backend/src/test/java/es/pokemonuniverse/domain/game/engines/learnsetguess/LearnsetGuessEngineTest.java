@@ -237,6 +237,34 @@ class LearnsetGuessEngineTest {
   }
 
   /**
+   * {@code lastRound.absentIds} se fija al cerrar la ronda con {@code isPlayerRequired}: quien acertó y se fue no está;
+   * quien se fue y volvió antes del cierre tampoco; los cambios de presencia durante la revelación no lo alteran.
+   */
+  @Test
+  void absentIdsAreFixedAtResolution() {
+    var players = List.of(new GamePlayer("p1", "Pedro"), new GamePlayer("p2", "Ana"), new GamePlayer("p3", "Luis"),
+        new GamePlayer("p4", "Eva"));
+    var context = context(GOLDEN, 4);
+    var state = engine.start(engine.createInitialState(config(true, true), context), context);
+    state = engine.handleAction(state, "p1", new LearnsetGuessTypes.LearnsetGuessAction(state.correctPokemonId()),
+        context).state();
+    var p4Away = context.withPlayers(List.of(players.get(0), players.get(1), players.get(2),
+        new GamePlayer("p4", "Eva", false, null)));
+    state = engine.handlePresenceChange(state, p4Away);
+    state = engine.handlePresenceChange(state, context.withPlayers(players));
+    var atClose = context.withPlayers(List.of(new GamePlayer("p1", "Pedro", false, null), players.get(1),
+        new GamePlayer("p3", "Luis", false, null), players.get(3)));
+    state = engine.handlePresenceChange(state, atClose);
+    state = engine.handleTimeout(state, atClose.withNow(state.roundEndsAt()));
+    assertEquals(GamePhase.ROUND_RESULTS, state.phase());
+    assertEquals(List.of("p3"), state.lastRound().absentIds());
+    var duringResults = context.withPlayers(List.of(players.get(0), new GamePlayer("p2", "Ana", false, null),
+        players.get(2), players.get(3)));
+    state = engine.handlePresenceChange(state, duringResults);
+    assertEquals(List.of("p3"), engine.getPublicState(state, duringResults).lastRound().absentIds());
+  }
+
+  /**
    * La pista pendiente en el cierre recortado o después pasa a {@code null}. El flujo público no lo produce (la pista
    * siempre cae a menos de 7 s), así que no sale en las fixtures doradas.
    */

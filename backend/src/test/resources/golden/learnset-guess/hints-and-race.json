@@ -1557,7 +1557,8 @@
                   "revealStage": 3,
                   "points": 4
                 }
-              }
+              },
+              "absentIds": []
             },
             "scores": {
               "p1": 0,
@@ -1742,7 +1743,8 @@
                   "revealStage": 3,
                   "points": 4
                 }
-              }
+              },
+              "absentIds": []
             },
             "scores": {
               "p1": 0,
@@ -2114,7 +2116,10 @@
                   "revealStage": 0,
                   "points": 6
                 }
-              }
+              },
+              "absentIds": [
+                "p3"
+              ]
             },
             "scores": {
               "p1": 7,
@@ -2686,7 +2691,8 @@
                   "category": "special"
                 }
               ],
-              "solves": {}
+              "solves": {},
+              "absentIds": []
             },
             "scores": {
               "p1": 7,

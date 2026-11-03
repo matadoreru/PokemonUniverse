@@ -1184,7 +1184,8 @@
                   "revealStage": 2,
                   "points": 5
                 }
-              }
+              },
+              "absentIds": []
             },
             "scores": {
               "p1": 0,
@@ -1509,7 +1510,10 @@
                   "revealStage": 0,
                   "points": 7
                 }
-              }
+              },
+              "absentIds": [
+                "p1"
+              ]
             },
             "scores": {
               "p1": 0,
@@ -2274,7 +2278,8 @@
                   "revealStage": 0,
                   "points": 7
                 }
-              }
+              },
+              "absentIds": []
             },
             "scores": {
               "p1": 7,
@@ -2733,7 +2738,8 @@
                   "revealStage": 1,
                   "points": 5
                 }
-              }
+              },
+              "absentIds": []
             },
             "scores": {
               "p1": 13,
