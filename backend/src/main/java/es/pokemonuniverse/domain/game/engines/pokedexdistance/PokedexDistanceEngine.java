@@ -153,6 +153,11 @@ public final class PokedexDistanceEngine implements
     }
 
     var farthest = PokedexDistanceRules.farthestPlayerIds(state.selections());
+    if (farthest.size() > 1 && state.tiebreakDepth() >= PokedexDistanceRules.MAX_TIEBREAK_DEPTH) {
+      var eliminatedIds = PokedexDistanceRules.lastToSelectIds(state.selections(), farthest);
+      return eliminateAndContinue(state, eliminatedIds, EliminationReason.FARTHEST, context,
+          new RoundResult(targetDexNumber, state.selections(), eliminatedIds, RoundReason.FARTHEST, farthest));
+    }
     if (farthest.size() > 1) {
       var tieResult = new RoundResult(targetDexNumber, state.selections(), List.of(), RoundReason.TIE, farthest);
       return state.toBuilder()

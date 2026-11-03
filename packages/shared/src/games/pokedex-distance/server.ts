@@ -2,7 +2,7 @@ import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import { type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultPokedexDistanceConfig, pokedexDistanceConfigSchema, type PokedexDistanceConfig } from './config.js';
-import { buildResults, distanceBetween, elimination, emptyPlayerStats, farthestPlayerIds } from './rules.js';
+import { buildResults, distanceBetween, elimination, emptyPlayerStats, farthestPlayerIds, lastToSelectIds, MAX_TIEBREAK_DEPTH } from './rules.js';
 import { pokedexDistanceActionSchema, type PokedexDistanceAction, type PokedexDistancePlayerState, type PokedexDistancePublicState, type PokedexDistanceState, type RoundResult } from './types.js';
 
 const manifest = {
@@ -99,6 +99,12 @@ function resolveRound(state: PokedexDistanceState, context: GameContext): Pokede
   }
 
   const farthest = farthestPlayerIds(state.selections);
+  if (farthest.length > 1 && state.tiebreakDepth >= MAX_TIEBREAK_DEPTH) {
+    const eliminatedIds = lastToSelectIds(state.selections, farthest);
+    return eliminateAndContinue(state, eliminatedIds, 'FARTHEST', context, {
+      targetDexNumber: state.targetDexNumber!, selections: state.selections, eliminatedIds, reason: 'FARTHEST', tiedIds: farthest,
+    });
+  }
   if (farthest.length > 1) {
     const tieResult: RoundResult = {
       targetDexNumber: state.targetDexNumber!, selections: state.selections, eliminatedIds: [], reason: 'TIE', tiedIds: farthest,

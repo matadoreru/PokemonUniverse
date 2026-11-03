@@ -105,6 +105,50 @@ class PokedexDistanceEngineTest {
     assertEquals(1, state.playerStats().get("p2").exactHits());
   }
 
+  private static GameContext contextAt(int players, long now) {
+    var list = new java.util.ArrayList<GamePlayer>();
+    for (int index = 1; index <= players; index++) list.add(new GamePlayer("p" + index, "Player " + index));
+    return GameContext.builder(GoldenCatalogs.load("gen1-2"), new Mulberry32(1)).players(list).now(now).build();
+  }
+
+  /** Estado en el tercer desempate entre p1 y p2 con objetivo #1 (Carla, si la hay, sobrevive fuera). */
+  private PokedexDistanceTypes.PokedexDistanceState thirdTiebreak(int players) {
+    var context = contextAt(players, 1000);
+    return engine.start(engine.createInitialState(engine.defaultConfig(), context), context).toBuilder()
+        .phase(es.pokemonuniverse.domain.game.engine.GamePhase.TIEBREAKER_ACTIVE)
+        .tiebreakDepth(PokedexDistanceRules.MAX_TIEBREAK_DEPTH)
+        .eligibleIds(List.of("p1", "p2"))
+        .targetDexNumber(1)
+        .build();
+  }
+
+  @Test
+  void identicalPicksAtTheTiebreakCapResolveBySelectedAt() {
+    assertEquals(3, PokedexDistanceRules.MAX_TIEBREAK_DEPTH);
+    var state = thirdTiebreak(3);
+    state = engine.handleAction(state, "p2", new PokedexDistanceAction("bulbasaur"), contextAt(3, 2000)).state();
+    state = engine.handleAction(state, "p1", new PokedexDistanceAction("bulbasaur"), contextAt(3, 3000)).state();
+    var round = state.lastRound();
+    assertEquals(PokedexDistanceTypes.RoundReason.FARTHEST, round.reason());
+    assertEquals(List.of("p1"), round.eliminatedIds());
+    assertEquals(List.of("p2", "p1"), round.tiedIds());
+    assertEquals(List.of("p2", "p3"), state.survivorIds());
+    assertEquals(0, state.pendingTiebreakDepth());
+  }
+
+  @Test
+  void identicalPicksWithTheSameSelectedAtAtTheCapEliminateAllTied() {
+    var state = thirdTiebreak(2);
+    var context = contextAt(2, 2000);
+    state = engine.handleAction(state, "p1", new PokedexDistanceAction("mew"), context).state();
+    state = engine.handleAction(state, "p2", new PokedexDistanceAction("mew"), context).state();
+    assertEquals(List.of("p1", "p2"), state.lastRound().eliminatedIds());
+    assertEquals(List.of(), state.survivorIds());
+    state = engine.handleTimeout(state, contextAt(2, state.nextTransitionAt()));
+    assertTrue(engine.isFinished(state));
+    assertEquals(null, state.winnerId());
+  }
+
   @Test
   void liveKeepsTheLockAndTheLiveSelections() {
     var context = context(3);

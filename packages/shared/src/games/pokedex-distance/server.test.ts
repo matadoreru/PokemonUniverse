@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { GameContext, GamePlayer, Pokemon, PokemonCatalog, PokedexDistanceConfig, PokedexDistancePlayerState, PokedexDistanceState } from '../../index.js';
-import { defaultPokedexDistanceConfig, distanceBetween, pokedexDistanceConfigSchema, farthestPlayerIds, pointsForPosition, pokedexDistanceGame } from '../../index.js';
+import { defaultPokedexDistanceConfig, distanceBetween, MAX_TIEBREAK_DEPTH, pokedexDistanceConfigSchema, farthestPlayerIds, pointsForPosition, pokedexDistanceGame } from '../../index.js';
 
 const battleData = { hp: 50, attack: 50, defense: 50, specialAttack: 50, specialDefense: 50, speed: 50, baseStatTotal: 300, types: ['normal'] as Pokemon['types'] };
 
@@ -265,6 +265,59 @@ describe('Pokédex Distance rules', () => {
     expect(pokedexDistanceConfigSchema.safeParse({ generations: [1], roundSeconds: 20, selectionVisibility: 'SECRET' }).success).toBe(false);
     expect(pokedexDistanceConfigSchema.safeParse({ generations: [1], roundSeconds: 20 }).success).toBe(false);
     expect(pokedexDistanceConfigSchema.safeParse({ generations: [1], roundSeconds: 20, selectionVisibility: 'LIVE' }).success).toBe(true);
+  });
+
+  it('caps tiebreaks: identical picks at depth 3 resolve by selectedAt', () => {
+    expect(MAX_TIEBREAK_DEPTH).toBe(3);
+    const fixture = setup(3, 0);
+    let state: PokedexDistanceState = { ...fixture.state, phase: 'TIEBREAKER_ACTIVE', tiebreakDepth: 3, eligibleIds: ['p1', 'p2'], targetDexNumber: 1 };
+    fixture.setNow(2_000);
+    state = choose(state, 'p2', 'bulbasaur', fixture.context);
+    fixture.setNow(3_000);
+    state = choose(state, 'p1', 'bulbasaur', fixture.context);
+    expect(state.phase).toBe('ROUND_RESULTS');
+    expect(state.lastRound).toMatchObject({ reason: 'FARTHEST', eliminatedIds: ['p1'], tiedIds: ['p2', 'p1'] });
+    expect(state.survivorIds).toEqual(['p2', 'p3']);
+    expect(state.eliminations.at(-1)).toMatchObject({ playerIds: ['p1'], reason: 'FARTHEST' });
+    expect(state.pendingTiebreakDepth).toBe(0);
+    state = advanceResults(state, fixture.context, fixture.setNow);
+    expect(state.phase).toBe('ROUND_ACTIVE');
+    expect(state.tiebreakDepth).toBe(0);
+  });
+
+  it('a tie below the cap still starts another tiebreak', () => {
+    const fixture = setup(3, 0);
+    let state: PokedexDistanceState = { ...fixture.state, phase: 'TIEBREAKER_ACTIVE', tiebreakDepth: 2, eligibleIds: ['p1', 'p2'], targetDexNumber: 1 };
+    state = choose(state, 'p1', 'mew', fixture.context);
+    state = choose(state, 'p2', 'mew', fixture.context);
+    expect(state.lastRound?.reason).toBe('TIE');
+    expect(state.pendingTiebreakDepth).toBe(3);
+  });
+
+  it('identical picks with the same selectedAt at depth 3 eliminate all tied', () => {
+    const fixture = setup(3, 0);
+    let state: PokedexDistanceState = { ...fixture.state, phase: 'TIEBREAKER_ACTIVE', tiebreakDepth: 3, eligibleIds: ['p1', 'p2'], targetDexNumber: 1 };
+    state = choose(state, 'p1', 'mew', fixture.context);
+    state = choose(state, 'p2', 'mew', fixture.context);
+    expect(state.lastRound).toMatchObject({ reason: 'FARTHEST', eliminatedIds: ['p1', 'p2'], tiedIds: ['p1', 'p2'] });
+    expect(state.survivorIds).toEqual(['p3']);
+    expect(state.playerStats.p3?.roundsSurvived).toBe(1);
+    state = advanceResults(state, fixture.context, fixture.setNow);
+    expect(state.phase).toBe('GAME_RESULTS');
+    expect(state.winnerId).toBe('p3');
+    expect(pokedexDistanceGame.getResults(state).standings.map((entry) => [entry.playerId, entry.position])).toEqual([['p3', 1], ['p1', 2], ['p2', 2]]);
+  });
+
+  it('when the capped tie removes every survivor the game ends without a winner', () => {
+    const fixture = setup(2, 0);
+    let state: PokedexDistanceState = { ...fixture.state, phase: 'TIEBREAKER_ACTIVE', tiebreakDepth: 3, targetDexNumber: 1 };
+    state = choose(state, 'p1', 'mew', fixture.context);
+    state = choose(state, 'p2', 'mew', fixture.context);
+    expect(state.survivorIds).toEqual([]);
+    state = advanceResults(state, fixture.context, fixture.setNow);
+    expect(state.phase).toBe('GAME_RESULTS');
+    expect(state.winnerId).toBeNull();
+    expect(pokedexDistanceGame.getResults(state).standings.every((entry) => entry.points === 0)).toBe(true);
   });
 
   it('finishes with one winner', () => {

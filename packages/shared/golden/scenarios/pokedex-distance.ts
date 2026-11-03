@@ -223,9 +223,70 @@ const hiddenDuplicatesAndTiebreak: GoldenScenario = {
   ],
 };
 
+// Tope de desempates (MAX_TIEBREAK_DEPTH = 3): en HIDDEN los empatados pueden repetir el mismo Pokémon en cada
+// desempate; en el tercero el empate se resuelve a la fuerza y cae quien eligió el último.
+const tiebreakCapBySelectedAt: GoldenScenario = {
+  name: 'tiebreak-cap-by-selected-at',
+  seed: 919,
+  catalog: 'gen1-2',
+  players: [ana, bruno, carla],
+  config: { generations: [1, 2], roundSeconds: 20, selectionVisibility: 'HIDDEN' },
+  steps: [
+    // Ronda 1 (1000–21000, objetivo #32): Ana y Bruno eligen Celebi (#251) y empatan a 219; Carla (#33) sobrevive.
+    select('p1', 'celebi', 2_000),
+    select('p2', 'celebi', 3_000),
+    select('p3', 'nidorino', 4_000),
+    // Desempate 1 (10000–30000, objetivo #182): los dos repiten Bulbasaur (#1) y empatan a 181.
+    timeout(10_000),
+    select('p1', 'bulbasaur', 11_000),
+    select('p2', 'bulbasaur', 12_000),
+    // Desempate 2 (18000–38000, objetivo #31): los dos repiten Celebi y empatan a 220.
+    timeout(18_000),
+    select('p2', 'celebi', 19_000),
+    select('p1', 'celebi', 20_000),
+    // Desempate 3 (26000–46000, objetivo #215): vuelven a empatar con Bulbasaur, pero es el tope: cae Ana, que eligió
+    // la última (FARTHEST con tiedIds de los dos).
+    timeout(26_000),
+    select('p2', 'bulbasaur', 27_000),
+    select('p1', 'bulbasaur', 28_000),
+    // Ronda 2 (34000–54000, objetivo #131): Bruno acierta Lapras y Carla (#1) cae: gana Bruno.
+    timeout(34_000),
+    select('p3', 'bulbasaur', 35_000),
+    select('p2', 'lapras', 36_000),
+    timeout(42_000),
+  ],
+};
+
+const tiebreakCapSameInstant: GoldenScenario = {
+  name: 'tiebreak-cap-same-instant',
+  seed: 1020,
+  catalog: 'gen1-2',
+  players: [ana, bruno],
+  config: { generations: [1, 2], roundSeconds: 20, selectionVisibility: 'HIDDEN' },
+  steps: [
+    // Ronda 1 (1000–21000, objetivo #31): los dos eligen Celebi y empatan.
+    select('p1', 'celebi', 2_000),
+    select('p2', 'celebi', 3_000),
+    // Desempates 1 (#236) y 2 (#141): los dos repiten Bulbasaur.
+    timeout(9_000),
+    select('p1', 'bulbasaur', 10_000),
+    select('p2', 'bulbasaur', 11_000),
+    timeout(17_000),
+    select('p2', 'bulbasaur', 18_000),
+    select('p1', 'bulbasaur', 19_000),
+    // Desempate 3 (25000–45000, objetivo #13): eligen Celebi en el mismo instante; en el tope caen los dos y la partida
+    // acaba sin ganador, como cuando nadie responde.
+    timeout(25_000),
+    select('p1', 'celebi', 26_000),
+    select('p2', 'celebi', 26_000),
+    timeout(32_000),
+  ],
+};
+
 export const pokedexDistanceScenarios: GoldenEngineEntry = {
   module: pokedexDistanceGame,
-  scenarios: [threePlayersFullGame, repeatedTiebreaks, presenceDisconnects, everyRejection, invalidActionStops, roundsSurvivedAndForms, hiddenDuplicatesAndTiebreak],
+  scenarios: [threePlayersFullGame, repeatedTiebreaks, presenceDisconnects, everyRejection, invalidActionStops, roundsSurvivedAndForms, hiddenDuplicatesAndTiebreak,
+    tiebreakCapBySelectedAt, tiebreakCapSameInstant],
   configCases: [
     // Válidos: generaciones deduplicadas y ordenadas, clave extra ignorada, límites de roundSeconds, los dos modos.
     { generations: [2, 1, 2], roundSeconds: 20, selectionVisibility: 'HIDDEN' },

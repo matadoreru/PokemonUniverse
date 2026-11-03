@@ -20,6 +20,12 @@ import java.util.Map;
 /** Traducción literal de {@code pokedex-distance/rules.ts}. */
 public final class PokedexDistanceRules {
 
+  /**
+   * Desempates como máximo antes de resolver un empate a la fuerza. En {@code HIDDEN} los empatados pueden repetir el
+   * mismo Pokémon en cada desempate; el tope garantiza que la partida acabe ({@code maxTiebreaks} es de la Fase 3).
+   */
+  public static final int MAX_TIEBREAK_DEPTH = 3;
+
   private PokedexDistanceRules() {}
 
   public static int distanceBetween(int selectedDex, int targetDex) {
@@ -34,6 +40,15 @@ public final class PokedexDistanceRules {
         .filter(entry -> entry.getValue().distance() == maximum)
         .map(Map.Entry::getKey)
         .toList();
+  }
+
+  /**
+   * Empate en el tope de desempates: caen los empatados que eligieron los últimos (mayor {@code selectedAt}); si todos
+   * eligieron a la vez, caen todos. Conserva el orden de {@code tiedIds} y siempre elimina al menos a uno.
+   */
+  public static List<String> lastToSelectIds(Map<String, RoundSelection> selections, List<String> tiedIds) {
+    long latest = tiedIds.stream().mapToLong(id -> selections.get(id).selectedAt()).max().orElseThrow();
+    return tiedIds.stream().filter(id -> selections.get(id).selectedAt() == latest).toList();
   }
 
   /**
