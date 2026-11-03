@@ -210,13 +210,19 @@ handshake de `/ws` (101 y, sin sesión, cierre 4401 «Authentication required»;
 sirve a mano contra cualquier stack: `./scripts/smoke-check.sh http://127.0.0.1:8080 https://pokemon.example.com`.
 
 **Primer despliegue tras el corte 2D.** El contenedor Node (`server`) del despliegue anterior ya no está en
-`compose.yaml`, así que `docker compose up` lo deja vivo como huérfano; `deploy.sh` lo retira solo cuando el humo pasa.
-Si ese despliegue falla, el rollback vuelve a las imágenes `web` y `backend` anteriores con el `compose.yaml` nuevo:
-el nginx antiguo sigue encontrando `server:3001` porque Node no se ha parado, pero el backend antiguo arranca con los
-interruptores del compose nuevo (salas, interrupción de salas y sincronización encendidos). Para volver del todo al
+`compose.yaml`. `deploy.sh` lo localiza por las etiquetas de compose, lo **para** (sin borrarlo) justo antes de arrancar
+el backend nuevo, para que Node no siga sirviendo salas ni sincronizando mientras Java enciende salas, interrupción de
+salas y sincronización, y lo borra cuando el humo pasa. Si ese despliegue falla, el rollback arranca de nuevo Node (el
+nginx antiguo exige `server:3001` al arrancar) y vuelve a las imágenes `web` y `backend` anteriores con el
+`compose.yaml` nuevo, así que el backend antiguo arranca con los interruptores del compose nuevo (salas, interrupción
+de salas y sincronización encendidos) junto a Node. Para volver del todo al
 stack anterior despliega el SHA anterior con su propio `compose.yaml`
 (`git checkout --detach SHA_ANTERIOR && ./scripts/deploy.sh SHA_ANTERIOR`). Una imagen web anterior al corte no
 arranca sin un contenedor `server` en la red (`host not found in upstream "server"`).
+
+En ese mismo despliegue compose recrea una vez el contenedor `postgres` (sin tocar el volumen): la imagen pasó de
+`postgres:17-alpine` a `docker.io/library/postgres:17-alpine` (nombre completo, para podman) y cambia el hash de su
+configuración. El backup de `deploy.sh` se hace antes.
 
 Una migración no se deshace automáticamente; antes de cambios incompatibles debe existir un procedimiento de migración
 inversa o restaurarse el dump.

@@ -25,9 +25,10 @@ project_name=${PU_COMPOSE_PROJECT_NAME:-pokemon-universe}
 environment_name=${PU_DEPLOY_ENVIRONMENT:-production}
 web_container=$(docker compose ps -q web 2>/dev/null || true)
 backend_container=$(docker compose ps -q backend 2>/dev/null || true)
-# Contenedor Node (`server`) de antes del corte 2D. compose.yaml ya no lo define, así que `compose up` lo deja vivo
-# como huérfano: se mantiene hasta que el humo pasa (el nginx de la imagen web anterior, si hay rollback, enruta a
-# server:3001 y no arranca sin él) y entonces se retira.
+# Contenedor Node (`server`) de antes del corte 2D. compose.yaml ya no lo define. Se para (sin borrarlo) antes de
+# arrancar el backend nuevo: Java enciende salas, interrupción de salas y sincronización, y Node no puede seguir
+# sirviendo salas ni escribiendo esas tablas a la vez. Si hay rollback se vuelve a arrancar (el nginx de la imagen web
+# anterior enruta a server:3001 y no arranca sin él); si el humo pasa, se borra.
 legacy_server_container=$(docker ps -aq \
   --filter "label=com.docker.compose.project=$project_name" \
   --filter "label=com.docker.compose.service=server" 2>/dev/null || true)
@@ -65,9 +66,12 @@ rollback() {
     export PU_IMAGE_TAG="$previous_tag"
   fi
   if [ -n "$legacy_server_container" ]; then
-    # Primer despliegue tras el corte: Node sigue vivo y las imágenes anteriores vuelven con el compose.yaml nuevo.
-    # Para recuperar también el compose anterior: git checkout <SHA anterior> && ./scripts/deploy.sh <SHA anterior>.
-    echo "Node (server) sigue en marcha; para volver del todo al stack anterior al corte despliega su SHA con su compose.yaml" >&2
+    # Primer despliegue tras el corte: Node vuelve antes que la web anterior, que lo resuelve al arrancar; las imágenes
+    # anteriores vuelven con el compose.yaml nuevo. Para recuperar también el compose anterior:
+    # git checkout --detach <SHA anterior> && ./scripts/deploy.sh <SHA anterior>.
+    echo "Arrancando de nuevo Node (server); para volver del todo al stack anterior al corte despliega su SHA con su compose.yaml" >&2
+    # shellcheck disable=SC2086
+    docker start $legacy_server_container >&2 || true
   fi
   docker compose up -d --wait --wait-timeout "$deploy_wait_seconds" backend web || true
   exit 1
@@ -86,6 +90,11 @@ else
 fi
 export PU_IMAGE_TAG="$new_tag"
 docker compose pull backend web
+if [ -n "$legacy_server_container" ]; then
+  echo "Parando Node (server), anterior al corte 2D: el backend Java pasa a servir salas y sincronización"
+  # shellcheck disable=SC2086
+  docker stop $legacy_server_container >/dev/null || rollback
+fi
 docker compose up -d --wait --wait-timeout "$deploy_wait_seconds" backend web || rollback
 
 # A través de nginx, para que una ruta rota de nginx hacia el backend también dispare el rollback.
