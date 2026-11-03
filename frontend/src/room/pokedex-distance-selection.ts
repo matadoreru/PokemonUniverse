@@ -29,3 +29,29 @@ export function distanceMemberStatus(game: PokedexDistancePublicState, memberId:
 export function distanceSpectatorHint(visibility: PokedexDistanceSelectionVisibility): string {
   return visibility === 'LIVE' ? 'Sigue las selecciones en directo.' : 'Las elecciones se verán al revelar la ronda.';
 }
+
+export interface DistanceRoundOutcome {
+  title: string;
+  /** Línea bajo las tarjetas de resultado, o `null` si no hace falta explicar nada. */
+  note: string | null;
+  /** Si la tarjeta del jugador lleva la etiqueta «Empate». */
+  showTiedChip(playerId: string): boolean;
+}
+
+/**
+ * Cabecera y nota del resultado de una ronda. Un `FARTHEST` con `tiedIds` es un empate resuelto a la fuerza en el tope
+ * de desempates (`MAX_TIEBREAK_DEPTH`): se explica el criterio y el eliminado lleva solo «Eliminado».
+ */
+export function distanceRoundOutcome(round: Pick<PokedexDistancePublicState['lastRound'] & object, 'reason' | 'eliminatedIds' | 'tiedIds'>): DistanceRoundOutcome {
+  const forcedTie = round.reason === 'FARTHEST' && round.tiedIds.length > 0;
+  const title = round.reason === 'TIE' ? '⚔️ Empate en la peor distancia'
+    : forcedTie ? '⚔️ Empate tras 3 desempates'
+      : round.reason === 'NO_RESPONSE' ? '⏱️ Tiempo agotado' : '📏 Distancias calculadas';
+  const note = round.reason === 'TIE' ? 'Solo los jugadores empatados jugarán la ronda de desempate.'
+    : forcedTie ? 'Cae quien eligió último; si eligieron a la vez, caen todos.' : null;
+  return {
+    title,
+    note,
+    showTiedChip: (playerId) => round.tiedIds.includes(playerId) && !(forcedTie && round.eliminatedIds.includes(playerId)),
+  };
+}
