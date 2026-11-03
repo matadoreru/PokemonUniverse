@@ -69,7 +69,6 @@ export function HomePage() {
           <h1 className="ol2 mt-2 font-display text-44 font-extrabold text-[color:var(--white)] lg:text-68">
             Pokémon <span className="inline-block text-[color:var(--yellow)]">Universe</span>
           </h1>
-          <p className="mt-3 max-w-[34ch] text-18 font-extrabold text-[color:var(--sky-2)]">Minijuegos Pokémon para jugar con tus amigos, todos en una sola sala.</p>
           <nav className="mt-6 flex w-full max-w-[22rem] flex-col gap-3" aria-label="Empezar">
             <PillLink to={user ? '/play' : '/auth'} variant="yellow" size="main" icon={Play} block>Empezar a jugar</PillLink>
             {!user && <PillLink to="/auth?mode=guest" variant="cream" icon={UserRound} block>Entrar como invitado</PillLink>}
