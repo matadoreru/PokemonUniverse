@@ -135,6 +135,26 @@
   width: 100%;
 }
 
+/* Página actual (`PillLink nav`): amarilla con tinta azul noche y una barra amarilla debajo (forma además de color). */
+.current {
+  background: linear-gradient(180deg, var(--yellow-l) 0%, var(--yellow) 48%, var(--yellow-d) 100%);
+  color: var(--navy);
+}
+.current:focus-visible {
+  outline-color: var(--focus-ring-on-yellow);
+}
+.current::after {
+  content: '';
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  bottom: -9px;
+  height: 4px;
+  border-radius: var(--r-pill);
+  background: var(--yellow);
+  pointer-events: none;
+}
+
 /* Cargando: la atenuación la lleva solo la etiqueta; los puntos se ven enteros. */
 .loading:disabled {
   opacity: 1;

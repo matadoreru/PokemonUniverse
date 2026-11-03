@@ -1,0 +1,327 @@
+/*
+ * Carrusel de «Cómo jugar» con los tokens del sistema. Va sobre azul (panel de Jugar, intro de partida con marco propio)
+ * o sobre crema (`onCream`, dentro del `Dialog`): solo cambian las tintas del texto. Las maquetas usan rellenos sólidos
+ * con borde azul noche y tinta azul noche, que se leen igual sobre los dos fondos.
+ */
+.root {
+  --hp-title: var(--white);
+  --hp-text: var(--white);
+  --hp-line: color-mix(in srgb, var(--navy) 45%, transparent);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  /* Las etiquetas de «Anterior» y «Siguiente» dependen del ancho del carrusel, no de la ventana (panel estrecho). */
+  container-type: inline-size;
+}
+.onCream {
+  --hp-title: var(--ink);
+  --hp-text: var(--ink-2);
+  --hp-line: color-mix(in srgb, var(--navy) 20%, transparent);
+}
+
+/* Marco propio (fuera de un panel o diálogo): el de `Panel`, azul con rayas, contorno y sombra dura. */
+.framed {
+  position: relative;
+  overflow: hidden;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-panel);
+  background: var(--blue);
+  color: var(--white);
+  box-shadow: var(--sh-hard-5), var(--sh-panel);
+}
+.framed::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--stripes-blue);
+  pointer-events: none;
+}
+.framed > * {
+  position: relative;
+}
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--navy-3);
+  border-bottom: var(--ol-3) solid var(--navy-2);
+}
+.kicker {
+  display: block;
+  color: var(--sky-2);
+  font: 800 var(--fs-13) / var(--lh-text) var(--font-text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.heading {
+  color: var(--white);
+  font: 800 var(--fs-26) / 1.1 var(--font-display);
+}
+
+/* Diapositiva: el atributo `hidden` manda (el `display` solo se pone a la visible). */
+.slide:not([hidden]) {
+  display: flex;
+}
+.slide {
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.title {
+  margin-top: var(--sp-1);
+  max-width: 28rem;
+  color: var(--hp-title);
+  font: 800 var(--fs-26) / 1.1 var(--font-display);
+}
+.text {
+  margin-top: var(--sp-2);
+  max-width: 34rem;
+  color: var(--hp-text);
+  font: 700 var(--fs-15) / 1.45 var(--font-text);
+}
+@media (min-width: 640px) {
+  .text {
+    font-size: var(--fs-18);
+  }
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  border-top: var(--ol-2) solid var(--hp-line);
+}
+.footer {
+  padding: var(--sp-3) var(--sp-4);
+  border-top: var(--ol-2) solid var(--hp-line);
+}
+/* En un carrusel estrecho (móvil) los puntos van en su fila, encima: «Entendido» cabe junto a «Anterior». */
+.dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav {
+  flex-wrap: wrap;
+}
+@container (max-width: 439px) {
+  .dots {
+    order: -1;
+    flex: 1 0 100%;
+  }
+}
+/* Con poco ancho, flechas solas (el nombre accesible sigue en `aria-label`) y menos relleno. */
+.navLabel {
+  display: none;
+}
+.navPill.navPill {
+  padding: 0 var(--sp-4);
+}
+@container (min-width: 520px) {
+  .navLabel {
+    display: inline;
+  }
+  .navPill.navPill {
+    padding: 0 22px;
+  }
+}
+/* «Anterior» en el primer paso: sigue enfocable (aria-disabled) pero se ve inactivo y no se hunde. */
+.nav.nav > [aria-disabled='true'],
+.nav.nav > [aria-disabled='true']:hover,
+.nav.nav > [aria-disabled='true']:active {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: var(--sh-hard-5);
+}
+
+/* Puntos: botón de 44 px con el punto dentro; el activo se estira (forma, no solo color) y va en amarillo. */
+.dot {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+}
+.dotMark {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: 50%;
+  background: var(--white);
+  transition: transform var(--t-press) var(--ease);
+}
+.onCream .dotMark {
+  background: var(--cream-2);
+}
+.dot:hover .dotMark {
+  background: var(--sky);
+}
+.dotActive,
+.dot:hover .dotActive,
+.onCream .dotActive {
+  background: var(--yellow);
+  transform: scaleX(2.6);
+}
+@media (prefers-reduced-motion: reduce) {
+  .dotMark {
+    transition: none;
+  }
+}
+
+/* Medallón de los pasos de cada minijuego: relleno sólido, contorno y tinta azul noche. */
+.medallion {
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-panel);
+  color: var(--navy);
+  box-shadow: var(--sh-hard-4);
+}
+.red {
+  background: var(--red-l);
+}
+.blue {
+  background: var(--info);
+}
+.yellow {
+  background: var(--yellow);
+}
+.green {
+  background: var(--ok);
+}
+
+/* Maquetas de la guía general: tarjetas crema con contorno, que se leen sobre azul y sobre crema. */
+.mock {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--cream);
+  color: var(--ink);
+  text-align: left;
+  box-shadow: var(--sh-hard-3);
+}
+.mockTitle {
+  display: block;
+  color: var(--ink);
+  font: 800 var(--fs-18) / 1.2 var(--font-display);
+}
+.mockText {
+  display: block;
+  color: var(--ink-2);
+  font: 700 var(--fs-13) / var(--lh-text) var(--font-text);
+}
+.tile {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-badge);
+  color: var(--navy);
+}
+.bigTile {
+  width: 56px;
+  height: 56px;
+}
+.code {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: var(--sp-2) var(--sp-4);
+  border: var(--ol-2) dashed var(--sky);
+  border-radius: var(--r-card);
+  background: var(--navy-2);
+  color: var(--white);
+  font: 800 var(--fs-22) / 1 var(--font-display);
+  letter-spacing: 0.28em;
+}
+.codeIcon {
+  color: var(--sky);
+}
+.avatars {
+  display: flex;
+  justify-content: center;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-left: -8px;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: 50%;
+  color: var(--navy);
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+.avatar:first-child {
+  margin-left: 0;
+}
+.tabs {
+  display: flex;
+  gap: var(--sp-1);
+  padding: var(--sp-1);
+  border-bottom: var(--ol-2) solid var(--navy);
+  background: var(--navy-3);
+}
+.tab {
+  flex: 1;
+  padding: 6px var(--sp-1);
+  border-radius: var(--r-badge);
+  color: var(--white);
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  text-align: center;
+}
+.tabActive {
+  background: var(--yellow);
+  color: var(--navy);
+  box-shadow: inset 0 -3px 0 var(--navy);
+}
+.sheet {
+  overflow: hidden;
+  width: 100%;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--cream);
+  box-shadow: var(--sh-hard-3);
+}
+.sheetRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 6px var(--sp-3);
+  color: var(--ink);
+  font: 800 var(--fs-15) / 1.2 var(--font-text);
+}
+.sheetRow + .sheetRow {
+  border-top: var(--ol-1-5) solid var(--cream-2);
+}
+.feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-2);
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--cream);
+  color: var(--ink);
+  font: 800 var(--fs-15) / 1.2 var(--font-display);
+  box-shadow: var(--sh-hard-3);
+}

@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, MouseEvent, ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { uiSound } from '../audio/uiSound';
 import { cx } from './cx';
 import type { ForcedState } from './cx';
@@ -75,6 +75,11 @@ interface PillLinkBase extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'ch
   children?: ReactNode;
   icon?: LucideIcon;
   block?: boolean;
+  /**
+   * Enlace de navegación (cabecera): en su página lleva `aria-current="page"` y se ve elegida, en amarillo y con una
+   * barra debajo (no solo el color). Cuenta también en sus subrutas (`/admin/...`).
+   */
+  nav?: boolean;
   /** Solo galería: estado forzado. */
   forced?: ForcedState;
 }
@@ -89,19 +94,30 @@ export type PillLinkProps = PillLinkBase &
 
 /** Píldora que navega: el mismo relieve y sonido que `Pill`, pero es un enlace (se abre en otra pestaña, se anuncia como enlace). */
 export function PillLink(props: PillLinkProps) {
-  const { to, variant = 'blue', size = 'std', icon, block, forced, className, children, onClick, ...rest } = props;
-  return (
-    <Link
-      {...rest}
-      to={to}
-      className={cx(s.pill, s.link, s[variant], size !== 'std' && s[size], block && s.block, forced && s[forced], className)}
-      onClick={(e) => {
-        uiSound(variant === 'ghost' || variant === 'cream' ? 'tap' : 'confirm');
-        onClick?.(e);
-      }}
-    >
+  const { to, variant = 'blue', size = 'std', icon, block, nav, forced, className, children, onClick, ...rest } = props;
+  const classes = (current: boolean) => cx(s.pill, s.link, s[variant], size !== 'std' && s[size], block && s.block, current && s.current, forced && s[forced], className);
+  const body = (current: boolean) => (
+    <>
       {icon && <Icon icon={icon} size={size === 'small' ? 18 : size === 'round' ? 22 : 24} className={s.icon} />}
-      {children != null && children !== false && <span className={cx(s.label, WHITE_INK_PILLS.includes(variant) && 'ol')}>{children}</span>}
+      {children != null && children !== false && <span className={cx(s.label, !current && WHITE_INK_PILLS.includes(variant) && 'ol')}>{children}</span>}
+    </>
+  );
+  const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    uiSound(variant === 'ghost' || variant === 'cream' ? 'tap' : 'confirm');
+    onClick?.(e);
+  };
+  if (nav) {
+    // `exactOptionalPropertyTypes`: NavLink no acepta `style={undefined}`.
+    const { style, ...navRest } = rest;
+    return (
+      <NavLink {...navRest} {...(style ? { style } : {})} to={to} className={({ isActive }) => classes(isActive)} onClick={handleClick}>
+        {({ isActive }) => body(isActive)}
+      </NavLink>
+    );
+  }
+  return (
+    <Link {...rest} to={to} className={classes(false)} onClick={handleClick}>
+      {body(false)}
     </Link>
   );
 }

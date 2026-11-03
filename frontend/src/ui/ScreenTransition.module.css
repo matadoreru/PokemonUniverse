@@ -2,6 +2,10 @@
 .screen {
   height: 100%;
 }
+/* El `h1` que recibe el foco al cambiar de ruta no es un control: sin anillo. */
+.screen :global(h1[tabindex='-1']:focus) {
+  outline: none;
+}
 /* Dos animaciones iguales: al pasar de una a otra se reinicia la entrada. `backwards`: al acabar no queda `transform`. */
 .even {
   animation: enter-even var(--t-screen) var(--ease) backwards;

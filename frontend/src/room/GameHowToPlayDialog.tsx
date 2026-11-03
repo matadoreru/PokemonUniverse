@@ -1,7 +1,8 @@
+import { Check } from 'lucide-react';
 import { useEffect } from 'react';
 import { HowToPlayCarousel } from '../components/HowToPlayCarousel';
 import { gameHowToPlay } from '../games/how-to-play';
-import { Dialog } from '../ui';
+import { Dialog, Pill } from '../ui';
 
 interface Props {
   gameId: string;
@@ -32,7 +33,7 @@ export function GameHowToPlayDialog({ gameId, gameName, open, onClose }: Props) 
   if (!slides) return null;
   return <Dialog open={open} title={gameName} onClose={onClose} width={672} actions={[{ label: 'Cerrar', variant: 'blue', onClick: () => undefined }]}>
     {/* Antetítulo del carrusel: el nombre accesible del diálogo sigue siendo su título (el nombre del juego). */}
-    <span className="text-xs font-black uppercase tracking-[.18em] text-ink/70">Cómo se juega</span>
-    <HowToPlayCarousel slides={slides} heading={gameName} idPrefix={`how-to-play-${gameId}`} itemLabel="paso" loop={false} inDialog lastAction={<button type="button" className="btn-primary" onClick={onClose}>Entendido</button>} />
+    <span className="text-13 font-extrabold uppercase tracking-[.08em] text-[color:var(--ink-2)]">Cómo se juega</span>
+    <HowToPlayCarousel slides={slides} heading={gameName} idPrefix={`how-to-play-${gameId}`} itemLabel="paso" loop={false} inDialog onCream lastAction={<Pill variant="blue" icon={Check} onClick={onClose}>Entendido</Pill>} />
   </Dialog>;
 }

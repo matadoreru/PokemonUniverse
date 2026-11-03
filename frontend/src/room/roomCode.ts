@@ -16,7 +16,7 @@ export function normalizeRoomCode(raw: string): string {
   return upper.replace(/[^A-Z2-9]/g, '').slice(0, ROOM_CODE_LENGTH);
 }
 
-/** Patrón del código que el backend incluye en su error de validación (RoomCommandParsers.java:51). */
+/** Patrón del código que el backend incluye en su error de validación (`RoomCommandParsers.roomCode`). */
 export const ROOM_CODE_PATTERN = '/^[A-Z2-9]{6}$/';
 
 /** Ficheros del backend de los que salen los textos que se reconocen aquí (los vigila `roomCode.test.ts`). */
@@ -33,11 +33,11 @@ const OTHER_ROOM = 'Ya estás en otra sala. Sal de ella antes de unirte a esta.'
  * backend/src/main/java/es/pokemonuniverse/application/rooms/RoomCoordinator.java). Pasar a códigos de error queda fuera
  * de F3; mientras tanto, `roomCode.test.ts` lee esos ficheros Java y falla si un texto deja de aparecer.
  *
- * - «Room not found»: RoomCoordinator.java:308 (`join`).
- * - «Room is full»: RoomCoordinator.java:313 (`join`).
- * - «Leave your current room first»: RoomCoordinator.java:306 y :315 (`join`).
- * - «Already in a room»: RoomCoordinator.java:260 y :287 (`create`).
- * - «Not in a room»: RoomCoordinator.java:1437 y :1546 (`leave` y otras órdenes sin sala).
+ * - «Room not found»: `RoomCoordinator.join`.
+ * - «Room is full»: `RoomCoordinator.join`.
+ * - «Leave your current room first»: `RoomCoordinator.join` (dos veces).
+ * - «Already in a room»: `RoomCoordinator.create` (dos veces).
+ * - «Not in a room»: `RoomCoordinator.requiredRoom` e `inRequiredRoom` (`leave` y otras órdenes sin sala).
  */
 export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
   'Room not found': 'No hay ninguna sala con ese código. Revísalo con quien la creó.',
@@ -48,11 +48,10 @@ export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
 };
 
 /**
- * Mensajes que ya llegan en español y pasan tal cual: los del cliente (`lib/realtime.ts`) y dos del servidor,
- * «Esta conexión ha sido reemplazada…» (RoomCoordinator.java:238) y «El servidor se está cerrando»
- * (RoomCoordinator.java:209).
+ * Textos en español del servidor que pasan tal cual: «Esta conexión ha sido reemplazada…»
+ * (`RoomCoordinator.assertActiveSocket`) y «El servidor se está cerrando» (`RoomCoordinator.assertAcceptingCommands`).
+ * Junto a los del cliente (`lib/realtime.ts`), forman los mensajes que no se traducen.
  */
-/** Textos en español del servidor que pasan tal cual. */
 export const SERVER_SPANISH_MESSAGES = ['Esta conexión ha sido reemplazada por una sesión más reciente.', 'El servidor se está cerrando'] as const;
 
 const SPANISH = new Set<string>([OFFLINE_MESSAGE, TIMEOUT_MESSAGE, ...SERVER_SPANISH_MESSAGES]);
@@ -63,7 +62,7 @@ export function roomErrorMessage(error: unknown): string {
   if (Object.hasOwn(ROOM_ERROR_TRANSLATIONS, raw)) return ROOM_ERROR_TRANSLATIONS[raw]!;
   if (SPANISH.has(raw)) return raw;
   // El error de validación del código llega como la lista de incidencias de Zod, con el patrón
-  // `/^[A-Z2-9]{6}$/` (RoomCommandParsers.java:51, `roomCode`).
+  // `/^[A-Z2-9]{6}$/` (`RoomCommandParsers.roomCode`).
   if (raw.includes(ROOM_CODE_PATTERN)) return 'El código tiene 6 letras o números.';
   return GENERIC;
 }

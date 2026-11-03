@@ -68,4 +68,16 @@ describe('Pill', () => {
     expect(html).toMatch(/class="[^"]*pill[^"]*link/);
     expect(html).toMatch(/<span class="[^"]*\bol\b[^"]*">Novedades<\/span>/);
   });
+
+  it('PillLink nav marca la página actual con aria-current y el estado elegido; fuera de ella, nada', () => {
+    const link = (path: string) => renderToStaticMarkup(createElement(MemoryRouter, { initialEntries: [path] }, createElement(PillLink, { nav: true, to: '/admin', 'aria-label': 'Administración' }, 'Administración')));
+    const here = link('/admin/feedback');
+    expect(here).toContain('aria-current="page"');
+    expect(here).toMatch(/class="[^"]*current/);
+    // Elegida va en amarillo con tinta azul noche: la etiqueta pierde el contorno de la tinta blanca.
+    expect(here).not.toMatch(/<span class="[^"]*\bol\b/);
+    const away = link('/changelog');
+    expect(away).not.toContain('aria-current');
+    expect(away).not.toMatch(/class="[^"]*current/);
+  });
 });

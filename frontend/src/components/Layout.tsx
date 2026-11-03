@@ -43,14 +43,14 @@ function HeaderMenu({ unread, isAdmin }: { unread: number; isAdmin: boolean }) {
       </span>
       <Dialog open={open} title="Más opciones" onClose={close} width={360}>
         <nav aria-label="Más opciones" className="flex flex-col gap-3">
-          <PillLink to="/changelog" icon={Newspaper} block aria-label={newsLabel(unread)} onClick={close}>
+          <PillLink nav to="/changelog" icon={Newspaper} block aria-label={newsLabel(unread)} onClick={close}>
             {unread ? `Novedades (${unread > 9 ? '9+' : unread})` : 'Novedades'}
           </PillLink>
-          <PillLink to="/feedback" icon={MessageSquareWarning} block onClick={close}>
+          <PillLink nav to="/feedback" icon={MessageSquareWarning} block onClick={close}>
             Enviar feedback
           </PillLink>
           {isAdmin && (
-            <PillLink to="/admin" icon={ShieldCheck} block aria-label="Abrir panel de administración" onClick={close}>
+            <PillLink nav to="/admin" icon={ShieldCheck} block aria-label="Abrir panel de administración" onClick={close}>
               Administración
             </PillLink>
           )}
@@ -71,7 +71,7 @@ export function AppHeader({ user, onLogout, unreadChangelogCount = 0 }: { user: 
   const profileLabel = user ? `Abrir perfil de ${user.displayName}` : '';
   const news = (
     <span className="relative inline-flex">
-      <PillLink to="/changelog" size="round" icon={Newspaper} aria-label={newsLabel(unreadChangelogCount)} title="Novedades" />
+      <PillLink nav to="/changelog" size="round" icon={Newspaper} aria-label={newsLabel(unreadChangelogCount)} title="Novedades" />
       <UnreadBadge count={unreadChangelogCount} />
     </span>
   );
@@ -98,17 +98,17 @@ export function AppHeader({ user, onLogout, unreadChangelogCount = 0 }: { user: 
               </span>
               <span className="hidden md:contents">
                 {news}
-                <PillLink to="/feedback" size="round" icon={MessageSquareWarning} aria-label="Enviar feedback" title="Enviar feedback" />
+                <PillLink nav to="/feedback" size="round" icon={MessageSquareWarning} aria-label="Enviar feedback" title="Enviar feedback" />
               </span>
             </>
           )}
           {isAdmin && (
             <>
               <span className="hidden md:contents xl:hidden">
-                <PillLink to="/admin" size="round" icon={ShieldCheck} aria-label="Abrir panel de administración" title="Administración" />
+                <PillLink nav to="/admin" size="round" icon={ShieldCheck} aria-label="Abrir panel de administración" title="Administración" />
               </span>
               <span className="hidden xl:contents">
-                <PillLink to="/admin" icon={ShieldCheck} aria-label="Abrir panel de administración" title="Administración">
+                <PillLink nav to="/admin" icon={ShieldCheck} aria-label="Abrir panel de administración" title="Administración">
                   Administración
                 </PillLink>
               </span>
@@ -117,12 +117,12 @@ export function AppHeader({ user, onLogout, unreadChangelogCount = 0 }: { user: 
           {user?.kind === 'USER' && (
             <>
               <span className="contents lg:hidden">
-                <PillLink to="/profile" variant="cream" size="round" aria-label={profileLabel} title={user.displayName}>
+                <PillLink nav to="/profile" variant="cream" size="round" aria-label={profileLabel} title={user.displayName}>
                   <Avatar name={user.displayName} avatar={user.avatar} size="sm" className="!text-13" />
                 </PillLink>
               </span>
               <span className="hidden lg:contents">
-                <PillLink to="/profile" variant="cream" aria-label={profileLabel} className={s.profile}>
+                <PillLink nav to="/profile" variant="cream" aria-label={profileLabel} className={s.profile}>
                   <Avatar name={user.displayName} avatar={user.avatar} size="sm" className="!text-13" />
                   <span className={s.name} title={user.displayName}>
                     {user.displayName}
@@ -160,7 +160,7 @@ export function Layout() {
     <div className="grid h-[100dvh] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)]">
       <AppHeader user={user} unreadChangelogCount={unreadCount} onLogout={() => void logout().then(() => navigate('/'))} />
       <main className="min-h-0 overflow-y-auto">
-        <ScreenTransition routeKey={pathname}>
+        <ScreenTransition routeKey={pathname} focusHeading>
           <Suspense fallback={<RouteLoadingFallback />}>
             <Outlet />
           </Suspense>

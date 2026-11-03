@@ -75,8 +75,10 @@ export function ProfilePage() {
 
   if (status || !profile) {
     return (
-      <div className="mx-auto grid w-full max-w-[1600px] px-4 pb-4 pt-6 sm:px-6 lg:px-8 lg:pt-5">
-        <Panel title="Perfil de entrenador" status={status} className="mx-auto w-full max-w-[40rem]" />
+      <div className="mx-auto grid w-full max-w-[40rem] gap-4 px-4 pb-4 pt-6 sm:px-6 lg:px-8 lg:pt-5">
+        {/* Mientras carga o si falla, la pantalla sigue teniendo su `h1` (el foco de ruta y los lectores de pantalla lo buscan). */}
+        <h1 className="ol2 font-display text-26 font-extrabold text-[color:var(--white)] sm:text-34">Perfil de entrenador</h1>
+        <Panel status={status} className="w-full" aria-label="Perfil de entrenador" />
       </div>
     );
   }

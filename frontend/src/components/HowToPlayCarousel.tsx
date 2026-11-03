@@ -1,8 +1,17 @@
-import { ArrowLeft, ArrowRight, Crown, Gamepad2, Headphones, KeyRound, SlidersHorizontal, Sparkles, Users } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Crown, Gamepad2, Headphones, KeyRound, SlidersHorizontal, Sparkles, Users, type LucideIcon } from 'lucide-react';
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
+import { Badge, Chip, cx, Icon, Pill } from '../ui';
+import s from './HowToPlayCarousel.module.css';
 
 /** Una diapositiva del carrusel: antetítulo («Paso 1 de 3»), título, descripción de una línea y visual decorativo. */
 export interface HowToPlaySlide { eyebrow: string; title: string; description: string; visual: ReactNode }
+
+export type HowToPlayTone = 'red' | 'blue' | 'yellow' | 'green';
+
+/** Medallón decorativo de un paso: relleno sólido del tono, contorno y icono azul noche (se lee sobre azul y crema). */
+export function HowToPlayMedallion({ icon: Glyph, tone }: { icon: LucideIcon; tone: HowToPlayTone }) {
+  return <span className={cx(s.medallion, s[tone])} aria-hidden="true"><Glyph size={56} strokeWidth={2.5} /></span>;
+}
 
 /** Guía general de la pantalla de entrada (4 consejos). */
 const generalSlides: readonly HowToPlaySlide[] = [
@@ -11,27 +20,28 @@ const generalSlides: readonly HowToPlaySlide[] = [
     title: 'Crea una sala o entra con un código',
     description: 'La persona anfitriona comparte un código de seis caracteres y el resto se une desde esta misma pantalla.',
     visual: <div className="grid w-full max-w-sm gap-3" aria-hidden="true">
-      <div className="flex items-center gap-3 rounded-xl border border-aqua/25 bg-aqua/[.08] p-3"><Crown className="text-electric" /><span className="min-w-0 flex-1"><strong className="block">Crea la sala</strong><small className="text-13 font-bold text-ink/55">Tú eliges juego y ajustes</small></span></div>
-      <div className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-ink/20 bg-surface px-4 py-3 font-display text-xl tracking-[.28em]"><KeyRound className="text-aqua" size={20} /> PIKA42</div>
-      <div className="flex justify-center -space-x-2"><span className="grid h-9 w-9 place-items-center rounded-full border-2 border-surface bg-berry text-sm font-black text-night">A</span><span className="grid h-9 w-9 place-items-center rounded-full border-2 border-surface bg-aqua text-sm font-black text-night">P</span><span className="grid h-9 w-9 place-items-center rounded-full border-2 border-surface bg-electric text-sm font-black text-night">+3</span></div>
+      <div className={s.mock}><span className={cx(s.tile, s.yellow)}><Icon icon={Crown} size={22} /></span><span className="min-w-0 flex-1"><strong className={s.mockTitle}>Crea la sala</strong><small className={s.mockText}>Tú eliges juego y ajustes</small></span></div>
+      <div className={s.code}><Icon icon={KeyRound} size={22} className={s.codeIcon} /> PIKA42</div>
+      <div className={s.avatars}><span className={cx(s.avatar, s.red)}>A</span><span className={cx(s.avatar, s.blue)}>P</span><span className={cx(s.avatar, s.yellow)}>+3</span></div>
     </div>,
   },
   {
     eyebrow: '2 · En llamada mejor',
     title: 'Conectate a una llamada con tus amigos',
     description: 'Recomendamos estar en una llamada de voz, por ejemplo en Discord, Zoom o vuestra app favorita. Muchos juegos ganan muchísimo cuando podéis comentar y reíros juntos.',
-    visual: <div className="flex w-full max-w-sm items-center gap-4 rounded-xl border border-berry/20 bg-berry/[.07] p-4" aria-hidden="true">
-      <span className="grid h-16 w-16 shrink-0 place-items-center rounded-xl bg-berry text-night shadow-card"><Headphones size={34} /></span>
-      <span><strong className="font-display text-xl">Llamada de voz</strong><small className="mt-1 block text-13 font-bold text-ink/70">Discord · Zoom · Meet · Telegram</small><span className="mt-2 inline-flex items-center gap-1 text-13 font-black text-leaf"><span className="h-2 w-2 rounded-full bg-leaf" /> Grupo conectado</span></span>
+    visual: <div className={cx(s.mock, 'max-w-sm !gap-4 !p-4')} aria-hidden="true">
+      <span className={cx(s.tile, s.bigTile, s.red)}><Icon icon={Headphones} size={32} /></span>
+      <span className="flex min-w-0 flex-col items-start gap-1"><strong className={s.mockTitle}>Llamada de voz</strong><small className={s.mockText}>Discord · Zoom · Meet · Telegram</small><Chip tone="ok">Grupo conectado</Chip></span>
     </div>,
   },
   {
     eyebrow: '3 · Prepara la partida',
     title: 'Elige juego, modo y configuración',
     description: 'En el lobby podéis leer cada juego antes de elegirlo. La persona anfitriona configura sus reglas (cada minijuego tiene las suyas propias) y decide cómo rota la sesión (los modos de rotacion random y votacion recomendamos configurar los minijuegos uno a uno para mejor experie).',
-    visual: <div className="w-full max-w-sm overflow-hidden rounded-xl border border-ink/10 bg-surface" aria-hidden="true">
-      <div className="flex border-b border-ink/10 bg-surface-raised p-1.5 text-13 font-black"><span className="flex-1 rounded-lg bg-aqua px-2 py-2 text-center text-night">Minijuego</span><span className="flex-1 px-2 py-2 text-center text-ink/55">Configuración</span><span className="flex-1 px-2 py-2 text-center text-ink/55">Modo</span></div>
-      <div className="space-y-2 p-3"><div className="flex items-center gap-2 rounded-lg bg-aqua/[.08] p-2"><Gamepad2 className="text-aqua" size={20} /><strong className="text-sm">Pokémon Connections</strong></div><div className="flex items-center gap-2 rounded-lg bg-ink/[.04] p-2"><SlidersHorizontal className="text-berry" size={20} /><span className="text-sm font-bold">4 grupos · 120 segundos</span></div></div>
+    visual: <div className={cx(s.sheet, 'max-w-sm')} aria-hidden="true">
+      <div className={s.tabs}><span className={cx(s.tab, s.tabActive)}>Minijuego</span><span className={s.tab}>Configuración</span><span className={s.tab}>Modo</span></div>
+      <div className={s.sheetRow}><span className={cx(s.tile, s.blue, '!h-8 !w-8')}><Icon icon={Gamepad2} size={18} /></span>Pokémon Connections</div>
+      <div className={s.sheetRow}><span className={cx(s.tile, s.red, '!h-8 !w-8')}><Icon icon={SlidersHorizontal} size={18} /></span><Badge tone="navy">4 grupos</Badge><Badge tone="navy">120 s</Badge></div>
     </div>,
   },
   {
@@ -39,9 +49,9 @@ const generalSlides: readonly HowToPlaySlide[] = [
     title: 'Juega con o contra tus amigos',
     description: 'Cada minijuego tiene reglas propias. Juega y divertete!',
     visual: <div className="grid w-full max-w-sm grid-cols-3 gap-2" aria-hidden="true">
-      <div className="rounded-xl bg-electric/15 p-3 text-center"><Sparkles className="mx-auto text-electric" /><strong className="mt-2 block text-sm">Descubre</strong></div>
-      <div className="rounded-xl bg-aqua/10 p-3 text-center"><Users className="mx-auto text-aqua" /><strong className="mt-2 block text-sm">Comparte</strong></div>
-      <div className="rounded-xl bg-leaf/10 p-3 text-center"><Crown className="mx-auto text-leaf" /><strong className="mt-2 block text-sm">Puntúa</strong></div>
+      <div className={s.feature}><span className={cx(s.tile, s.yellow)}><Icon icon={Sparkles} size={22} /></span>Descubre</div>
+      <div className={s.feature}><span className={cx(s.tile, s.blue)}><Icon icon={Users} size={22} /></span>Comparte</div>
+      <div className={s.feature}><span className={cx(s.tile, s.green)}><Icon icon={Crown} size={22} /></span>Puntúa</div>
     </div>,
   },
 ];
@@ -70,6 +80,8 @@ interface Props {
    * `heading`), y «Siguiente» recibe el foco al abrir (`data-autofocus`).
    */
   inDialog?: boolean;
+  /** Sobre crema (el `Dialog`): título y texto en tinta oscura. Por defecto el carrusel va sobre azul. */
+  onCream?: boolean;
 }
 
 /** Índice tras moverse `delta` posiciones: da la vuelta con bucle, se para en los extremos sin él y nunca sale de rango. */
@@ -83,7 +95,7 @@ export function carouselStep(active: number, count: number, loop: boolean, delta
  * Carrusel accesible sin reproducción automática: flechas, puntos de 44 px y teclas ← → sobre la región.
  * Pinta todas las diapositivas y oculta las inactivas con `hidden`, así el contenido existe sin JavaScript.
  */
-export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jugar', kicker = 'Guía rápida', footer, headerAction, idPrefix = 'how-to-play', itemLabel = 'consejo', loop = true, lastAction, compact = false, inDialog = false }: Props) {
+export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jugar', kicker = 'Guía rápida', footer, headerAction, idPrefix = 'how-to-play', itemLabel = 'consejo', loop = true, lastAction, compact = false, inDialog = false, onCream = false }: Props) {
   const [storedActive, setActive] = useState(0);
   const [direction, setDirection] = useState<'next' | 'previous'>('next');
   // Otras diapositivas (otro juego) vuelven a empezar por la primera.
@@ -117,29 +129,29 @@ export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jug
   const label = itemLabel.charAt(0).toLocaleUpperCase('es') + itemLabel.slice(1);
   const titleId = `${idPrefix}-title`;
 
-  return <section className={inDialog ? 'flex flex-col' : `flex ${compact ? 'min-h-[24rem]' : 'min-h-[31rem]'} flex-col overflow-hidden rounded-2xl border border-aqua/20 bg-surface shadow-card`} {...(inDialog ? { 'aria-label': heading } : { 'aria-labelledby': titleId })} aria-roledescription="carrusel" onKeyDown={onKeyDown}>
-    {!inDialog && <header className="flex items-start justify-between gap-3 border-b border-ink/10 bg-gradient-to-r from-aqua/[.12] to-berry/[.08] px-5 py-4 sm:px-6">
+  return <section className={cx(s.root, onCream && s.onCream, !inDialog && s.framed, !inDialog && (compact ? 'min-h-[24rem]' : 'min-h-[31rem]'))} {...(inDialog ? { 'aria-label': heading } : { 'aria-labelledby': titleId })} aria-roledescription="carrusel" onKeyDown={onKeyDown}>
+    {!inDialog && <header className={s.head}>
       <div className="min-w-0">
-        <span className="text-13 font-black uppercase tracking-[.18em] text-aqua">{kicker}</span>
-        <h2 id={titleId} className="font-display text-2xl sm:text-3xl">{heading}</h2>
+        <span className={s.kicker}>{kicker}</span>
+        <h2 id={titleId} className={s.heading}>{heading}</h2>
       </div>
       {headerAction}
     </header>}
     <div className={`flex flex-1 flex-col px-5 text-center sm:px-8 ${compact ? 'py-4' : 'py-6'}`} aria-live="polite">
-      {slides.map((slide, index) => <div key={slide.eyebrow} id={`${idPrefix}-slide-${index + 1}`} role="group" aria-roledescription="diapositiva" aria-label={`${label} ${index + 1} de ${count}`} hidden={index !== active} className={`${index === active ? 'flex' : 'hidden'} flex-1 flex-col items-center justify-center ${direction === 'next' ? 'motion-enter-right' : 'motion-enter-left'}`}>
+      {slides.map((slide, index) => <div key={slide.eyebrow} id={`${idPrefix}-slide-${index + 1}`} role="group" aria-roledescription="diapositiva" aria-label={`${label} ${index + 1} de ${count}`} hidden={index !== active} className={cx(s.slide, direction === 'next' ? 'motion-enter-right' : 'motion-enter-left')}>
         <div className={`flex w-full items-center justify-center ${compact ? 'min-h-28' : 'min-h-48'}`}>{slide.visual}</div>
-        <span className="mt-4 text-13 font-black uppercase tracking-[.16em] text-berry">{slide.eyebrow}</span>
-        <h3 className="mt-1 max-w-md font-display text-2xl leading-tight">{slide.title}</h3>
-        <p className="mt-3 max-w-lg text-sm font-semibold leading-relaxed text-ink/70 sm:text-base">{slide.description}</p>
+        <span className="mt-4"><Badge>{slide.eyebrow}</Badge></span>
+        <h3 className={s.title}>{slide.title}</h3>
+        <p className={s.text}>{slide.description}</p>
       </div>)}
     </div>
-    <nav className="flex items-center justify-between gap-2 border-t border-ink/10 px-4 py-3 sm:px-5" aria-label={`${label}s de ${heading}`}>
-      <button type="button" className="btn-ghost !px-3 aria-disabled:cursor-not-allowed aria-disabled:opacity-45" onClick={previous} aria-disabled={isFirst || undefined} aria-label={`${label} anterior`}><ArrowLeft size={18} /> <span className="hidden sm:inline">Anterior</span></button>
-      <div className="flex items-center" role="group" aria-label={`${label} ${active + 1} de ${count}`}>{slides.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => go(index, index < active ? 'previous' : 'next')} aria-label={`Ver ${itemLabel} ${index + 1}`} aria-controls={`${idPrefix}-slide-${index + 1}`} aria-current={index === active ? 'step' : undefined} className="group grid min-h-11 min-w-11 place-items-center rounded-full"><span className={`block h-2.5 w-2.5 rounded-full ${index === active ? 'scale-x-[2.6] bg-aqua' : 'bg-ink/50 group-hover:bg-ink/70'}`} /></button>)}</div>
+    <nav className={s.nav} aria-label={`${label}s de ${heading}`}>
+      <Pill variant="ghost" className={s.navPill} onClick={previous} aria-disabled={isFirst || undefined} aria-label={`${label} anterior`}><Icon icon={ArrowLeft} size={24} /><span className={s.navLabel}>Anterior</span></Pill>
+      <div className={s.dots} role="group" aria-label={`${label} ${active + 1} de ${count}`}>{slides.map((item, index) => <button key={item.eyebrow} type="button" onClick={() => go(index, index < active ? 'previous' : 'next')} aria-label={`Ver ${itemLabel} ${index + 1}`} aria-controls={`${idPrefix}-slide-${index + 1}`} aria-current={index === active ? 'step' : undefined} className={s.dot}><span className={cx(s.dotMark, index === active && s.dotActive)} /></button>)}</div>
       {showLastAction
         ? <span ref={lastActionRef} className="flex">{lastAction}</span>
-        : <button type="button" className="btn-ghost !px-3 aria-disabled:cursor-not-allowed aria-disabled:opacity-45" onClick={next} aria-disabled={isLast || undefined} aria-label={`Siguiente ${itemLabel}`} data-carousel-next="" {...(inDialog ? { 'data-autofocus': '' } : {})}><span className="hidden sm:inline">Siguiente</span> <ArrowRight size={18} /></button>}
+        : <Pill variant="ghost" className={s.navPill} onClick={next} aria-disabled={isLast || undefined} aria-label={`Siguiente ${itemLabel}`} data-carousel-next="" {...(inDialog ? { 'data-autofocus': '' } : {})}><span className={s.navLabel}>Siguiente</span><Icon icon={ArrowRight} size={24} /></Pill>}
     </nav>
-    {footer && <div className="border-t border-ink/10 px-4 py-3 sm:px-5">{footer}</div>}
+    {footer && <div className={s.footer}>{footer}</div>}
   </section>;
 }

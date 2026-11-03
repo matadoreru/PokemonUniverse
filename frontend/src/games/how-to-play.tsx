@@ -1,15 +1,10 @@
 import { ArrowUpDown, BarChart3, BookOpen, Clock3, Eye, Flame, LockKeyhole, MessageSquareText, Palette, Search, Sparkles, Swords, Target, Timer, Trophy, UserX, Vote, Zap, type LucideIcon } from 'lucide-react';
-import type { HowToPlaySlide } from '../components/HowToPlayCarousel';
+import { HowToPlayMedallion, type HowToPlayTone, type HowToPlaySlide } from '../components/HowToPlayCarousel';
 
 type Tone = 'aqua' | 'berry' | 'electric' | 'leaf';
 
-/** Clases literales por token (Tailwind solo genera las que aparecen enteras en el código). */
-const toneClass: Record<Tone, string> = {
-  aqua: 'bg-aqua/15 text-aqua',
-  berry: 'bg-berry/15 text-berry',
-  electric: 'bg-electric/15 text-electric',
-  leaf: 'bg-leaf/15 text-leaf',
-};
+/** Tono del medallón de cada paso (relleno sólido con tinta azul noche: se lee sobre el panel azul y sobre el crema). */
+const medallionTone: Record<Tone, HowToPlayTone> = { aqua: 'blue', berry: 'red', electric: 'yellow', leaf: 'green' };
 
 type Step = readonly [title: string, description: string, icon: LucideIcon, tone: Tone];
 
@@ -18,7 +13,7 @@ function steps(...items: readonly [Step, Step, Step]): readonly [HowToPlaySlide,
     eyebrow: `Paso ${index + 1} de 3`,
     title,
     description,
-    visual: <span className={`grid h-24 w-24 place-items-center rounded-2xl ${toneClass[tone]}`} aria-hidden="true"><Icon size={56} /></span>,
+    visual: <HowToPlayMedallion icon={Icon} tone={medallionTone[tone]} />,
   })) as [HowToPlaySlide, HowToPlaySlide, HowToPlaySlide];
   return [first, second, third];
 }

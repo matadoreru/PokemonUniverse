@@ -127,7 +127,7 @@ export function FeedbackPage() {
         <Panel variant="cream" title="Mensaje enviado" className="mx-auto w-full max-w-[44rem] lg:self-center" bodyClassName="px-5 py-7 sm:px-8">
           <div className="flex flex-col items-center text-center" role="status">
             <span className="grid h-16 w-16 place-items-center rounded-full border-[3px] border-[color:var(--navy)] bg-[var(--ok)] text-[color:var(--navy)]" aria-hidden="true"><Icon icon={CheckCircle2} size={32} /></span>
-            <h2 ref={thanks} tabIndex={-1} className="mt-4 font-display text-34 font-extrabold text-[color:var(--ink)] outline-none">Gracias por avisar</h2>
+            <h3 ref={thanks} tabIndex={-1} className="mt-4 font-display text-34 font-extrabold text-[color:var(--ink)] outline-none">Gracias por avisar</h3>
             <p className="mt-2 max-w-[48ch] text-18 font-semibold text-[color:var(--ink-2)]">
               Tu {sent.type === 'BUG' ? 'reporte' : 'sugerencia'} sobre <strong className="text-[color:var(--ink)]">{sent.gameName ?? FEEDBACK_REFERENCE_LABELS[sent.reference]}</strong> ya está en la bandeja de administración.
             </p>

@@ -168,6 +168,14 @@ function PillSection() {
       <Fig id="pill-link-round" caption="Enlace redondo (solo icono)">
         <PillLink to="/dev/ui" size="round" icon={Newspaper} aria-label="Novedades" />
       </Fig>
+      <Fig id="pill-link-current" caption="Enlace de cabecera · página actual (aria-current, amarillo y barra)">
+        <PillLink nav to="/dev/ui" icon={ShieldCheck}>
+          Administración
+        </PillLink>
+      </Fig>
+      <Fig id="pill-link-round-current" caption="Enlace redondo · página actual">
+        <PillLink nav to="/dev/ui" size="round" icon={Newspaper} aria-label="Novedades (página actual)" />
+      </Fig>
       <Fig id="pill-link-yellow-main" caption="Enlace amarillo principal">
         <PillLink to="/dev/ui" variant="yellow" size="main">
           Empezar a jugar

@@ -182,6 +182,17 @@ test.describe('cabecera con cuenta', () => {
     await page.getByRole('dialog', { name: 'Más opciones' }).getByRole('link', { name: 'Enviar feedback' }).click();
     await expect(page).toHaveURL(/\/feedback$/);
     await expect(page.getByRole('dialog', { name: 'Más opciones' })).toBeHidden();
+    // El foco pasa a la pantalla nueva (su título o el campo que ella elige), no vuelve al botón del menú.
+    await expect(page.getByRole('button', { name: /^Más opciones/ })).not.toBeFocused();
+    await expect.poll(() => page.evaluate(() => document.querySelector('main')?.contains(document.activeElement) ?? false)).toBe(true);
+    // En la placa, la píldora de la página actual lo dice (aria-current) y se ve elegida.
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await expect(page.getByRole('link', { name: 'Enviar feedback' })).toHaveAttribute('aria-current', 'page');
+    await expect(page.getByRole('link', { name: /^Novedades/ })).not.toHaveAttribute('aria-current', 'page');
+    // Una pantalla que no elige su foco lo recibe en su h1 al llegar desde la cabecera.
+    await page.getByRole('link', { name: /^Novedades/ }).click();
+    await expect(page.getByRole('heading', { level: 1, name: 'Novedades' })).toBeFocused();
+    await expect(page.getByRole('link', { name: /^Novedades/ })).toHaveAttribute('aria-current', 'page');
     expect(errors).toEqual([]);
   });
 });
