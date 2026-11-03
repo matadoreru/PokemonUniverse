@@ -84,7 +84,7 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   id: 'pokedex-distance',
   config: component(() => import('./pokedex-distance/ConfigPanel'), 'PokedexDistanceConfigPanel'),
   active: component(() => import('../room/PokedexDistanceGame'), 'PokedexDistanceGame'),
-  results: component(() => import('../room/Results'), 'GameResults'),
+  results: component(() => import('../room/PokedexDistanceResults'), 'PokedexDistanceResults'),
 })).register(clientModule({
   id: 'shiny-vote',
   config: component(() => import('./shiny-vote/ConfigPanel'), 'ShinyVoteConfigPanel'),

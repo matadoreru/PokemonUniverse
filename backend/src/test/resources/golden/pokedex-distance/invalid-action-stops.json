@@ -84,6 +84,7 @@
         "roundStartedAt": null,
         "roundEndsAt": null,
         "lastRound": null,
+        "roundHistory": [],
         "winnerId": null,
         "nextTransitionAt": null,
         "results": null
@@ -130,6 +131,7 @@
         "roundStartedAt": 1000,
         "roundEndsAt": 21000,
         "lastRound": null,
+        "roundHistory": [],
         "winnerId": null,
         "nextTransitionAt": null,
         "results": null
@@ -190,6 +192,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 21000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null

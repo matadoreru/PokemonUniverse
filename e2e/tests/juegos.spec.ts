@@ -641,6 +641,23 @@ test('pokedex-distance: empate forzado tras tres desempates', async ({ browser }
     await expect(host.page.locator('article').filter({ hasText: invitado.name })).toContainText('Eliminado');
     await host.page.evaluate(() => window.scrollTo(0, 0));
     await capturarAnotando(host.page, 'juego-pokedex-distance-empate-forzado', forzado);
+
+    // Resultados propios: clasificación con la ronda de caída, mejor acierto y distancia por ronda (R1 y sus tres
+    // desempates), sin NaN ni scroll horizontal de la página aunque la tabla tenga muchas columnas.
+    await expect(titulo('Resultado de la partida')).toBeVisible({ timeout: 15_000 });
+    const clasificacion = host.page.getByRole('list', { name: 'Clasificación' });
+    await expect(clasificacion.getByRole('listitem').filter({ hasText: host.name })).toContainText('Ganador');
+    await expect(clasificacion.getByRole('listitem').filter({ hasText: invitado.name })).toContainText('Cayó en la ronda 1');
+    await expect(clasificacion.getByRole('listitem').filter({ hasText: host.name })).toContainText('1 desempate superado');
+    await expect(host.page.getByRole('heading', { name: 'Mejor acierto' })).toBeVisible();
+    const tabla = host.page.getByRole('table');
+    await expect(tabla.getByRole('columnheader')).toHaveText(['Entrenador', 'R1', 'R1 · D1', 'R1 · D2', 'R1 · D3']);
+    await expect(tabla.getByRole('row').filter({ hasText: invitado.name }).getByRole('cell').last()).toContainText('✗');
+    await expect(host.page.getByText(/NaN|Infinity|ronda 0/)).toHaveCount(0);
+    await host.page.setViewportSize({ width: 390, height: 844 });
+    expect(await host.page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'sin scroll horizontal de la página a 390').toBe(true);
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-pokedex-distance-resultados', { sigue: tabla, claro: true, completa: true });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

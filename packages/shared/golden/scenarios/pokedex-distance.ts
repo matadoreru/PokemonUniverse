@@ -283,10 +283,37 @@ const tiebreakCapSameInstant: GoldenScenario = {
   ],
 };
 
+// Historial de rondas y desempates superados (Fase 2): roundHistory solo se publica en GAME_RESULTS, con un registro
+// por resolución (también el empate, con eliminatedIds vacío) y null para quien no respondió.
+const roundHistoryTiebreak: GoldenScenario = {
+  name: 'round-history-tiebreak',
+  seed: 1121,
+  catalog: 'gen1-2',
+  players: [ana, bruno, carla],
+  config: { generations: [1, 2], roundSeconds: 20, selectionVisibility: 'HIDDEN' },
+  steps: [
+    // Ronda 1 (1000–21000, objetivo #83): Ana y Bruno eligen Celebi (#251) y empatan a 168; Carla (#1) sobrevive.
+    // Mientras dura, la proyección pública lleva roundHistory vacío aunque el estado ya tenga el registro del empate.
+    select('p1', 'celebi', 2_000),
+    select('p2', 'celebi', 3_000),
+    select('p3', 'bulbasaur', 4_000),
+    // Desempate 1 (10000–30000, objetivo #90): Ana (#1) supera el desempate y Bruno (#251) cae; Carla no lo juega y
+    // no suma tiebreaksWon.
+    timeout(10_000),
+    select('p1', 'bulbasaur', 11_000),
+    select('p2', 'celebi', 12_000),
+    // Ronda 2 (18000–38000, objetivo #135): Carla no responde y cae por NO_RESPONSE (distancia null en el historial): gana Ana.
+    timeout(18_000),
+    select('p1', 'bulbasaur', 19_000),
+    timeout(38_000),
+    timeout(44_000),
+  ],
+};
+
 export const pokedexDistanceScenarios: GoldenEngineEntry = {
   module: pokedexDistanceGame,
   scenarios: [threePlayersFullGame, repeatedTiebreaks, presenceDisconnects, everyRejection, invalidActionStops, roundsSurvivedAndForms, hiddenDuplicatesAndTiebreak,
-    tiebreakCapBySelectedAt, tiebreakCapSameInstant],
+    tiebreakCapBySelectedAt, tiebreakCapSameInstant, roundHistoryTiebreak],
   configCases: [
     // Válidos: generaciones deduplicadas y ordenadas, clave extra ignorada, límites de roundSeconds, los dos modos.
     { generations: [2, 1, 2], roundSeconds: 20, selectionVisibility: 'HIDDEN' },

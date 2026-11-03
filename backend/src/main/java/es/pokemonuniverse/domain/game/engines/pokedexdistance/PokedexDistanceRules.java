@@ -5,6 +5,7 @@ import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.GameStanding;
+import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.DistanceRoundRecord;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.EliminationReason;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.EliminationRecord;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.PlayerRoundStats;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /** Traducción literal de {@code pokedex-distance/rules.ts}. */
 public final class PokedexDistanceRules {
@@ -83,6 +85,7 @@ public final class PokedexDistanceRules {
       mapped.put("selections", stats.selections());
       mapped.put("averageDistance", stats.selections() == 0 ? 0
           : Math.round((double) stats.distanceTotal() / stats.selections() * 100) / 100.0);
+      mapped.put("tiebreaksWon", stats.tiebreaksWon());
       int points = state.winnerId() == null && position == 1 ? 0 : Scoring.pointsForPosition(total, position);
       standings.add(new GameStanding(playerId, position, points, null, mapped));
     }
@@ -99,5 +102,16 @@ public final class PokedexDistanceRules {
   public static EliminationRecord elimination(List<String> playerIds, EliminationReason reason,
       PokedexDistanceState state) {
     return new EliminationRecord(playerIds, reason, state.roundNumber(), state.survivorIds().size() - playerIds.size());
+  }
+
+  /** {@code roundRecord}: el registro de la ronda que se resuelve ahora, una distancia por elegible ({@code null} si no respondió). */
+  public static DistanceRoundRecord roundRecord(PokedexDistanceState state, List<String> eliminatedIds) {
+    var distances = new LinkedHashMap<String, Integer>();
+    for (var id : state.eligibleIds()) {
+      var selection = state.selections().get(id);
+      distances.put(id, selection == null ? null : selection.distance());
+    }
+    return new DistanceRoundRecord(state.roundNumber(), state.tiebreakDepth(),
+        Objects.requireNonNull(state.targetDexNumber(), "targetDexNumber"), distances, eliminatedIds);
   }
 }

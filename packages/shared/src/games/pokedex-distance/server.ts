@@ -2,7 +2,7 @@ import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import { type GameActionResult, type GameContext, type MiniGameModule, PRESENCE_GRACE_MS, GAME_INTRO_MS } from '../contracts.js';
 import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultPokedexDistanceConfig, pokedexDistanceConfigSchema, type PokedexDistanceConfig } from './config.js';
-import { buildResults, distanceBetween, elimination, emptyPlayerStats, farthestPlayerIds, lastToSelectIds, MAX_TIEBREAK_DEPTH } from './rules.js';
+import { buildResults, distanceBetween, elimination, emptyPlayerStats, farthestPlayerIds, lastToSelectIds, MAX_TIEBREAK_DEPTH, roundRecord } from './rules.js';
 import { pokedexDistanceActionSchema, type PokedexDistanceAction, type PokedexDistancePlayerState, type PokedexDistancePublicState, type PokedexDistanceState, type RoundResult } from './types.js';
 
 const manifest = {
@@ -18,6 +18,7 @@ const manifest = {
       { key: 'exactHits', label: 'Exact Hits', aggregation: 'SUM' },
       { key: 'roundsSurvived', label: 'Rondas superadas', aggregation: 'SUM' },
       { key: 'selections', label: 'Selecciones', aggregation: 'SUM' },
+      { key: 'tiebreaksWon', label: 'Desempates superados', aggregation: 'SUM' },
     ],
   },
 } as const;
@@ -72,9 +73,11 @@ function eliminateAndContinue(
   const eliminatedSet = new Set(playerIds);
   const survivorIds = state.survivorIds.filter((id) => !eliminatedSet.has(id));
   const playerStats = { ...state.playerStats };
+  // Supera el desempate quien lo jugaba y no cae; un desempate que vuelve a empatar no pasa por aquí.
+  const wonTiebreak = new Set(state.tiebreakDepth > 0 ? state.eligibleIds : []);
   for (const id of survivorIds) {
     const stats = playerStats[id] ?? emptyPlayerStats();
-    playerStats[id] = { ...stats, roundsSurvived: stats.roundsSurvived + 1 };
+    playerStats[id] = { ...stats, roundsSurvived: stats.roundsSurvived + 1, tiebreaksWon: stats.tiebreaksWon + (wonTiebreak.has(id) ? 1 : 0) };
   }
   const next: PokedexDistanceState = {
     ...state,
@@ -83,6 +86,7 @@ function eliminateAndContinue(
     spectatorIds: [...new Set([...state.spectatorIds, ...playerIds])],
     lastRound: roundResult,
     eliminations: [...state.eliminations, elimination(playerIds, reason, state)],
+    roundHistory: [...state.roundHistory, roundRecord(state, playerIds)],
     roundEndsAt: null,
     nextTransitionAt: context.now + RESULTS_DURATION_MS,
     pendingEligibleIds: survivorIds,
@@ -115,6 +119,7 @@ function resolveRound(state: PokedexDistanceState, context: GameContext): Pokede
       ...state,
       phase: 'ROUND_RESULTS',
       lastRound: tieResult,
+      roundHistory: [...state.roundHistory, roundRecord(state, [])],
       roundEndsAt: null,
       nextTransitionAt: context.now + RESULTS_DURATION_MS,
       pendingEligibleIds: farthest,
@@ -146,7 +151,7 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
       survivorIds: context.players.map((player) => player.id), spectatorIds: [], roundNumber: 0, tiebreakDepth: 0,
       eligibleIds: [], targetDexNumber: null, selections: {}, lockedPokemonIds: [], roundStartedAt: null,
       roundEndsAt: null, nextTransitionAt: null, pendingEligibleIds: [], pendingTiebreakDepth: 0,
-      lastRound: null, eliminations: [], playerStats, winnerId: null,
+      lastRound: null, eliminations: [], roundHistory: [], playerStats, winnerId: null,
     };
   },
 
@@ -218,7 +223,9 @@ export const pokedexDistanceGame: MiniGameModule<PokedexDistanceConfig, PokedexD
       tiebreakDepth: state.tiebreakDepth, targetDexNumber: state.targetDexNumber, eligibleIds: state.eligibleIds,
       survivorIds: state.survivorIds, spectatorIds: state.spectatorIds, selections, selectedIds: Object.keys(state.selections),
       lockedPokemonIds: state.lockedPokemonIds, roundStartedAt: state.roundStartedAt,
-      roundEndsAt: state.roundEndsAt, lastRound, winnerId: state.winnerId,
+      roundEndsAt: state.roundEndsAt, lastRound,
+      // Solo al final: las rondas resueltas ya se vieron una a una en `lastRound`, y así no viaja en cada difusión.
+      roundHistory: state.phase === 'GAME_RESULTS' ? state.roundHistory : [], winnerId: state.winnerId,
       nextTransitionAt: state.nextTransitionAt,
       results: state.phase === 'GAME_RESULTS' ? buildResults(state) : null,
     };

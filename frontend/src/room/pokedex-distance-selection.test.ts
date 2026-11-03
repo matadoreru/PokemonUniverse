@@ -9,7 +9,7 @@ function game(overrides: Partial<PokedexDistancePublicState>): PokedexDistancePu
   return {
     gameId: 'pokedex-distance', phase: 'ROUND_ACTIVE', roundNumber: 1, tiebreakDepth: 0, targetDexNumber: 25,
     eligibleIds: ['p1', 'p2'], survivorIds: ['p1', 'p2'], spectatorIds: [], selections: {}, selectedIds: [],
-    lockedPokemonIds: [], roundStartedAt: 0, roundEndsAt: 20_000, nextTransitionAt: null, lastRound: null, winnerId: null,
+    lockedPokemonIds: [], roundStartedAt: 0, roundEndsAt: 20_000, nextTransitionAt: null, lastRound: null, roundHistory: [], winnerId: null,
     results: null, ...overrides,
   };
 }

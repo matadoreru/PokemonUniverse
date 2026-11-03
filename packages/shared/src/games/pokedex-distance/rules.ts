@@ -1,6 +1,6 @@
 import { pointsForPosition } from '../../scoring.js';
 import type { GameResults, GameStanding } from '../contracts.js';
-import type { EliminationRecord, PlayerRoundStats, PokedexDistanceState, RoundSelection } from './types.js';
+import type { DistanceRoundRecord, EliminationRecord, PlayerRoundStats, PokedexDistanceState, RoundSelection } from './types.js';
 
 /**
  * Desempates como máximo antes de resolver un empate a la fuerza. En `HIDDEN` los empatados pueden repetir el mismo
@@ -47,6 +47,7 @@ export function buildResults(state: PokedexDistanceState): GameResults {
         roundsSurvived: stats.roundsSurvived,
         selections: stats.selections,
         averageDistance: stats.selections === 0 ? 0 : Math.round((stats.distanceTotal / stats.selections) * 100) / 100,
+        tiebreaksWon: stats.tiebreaksWon,
       },
     };
   });
@@ -55,9 +56,20 @@ export function buildResults(state: PokedexDistanceState): GameResults {
 }
 
 export function emptyPlayerStats(): PlayerRoundStats {
-  return { exactHits: 0, distanceTotal: 0, selections: 0, roundsSurvived: 0 };
+  return { exactHits: 0, distanceTotal: 0, selections: 0, roundsSurvived: 0, tiebreaksWon: 0 };
 }
 
 export function elimination(playerIds: string[], reason: EliminationRecord['reason'], state: PokedexDistanceState): EliminationRecord {
   return { playerIds, reason, roundNumber: state.roundNumber, remainingAfter: state.survivorIds.length - playerIds.length };
+}
+
+/** Registro de la ronda que se resuelve ahora: una distancia por elegible (`null` si no respondió). */
+export function roundRecord(state: PokedexDistanceState, eliminatedIds: string[]): DistanceRoundRecord {
+  return {
+    roundNumber: state.roundNumber,
+    tiebreakDepth: state.tiebreakDepth,
+    targetDexNumber: state.targetDexNumber!,
+    distances: Object.fromEntries(state.eligibleIds.map((id) => [id, state.selections[id]?.distance ?? null])),
+    eliminatedIds: [...eliminatedIds],
+  };
 }

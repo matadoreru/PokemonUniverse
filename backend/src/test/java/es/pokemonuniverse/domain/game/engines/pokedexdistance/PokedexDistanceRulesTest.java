@@ -9,6 +9,7 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameStanding;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
+import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.DistanceRoundRecord;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.EliminationReason;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.EliminationRecord;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.PlayerRoundStats;
@@ -62,13 +63,36 @@ class PokedexDistanceRulesTest {
   @Test
   void selectionStatsCountExactHitsButNotRoundsSurvived() {
     var stats = PokedexDistanceRules.emptyPlayerStats().afterSelection(0).afterSelection(7);
-    assertEquals(new PlayerRoundStats(1, 7, 2, 0), stats);
+    assertEquals(new PlayerRoundStats(1, 7, 2, 0, 0), stats);
   }
 
   @Test
   void survivalOnlyAddsOneRoundSurvived() {
-    var stats = PokedexDistanceRules.emptyPlayerStats().afterSelection(3).afterSurvival();
-    assertEquals(new PlayerRoundStats(0, 3, 1, 1), stats);
+    var stats = PokedexDistanceRules.emptyPlayerStats().afterSelection(3).afterSurvival(false);
+    assertEquals(new PlayerRoundStats(0, 3, 1, 1, 0), stats);
+  }
+
+  @Test
+  void survivingATiebreakAlsoAddsATiebreakWon() {
+    var stats = PokedexDistanceRules.emptyPlayerStats().afterSurvival(true).afterSurvival(false);
+    assertEquals(new PlayerRoundStats(0, 0, 0, 2, 1), stats);
+  }
+
+  /** {@code roundRecord}: una distancia por elegible en su orden, {@code null} sin respuesta, aunque se elija en otro orden. */
+  @Test
+  void roundRecordFollowsEligibleOrderWithNullsForNonResponders() {
+    var selections = new LinkedHashMap<String, RoundSelection>();
+    selections.put("p3", new RoundSelection("mew", 151, 25, 2_000));
+    selections.put("p1", new RoundSelection("bulbasaur", 1, 125, 3_000));
+    var state = finished().phase(GamePhase.TIEBREAKER_ACTIVE).roundNumber(2).tiebreakDepth(1).targetDexNumber(126)
+        .eligibleIds(List.of("p1", "p2", "p3")).selections(selections).build();
+    var record = PokedexDistanceRules.roundRecord(state, List.of("p2"));
+    var distances = new LinkedHashMap<String, Integer>();
+    distances.put("p1", 125);
+    distances.put("p2", null);
+    distances.put("p3", 25);
+    assertEquals(new DistanceRoundRecord(2, 1, 126, distances, List.of("p2")), record);
+    assertEquals(List.of("p1", "p2", "p3"), List.copyOf(record.distances().keySet()));
   }
 
   @Test
@@ -87,9 +111,9 @@ class PokedexDistanceRulesTest {
   void buildsSurvivalPositionsLikeTypeScript() {
     var stats = new LinkedHashMap<String, PlayerRoundStats>();
     stats.put("p4", PlayerRoundStats.ZERO);
-    stats.put("p2", new PlayerRoundStats(1, 1, 8, 8));
-    stats.put("p1", new PlayerRoundStats(0, 5, 3, 3));
-    stats.put("p3", new PlayerRoundStats(2, 2, 3, 3));
+    stats.put("p2", new PlayerRoundStats(1, 1, 8, 8, 2));
+    stats.put("p1", new PlayerRoundStats(0, 5, 3, 3, 0));
+    stats.put("p3", new PlayerRoundStats(2, 2, 3, 3, 1));
     var state = finished()
         .initialPlayerIds(List.of("p4", "p2", "p1", "p3"))
         .winnerId("p2")
@@ -101,10 +125,10 @@ class PokedexDistanceRulesTest {
     var results = PokedexDistanceRules.buildResults(state);
     assertEquals("p2", results.winnerId());
     assertEquals(List.of(
-        standing("p2", 1, 8, 1, 8, 8, 0.13),
-        standing("p1", 2, 5, 0, 3, 3, 1.67),
-        standing("p3", 2, 5, 2, 3, 3, 0.67),
-        standing("p4", 4, 1, 0, 0, 0, 0)), results.standings());
+        standing("p2", 1, 8, 1, 8, 8, 0.13, 2),
+        standing("p1", 2, 5, 0, 3, 3, 1.67, 0),
+        standing("p3", 2, 5, 2, 3, 3, 0.67, 1),
+        standing("p4", 4, 1, 0, 0, 0, 0, 0)), results.standings());
   }
 
   /** {@code finishes safely without a winner when every remaining player times out}: nadie puntúa. */
@@ -139,12 +163,13 @@ class PokedexDistanceRulesTest {
   }
 
   private static GameStanding standing(String playerId, int position, int points, int exactHits, int roundsSurvived,
-      int selections, double averageDistance) {
+      int selections, double averageDistance, int tiebreaksWon) {
     var stats = new LinkedHashMap<String, Number>();
     stats.put("exactHits", exactHits);
     stats.put("roundsSurvived", roundsSurvived);
     stats.put("selections", selections);
     stats.put("averageDistance", averageDistance); // el ternario de Java promociona el 0 de TS a 0.0 (mismo JSON)
+    stats.put("tiebreaksWon", tiebreaksWon);
     return new GameStanding(playerId, position, points, null, stats);
   }
 }

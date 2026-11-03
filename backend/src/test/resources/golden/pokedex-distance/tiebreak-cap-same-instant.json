@@ -145,6 +145,7 @@
         "roundStartedAt": null,
         "roundEndsAt": null,
         "lastRound": null,
+        "roundHistory": [],
         "winnerId": null,
         "nextTransitionAt": null,
         "results": null
@@ -191,6 +192,7 @@
         "roundStartedAt": 1000,
         "roundEndsAt": 21000,
         "lastRound": null,
+        "roundHistory": [],
         "winnerId": null,
         "nextTransitionAt": null,
         "results": null
@@ -242,6 +244,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 21000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -333,6 +336,7 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/31.png"
               }
             },
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": 9000,
             "results": null
@@ -387,6 +391,7 @@
             "roundStartedAt": 9000,
             "roundEndsAt": 29000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -438,6 +443,7 @@
             "roundStartedAt": 9000,
             "roundEndsAt": 29000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -529,6 +535,7 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/236.png"
               }
             },
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": 17000,
             "results": null
@@ -583,6 +590,7 @@
             "roundStartedAt": 17000,
             "roundEndsAt": 37000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -634,6 +642,7 @@
             "roundStartedAt": 17000,
             "roundEndsAt": 37000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -725,6 +734,7 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/141.png"
               }
             },
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": 25000,
             "results": null
@@ -779,6 +789,7 @@
             "roundStartedAt": 25000,
             "roundEndsAt": 45000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -830,6 +841,7 @@
             "roundStartedAt": 25000,
             "roundEndsAt": 45000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -927,6 +939,7 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
               }
             },
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": 32000,
             "results": null
@@ -1020,6 +1033,51 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png"
               }
             },
+            "roundHistory": [
+              {
+                "roundNumber": 1,
+                "tiebreakDepth": 0,
+                "targetDexNumber": 31,
+                "distances": {
+                  "p1": 220,
+                  "p2": 220
+                },
+                "eliminatedIds": []
+              },
+              {
+                "roundNumber": 1,
+                "tiebreakDepth": 1,
+                "targetDexNumber": 236,
+                "distances": {
+                  "p1": 235,
+                  "p2": 235
+                },
+                "eliminatedIds": []
+              },
+              {
+                "roundNumber": 1,
+                "tiebreakDepth": 2,
+                "targetDexNumber": 141,
+                "distances": {
+                  "p1": 140,
+                  "p2": 140
+                },
+                "eliminatedIds": []
+              },
+              {
+                "roundNumber": 1,
+                "tiebreakDepth": 3,
+                "targetDexNumber": 13,
+                "distances": {
+                  "p2": 238,
+                  "p1": 238
+                },
+                "eliminatedIds": [
+                  "p1",
+                  "p2"
+                ]
+              }
+            ],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": {
@@ -1033,7 +1091,8 @@
                     "exactHits": 0,
                     "roundsSurvived": 0,
                     "selections": 4,
-                    "averageDistance": 208.25
+                    "averageDistance": 208.25,
+                    "tiebreaksWon": 0
                   }
                 },
                 {
@@ -1044,7 +1103,8 @@
                     "exactHits": 0,
                     "roundsSurvived": 0,
                     "selections": 4,
-                    "averageDistance": 208.25
+                    "averageDistance": 208.25,
+                    "tiebreaksWon": 0
                   }
                 }
               ]
@@ -1083,7 +1143,8 @@
             "exactHits": 0,
             "roundsSurvived": 0,
             "selections": 4,
-            "averageDistance": 208.25
+            "averageDistance": 208.25,
+            "tiebreaksWon": 0
           }
         },
         {
@@ -1094,7 +1155,8 @@
             "exactHits": 0,
             "roundsSurvived": 0,
             "selections": 4,
-            "averageDistance": 208.25
+            "averageDistance": 208.25,
+            "tiebreaksWon": 0
           }
         }
       ]

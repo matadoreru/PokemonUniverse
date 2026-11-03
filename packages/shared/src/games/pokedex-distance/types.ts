@@ -8,6 +8,8 @@ export interface PlayerRoundStats {
   distanceTotal: number;
   selections: number;
   roundsSurvived: number;
+  /** Desempates resueltos con alguien eliminado en los que este jugador jugaba y no cayó. */
+  tiebreaksWon: number;
 }
 
 export interface RoundSelection {
@@ -32,6 +34,18 @@ export interface RoundResult {
   tiedIds: string[];
 }
 
+/**
+ * Una ronda resuelta (normal o desempate). `distances` va en el orden de `eligibleIds` de esa ronda; `null` es sin
+ * respuesta. `eliminatedIds` va vacío si hubo empate.
+ */
+export interface DistanceRoundRecord {
+  roundNumber: number;
+  tiebreakDepth: number;
+  targetDexNumber: number;
+  distances: Record<string, number | null>;
+  eliminatedIds: string[];
+}
+
 export interface PokedexDistanceState {
   phase: GamePhase;
   config: PokedexDistanceConfig;
@@ -51,6 +65,12 @@ export interface PokedexDistanceState {
   pendingTiebreakDepth: number;
   lastRound: RoundResult | null;
   eliminations: EliminationRecord[];
+  /**
+   * Solo rondas ya resueltas, así que nunca adelanta elecciones ocultas. Acotado sin tope explícito: cada número de
+   * ronda tiene como mucho 1 + MAX_TIEBREAK_DEPTH resoluciones y la última elimina al menos a uno, así que hay
+   * ≤ 4·(jugadores − 1) registros.
+   */
+  roundHistory: DistanceRoundRecord[];
   playerStats: Record<string, PlayerRoundStats>;
   winnerId: string | null;
 }
@@ -99,6 +119,8 @@ export interface PokedexDistancePublicState {
   roundEndsAt: number | null;
   nextTransitionAt: number | null;
   lastRound: PublicRoundResult | null;
+  /** Historial completo en `GAME_RESULTS`; vacío en el resto de fases. */
+  roundHistory: DistanceRoundRecord[];
   winnerId: string | null;
   results: GameResults | null;
 }

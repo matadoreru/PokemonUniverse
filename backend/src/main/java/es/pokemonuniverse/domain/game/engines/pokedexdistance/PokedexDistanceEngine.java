@@ -13,6 +13,7 @@ import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceConfig.SelectionVisibility;
+import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.DistanceRoundRecord;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.EliminationReason;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.EliminationRecord;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.PlayerRoundStats;
@@ -126,9 +127,14 @@ public final class PokedexDistanceEngine implements
     spectatorIds.addAll(playerIds);
     var eliminations = new ArrayList<EliminationRecord>(state.eliminations());
     eliminations.add(PokedexDistanceRules.elimination(playerIds, reason, state));
+    var history = new ArrayList<DistanceRoundRecord>(state.roundHistory());
+    history.add(PokedexDistanceRules.roundRecord(state, playerIds));
+    // Supera el desempate quien lo jugaba y no cae; un desempate que vuelve a empatar no pasa por aquí.
+    Set<String> wonTiebreak = state.tiebreakDepth() > 0 ? Set.copyOf(state.eligibleIds()) : Set.of();
     var playerStats = new LinkedHashMap<>(state.playerStats());
     for (var id : survivorIds) {
-      playerStats.put(id, playerStats.getOrDefault(id, PokedexDistanceRules.emptyPlayerStats()).afterSurvival());
+      playerStats.put(id, playerStats.getOrDefault(id, PokedexDistanceRules.emptyPlayerStats())
+          .afterSurvival(wonTiebreak.contains(id)));
     }
     return state.toBuilder()
         .phase(GamePhase.ROUND_RESULTS)
@@ -136,6 +142,7 @@ public final class PokedexDistanceEngine implements
         .spectatorIds(new ArrayList<>(spectatorIds))
         .lastRound(roundResult)
         .eliminations(eliminations)
+        .roundHistory(history)
         .roundEndsAt(null)
         .nextTransitionAt(context.now() + RESULTS_DURATION_MS)
         .pendingEligibleIds(survivorIds)
@@ -160,9 +167,12 @@ public final class PokedexDistanceEngine implements
     }
     if (farthest.size() > 1) {
       var tieResult = new RoundResult(targetDexNumber, state.selections(), List.of(), RoundReason.TIE, farthest);
+      var history = new ArrayList<DistanceRoundRecord>(state.roundHistory());
+      history.add(PokedexDistanceRules.roundRecord(state, List.of()));
       return state.toBuilder()
           .phase(GamePhase.ROUND_RESULTS)
           .lastRound(tieResult)
+          .roundHistory(history)
           .roundEndsAt(null)
           .nextTransitionAt(context.now() + RESULTS_DURATION_MS)
           .pendingEligibleIds(farthest)
@@ -314,6 +324,8 @@ public final class PokedexDistanceEngine implements
         .roundStartedAt(state.roundStartedAt())
         .roundEndsAt(state.roundEndsAt())
         .lastRound(lastRound)
+        // Solo al final: las rondas resueltas ya se vieron una a una en `lastRound`.
+        .roundHistory(state.phase() == GamePhase.GAME_RESULTS ? state.roundHistory() : List.of())
         .winnerId(state.winnerId())
         .nextTransitionAt(state.nextTransitionAt())
         .results(state.phase() == GamePhase.GAME_RESULTS ? PokedexDistanceRules.buildResults(state) : null)

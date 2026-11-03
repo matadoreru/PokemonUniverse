@@ -23,6 +23,11 @@
           "key": "selections",
           "label": "Selecciones",
           "aggregation": "SUM"
+        },
+        {
+          "key": "tiebreaksWon",
+          "label": "Desempates superados",
+          "aggregation": "SUM"
         }
       ]
     },

@@ -220,6 +220,7 @@
         "roundStartedAt": null,
         "roundEndsAt": null,
         "lastRound": null,
+        "roundHistory": [],
         "winnerId": null,
         "nextTransitionAt": null,
         "results": null
@@ -273,6 +274,7 @@
         "roundStartedAt": 1000,
         "roundEndsAt": 11000,
         "lastRound": null,
+        "roundHistory": [],
         "winnerId": null,
         "nextTransitionAt": null,
         "results": null
@@ -340,6 +342,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 11000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -411,6 +414,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 11000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -482,6 +486,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 11000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -553,6 +558,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 11000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -624,6 +630,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 11000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -695,6 +702,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 11000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -766,6 +774,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 11000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -844,6 +853,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 11000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -924,6 +934,7 @@
             "roundStartedAt": 1000,
             "roundEndsAt": 11000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -1045,6 +1056,7 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
               }
             },
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": 17000,
             "results": null
@@ -1166,6 +1178,7 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
               }
             },
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": 17000,
             "results": null
@@ -1229,6 +1242,7 @@
             "roundStartedAt": 17000,
             "roundEndsAt": 27000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -1288,6 +1302,7 @@
             "roundStartedAt": 17000,
             "roundEndsAt": 27000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -1357,6 +1372,7 @@
             "roundStartedAt": 17000,
             "roundEndsAt": 27000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -1473,6 +1489,7 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/136.png"
               }
             },
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": 26000,
             "results": null
@@ -1536,6 +1553,7 @@
             "roundStartedAt": 26000,
             "roundEndsAt": 36000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -1605,6 +1623,7 @@
             "roundStartedAt": 26000,
             "roundEndsAt": 36000,
             "lastRound": null,
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": null,
             "results": null
@@ -1721,6 +1740,7 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
               }
             },
+            "roundHistory": [],
             "winnerId": null,
             "nextTransitionAt": 34000,
             "results": null
@@ -1833,6 +1853,43 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
               }
             },
+            "roundHistory": [
+              {
+                "roundNumber": 1,
+                "tiebreakDepth": 0,
+                "targetDexNumber": 54,
+                "distances": {
+                  "p1": 0,
+                  "p2": 1,
+                  "p3": null
+                },
+                "eliminatedIds": [
+                  "p3"
+                ]
+              },
+              {
+                "roundNumber": 2,
+                "tiebreakDepth": 0,
+                "targetDexNumber": 136,
+                "distances": {
+                  "p1": 6,
+                  "p2": 6
+                },
+                "eliminatedIds": []
+              },
+              {
+                "roundNumber": 2,
+                "tiebreakDepth": 1,
+                "targetDexNumber": 23,
+                "distances": {
+                  "p1": 3,
+                  "p2": 0
+                },
+                "eliminatedIds": [
+                  "p1"
+                ]
+              }
+            ],
             "winnerId": "p2",
             "nextTransitionAt": null,
             "results": {
@@ -1846,7 +1903,8 @@
                     "exactHits": 1,
                     "roundsSurvived": 2,
                     "selections": 3,
-                    "averageDistance": 2.33
+                    "averageDistance": 2.33,
+                    "tiebreaksWon": 1
                   }
                 },
                 {
@@ -1857,7 +1915,8 @@
                     "exactHits": 1,
                     "roundsSurvived": 1,
                     "selections": 3,
-                    "averageDistance": 3
+                    "averageDistance": 3,
+                    "tiebreaksWon": 0
                   }
                 },
                 {
@@ -1868,7 +1927,8 @@
                     "exactHits": 0,
                     "roundsSurvived": 0,
                     "selections": 0,
-                    "averageDistance": 0
+                    "averageDistance": 0,
+                    "tiebreaksWon": 0
                   }
                 }
               ]
@@ -1984,6 +2044,43 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png"
               }
             },
+            "roundHistory": [
+              {
+                "roundNumber": 1,
+                "tiebreakDepth": 0,
+                "targetDexNumber": 54,
+                "distances": {
+                  "p1": 0,
+                  "p2": 1,
+                  "p3": null
+                },
+                "eliminatedIds": [
+                  "p3"
+                ]
+              },
+              {
+                "roundNumber": 2,
+                "tiebreakDepth": 0,
+                "targetDexNumber": 136,
+                "distances": {
+                  "p1": 6,
+                  "p2": 6
+                },
+                "eliminatedIds": []
+              },
+              {
+                "roundNumber": 2,
+                "tiebreakDepth": 1,
+                "targetDexNumber": 23,
+                "distances": {
+                  "p1": 3,
+                  "p2": 0
+                },
+                "eliminatedIds": [
+                  "p1"
+                ]
+              }
+            ],
             "winnerId": "p2",
             "nextTransitionAt": null,
             "results": {
@@ -1997,7 +2094,8 @@
                     "exactHits": 1,
                     "roundsSurvived": 2,
                     "selections": 3,
-                    "averageDistance": 2.33
+                    "averageDistance": 2.33,
+                    "tiebreaksWon": 1
                   }
                 },
                 {
@@ -2008,7 +2106,8 @@
                     "exactHits": 1,
                     "roundsSurvived": 1,
                     "selections": 3,
-                    "averageDistance": 3
+                    "averageDistance": 3,
+                    "tiebreaksWon": 0
                   }
                 },
                 {
@@ -2019,7 +2118,8 @@
                     "exactHits": 0,
                     "roundsSurvived": 0,
                     "selections": 0,
-                    "averageDistance": 0
+                    "averageDistance": 0,
+                    "tiebreaksWon": 0
                   }
                 }
               ]
@@ -2063,7 +2163,8 @@
             "exactHits": 1,
             "roundsSurvived": 2,
             "selections": 3,
-            "averageDistance": 2.33
+            "averageDistance": 2.33,
+            "tiebreaksWon": 1
           }
         },
         {
@@ -2074,7 +2175,8 @@
             "exactHits": 1,
             "roundsSurvived": 1,
             "selections": 3,
-            "averageDistance": 3
+            "averageDistance": 3,
+            "tiebreaksWon": 0
           }
         },
         {
@@ -2085,7 +2187,8 @@
             "exactHits": 0,
             "roundsSurvived": 0,
             "selections": 0,
-            "averageDistance": 0
+            "averageDistance": 0,
+            "tiebreaksWon": 0
           }
         }
       ]

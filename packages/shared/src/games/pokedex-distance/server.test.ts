@@ -116,6 +116,84 @@ describe('Pokédex Distance rules', () => {
     expect(state.playerStats.p2?.roundsSurvived).toBe(0);
   });
 
+  it('records every resolved round in roundHistory', () => {
+    const fixture = setup(3, 0); // objetivo #1 en cada ronda salvo que se fije
+    let state = choose(fixture.state, 'p1', 'bulbasaur', fixture.context);
+    state = choose(state, 'p2', 'pikachu', fixture.context);
+    state = choose(state, 'p3', 'mew', fixture.context);
+    state = advanceResults(state, fixture.context, fixture.setNow);
+    state = { ...state, targetDexNumber: 126 };
+    state = choose(state, 'p1', 'bulbasaur', fixture.context);
+    state = choose(state, 'p2', 'celebi', fixture.context);
+    expect(state.lastRound?.reason).toBe('TIE');
+    state = advanceResults(state, fixture.context, fixture.setNow);
+    state = choose(state, 'p2', 'mew', fixture.context);
+    state = choose(state, 'p1', 'pikachu', fixture.context);
+    expect(state.roundHistory).toEqual([
+      { roundNumber: 1, tiebreakDepth: 0, targetDexNumber: 1, distances: { p1: 0, p2: 24, p3: 150 }, eliminatedIds: ['p3'] },
+      { roundNumber: 2, tiebreakDepth: 0, targetDexNumber: 126, distances: { p1: 125, p2: 125 }, eliminatedIds: [] },
+      { roundNumber: 2, tiebreakDepth: 1, targetDexNumber: 1, distances: { p1: 24, p2: 150 }, eliminatedIds: ['p2'] },
+    ]);
+    // Las claves siguen el orden de eligibleIds, no el de elección.
+    expect(Object.keys(state.roundHistory[2]!.distances)).toEqual(['p1', 'p2']);
+  });
+
+  it('records a non-responder with a null distance', () => {
+    const fixture = setup(2, 0);
+    const state = choose(fixture.state, 'p2', 'pikachu', fixture.context);
+    fixture.setNow(state.roundEndsAt!);
+    const next = pokedexDistanceGame.handleTimeout(state, fixture.context);
+    expect(next.roundHistory).toEqual([{ roundNumber: 1, tiebreakDepth: 0, targetDexNumber: 1, distances: { p1: null, p2: 24 }, eliminatedIds: ['p1'] }]);
+  });
+
+  it('tiebreak survivors earn tiebreaksWon', () => {
+    const fixture = setup(3, 0);
+    let state: PokedexDistanceState = { ...fixture.state, targetDexNumber: 126 };
+    state = choose(state, 'p1', 'bulbasaur', fixture.context);
+    state = choose(state, 'p2', 'celebi', fixture.context);
+    state = choose(state, 'p3', 'mew', fixture.context);
+    state = advanceResults(state, fixture.context, fixture.setNow);
+    // Desempate que vuelve a empatar: no suma.
+    state = { ...state, targetDexNumber: 126 };
+    state = choose(state, 'p1', 'bulbasaur', fixture.context);
+    state = choose(state, 'p2', 'celebi', fixture.context);
+    expect(state.lastRound?.reason).toBe('TIE');
+    expect(Object.values(state.playerStats).map((stats) => stats.tiebreaksWon)).toEqual([0, 0, 0]);
+    state = advanceResults(state, fixture.context, fixture.setNow);
+    state = choose(state, 'p1', 'bulbasaur', fixture.context);
+    state = choose(state, 'p2', 'mew', fixture.context);
+    expect(state.lastRound?.eliminatedIds).toEqual(['p2']);
+    expect(state.playerStats.p1?.tiebreaksWon).toBe(1);
+    expect(state.playerStats.p2?.tiebreaksWon).toBe(0);
+    // p3 no jugaba el desempate: sobrevive la ronda, pero no lo supera.
+    expect(state.playerStats.p3?.tiebreaksWon).toBe(0);
+    expect(state.playerStats.p3?.roundsSurvived).toBe(1);
+    // Ronda normal: nadie suma desempates.
+    state = advanceResults(state, fixture.context, fixture.setNow);
+    state = choose(state, 'p1', 'bulbasaur', fixture.context);
+    state = choose(state, 'p3', 'mew', fixture.context);
+    state = advanceResults(state, fixture.context, fixture.setNow);
+    expect(state.phase).toBe('GAME_RESULTS');
+    const stats = Object.fromEntries(pokedexDistanceGame.getResults(state).standings.map((entry) => [entry.playerId, entry.stats.tiebreaksWon]));
+    expect(stats).toEqual({ p1: 1, p2: 0, p3: 0 });
+    expect(Object.keys(pokedexDistanceGame.getResults(state).standings[0]!.stats)).toEqual(['exactHits', 'roundsSurvived', 'selections', 'averageDistance', 'tiebreaksWon']);
+  });
+
+  it('roundHistory is only public in GAME_RESULTS', () => {
+    const fixture = setup(2, 0);
+    let state = choose(fixture.state, 'p1', 'bulbasaur', fixture.context);
+    expect(pokedexDistanceGame.getPublicState(state, fixture.context).roundHistory).toEqual([]);
+    state = choose(state, 'p2', 'mew', fixture.context);
+    expect(state.phase).toBe('ROUND_RESULTS');
+    expect(state.roundHistory).toHaveLength(1);
+    expect(pokedexDistanceGame.getPublicState(state, fixture.context).roundHistory).toEqual([]);
+    state = advanceResults(state, fixture.context, fixture.setNow);
+    expect(state.phase).toBe('GAME_RESULTS');
+    const view = pokedexDistanceGame.getPublicState(state, fixture.context);
+    expect(view.roundHistory).toEqual([{ roundNumber: 1, tiebreakDepth: 0, targetDexNumber: 1, distances: { p1: 0, p2: 150 }, eliminatedIds: ['p2'] }]);
+    expect(Object.keys(view).indexOf('roundHistory')).toBe(Object.keys(view).indexOf('lastRound') + 1);
+  });
+
   it('rejects a non-default form', () => {
     const { context, state } = setup(3, 0);
     const result = pokedexDistanceGame.handleAction(state, 'p1', { type: 'SELECT_POKEMON', pokemonId: 'raichu-alola' }, context);
