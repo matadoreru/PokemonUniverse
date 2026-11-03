@@ -1,0 +1,66 @@
+/* Diálogo (spec §2): `<dialog>` nativo en la capa superior; caja crema con contorno de 3 px y rebote de entrada. */
+.dialog {
+  width: min(var(--dialog-w, 520px), calc(100vw - 2 * var(--sp-4)));
+  max-width: none;
+  max-height: calc(100dvh - 2 * var(--sp-4));
+  padding: 0;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-dialog);
+  background: var(--cream);
+  color: var(--ink);
+  box-shadow: var(--sh-hard-5), var(--sh-dialog);
+  overflow: hidden;
+}
+.dialog[open] {
+  display: flex;
+  flex-direction: column;
+  animation: pop var(--t-bounce) var(--ease-bounce) both;
+}
+.dialog::backdrop {
+  background: color-mix(in srgb, var(--band) 55%, transparent);
+}
+@keyframes pop {
+  from {
+    transform: scale(0.96);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+/* La caja llena el `<dialog>`: un clic cuyo destino es el propio `<dialog>` solo puede venir del fondo. */
+.box {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+.head {
+  flex: none;
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  background: linear-gradient(180deg, var(--navy-3), var(--navy));
+  border-bottom: var(--ol-3) solid var(--navy-2);
+  color: var(--white);
+  font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
+}
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--sp-4);
+  font: 700 var(--fs-15) / var(--lh-text) var(--font-text);
+}
+.actions {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-4) var(--sp-4);
+}
+@media (max-width: 640px) {
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

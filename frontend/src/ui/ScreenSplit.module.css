@@ -1,0 +1,54 @@
+/* Pantalla doble (la bisagra va dentro de la pantalla inferior, así se queda pegada con ella): móvil y tableta en columna con bisagra; escritorio en rejilla principal + lateral. */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 1fr auto;
+  grid-template-areas: 'top' 'bottom';
+  min-height: 100dvh;
+}
+.withSide {
+  grid-template-rows: 1fr auto auto;
+  grid-template-areas: 'top' 'side' 'bottom';
+}
+.top {
+  grid-area: top;
+  min-width: 0;
+}
+.side {
+  grid-area: side;
+  min-width: 0;
+}
+.hinge {
+  height: 8px;
+  background: var(--navy-2);
+}
+.bottom {
+  grid-area: bottom;
+  position: sticky;
+  bottom: 0;
+  z-index: var(--z-sticky);
+  min-width: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (min-width: 1024px) {
+  .split {
+    grid-template-rows: 1fr auto;
+    grid-template-areas: 'top' 'bottom';
+    gap: var(--sp-4);
+    max-width: 1600px;
+    margin-inline: auto;
+    min-height: 0;
+  }
+  .withSide {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-areas: 'top side' 'bottom side';
+  }
+  .hinge {
+    display: none;
+  }
+  .bottom {
+    position: static;
+    padding-bottom: 0;
+  }
+}

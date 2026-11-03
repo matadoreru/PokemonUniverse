@@ -1,0 +1,73 @@
+/*
+ * Avisos (spec §2): pila abajo en el centro. Con la API Popover vive en la capa superior; sin ella, el mismo
+ * `position: fixed` con `--z-toast`. Anula el estilo de agente de usuario de `[popover]` (inset, margen, borde).
+ */
+.stack {
+  position: fixed;
+  inset: auto 0 calc(var(--sp-4) + env(safe-area-inset-bottom)) 0;
+  z-index: var(--z-toast);
+  width: fit-content;
+  max-width: calc(100vw - 2 * var(--sp-4));
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  pointer-events: none;
+}
+/* El `display: flex` de arriba ganaría al oculto del agente de usuario; sin la API Popover esta regla se ignora. */
+.stack:not(:popover-open) {
+  display: none;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  max-width: 520px;
+  min-height: 52px;
+  padding: var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-3);
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-pill);
+  background: var(--cream);
+  color: var(--ink);
+  box-shadow: var(--sh-hard-4);
+  font: 800 var(--fs-15) / var(--lh-text) var(--font-text);
+  pointer-events: auto;
+  animation: enter var(--t-screen) var(--ease) both;
+}
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.icon {
+  flex: none;
+  display: inline-flex;
+  color: var(--navy);
+}
+.ok .icon {
+  color: var(--ok);
+}
+.error .icon {
+  color: var(--red-text);
+}
+.info .icon {
+  color: var(--blue);
+}
+.text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.close {
+  flex: none;
+}

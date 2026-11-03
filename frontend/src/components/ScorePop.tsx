@@ -1,25 +1,19 @@
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
-import { useTimedVisibility } from '../hooks/useTimedVisibility';
+import { cx } from '../ui/cx';
+import { ScorePop as UiScorePop } from '../ui/ScorePop';
 import type { CutInTone } from './RevealCutIn';
 
-/** Lo que dura el «+N» en pantalla, igual que su animación. */
-export const SCORE_POP_MS = 400;
+export { SCORE_POP_MS, scorePopLabel } from '../ui/ScorePop';
 
-export function scorePopLabel(points: number): string {
-  return `+${points}`;
-}
+/** Tono de siempre → color del token. */
+const TONE_COLOR: Record<CutInTone, string> = { electric: 'var(--yellow)', berry: 'var(--red)', aqua: 'var(--info)', leaf: 'var(--ok)' };
 
 /**
- * Puntos que flotan sobre el marcador y desaparecen a los 400 ms con un temporizador, con o sin
- * reducción de movimiento. Un `points` o `tone` nuevos lo vuelven a mostrar; para repetir el mismo
- * valor (dos «+3» seguidos), móntalo con `key={idDelEvento}`. Es decorativo (`aria-hidden`): el
- * cambio de puntos se anuncia en el texto de la pantalla.
+ * Envoltorio de `ui/ScorePop` con la API de siempre (`tone`); conserva las clases `score-pop`, `score-pop-<tono>` y
+ * `score-pop-anim` (las buscan los tests y los E2E).
  */
 export function ScorePop({ points, tone, reducedMotion }: { points: number; tone?: CutInTone; reducedMotion?: boolean }) {
   const prefersReduced = usePrefersReducedMotion();
   const reduced = reducedMotion ?? prefersReduced;
-  const visible = useTimedVisibility(SCORE_POP_MS, `${points}|${tone ?? ''}`);
-  if (!visible) return null;
-  const classes = ['score-pop', tone ? `score-pop-${tone}` : '', reduced ? '' : 'score-pop-anim'].filter(Boolean).join(' ');
-  return <span className={classes} aria-hidden="true">{scorePopLabel(points)}</span>;
+  return <UiScorePop points={points} color={tone && TONE_COLOR[tone]} reducedMotion={reduced} className={cx('score-pop', tone && `score-pop-${tone}`, !reduced && 'score-pop-anim')} />;
 }

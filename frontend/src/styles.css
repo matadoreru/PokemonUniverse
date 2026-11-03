@@ -238,19 +238,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @keyframes motion-enter-right { from { opacity: 0; transform: translateX(1.5rem); } to { opacity: 1; transform: translateX(0); } }
 @keyframes motion-grow-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes motion-flip { from { transform: rotateY(90deg); } to { transform: rotateY(0); } }
-/* Cut-in de cartucho: banda a todo el ancho, centrada en vertical, que no bloquea la pantalla. */
-.reveal-cut-in { position: fixed; inset-inline: 0; top: 0; bottom: 0; z-index: var(--z-cutin); height: fit-content; margin-block: auto; padding: 1rem; pointer-events: none; text-align: center; border-block: 4px solid rgb(var(--cut-in-tone)); background: rgb(var(--color-surface)); box-shadow: var(--shadow-card); }
-.reveal-cut-in-title { color: rgb(var(--cut-in-text)); }
-.reveal-cut-in-electric, .score-pop-electric { --cut-in-tone: var(--color-electric); --cut-in-text: var(--color-electric); }
-.reveal-cut-in-berry, .score-pop-berry { --cut-in-tone: var(--color-berry); --cut-in-text: var(--color-berry); }
-.reveal-cut-in-aqua, .score-pop-aqua { --cut-in-tone: var(--color-aqua); --cut-in-text: var(--color-aqua); }
-.reveal-cut-in-leaf, .score-pop-leaf { --cut-in-tone: var(--color-leaf); --cut-in-text: var(--color-leaf); }
-.reveal-cut-in-enter { animation: reveal-cut-in-enter 280ms cubic-bezier(.16,1,.3,1) both; }
-@keyframes reveal-cut-in-enter { from { opacity: 0; transform: translateX(-8%); } to { opacity: 1; transform: translateX(0); } }
-/* Puntos flotantes: sube y se desvanece; el cambio de marcador se anuncia en el texto de la pantalla. */
-.score-pop { @apply inline-block text-sm font-black tabular-nums; color: rgb(var(--cut-in-text, var(--color-ink))); }
-.score-pop-anim { animation: score-pop 400ms cubic-bezier(.16,1,.3,1) both; }
-@keyframes score-pop { 0% { opacity: 0; transform: translateY(0); } 35% { opacity: 1; } 100% { opacity: 0; transform: translateY(-.75rem); } }
 /* Regla de la revelación de Pokédex Distance: el objetivo en el 50 % y cada respuesta a su distancia, en carriles de 4 rem. */
 /* isolate contiene los z-index inline de los marcadores (DistanceRuler.tsx) para que no pasen sobre la cabecera fija. */
 .distance-ruler-lanes { position: relative; isolation: isolate; }

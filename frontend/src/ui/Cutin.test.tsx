@@ -1,0 +1,58 @@
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { describe, expect, it } from 'vitest';
+import { cutInToneMap } from '../components/RevealCutIn';
+import { Cutin, CutinBand } from './Cutin';
+
+const classes = (html: string) => (/class="([^"]*)"/.exec(html)?.[1] ?? '').split(' ').map((c) => c.replace(/^_/, '').replace(/_[0-9a-z]+$/i, ''));
+
+describe('Cutin', () => {
+  it('lleva la clase del tono y el modo de movimiento', () => {
+    const full = renderToStaticMarkup(createElement(Cutin, { tone: 'red', title: 'Eliminado', reducedMotion: false }));
+    expect(classes(full)).toEqual(expect.arrayContaining(['cutin', 'red']));
+    expect(full).toContain('data-motion="full"');
+    expect(full).toContain('role="status"');
+    expect(full).toContain('aria-live="assertive"');
+    expect(full).toContain('data-layer="cutin"');
+    const reduced = renderToStaticMarkup(createElement(Cutin, { tone: 'ok', title: 'Bien', reducedMotion: true }));
+    expect(classes(reduced)).toContain('ok');
+    expect(reduced).toContain('data-motion="reduced"');
+  });
+
+  it('no intercepta el puntero salvo que se pueda saltar', () => {
+    const plain = renderToStaticMarkup(createElement(Cutin, { tone: 'info', title: 'Hola', reducedMotion: false }));
+    expect(classes(plain)).not.toContain('skippable');
+    const skip = renderToStaticMarkup(createElement(Cutin, { tone: 'info', title: 'Hola', reducedMotion: false, onSkip: () => undefined }));
+    expect(classes(skip)).toContain('skippable');
+  });
+
+  it('añade la clase de quien la envuelve según el tono visible', () => {
+    const html = renderToStaticMarkup(createElement(Cutin, { tone: 'yellow', title: 'Ana', reducedMotion: false, className: (tone: string) => `extra-${tone}` }));
+    expect(html).toContain('extra-yellow');
+  });
+
+  it('al ocultarse deja la región status vacía, sin las clases de la banda', () => {
+    const html = renderToStaticMarkup(createElement(CutinBand, { visible: false, delayedShown: false, reduced: false, tone: 'yellow', title: 'Ana', className: 'reveal-cut-in', layer: 'reveal-cut-in' }));
+    expect(html).toContain('role="status"');
+    expect(html).toContain('aria-live="assertive"');
+    expect(html).toContain('data-layer="reveal-cut-in"');
+    expect(html).not.toContain('Ana');
+    expect(html).not.toMatch(/class="[^"]*reveal-cut-in/);
+  });
+
+  it('cambia al tono diferido junto con la línea diferida', () => {
+    const before = renderToStaticMarkup(createElement(CutinBand, { visible: true, delayedShown: false, reduced: false, tone: 'yellow', delayedTone: 'red', title: 'Ana', delayedLine: '…era impostor' }));
+    expect(classes(before)).toContain('yellow');
+    expect(before).not.toContain('…era impostor');
+    const after = renderToStaticMarkup(createElement(CutinBand, { visible: true, delayedShown: true, reduced: false, tone: 'yellow', delayedTone: 'red', title: 'Ana', delayedLine: '…era impostor' }));
+    expect(classes(after)).toContain('red');
+    expect(after).toContain('…era impostor');
+    expect(after).toContain('motion-enter-up');
+  });
+});
+
+describe('RevealCutIn › mapa de tonos', () => {
+  it('traduce los tonos de siempre a los del cut-in', () => {
+    expect(cutInToneMap).toEqual({ electric: 'yellow', berry: 'red', aqua: 'info', leaf: 'ok' });
+  });
+});

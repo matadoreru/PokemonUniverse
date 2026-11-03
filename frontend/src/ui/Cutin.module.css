@@ -1,0 +1,102 @@
+/* Cut-in (spec §2, §4): losa azul noche a todo el ancho, centrada en vertical, en `position: fixed`. */
+.cutin {
+  --tone: var(--yellow);
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  bottom: 0;
+  z-index: var(--z-cutin);
+  height: fit-content;
+  margin-block: auto;
+  pointer-events: none;
+  text-align: center;
+}
+.yellow {
+  --tone: var(--yellow);
+}
+.red {
+  --tone: var(--red);
+}
+.info {
+  --tone: var(--info);
+}
+.ok {
+  --tone: var(--ok);
+}
+.skippable {
+  pointer-events: auto;
+  cursor: pointer;
+}
+.slab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-4);
+  background: linear-gradient(90deg, var(--navy-2), var(--navy) 50%, var(--navy-2));
+  border-block: var(--ol-4) solid var(--tone);
+  color: var(--white);
+}
+.media {
+  display: inline-flex;
+}
+.title {
+  max-width: 100%;
+  font: 800 var(--fs-44) / var(--lh-display) var(--font-display);
+  overflow-wrap: anywhere;
+}
+.subtitle {
+  font: 800 var(--fs-18) / var(--lh-text) var(--font-text);
+  color: var(--sky-2);
+}
+.delayed {
+  display: inline-block;
+  font: 800 var(--fs-26) / var(--lh-display) var(--font-display);
+  color: var(--tone);
+}
+.placeholder {
+  visibility: hidden;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/*
+ * Movimiento: la raíz entra desde la izquierda y la losa sale por la derecha al final de `--cutin-hold` (lo fija el
+ * componente desde `holdMs`). La entrada usa el nombre global `reveal-cut-in-enter`, que los E2E leen con
+ * `getComputedStyle().animationName`. Con reducción de movimiento (`data-motion="reduced"`) no se desplaza.
+ */
+.cutin[data-motion='full'] {
+  animation: global(reveal-cut-in-enter) var(--t-screen) var(--ease) both;
+}
+.cutin[data-motion='full'] .slab {
+  animation: leave var(--t-screen) var(--ease) calc(var(--cutin-hold) - var(--t-screen)) forwards;
+  will-change: transform;
+}
+@keyframes :global(reveal-cut-in-enter) {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes leave {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: var(--fs-34);
+  }
+}
