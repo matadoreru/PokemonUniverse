@@ -30,7 +30,7 @@ const UNAVAILABLE: Record<string, RegExp> = {
   'pokemon-palette-guess': /No hay suficientes paletas en PostgreSQL para las generaciones y tamaño seleccionados\.|No hay paletas persistidas para esta configuración\./,
 };
 
-/** WebSocket de la sala según el transporte (`apps/web/src/lib/socket.ts`). */
+/** WebSocket de la sala según el transporte (`frontend/src/lib/socket.ts`). */
 const JAVA_WS = /^wss?:\/\/[^/]+\/ws$/;
 const SOCKET_IO = /^wss?:\/\/[^/]+\/socket\.io\/\?/;
 

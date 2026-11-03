@@ -10,7 +10,7 @@
     "test": "vitest run",
     "lint": "eslint src --max-warnings=0",
     "preview": "vite preview",
-    "api:types": "openapi-typescript ../../backend/openapi/pokemon-universe.yml -o src/lib/api-types.ts"
+    "api:types": "openapi-typescript ../backend/openapi/pokemon-universe.yml -o src/lib/api-types.ts"
   },
   "dependencies": {
     "@pokemon-universe/shared": "*",

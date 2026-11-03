@@ -7,7 +7,7 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   { rules: { '@typescript-eslint/no-explicit-any': 'off' } },
   {
-    files: ['apps/web/src/**/*.{ts,tsx}'],
+    files: ['frontend/src/**/*.{ts,tsx}'],
     ignores: ['**/*.test.ts', '**/*.test.tsx'],
     rules: { 'no-restricted-imports': ['error', {
       paths: [{ name: '@pokemon-universe/shared', message: 'Use @pokemon-universe/shared/public in browser code.' }],

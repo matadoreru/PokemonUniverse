@@ -466,7 +466,7 @@ Paths are relative to `/home/eru/Documents/Projects/PokemonUniverse`. `S` = `app
 6. `await prisma.$disconnect()`.
 - Errors are logged ('Shutdown failed') and set `process.exitCode=1`. There is no explicit `process.exit`.
 
-## Web socket usage (`apps/web/src`)
+## Web socket usage (`frontend/src`)
 
 - Only four files touch the socket. Everything else goes through `useRoom()`.
 - `lib/socket.ts`: `createSocket()` = `io(socketUrl, {withCredentials: true, autoConnect: true})`. `socketUrl = API_URL || window.location.origin` (`lib/api.ts`). It uses default socket.io-client reconnection settings, with no custom timeouts, auth, or transport configuration. The auth cookie is sent with the handshake.

@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "Bundler",
@@ -9,5 +9,5 @@
     "allowImportingTsExtensions": true
   },
   "include": ["src"],
-  "references": [{ "path": "../../packages/shared" }]
+  "references": [{ "path": "../packages/shared" }]
 }

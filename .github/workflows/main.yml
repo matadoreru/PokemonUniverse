@@ -81,7 +81,7 @@ jobs:
           ref: ${{ github.sha }}
           filters: |
             frontend:
-              - 'apps/web/**'
+              - 'frontend/**'
               - 'packages/shared/**'
               - 'e2e/**'
               - 'package.json'

@@ -51,13 +51,13 @@ Las salas admiten hasta 8 jugadores por defecto. Si alguien se desconecta, conse
 - **Monorepo** con npm workspaces y TypeScript estricto.
 - **`packages/shared`**: contratos Zod, tipos, puntuación y los motores deterministas de cada minijuego.
 - **`apps/server`**: Express, Socket.IO y Prisma sobre PostgreSQL. Es la autoridad de la partida: temporizadores, secretos y ganadores se deciden aquí.
-- **`apps/web`**: React 19, Vite y Tailwind. Solo muestra lo que el servidor le envía a cada jugador.
+- **`frontend`**: React 19, Vite y Tailwind. Solo muestra lo que el servidor le envía a cada jugador.
 - **`backend`**: backend Java 25 con Micronaut, Gradle y PostgreSQL (ver abajo).
 - **`e2e`**: pruebas end-to-end con Playwright.
 
 ### Backend Java (etapa 1)
 
-El backend Java convive con Node detrás del mismo origen y ambos firman y aceptan la misma cookie `pu_session` con `JWT_SECRET`. En esta etapa Java atiende `POST /api/auth/{register,login,guest,logout}`, `GET /api/auth/{me,profile}`, `GET /api/auth/avatars/*`, `GET /api/changelog`, `POST /api/feedback`, `GET /api/games`, `GET /api/health` y `GET /api/pokemon`. En producción todo lo demás (salas, Socket.IO, administración, TCG, categorías, subida de avatares…) sigue en Node. En desarrollo el reparto lo hace el proxy de Vite (`apps/web/vite.config.ts`); en contenedores, nginx.
+El backend Java convive con Node detrás del mismo origen y ambos firman y aceptan la misma cookie `pu_session` con `JWT_SECRET`. En esta etapa Java atiende `POST /api/auth/{register,login,guest,logout}`, `GET /api/auth/{me,profile}`, `GET /api/auth/avatars/*`, `GET /api/changelog`, `POST /api/feedback`, `GET /api/games`, `GET /api/health` y `GET /api/pokemon`. En producción todo lo demás (salas, Socket.IO, administración, TCG, categorías, subida de avatares…) sigue en Node. En desarrollo el reparto lo hace el proxy de Vite (`frontend/vite.config.ts`); en contenedores, nginx.
 
 ### Salas en Java (etapas 2A y 2B, solo desarrollo)
 

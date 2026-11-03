@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      - 'apps/web/**'
+      - 'frontend/**'
       - 'packages/shared/**'
       - 'e2e/**'
       - 'package.json'

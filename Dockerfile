@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package.json package-lock.json* tsconfig.base.json eslint.config.mjs ./
 COPY packages/shared/package.json packages/shared/tsconfig.json ./packages/shared/
 COPY apps/server/package.json apps/server/tsconfig.json ./apps/server/
-COPY apps/web/package.json apps/web/tsconfig*.json apps/web/vite.config.ts apps/web/tailwind.config.js apps/web/postcss.config.js ./apps/web/
+COPY frontend/package.json frontend/tsconfig*.json frontend/vite.config.ts frontend/tailwind.config.js frontend/postcss.config.js ./frontend/
 COPY apps/server/prisma ./apps/server/prisma
 # The build stage intentionally runs on BUILDPLATFORM so TypeScript/Vite do not
 # execute through QEMU. Sharp is the one runtime-native dependency: retain the
@@ -22,9 +22,9 @@ RUN npm ci \
 COPY packages/shared/src ./packages/shared/src
 COPY apps/server/src ./apps/server/src
 COPY apps/server/assets ./apps/server/assets
-COPY apps/web/src ./apps/web/src
-COPY apps/web/public ./apps/web/public
-COPY apps/web/index.html ./apps/web/index.html
+COPY frontend/src ./frontend/src
+COPY frontend/public ./frontend/public
+COPY frontend/index.html ./frontend/index.html
 RUN npm run build
 
 FROM node:22-alpine AS server
@@ -53,5 +53,5 @@ CMD ["start-pokemon-universe"]
 
 FROM nginxinc/nginx-unprivileged:1.27-alpine AS web
 COPY infra/nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/apps/web/dist /usr/share/nginx/html
+COPY --from=build /app/frontend/dist /usr/share/nginx/html
 EXPOSE 8080

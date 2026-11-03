@@ -63,7 +63,7 @@ Una pantalla nueva o rediseñada nunca es línea base, y un 0 en "Solo component
 2. Abre las capturas de `e2e/screenshots/` de la pantalla en los tres tamaños (y en claro si la
    pantalla cambia colores) y míralas antes de dar la tarea por hecha.
 3. Puntúa los ocho criterios con la tabla. Movimiento e Interacción se juzgan también leyendo
-   `apps/web/src/styles.css` y el código del componente (no se ven en una captura fija).
+   `frontend/src/styles.css` y el código del componente (no se ven en una captura fija).
 4. Escribe la línea `Rúbrica <pantalla>: …` en el commit o PR. Si no llega a la regla de
    integración, arréglalo antes de integrar o, si la pantalla no es parte del cambio, anota la nota
    y deja lo pendiente como seguimiento.

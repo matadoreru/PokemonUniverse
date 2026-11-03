@@ -104,7 +104,7 @@ Queda como deuda de E2E: esperar a la conexión antes de capturar, o calentar `/
 #### Convivencia con Node hasta 2D
 
 - **Rutas solo en Vite.** `infra/nginx.conf` solo ganó `/api/health`. Las demás rutas de 2C van a Java **solo** con
-  `VITE_REALTIME=java` (`proxyFor('java')` de `apps/web/vite.config.ts`): Node guarda en memoria categorías, dilemas,
+  `VITE_REALTIME=java` (`proxyFor('java')` de `frontend/vite.config.ts`): Node guarda en memoria categorías, dilemas,
   configuraciones y el catálogo TCG, que quedarían obsoletos si Java escribiera en producción.
 - **Cachés Java también en memoria.** Las de categorías, dilemas y configuraciones se cargan al arrancar y solo ven lo
   que escribe Java; el catálogo TCG se recarga al arrancar y tras cada TCGDEX completada **por Java**. Con Node

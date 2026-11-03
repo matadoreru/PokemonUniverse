@@ -40,7 +40,7 @@ Sube el proyecto a GitHub con rama principal `main`. La integración continua es
 
 | Workflow | Se dispara en PR cuando cambia | Valida | Imagen |
 | --- | --- | --- | --- |
-| `.github/workflows/frontend.yml` | `apps/web/`, `packages/shared/`, `e2e/`, `package*.json`, `tsconfig.base.json`, `eslint.config.mjs`, `Dockerfile`, `.dockerignore`, `infra/nginx.conf`, `backend/openapi/` | lint, typecheck y tests en paralelo (incluye `check:boundaries` y `check:registry`), build Vite | `pokemon-universe-web` (target `web`) |
+| `.github/workflows/frontend.yml` | `frontend/`, `packages/shared/`, `e2e/`, `package*.json`, `tsconfig.base.json`, `eslint.config.mjs`, `Dockerfile`, `.dockerignore`, `infra/nginx.conf`, `backend/openapi/` | lint, typecheck y tests en paralelo (incluye `check:boundaries` y `check:registry`), build Vite | `pokemon-universe-web` (target `web`) |
 | `.github/workflows/node-server.yml` (transitorio) | `apps/server/`, `packages/shared/`, `Dockerfile`, `.dockerignore`, `scripts/start-server.sh`, `package*.json`, `tsconfig.base.json`, `eslint.config.mjs` | migraciones sobre PostgreSQL de prueba, typecheck, lint, tests, build; `npm audit` no bloqueante en el resumen | `pokemon-universe-server` (target `server`) |
 | `.github/workflows/backend.yml` | `backend/` | `./gradlew check` (tests con Testcontainers y `verifyOpenApi`) | `pokemon-universe-backend` (JVM); `main.yml` añade `:<sha>-native` experimental, no bloqueante |
 
