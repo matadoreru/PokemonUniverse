@@ -1,0 +1,102 @@
+/**
+ * Tokens (spec Arcade DS §3): el espejo tokens.ts coincide con tokens.css, las parejas de texto
+ * cumplen AA y las capas están ordenadas.
+ */
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { describe, expect, it } from 'vitest';
+import { bestInk, colors, contrast, cssName, fontSizes, layers, typeColors, typeInk, type PokemonType } from './tokens';
+
+const here = path.dirname(new URL(import.meta.url).pathname);
+const css = readFileSync(path.join(here, 'tokens.css'), 'utf8');
+const rootBlock = css.slice(css.indexOf(':root {'), css.indexOf('/* Reducción de movimiento'));
+
+function cssHex(name: string): string {
+  const m = rootBlock.match(new RegExp(`^\\s*${name}:\\s*(#[0-9a-fA-F]{6});`, 'm'));
+  if (!m) throw new Error(`token ${name} no encontrado en tokens.css`);
+  return m[1]!.toUpperCase();
+}
+
+/** Mezcla `fg` con opacidad `alpha` sobre `bg` (ambos `#rrggbb`). */
+function mix(fg: string, bg: string, alpha: number): string {
+  const ch = (h: string, i: number): number => parseInt(h.slice(1 + i, 3 + i), 16);
+  const out = [0, 2, 4].map((i) => Math.round(ch(fg, i) * alpha + ch(bg, i) * (1 - alpha)).toString(16).padStart(2, '0'));
+  return `#${out.join('')}`;
+}
+
+const tipos = Object.keys(typeColors) as PokemonType[];
+
+describe('tokens.css ↔ tokens.ts', () => {
+  it('cada color del espejo coincide con el CSS', () => {
+    for (const [k, v] of Object.entries(colors)) expect(cssHex(cssName[k as keyof typeof colors]), k).toBe(v);
+  });
+  it('hay 18 tipos y cada color coincide con --type-<t>', () => {
+    expect(tipos).toHaveLength(18);
+    for (const t of tipos) expect(cssHex(`--type-${t}`), t).toBe(typeColors[t]);
+  });
+  it('el triplete --type-<t>-rgb coincide con el hex', () => {
+    for (const t of tipos) {
+      const h = typeColors[t];
+      const rgb = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)).join(' ');
+      expect(rootBlock, t).toContain(`--type-${t}-rgb: ${rgb};`);
+    }
+  });
+  it('la tinta de cada tipo coincide con --type-<t>-ink', () => {
+    for (const t of tipos) {
+      const m = rootBlock.match(new RegExp(`--type-${t}-ink:\\s*var\\(--(navy|white)\\);`));
+      expect(m, `--type-${t}-ink`).not.toBeNull();
+      expect(m![1] === 'navy' ? colors.navy : colors.white, t).toBe(typeInk[t]);
+    }
+  });
+  it('la escala tipográfica del CSS es la cerrada', () => {
+    for (const n of fontSizes) expect(rootBlock).toContain(`--fs-${n}: ${n}px;`);
+    const declarados = [...rootBlock.matchAll(/--fs-(\d+):/g)].map((m) => Number(m[1]));
+    expect(declarados).toEqual([...fontSizes]);
+  });
+});
+
+describe('contraste AA de las parejas de texto (§3.1)', () => {
+  const normal: [string, string, string][] = [
+    ['blanco sobre navy', colors.white, colors.navy],
+    ['blanco sobre navy-2', colors.white, colors.navy2],
+    ['blanco sobre navy-3', colors.white, colors.navy3],
+    ['blanco sobre blue', colors.white, colors.blue],
+    ['blanco sobre blue-d', colors.white, colors.blueD],
+    ['ink sobre cream', colors.ink, colors.cream],
+    ['ink-2 sobre cream', colors.ink2, colors.cream],
+    ['navy sobre yellow', colors.navy, colors.yellow],
+    ['navy sobre cream', colors.navy, colors.cream],
+    ['navy sobre ok', colors.navy, colors.ok],
+    ['navy sobre warn', colors.navy, colors.warn],
+    ['navy sobre bad', colors.navy, colors.bad],
+    ['navy sobre info', colors.navy, colors.info],
+    ['blanco sobre red-text', colors.white, colors.redText],
+    ['yellow sobre navy-2', colors.yellow, colors.navy2],
+    ['sky-2 sobre navy-2', colors.sky2, colors.navy2],
+  ];
+  it.each(normal)('%s ≥ 4,5:1', (_n, fg, bg) => {
+    expect(contrast(fg, bg)).toBeGreaterThanOrEqual(4.5);
+  });
+  it('blanco sobre red (solo texto grande) ≥ 3:1', () => {
+    expect(contrast(colors.white, colors.red)).toBeGreaterThanOrEqual(3);
+  });
+  it.each(tipos)('tipo %s: su tinta es la de más contraste y llega a 4,5:1', (t) => {
+    expect(contrast(typeInk[t], typeColors[t])).toBeGreaterThanOrEqual(4.5);
+    expect(typeInk[t]).toBe(bestInk(typeColors[t]));
+  });
+  it('texto secundario: blanco al 60 % sobre navy ≥ 4,5:1', () => {
+    expect(contrast(mix(colors.white, colors.navy, 0.6), colors.navy)).toBeGreaterThanOrEqual(4.5);
+  });
+});
+
+describe('capas (§3.5)', () => {
+  it('orden: content < hud < sticky < cutin < toast', () => {
+    expect(layers.content).toBeLessThan(layers.hud);
+    expect(layers.hud).toBeLessThan(layers.sticky);
+    expect(layers.sticky).toBeLessThan(layers.cutin);
+    expect(layers.cutin).toBeLessThan(layers.toast);
+  });
+  it('cada valor coincide con su --z-* del CSS', () => {
+    for (const [k, v] of Object.entries(layers)) expect(rootBlock, k).toMatch(new RegExp(`--z-${k}:\\s*${v};`));
+  });
+});

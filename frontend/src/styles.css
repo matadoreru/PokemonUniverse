@@ -1,3 +1,5 @@
+@import './styles/tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,25 +17,6 @@
   --color-leaf: 98 201 149;
   --color-focus: 82 199 232;
   --shadow-card: 0 1px 2px rgb(0 0 0 / .22);
-  /* Colores de los tipos Pokémon (iguales en los dos temas). */
-  --type-normal: 168 167 122;
-  --type-fire: 238 129 48;
-  --type-water: 99 144 240;
-  --type-electric: 247 208 44;
-  --type-grass: 122 199 76;
-  --type-ice: 150 217 214;
-  --type-fighting: 194 46 40;
-  --type-poison: 163 62 161;
-  --type-ground: 226 191 101;
-  --type-flying: 169 143 243;
-  --type-psychic: 249 85 135;
-  --type-bug: 166 185 26;
-  --type-rock: 182 161 54;
-  --type-ghost: 115 87 151;
-  --type-dragon: 111 53 252;
-  --type-dark: 112 87 70;
-  --type-steel: 183 183 206;
-  --type-fairy: 214 133 173;
   color: rgb(var(--color-ink));
   background: rgb(var(--color-cream));
   font-family: Nunito, system-ui, sans-serif;
@@ -123,24 +106,24 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 /* Insignia de tipo Pokémon: borde y fondo con el token del tipo (`--type-*`), texto con `ink`. */
 .type-badge { border-color: rgb(var(--type-rgb) / .5); background-color: rgb(var(--type-rgb) / .12); }
 .type-badge-icon { background-color: rgb(var(--type-rgb) / .21); }
-.type-badge-normal { --type-rgb: var(--type-normal); }
-.type-badge-fire { --type-rgb: var(--type-fire); }
-.type-badge-water { --type-rgb: var(--type-water); }
-.type-badge-electric { --type-rgb: var(--type-electric); }
-.type-badge-grass { --type-rgb: var(--type-grass); }
-.type-badge-ice { --type-rgb: var(--type-ice); }
-.type-badge-fighting { --type-rgb: var(--type-fighting); }
-.type-badge-poison { --type-rgb: var(--type-poison); }
-.type-badge-ground { --type-rgb: var(--type-ground); }
-.type-badge-flying { --type-rgb: var(--type-flying); }
-.type-badge-psychic { --type-rgb: var(--type-psychic); }
-.type-badge-bug { --type-rgb: var(--type-bug); }
-.type-badge-rock { --type-rgb: var(--type-rock); }
-.type-badge-ghost { --type-rgb: var(--type-ghost); }
-.type-badge-dragon { --type-rgb: var(--type-dragon); }
-.type-badge-dark { --type-rgb: var(--type-dark); }
-.type-badge-steel { --type-rgb: var(--type-steel); }
-.type-badge-fairy { --type-rgb: var(--type-fairy); }
+.type-badge-normal { --type-rgb: var(--type-normal-rgb); }
+.type-badge-fire { --type-rgb: var(--type-fire-rgb); }
+.type-badge-water { --type-rgb: var(--type-water-rgb); }
+.type-badge-electric { --type-rgb: var(--type-electric-rgb); }
+.type-badge-grass { --type-rgb: var(--type-grass-rgb); }
+.type-badge-ice { --type-rgb: var(--type-ice-rgb); }
+.type-badge-fighting { --type-rgb: var(--type-fighting-rgb); }
+.type-badge-poison { --type-rgb: var(--type-poison-rgb); }
+.type-badge-ground { --type-rgb: var(--type-ground-rgb); }
+.type-badge-flying { --type-rgb: var(--type-flying-rgb); }
+.type-badge-psychic { --type-rgb: var(--type-psychic-rgb); }
+.type-badge-bug { --type-rgb: var(--type-bug-rgb); }
+.type-badge-rock { --type-rgb: var(--type-rock-rgb); }
+.type-badge-ghost { --type-rgb: var(--type-ghost-rgb); }
+.type-badge-dragon { --type-rgb: var(--type-dragon-rgb); }
+.type-badge-dark { --type-rgb: var(--type-dark-rgb); }
+.type-badge-steel { --type-rgb: var(--type-steel-rgb); }
+.type-badge-fairy { --type-rgb: var(--type-fairy-rgb); }
 
 .modal-dialog::backdrop { background: rgb(var(--color-night) / .78); }
 
