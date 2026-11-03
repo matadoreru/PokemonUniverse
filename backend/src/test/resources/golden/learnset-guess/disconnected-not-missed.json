@@ -1,0 +1,1372 @@
+{
+  "engineId": "learnset-guess",
+  "scenario": "disconnected-not-missed",
+  "seed": 812,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "showLevels": true,
+    "showEvolution": true,
+    "roundSeconds": 30,
+    "rounds": 3
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "dodrio"
+      },
+      "now": 1500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 2000
+    },
+    {
+      "kind": "timeout",
+      "now": 31000
+    },
+    {
+      "kind": "timeout",
+      "now": 35000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 36000
+    },
+    {
+      "kind": "timeout",
+      "now": 65000
+    },
+    {
+      "kind": "timeout",
+      "now": 69000
+    },
+    {
+      "kind": "timeout",
+      "now": 99000
+    },
+    {
+      "kind": "timeout",
+      "now": 103000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 30,
+      "rounds": 3
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "learnset-guess",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "referenceGeneration": 1,
+        "referenceSource": "Pokémon Yellow",
+        "visibleGroups": [],
+        "evolutionHint": null,
+        "attempts": [],
+        "solvedPlayers": [],
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p2": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p3": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 8000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "learnset-guess",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "referenceGeneration": 1,
+        "referenceSource": "Pokémon Yellow",
+        "visibleGroups": [
+          {
+            "level": 1,
+            "moves": [
+              {
+                "moveId": "fury-attack",
+                "name": "Ataque Furia",
+                "level": 1,
+                "type": "normal",
+                "category": "physical"
+              },
+              {
+                "moveId": "growl",
+                "name": "Gruñido",
+                "level": 1,
+                "type": "normal",
+                "category": "status"
+              },
+              {
+                "moveId": "peck",
+                "name": "Picotazo",
+                "level": 1,
+                "type": "flying",
+                "category": "physical"
+              }
+            ],
+            "stage": 0
+          }
+        ],
+        "evolutionHint": "Evolución final · etapa 2 de 2",
+        "attempts": [],
+        "solvedPlayers": [],
+        "roundStartedAt": 1000,
+        "roundEndsAt": 31000,
+        "nextTransitionAt": 8000,
+        "lastRound": null,
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p2": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        },
+        "p3": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "fury-attack",
+                    "name": "Ataque Furia",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "growl",
+                    "name": "Gruñido",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "peck",
+                    "name": "Picotazo",
+                    "level": 1,
+                    "type": "flying",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución final · etapa 2 de 2",
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 8000,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "fury-attack",
+                    "name": "Ataque Furia",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "growl",
+                    "name": "Gruñido",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "peck",
+                    "name": "Picotazo",
+                    "level": 1,
+                    "type": "flying",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución final · etapa 2 de 2",
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": 8000,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 35000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 35000,
+            "lastRound": {
+              "pokemon": {
+                "id": "dodrio",
+                "name": "Dodrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png",
+                "nationalDexNumber": 85,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "fury-attack",
+                  "name": "Ataque Furia",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "growl",
+                  "name": "Gruñido",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "peck",
+                  "name": "Picotazo",
+                  "level": 1,
+                  "type": "flying",
+                  "category": "physical"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "fury-attack",
+                  "name": "Ataque Furia",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "growl",
+                  "name": "Gruñido",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "peck",
+                  "name": "Picotazo",
+                  "level": 1,
+                  "type": "flying",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "growl",
+                  "name": "Gruñido",
+                  "level": 20,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "fury-attack",
+                  "name": "Ataque Furia",
+                  "level": 24,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "drill-peck",
+                  "name": "Pico Taladro",
+                  "level": 30,
+                  "type": "flying",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "rage",
+                  "name": "Furia",
+                  "level": 39,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "tri-attack",
+                  "name": "Triataque",
+                  "level": 45,
+                  "type": "normal",
+                  "category": "special"
+                },
+                {
+                  "moveId": "agility",
+                  "name": "Agilidad",
+                  "level": 51,
+                  "type": "psychic",
+                  "category": "status"
+                }
+              ],
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 1500,
+                  "revealStage": 0,
+                  "points": 5
+                }
+              }
+            },
+            "scores": {
+              "p1": 5,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 5
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,35000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "peck",
+                    "name": "Picotazo",
+                    "level": 1,
+                    "type": "flying",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "sand-attack",
+                    "name": "Ataque Arena",
+                    "level": 1,
+                    "type": "ground",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 7,
+                "moves": [
+                  {
+                    "moveId": "leer",
+                    "name": "Malicioso",
+                    "level": 7,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 15,
+                "moves": [
+                  {
+                    "moveId": "fury-attack",
+                    "name": "Ataque Furia",
+                    "level": 15,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Pokémon base · etapa 1 de 2",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 35000,
+            "roundEndsAt": 65000,
+            "nextTransitionAt": 42000,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,35000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "peck",
+                    "name": "Picotazo",
+                    "level": 1,
+                    "type": "flying",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "sand-attack",
+                    "name": "Ataque Arena",
+                    "level": 1,
+                    "type": "ground",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 7,
+                "moves": [
+                  {
+                    "moveId": "leer",
+                    "name": "Malicioso",
+                    "level": 7,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 15,
+                "moves": [
+                  {
+                    "moveId": "fury-attack",
+                    "name": "Ataque Furia",
+                    "level": 15,
+                    "type": "normal",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Pokémon base · etapa 1 de 2",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 35000,
+            "roundEndsAt": 65000,
+            "nextTransitionAt": 42000,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 69000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,35000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 35000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 69000,
+            "lastRound": {
+              "pokemon": {
+                "id": "farfetchd",
+                "name": "Farfetchd",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/83.png",
+                "nationalDexNumber": 83,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "peck",
+                  "name": "Picotazo",
+                  "level": 1,
+                  "type": "flying",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "sand-attack",
+                  "name": "Ataque Arena",
+                  "level": 1,
+                  "type": "ground",
+                  "category": "status"
+                },
+                {
+                  "moveId": "leer",
+                  "name": "Malicioso",
+                  "level": 7,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "fury-attack",
+                  "name": "Ataque Furia",
+                  "level": 15,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "peck",
+                  "name": "Picotazo",
+                  "level": 1,
+                  "type": "flying",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "sand-attack",
+                  "name": "Ataque Arena",
+                  "level": 1,
+                  "type": "ground",
+                  "category": "status"
+                },
+                {
+                  "moveId": "leer",
+                  "name": "Malicioso",
+                  "level": 7,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "fury-attack",
+                  "name": "Ataque Furia",
+                  "level": 15,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "swords-dance",
+                  "name": "Danza Espada",
+                  "level": 23,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "agility",
+                  "name": "Agilidad",
+                  "level": 31,
+                  "type": "psychic",
+                  "category": "status"
+                },
+                {
+                  "moveId": "slash",
+                  "name": "Cuchillada",
+                  "level": 39,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "solves": {}
+            },
+            "scores": {
+              "p1": 5,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 76000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,69000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [
+              {
+                "level": 1,
+                "moves": [
+                  {
+                    "moveId": "bite",
+                    "name": "Mordisco",
+                    "level": 1,
+                    "type": "dark",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "growl",
+                    "name": "Gruñido",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  },
+                  {
+                    "moveId": "scratch",
+                    "name": "Arañazo",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "physical"
+                  },
+                  {
+                    "moveId": "screech",
+                    "name": "Chirrido",
+                    "level": 1,
+                    "type": "normal",
+                    "category": "status"
+                  }
+                ],
+                "stage": 0
+              },
+              {
+                "level": 12,
+                "moves": [
+                  {
+                    "moveId": "bite",
+                    "name": "Mordisco",
+                    "level": 12,
+                    "type": "dark",
+                    "category": "physical"
+                  }
+                ],
+                "stage": 0
+              }
+            ],
+            "evolutionHint": "Evolución final · etapa 2 de 2",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 69000,
+            "roundEndsAt": 99000,
+            "nextTransitionAt": 76000,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 103000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,69000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 69000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 103000,
+            "lastRound": {
+              "pokemon": {
+                "id": "persian",
+                "name": "Persian",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/53.png",
+                "nationalDexNumber": 53,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "bite",
+                  "name": "Mordisco",
+                  "level": 1,
+                  "type": "dark",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "growl",
+                  "name": "Gruñido",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "scratch",
+                  "name": "Arañazo",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "screech",
+                  "name": "Chirrido",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "bite",
+                  "name": "Mordisco",
+                  "level": 12,
+                  "type": "dark",
+                  "category": "physical"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "bite",
+                  "name": "Mordisco",
+                  "level": 1,
+                  "type": "dark",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "growl",
+                  "name": "Gruñido",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "scratch",
+                  "name": "Arañazo",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "screech",
+                  "name": "Chirrido",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "bite",
+                  "name": "Mordisco",
+                  "level": 12,
+                  "type": "dark",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "pay-day",
+                  "name": "Día de Pago",
+                  "level": 17,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "screech",
+                  "name": "Chirrido",
+                  "level": 24,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "fury-swipes",
+                  "name": "Golpes Furia",
+                  "level": 37,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "slash",
+                  "name": "Cuchillada",
+                  "level": 51,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "solves": {}
+            },
+            "scores": {
+              "p1": 5,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,69000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 69000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "scores": {
+              "p1": 5,
+              "p2": 0,
+              "p3": 0
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 5,
+                  "won": true,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 2,
+                    "initialSolves": 1,
+                    "incorrectGuesses": 0,
+                    "pointsFromSolves": 5,
+                    "bestRoundPoints": 5
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "correct": 0,
+                    "missed": 3,
+                    "initialSolves": 0,
+                    "incorrectGuesses": 0,
+                    "pointsFromSolves": 0,
+                    "bestRoundPoints": 0
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 2,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "correct": 0,
+                    "missed": 2,
+                    "initialSolves": 0,
+                    "incorrectGuesses": 0,
+                    "pointsFromSolves": 0,
+                    "bestRoundPoints": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 5,
+          "won": true,
+          "stats": {
+            "correct": 1,
+            "missed": 2,
+            "initialSolves": 1,
+            "incorrectGuesses": 0,
+            "pointsFromSolves": 5,
+            "bestRoundPoints": 5
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "correct": 0,
+            "missed": 3,
+            "initialSolves": 0,
+            "incorrectGuesses": 0,
+            "pointsFromSolves": 0,
+            "bestRoundPoints": 0
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 2,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "correct": 0,
+            "missed": 2,
+            "initialSolves": 0,
+            "incorrectGuesses": 0,
+            "pointsFromSolves": 0,
+            "bestRoundPoints": 0
+          }
+        }
+      ]
+    }
+  }
+}

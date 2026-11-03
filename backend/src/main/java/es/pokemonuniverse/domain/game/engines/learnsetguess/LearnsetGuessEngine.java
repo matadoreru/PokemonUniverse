@@ -259,8 +259,9 @@ public final class LearnsetGuessEngine
         .map(entry -> hint(entry, showLevels))
         .toList();
     var playerStats = new LinkedHashMap<>(state.playerStats());
+    // Solo falla quien debía jugar la ronda: un desconectado no suma missed.
     for (var playerId : state.playerIds()) {
-      if (!state.solves().containsKey(playerId)) {
+      if (!state.solves().containsKey(playerId) && context.isPlayerRequired(playerId)) {
         playerStats.put(playerId, playerStats.getOrDefault(playerId, LearnsetGuessPlayerStats.ZERO).afterMiss());
       }
     }

@@ -107,7 +107,7 @@ function resolveRound(state: LearnsetGuessState, context: GameContext): Learnset
   if (!pokemon) throw new Error('Learnset Guess answer is missing from the catalog');
   const visibleMoves = groupsForState(state).slice(0, visibleGroupCount(state)).flat().map((entry) => hint(entry, state.config.showLevels));
   const playerStats = { ...state.playerStats };
-  for (const playerId of state.playerIds) if (!state.solves[playerId]) {
+  for (const playerId of state.playerIds) if (!state.solves[playerId] && isPlayerRequired(context, playerId)) {
     const stats = playerStats[playerId] ?? emptyLearnsetStats(); playerStats[playerId] = { ...stats, missed: stats.missed + 1 };
   }
   return {

@@ -2771,7 +2771,7 @@
                   "won": false,
                   "stats": {
                     "correct": 0,
-                    "missed": 3,
+                    "missed": 2,
                     "initialSolves": 0,
                     "incorrectGuesses": 1,
                     "pointsFromSolves": 0,
@@ -2883,7 +2883,7 @@
                   "won": false,
                   "stats": {
                     "correct": 0,
-                    "missed": 3,
+                    "missed": 2,
                     "initialSolves": 0,
                     "incorrectGuesses": 1,
                     "pointsFromSolves": 0,
@@ -2958,7 +2958,7 @@
           "won": false,
           "stats": {
             "correct": 0,
-            "missed": 3,
+            "missed": 2,
             "initialSolves": 0,
             "incorrectGuesses": 1,
             "pointsFromSolves": 0,

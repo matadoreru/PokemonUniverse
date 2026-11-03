@@ -101,6 +101,15 @@ describe('Learnset Guess', () => {
     state = learnsetGuessGame.handlePresenceChange!(state, fixture.context); expect(state.phase).toBe('ROUND_RESULTS'); expect(state.solves.p1?.points).toBe(5);
   });
 
+  it('a disconnected player does not add missed', () => {
+    const context: GameContext = { players: [{ id: 'p1', displayName: 'Pedro' }, { id: 'p2', displayName: 'Ana' }, { id: 'p3', displayName: 'Luis' }], pokemon: catalog, now: 1_000, random: () => 0 };
+    let state = learnsetGuessGame.createInitialState({ ...defaultLearnsetGuessConfig, generations: [1], rounds: 2 }, context); state = learnsetGuessGame.start(state, context);
+    state = guess(state, 'p1', 'pikachu', context).state; context.players[2]!.connected = false;
+    state = learnsetGuessGame.handlePresenceChange!(state, context); expect(state.phase).toBe('ROUND_ACTIVE');
+    context.now = state.roundEndsAt!; state = learnsetGuessGame.handleTimeout(state, context);
+    expect(state.phase).toBe('ROUND_RESULTS'); expect(state.playerStats.p1?.missed).toBe(0); expect(state.playerStats.p2?.missed).toBe(1); expect(state.playerStats.p3?.missed).toBe(0);
+  });
+
   it('rejects disconnected players and guesses received at the authoritative deadline', () => {
     const disconnected = setup(); disconnected.context.players[0]!.connected = false;
     expect(guess(disconnected.state, 'p1', 'pikachu', disconnected.context)).toMatchObject({ accepted: false, error: expect.stringMatching(/conectado/) });

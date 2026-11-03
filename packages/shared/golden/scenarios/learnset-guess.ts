@@ -121,6 +121,28 @@ const exhaustedHints: GoldenScenario = {
   ],
 };
 
+const disconnectedNotMissed: GoldenScenario = {
+  name: 'disconnected-not-missed',
+  seed: 812,
+  catalog: 'gen1-2',
+  players: [ana, bruno, carla],
+  config: baseConfig,
+  steps: [
+    // Ronda 1 (1000–31000), Dodrio: Ana acierta, Carla se desconecta y la ronda se resuelve por tiempo; solo Bruno suma missed.
+    guess('p1', 'dodrio', 1_500),
+    { kind: 'presence', players: [ana, bruno, { ...carla, connected: false }], now: 2_000 },
+    timeout(31_000),
+    timeout(35_000),
+    // Ronda 2 (35000–65000), Farfetch'd: Carla vuelve y nadie acierta; los tres suman missed.
+    { kind: 'presence', players: [ana, bruno, carla], now: 36_000 },
+    timeout(65_000),
+    timeout(69_000),
+    // Ronda 3 (69000–99000), Persian: resolución por tiempo y fin de partida.
+    timeout(99_000),
+    timeout(103_000),
+  ],
+};
+
 const invalidActionStops: GoldenScenario = {
   name: 'invalid-action-stops',
   seed: 806,
@@ -137,7 +159,7 @@ const invalidActionStops: GoldenScenario = {
 
 export const learnsetGuessScenarios: GoldenEngineEntry = {
   module: learnsetGuessGame,
-  scenarios: [hintsAndRace, hiddenLevels, exhaustedHints, invalidActionStops],
+  scenarios: [hintsAndRace, hiddenLevels, exhaustedHints, invalidActionStops, disconnectedNotMissed],
   configCases: [
     // Válidos: normalización de generaciones y límites.
     { ...baseConfig, generations: [2, 1, 2] },

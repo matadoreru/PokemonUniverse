@@ -2797,7 +2797,7 @@
                   "won": false,
                   "stats": {
                     "correct": 2,
-                    "missed": 2,
+                    "missed": 1,
                     "initialSolves": 1,
                     "incorrectGuesses": 2,
                     "pointsFromSolves": 9,
@@ -2851,7 +2851,7 @@
           "won": false,
           "stats": {
             "correct": 2,
-            "missed": 2,
+            "missed": 1,
             "initialSolves": 1,
             "incorrectGuesses": 2,
             "pointsFromSolves": 9,
