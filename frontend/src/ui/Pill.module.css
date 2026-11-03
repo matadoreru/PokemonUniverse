@@ -1,0 +1,191 @@
+/* Píldora: el botón del sistema. Cada pseudo-clase también como clase (.hover, .focus, .active) para la galería. */
+.pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  height: 46px;
+  padding: 0 26px;
+  border-radius: var(--r-pill);
+  border: var(--ol-3) solid var(--navy);
+  background: linear-gradient(180deg, var(--blue-l) 0%, var(--blue) 48%, var(--blue-d) 52%, var(--blue-d) 100%);
+  color: var(--white);
+  font: 800 var(--fs-18) / 1 var(--font-display);
+  cursor: pointer;
+  box-shadow: var(--sh-hard-5);
+  /* Solo se anima el hundimiento (transform); la sombra dura cambia en el acto. */
+  transition: transform var(--t-press) var(--ease);
+  white-space: nowrap;
+  user-select: none;
+  flex: none;
+}
+/* Brillo superior. */
+.pill::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 3px;
+  height: 40%;
+  border-radius: var(--r-pill);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--white) 55%, transparent), transparent);
+  pointer-events: none;
+}
+.label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.icon {
+  position: relative;
+  flex: none;
+}
+.pill:hover:not(:disabled),
+.pill.hover {
+  transform: translateY(-1px);
+}
+.pill:focus-visible,
+.pill.focus {
+  outline: var(--ol-3) solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.yellow:focus-visible,
+.yellow.focus {
+  outline-color: var(--focus-ring-on-yellow);
+}
+.pill:active:not(:disabled),
+.pill.active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 var(--navy-2);
+}
+.pill:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.yellow {
+  background: linear-gradient(180deg, var(--yellow-l) 0%, var(--yellow) 48%, var(--yellow-d) 100%);
+  color: var(--navy);
+}
+.red {
+  background: linear-gradient(180deg, var(--red-l) 0%, var(--red) 48%, var(--red-d) 100%);
+}
+.ghost {
+  background: linear-gradient(180deg, var(--navy-3), var(--navy));
+  font-size: var(--fs-15);
+}
+.cream {
+  background: linear-gradient(180deg, var(--white) 0%, var(--cream) 48%, var(--cream-2) 100%);
+  color: var(--navy);
+}
+.danger {
+  background: var(--red-text);
+  color: var(--white);
+}
+.danger::before {
+  display: none;
+}
+
+.main {
+  height: 60px;
+  padding: 0 34px;
+  font-size: var(--fs-26);
+  border-radius: var(--r-dialog);
+}
+.small {
+  height: 34px;
+  padding: 0 16px;
+  font-size: var(--fs-15);
+  box-shadow: var(--sh-hard-3);
+}
+/* El área pulsable de la pequeña llega a 44 px. */
+.small::after {
+  content: '';
+  position: absolute;
+  inset: -5px 0;
+}
+.small:active:not(:disabled),
+.small.active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--navy-2);
+}
+.round {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  gap: 0;
+  border-radius: 50%;
+  font-size: var(--fs-22);
+  box-shadow: var(--sh-hard-4);
+}
+.round::before {
+  left: 6px;
+  right: 6px;
+}
+.block {
+  width: 100%;
+}
+
+/* Insignia de número en la esquina. */
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -4px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-pill);
+  border: var(--ol-2) solid var(--navy);
+  background: var(--white);
+  color: var(--navy);
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+
+/* Cargando: tres puntos que alternan opacidad; el texto se atenúa. */
+.loading .label,
+.loading .icon,
+.loading .badge {
+  opacity: 0.35;
+}
+.dots {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: dot 900ms infinite;
+}
+.dots i:nth-child(2) {
+  animation-delay: 300ms;
+}
+.dots i:nth-child(3) {
+  animation-delay: 600ms;
+}
+@keyframes dot {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dots i {
+    animation: none;
+  }
+}

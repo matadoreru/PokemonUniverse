@@ -1,0 +1,75 @@
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-panel);
+  background: var(--blue);
+  color: var(--white);
+  box-shadow: var(--sh-hard-5), var(--sh-panel);
+  overflow: hidden;
+}
+.panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--stripes-blue);
+  pointer-events: none;
+}
+.panel > * {
+  position: relative;
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  height: 40px;
+  padding: 0 var(--sp-4);
+  background: var(--navy-3);
+  border-bottom: var(--ol-3) solid var(--navy-2);
+  color: var(--white);
+}
+.title {
+  font: 800 var(--fs-18) / var(--lh-display) var(--font-display);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font: 800 var(--fs-13) / 1 var(--font-text);
+  white-space: nowrap;
+}
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--sp-3) 14px;
+}
+.scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--yellow) transparent;
+}
+.flush {
+  padding: 0;
+}
+.cream {
+  background: var(--cream);
+  color: var(--ink);
+}
+.cream::before {
+  background: var(--stripes-cream);
+}
+.dark {
+  background: var(--navy-2);
+}
+.error {
+  border-color: var(--red-text);
+}
