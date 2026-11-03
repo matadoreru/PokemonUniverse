@@ -40,8 +40,8 @@ const DISTANCE_PICKED = '✓ Ya ha elegido';
 /** Lo que el backend Java dice de un juego sin motor portado: nunca debe salir. */
 const NOT_PORTED = 'Este minijuego todavía no está disponible en el servidor Java.';
 
-/** Un juego de cada lote de la etapa 2B (y Higher or Lower, de la Fase 0): se captura a los tres tamaños de revisión. */
-const SCREENSHOT_GAMES = new Set(['type-duel', 'higher-lower', 'poke-taboo', 'most-likely-to', 'learnset-guess', 'whos-that-pokemon', 'who-is-who-pokemon', 'pokemon-bingo', 'sketchmon']);
+/** Un juego de cada lote de la etapa 2B: se captura a los tres tamaños de revisión (Higher or Lower, en su propio test). */
+const SCREENSHOT_GAMES = new Set(['type-duel', 'poke-taboo', 'most-likely-to', 'learnset-guess', 'whos-that-pokemon', 'who-is-who-pokemon', 'pokemon-bingo', 'sketchmon']);
 
 /** Texto del aviso de error del lobby o de la sala, si hay alguno visible. */
 async function avisos(page: Page): Promise<string> {
@@ -433,22 +433,49 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     }
     await expect.poll(() => imagenes.filter((url) => proxy.test(new URL(url).pathname)).length, { timeout: 10_000 }).toBeGreaterThanOrEqual(2);
 
-    // Todos responden: la ronda se revela en cuanto contesta el último y el revelado dura 3 s. Se captura un solo
-    // tamaño (390×844, el de los botones de respuesta), fijado antes de la última respuesta; la pantalla activa ya está
-    // a los tres tamaños en el test por juego. El host contesta primero (su clic desplaza la página) y la última
-    // respuesta es de un invitado.
+    // Ronda activa: a 390×844, sin desplazar, las tres respuestas están a la vista (en el `answer-dock` pegado abajo).
     const mayor = (page: Page) => page.getByRole('button', { name: 'Mayor', exact: true });
-    await mayor(host.page).click({ timeout: 20_000 });
-    await host.page.evaluate(() => window.scrollTo(0, 0));
-    await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
-    for (const { page } of invitados) await mayor(page).click({ timeout: 20_000 });
-    const revelado = host.page.getByText(/^Respuesta: (Mayor|Igual|Menor)$/);
-    await expect(revelado).toBeVisible({ timeout: 10_000 });
+    const movil = invitados[1]!.page;
+    await expect(mayor(movil)).toBeVisible({ timeout: 20_000 });
+    await movil.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
+    await movil.evaluate(() => window.scrollTo(0, 0));
+    for (const nombre of ['Mayor', 'Igual', 'Menor']) await expect(movil.getByRole('button', { name: nombre, exact: true }), `${nombre} a la vista a 390×844`).toBeInViewport({ ratio: 1 });
+    // Las barras solo existen al revelar: antes no hay ningún valor del actual en la página.
+    const barras = (page: Page) => page.getByTestId('higher-lower-bars');
+    await expect(barras(host.page)).toHaveCount(0);
+    await capturarTamanos(host.page, 'juego-higher-lower', { sigue: mayor(host.page), claro: true });
+
+    // Todos responden: la ronda se revela en cuanto contesta el último y el revelado dura 3 s. Para que quepan los
+    // tres tamaños y el claro, cada página se fija a un tamaño antes de la última respuesta y se capturan a la vez.
+    const capturas = [
+      { page: host.page, w: SIZES[0].w, h: SIZES[0].h },
+      { page: invitados[0]!.page, w: SIZES[1].w, h: SIZES[1].h },
+      { page: movil, w: SIZES[2].w, h: SIZES[2].h },
+    ];
+    for (const { page, w, h } of capturas) await page.setViewportSize({ width: w, height: h });
+    for (const { page } of jugadores) await mayor(page).click({ timeout: 20_000 });
+    for (const { page } of capturas) await page.evaluate(() => window.scrollTo(0, 0));
+    const revelado = (page: Page) => page.getByText(/^Respuesta: (Mayor|Igual|Menor)$/);
+    for (const { page } of capturas) await expect(barras(page)).toBeVisible({ timeout: 10_000 });
     await expect(host.page.getByText(/^Clasificación en \ds…$/)).toBeVisible();
-    const { id, problems } = await layoutProblems(host.page, 'juego-higher-lower-revelado', true);
-    await expect(revelado, `${id}: el revelado sigue en pantalla`).toBeVisible({ timeout: 1_000 });
-    expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
-    await host.page.setViewportSize({ width: 1280, height: 720 });
+    const nombre = 'juego-higher-lower-revelacion';
+    const medidas = await Promise.all(capturas.map(async ({ page }) => {
+      const oscuro = await layoutProblems(page, nombre, true);
+      if (page !== host.page) return [oscuro];
+      await page.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
+      const claro = await layoutProblems(page, `${nombre}-claro`, true);
+      await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
+      return [oscuro, claro];
+    }));
+    for (const { page } of capturas) await expect(revelado(page), 'el revelado sigue en pantalla tras la captura').toBeVisible({ timeout: 500 });
+    for (const { id, problems } of medidas.flat()) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
+    // Barras: con la reducción no animan; con movimiento, el relleno crece (solo transform).
+    const barra = barras(host.page).locator('[data-bar="current"]');
+    expect(await animacionDe(barra), 'barra con reducción de movimiento').toBe('none');
+    await conMovimiento(host.page);
+    expect(await animacionDe(barra), 'barra con movimiento').toBe('motion-grow-x');
+    await host.page.emulateMedia({ reducedMotion: 'reduce' });
+    for (const { page } of capturas) await page.setViewportSize({ width: 1280, height: 720 });
 
     const clasificacion = host.page.getByRole('heading', { name: 'Clasificación Higher or Lower' });
     await expect(clasificacion).toBeVisible({ timeout: 15_000 });

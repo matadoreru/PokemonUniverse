@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { HigherLowerOutcome } from '@pokemon-universe/shared/public';
-import { higherLowerChoiceLabels, higherLowerOutcomeDetail, higherLowerRevealCountdown, higherLowerStatsLine, higherLowerVisibilityLabels } from './higher-lower-labels';
+import { higherLowerBars, higherLowerChoiceLabels, higherLowerOutcomeLine, higherLowerRevealCountdown, higherLowerStatsLine, higherLowerStreakMilestone, higherLowerVisibilityLabels } from './higher-lower-labels';
 
 describe('higherLowerChoiceLabels', () => {
   it('traduce las tres respuestas al español', () => {
@@ -31,14 +31,47 @@ describe('higherLowerVisibilityLabels', () => {
   });
 });
 
-describe('higherLowerOutcomeDetail', () => {
-  const outcome = (streakBonus: number, speedBonus: number): HigherLowerOutcome => ({ choice: 'HIGHER', correct: true, basePoints: 1, streakBonus, speedBonus, awardedPoints: 1 + streakBonus + speedBonus, streak: 3 });
-  it('desglosa los bonus de racha y de rapidez', () => {
-    expect(higherLowerOutcomeDetail(outcome(1, 1))).toBe('+1 racha · +1 rapidez');
-    expect(higherLowerOutcomeDetail(outcome(0, 1))).toBe('+1 rapidez');
-    expect(higherLowerOutcomeDetail(outcome(2, 0))).toBe('+2 racha');
+const outcome = (streak: number, streakBonus: number, speedBonus: number, correct = true): HigherLowerOutcome => ({ choice: 'HIGHER', correct, basePoints: correct ? 1 : 0, streakBonus, speedBonus, awardedPoints: correct ? 1 + streakBonus + speedBonus : 0, streak });
+
+describe('higherLowerBars', () => {
+  it('higherLowerBars handles zero and equal values', () => {
+    expect(higherLowerBars(0, 0)).toEqual({ previousScale: 0, currentScale: 0, leader: 'tie', diffLabel: '=' });
+    expect(higherLowerBars(50, 50)).toEqual({ previousScale: 1, currentScale: 1, leader: 'tie', diffLabel: '=' });
   });
-  it('devuelve null sin bonus', () => {
-    expect(higherLowerOutcomeDetail(outcome(0, 0))).toBeNull();
+  it('escala sobre el mayor y firma la diferencia del actual', () => {
+    const up = higherLowerBars(40, 63);
+    expect(up.leader).toBe('current');
+    expect(up.diffLabel).toBe('+23');
+    expect(up.currentScale).toBe(1);
+    expect(up.previousScale).toBeCloseTo(40 / 63);
+    const down = higherLowerBars(63, 40);
+    expect(down.leader).toBe('previous');
+    expect(down.diffLabel).toBe('\u221223');
+    expect(down.previousScale).toBe(1);
+    expect(down.currentScale).toBeCloseTo(40 / 63);
+  });
+});
+
+describe('higherLowerOutcomeLine', () => {
+  it('pone el bonus de racha entre paréntesis y la rapidez aparte', () => {
+    expect(higherLowerOutcomeLine(outcome(3, 1, 1))).toBe('Racha 3 (+1) · +1 rapidez');
+  });
+  it('solo la racha sin bonus', () => {
+    expect(higherLowerOutcomeLine(outcome(1, 0, 0))).toBe('Racha 1');
+  });
+  it('racha sin bonus con rapidez', () => {
+    expect(higherLowerOutcomeLine(outcome(2, 0, 1))).toBe('Racha 2 · +1 rapidez');
+  });
+});
+
+describe('higherLowerStreakMilestone', () => {
+  it('celebra las rachas de 3, 5 y 10', () => {
+    expect(higherLowerStreakMilestone(outcome(3, 1, 0))).toEqual({ title: '¡Racha ×3!', subtitle: '+1' });
+    expect(higherLowerStreakMilestone(outcome(5, 2, 1))).toEqual({ title: '¡Racha ×5!', subtitle: '+2' });
+    expect(higherLowerStreakMilestone(outcome(10, 0, 0))).toEqual({ title: '¡Racha ×10!', subtitle: '¡Sigue así!' });
+  });
+  it('no celebra otras rachas ni un fallo', () => {
+    expect(higherLowerStreakMilestone(outcome(4, 1, 0))).toBeNull();
+    expect(higherLowerStreakMilestone(outcome(5, 2, 0, false))).toBeNull();
   });
 });

@@ -6,10 +6,33 @@ export const higherLowerChoiceLabels: Record<HigherLowerChoice, string> = { HIGH
 // Modos de visibilidad de las respuestas del panel de configuración.
 export const higherLowerVisibilityLabels: Record<HigherLowerAnswerVisibility, string> = { LIVE: 'En directo', REVEAL: 'Al revelar' };
 
-/** Desglose de los bonus de un acierto («+1 racha · +1 rapidez»), o `null` si no hay ninguno. */
-export function higherLowerOutcomeDetail(outcome: HigherLowerOutcome): string | null {
-  const parts = [outcome.streakBonus ? `+${outcome.streakBonus} racha` : null, outcome.speedBonus ? `+${outcome.speedBonus} rapidez` : null].filter((part) => part !== null);
-  return parts.length ? parts.join(' · ') : null;
+/** Línea del acierto en el revelado: «Racha 3 (+1) · +1 rapidez» (el bonus de racha va entre paréntesis). */
+export function higherLowerOutcomeLine(outcome: HigherLowerOutcome): string {
+  const streak = `Racha ${outcome.streak}${outcome.streakBonus ? ` (+${outcome.streakBonus})` : ''}`;
+  return outcome.speedBonus ? `${streak} · +${outcome.speedBonus} rapidez` : streak;
+}
+
+const STREAK_MILESTONES: readonly number[] = [3, 5, 10];
+
+/** Hito de racha propio (3, 5 o 10 aciertos seguidos) para el cut-in, o `null` si no toca. */
+export function higherLowerStreakMilestone(outcome: HigherLowerOutcome): { title: string; subtitle: string } | null {
+  if (!outcome.correct || !STREAK_MILESTONES.includes(outcome.streak)) return null;
+  return { title: `¡Racha ×${outcome.streak}!`, subtitle: outcome.streakBonus ? `+${outcome.streakBonus}` : '¡Sigue así!' };
+}
+
+export interface HigherLowerBarsView { previousScale: number; currentScale: number; leader: 'previous' | 'current' | 'tie'; diffLabel: string }
+
+/** Escalas (0–1 sobre el mayor de los dos; 0 y 0 si el mayor es 0), quién va por delante y la diferencia del actual. */
+export function higherLowerBars(previous: number, current: number): HigherLowerBarsView {
+  const max = Math.max(previous, current);
+  const scale = (value: number) => max > 0 ? value / max : 0;
+  const diff = current - previous;
+  return {
+    previousScale: scale(previous),
+    currentScale: scale(current),
+    leader: diff > 0 ? 'current' : diff < 0 ? 'previous' : 'tie',
+    diffLabel: diff > 0 ? `+${diff}` : diff < 0 ? `\u2212${-diff}` : '=',
+  };
 }
 
 const plural = (count: number, singular: string, pluralForm: string) => `${count} ${count === 1 ? singular : pluralForm}`;
