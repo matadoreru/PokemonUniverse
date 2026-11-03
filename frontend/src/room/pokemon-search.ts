@@ -41,6 +41,6 @@ export function searchPokemonOptions(pokemon: readonly SearchablePokemon[], quer
   return results;
 }
 
-export function firstSelectablePokemonOption(pokemon: readonly Pokemon[], query: string, locked: ReadonlySet<string>): PokemonSearchOption | undefined {
+export function firstSelectablePokemonOption(pokemon: readonly SearchablePokemon[], query: string, locked: ReadonlySet<string>): PokemonSearchOption | undefined {
   return searchPokemonOptions(pokemon, query).find((entry) => !locked.has(entry.id));
 }

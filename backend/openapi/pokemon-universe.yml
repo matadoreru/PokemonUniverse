@@ -1137,12 +1137,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthResponse"
-  /api/pokemon:
+  /api/pokemon/selector:
     get:
       tags:
       - pokemon
-      summary: Catálogo Pokémon
-      operationId: listPokemon
+      summary: Catálogo del buscador de Pokémon
+      operationId: listSelectorPokemon
       parameters:
       - name: generations
         in: query
@@ -1156,13 +1156,48 @@ paths:
         schema:
           type: string
           nullable: true
+      - name: If-None-Match
+        in: header
+        schema:
+          type: string
+          nullable: true
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PokemonController.PokemonResponse"
+                $ref: "#/components/schemas/PokemonController.PokemonSelectorResponse"
+        "304":
+          description: Sin cambios desde el ETag de If-None-Match
+  /api/pokemon/{id}/sprite:
+    get:
+      tags:
+      - pokemon
+      summary: Miniatura de un Pokémon del buscador
+      operationId: pokemonSprite
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: No encontrado
+        "503":
+          description: Demasiados recursos en curso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/audio:
     get:
       tags:
@@ -2476,101 +2511,7 @@ components:
           type: string
           x-size-message: La contraseña debe tener entre 1 y 128 caracteres
           x-not-null-message: La contraseña es obligatoria
-    Pokemon:
-      required:
-      - abilities
-      - attack
-      - baseStatTotal
-      - color
-      - defense
-      - evolutionStage
-      - evolutionStageCount
-      - generation
-      - heightDecimeters
-      - hp
-      - id
-      - isDefault
-      - legendaryStatus
-      - name
-      - names
-      - nationalDexNumber
-      - shinySprite
-      - specialAttack
-      - specialDefense
-      - speed
-      - sprite
-      - types
-      - weightHectograms
-      type: object
-      properties:
-        id:
-          type: string
-        nationalDexNumber:
-          type: integer
-          format: int32
-        name:
-          type: string
-        generation:
-          type: integer
-          format: int32
-        isDefault:
-          type: boolean
-        sprite:
-          type: string
-        shinySprite:
-          type: string
-        hp:
-          type: integer
-          format: int32
-        attack:
-          type: integer
-          format: int32
-        defense:
-          type: integer
-          format: int32
-        specialAttack:
-          type: integer
-          format: int32
-        specialDefense:
-          type: integer
-          format: int32
-        speed:
-          type: integer
-          format: int32
-        baseStatTotal:
-          type: integer
-          format: int32
-        heightDecimeters:
-          type: integer
-          format: int32
-        weightHectograms:
-          type: integer
-          format: int32
-        evolutionStage:
-          type: integer
-          format: int32
-        evolutionStageCount:
-          type: integer
-          format: int32
-        legendaryStatus:
-          type: string
-        color:
-          type: string
-        abilities:
-          type: array
-          items:
-            type: string
-        names:
-          type: object
-          additionalProperties:
-            type: object
-        types:
-          type: array
-          items:
-            type: string
-      description: Pokémon público del catálogo; sin `palette`/`paletteWeights`. Los
-        null se omiten del JSON.
-    PokemonController.PokemonResponse:
+    PokemonController.PokemonSelectorResponse:
       required:
       - pokemon
       type: object
@@ -2578,7 +2519,7 @@ components:
         pokemon:
           type: array
           items:
-            $ref: "#/components/schemas/Pokemon"
+            $ref: "#/components/schemas/SelectorPokemon"
     PresenceStatus:
       type: string
       description: '`PresenceStatus` de `room.ts`.'
@@ -2783,6 +2724,22 @@ components:
       - HOST
       - CO_HOST
       - MEMBER
+    SelectorPokemon:
+      required:
+      - id
+      - name
+      - sprite
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        sprite:
+          type: string
+      description: "Entrada del buscador de Pokémon: solo id, nombre y una URL de\
+        \ sprite opaca servida por Java. Sin número de Pokédex, generación, tipos,\
+        \ estadísticas ni sprite shiny, que darían la respuesta en varios minijuegos."
     SyncOverviewItem:
       required:
       - durationMs

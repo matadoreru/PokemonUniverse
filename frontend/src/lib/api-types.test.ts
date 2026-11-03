@@ -10,7 +10,7 @@ const ROUTES = [
   '/api/auth/avatars/{filename}', '/api/auth/guest', '/api/auth/guest/custom-avatar', '/api/auth/login',
   '/api/auth/logout', '/api/auth/me', '/api/auth/profile', '/api/auth/profile/avatar', '/api/auth/profile/avatar/custom',
   '/api/auth/profile/avatar/preset', '/api/auth/register', '/api/categories', '/api/categories/{id}', '/api/changelog',
-  '/api/feedback', '/api/games', '/api/health', '/api/pokemon',
+  '/api/feedback', '/api/games', '/api/health', '/api/pokemon/selector', '/api/pokemon/{id}/sprite',
   '/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/audio',
   '/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/sprite',
   '/api/tcg/eligibility', '/api/tcg/options',
@@ -18,9 +18,9 @@ const ROUTES = [
 ] as const satisfies readonly (keyof paths)[];
 
 describe('contrato OpenAPI generado', () => {
-  it('expone exactamente las 36 rutas del backend Java', () => {
+  it('expone exactamente las 37 rutas del backend Java', () => {
     expectTypeOf<keyof paths>().toEqualTypeOf<typeof ROUTES[number]>();
-    expect(ROUTES).toHaveLength(36);
+    expect(ROUTES).toHaveLength(37);
   });
   it('las opciones TCG coinciden con las de shared y la elegibilidad valida con incidencias de Zod', () => {
     expectTypeOf<paths['/api/tcg/options']['get']['responses'][200]['content']['application/json']>().toEqualTypeOf<TcgFilterOptions>();

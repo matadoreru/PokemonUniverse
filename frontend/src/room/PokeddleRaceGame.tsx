@@ -1,4 +1,4 @@
-import type { Pokemon, PokeddlePublicBoard, PokeddleRacePlayerState, PokeddleRacePublicState, PresenceStatus, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
+import type { PokeddlePublicBoard, PokeddleRacePlayerState, PokeddleRacePublicState, PresenceStatus, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Circle, Eye, Flag, Search, Trophy, WifiOff } from 'lucide-react';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar } from '../components/Avatar';
@@ -6,6 +6,7 @@ import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useServerOffset } from '../hooks/useServerTime';
 import { PokeddleBoard } from './PokeddleBoard';
 import { PokemonSelector } from './PokemonSelector';
+import type { PokemonSearchOption } from './pokemon-search';
 import { resolveRivalSelection } from './pokeddle-presentation';
 import { PokeddleRaceTimer } from './PokeddleRaceTimer';
 
@@ -62,7 +63,7 @@ function RoundStatus({ status }: { status: PokeddleRoundStatus }) {
   return <div className="text-right" role="status" aria-live="polite"><strong className={`flex items-center justify-end gap-1.5 text-sm ${tone}`}>{status.kind === 'solved' || status.kind === 'submitted' ? <CheckCircle2 size={17} aria-hidden="true" /> : status.kind === 'disconnected' ? <WifiOff size={17} aria-hidden="true" /> : <Circle size={10} className={status.kind === 'pending' ? 'fill-current' : ''} aria-hidden="true" />}{status.title}</strong>{status.detail && <small className="mt-0.5 block font-bold text-ink/60">{status.detail}</small>}</div>;
 }
 
-function SubmittedGuess({ pokemon }: { pokemon: Pokemon | null }) {
+function SubmittedGuess({ pokemon }: { pokemon: PokemonSearchOption | null }) {
   return <div className="flex min-h-20 items-center justify-center gap-3 rounded-2xl bg-leaf/[0.06] px-3 py-3 text-center" role="status">
     {pokemon ? <img src={pokemon.sprite} alt="" className="h-14 w-14 object-contain [image-rendering:pixelated]" /> : <CheckCircle2 className="text-leaf" size={34} aria-hidden="true" />}
     <div className="text-left"><strong className="block font-display text-lg text-leaf">{pokemon ? `${pokemon.name} enviado` : 'Intento enviado'}</strong><span className="text-sm font-bold text-ink/65">Esperando resultados de la ronda…</span></div>
@@ -84,7 +85,7 @@ export function PokeddleRaceGame({ room, selfId, onAction }: { room: RoomView; s
   const config = room.selectedGameConfig as { generations: number[]; roundSeconds: number };
   const { pokemon, error: poolError } = usePokemonPool({ generations: config.generations });
   const [selectedRival, setSelectedRival] = useState<string | null>(null);
-  const [submittedPokemon, setSubmittedPokemon] = useState<Pokemon | null>(null);
+  const [submittedPokemon, setSubmittedPokemon] = useState<PokemonSearchOption | null>(null);
   const [solveNotice, setSolveNotice] = useState<{ member: RoomMemberView; pokemon: PokeddlePublicBoard['revealedPokemon']; round: number | null } | null>(null);
   const knownSolved = useRef(new Set(Object.values(game.boards).filter((board) => board.solved).map((board) => board.playerId)));
   const serverOffset = useServerOffset(room.serverNow);

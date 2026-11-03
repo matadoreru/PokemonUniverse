@@ -165,8 +165,14 @@ class PokemonCatalogReloadTest implements TestPropertyProvider {
 
   @SuppressWarnings("unchecked")
   private List<String> publicIds() {
-    var body = client.toBlocking().retrieve(HttpRequest.GET("/api/pokemon"), Map.class);
+    var body = client.toBlocking().retrieve(HttpRequest.GET("/api/pokemon/selector"), Map.class);
     return ((List<Map<String, Object>>) body.get("pokemon")).stream().map(p -> (String) p.get("id")).toList();
+  }
+
+  private String selectorETag() {
+    var etag = client.toBlocking().exchange(HttpRequest.GET("/api/pokemon/selector"), String.class).header("ETag");
+    assertNotNull(etag);
+    return etag;
   }
 
   @Test
@@ -177,11 +183,13 @@ class PokemonCatalogReloadTest implements TestPropertyProvider {
     var version = rooms.view(running, "reload-a-host").gameCatalogVersion();
     var pool = pool(running);
     assertFalse(publicIds().contains("reload-newmon"));
+    var etag = selectorETag();
 
     insertDefault("reload-newmon", 9_001, SPRITE + "?reload");
     service.start(DataSyncSource.POKEAPI, DataSyncMode.FULL).get();
 
-    assertTrue(publicIds().contains("reload-newmon"), "/api/pokemon debe ver el Pokémon nuevo");
+    assertTrue(publicIds().contains("reload-newmon"), "/api/pokemon/selector debe ver el Pokémon nuevo");
+    assertNotEquals(etag, selectorETag(), "la recarga debe cambiar el ETag del buscador");
     // La partida en curso conserva su catálogo, su versión y su pool.
     assertSame(snapshot, running.game.catalog);
     assertEquals(version, rooms.view(running, "reload-a-host").gameCatalogVersion());

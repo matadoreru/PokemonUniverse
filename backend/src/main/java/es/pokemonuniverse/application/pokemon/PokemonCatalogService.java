@@ -77,11 +77,16 @@ public class PokemonCatalogService implements GameCatalogProvider {
     this.artworkDir = Path.of(artworkDir);
   }
 
-  public List<Pokemon> search(PokemonSearchQuery query) {
+  /**
+   * Catálogo del buscador: filtra por generación y formas y ordena por nombre ({@link Collations#names()}), con la
+   * forma por defecto antes que las demás del mismo nombre y después por id. No se ordena por número de Pokédex: la
+   * posición en la lista lo revelaría aunque la respuesta no lleve el número.
+   */
+  public List<Pokemon> selectorSearch(PokemonSearchQuery query) {
     var allowed = Set.copyOf(query.generations());
-    var order = Comparator.comparingInt(Pokemon::nationalDexNumber)
+    var order = Comparator.comparing(Pokemon::name, Collations.names())
         .thenComparing(p -> p.isDefault() ? 0 : 1)
-        .thenComparing(Pokemon::name, Collations.names());
+        .thenComparing(Pokemon::id);
     return catalog().all().stream()
         .filter(p -> allowed.isEmpty() || allowed.contains(p.generation()))
         .filter(p -> query.includeForms() || p.isDefault())
@@ -107,7 +112,7 @@ public class PokemonCatalogService implements GameCatalogProvider {
   /**
    * Recarga tras una sincronización POKEAPI completada ({@code index.ts}): catálogo y gritos en paralelo desde la base
    * de datos (sin pasar por la caché), después los artworks contra los ids nuevos. Solo si las tres cargas terminan
-   * se instala el catálogo en la caché ({@code registerPokemonRepository}: {@code /api/pokemon} lo ve ya) y se
+   * se instala el catálogo en la caché ({@code registerPokemonRepository}: {@code /api/pokemon/selector} lo ve ya) y se
    * devuelven los catálogos para {@code replaceCatalog}; si algo falla, la excepción sale antes y todo sigue con los
    * catálogos anteriores.
    */

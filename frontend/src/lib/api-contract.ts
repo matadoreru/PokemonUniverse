@@ -25,4 +25,4 @@ export type ProfileResponse = JsonBody<'/api/auth/profile', 'get', 200>;
 export type ChangelogResponse = { entries: Bridge<JsonBody<'/api/changelog', 'get', 200>['entries'][number], ChangelogEntry>[] };
 export type FeedbackCreateResponse = { feedback: Bridge<JsonBody<'/api/feedback', 'post', 201>['feedback'], FeedbackItem> };
 export type GamesResponse = JsonBody<'/api/games', 'get', 200>;
-export type PokemonResponse = JsonBody<'/api/pokemon', 'get', 200>;
+export type PokemonSelectorResponse = JsonBody<'/api/pokemon/selector', 'get', 200>;

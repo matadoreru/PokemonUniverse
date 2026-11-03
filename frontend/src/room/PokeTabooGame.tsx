@@ -1,4 +1,4 @@
-import type { PokeTabooPlayerState, PokeTabooPublicState, PokeTabooSecretPokemon, Pokemon, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
+import type { PokeTabooPlayerState, PokeTabooPublicState, PokeTabooSecretPokemon, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Eye, History, MessageCircle, Mic2, Search, Send, XCircle } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { Avatar } from '../components/Avatar';
@@ -7,6 +7,7 @@ import { ServerTimer } from '../components/ServerTimer';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { PokemonSelector } from './PokemonSelector';
+import type { PokemonSearchOption } from './pokemon-search';
 
 const EMPTY_LOCKED = new Set<string>();
 
@@ -57,7 +58,7 @@ function HintList({ game, descriptorName }: { game: PokeTabooPublicState; descri
   return <section aria-labelledby="taboo-hints-heading"><h2 id="taboo-hints-heading" className="mb-3 flex items-center gap-2 font-display text-xl"><MessageCircle className="text-aqua" size={20} /> Pistas de {descriptorName}</h2>{game.hints.length ? <div className="space-y-2" aria-live="polite">{game.hints.map((hint) => <p key={hint.id} className="rounded-xl bg-aqua/[.07] px-3 py-2.5 font-bold">“{hint.text}”</p>)}</div> : <div className="rounded-xl border border-dashed border-ink/15 p-5 text-center"><strong className="block">La descripción se escucha fuera del juego</strong><span className="text-sm font-bold text-ink/60">Si {descriptorName} necesita texto, sus pistas aparecerán aquí.</span></div>}</section>;
 }
 
-function GuessPanel({ pokemon, player, game, serverOffset, loadError, onAction }: { pokemon: Pokemon[]; player: Extract<PokeTabooPlayerState, { role: 'GUESSER' }>; game: PokeTabooPublicState; serverOffset: number; loadError: string; onAction(action: unknown): Promise<void> }) {
+function GuessPanel({ pokemon, player, game, serverOffset, loadError, onAction }: { pokemon: readonly PokemonSearchOption[]; player: Extract<PokeTabooPlayerState, { role: 'GUESSER' }>; game: PokeTabooPublicState; serverOffset: number; loadError: string; onAction(action: unknown): Promise<void> }) {
   const cooldownMs = useRemainingMs(player.cooldownUntil, serverOffset);
   if (!player.canGuess) return <div className="grid min-h-28 place-items-center rounded-xl bg-ink/[.04] font-bold text-ink/65">Esperando al siguiente turno…</div>;
   return <section aria-labelledby="taboo-answer-heading"><div className="mb-2 flex items-end justify-between gap-2"><div><span className="text-xs font-black text-aqua">TU RESPUESTA</span><h2 id="taboo-answer-heading" className="flex items-center gap-2 font-display text-xl"><Search size={19} /> Buscar Pokémon</h2></div><span className="text-xs font-bold text-ink/60">{player.attemptCount} intento{player.attemptCount === 1 ? '' : 's'}</span></div>{cooldownMs > 0 && <p className="mb-2 flex items-center gap-2 rounded-xl bg-berry/[.08] px-3 py-2 text-sm font-extrabold text-berry" role="status"><XCircle size={17} /> Incorrecto · nuevo intento en {(cooldownMs / 1_000).toFixed(1)}s</p>}{loadError ? <p className="status-error" role="alert">{loadError}</p> : <PokemonSelector key={game.roundNumber} pokemon={pokemon} locked={EMPTY_LOCKED} disabled={false} confirmationDisabled={cooldownMs > 0} variant="embedded" autoFocus={false} inputLabel={`Buscar respuesta para la ronda ${game.roundNumber}`} onSelect={(pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId })} />}</section>;

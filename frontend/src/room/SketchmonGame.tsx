@@ -1,4 +1,4 @@
-import type { Pokemon, RoomMemberView, RoomView, SketchmonPlayerState, SketchmonPublicState } from '@pokemon-universe/shared/public';
+import type { RoomMemberView, RoomView, SketchmonPlayerState, SketchmonPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, EyeOff, History, Lightbulb, Palette, Search, XCircle } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { PokemonTypeBadge } from '../components/PokemonTypeBadge';
@@ -6,6 +6,7 @@ import { ServerTimer } from '../components/ServerTimer';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { PokemonSelector } from './PokemonSelector';
+import type { PokemonSearchOption } from './pokemon-search';
 import { SketchmonCanvas, SketchmonCanvasSurface } from './SketchmonCanvas';
 
 const EMPTY_LOCKED = new Set<string>();
@@ -52,7 +53,7 @@ function HintPanel({ game }: { game: SketchmonPublicState }) {
   </section>;
 }
 
-function GuessPanel({ pokemon, player, game, serverOffset, loadError, onAction }: { pokemon: Pokemon[]; player: Extract<SketchmonPlayerState, { role: 'GUESSER' }>; game: SketchmonPublicState; serverOffset: number; loadError: string; onAction(action: unknown): Promise<void> }) {
+function GuessPanel({ pokemon, player, game, serverOffset, loadError, onAction }: { pokemon: readonly PokemonSearchOption[]; player: Extract<SketchmonPlayerState, { role: 'GUESSER' }>; game: SketchmonPublicState; serverOffset: number; loadError: string; onAction(action: unknown): Promise<void> }) {
   const cooldownMs = useRemainingMs(player.cooldownUntil, serverOffset);
   if (!player.canGuess) return <div className="grid min-h-28 place-items-center rounded-xl bg-ink/[.04] font-bold text-ink/65">Esperando al siguiente dibujo…</div>;
   return <section className="mt-4 border-t border-ink/10 pt-4" aria-labelledby="sketchmon-answer">

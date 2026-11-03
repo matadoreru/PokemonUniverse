@@ -83,7 +83,7 @@ class ComposeStartupTest {
 
   /**
    * BD vacía: {@code ensureInitialPokemon} termina antes de que el servidor acepte conexiones; con el servidor ya
-   * listo, la inicial de TCG sigue en curso (TCGdex retenido) y {@code /api/pokemon} devuelve el catálogo. Después,
+   * listo, la inicial de TCG sigue en curso (TCGdex retenido) y {@code /api/pokemon/selector} devuelve el catálogo. Después,
    * un segundo arranque sobre la misma BD marca INTERRUPTED las salas y partidas que dejó abiertas el anterior.
    */
   @Test
@@ -103,7 +103,7 @@ class ComposeStartupTest {
 
         var base = "http://127.0.0.1:" + context.getBean(EmbeddedServer.class).getPort();
         assertEquals(200, get(base + "/health/readiness").statusCode());
-        var pokemon = get(base + "/api/pokemon");
+        var pokemon = get(base + "/api/pokemon/selector");
         assertEquals(200, pokemon.statusCode());
         for (var name : List.of("geodude", "graveler", "golem")) {
           assertTrue(pokemon.body().contains("\"" + name + "\""), name + " en " + pokemon.body());

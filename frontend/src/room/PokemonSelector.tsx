@@ -1,9 +1,8 @@
-import type { Pokemon } from '@pokemon-universe/shared/public';
 import { Search } from 'lucide-react';
 import { useId, useMemo, useRef, useState } from 'react';
-import { normalizePokemonQuery, searchPokemonOptions } from './pokemon-search';
+import { normalizePokemonQuery, searchPokemonOptions, type PokemonSearchOption } from './pokemon-search';
 
-export function PokemonSelector({ pokemon, locked, disabled, confirmationDisabled = false, variant = 'card', autoFocus = true, inputLabel = 'Buscar Pokémon', maxResults = 40, onSelect }: { pokemon: Pokemon[]; locked: Set<string>; disabled: boolean; confirmationDisabled?: boolean; variant?: 'card' | 'embedded'; autoFocus?: boolean; inputLabel?: string; maxResults?: number; onSelect(id: string): Promise<void> }) {
+export function PokemonSelector({ pokemon, locked, disabled, confirmationDisabled = false, variant = 'card', autoFocus = true, inputLabel = 'Buscar Pokémon', maxResults = 40, onSelect }: { pokemon: readonly PokemonSearchOption[]; locked: Set<string>; disabled: boolean; confirmationDisabled?: boolean; variant?: 'card' | 'embedded'; autoFocus?: boolean; inputLabel?: string; maxResults?: number; onSelect(id: string): Promise<void> }) {
   const [query, setQuery] = useState('');
   const [pending, setPending] = useState('');
   const [error, setError] = useState('');

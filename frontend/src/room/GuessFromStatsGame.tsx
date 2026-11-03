@@ -1,4 +1,4 @@
-import type { GuessFromStatsHint, GuessFromStatsPlayerState, GuessFromStatsPokemonReveal, GuessFromStatsPublicState, GuessFromStatsVisibleStat, Pokemon, PokemonLegendaryStatus, RoomView } from '@pokemon-universe/shared/public';
+import type { GuessFromStatsHint, GuessFromStatsPlayerState, GuessFromStatsPokemonReveal, GuessFromStatsPublicState, GuessFromStatsVisibleStat, PokemonLegendaryStatus, RoomView } from '@pokemon-universe/shared/public';
 import { BarChart3, CheckCircle2, Eye, History, Lightbulb, Search, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar } from '../components/Avatar';
@@ -7,6 +7,7 @@ import { ServerTimer } from '../components/ServerTimer';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { PokemonSelector } from './PokemonSelector';
+import type { PokemonSearchOption } from './pokemon-search';
 
 const EMPTY_LOCKED = new Set<string>();
 const statLabels: Record<GuessFromStatsVisibleStat['key'], string> = { hp: 'PS', attack: 'Ataque', defense: 'Defensa', specialAttack: 'At. Esp.', specialDefense: 'Def. Esp.', speed: 'Velocidad', bst: 'Total (BST)' };
@@ -27,7 +28,7 @@ function HintPanel({ hints }: { hints: GuessFromStatsHint[] }) {
   })}</section>;
 }
 
-function GuessPanel({ pokemon, player, game, serverOffset, participating, loadError, actionError, onGuess }: { pokemon: Pokemon[]; player: GuessFromStatsPlayerState; game: GuessFromStatsPublicState; serverOffset: number; participating: boolean; loadError: string; actionError: string; onGuess(id: string): Promise<void> }) {
+function GuessPanel({ pokemon, player, game, serverOffset, participating, loadError, actionError, onGuess }: { pokemon: readonly PokemonSearchOption[]; player: GuessFromStatsPlayerState; game: GuessFromStatsPublicState; serverOffset: number; participating: boolean; loadError: string; actionError: string; onGuess(id: string): Promise<void> }) {
   const cooldownMs = useRemainingMs(player.cooldownUntil, serverOffset);
   if (!participating) return <div className="grid min-h-28 place-items-center rounded-2xl bg-ink/[0.04] text-center"><div><Eye className="mx-auto text-aqua" /><strong className="block font-display text-xl">Estás observando</strong><span className="text-sm font-bold text-ink/65">Los espectadores no pueden responder.</span></div></div>;
   if (player.solved) return <div className="reveal-pop grid min-h-28 place-items-center rounded-2xl border border-leaf/30 bg-leaf/[0.08] text-center"><div><CheckCircle2 className="mx-auto text-leaf" size={38} /><strong className="block font-display text-2xl text-leaf">¡Has acertado!</strong><span className="font-bold text-ink/65">{ordinal(player.solveOrder!)} en resolverlo · +{player.roundPoints} pts</span><small className="block font-bold text-ink/55">Esperando al resto…</small></div></div>;

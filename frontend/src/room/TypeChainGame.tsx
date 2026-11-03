@@ -1,4 +1,4 @@
-import type { Pokemon, RoomView, TypeChainInvalidReason, TypeChainPlayerState, TypeChainPublicState } from '@pokemon-universe/shared/public';
+import type { RoomView, TypeChainInvalidReason, TypeChainPlayerState, TypeChainPublicState } from '@pokemon-universe/shared/public';
 import { Clock3, Eye, History, Skull, Trophy, Users, XCircle } from 'lucide-react';
 import { memo, useState } from 'react';
 import { Avatar } from '../components/Avatar';
@@ -6,6 +6,7 @@ import { PokemonTypeBadge, pokemonTypeLabels } from '../components/PokemonTypeBa
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { PokemonSelector } from './PokemonSelector';
+import type { PokemonSearchOption } from './pokemon-search';
 
 const reasonLabels: Record<TypeChainInvalidReason, string> = {
   ALREADY_USED: 'Este Pokémon ya ha sido utilizado.', NO_SHARED_TYPE: 'No comparte ningún tipo.',
@@ -29,7 +30,7 @@ function CurrentPokemon({ game }: { game: TypeChainPublicState }) {
   return <section className="text-center"><span className="label !mb-0">Pokémon actual</span><div className="mx-auto mt-2 grid min-h-64 max-w-xl place-items-center rounded-2xl border border-aqua/15 bg-[radial-gradient(circle_at_center,rgba(29,201,224,.12),transparent_67%)] p-4"><img src={current.pokemon.sprite} alt={current.pokemon.name} className="h-44 w-44 object-contain drop-shadow-lg [image-rendering:pixelated] sm:h-52 sm:w-52" /><h2 className="font-display text-3xl sm:text-4xl">{current.pokemon.name}</h2><div className="mt-2 flex flex-wrap justify-center gap-2">{current.pokemon.types.map((type) => <PokemonTypeBadge key={type} type={type} />)}</div></div><p className="mt-3 font-bold text-ink/65">Encuentra otro Pokémon que comparta <strong className="text-electric">exactamente un tipo</strong>.</p></section>;
 }
 
-function TurnAction({ room, selfId, game, player, pokemon, serverOffset, onAction }: { room: RoomView; selfId: string; game: TypeChainPublicState; player: TypeChainPlayerState; pokemon: Pokemon[]; serverOffset: number; onAction(action: unknown): Promise<void> }) {
+function TurnAction({ room, selfId, game, player, pokemon, serverOffset, onAction }: { room: RoomView; selfId: string; game: TypeChainPublicState; player: TypeChainPlayerState; pokemon: readonly PokemonSearchOption[]; serverOffset: number; onAction(action: unknown): Promise<void> }) {
   const cooldownMs = useRemainingMs(player.cooldownUntil, serverOffset); const currentName = room.members.find((member) => member.id === game.currentPlayerId)?.displayName ?? 'otro jugador';
   if (!player.canSubmit) return <section className="grid min-h-36 place-items-center rounded-2xl border border-ink/10 bg-ink/[0.03] p-4 text-center"><div>{player.eliminated || room.members.find((member) => member.id === selfId)?.role === 'SPECTATOR' ? <Eye className="mx-auto text-aqua" size={32} /> : <Clock3 className="mx-auto text-electric" size={32} />}<strong className="mt-2 block font-display text-2xl">{player.eliminated ? 'Observas la cadena' : `Esperando a ${currentName}…`}</strong><p className="text-sm font-bold text-ink/65">{player.eliminated ? 'Has sido eliminado, pero puedes seguir toda la partida.' : 'El buscador aparecerá automáticamente en tu turno.'}</p></div></section>;
   return <section className="rounded-2xl border border-electric/40 bg-electric/[0.06] p-4 shadow-card"><div className="mb-3 flex flex-wrap items-center justify-between gap-3"><div><span className="label !mb-0 text-electric">Tu turno</span><h2 className="font-display text-2xl">Continúa la cadena</h2></div><TurnTimer deadline={game.roundEndsAt} serverOffset={serverOffset} /></div>{player.lastAttempt && <p className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-berry/[0.09] p-3 text-sm font-extrabold text-berry" role="status"><span className="flex items-center gap-1.5"><XCircle size={17} /> {reasonLabels[player.lastAttempt.reason]}</span>{cooldownMs > 0 && <span>Nuevo intento en {(cooldownMs / 1_000).toFixed(1)}s</span>}</p>}<PokemonSelector key={game.turnNumber} pokemon={pokemon} locked={new Set(game.usedPokemonIds)} disabled={false} confirmationDisabled={cooldownMs > 0} variant="embedded" inputLabel={`Buscar Pokémon para continuar desde ${game.chain.at(-1)?.pokemon.name}`} onSelect={(pokemonId) => onAction({ type: 'SUBMIT_POKEMON', pokemonId })} /></section>;

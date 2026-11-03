@@ -1,4 +1,4 @@
-import type { Pokemon, PokemonCryQuizPlayerState, PokemonCryQuizPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { PokemonCryQuizPlayerState, PokemonCryQuizPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Eye, Headphones, Play, RotateCcw, Volume2, XCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Avatar } from '../components/Avatar';
@@ -6,6 +6,7 @@ import { ServerTimer } from '../components/ServerTimer';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { PokemonSelector } from './PokemonSelector';
+import type { PokemonSearchOption } from './pokemon-search';
 
 const EMPTY_LOCKED = new Set<string>();
 
@@ -16,7 +17,7 @@ function CryPlayer({ source, replay = false }: { source: string; replay?: boolea
   return <div className="text-center"><audio ref={audioRef} src={source} preload="auto" onEnded={() => setPlaying(false)} onError={() => setError('El grito no está disponible temporalmente.')} /><button type="button" onClick={() => void play()} className={`mx-auto grid aspect-square w-40 place-items-center rounded-full border transition-[transform,background-color,border-color] duration-200 hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aqua sm:w-48 ${playing ? 'border-electric bg-electric/15 text-electric' : 'border-aqua/50 bg-aqua/10 text-aqua'}`} aria-label={replay ? 'Volver a escuchar el grito' : 'Reproducir grito'}>{playing ? <Volume2 size={64} className="animate-pulse motion-reduce:animate-none" /> : replay ? <RotateCcw size={58} /> : <Play size={64} className="translate-x-1" />}</button><strong className="mt-3 block font-display text-xl">{playing ? 'Escuchando…' : replay ? 'Volver a escuchar' : 'Pulsa para escuchar'}</strong>{error && <p className="mt-2 text-sm font-bold text-berry" role="alert">{error}</p>}</div>;
 }
 
-function GuessArea({ pokemon, game, player, participating, serverOffset, onAction }: { pokemon: Pokemon[]; game: PokemonCryQuizPublicState; player: PokemonCryQuizPlayerState; participating: boolean; serverOffset: number; onAction(action: unknown): Promise<void> }) {
+function GuessArea({ pokemon, game, player, participating, serverOffset, onAction }: { pokemon: readonly PokemonSearchOption[]; game: PokemonCryQuizPublicState; player: PokemonCryQuizPlayerState; participating: boolean; serverOffset: number; onAction(action: unknown): Promise<void> }) {
   const cooldownMs = useRemainingMs(player.cooldownUntil, serverOffset);
   if (!participating) return <div className="grid min-h-36 place-items-center text-center"><div><Eye className="mx-auto text-aqua" /><strong className="mt-2 block font-display text-xl">Estás observando</strong><p className="text-sm font-bold text-ink/60">Puedes escuchar el grito y seguir los resultados.</p></div></div>;
   if (player.solved) return <div className="grid min-h-36 place-items-center rounded-xl bg-leaf/[.08] text-center"><div><CheckCircle2 className="mx-auto text-leaf" size={42} /><strong className="block font-display text-2xl text-leaf">¡Grito acertado!</strong><p className="font-bold text-ink/65">{player.solveOrder}.º · +{player.roundPoints} puntos</p></div></div>;

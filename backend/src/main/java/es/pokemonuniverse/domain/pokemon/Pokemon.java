@@ -7,8 +7,8 @@ import java.util.Map;
 
 /**
  * Pokémon del catálogo ({@code Pokemon} de {@code pokemon/types.ts}). {@code palette}/{@code paletteWeights} son
- * internos de los motores (los calcula el data-sync): {@code /api/pokemon} responde con {@code PublicPokemon}, que no
- * los incluye. Los null se omiten del JSON.
+ * internos de los motores (los calcula el data-sync). La web solo recibe {@code id}, {@code name} y un sprite opaco
+ * ({@code /api/pokemon/selector}). Los null se omiten del JSON.
  */
 @Serdeable
 public record Pokemon(

@@ -1,10 +1,11 @@
-import type { Pokemon, PokemonLegendaryStatus, PokemonType, RoomView, ZoomedPokemonHint, ZoomedPokemonPlayerState, ZoomedPokemonPublicState } from '@pokemon-universe/shared/public';
+import type { PokemonLegendaryStatus, PokemonType, RoomView, ZoomedPokemonHint, ZoomedPokemonPlayerState, ZoomedPokemonPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Eye, History, Lightbulb, Search, XCircle, ZoomOut } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { PokemonSelector } from './PokemonSelector';
+import type { PokemonSearchOption } from './pokemon-search';
 
 const EMPTY_LOCKED = new Set<string>();
 const typeLabels: Record<PokemonType, string> = { normal: 'Normal', fire: 'Fuego', water: 'Agua', electric: 'Eléctrico', grass: 'Planta', ice: 'Hielo', fighting: 'Lucha', poison: 'Veneno', ground: 'Tierra', flying: 'Volador', psychic: 'Psíquico', bug: 'Bicho', rock: 'Roca', ghost: 'Fantasma', dragon: 'Dragón', dark: 'Siniestro', steel: 'Acero', fairy: 'Hada' };
@@ -22,7 +23,7 @@ export function ZoomViewport({ source, sourceType, alt }: { source: string; sour
   return <div className="zoomed-viewport relative aspect-square w-full overflow-hidden rounded-2xl border border-aqua/25 bg-night" aria-label={alt} data-source-type={sourceType}><div className="absolute inset-0 bg-[radial-gradient(circle,rgba(82,199,232,.16),transparent_70%)]" /><img src={source} alt="" className="zoomed-image absolute inset-0 h-full w-full object-contain [image-rendering:auto]" /></div>;
 }
 
-function GuessPanel({ pokemon, player, game, serverOffset, participating, loadError, onAction }: { pokemon: Pokemon[]; player: ZoomedPokemonPlayerState; game: ZoomedPokemonPublicState; serverOffset: number; participating: boolean; loadError: string; onAction(action: unknown): Promise<void> }) {
+function GuessPanel({ pokemon, player, game, serverOffset, participating, loadError, onAction }: { pokemon: readonly PokemonSearchOption[]; player: ZoomedPokemonPlayerState; game: ZoomedPokemonPublicState; serverOffset: number; participating: boolean; loadError: string; onAction(action: unknown): Promise<void> }) {
   const cooldownMs = useRemainingMs(player.cooldownUntil, serverOffset);
   if (!participating) return <div className="grid min-h-28 place-items-center rounded-2xl bg-ink/[.04] text-center"><div><Eye className="mx-auto text-aqua" /><strong className="block font-display text-xl">Estás observando</strong><span className="text-sm font-bold text-ink/65">Los espectadores no pueden responder.</span></div></div>;
   if (player.solved) return <div className="reveal-pop grid min-h-32 place-items-center rounded-2xl border border-leaf/30 bg-leaf/[.08] text-center"><div><CheckCircle2 className="mx-auto text-leaf" size={40} /><strong className="block font-display text-2xl text-leaf">¡Has acertado!</strong><span className="font-bold text-ink/70">Eres el {player.solveOrder}º · +{player.roundPoints} pts<br />Esperando al resto…</span></div></div>;

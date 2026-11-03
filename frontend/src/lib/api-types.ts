@@ -484,15 +484,32 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/pokemon": {
+    "/api/pokemon/selector": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Catálogo Pokémon */
-        get: operations["listPokemon"];
+        /** Catálogo del buscador de Pokémon */
+        get: operations["listSelectorPokemon"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/pokemon/{id}/sprite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Miniatura de un Pokémon del buscador */
+        get: operations["pokemonSprite"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1027,49 +1044,8 @@ export interface components {
             email: string;
             password: string;
         };
-        /** @description Pokémon público del catálogo; sin `palette`/`paletteWeights`. Los null se omiten del JSON. */
-        Pokemon: {
-            id: string;
-            /** Format: int32 */
-            nationalDexNumber: number;
-            name: string;
-            /** Format: int32 */
-            generation: number;
-            isDefault: boolean;
-            sprite: string;
-            shinySprite: string;
-            /** Format: int32 */
-            hp: number;
-            /** Format: int32 */
-            attack: number;
-            /** Format: int32 */
-            defense: number;
-            /** Format: int32 */
-            specialAttack: number;
-            /** Format: int32 */
-            specialDefense: number;
-            /** Format: int32 */
-            speed: number;
-            /** Format: int32 */
-            baseStatTotal: number;
-            /** Format: int32 */
-            heightDecimeters: number;
-            /** Format: int32 */
-            weightHectograms: number;
-            /** Format: int32 */
-            evolutionStage: number;
-            /** Format: int32 */
-            evolutionStageCount: number;
-            legendaryStatus: string;
-            color: string;
-            abilities: string[];
-            names: {
-                [key: string]: Record<string, never>;
-            };
-            types: string[];
-        };
-        "PokemonController.PokemonResponse": {
-            pokemon: components["schemas"]["Pokemon"][];
+        "PokemonController.PokemonSelectorResponse": {
+            pokemon: components["schemas"]["SelectorPokemon"][];
         };
         /**
          * @description `PresenceStatus` de `room.ts`.
@@ -1148,6 +1124,12 @@ export interface components {
          * @enum {string}
          */
         RoomRole: "HOST" | "CO_HOST" | "MEMBER";
+        /** @description Entrada del buscador de Pokémon: solo id, nombre y una URL de sprite opaca servida por Java. Sin número de Pokédex, generación, tipos, estadísticas ni sprite shiny, que darían la respuesta en varios minijuegos. */
+        SelectorPokemon: {
+            id: string;
+            name: string;
+            sprite: string;
+        };
         /** @description Estado de un origen para la administración (`SyncOverviewItem` / `AdminDataSyncItem`). Las fechas son cadenas `toISOString()` y los nulos se serializan (la configuración global omite los nulos). */
         SyncOverviewItem: {
             source: components["schemas"]["DataSyncSource"];
@@ -2713,13 +2695,15 @@ export interface operations {
             };
         };
     };
-    listPokemon: {
+    listSelectorPokemon: {
         parameters: {
             query?: {
                 generations?: string | null;
                 includeForms?: string | null;
             };
-            header?: never;
+            header?: {
+                "If-None-Match"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -2731,7 +2715,52 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PokemonController.PokemonResponse"];
+                    "application/json": components["schemas"]["PokemonController.PokemonSelectorResponse"];
+                };
+            };
+            /** @description Sin cambios desde el ETag de If-None-Match */
+            304: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    pokemonSprite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/png": string;
+                };
+            };
+            /** @description No encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Demasiados recursos en curso */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
                 };
             };
         };
