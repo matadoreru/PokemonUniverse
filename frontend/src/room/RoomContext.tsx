@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { useAuth } from '../auth/AuthContext';
 import type { CommandEvent, CommandPayload, RealtimeClient } from '../lib/realtime';
 import { createRealtime } from '../lib/socket';
+import { requestCommand } from './room-command';
 import { OptimisticRoomProjection, runOptimisticLobbyMutation, type OptimisticLobbyUpdate } from './optimistic-room';
 import { attachWhoIsWhoCursorChannel } from './who-is-who-cursor-channel';
 
@@ -11,9 +12,12 @@ interface RoomContextValue {
   connected: boolean;
   error: string | null;
   clearError(): void;
+  /** Sin aviso global: su único uso (Jugar) enseña el error en su pantalla. */
   createRoom(): Promise<RoomView>;
+  /** Sin aviso global: su único uso (Jugar) enseña el error en el campo del código. */
   joinRoom(code: string): Promise<RoomView>;
-  leaveRoom(): Promise<void>;
+  /** Con aviso global salvo `{ reportError: false }` (Jugar, que enseña el error en su panel). */
+  leaveRoom(options?: { reportError?: boolean }): Promise<void>;
   selectGame(gameId: string): Promise<void>;
   updateConfig(config: unknown): Promise<void>;
   updateGameConfig(gameId: string, config: unknown): Promise<void>;
@@ -62,15 +66,12 @@ export function RoomProvider({ children }: PropsWithChildren) {
     return () => { detachCursorChannel(); socket.disconnect(); socketRef.current = null; projection.setAuthoritative(null, true); };
   }, [user?.id]);
 
-  const emit = useCallback(async <E extends CommandEvent,>(event: E, payload: CommandPayload<E>) => {
+  /** Con `report = false` el fallo no pasa al aviso global (ni lo limpia): lo enseña quien llama. */
+  const emit = useCallback(async <E extends CommandEvent,>(event: E, payload: CommandPayload<E>, report = true) => {
     const socket = socketRef.current;
     if (!socket) throw new Error('Sin conexión con el servidor');
-    setError(null);
-    try { return await socket.request(event, payload); }
-    catch (error) {
-      if (socketRef.current === socket) setError(error instanceof Error ? error.message : String(error));
-      throw error;
-    }
+    const reporter = report ? { clear: () => setError(null), set: (message: string) => { if (socketRef.current === socket) setError(message); } } : null;
+    return requestCommand(() => socket.request(event, payload), reporter);
   }, []);
 
   const optimisticEmit = useCallback(<E extends CommandEvent,>(event: E, payload: CommandPayload<E>, update: OptimisticLobbyUpdate) => (
@@ -79,9 +80,9 @@ export function RoomProvider({ children }: PropsWithChildren) {
 
   const value = useMemo<RoomContextValue>(() => ({
     room, connected, error, clearError: () => setError(null),
-    async createRoom() { const response = await emit('room:create', {}); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
-    async joinRoom(code) { const response = await emit('room:join', { code }); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
-    async leaveRoom() { await emit('room:leave', {}); setRoom(projectionRef.current.setAuthoritative(null, true)); },
+    async createRoom() { const response = await emit('room:create', {}, false); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
+    async joinRoom(code) { const response = await emit('room:join', { code }, false); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
+    async leaveRoom(options) { await emit('room:leave', {}, options?.reportError ?? true); setRoom(projectionRef.current.setAuthoritative(null, true)); },
     async selectGame(gameId) { await emit('room:select-game', { gameId }); },
     async updateConfig(config) {
       const gameId = projectionRef.current.view()?.selectedGameId;

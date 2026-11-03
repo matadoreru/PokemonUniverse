@@ -20,7 +20,7 @@ function PanelTitle({ icon, children }: { icon: typeof Crown; children: string }
  * Si ya hay una sala activa, solo se ofrece volver a ella o salir.
  */
 export function PlayPage() {
-  const { createRoom, joinRoom, leaveRoom, clearError, connected, room } = useRoom();
+  const { createRoom, joinRoom, leaveRoom, connected, room } = useRoom();
   const navigate = useNavigate();
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState<Busy>(null);
@@ -34,33 +34,38 @@ export function PlayPage() {
     if (!room && window.matchMedia?.('(pointer: fine)').matches) codeInput.current?.focus();
   }, [room]);
 
+  /** Un intento nuevo (crear o unirse) borra los errores de los dos paneles: solo se ve el del último. */
+  function resetErrors() {
+    setCreateError(''); setJoinError('');
+  }
+
   async function create() {
-    setBusy('create'); setCreateError(''); setJoinError('');
+    setBusy('create'); resetErrors();
+    // createRoom y joinRoom no pasan su fallo al aviso global de la sala: aquí se enseña traducido, en su panel.
     try { await createRoom(); navigate('/room'); }
-    // El error se enseña aquí, traducido: el aviso global de la sala (en inglés) sobra.
-    catch (caught) { clearError(); setCreateError(roomErrorMessage(caught)); }
+    catch (caught) { setCreateError(roomErrorMessage(caught)); }
     finally { setBusy(null); }
   }
 
   async function join(event: FormEvent) {
     event.preventDefault();
-    setCreateError('');
+    resetErrors();
     if (code.length !== ROOM_CODE_LENGTH) {
       const missing = ROOM_CODE_LENGTH - code.length;
       setJoinError(code.length === 0 ? 'Escribe el código de la sala.' : `Faltan ${missing} ${missing === 1 ? 'carácter' : 'caracteres'} del código.`);
       codeInput.current?.focus();
       return;
     }
-    setBusy('join'); setJoinError('');
+    setBusy('join');
     try { await joinRoom(code); navigate('/room'); }
-    catch (caught) { clearError(); setJoinError(roomErrorMessage(caught)); codeInput.current?.focus(); }
+    catch (caught) { setJoinError(roomErrorMessage(caught)); codeInput.current?.focus(); }
     finally { setBusy(null); }
   }
 
   async function leave() {
     setBusy('leave'); setLeaveError('');
-    try { await leaveRoom(); }
-    catch (caught) { clearError(); setLeaveError(roomErrorMessage(caught)); }
+    try { await leaveRoom({ reportError: false }); }
+    catch (caught) { setLeaveError(roomErrorMessage(caught)); }
     finally { setBusy(null); }
   }
 

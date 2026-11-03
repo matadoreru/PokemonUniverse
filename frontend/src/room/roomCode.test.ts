@@ -1,6 +1,12 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { OFFLINE_MESSAGE, TIMEOUT_MESSAGE } from '../lib/realtime';
-import { ROOM_CODE_LENGTH, normalizeRoomCode, roomErrorMessage } from './roomCode';
+import { ROOM_CODE_LENGTH, ROOM_CODE_PATTERN, ROOM_ERROR_TRANSLATIONS, SERVER_MESSAGE_SOURCES, SERVER_SPANISH_MESSAGES, normalizeRoomCode, roomErrorMessage } from './roomCode';
+
+/** Fuente Java del backend, leída desde la raíz del repositorio. */
+function javaSource(path: string): string {
+  return readFileSync(new URL(`../../../${path}`, import.meta.url), 'utf8');
+}
 
 describe('normalizeRoomCode', () => {
   it('pasa a mayúsculas', () => {
@@ -48,5 +54,19 @@ describe('roomErrorMessage', () => {
   it('lo desconocido da un texto genérico en español', () => {
     expect(roomErrorMessage(new Error('Internal Server Error'))).toBe('No se pudo completar. Inténtalo de nuevo en unos segundos.');
     expect(roomErrorMessage(null)).toBe('No se pudo completar. Inténtalo de nuevo en unos segundos.');
+  });
+});
+
+describe('textos del servidor vigilados', () => {
+  // Si el backend cambia uno de estos textos, la traducción dejaría de aplicarse en silencio: este test lo detecta.
+  const coordinator = javaSource(SERVER_MESSAGE_SOURCES.coordinator);
+  it.each(Object.keys(ROOM_ERROR_TRANSLATIONS))('«%s» sigue saliendo de RoomCoordinator.java', (message) => {
+    expect(coordinator).toContain(`new RoomException("${message}")`);
+  });
+  it.each([...SERVER_SPANISH_MESSAGES])('«%s» sigue saliendo de RoomCoordinator.java', (message) => {
+    expect(coordinator).toContain(`new RoomException("${message}")`);
+  });
+  it('el patrón del código sigue en el error de validación de RoomCommandParsers.java', () => {
+    expect(javaSource(SERVER_MESSAGE_SOURCES.parsers)).toContain(`issues.invalidFormat("regex", "${ROOM_CODE_PATTERN}"`);
   });
 });
