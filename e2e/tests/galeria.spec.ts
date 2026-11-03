@@ -90,3 +90,27 @@ test('el aviso queda encima del diálogo abierto y Esc devuelve el foco', async 
   expect(Buffer.compare(conDialogo, sinDialogo), 'el aviso se ve igual con el diálogo abierto que sin él').toBe(0);
   expect(errors).toEqual([]);
 });
+
+test('con el diálogo abierto el aviso se monta dentro de él y se cierra con su botón', async ({ page }) => {
+  const errors = collectErrors(page);
+  await abrirGaleria(page);
+
+  const abrir = page.getByRole('button', { name: 'Abrir diálogo' });
+  await abrir.scrollIntoViewIfNeeded();
+  await abrir.click();
+  const dialogo = page.getByRole('dialog', { name: 'Diálogo de ejemplo' });
+  await expect(dialogo).toBeVisible();
+  await dialogo.getByRole('button', { name: 'Lanzar aviso' }).click();
+
+  // Dentro del `<dialog>` modal el aviso no es inerte: está en el árbol de accesibilidad y se anuncia.
+  const pila = dialogo.locator('[popover]');
+  await expect(pila.getByText('Aviso sobre el diálogo')).toBeVisible();
+  await expect(dialogo.getByRole('status').filter({ hasText: 'Aviso sobre el diálogo' })).toHaveCount(1);
+  await capture(page, 'galeria-aviso-sobre-dialogo', { minFontPx: 13 });
+
+  await pila.getByRole('button', { name: 'Cerrar aviso' }).click();
+  await expect(page.getByText('Aviso sobre el diálogo', { exact: true })).toHaveCount(0);
+  // Cerrar el aviso no cierra el diálogo.
+  await expect(dialogo).toBeVisible();
+  expect(errors).toEqual([]);
+});

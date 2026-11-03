@@ -20,6 +20,11 @@
   user-select: none;
   flex: none;
 }
+/* La de enlace (`PillLink`): sin subrayado ni color de enlace. */
+.link,
+.link:hover {
+  text-decoration: none;
+}
 /* Brillo superior. */
 .pill::before {
   content: '';

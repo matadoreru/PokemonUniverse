@@ -5,7 +5,8 @@
  * - textos y controles que se pisan (sin contar capas: diálogos, avisos, tooltips, `[data-layer]`);
  * - texto recortado («…», `line-clamp` u `overflow`) sin `title` con el texto completo en él o en
  *   un antepasado;
- * - controles que se salen de la caja que los recorta (sin contar listas y carruseles con scroll).
+ * - controles que se salen de la caja que los recorta (sin contar listas y carruseles con scroll ni
+ *   antepasados de algo que está en la capa superior, que no lo recortan).
  *
  * `[data-layout-ignore]` excluye un elemento y sus descendientes: solo para falsos positivos del
  * medidor, nunca para esconder un problema real.
@@ -69,6 +70,8 @@ export async function measureLayout(page: Page, minFontPx = 12): Promise<LayoutR
       const T = Math.max(t, box.top);
       return new DOMRect(L, T, Math.max(0, Math.min(r, box.right) - L), Math.max(0, Math.min(b, box.bottom) - T));
     };
+    // Lo que está en la capa superior (popover abierto, diálogo modal) no lo recortan sus antepasados del DOM.
+    const topLayer = (e: Element) => e.matches(':popover-open, :modal');
     const isControl = (el: Element) => el.matches('button, [role="button"], [role="tab"], input, select');
     const root = document.body;
     const clipBox = (el: Element) => {
@@ -77,7 +80,7 @@ export async function measureLayout(page: Page, minFontPx = 12): Promise<LayoutR
       let t = r.top;
       let rr = r.right;
       let b = r.bottom;
-      for (let e = el.parentElement; e && e !== root; e = e.parentElement) {
+      for (let c: Element = el, e = el.parentElement; e && e !== root && !topLayer(c); c = e, e = e.parentElement) {
         const cs = getComputedStyle(e);
         if (cs.overflowX !== 'visible' || cs.overflowY !== 'visible') {
           const c = e.getBoundingClientRect();
@@ -150,7 +153,7 @@ export async function measureLayout(page: Page, minFontPx = 12): Promise<LayoutR
     for (const el of root.querySelectorAll('button, [role="button"], [role="tab"], kbd')) {
       if (ignored(el) || !visible(el)) continue;
       const r = el.getBoundingClientRect();
-      for (let e = el.parentElement; e && e !== root; e = e.parentElement) {
+      for (let c: Element = el, e = el.parentElement; e && e !== root && !topLayer(c); c = e, e = e.parentElement) {
         const cs = getComputedStyle(e);
         if (cs.overflowX === 'visible' && cs.overflowY === 'visible') continue;
         if (cs.overflowX === 'auto' || cs.overflowX === 'scroll' || cs.overflowY === 'auto' || cs.overflowY === 'scroll') break;

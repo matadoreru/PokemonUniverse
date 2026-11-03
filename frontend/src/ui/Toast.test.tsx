@@ -1,7 +1,7 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { hasNewToast, latestStatusText, ToastStack, toastRole } from './Toast';
+import { hasNewToast, latestStatusText, ToastStack, toastHost, toastRole } from './Toast';
 
 describe('ToastStack', () => {
   it('es un popover manual con un aviso por elemento', () => {
@@ -32,5 +32,19 @@ describe('ToastStack', () => {
     expect(toastRole('error')).toBe('alert');
     expect(toastRole('ok')).toBe('status');
     expect(toastRole('info')).toBe('status');
+  });
+
+  it('el aviso se monta en el último diálogo abierto, o en su sitio si no hay ninguno', () => {
+    const a = { id: 'a' };
+    const b = { id: 'b' };
+    const doc = (open: object[]) => ({
+      querySelectorAll: (sel: string) => {
+        expect(sel).toBe('dialog[open]');
+        return open as unknown as NodeListOf<Element>;
+      },
+    });
+    expect(toastHost(doc([]))).toBeNull();
+    expect(toastHost(doc([a]))).toBe(a);
+    expect(toastHost(doc([a, b]))).toBe(b);
   });
 });

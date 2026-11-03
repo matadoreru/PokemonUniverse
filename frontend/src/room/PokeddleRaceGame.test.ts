@@ -133,10 +133,10 @@ describe('Pokédle race interaction state', () => {
 });
 
 describe('Global header accessibility', () => {
-  it('keeps the brand in a centered grid and exposes profile and logout actions', () => {
+  it('puts the brand and actions in HUD plates and exposes profile and logout actions', () => {
     const user = { id: 'p1', displayName: 'Eru', kind: 'USER' as const, email: 'eru@example.com', avatar: { type: 'PRESET' as const, value: 'trainer-berry' as const } };
     const markup = renderToStaticMarkup(createElement(MemoryRouter, null, createElement(AppHeader, { user, onLogout: () => undefined })));
-    expect(markup).toContain('data-layout="centered-brand"');
+    expect(markup).toContain('data-layout="hud-plates"');
     expect(markup).toContain('aria-label="Pokémon Universe, inicio"');
     expect(markup).toContain('aria-label="Abrir perfil de Eru"');
     expect(markup).toContain('aria-label="Cerrar sesión"');

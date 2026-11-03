@@ -1,8 +1,9 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { setUiSoundSink } from '../audio/uiSound';
-import { Pill, pillClickHandler } from './Pill';
+import { Pill, PillLink, pillClickHandler } from './Pill';
 
 afterEach(() => setUiSoundSink(null));
 
@@ -57,5 +58,14 @@ describe('Pill', () => {
     expect(html).toContain('aria-busy="true"');
     expect(html).toContain('tabindex="-1"');
     expect(html).toContain('disabled');
+  });
+
+  it('PillLink es un enlace con el mismo relieve y la etiqueta con contorno en tinta blanca', () => {
+    const html = renderToStaticMarkup(createElement(MemoryRouter, null, createElement(PillLink, { to: '/changelog', variant: 'blue', 'aria-label': 'Novedades' }, 'Novedades')));
+    expect(html).toMatch(/^<a [^>]*href="\/changelog"/);
+    expect(html).toContain('aria-label="Novedades"');
+    expect(html).not.toContain('<button');
+    expect(html).toMatch(/class="[^"]*pill[^"]*link/);
+    expect(html).toMatch(/<span class="[^"]*\bol\b[^"]*">Novedades<\/span>/);
   });
 });

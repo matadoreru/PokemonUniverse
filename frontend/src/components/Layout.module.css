@@ -1,0 +1,35 @@
+/* Logotipo de la placa: blanco con «Universe» en amarillo, contorno `.ol2` y sin aspecto de enlace. */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--white);
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: var(--r-badge);
+}
+.accent {
+  color: var(--yellow);
+}
+/* Píldora de perfil: el avatar casi toca el borde izquierdo (doble clase: gana al relleno de la píldora). */
+.profile.profile {
+  padding-left: var(--sp-1);
+  padding-right: var(--sp-4);
+}
+.name {
+  display: block;
+  max-width: 9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 800 var(--fs-15) / 1.3 var(--font-text);
+}
+/* Invitado: avatar y nombre sin relieve (no se pulsa). */
+.guest {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 44px;
+  color: var(--white);
+}

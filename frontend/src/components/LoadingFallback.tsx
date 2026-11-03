@@ -1,12 +1,12 @@
+import { Panel } from '../ui';
+
+/** Carga de una pantalla perezosa: el esqueleto de `StateBox` dentro de un `Panel`, a lo ancho del armazón. */
 export function RouteLoadingFallback() {
-  return <section className="page-shell" role="status" aria-live="polite" aria-busy="true">
-    <span className="sr-only">Cargando pantalla…</span>
-    <div className="panel space-y-4 p-5" aria-hidden="true">
-      <div className="skeleton h-7 w-48" />
-      <div className="skeleton h-4 max-w-2xl" />
-      <div className="skeleton h-32" />
+  return (
+    <div className="mx-auto w-full max-w-[1600px] p-3 sm:p-4 lg:p-6">
+      <Panel status={{ kind: 'loading', title: 'Cargando pantalla…' }} />
     </div>
-  </section>;
+  );
 }
 
 export function GameLoadingFallback({ compact = false }: { compact?: boolean }) {

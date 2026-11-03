@@ -57,7 +57,10 @@ export async function expectNoHorizontalScroll(page: Page, name: string): Promis
 export interface CaptureOptions {
   /** Tamaño mínimo de letra que exige `measureLayout` (12 px por defecto). */
   minFontPx?: number;
-  /** En vistas de 1024 px de ancho o más, la página no se desplaza en vertical (`scrollHeight ≤ innerHeight`). */
+  /**
+   * En vistas de 1024 px de ancho o más, ni la página ni el `main` del armazón se desplazan en vertical
+   * (`scrollHeight ≤ innerHeight` y `main.scrollHeight ≤ main.clientHeight`).
+   */
   noPageScroll?: boolean;
   /** Captura de página completa en lugar de solo la vista (por defecto, `false`). */
   fullPage?: boolean;
@@ -101,6 +104,12 @@ export async function layoutProblems(page: Page, name: string, screenshot: boole
   if (opts.noPageScroll && vp.width >= 1024) {
     const over = await page.evaluate(() => Math.max(document.documentElement.scrollHeight, document.body.scrollHeight) - window.innerHeight);
     expect(over, `${id}: scroll vertical de página`).toBeLessThanOrEqual(0);
+    // El armazón es una rejilla de 100dvh: lo que no cabe se desplaza dentro de `main`, que tampoco debe desbordarse.
+    const mainOver = await page.evaluate(() => {
+      const main = document.querySelector('main');
+      return main ? main.scrollHeight - main.clientHeight : 0;
+    });
+    expect(mainOver, `${id}: scroll vertical del main`).toBeLessThanOrEqual(0);
   }
   if (screenshot) await page.screenshot({ path: `screenshots/${id}.png`, animations: 'disabled', fullPage });
   const minFontPx = opts.minFontPx ?? 12;

@@ -4,7 +4,8 @@
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 1fr auto;
   grid-template-areas: 'top' 'bottom';
-  min-height: 100dvh;
+  /* Llena el alto del padre (el `main` del armazón ya es la vista menos la cabecera). */
+  min-height: 100%;
 }
 .withSide {
   grid-template-rows: 1fr auto auto;

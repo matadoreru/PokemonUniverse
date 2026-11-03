@@ -1,6 +1,7 @@
 import { CheckCircle2, Info, X, XCircle } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { uiSound } from '../audio/uiSound';
 import { cx } from './cx';
 import { Icon } from './Icon';
@@ -42,6 +43,29 @@ export function hasNewToast(toasts: ToastData[], seen: ReadonlySet<number>): boo
   return toasts.some((t) => !seen.has(t.id));
 }
 
+/**
+ * Dónde se monta la pila: dentro del último `<dialog open>` (un diálogo modal deja inerte el resto del documento, así
+ * que un aviso fuera de él se vería pero no se anunciaría ni se podría cerrar) o, sin diálogo, en su sitio (`null`).
+ */
+export function toastHost(doc: Pick<Document, 'querySelectorAll'>): Element | null {
+  const open = doc.querySelectorAll('dialog[open]');
+  return open.length > 0 ? (open[open.length - 1] ?? null) : null;
+}
+
+/** Sigue el anfitrión de la pila mientras hay avisos: se recalcula al abrirse, cerrarse o quitarse un diálogo. */
+function useToastHost(active: boolean): Element | null {
+  const [host, setHost] = useState<Element | null>(null);
+  useEffect(() => {
+    if (!active) return;
+    const update = () => setHost(toastHost(document));
+    update();
+    const observer = new MutationObserver(update);
+    observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['open'] });
+    return () => observer.disconnect();
+  }, [active]);
+  return active ? host : null;
+}
+
 /** El navegador tiene la API Popover (si no, la pila queda en `position: fixed` con `--z-toast`). */
 function hasPopover(el: HTMLElement): el is HTMLElement & { showPopover(): void; hidePopover(): void } {
   return typeof (el as { showPopover?: unknown }).showPopover === 'function';
@@ -52,12 +76,15 @@ function hasPopover(el: HTMLElement): el is HTMLElement & { showPopover(): void;
  * muestra con `showPopover()` cuando hay avisos y se oculta cuando no queda ninguno; si llega uno nuevo con la pila ya
  * abierta, se oculta y se vuelve a mostrar para quedar encima de un diálogo abierto después. Los errores son `alert`;
  * el resto se anuncia en una región `status` fija fuera del popover (un aviso que aparece ya lleno en un contenedor
- * oculto puede no anunciarse). Suena `error` al llegar uno de error.
+ * oculto puede no anunciarse). Suena `error` al llegar uno de error. Con un `<dialog>` modal abierto, todo (pila y
+ * región viva) se monta dentro de él (`toastHost`): sigue en la capa superior por ser `popover`, pero ya no es inerte.
  */
 export function ToastStack({ toasts, onClose }: ToastStackProps) {
   const ref = useRef<HTMLDivElement>(null);
   const seen = useRef(new Set<number>());
+  const host = useToastHost(toasts.length > 0);
 
+  // Depende también de `host`: al cambiar de anfitrión el portal crea un elemento nuevo, que hay que volver a mostrar.
   useEffect(() => {
     const fresh = hasNewToast(toasts, seen.current);
     for (const t of toasts) if (!seen.current.has(t.id) && t.kind === 'error') uiSound('error');
@@ -75,9 +102,9 @@ export function ToastStack({ toasts, onClose }: ToastStackProps) {
       el.hidePopover();
       el.showPopover();
     }
-  }, [toasts]);
+  }, [toasts, host]);
 
-  return (
+  const content = (
     <>
       <div className={s.srOnly} role="status" aria-live="polite">
         {latestStatusText(toasts)}
@@ -95,6 +122,7 @@ export function ToastStack({ toasts, onClose }: ToastStackProps) {
       </div>
     </>
   );
+  return host ? createPortal(content, host) : content;
 }
 
 /** Estado de avisos: `push` devuelve el id y lo cierra solo a los `ms` (0 = no se cierra solo). */

@@ -4,12 +4,13 @@ import { describe, expect, it } from 'vitest';
 import { GameLoadingFallback, RouteLoadingFallback } from './LoadingFallback';
 
 describe('lazy-loading fallbacks', () => {
-  it('announces route loading while keeping decorative skeletons hidden', () => {
+  it('announces route loading with the StateBox skeleton inside a Panel', () => {
     const markup = renderToStaticMarkup(createElement(RouteLoadingFallback));
-    expect(markup).toContain('role="status"');
+    expect(markup.match(/role="status"/g)).toHaveLength(1);
     expect(markup).toContain('aria-busy="true"');
-    expect(markup).toContain('Cargando pantalla…');
-    expect(markup).toContain('aria-hidden="true"');
+    expect(markup).toContain('aria-label="Cargando pantalla…"');
+    expect(markup).toMatch(/<section class="[^"]*panel/);
+    expect(markup).not.toContain('page-shell');
   });
 
   it('provides a compact accessible fallback for lazy game configuration', () => {

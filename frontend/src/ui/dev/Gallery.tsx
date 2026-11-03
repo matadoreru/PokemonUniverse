@@ -4,7 +4,7 @@
  * `<figure data-gallery="<componente>-<estado>">` que el E2E captura uno a uno. Con `?static` en la URL se añade la
  * clase `static` al `body` (sin animaciones ni transiciones).
  */
-import { Bell, Heart, Settings, Star, Trophy, Zap } from 'lucide-react';
+import { Bell, Heart, LogOut, Newspaper, Settings, ShieldCheck, Star, Trophy, Volume2, Zap } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { AudioSettingsPanel } from '../../components/AudioSettingsDialog';
@@ -23,10 +23,11 @@ import { Field, SelectField, TextArea } from '../Field';
 import { HudPlate } from '../HudPlate';
 import { Icon } from '../Icon';
 import { Panel } from '../Panel';
-import { Pill } from '../Pill';
+import { Pill, PillLink } from '../Pill';
 import { Row } from '../Row';
 import { ScorePop } from '../ScorePop';
 import { ScreenSplit } from '../ScreenSplit';
+import { ScreenTransition } from '../ScreenTransition';
 import { Segmented } from '../Segmented';
 import { Slider } from '../Slider';
 import { StateBox } from '../StateBox';
@@ -156,6 +157,21 @@ function PillSection() {
         <Pill variant="cream" badge="1">
           Opción A
         </Pill>
+      </Fig>
+      {STATES.map((st) => (
+        <Fig key={`link-${st.key}`} id={`pill-link-${st.key}`} caption={`Enlace · ${st.label}`}>
+          <PillLink to="/dev/ui" icon={ShieldCheck} {...force(st.forced)}>
+            Administración
+          </PillLink>
+        </Fig>
+      ))}
+      <Fig id="pill-link-round" caption="Enlace redondo (solo icono)">
+        <PillLink to="/dev/ui" size="round" icon={Newspaper} aria-label="Novedades" />
+      </Fig>
+      <Fig id="pill-link-yellow-main" caption="Enlace amarillo principal">
+        <PillLink to="/dev/ui" variant="yellow" size="main">
+          Empezar a jugar
+        </PillLink>
       </Fig>
       <Fig id="pill-block" caption="A todo el ancho" wide>
         <Pill variant="yellow" block>
@@ -556,6 +572,18 @@ function HudSection() {
           <span className={s.text}>12 pts</span>
         </HudPlate>
       </Fig>
+      <Fig id="hudplate-header" caption="Cabecera: logotipo, sonido y píldoras redondas" wide>
+        <span className={s.iconRow}>
+          <HudPlate>
+            <span className="ol2 font-display text-26">Pokémon Universe</span>
+            <Pill variant="cream" size="round" icon={Volume2} aria-label="Ajustes de sonido (ejemplo)" />
+          </HudPlate>
+          <HudPlate>
+            <PillLink to="/dev/ui" size="round" icon={Newspaper} aria-label="Novedades (ejemplo)" />
+            <Pill size="round" variant="ghost" icon={LogOut} aria-label="Cerrar sesión (ejemplo)" />
+          </HudPlate>
+        </span>
+      </Fig>
     </Section>
   );
 }
@@ -649,6 +677,26 @@ function ScorePopSection() {
   );
 }
 
+function ScreenTransitionSection() {
+  const [n, setN] = useState(0);
+  return (
+    <Section name="screentransition" title="ScreenTransition">
+      <Fig id="screentransition-replay" caption="Entrada de pantalla (se repite al cambiar la clave)" wide>
+        <span className={s.iconRow}>
+          <Pill size="small" onClick={() => setN((v) => v + 1)}>
+            Cambiar de pantalla
+          </Pill>
+          <ScreenTransition routeKey={`pantalla-${n}`}>
+            <Panel title={`Pantalla ${n + 1}`} variant="dark">
+              <p className={s.text}>Opacidad y 8 px hacia arriba.</p>
+            </Panel>
+          </ScreenTransition>
+        </span>
+      </Fig>
+    </Section>
+  );
+}
+
 function ScreenSplitSection() {
   return (
     <Section name="screensplit" title="ScreenSplit">
@@ -713,6 +761,7 @@ export function Gallery() {
       <ToastSection push={push} />
       <CutinSection />
       <ScorePopSection />
+      <ScreenTransitionSection />
       <ScreenSplitSection />
       <ToastStack toasts={toasts} onClose={close} />
     </main>

@@ -1,5 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
-import type { ButtonHTMLAttributes, MouseEvent, ReactNode } from 'react';
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, MouseEvent, ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { uiSound } from '../audio/uiSound';
 import { cx } from './cx';
 import type { ForcedState } from './cx';
@@ -65,5 +66,41 @@ export function Pill(props: PillProps) {
         </span>
       )}
     </button>
+  );
+}
+
+interface PillLinkBase extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'children' | 'href'> {
+  /** Ruta de la aplicación (enlace de React Router). */
+  to: string;
+  children?: ReactNode;
+  icon?: LucideIcon;
+  /** Solo galería: estado forzado. */
+  forced?: ForcedState;
+}
+
+/** Mismas reglas de tono y tamaño que `Pill`. */
+export type PillLinkProps = PillLinkBase &
+  (
+    | { variant: 'red'; size: 'main' }
+    | { variant: 'yellow'; size?: PillSize }
+    | { variant?: 'blue' | 'danger' | 'ghost' | 'cream'; size?: Exclude<PillSize, 'main'> }
+  );
+
+/** Píldora que navega: el mismo relieve y sonido que `Pill`, pero es un enlace (se abre en otra pestaña, se anuncia como enlace). */
+export function PillLink(props: PillLinkProps) {
+  const { to, variant = 'blue', size = 'std', icon, forced, className, children, onClick, ...rest } = props;
+  return (
+    <Link
+      {...rest}
+      to={to}
+      className={cx(s.pill, s.link, s[variant], size !== 'std' && s[size], forced && s[forced], className)}
+      onClick={(e) => {
+        uiSound(variant === 'ghost' || variant === 'cream' ? 'tap' : 'confirm');
+        onClick?.(e);
+      }}
+    >
+      {icon && <Icon icon={icon} size={size === 'small' ? 18 : size === 'round' ? 22 : 24} className={s.icon} />}
+      {children != null && children !== false && <span className={cx(s.label, WHITE_INK_PILLS.includes(variant) && 'ol')}>{children}</span>}
+    </Link>
   );
 }

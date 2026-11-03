@@ -80,7 +80,7 @@
 * { box-sizing: border-box; scrollbar-color: var(--yellow) var(--navy-2); scrollbar-width: thin; }
 html { min-width: 320px; overflow-x: clip; }
 /* La escena es fija y sin animación; los paneles van encima y son opacos. */
-body { margin: 0; min-width: 320px; min-height: 100vh; overflow-x: clip; background-color: var(--band); background-image: var(--scene-pattern), linear-gradient(var(--blue-d), var(--navy-2)); background-attachment: fixed; }
+body { margin: 0; min-width: 320px; min-height: 100dvh; overflow-x: clip; background-color: var(--band); background-image: var(--scene-pattern), linear-gradient(var(--blue-d), var(--navy-2)); background-attachment: fixed; }
 button, input, select, textarea { min-width: 0; font: inherit; caret-color: rgb(var(--color-aqua)); }
 button { -webkit-tap-highlight-color: transparent; }
 img, video, canvas { max-width: 100%; }

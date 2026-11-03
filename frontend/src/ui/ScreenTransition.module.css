@@ -1,0 +1,41 @@
+/* Pantalla del armazón: alto definido (el del `main`) para que `ScreenSplit` y las pantallas puedan llenarlo. */
+.screen {
+  height: 100%;
+}
+/* Dos animaciones iguales: al pasar de una a otra se reinicia la entrada. `backwards`: al acabar no queda `transform`. */
+.even {
+  animation: enter-even var(--t-screen) var(--ease) backwards;
+}
+.odd {
+  animation: enter-odd var(--t-screen) var(--ease) backwards;
+}
+@keyframes enter-even {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes enter-odd {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .even {
+    animation: fade-even var(--t-fade) linear backwards;
+  }
+  .odd {
+    animation: fade-odd var(--t-fade) linear backwards;
+  }
+}
+@keyframes fade-even {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes fade-odd {
+  from {
+    opacity: 0;
+  }
+}

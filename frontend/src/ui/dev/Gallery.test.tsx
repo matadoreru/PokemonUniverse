@@ -1,10 +1,11 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { Gallery } from './Gallery';
 
 describe('Gallery', () => {
-  const html = renderToStaticMarkup(createElement(Gallery));
+  const html = renderToStaticMarkup(createElement(MemoryRouter, null, createElement(Gallery)));
   const sections = [...html.matchAll(/data-gallery-section="([^"]+)"/g)].map((m) => m[1]);
   const figures = [...html.matchAll(/<figure[^>]*data-gallery="([^"]+)"/g)].map((m) => m[1]);
 

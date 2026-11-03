@@ -1,40 +1,115 @@
 import type { AuthUser } from '@pokemon-universe/shared/public';
 import { LogOut, Newspaper, ShieldCheck } from 'lucide-react';
 import { Suspense } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { useChangelog } from '../changelog/ChangelogContext';
+import { Badge, HudPlate, Pill, PillLink, ScreenTransition } from '../ui';
 import { Avatar } from './Avatar';
-import { RouteLoadingFallback } from './LoadingFallback';
 import { AudioButton } from './AudioButton';
+import { RouteLoadingFallback } from './LoadingFallback';
+import s from './Layout.module.css';
 
-/** Hueco de la cabecera (fija) para avisos de toda la página, como el de conexión de la sala: van bajo la fila de marca, nunca encima. */
+/** Hueco de la cabecera para avisos de toda la página, como el de conexión de la sala: van bajo las placas, nunca encima. */
 export const HEADER_NOTICES_ID = 'app-header-notices';
 
+/**
+ * Cabecera de placas de HUD (spec §6): a la izquierda el logotipo (enlace a inicio) y el sonido; a la derecha Novedades,
+ * Administración (solo ADMIN), el perfil y «Cerrar sesión». Por debajo de 640 px el logotipo pasa a «PU»; por debajo de
+ * 1024 px Administración y el perfil quedan en píldoras redondas (el ADMIN deja el perfil para no desbordar el móvil).
+ */
 export function AppHeader({ user, onLogout, unreadChangelogCount = 0 }: { user: AuthUser | null; onLogout(): void; unreadChangelogCount?: number }) {
-  return <header className="sticky top-0 z-hud border-b border-ink/10 bg-cream/95" data-layout="centered-brand"><div className="mx-auto grid w-full max-w-[96rem] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center px-3 py-2.5 sm:px-5 md:px-8">
-    <span className="flex items-center gap-1 justify-self-start"><AudioButton /></span>
-    <Link to="/" className="justify-self-center whitespace-nowrap font-display text-sm font-bold no-underline sm:text-xl" aria-label="Pokémon Universe, inicio">
-      <span className="sm:hidden">P<span className="text-berry">U</span></span><span className="hidden sm:inline">Pokémon <span className="text-berry">Universe</span></span>
-    </Link>
-    <div className="flex min-w-0 items-center justify-self-end gap-1 sm:gap-2">
-      <Link className="relative inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl px-2 text-sm font-extrabold text-ink/70 no-underline transition hover:bg-ink/[0.06] hover:text-ink" to="/changelog" aria-label={unreadChangelogCount ? `Novedades, ${unreadChangelogCount} versiones sin leer` : 'Novedades'} title="Novedades"><Newspaper size={19} /><span className="hidden xl:inline">Novedades</span>{unreadChangelogCount > 0 && <span className="absolute right-0.5 top-0.5 grid min-h-4 min-w-4 place-items-center rounded-full bg-berry px-1 text-[.62rem] font-black leading-none text-night" aria-hidden="true">{unreadChangelogCount > 9 ? '9+' : unreadChangelogCount}</span>}</Link>
-      {user && <>
-      {user.kind === 'USER' && user.role === 'ADMIN' && <Link className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl px-2 text-sm font-extrabold text-ink/70 no-underline transition hover:bg-ink/[0.06] hover:text-ink" to="/admin" aria-label="Abrir panel de administración" title="Administración"><ShieldCheck size={19} /><span className="hidden lg:inline">Administración</span></Link>}
-      {user.kind === 'USER' && <Link className={`${user.role === 'ADMIN' ? 'hidden sm:flex' : 'flex'} min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl px-1.5 text-sm font-extrabold no-underline transition hover:bg-ink/[0.06] sm:px-2.5`} to="/profile" aria-label={`Abrir perfil de ${user.displayName}`}><Avatar name={user.displayName} avatar={user.avatar} size="sm" /><span className="hidden max-w-36 truncate sm:inline" title={user.displayName}>{user.displayName}</span></Link>}
-      {user.kind === 'GUEST' && <span className="inline-flex min-h-10 items-center gap-2 rounded-xl px-1.5 sm:bg-ink/5 sm:px-2.5"><Avatar name={user.displayName} avatar={user.avatar} size="sm" /><span className="hidden max-w-36 truncate text-sm font-extrabold sm:inline">{user.displayName}</span></span>}
-      <button aria-label="Cerrar sesión" title="Cerrar sesión" className="icon-button" onClick={onLogout}><LogOut size={19} /></button>
-      </>}
-    </div>
-  </div><div id={HEADER_NOTICES_ID} /></header>;
+  const isAdmin = user?.kind === 'USER' && user.role === 'ADMIN';
+  const profileLabel = user ? `Abrir perfil de ${user.displayName}` : '';
+  return (
+    <header className="relative z-hud" data-layout="hud-plates">
+      <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-2 px-3 pb-1 pt-3 sm:px-4 lg:px-6">
+        <HudPlate>
+          <Link to="/" className={`${s.logo} ol2 font-display text-26`} aria-label="Pokémon Universe, inicio">
+            <span className="sm:hidden" aria-hidden="true">
+              P<span className={s.accent}>U</span>
+            </span>
+            <span className="hidden sm:inline" aria-hidden="true">
+              Pokémon <span className={s.accent}>Universe</span>
+            </span>
+          </Link>
+          <AudioButton />
+        </HudPlate>
+        <HudPlate>
+          <span className="relative inline-flex">
+            <PillLink to="/changelog" size="round" icon={Newspaper} aria-label={unreadChangelogCount ? `Novedades, ${unreadChangelogCount} versiones sin leer` : 'Novedades'} title="Novedades" />
+            {unreadChangelogCount > 0 && (
+              <span className="pointer-events-none absolute -right-2 -top-2" data-layer aria-hidden="true">
+                <Badge>{unreadChangelogCount > 9 ? '9+' : unreadChangelogCount}</Badge>
+              </span>
+            )}
+          </span>
+          {isAdmin && (
+            <>
+              <span className="contents lg:hidden">
+                <PillLink to="/admin" size="round" icon={ShieldCheck} aria-label="Abrir panel de administración" title="Administración" />
+              </span>
+              <span className="hidden lg:contents">
+                <PillLink to="/admin" icon={ShieldCheck} aria-label="Abrir panel de administración" title="Administración">
+                  Administración
+                </PillLink>
+              </span>
+            </>
+          )}
+          {user?.kind === 'USER' && (
+            <>
+              {!isAdmin && (
+                <span className="contents lg:hidden">
+                  <PillLink to="/profile" variant="cream" size="round" aria-label={profileLabel} title={user.displayName}>
+                    <Avatar name={user.displayName} avatar={user.avatar} size="sm" className="!text-13" />
+                  </PillLink>
+                </span>
+              )}
+              <span className="hidden lg:contents">
+                <PillLink to="/profile" variant="cream" aria-label={profileLabel} className={s.profile}>
+                  <Avatar name={user.displayName} avatar={user.avatar} size="sm" className="!text-13" />
+                  <span className={s.name} title={user.displayName}>
+                    {user.displayName}
+                  </span>
+                </PillLink>
+              </span>
+            </>
+          )}
+          {user?.kind === 'GUEST' && (
+            <span className={s.guest}>
+              <Avatar name={user.displayName} avatar={user.avatar} size="md" />
+              <span className={`${s.name} hidden lg:block`} title={user.displayName}>
+                {user.displayName}
+              </span>
+            </span>
+          )}
+          {user && <Pill size="round" variant="ghost" icon={LogOut} aria-label="Cerrar sesión" title="Cerrar sesión" onClick={onLogout} />}
+        </HudPlate>
+      </div>
+      <div id={HEADER_NOTICES_ID} />
+    </header>
+  );
 }
 
+/**
+ * Armazón de pantalla completa (spec §2): rejilla de `100dvh` con la cabecera arriba y el `main` debajo, que se desplaza
+ * por dentro mientras haya pantallas sin rediseñar. Cada ruta nueva entra con `ScreenTransition`.
+ */
 export function Layout() {
-  const { user, logout } = useAuth(); const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { unreadCount } = useChangelog();
-  return <div className="flex min-h-screen flex-col">
-    <AppHeader user={user} unreadChangelogCount={unreadCount} onLogout={() => void logout().then(() => navigate('/'))} />
-    <main className="flex-1"><Suspense fallback={<RouteLoadingFallback />}><Outlet /></Suspense></main>
-    <footer className="mx-auto max-w-7xl px-5 py-8 text-center text-sm font-bold text-ink/60"><p>Proyecto fan no afiliado a Nintendo, Game Freak ni The Pokémon Company. Todos los nombres de productos son marcas registradas de sus respectivos dueños.</p>{user && <Link className="mt-3 inline-flex min-h-11 items-center text-aqua underline decoration-aqua/30 underline-offset-4 hover:text-ink" to="/feedback">Enviar feedback</Link>}</footer>
-  </div>;
+  return (
+    <div className="grid h-[100dvh] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)]">
+      <AppHeader user={user} unreadChangelogCount={unreadCount} onLogout={() => void logout().then(() => navigate('/'))} />
+      <main className="min-h-0 overflow-y-auto">
+        <ScreenTransition routeKey={pathname}>
+          <Suspense fallback={<RouteLoadingFallback />}>
+            <Outlet />
+          </Suspense>
+        </ScreenTransition>
+      </main>
+    </div>
+  );
 }
