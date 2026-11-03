@@ -120,10 +120,15 @@ export function createMusicPlayer(ctx: AudioContextLike, out: GainLike, cfg: Sfx
     if (track === null) return;
     render(track).then(
       (r) => {
-        if (g !== gen || opts.isMuted()) return;
-        const wait = quietUntil - opts.now();
-        if (wait > 0) opts.after(wait, () => begin(g, track, r));
-        else begin(g, track, r);
+        // Un fallo al arrancar el tema (nodos, contexto cerrado) nunca debe acabar como promesa rechazada.
+        try {
+          if (g !== gen || opts.isMuted()) return;
+          const wait = quietUntil - opts.now();
+          if (wait > 0) opts.after(wait, () => { try { begin(g, track, r); } catch { /* sin música */ } });
+          else begin(g, track, r);
+        } catch {
+          // Sin música: la partida sigue.
+        }
       },
       () => undefined,
     );
