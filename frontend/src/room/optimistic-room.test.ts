@@ -5,7 +5,7 @@ import { OptimisticRoomProjection, runOptimisticLobbyMutation } from './optimist
 function room(overrides: Partial<RoomView> = {}): RoomView {
   return {
     code: 'ABC234', phase: 'LOBBY', hostId: 'host', maxPlayers: 8, members: [], availableGames: [],
-    selectedGameId: 'shiny-vote', selectedGameConfig: { showVotes: true }, sessionMode: { type: 'INFINITE' },
+    selectedGameId: 'shiny-vote', selectedGameConfig: { voteVisibility: 'LIVE' }, sessionMode: { type: 'INFINITE' },
     gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: null,
     gamePlayerState: null, serverNow: 1_000, ...overrides,
   };
@@ -28,15 +28,15 @@ describe('optimistic lobby room projection', () => {
     const mutation = runOptimisticLobbyMutation(
       projection,
       (nextRoom) => published.push(nextRoom),
-      { kind: 'config', gameId: 'shiny-vote', config: { showVotes: false } },
+      { kind: 'config', gameId: 'shiny-vote', config: { voteVisibility: 'REVEAL' } },
       () => acknowledgement.promise,
     );
 
-    expect(published.at(-1)?.selectedGameConfig).toEqual({ showVotes: false });
-    projection.setAuthoritative(room({ selectedGameConfig: { showVotes: false }, serverNow: 1_020 }));
+    expect(published.at(-1)?.selectedGameConfig).toEqual({ voteVisibility: 'REVEAL' });
+    projection.setAuthoritative(room({ selectedGameConfig: { voteVisibility: 'REVEAL' }, serverNow: 1_020 }));
     acknowledgement.resolve();
     await mutation;
-    expect(published.at(-1)?.selectedGameConfig).toEqual({ showVotes: false });
+    expect(published.at(-1)?.selectedGameConfig).toEqual({ voteVisibility: 'REVEAL' });
   });
 
   it('keeps an off-screen rotation game edit in the public config map', () => {
@@ -45,7 +45,7 @@ describe('optimistic lobby room projection', () => {
 
     projection.begin({ kind: 'config', gameId: 'higher-lower', config: { rounds: 9 } });
 
-    expect(projection.view()?.selectedGameConfig).toEqual({ showVotes: true });
+    expect(projection.view()?.selectedGameConfig).toEqual({ voteVisibility: 'LIVE' });
     expect(projection.view()?.gameConfigs?.['higher-lower']).toEqual({ rounds: 9 });
     expect(projection.view()?.customizedGameIds).toContain('higher-lower');
   });
@@ -99,18 +99,18 @@ describe('optimistic lobby room projection', () => {
 
   it('keeps a pending config scoped to its game when the selected game changes', () => {
     const projection = new OptimisticRoomProjection(); projection.setAuthoritative(room());
-    projection.begin({ kind: 'config', gameId: 'shiny-vote', config: { showVotes: false } });
+    projection.begin({ kind: 'config', gameId: 'shiny-vote', config: { voteVisibility: 'REVEAL' } });
     const changedGame = room({ selectedGameId: 'higher-lower', selectedGameConfig: { rounds: 5 } });
     const projected = projection.setAuthoritative(changedGame);
     expect(projected?.selectedGameConfig).toEqual({ rounds: 5 });
-    expect(projected?.gameConfigs?.['shiny-vote']).toEqual({ showVotes: false });
+    expect(projected?.gameConfigs?.['shiny-vote']).toEqual({ voteVisibility: 'REVEAL' });
   });
 
   it('drops unconfirmed edits when the socket disconnects', () => {
-    const authoritative = room({ selectedGameConfig: { showVotes: true } });
+    const authoritative = room({ selectedGameConfig: { voteVisibility: 'LIVE' } });
     const projection = new OptimisticRoomProjection(); projection.setAuthoritative(authoritative);
-    projection.begin({ kind: 'config', gameId: 'shiny-vote', config: { showVotes: false } });
-    expect(projection.view()?.selectedGameConfig).toEqual({ showVotes: false });
+    projection.begin({ kind: 'config', gameId: 'shiny-vote', config: { voteVisibility: 'REVEAL' } });
+    expect(projection.view()?.selectedGameConfig).toEqual({ voteVisibility: 'REVEAL' });
     expect(projection.clearPending()).toBe(authoritative);
   });
 });

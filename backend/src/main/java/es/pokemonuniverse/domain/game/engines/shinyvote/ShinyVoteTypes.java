@@ -58,8 +58,6 @@ public final class ShinyVoteTypes {
       correctPlayerIds = frozenList(correctPlayerIds);
       missedPlayerIds = frozenList(missedPlayerIds);
     }
-
-    /** {@code { ...lastRound, votes: {}, correctPlayerIds: [], missedPlayerIds: [] }} con los votos ocultos. */
   }
 
   @Serdeable
