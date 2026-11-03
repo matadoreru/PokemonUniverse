@@ -243,7 +243,7 @@
         "BASE_STAT_TOTAL"
       ],
       "showPreviousValue": true,
-      "answerVisibility": "REALTIME",
+      "answerVisibility": "REVEAL",
       "difficulty": "NORMAL",
       "roundSeconds": 20,
       "rounds": 10

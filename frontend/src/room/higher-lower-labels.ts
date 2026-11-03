@@ -1,7 +1,19 @@
-import type { HigherLowerChoice } from '@pokemon-universe/shared/public';
+import type { HigherLowerAnswerVisibility, HigherLowerChoice, HigherLowerOutcome } from '@pokemon-universe/shared/public';
 
 // Etiquetas en español de las tres respuestas de Higher or Lower (botones, revelado y barra lateral).
 export const higherLowerChoiceLabels: Record<HigherLowerChoice, string> = { HIGHER: 'Mayor', SAME: 'Igual', LOWER: 'Menor' };
+
+// Modos de visibilidad de las respuestas del panel de configuración.
+export const higherLowerVisibilityLabels: Record<HigherLowerAnswerVisibility, string> = { LIVE: 'En directo', REVEAL: 'Al revelar' };
+
+/** Aviso del panel cuando las respuestas se ven en directo. */
+export const HIGHER_LOWER_LIVE_WARNING = 'Permite copiar: los demás ven tu elección al momento.';
+
+/** Desglose de los bonus de un acierto («+1 racha · +1 rapidez»), o `null` si no hay ninguno. */
+export function higherLowerOutcomeDetail(outcome: HigherLowerOutcome): string | null {
+  const parts = [outcome.streakBonus ? `+${outcome.streakBonus} racha` : null, outcome.speedBonus ? `+${outcome.speedBonus} rapidez` : null].filter((part) => part !== null);
+  return parts.length ? parts.join(' · ') : null;
+}
 
 const plural = (count: number, singular: string, pluralForm: string) => `${count} ${count === 1 ? singular : pluralForm}`;
 

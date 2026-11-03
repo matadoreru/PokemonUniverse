@@ -29,7 +29,7 @@
       "BASE_STAT_TOTAL"
     ],
     "showPreviousValue": true,
-    "answerVisibility": "REALTIME",
+    "answerVisibility": "LIVE",
     "difficulty": "VERY_EASY",
     "roundSeconds": 20,
     "rounds": 3
@@ -81,7 +81,7 @@
         "BASE_STAT_TOTAL"
       ],
       "showPreviousValue": true,
-      "answerVisibility": "REALTIME",
+      "answerVisibility": "LIVE",
       "difficulty": "VERY_EASY",
       "roundSeconds": 20,
       "rounds": 3

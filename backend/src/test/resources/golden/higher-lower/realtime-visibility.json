@@ -26,7 +26,7 @@
       "SPEED"
     ],
     "showPreviousValue": true,
-    "answerVisibility": "REALTIME",
+    "answerVisibility": "LIVE",
     "difficulty": "EASY",
     "roundSeconds": 15,
     "rounds": 3
@@ -131,7 +131,7 @@
         "SPEED"
       ],
       "showPreviousValue": true,
-      "answerVisibility": "REALTIME",
+      "answerVisibility": "LIVE",
       "difficulty": "EASY",
       "roundSeconds": 15,
       "rounds": 3
@@ -480,7 +480,7 @@
             ],
             "scores": {
               "p1": 0,
-              "p2": 1,
+              "p2": 2,
               "p3": 0
             },
             "streaks": {
@@ -501,6 +501,7 @@
                   "correct": false,
                   "basePoints": 0,
                   "streakBonus": 0,
+                  "speedBonus": 0,
                   "awardedPoints": 0,
                   "streak": 0
                 },
@@ -509,7 +510,8 @@
                   "correct": true,
                   "basePoints": 1,
                   "streakBonus": 0,
-                  "awardedPoints": 1,
+                  "speedBonus": 1,
+                  "awardedPoints": 2,
                   "streak": 1
                 },
                 "p3": {
@@ -517,6 +519,7 @@
                   "correct": false,
                   "basePoints": 0,
                   "streakBonus": 0,
+                  "speedBonus": 0,
                   "awardedPoints": 0,
                   "streak": 0
                 }
@@ -585,7 +588,7 @@
             "answeredIds": [],
             "scores": {
               "p1": 0,
-              "p2": 1,
+              "p2": 2,
               "p3": 0
             },
             "streaks": {
@@ -659,7 +662,7 @@
             ],
             "scores": {
               "p1": 0,
-              "p2": 1,
+              "p2": 2,
               "p3": 0
             },
             "streaks": {
@@ -741,7 +744,7 @@
             ],
             "scores": {
               "p1": 0,
-              "p2": 1,
+              "p2": 2,
               "p3": 0
             },
             "streaks": {
@@ -824,8 +827,8 @@
               "p1"
             ],
             "scores": {
-              "p1": 1,
-              "p2": 1,
+              "p1": 2,
+              "p2": 2,
               "p3": 0
             },
             "streaks": {
@@ -846,7 +849,8 @@
                   "correct": true,
                   "basePoints": 1,
                   "streakBonus": 0,
-                  "awardedPoints": 1,
+                  "speedBonus": 1,
+                  "awardedPoints": 2,
                   "streak": 1
                 },
                 "p2": {
@@ -854,6 +858,7 @@
                   "correct": false,
                   "basePoints": 0,
                   "streakBonus": 0,
+                  "speedBonus": 0,
                   "awardedPoints": 0,
                   "streak": 0
                 },
@@ -862,6 +867,7 @@
                   "correct": false,
                   "basePoints": 0,
                   "streakBonus": 0,
+                  "speedBonus": 0,
                   "awardedPoints": 0,
                   "streak": 0
                 }
@@ -926,8 +932,8 @@
             "answers": {},
             "answeredIds": [],
             "scores": {
-              "p1": 1,
-              "p2": 1,
+              "p1": 2,
+              "p2": 2,
               "p3": 0
             },
             "streaks": {
@@ -1000,8 +1006,8 @@
               "p1"
             ],
             "scores": {
-              "p1": 1,
-              "p2": 1,
+              "p1": 2,
+              "p2": 2,
               "p3": 0
             },
             "streaks": {
@@ -1082,8 +1088,8 @@
               "p2"
             ],
             "scores": {
-              "p1": 1,
-              "p2": 1,
+              "p1": 2,
+              "p2": 2,
               "p3": 0
             },
             "streaks": {
@@ -1172,9 +1178,9 @@
               "p3"
             ],
             "scores": {
-              "p1": 1,
-              "p2": 1,
-              "p3": 1
+              "p1": 2,
+              "p2": 2,
+              "p3": 2
             },
             "streaks": {
               "p1": 0,
@@ -1194,6 +1200,7 @@
                   "correct": false,
                   "basePoints": 0,
                   "streakBonus": 0,
+                  "speedBonus": 0,
                   "awardedPoints": 0,
                   "streak": 0
                 },
@@ -1202,6 +1209,7 @@
                   "correct": false,
                   "basePoints": 0,
                   "streakBonus": 0,
+                  "speedBonus": 0,
                   "awardedPoints": 0,
                   "streak": 0
                 },
@@ -1210,7 +1218,8 @@
                   "correct": true,
                   "basePoints": 1,
                   "streakBonus": 0,
-                  "awardedPoints": 1,
+                  "speedBonus": 1,
+                  "awardedPoints": 2,
                   "streak": 1
                 }
               }
@@ -1294,9 +1303,9 @@
               "p3"
             ],
             "scores": {
-              "p1": 1,
-              "p2": 1,
-              "p3": 1
+              "p1": 2,
+              "p2": 2,
+              "p3": 2
             },
             "streaks": {
               "p1": 0,
@@ -1316,6 +1325,7 @@
                   "correct": false,
                   "basePoints": 0,
                   "streakBonus": 0,
+                  "speedBonus": 0,
                   "awardedPoints": 0,
                   "streak": 0
                 },
@@ -1324,6 +1334,7 @@
                   "correct": false,
                   "basePoints": 0,
                   "streakBonus": 0,
+                  "speedBonus": 0,
                   "awardedPoints": 0,
                   "streak": 0
                 },
@@ -1332,7 +1343,8 @@
                   "correct": true,
                   "basePoints": 1,
                   "streakBonus": 0,
-                  "awardedPoints": 1,
+                  "speedBonus": 1,
+                  "awardedPoints": 2,
                   "streak": 1
                 }
               }
@@ -1343,7 +1355,7 @@
                 {
                   "playerId": "p1",
                   "position": 1,
-                  "points": 1,
+                  "points": 2,
                   "won": true,
                   "stats": {
                     "correct": 1,
@@ -1357,7 +1369,7 @@
                 {
                   "playerId": "p2",
                   "position": 1,
-                  "points": 1,
+                  "points": 2,
                   "won": true,
                   "stats": {
                     "correct": 1,
@@ -1371,7 +1383,7 @@
                 {
                   "playerId": "p3",
                   "position": 1,
-                  "points": 1,
+                  "points": 2,
                   "won": true,
                   "stats": {
                     "correct": 1,
@@ -1418,7 +1430,7 @@
         {
           "playerId": "p1",
           "position": 1,
-          "points": 1,
+          "points": 2,
           "won": true,
           "stats": {
             "correct": 1,
@@ -1432,7 +1444,7 @@
         {
           "playerId": "p2",
           "position": 1,
-          "points": 1,
+          "points": 2,
           "won": true,
           "stats": {
             "correct": 1,
@@ -1446,7 +1458,7 @@
         {
           "playerId": "p3",
           "position": 1,
-          "points": 1,
+          "points": 2,
           "won": true,
           "stats": {
             "correct": 1,

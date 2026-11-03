@@ -31,7 +31,7 @@ final class RoomTestKit {
   static final GameRegistry REAL_REGISTRY = ClasspathGameRegistryLoader.loadFromClasspath(MAPPER);
   static final InMemoryPokemonCatalog CATALOG = GoldenCatalogs.load("gen1-2");
   static final String HIGHER_LOWER_1_ROUND = """
-      {"generations":[1],"categories":["ATTACK"],"showPreviousValue":true,"answerVisibility":"REALTIME",
+      {"generations":[1],"categories":["ATTACK"],"showPreviousValue":true,"answerVisibility":"LIVE",
        "difficulty":"NORMAL","roundSeconds":10,"rounds":1}""";
 
   final ManualTime time;

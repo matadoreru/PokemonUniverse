@@ -19,6 +19,8 @@ add('higher-lower: JSON no objeto', 'higher-lower', 'texto');
 add('higher-lower: configuración válida sin cambios', 'higher-lower', { ...def('higher-lower'), generations: [1, 2], categories: ['HP', 'SPEED'], showPreviousValue: false, answerVisibility: 'REVEAL', difficulty: 'HARD', roundSeconds: 15, rounds: 3 });
 add('higher-lower: varias claves erróneas a la vez', 'higher-lower', { ...def('higher-lower'), generations: 'x', categories: 7, rounds: 999, difficulty: 'HARD' });
 add('higher-lower: transformación al validar', 'higher-lower', { ...def('higher-lower'), generations: [3, 1, 1] });
+add('higher-lower: REALTIME guardado pasa a REVEAL', 'higher-lower', { ...def('higher-lower'), answerVisibility: 'REALTIME', rounds: 7 });
+add('higher-lower: LIVE guardado se conserva', 'higher-lower', { ...def('higher-lower'), answerVisibility: 'LIVE', rounds: 4 });
 add('pokemon-bingo: clave obsoleta eliminada', 'pokemon-bingo', { ...def('pokemon-bingo'), legacy: true, width: 4 });
 add('pokemon-bingo: tipo erróneo sustituido por el defecto', 'pokemon-bingo', { ...def('pokemon-bingo'), durationSeconds: '120', width: 5 });
 add('pokemon-bingo: generations con un elemento inválido', 'pokemon-bingo', { ...def('pokemon-bingo'), generations: [1, 12], height: 4 });

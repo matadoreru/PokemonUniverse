@@ -1,12 +1,14 @@
 import {
   HIGHER_LOWER_CATEGORIES,
   HIGHER_LOWER_DIFFICULTIES,
+  HIGHER_LOWER_VISIBILITIES,
   type HigherLowerCategory,
   type HigherLowerConfig,
   type HigherLowerDifficulty,
 } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
+import { HIGHER_LOWER_LIVE_WARNING, higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
 
 const categoryLabels: Record<HigherLowerCategory, string> = {
   DEX_NUMBER: 'N.º Pokédex',
@@ -87,9 +89,13 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
         <div>
           <span className="label">Mostrar votaciones de los otros jugadores</span>
           <div className="grid grid-cols-2 gap-2">
-            <button type="button" onClick={() => void onChange({ ...value, answerVisibility: 'REALTIME' })} className={`rounded-xl border py-2 font-bold ${value.answerVisibility === 'REALTIME' ? 'border-leaf bg-leaf text-night' : 'border-ink/10 bg-surface-raised'}`}>En directo</button>
-            <button type="button" onClick={() => void onChange({ ...value, answerVisibility: 'REVEAL' })} className={`rounded-xl border py-2 font-bold ${value.answerVisibility === 'REVEAL' ? 'border-leaf bg-leaf text-night' : 'border-ink/10 bg-surface-raised'}`}>Luego de votar</button>
+            {HIGHER_LOWER_VISIBILITIES.map((visibility) => (
+              <button type="button" key={visibility} onClick={() => void onChange({ ...value, answerVisibility: visibility })} className={`rounded-xl border py-2 font-bold ${value.answerVisibility === visibility ? 'border-leaf bg-leaf text-night' : 'border-ink/10 bg-surface-raised'}`}>
+                {higherLowerVisibilityLabels[visibility]}
+              </button>
+            ))}
           </div>
+          {value.answerVisibility === 'LIVE' && <p className="mt-2 text-sm font-bold text-ink/65">{HIGHER_LOWER_LIVE_WARNING}</p>}
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { higherLowerChoiceLabels, higherLowerRevealCountdown, higherLowerStatsLine } from './higher-lower-labels';
+import type { HigherLowerOutcome } from '@pokemon-universe/shared/public';
+import { HIGHER_LOWER_LIVE_WARNING, higherLowerChoiceLabels, higherLowerOutcomeDetail, higherLowerRevealCountdown, higherLowerStatsLine, higherLowerVisibilityLabels } from './higher-lower-labels';
 
 describe('higherLowerChoiceLabels', () => {
   it('traduce las tres respuestas al español', () => {
@@ -21,5 +22,24 @@ describe('higherLowerRevealCountdown', () => {
   it('anuncia la clasificación tras la última ronda, como el motor (roundNumber >= rounds)', () => {
     expect(higherLowerRevealCountdown({ roundNumber: 1, totalRounds: 1 }, 2)).toBe('Clasificación en 2s…');
     expect(higherLowerRevealCountdown({ roundNumber: 10, totalRounds: 10 }, 0)).toBe('Clasificación en 1s…');
+  });
+});
+
+describe('higherLowerVisibilityLabels', () => {
+  it('nombra los dos modos de visibilidad', () => {
+    expect(higherLowerVisibilityLabels).toEqual({ LIVE: 'En directo', REVEAL: 'Al revelar' });
+    expect(HIGHER_LOWER_LIVE_WARNING).toBe('Permite copiar: los demás ven tu elección al momento.');
+  });
+});
+
+describe('higherLowerOutcomeDetail', () => {
+  const outcome = (streakBonus: number, speedBonus: number): HigherLowerOutcome => ({ choice: 'HIGHER', correct: true, basePoints: 1, streakBonus, speedBonus, awardedPoints: 1 + streakBonus + speedBonus, streak: 3 });
+  it('desglosa los bonus de racha y de rapidez', () => {
+    expect(higherLowerOutcomeDetail(outcome(1, 1))).toBe('+1 racha · +1 rapidez');
+    expect(higherLowerOutcomeDetail(outcome(0, 1))).toBe('+1 rapidez');
+    expect(higherLowerOutcomeDetail(outcome(2, 0))).toBe('+2 racha');
+  });
+  it('devuelve null sin bonus', () => {
+    expect(higherLowerOutcomeDetail(outcome(0, 0))).toBeNull();
   });
 });

@@ -3,7 +3,7 @@ import type { Pokemon } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { advanceTimedRound, resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultHigherLowerConfig, higherLowerConfigSchema, type HigherLowerConfig } from './config.js';
-import { buildHigherLowerResults, higherLowerAnswer, HIGHER_LOWER_POINTS, pokemonCategoryValue, selectPokemonByDifficulty, streakBonus } from './rules.js';
+import { buildHigherLowerResults, higherLowerAnswer, HIGHER_LOWER_POINTS, pokemonCategoryValue, selectPokemonByDifficulty, speedBonus, streakBonus } from './rules.js';
 import { higherLowerActionSchema, type HigherLowerAction, type HigherLowerPlayerState, type HigherLowerPublicState, type HigherLowerState, type HigherLowerStats } from './types.js';
 
 const REVEAL_MS = 3_000;
@@ -41,9 +41,10 @@ function reveal(state: HigherLowerState, context: GameContext): HigherLowerState
   const outcomes = Object.fromEntries(state.playerIds.map((id) => {
     const choice = state.answers[id]?.choice ?? null; const correct = choice === correctAnswer; const streak = correct ? (streaks[id] ?? 0) + 1 : 0;
     const basePoints = correct ? HIGHER_LOWER_POINTS[correctAnswer] : 0; const bonus = correct ? streakBonus(streak) : 0;
-    scores[id] = (scores[id] ?? 0) + basePoints + bonus; streaks[id] = streak;
+    const speed = correct ? speedBonus(state.answers[id]!.answeredAt, state.roundStartedAt!, state.config.roundSeconds) : 0;
+    scores[id] = (scores[id] ?? 0) + basePoints + bonus + speed; streaks[id] = streak;
     const prior = playerStats[id]!; playerStats[id] = { correct: prior.correct + (correct ? 1 : 0), incorrect: prior.incorrect + (correct ? 0 : 1), sameCorrect: prior.sameCorrect + (correctAnswer === 'SAME' && correct ? 1 : 0), answered: prior.answered + (choice ? 1 : 0), bestStreak: Math.max(prior.bestStreak, streak) };
-    return [id, { choice, correct, basePoints, streakBonus: bonus, awardedPoints: basePoints + bonus, streak }];
+    return [id, { choice, correct, basePoints, streakBonus: bonus, speedBonus: speed, awardedPoints: basePoints + bonus + speed, streak }];
   }));
   return { ...state, phase: 'ROUND_RESULTS', scores, streaks, playerStats, roundEndsAt: null, nextTransitionAt: context.now + REVEAL_MS, lastRound: { previousValue, currentValue, correctAnswer, outcomes } };
 }
@@ -74,7 +75,7 @@ export const higherLowerGame: MiniGameModule<HigherLowerConfig, HigherLowerState
   handlePresenceChange(state, context) { return resolveWhenRequiredPlayersComplete(state, context, state.playerIds, (id) => Boolean(state.answers[id]), reveal); },
   getPublicState(state, context) {
     const revealPhase = state.phase === 'ROUND_RESULTS' || state.phase === 'GAME_RESULTS'; const previous = context.pokemon.byId(state.previousPokemonId)!; const current = context.pokemon.byId(state.currentPokemonId ?? state.previousPokemonId)!; const category = state.category ?? state.config.categories[0]!;
-    const showAnswers = state.config.answerVisibility === 'REALTIME' || revealPhase;
+    const showAnswers = state.config.answerVisibility === 'LIVE' || revealPhase;
     return { gameId: 'higher-lower', phase: state.phase, playerIds: state.playerIds, roundNumber: state.roundNumber, totalRounds: state.config.rounds, category,
       previousPokemon: pokemonView(previous, revealPhase || state.config.showPreviousValue ? pokemonCategoryValue(previous, category) : null),
       currentPokemon: pokemonView(current, revealPhase ? pokemonCategoryValue(current, category) : null), answers: showAnswers ? state.answers : {}, answeredIds: Object.keys(state.answers), scores: state.scores, streaks: state.streaks, roundStartedAt: state.roundStartedAt, roundEndsAt: state.roundEndsAt, nextTransitionAt: state.nextTransitionAt, lastRound: revealPhase ? state.lastRound : null, results: state.phase === 'GAME_RESULTS' ? buildHigherLowerResults(state) : null };

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'; import type { GameContext, GamePlayer, HigherLowerConfig, HigherLowerPlayerState, HigherLowerState, Pokemon, PokemonCatalog } from '../../index.js'; import { defaultHigherLowerConfig, higherLowerConfigSchema, higherLowerGame, pokemonCategoryValue, selectPokemonByDifficulty, streakBonus } from '../../index.js';
+import { describe, expect, it } from 'vitest'; import type { GameContext, GamePlayer, HigherLowerConfig, HigherLowerPlayerState, HigherLowerState, Pokemon, PokemonCatalog } from '../../index.js'; import { defaultHigherLowerConfig, HIGHER_LOWER_SPEED_BONUS, higherLowerConfigSchema, higherLowerGame, pokemonCategoryValue, selectPokemonByDifficulty, speedBonus, streakBonus } from '../../index.js';
 const pokemon: Pokemon[] = [
   { id: 'alpha', name: 'Alpha', nationalDexNumber: 1, generation: 1, sprite: '/a.png', hp: 50, attack: 100, defense: 80, specialAttack: 70, specialDefense: 60, speed: 90, baseStatTotal: 450, types: ['fire'] },
   { id: 'beta', name: 'Beta', nationalDexNumber: 2, generation: 1, sprite: '/b.png', hp: 50, attack: 130, defense: 70, specialAttack: 80, specialDefense: 60, speed: 80, baseStatTotal: 470, types: ['water'] },
@@ -37,12 +37,35 @@ describe('Higher or Lower', () => {
     expect(selectPokemonByDifficulty(previous, candidates, 'ATTACK', 'VERY_HARD', () => 0.99).id).toBe('tie-b');
   });
   it('uses only enabled categories and configured generations', () => { const f = setup({ categories: ['HP', 'SPEED'], generations: [1] }); expect(['HP', 'SPEED']).toContain(f.state.category); expect([f.state.previousPokemonId, f.state.currentPokemonId].every((id) => catalog.byId(id!)?.generation === 1)).toBe(true); });
-  it('scores Higher and Lower correctly', () => { const f = setup(); expect(answerAll(f.state, f.context, 'HIGHER').scores).toEqual({ p1: 1, p2: 1 }); const lowerState = { ...f.state, previousPokemonId: 'beta', currentPokemonId: 'alpha' }; expect(answerAll(lowerState, f.context, 'LOWER').scores.p1).toBe(1); });
-  it('scores Same with three points', () => { const f = setup({ categories: ['HP'] }); const result = answerAll(f.state, f.context, 'SAME'); expect(result.lastRound?.correctAnswer).toBe('SAME'); expect(result.scores.p1).toBe(3); expect(result.playerStats.p1?.sameCorrect).toBe(1); });
-  it('resets streak on failure or timeout and grants centralized bonuses', () => { const f = setup(); let state: HigherLowerState = { ...f.state, streaks: { p1: 2, p2: 4 } }; state = answerAll(state, f.context, 'HIGHER', 'LOWER'); expect(state.lastRound?.outcomes.p1).toMatchObject({ streak: 3, streakBonus: 1, awardedPoints: 2 }); expect(state.streaks.p2).toBe(0); expect(streakBonus(5)).toBe(2); expect(streakBonus(10)).toBe(4); });
+  it('scores Higher and Lower correctly', () => { const f = setup(); f.setNow(16_000); expect(answerAll(f.state, f.context, 'HIGHER').scores).toEqual({ p1: 1, p2: 1 }); const lowerState = { ...f.state, previousPokemonId: 'beta', currentPokemonId: 'alpha' }; expect(answerAll(lowerState, f.context, 'LOWER').scores.p1).toBe(1); });
+  it('scores Same with three points', () => { const f = setup({ categories: ['HP'] }); f.setNow(16_000); const result = answerAll(f.state, f.context, 'SAME'); expect(result.lastRound?.correctAnswer).toBe('SAME'); expect(result.scores.p1).toBe(3); expect(result.playerStats.p1?.sameCorrect).toBe(1); });
+  it('resets streak on failure or timeout and grants centralized bonuses', () => { const f = setup(); f.setNow(16_000); let state: HigherLowerState = { ...f.state, streaks: { p1: 2, p2: 4 } }; state = answerAll(state, f.context, 'HIGHER', 'LOWER'); expect(state.lastRound?.outcomes.p1).toMatchObject({ streak: 3, streakBonus: 1, awardedPoints: 2 }); expect(state.streaks.p2).toBe(0); expect(streakBonus(5)).toBe(2); expect(streakBonus(10)).toBe(4); });
   it('reveals on timeout and resets non-responder streaks', () => { const f = setup(); const state = { ...f.state, streaks: { p1: 4, p2: 2 } }; f.setNow(state.roundEndsAt!); const result = higherLowerGame.handleTimeout(state, f.context); expect(result.phase).toBe('ROUND_RESULTS'); expect(result.streaks).toEqual({ p1: 0, p2: 0 }); });
   it('shows or hides only the prior numeric value', () => { const visible = setup({ showPreviousValue: true }); expect(higherLowerGame.getPublicState(visible.state, visible.context).previousPokemon.value).toBe(100); const hidden = setup({ showPreviousValue: false }); const view = higherLowerGame.getPublicState(hidden.state, hidden.context); expect(view.previousPokemon.value).toBeNull(); expect(view.previousPokemon.name).toBe('Alpha'); });
-  it('supports realtime and reveal-only public answers', () => { const realtime = setup({ answerVisibility: 'REALTIME' }); const answered = higherLowerGame.handleAction(realtime.state, 'p1', { type: 'ANSWER', choice: 'HIGHER' }, realtime.context).state; expect(higherLowerGame.getPublicState(answered, realtime.context).answers.p1?.choice).toBe('HIGHER'); const hidden = setup({ answerVisibility: 'REVEAL' }); const hiddenAnswered = higherLowerGame.handleAction(hidden.state, 'p1', { type: 'ANSWER', choice: 'HIGHER' }, hidden.context).state; const view = higherLowerGame.getPublicState(hiddenAnswered, hidden.context); expect(view.answers).toEqual({}); expect(view.answeredIds).toEqual(['p1']); });
+  it('LIVE shows answers while the round is open', () => { const live = setup({ answerVisibility: 'LIVE' }); const answered = higherLowerGame.handleAction(live.state, 'p1', { type: 'ANSWER', choice: 'HIGHER' }, live.context).state; expect(higherLowerGame.getPublicState(answered, live.context).answers.p1?.choice).toBe('HIGHER'); });
+  it('hides other answers during ROUND_ACTIVE by default', () => {
+    expect(defaultHigherLowerConfig.answerVisibility).toBe('REVEAL');
+    const f = setup({ answerVisibility: defaultHigherLowerConfig.answerVisibility });
+    const answered = higherLowerGame.handleAction(f.state, 'p1', { type: 'ANSWER', choice: 'HIGHER' }, f.context).state;
+    const view = higherLowerGame.getPublicState(answered, f.context);
+    expect(view.answers).toEqual({}); expect(view.answeredIds).toEqual(['p1']);
+    const revealed = higherLowerGame.handleAction(answered, 'p2', { type: 'ANSWER', choice: 'LOWER' }, f.context).state;
+    expect(revealed.phase).toBe('ROUND_RESULTS');
+    expect(higherLowerGame.getPublicState(revealed, f.context).answers.p1?.choice).toBe('HIGHER');
+  });
+  it('awards the speed bonus in the first half of the round', () => {
+    const f = setup({ roundSeconds: 20 }); const startedAt = f.state.roundStartedAt!;
+    f.setNow(startedAt + 9_999); let state = higherLowerGame.handleAction(f.state, 'p1', { type: 'ANSWER', choice: 'HIGHER' }, f.context).state;
+    state = higherLowerGame.handleAction(state, 'p2', { type: 'ANSWER', choice: 'LOWER' }, f.context).state;
+    expect(state.lastRound?.outcomes.p1).toMatchObject({ correct: true, basePoints: 1, streakBonus: 0, speedBonus: 1, awardedPoints: 2 });
+    expect(state.lastRound?.outcomes.p2).toMatchObject({ correct: false, speedBonus: 0, awardedPoints: 0 });
+    expect(state.scores).toEqual({ p1: 2, p2: 0 });
+    f.setNow(startedAt + 10_000); let slow = higherLowerGame.handleAction(f.state, 'p1', { type: 'ANSWER', choice: 'HIGHER' }, f.context).state;
+    slow = higherLowerGame.handleAction(slow, 'p2', { type: 'ANSWER', choice: 'HIGHER' }, f.context).state;
+    expect(slow.lastRound?.outcomes.p1).toMatchObject({ correct: true, speedBonus: 0, awardedPoints: 1 });
+    expect(speedBonus(startedAt + 9_999, startedAt, 20)).toBe(HIGHER_LOWER_SPEED_BONUS); expect(speedBonus(startedAt + 10_000, startedAt, 20)).toBe(0);
+  });
+  it('parses REALTIME as invalid', () => { expect(higherLowerConfigSchema.safeParse({ ...defaultHigherLowerConfig, answerVisibility: 'REALTIME' }).success).toBe(false); expect(higherLowerConfigSchema.parse({ ...defaultHigherLowerConfig, answerVisibility: 'LIVE' }).answerVisibility).toBe('LIVE'); });
   it('reveals both values and correct answer', () => { const f = setup(); const result = answerAll(f.state, f.context, 'HIGHER'); const view = higherLowerGame.getPublicState(result, f.context); expect(view.currentPokemon.value).toBe(130); expect(view.lastRound?.correctAnswer).toBe('HIGHER'); });
   it('finishes after configured rounds', () => { const f = setup({ rounds: 1 }); let state = answerAll(f.state, f.context, 'HIGHER'); f.setNow(state.nextTransitionAt!); state = higherLowerGame.handleTimeout(state, f.context); expect(state.phase).toBe('GAME_RESULTS'); expect(higherLowerGame.getResults(state).standings).toHaveLength(2); });
   it('restores own locked answer on reconnect', () => { const f = setup(); const state = higherLowerGame.handleAction(f.state, 'p1', { type: 'ANSWER', choice: 'HIGHER' }, f.context).state; const restored = higherLowerGame.getPlayerState(state, 'p1', f.context) as HigherLowerPlayerState; expect(restored).toMatchObject({ canAnswer: false, answer: { choice: 'HIGHER' } }); });

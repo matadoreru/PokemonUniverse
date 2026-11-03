@@ -6,7 +6,7 @@ export const HIGHER_LOWER_CHOICES = ['HIGHER', 'SAME', 'LOWER'] as const;
 export type HigherLowerChoice = (typeof HIGHER_LOWER_CHOICES)[number];
 export interface HigherLowerAnswer { choice: HigherLowerChoice; answeredAt: number }
 export interface HigherLowerStats { correct: number; incorrect: number; sameCorrect: number; answered: number; bestStreak: number }
-export interface HigherLowerOutcome { choice: HigherLowerChoice | null; correct: boolean; basePoints: number; streakBonus: number; awardedPoints: number; streak: number }
+export interface HigherLowerOutcome { choice: HigherLowerChoice | null; correct: boolean; basePoints: number; streakBonus: number; speedBonus: number; awardedPoints: number; streak: number }
 export interface HigherLowerRoundResult { previousValue: number; currentValue: number; correctAnswer: HigherLowerChoice; outcomes: Record<string, HigherLowerOutcome> }
 
 export interface HigherLowerState {

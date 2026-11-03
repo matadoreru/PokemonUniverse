@@ -519,7 +519,7 @@ describe('room multi-game lifecycle', () => {
     const manager = new RoomManager(io() as any, catalog); const host = identity('host', 'Host'); const guest = identity('guest', 'Guest');
     const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!; (manager as any).join(socket('guest-socket'), guest, room.code);
     (manager as any).selectGame(host.id, 'higher-lower');
-    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'REALTIME', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
+    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'LIVE', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
     startReady(manager, room, host.id); (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' }); (manager as any).action(guest.id, { type: 'ANSWER', choice: 'LOWER' });
     inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room); expect(room.phase).toBe('GAME_RESULTS'); (manager as any).returnLobby(host.id);
     (manager as any).selectGame(host.id, 'type-duel'); (manager as any).updateConfig(host.id, { generations: [1], typeSelectSeconds: 5, searchSeconds: 10, rounds: 1 }); startReady(manager, room, host.id);
@@ -881,7 +881,7 @@ describe('room multi-game lifecycle', () => {
     const created = (manager as any).create(hostSocket, host, 8); const room = manager.store.get(created.room.code)!;
     (manager as any).join(guestSocket, guest, room.code);
     (manager as any).selectGame(host.id, 'higher-lower');
-    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'REALTIME', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
+    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'LIVE', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
     (manager as any).setReady(guest.id, true);
     startReady(manager, room, host.id);
     (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' });
@@ -910,7 +910,7 @@ describe('room multi-game lifecycle', () => {
     room.gamesPlayed = 100;
     room.sessionHistory = Array.from({ length: 100 }, (_, index) => ({ gameNumber: index + 1, gameId: 'higher-lower', winnerIds: ['host'], points: { host: 1, guest: 0 } }));
     (manager as any).selectGame(host.id, 'higher-lower');
-    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'REALTIME', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
+    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'LIVE', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
     startReady(manager, room, host.id);
     (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' });
     (manager as any).action(guest.id, { type: 'ANSWER', choice: 'LOWER' });
@@ -965,7 +965,7 @@ describe('room multi-game lifecycle', () => {
     const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
     (manager as any).join(socket('guest-socket'), guest, room.code);
     (manager as any).selectGame(host.id, 'higher-lower');
-    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'REALTIME', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
+    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'LIVE', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
     startReady(manager, room, host.id);
     (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' });
     (manager as any).action(guest.id, { type: 'ANSWER', choice: 'LOWER' });
@@ -986,7 +986,7 @@ describe('room multi-game lifecycle', () => {
     const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
     (manager as any).join(socket('guest-socket'), guest, room.code);
     (manager as any).selectGame(host.id, 'higher-lower');
-    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'REALTIME', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
+    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'LIVE', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
     startReady(manager, room, host.id);
     (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' });
     (manager as any).action(guest.id, { type: 'ANSWER', choice: 'LOWER' });
@@ -1033,7 +1033,7 @@ describe('room multi-game lifecycle', () => {
     const manager = new RoomManager(io() as any, catalog); const host = identity('host', 'Host');
     const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
     (manager as any).selectGame(host.id, 'higher-lower');
-    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'REALTIME', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
+    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'LIVE', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
     startReady(manager, room, host.id);
     (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' });
     inspectState(room.game!).nextTransitionAt = 0; (manager as any).tick(room);
@@ -1052,7 +1052,7 @@ describe('room multi-game lifecycle', () => {
     const created = (manager as any).create(socket('host-socket'), host, 8); const room = manager.store.get(created.room.code)!;
     (manager as any).join(socket('guest-socket'), guest, room.code);
     (manager as any).selectGame(host.id, 'higher-lower');
-    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'REALTIME', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
+    (manager as any).updateConfig(host.id, { generations: [1], categories: ['ATTACK'], showPreviousValue: true, answerVisibility: 'LIVE', difficulty: 'NORMAL', roundSeconds: 10, rounds: 1 });
     (manager as any).updateGameSelection(host.id, { type: 'VOTE', gameIds: ['higher-lower', 'shiny-vote', 'pokemon-bingo'] });
     startReady(manager, room, host.id);
     (manager as any).action(host.id, { type: 'ANSWER', choice: 'HIGHER' });

@@ -14,6 +14,7 @@ export const HIGHER_LOWER_DIFFICULTY_PERCENTILES: Record<HigherLowerDifficulty, 
   VERY_HARD: 0,
 };
 export const HIGHER_LOWER_DIFFICULTY_CANDIDATE_RATIO = 0.2;
+export const HIGHER_LOWER_SPEED_BONUS = 1;
 
 export function pokemonCategoryValue(pokemon: Pokemon, category: HigherLowerCategory): number {
   const fields = { DEX_NUMBER: pokemon.nationalDexNumber, HP: pokemon.hp, ATTACK: pokemon.attack, DEFENSE: pokemon.defense, SPECIAL_ATTACK: pokemon.specialAttack, SPECIAL_DEFENSE: pokemon.specialDefense, SPEED: pokemon.speed, BASE_STAT_TOTAL: pokemon.baseStatTotal };
@@ -42,6 +43,8 @@ export function selectPokemonByDifficulty(
   return suitable[Math.min(Math.floor(random() * suitable.length), suitable.length - 1)]!.pokemon;
 }
 export function streakBonus(streak: number): number { return STREAK_BONUSES.find((entry) => streak >= entry.streak)?.bonus ?? 0; }
+/** Bonus por acertar en la primera mitad de la ronda (`answeredAt - roundStartedAt < roundSeconds * 500`). */
+export function speedBonus(answeredAt: number, roundStartedAt: number, roundSeconds: number): number { return answeredAt - roundStartedAt < roundSeconds * 500 ? HIGHER_LOWER_SPEED_BONUS : 0; }
 export function buildHigherLowerResults(state: HigherLowerState): GameResults {
   if (state.phase !== 'GAME_RESULTS') throw new Error('Results unavailable');
   return buildRankedResults(state.playerIds.map((playerId) => ({ playerId, points: state.scores[playerId] ?? 0, stats: state.playerStats[playerId]! })), {

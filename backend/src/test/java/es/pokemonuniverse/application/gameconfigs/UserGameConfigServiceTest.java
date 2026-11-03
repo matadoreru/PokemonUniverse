@@ -111,7 +111,7 @@ class UserGameConfigServiceTest {
 
   private static JsonNode higherLower(int rounds) {
     return json("""
-        {"generations":[2,1],"categories":["HP"],"showPreviousValue":true,"answerVisibility":"REALTIME",
+        {"generations":[2,1],"categories":["HP"],"showPreviousValue":true,"answerVisibility":"LIVE",
          "difficulty":"NORMAL","roundSeconds":20,"rounds":%d}""".formatted(rounds));
   }
 

@@ -141,7 +141,11 @@ public final class HigherLowerEngine
       int streak = correct ? streaks.getOrDefault(id, 0) + 1 : 0;
       int basePoints = correct ? HigherLowerRules.POINTS.get(correctAnswer) : 0;
       int bonus = correct ? HigherLowerRules.streakBonus(streak) : 0;
-      scores.put(id, scores.getOrDefault(id, 0) + basePoints + bonus);
+      int speed = correct
+          ? HigherLowerRules.speedBonus(Objects.requireNonNull(answer).answeredAt(),
+              Objects.requireNonNull(state.roundStartedAt(), "roundStartedAt"), state.config().roundSeconds())
+          : 0;
+      scores.put(id, scores.getOrDefault(id, 0) + basePoints + bonus + speed);
       streaks.put(id, streak);
       var prior = Objects.requireNonNull(playerStats.get(id), "playerStats");
       playerStats.put(id, new HigherLowerStats(
@@ -150,7 +154,7 @@ public final class HigherLowerEngine
           prior.sameCorrect() + (correctAnswer == HigherLowerChoice.SAME && correct ? 1 : 0),
           prior.answered() + (choice != null ? 1 : 0),
           Math.max(prior.bestStreak(), streak)));
-      outcomes.put(id, new HigherLowerOutcome(choice, correct, basePoints, bonus, basePoints + bonus, streak));
+      outcomes.put(id, new HigherLowerOutcome(choice, correct, basePoints, bonus, speed, basePoints + bonus + speed, streak));
     }
     return state.toBuilder()
         .phase(GamePhase.ROUND_RESULTS)
@@ -236,7 +240,7 @@ public final class HigherLowerEngine
     var previous = pokemon(context, state.previousPokemonId());
     var current = pokemon(context, state.currentPokemonId() != null ? state.currentPokemonId() : state.previousPokemonId());
     var category = state.category() != null ? state.category() : state.config().categories().getFirst();
-    boolean showAnswers = state.config().answerVisibility() == HigherLowerAnswerVisibility.REALTIME || revealPhase;
+    boolean showAnswers = state.config().answerVisibility() == HigherLowerAnswerVisibility.LIVE || revealPhase;
     return new HigherLowerPublicState(ID, state.phase(), state.playerIds(), state.roundNumber(), state.config().rounds(),
         category,
         pokemonView(previous, revealPhase || state.config().showPreviousValue()

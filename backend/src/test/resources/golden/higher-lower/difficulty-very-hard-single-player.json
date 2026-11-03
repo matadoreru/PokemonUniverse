@@ -19,7 +19,7 @@
       "ATTACK"
     ],
     "showPreviousValue": false,
-    "answerVisibility": "REALTIME",
+    "answerVisibility": "LIVE",
     "difficulty": "VERY_HARD",
     "roundSeconds": 10,
     "rounds": 5
@@ -97,7 +97,7 @@
         "ATTACK"
       ],
       "showPreviousValue": false,
-      "answerVisibility": "REALTIME",
+      "answerVisibility": "LIVE",
       "difficulty": "VERY_HARD",
       "roundSeconds": 10,
       "rounds": 5
@@ -243,7 +243,7 @@
               "p1"
             ],
             "scores": {
-              "p1": 3
+              "p1": 4
             },
             "streaks": {
               "p1": 1
@@ -261,7 +261,8 @@
                   "correct": true,
                   "basePoints": 3,
                   "streakBonus": 0,
-                  "awardedPoints": 3,
+                  "speedBonus": 1,
+                  "awardedPoints": 4,
                   "streak": 1
                 }
               }
@@ -312,7 +313,7 @@
             "answers": {},
             "answeredIds": [],
             "scores": {
-              "p1": 3
+              "p1": 4
             },
             "streaks": {
               "p1": 1
@@ -372,7 +373,7 @@
               "p1"
             ],
             "scores": {
-              "p1": 4
+              "p1": 6
             },
             "streaks": {
               "p1": 2
@@ -390,7 +391,8 @@
                   "correct": true,
                   "basePoints": 1,
                   "streakBonus": 0,
-                  "awardedPoints": 1,
+                  "speedBonus": 1,
+                  "awardedPoints": 2,
                   "streak": 2
                 }
               }
@@ -441,7 +443,7 @@
             "answers": {},
             "answeredIds": [],
             "scores": {
-              "p1": 4
+              "p1": 6
             },
             "streaks": {
               "p1": 2
@@ -501,7 +503,7 @@
               "p1"
             ],
             "scores": {
-              "p1": 6
+              "p1": 9
             },
             "streaks": {
               "p1": 3
@@ -519,7 +521,8 @@
                   "correct": true,
                   "basePoints": 1,
                   "streakBonus": 1,
-                  "awardedPoints": 2,
+                  "speedBonus": 1,
+                  "awardedPoints": 3,
                   "streak": 3
                 }
               }
@@ -570,7 +573,7 @@
             "answers": {},
             "answeredIds": [],
             "scores": {
-              "p1": 6
+              "p1": 9
             },
             "streaks": {
               "p1": 3
@@ -630,7 +633,7 @@
               "p1"
             ],
             "scores": {
-              "p1": 8
+              "p1": 12
             },
             "streaks": {
               "p1": 4
@@ -648,7 +651,8 @@
                   "correct": true,
                   "basePoints": 1,
                   "streakBonus": 1,
-                  "awardedPoints": 2,
+                  "speedBonus": 1,
+                  "awardedPoints": 3,
                   "streak": 4
                 }
               }
@@ -699,7 +703,7 @@
             "answers": {},
             "answeredIds": [],
             "scores": {
-              "p1": 8
+              "p1": 12
             },
             "streaks": {
               "p1": 4
@@ -751,7 +755,7 @@
             "answers": {},
             "answeredIds": [],
             "scores": {
-              "p1": 8
+              "p1": 12
             },
             "streaks": {
               "p1": 0
@@ -769,6 +773,7 @@
                   "correct": false,
                   "basePoints": 0,
                   "streakBonus": 0,
+                  "speedBonus": 0,
                   "awardedPoints": 0,
                   "streak": 0
                 }
@@ -817,7 +822,7 @@
             "answers": {},
             "answeredIds": [],
             "scores": {
-              "p1": 8
+              "p1": 12
             },
             "streaks": {
               "p1": 0
@@ -835,6 +840,7 @@
                   "correct": false,
                   "basePoints": 0,
                   "streakBonus": 0,
+                  "speedBonus": 0,
                   "awardedPoints": 0,
                   "streak": 0
                 }
@@ -846,7 +852,7 @@
                 {
                   "playerId": "p1",
                   "position": 1,
-                  "points": 8,
+                  "points": 12,
                   "won": true,
                   "stats": {
                     "correct": 4,
@@ -876,7 +882,7 @@
         {
           "playerId": "p1",
           "position": 1,
-          "points": 8,
+          "points": 12,
           "won": true,
           "stats": {
             "correct": 4,

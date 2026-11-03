@@ -76,7 +76,7 @@ class StoredGameConfigMigrationTest {
   void enginesReportEveryBrokenKeyAtOnceLikeZod() throws IOException {
     var engine = REGISTRY.engine("higher-lower").orElseThrow();
     var raw = MAPPER.readValue("""
-        {"generations":"x","categories":7,"showPreviousValue":true,"answerVisibility":"REALTIME",
+        {"generations":"x","categories":7,"showPreviousValue":true,"answerVisibility":"LIVE",
          "difficulty":"NORMAL","roundSeconds":20,"rounds":"z"}""", JsonNode.class);
     assertEquals(List.of(List.of("generations"), List.of("categories"), List.of("rounds")),
         engine.configIssues(raw).stream().map(ConfigIssue::path).toList());

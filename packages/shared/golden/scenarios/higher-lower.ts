@@ -13,7 +13,7 @@ const baseConfig = {
   generations: [1, 2],
   categories: ['DEX_NUMBER', 'HP', 'ATTACK', 'DEFENSE', 'SPECIAL_ATTACK', 'SPECIAL_DEFENSE', 'SPEED', 'BASE_STAT_TOTAL'],
   showPreviousValue: true,
-  answerVisibility: 'REALTIME',
+  answerVisibility: 'LIVE',
   difficulty: 'NORMAL',
   roundSeconds: 20,
   rounds: 3,
@@ -176,9 +176,35 @@ const disconnectedCannotAnswer: GoldenScenario = {
   ],
 };
 
+const revealDefaultSpeedBonus: GoldenScenario = {
+  name: 'reveal-default-speed-bonus',
+  seed: 707,
+  catalog: 'gen1-2',
+  players: [ana, bruno, carla],
+  config: { ...baseConfig, answerVisibility: 'REVEAL' },
+  steps: [
+    // Ronda 1 (activa 1000–21000, mitad en 11000): las respuestas siguen ocultas hasta el reveal. Ana acierta a
+    // 10999 ms (+1 de rapidez), Bruno acierta justo en la mitad (sin bonus) y Carla falla rápido (sin bonus).
+    answer('p3', 'HIGHER', 2_000),
+    answer('p1', 'LOWER', 10_999),
+    answer('p2', 'LOWER', 11_000),
+    timeout(14_000),
+    // Ronda 2 (activa 14000–34000, mitad en 24000): acierto rápido y lento; Carla no responde.
+    answer('p2', 'LOWER', 15_000),
+    answer('p1', 'LOWER', 30_000),
+    timeout(34_000),
+    timeout(37_000),
+    // Ronda 3 (activa 37000–57000): todos aciertan deprisa; Ana y Bruno encadenan racha 3 (+1).
+    answer('p1', 'HIGHER', 38_000),
+    answer('p2', 'HIGHER', 39_000),
+    answer('p3', 'HIGHER', 40_000),
+    timeout(43_000),
+  ],
+};
+
 export const higherLowerScenarios: GoldenEngineEntry = {
   module: higherLowerGame,
-  scenarios: [twoPlayersThreeRounds, realtimeVisibility, presenceResolvesRound, veryHardSinglePlayer, invalidActionStops, disconnectedCannotAnswer],
+  scenarios: [twoPlayersThreeRounds, realtimeVisibility, presenceResolvesRound, veryHardSinglePlayer, invalidActionStops, disconnectedCannotAnswer, revealDefaultSpeedBonus],
   configCases: [
     // Válidos: normalización de generaciones (dedup + orden) y categorías (dedup, primer orden), clave extra ignorada.
     { ...baseConfig, generations: [2, 1, 2, 1] },
@@ -197,6 +223,8 @@ export const higherLowerScenarios: GoldenEngineEntry = {
     { ...baseConfig, categories: ['WEIGHT'] },
     { ...baseConfig, difficulty: 'IMPOSSIBLE' },
     { ...baseConfig, answerVisibility: 'HIDDEN' },
+    // El literal anterior al renombrado (§11.2) ya no valida.
+    { ...baseConfig, answerVisibility: 'REALTIME' },
     { ...baseConfig, showPreviousValue: 'yes' },
     { ...baseConfig, rounds: '3' },
     { ...baseConfig, rounds: undefined },

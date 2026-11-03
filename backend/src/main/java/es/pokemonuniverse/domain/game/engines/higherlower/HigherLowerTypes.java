@@ -41,7 +41,7 @@ public final class HigherLowerTypes {
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record HigherLowerOutcome(@Nullable HigherLowerChoice choice, boolean correct, int basePoints,
-      int streakBonus, int awardedPoints, int streak) {}
+      int streakBonus, int speedBonus, int awardedPoints, int streak) {}
 
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)

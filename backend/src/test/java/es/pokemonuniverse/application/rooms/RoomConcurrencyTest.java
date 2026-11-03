@@ -36,7 +36,7 @@ class RoomConcurrencyTest {
     var room = kit.room(8, guest("p1", "Host"), guest("p2", "Ana"), guest("p3", "Bea"), guest("p4", "Carla"));
     kit.manager.selectGame("p1", "higher-lower");
     kit.manager.updateConfig("p1", json("""
-        {"generations":[1,2],"categories":["ATTACK","SPEED"],"showPreviousValue":true,"answerVisibility":"REALTIME",
+        {"generations":[1,2],"categories":["ATTACK","SPEED"],"showPreviousValue":true,"answerVisibility":"LIVE",
          "difficulty":"NORMAL","roundSeconds":20,"rounds":50}"""));
     kit.startReady(room, "p1");
     return kit;

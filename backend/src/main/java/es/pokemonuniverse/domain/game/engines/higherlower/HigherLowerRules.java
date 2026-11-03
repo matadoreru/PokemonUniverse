@@ -38,6 +38,9 @@ public final class HigherLowerRules {
 
   public static final double DIFFICULTY_CANDIDATE_RATIO = 0.2;
 
+  /** {@code HIGHER_LOWER_SPEED_BONUS}. */
+  public static final int SPEED_BONUS = 1;
+
   private HigherLowerRules() {}
 
   public static int pokemonCategoryValue(Pokemon pokemon, HigherLowerCategory category) {
@@ -94,6 +97,11 @@ public final class HigherLowerRules {
       if (streak >= entry[0]) return entry[1];
     }
     return 0;
+  }
+
+  /** Bonus por acertar en la primera mitad de la ronda ({@code answeredAt - roundStartedAt < roundSeconds * 500}). */
+  public static int speedBonus(long answeredAt, long roundStartedAt, int roundSeconds) {
+    return answeredAt - roundStartedAt < roundSeconds * 500L ? SPEED_BONUS : 0;
   }
 
   /**

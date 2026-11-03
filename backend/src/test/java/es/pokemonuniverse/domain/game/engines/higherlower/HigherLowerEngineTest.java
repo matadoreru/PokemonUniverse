@@ -45,7 +45,7 @@ class HigherLowerEngineTest {
   @Test
   void acceptsIntegralDoublesAndRejectsFractions() throws IOException {
     var base = "\"generations\":[1],\"categories\":[\"HP\"],\"showPreviousValue\":true,"
-        + "\"answerVisibility\":\"REALTIME\",\"difficulty\":\"NORMAL\",";
+        + "\"answerVisibility\":\"LIVE\",\"difficulty\":\"NORMAL\",";
     var config = engine.parseConfig(json("{" + base + "\"roundSeconds\":10.0,\"rounds\":1.0}"));
     assertEquals(10, config.roundSeconds());
     assertEquals(1, config.rounds());
@@ -53,6 +53,22 @@ class HigherLowerEngineTest {
         () -> engine.parseConfig(json("{" + base + "\"roundSeconds\":10.5,\"rounds\":1}")));
     assertThrows(ConfigValidationException.class,
         () -> engine.parseConfig(json("{" + base + "\"roundSeconds\":20,\"rounds\":null}")));
+  }
+
+  @Test
+  void hidesAnswersUntilRevealByDefaultAndRejectsTheOldRealtimeValue() throws IOException {
+    assertEquals(HigherLowerConfig.HigherLowerAnswerVisibility.REVEAL, engine.defaultConfig().answerVisibility());
+    var base = "{\"generations\":[1],\"categories\":[\"HP\"],\"showPreviousValue\":true,\"difficulty\":\"NORMAL\","
+        + "\"roundSeconds\":10,\"rounds\":1,\"answerVisibility\":";
+    assertEquals(HigherLowerConfig.HigherLowerAnswerVisibility.LIVE,
+        engine.parseConfig(json(base + "\"LIVE\"}")).answerVisibility());
+    assertThrows(ConfigValidationException.class, () -> engine.parseConfig(json(base + "\"REALTIME\"}")));
+  }
+
+  @Test
+  void grantsTheSpeedBonusOnlyInTheFirstHalfOfTheRound() {
+    assertEquals(1, HigherLowerRules.speedBonus(10_999, 1_000, 20));
+    assertEquals(0, HigherLowerRules.speedBonus(11_000, 1_000, 20));
   }
 
   @Test

@@ -28,7 +28,7 @@ public record HigherLowerConfig(
     DEX_NUMBER, HP, ATTACK, DEFENSE, SPECIAL_ATTACK, SPECIAL_DEFENSE, SPEED, BASE_STAT_TOTAL
   }
 
-  public enum HigherLowerAnswerVisibility { REALTIME, REVEAL }
+  public enum HigherLowerAnswerVisibility { LIVE, REVEAL }
 
   public enum HigherLowerDifficulty { VERY_EASY, EASY, NORMAL, HARD, VERY_HARD }
 
@@ -36,7 +36,7 @@ public record HigherLowerConfig(
   public static HigherLowerConfig defaults() {
     var generations = ConfigReader.allGenerations();
     return new HigherLowerConfig(generations, Arrays.asList(HigherLowerCategory.values()), true,
-        HigherLowerAnswerVisibility.REALTIME, HigherLowerDifficulty.NORMAL, 20, 10);
+        HigherLowerAnswerVisibility.REVEAL, HigherLowerDifficulty.NORMAL, 20, 10);
   }
 
   /**
