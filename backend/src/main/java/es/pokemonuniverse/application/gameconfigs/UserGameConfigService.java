@@ -96,7 +96,10 @@ public class UserGameConfigService implements UserGameConfigPreferences {
       var engine = engine(row.gameId());
       if (engine.isEmpty()) continue;
       var config = migration.migrate(engine.get(), row.config());
-      cache(row.userId(), row.gameId(), config);
+      synchronized (lock) {
+        // Mismo lock que save(): la caché solo se modifica bajo él.
+        cache(row.userId(), row.gameId(), config);
+      }
       if (!JsonTree.equal(config, row.config())) migrations.add(new PendingWrite(row.userId(), row.gameId(), config));
     }
     for (var entry : migrations) store.upsert(entry.userId(), entry.gameId(), entry.config());
