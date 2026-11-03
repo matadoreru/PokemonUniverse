@@ -72,7 +72,7 @@ consola y que a 1280×720 no hay scroll horizontal (`measureLayout` se anota, ve
 
 - **Intro de partida**: los 6 primeros minijuegos (los que llevan `introMs` en el manifiesto) empiezan con
   10 s de pasos en `GAME_STARTING`, solo la primera vez en la sesión. Todo spec que arranque uno de ellos
-  llama a `saltarIntro(páginas)` (`src/helpers.ts`) justo después de «Empezar partida»: pulsa «Saltar» en cada
+  llama a `saltarIntro(páginas)` (`src/helpers.ts`) justo después de «Empezar partida»: pulsa «Empezar ya» en cada
   página que muestre la intro y espera a que todas la dejen atrás (15 s como máximo). El test
   `intro: los pasos antes de la primera ronda` la recorre con Learnset Guess y captura `juego-intro`.
 - **Saltos**: `tcg-higher-lower` (sin cartas TCG) y `pokemon-palette-guess` (sin `metadata.palette` en

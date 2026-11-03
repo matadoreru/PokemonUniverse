@@ -26,7 +26,10 @@ export function introReadyLabel({ skipped, total }: Pick<GameIntroProgress, 'ski
   return `${skipped} de ${total} listos`;
 }
 
-/** Mientras se envía sigue diciendo «Saltar» (con `aria-busy`); confirmado, «Esperando al resto». */
+/**
+ * «Empezar ya» (no «Saltar»: no se confunde con «Saltar minijuego»). Mientras se envía no cambia (con `aria-busy`);
+ * confirmado, «Esperando al resto».
+ */
 export function introSkipLabel(selfSkipped: boolean): string {
-  return selfSkipped ? 'Esperando al resto' : 'Saltar';
+  return selfSkipped ? 'Esperando al resto' : 'Empezar ya';
 }

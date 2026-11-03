@@ -31,9 +31,10 @@ public final class RoomCommandParsers {
   /** {@code { gameInstanceId, wantsToSkip }} validado. */
   public record SetGameSkipVoteRequest(String gameInstanceId, boolean wantsToSkip) {}
 
-  /** {@code { gameInstanceId, actionEpoch, action }} validado; {@code action} sigue siendo JSON crudo. */
+  /** {@code { gameInstanceId }} validado: el «Empezar ya» de la intro de partida. */
   public record SkipGameIntroRequest(String gameInstanceId) {}
 
+  /** {@code { gameInstanceId, actionEpoch, action }} validado; {@code action} sigue siendo JSON crudo. */
   public record GameActionRequest(String gameInstanceId, String actionEpoch, JsonNode action) {}
 
   private RoomCommandParsers() {}

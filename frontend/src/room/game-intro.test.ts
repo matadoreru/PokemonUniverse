@@ -37,7 +37,7 @@ describe('intro texts', () => {
   });
 
   it('labels the skip button by its state', () => {
-    expect(introSkipLabel(false)).toBe('Saltar');
+    expect(introSkipLabel(false)).toBe('Empezar ya');
     expect(introSkipLabel(true)).toBe('Esperando al resto');
   });
 });

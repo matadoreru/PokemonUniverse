@@ -227,7 +227,7 @@ export function introDePartida(page: Page): Locator {
 
 /**
  * Intro de partida (Fase 2): los 6 primeros minijuegos esperan en `GAME_STARTING` hasta que todos los jugadores
- * conectados pulsan «Saltar» (o 10 s). Espera a que cada página salga del lobby, pulsa «Saltar» en las que muestran
+ * conectados pulsan «Empezar ya» (o 10 s). Espera a que cada página salga del lobby, pulsa «Empezar ya» en las que muestran
  * la intro y espera a que todas la dejen atrás, en 15 s como máximo en total. Sin intro, vuelve enseguida.
  */
 export async function saltarIntro(pages: readonly Page[]): Promise<void> {
@@ -239,7 +239,7 @@ export async function saltarIntro(pages: readonly Page[]): Promise<void> {
     const intro = introDePartida(page);
     if (!(await intro.isVisible())) continue;
     // La intro puede acabar entre la comprobación y el clic (plazo o el último en saltar): no es un fallo.
-    await intro.getByRole('button', { name: 'Saltar', exact: true }).click({ timeout: Math.min(3_000, resto()) }).catch(() => undefined);
+    await intro.getByRole('button', { name: 'Empezar ya', exact: true }).click({ timeout: Math.min(3_000, resto()) }).catch(() => undefined);
   }
   for (const page of pages) await expect(introDePartida(page)).toBeHidden({ timeout: resto() });
 }

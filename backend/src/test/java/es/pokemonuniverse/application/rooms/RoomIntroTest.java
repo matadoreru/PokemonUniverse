@@ -256,4 +256,66 @@ class RoomIntroTest {
     f.skip(2);
     assertEquals(RoomPhase.ROUND_ACTIVE, f.room.phase);
   }
+
+  @Test
+  void aPlayerReconnectingDuringTheIntroDecidesAgain() {
+    var f = started("pokedex-distance", 3);
+    f.kit.manager.disconnect(f.id(2), "socket-" + f.id(2));
+    f.skip(0);
+    assertTrue(f.room.intro.presenceChanged);
+    f.kit.manager.connect(f.people.get(2), "socket-again-" + f.id(2));
+    f.skip(1);
+    // Ha vuelto: la intro le espera otra vez.
+    assertEquals(RoomPhase.GAME_STARTING, f.room.phase);
+    f.skip(2);
+    assertEquals(RoomPhase.ROUND_ACTIVE, f.room.phase);
+  }
+
+  @Test
+  void introPresenceFlagStaysOffWithoutPresenceChanges() {
+    var f = started("pokedex-distance", 2);
+    f.skip(0);
+    assertTrue(!f.room.intro.presenceChanged);
+  }
+
+  @Test
+  void aGameLaunchedFromTheNextGameVoteShowsItsIntroOnlyTheFirstTime() {
+    var f = lobby("higher-lower", 2);
+    f.kit.manager.updateConfig(f.id(0), json(RoomTestKit.HIGHER_LOWER_1_ROUND));
+    f.kit.manager.updateGameSelection(f.id(0),
+        json("{\"type\":\"VOTE\",\"gameIds\":[\"higher-lower\",\"pokedex-distance\",\"type-duel\"]}"));
+    f.kit.startReady(f.room, f.id(0));
+    assertNotNull(f.room.intro);
+    f.skip(0);
+    f.skip(1);
+    f.kit.passDeadline(f.room);
+    f.kit.passDeadline(f.room);
+    assertEquals(RoomPhase.GAME_RESULTS, f.room.phase);
+
+    // La votación elige Pokédex Distance, que no se ha jugado: intro.
+    f.kit.manager.continueSession(f.id(0));
+    voteAndLaunch(f, "pokedex-distance");
+    assertEquals("pokedex-distance", f.room.game.gameId);
+    assertEquals(RoomPhase.GAME_STARTING, f.room.phase);
+    assertNotNull(f.view().gameIntro());
+
+    // Se salta el minijuego por voto y la votación vuelve a Higher or Lower, ya presentado: arranca directo.
+    var instanceId = f.room.game.resultId;
+    for (int index = 0; index < 2; index++) {
+      f.kit.manager.setGameSkipVote(f.id(index),
+          json("{\"gameInstanceId\":\"" + instanceId + "\",\"wantsToSkip\":true}"));
+    }
+    voteAndLaunch(f, "higher-lower");
+    assertEquals("higher-lower", f.room.game.gameId);
+    assertNull(f.room.intro);
+    assertEquals(RoomPhase.ROUND_ACTIVE, f.room.phase);
+  }
+
+  private static void voteAndLaunch(Fixture f, String gameId) {
+    assertEquals(RoomPhase.NEXT_GAME_VOTE, f.room.phase);
+    assertTrue(f.room.nextGameVote.optionGameIds.contains(gameId), f.room.nextGameVote.optionGameIds.toString());
+    for (int index = 0; index < 2; index++) f.kit.manager.voteNextGame(f.id(index), gameId);
+    assertEquals(RoomPhase.NEXT_GAME_VOTE_RESULTS, f.room.phase);
+    f.kit.time.advance(RoomCoordinator.NEXT_GAME_VOTE_RESULT_MS + RoomCoordinator.DEADLINE_TOLERANCE_MS);
+  }
 }

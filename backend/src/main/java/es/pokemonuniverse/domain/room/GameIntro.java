@@ -14,6 +14,8 @@ public final class GameIntro {
   public final long endsAt;
   /** Jugadores que han pulsado «Saltar», en orden. */
   public final Set<String> skippedIds = new LinkedHashSet<>();
+  /** Hubo cambios de presencia durante la intro: el motor recibe uno solo justo después de arrancar. */
+  public boolean presenceChanged;
 
   public GameIntro(String gameInstanceId, long endsAt) {
     this.gameInstanceId = gameInstanceId;

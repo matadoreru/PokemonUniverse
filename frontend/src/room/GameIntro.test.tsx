@@ -31,13 +31,19 @@ describe('GameIntro', () => {
     expect(markup).toContain('role="timer"');
     expect(markup).toContain('tabular-nums');
     expect(markup).toContain('1 de 3 listos');
-    expect(markup).toMatch(/<button type="button" class="btn-primary"[^>]*>Saltar<\/button>/);
+    expect(markup).toMatch(/<button type="button" class="btn-primary[^"]*"[^>]*>Empezar ya<\/button>/);
+    // Más bajo que la guía del lobby, y sin barra fija que tape la navegación del carrusel.
+    expect(markup).toContain('min-h-[24rem]');
+    expect(markup).not.toContain('sticky');
+    // La acción y el recuento van en la cabecera del carrusel, antes de la navegación de pasos.
+    expect(markup.indexOf('Empezar ya')).toBeLessThan(markup.indexOf('Ver paso 1'));
+    expect(markup.indexOf('1 de 3 listos')).toBeLessThan(markup.indexOf('Ver paso 1'));
   });
 
   it('waits for the others once the player has skipped', () => {
     const markup = render('p2');
     expect(markup).toContain('Esperando al resto');
-    expect(markup).not.toMatch(/>Saltar</);
+    expect(markup).not.toMatch(/>Empezar ya</);
   });
 
   it('gives spectators no skip button', () => {

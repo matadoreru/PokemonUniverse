@@ -799,7 +799,9 @@ public class RoomCoordinator {
       var context = context(room);
       game.state = game.engine.start(game.state, context);
       // Los cambios de presencia durante la intro no llegaron al motor sin arrancar: se le entregan ahora.
-      if (game.engine.hasPresenceHandler()) game.state = game.engine.handlePresenceChange(game.state, context(room));
+      if (intro.presenceChanged && game.engine.hasPresenceHandler()) {
+        game.state = game.engine.handlePresenceChange(game.state, context(room));
+      }
     } catch (RuntimeException error) {
       // Una partida que no puede arrancar nunca deja la sala colgada en GAME_STARTING: se abandona como saltada.
       LOG.error("Failed to start game {} after its intro", game.resultId, error);
@@ -1111,6 +1113,7 @@ public class RoomCoordinator {
     if (game != null && game.finishReason == null && resolveUnanimousGameSkip(room, game)) return;
     if (room.intro != null) {
       // El motor aún no ha arrancado: solo cambia quién falta por saltar la intro.
+      room.intro.presenceChanged = true;
       if (!resolveUnanimousIntroSkip(room)) broadcast(room);
       return;
     }

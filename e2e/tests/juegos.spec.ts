@@ -52,7 +52,7 @@ async function avisos(page: Page): Promise<string> {
 /** Espera a que la pantalla de juego esté pintada: sin lobby, sin esqueleto de carga y con contenido. */
 async function esperarPantallaDeJuego(page: Page): Promise<void> {
   await expect(page.getByRole('heading', { name: 'Lobby de la sala' })).toBeHidden({ timeout: 15_000 });
-  // Intro de partida de los 6 primeros juegos: «Saltar» y, si nadie más salta, el plazo de 10 s.
+  // Intro de partida de los 6 primeros juegos: «Empezar ya» y, si nadie más la salta, el plazo de 10 s.
   if (await introDePartida(page).isVisible()) await saltarIntro([page]);
   await expect(page.getByText('Cargando minijuego…')).toHaveCount(0, { timeout: 15_000 });
   await expect(page.getByRole('heading').first()).toBeVisible({ timeout: 15_000 });
@@ -834,10 +834,19 @@ test('intro: los pasos antes de la primera ronda', async ({ browser }) => {
     await expect(intro.getByText('Paso 1 de 3', { exact: true })).toBeVisible();
     await expect(intro.getByRole('timer')).toBeVisible();
     await expect(intro.getByText('0 de 3 listos')).toBeVisible();
+    // Sin hacer scroll, «Empezar ya» y la navegación de pasos se ven a la vez a 1280×720 y 390×844.
+    const empezar = (page: Page) => introDePartida(page).getByRole('button', { name: 'Empezar ya', exact: true });
+    for (const { w, h } of [SIZES[0], SIZES[2]]) {
+      await host.page.setViewportSize({ width: w, height: h });
+      await host.page.evaluate(() => window.scrollTo(0, 0));
+      for (const objetivo of [empezar(host.page), intro.getByRole('button', { name: 'Siguiente paso' }), intro.getByRole('button', { name: 'Ver paso 3' })]) {
+        await expect(objetivo, `${w}×${h}`).toBeInViewport({ ratio: 1 });
+      }
+    }
     await capturarTamanos(host.page, 'juego-intro', { sigue: intro, claro: true });
 
-    // Salta uno: él espera al resto y los demás ven el recuento.
-    const saltar = (page: Page) => introDePartida(page).getByRole('button', { name: 'Saltar', exact: true });
+    // Uno pulsa «Empezar ya»: él espera al resto y los demás ven el recuento.
+    const saltar = empezar;
     await saltar(primero.page).click();
     await expect(introDePartida(primero.page).getByRole('button', { name: 'Esperando al resto' })).toBeDisabled();
     await expect(intro.getByText('1 de 3 listos')).toBeVisible();

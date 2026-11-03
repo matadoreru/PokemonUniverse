@@ -37,25 +37,24 @@ export function GameIntro({ room, intro, selfId, onSkip }: Props) {
     finally { setSubmitting(false); }
   }
 
-  // Barra fija abajo (como la de confirmar voto): «Saltar» siempre a la vista aunque el carrusel no quepa.
-  const actions = <div className="sticky-action-bar mt-3 items-stretch shadow-card sm:items-center sm:justify-between" data-layer="game-intro-actions">
-    <p className="inline-flex items-center justify-center gap-2 font-extrabold text-ink/70 sm:justify-start" role="status" aria-live="polite">
-      <UsersRound size={18} aria-hidden="true" />
-      <span className="tabular-nums">{introReadyLabel(progress)}</span>
-    </p>
+  // Cabecera del carrusel: cuenta atrás, «Empezar ya» y recuento juntos, siempre a la vista con la navegación de pasos.
+  const actions = <div className="flex shrink-0 flex-col items-end gap-2">
+    <ServerTimer deadline={intro.endsAt} serverOffset={serverOffset} label="Empieza en" />
     {progress.canSkip
-      ? <button type="button" className="btn-primary" onClick={() => void skip()} disabled={progress.selfSkipped} aria-busy={submitting || undefined}>
+      ? <button type="button" className="btn-primary whitespace-nowrap" onClick={() => void skip()} disabled={progress.selfSkipped} aria-busy={submitting || undefined}>
         {submitting ? <LoaderCircle className="animate-spin" size={18} aria-hidden="true" /> : progress.selfSkipped && <Check size={18} aria-hidden="true" />}
         {introSkipLabel(progress.selfSkipped)}
       </button>
-      : <p className="text-center text-sm font-bold text-ink/65 sm:text-right">Empieza cuando los jugadores estén listos.</p>}
+      : <p className="max-w-[9rem] text-right text-sm font-bold text-ink/65">Empieza cuando los jugadores estén listos.</p>}
+    <p className="inline-flex items-center gap-1.5 text-sm font-extrabold text-ink/70" role="status" aria-live="polite">
+      <UsersRound size={16} aria-hidden="true" />
+      <span className="tabular-nums">{introReadyLabel(progress)}</span>
+    </p>
   </div>;
-  const timer = <div className="shrink-0"><ServerTimer deadline={intro.endsAt} serverOffset={serverOffset} label="Empieza en" /></div>;
 
-  return <section className="page-shell max-w-3xl py-4 sm:py-8" aria-label={`Intro de ${name}`}>
+  return <section className="page-shell max-w-3xl py-3 sm:py-4" aria-label={`Intro de ${name}`}>
     {slides
-      ? <HowToPlayCarousel slides={slides} kicker="Antes de empezar" heading={`Cómo se juega a ${name}`} idPrefix="game-intro" itemLabel="paso" loop={false} headerAction={timer} />
-      : <div className="card flex items-start justify-between gap-3"><h2 className="font-display text-2xl sm:text-3xl">{name}</h2>{timer}</div>}
-    {actions}
+      ? <HowToPlayCarousel slides={slides} kicker="Antes de empezar" heading={`Cómo se juega a ${name}`} idPrefix="game-intro" itemLabel="paso" loop={false} compact headerAction={actions} />
+      : <div className="card flex items-start justify-between gap-3"><h2 className="font-display text-2xl sm:text-3xl">{name}</h2>{actions}</div>}
   </section>;
 }

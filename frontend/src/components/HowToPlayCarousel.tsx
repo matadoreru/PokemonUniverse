@@ -63,6 +63,8 @@ interface Props {
   loop?: boolean;
   /** Sin bucle, sustituye a «Siguiente» en la última diapositiva (por ejemplo, «Entendido» o «Empezar»). */
   lastAction?: ReactNode;
+  /** Más bajo (intro de partida): el carrusel, su navegación y la cabecera caben juntos a 1280×720 y 390×844. */
+  compact?: boolean;
 }
 
 /** Índice tras moverse `delta` posiciones: da la vuelta con bucle, se para en los extremos sin él y nunca sale de rango. */
@@ -76,7 +78,7 @@ export function carouselStep(active: number, count: number, loop: boolean, delta
  * Carrusel accesible sin reproducción automática: flechas, puntos de 44 px y teclas ← → sobre la región.
  * Pinta todas las diapositivas y oculta las inactivas con `hidden`, así el contenido existe sin JavaScript.
  */
-export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jugar', kicker = 'Guía rápida', footer, headerAction, idPrefix = 'how-to-play', itemLabel = 'consejo', loop = true, lastAction }: Props) {
+export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jugar', kicker = 'Guía rápida', footer, headerAction, idPrefix = 'how-to-play', itemLabel = 'consejo', loop = true, lastAction, compact = false }: Props) {
   const [storedActive, setActive] = useState(0);
   const [direction, setDirection] = useState<'next' | 'previous'>('next');
   // Otras diapositivas (otro juego) vuelven a empezar por la primera.
@@ -110,7 +112,7 @@ export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jug
   const label = itemLabel.charAt(0).toLocaleUpperCase('es') + itemLabel.slice(1);
   const titleId = `${idPrefix}-title`;
 
-  return <section className="flex min-h-[31rem] flex-col overflow-hidden rounded-2xl border border-aqua/20 bg-surface shadow-card" aria-labelledby={titleId} aria-roledescription="carrusel" onKeyDown={onKeyDown}>
+  return <section className={`flex ${compact ? 'min-h-[24rem]' : 'min-h-[31rem]'} flex-col overflow-hidden rounded-2xl border border-aqua/20 bg-surface shadow-card`} aria-labelledby={titleId} aria-roledescription="carrusel" onKeyDown={onKeyDown}>
     <header className="flex items-start justify-between gap-3 border-b border-ink/10 bg-gradient-to-r from-aqua/[.12] to-berry/[.08] px-5 py-4 sm:px-6">
       <div className="min-w-0">
         <span className="text-xs font-black uppercase tracking-[.18em] text-aqua">{kicker}</span>
@@ -118,9 +120,9 @@ export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jug
       </div>
       {headerAction}
     </header>
-    <div className="flex flex-1 flex-col px-5 py-6 text-center sm:px-8" aria-live="polite">
+    <div className={`flex flex-1 flex-col px-5 text-center sm:px-8 ${compact ? 'py-4' : 'py-6'}`} aria-live="polite">
       {slides.map((slide, index) => <div key={slide.eyebrow} id={`${idPrefix}-slide-${index + 1}`} role="group" aria-roledescription="diapositiva" aria-label={`${label} ${index + 1} de ${count}`} hidden={index !== active} className={`${index === active ? 'flex' : 'hidden'} flex-1 flex-col items-center justify-center ${direction === 'next' ? 'motion-enter-right' : 'motion-enter-left'}`}>
-        <div className="flex min-h-48 w-full items-center justify-center">{slide.visual}</div>
+        <div className={`flex w-full items-center justify-center ${compact ? 'min-h-28' : 'min-h-48'}`}>{slide.visual}</div>
         <span className="mt-4 text-xs font-black uppercase tracking-[.16em] text-berry">{slide.eyebrow}</span>
         <h3 className="mt-1 max-w-md font-display text-2xl leading-tight">{slide.title}</h3>
         <p className="mt-3 max-w-lg text-sm font-semibold leading-relaxed text-ink/65 sm:text-base">{slide.description}</p>
