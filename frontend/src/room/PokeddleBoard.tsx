@@ -69,6 +69,7 @@ function PokemonAnchor({ row, latest }: { row: PokeddlePublicBoard['rows'][numbe
 
 function DesktopBoard({ board, columns }: { board: PokeddlePublicBoard; columns: PokeddleColumn[] }) {
   const latestRound = latestGuessRound(board.rows);
+  // Las capas de esta tabla son orden relativo dentro de `isolate`, no capas de página.
   return <div className="isolate hidden max-h-[34rem] max-w-full overflow-auto overscroll-contain lg:block">
     <table className="w-max min-w-full border-separate border-spacing-0 text-sm" aria-label={`Historial Pokédle de ${board.playerId}`}>
       <thead><tr className="text-left text-xs uppercase tracking-wide text-ink/70">

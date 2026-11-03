@@ -155,8 +155,17 @@ describe('capas (§2)', () => {
   it('sin z-index literales', () => {
     expect(styles).not.toMatch(/z-index:\s*\d/);
     const root = path.join(here, '..');
-    const malos = tsxFiles(root).filter((f) => /(^|[^\w-])-?z-(\d+|\[)/.test(readFileSync(f, 'utf8'))).map((f) => path.relative(root, f));
+    const permitidas = new Set(Object.keys(layers));
+    // Clases `z-*` (con variantes y signo negativo) cuyo nombre no es una capa del sistema.
+    const ilegales = (texto: string): string[] =>
+      texto.split(/[\s"'`{}]+/).filter((t) => {
+        const m = t.match(/^(?:[a-z0-9-]+:)*-?z-(.+)$/);
+        return m !== null && !permitidas.has(m[1]!);
+      });
+    const malos = tsxFiles(root).filter((f) => ilegales(readFileSync(f, 'utf8')).length > 0).map((f) => path.relative(root, f));
     expect(malos).toEqual([]);
+    const aplicadas = styles.split('\n').filter((l) => l.includes('@apply')).flatMap((l) => ilegales(l.replace(/^.*@apply/, '')));
+    expect(aplicadas).toEqual([]);
   });
   it('la escala de Tailwind son solo las capas', () => {
     expect(Object.keys((tailwind.theme as { zIndex?: Record<string, string> }).zIndex ?? {}).sort()).toEqual(Object.keys(layers).sort());
