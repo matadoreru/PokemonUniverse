@@ -1192,6 +1192,8 @@ paths:
                 format: binary
         "404":
           description: No encontrado
+        "502":
+          description: El origen no devolvió una imagen
         "503":
           description: Demasiados recursos en curso
           content:

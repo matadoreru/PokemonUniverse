@@ -46,6 +46,7 @@ public class PokemonController {
   /** Revalida siempre: una recarga del catálogo cambia el ETag y se ve en la siguiente petición. */
   private static final String SELECTOR_CACHE_CONTROL = "no-cache";
   private static final String SPRITE_CACHE_CONTROL = "public, max-age=86400";
+  private static final Pattern IMAGE_TYPE = Pattern.compile("^image/");
 
   private final PokemonCatalogService service;
   private final PokemonSpriteService sprites;
@@ -78,13 +79,17 @@ public class PokemonController {
   @Operation(summary = "Miniatura de un Pokémon del buscador", operationId = "pokemonSprite")
   @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "image/png", schema = @Schema(type = "string", format = "binary")))
   @ApiResponse(responseCode = "404", description = "No encontrado")
+  @ApiResponse(responseCode = "502", description = "El origen no devolvió una imagen")
   @ApiResponse(responseCode = "503", description = "Demasiados recursos en curso", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Get("/{id}/sprite")
   public HttpResponse<byte[]> sprite(String id) {
-    return service.catalog().byId(id).map(sprites::sprite)
-        .map(asset -> HttpResponse.ok(asset.body()).contentType(MediaType.of(asset.contentType()))
-            .header("Cache-Control", SPRITE_CACHE_CONTROL))
-        .orElseGet(HttpResponse::notFound);
+    var pokemon = service.catalog().byId(id);
+    if (pokemon.isEmpty()) return HttpResponse.notFound();
+    var asset = sprites.sprite(pokemon.get());
+    // Solo se reenvían imágenes: cualquier otra cosa del origen (HTML de error, audio…) es un fallo de la pasarela.
+    if (!IMAGE_TYPE.matcher(asset.contentType()).find()) return HttpResponse.status(HttpStatus.BAD_GATEWAY);
+    return HttpResponse.ok(asset.body()).contentType(MediaType.of(asset.contentType()))
+        .header("Cache-Control", SPRITE_CACHE_CONTROL);
   }
 
   /** {@code ResourceCapacityError} de Node: 503 con su mensaje, como en {@code GameAssetController}. */

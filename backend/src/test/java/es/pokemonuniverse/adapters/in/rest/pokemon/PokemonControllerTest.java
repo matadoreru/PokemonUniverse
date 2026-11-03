@@ -42,7 +42,7 @@ class PokemonControllerTest {
 
   private static final Instant NOW = Instant.parse("2026-01-01T00:00:00.123Z");
   private static final String[] IDS = {"t11-bulbasaur", "t11-ivysaur", "t11-raichu-alola", "t11-pikachu-cosplay",
-      "t11-abra", "t11-meowth", "t11-aa-meowth-galar", "t11-broken"};
+      "t11-abra", "t11-meowth", "t11-aa-meowth-galar", "t11-broken", "t11-html"};
   private static final byte[] PNG = {(byte) 0x89, 'P', 'N', 'G'};
 
   /** Origen falso de los sprites: el proxy no sale a la red y se cuentan las descargas. */
@@ -55,6 +55,7 @@ class PokemonControllerTest {
     @Override
     public LoadedAsset fetch(String source) {
       calls.add(source);
+      if (source.equals("https://sprites/t11-html.png")) return new LoadedAsset("<html>".getBytes(), "text/html");
       if (source.startsWith("https://sprites/t11-") && !source.contains("broken")) return new LoadedAsset(PNG, "image/png");
       throw new EngineException("Sprite source returned 404");
     }
@@ -79,6 +80,7 @@ class PokemonControllerTest {
     repo.save(PokemonEntity.create(IDS[5], 9052, "t11 meowth", 1, true, new String[] {}, new String[] {"normal"}, null, NOW));
     repo.save(PokemonEntity.create(IDS[6], 9052, "t11 meowth", 8, false, new String[] {}, new String[] {"steel"}, null, NOW));
     repo.save(PokemonEntity.create(IDS[7], 9099, "zz-broken", 9, true, new String[] {}, new String[] {"normal"}, null, NOW));
+    repo.save(PokemonEntity.create(IDS[8], 9098, "zz-html", 9, true, new String[] {}, new String[] {"normal"}, null, NOW));
     service.refresh();
     loader.calls.clear();
   }
@@ -141,9 +143,10 @@ class PokemonControllerTest {
 
   @Test
   void selectorFiltersGenerationsAndForms() {
-    assertEquals(List.of("t11-abra", "t11-bulbasaur", "t11-ivysaur", "t11-meowth", "t11-broken"), ids(selector("")));
+    assertEquals(List.of("t11-abra", "t11-bulbasaur", "t11-ivysaur", "t11-meowth", "t11-broken", "t11-html"),
+        ids(selector("")));
     assertEquals(List.of("t11-abra", "t11-bulbasaur", "t11-ivysaur", "t11-raichu-alola", "t11-meowth",
-        "t11-aa-meowth-galar", "t11-broken"), ids(selector("?includeForms=true")));
+        "t11-aa-meowth-galar", "t11-broken", "t11-html"), ids(selector("?includeForms=true")));
     assertEquals(List.of("t11-raichu-alola"), ids(selector("?generations=7&includeForms=true")));
     assertEquals(List.of(), ids(selector("?generations=7")));
     assertEquals(ids(selector("?generations=1")), ids(selector("?generations=1,x,12")));
@@ -212,6 +215,14 @@ class PokemonControllerTest {
     var broken = exchange(HttpRequest.GET("/api/pokemon/t11-broken/sprite"));
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, broken.status());
     assertFalse(new String(broken.getBody(byte[].class).orElse(new byte[0])).contains("https://"));
+  }
+
+  /** Si el origen no devuelve una imagen, el proxy no la reenvía como si lo fuera. */
+  @Test
+  void spriteRejectsANonImageUpstreamWith502() {
+    var html = exchange(HttpRequest.GET("/api/pokemon/t11-html/sprite"));
+    assertEquals(HttpStatus.BAD_GATEWAY, html.status());
+    assertFalse(new String(html.getBody(byte[].class).orElse(new byte[0])).contains("<html>"));
   }
 
   @Test

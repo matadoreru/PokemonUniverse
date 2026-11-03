@@ -286,15 +286,16 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
 
 - **OpenAPI más laxo que `shared`**: `email` y `role` aparecen anulables y los enumerados como `string`; los tipos
   generados no son asignables a los de `shared`. Hay que afinar las anotaciones Java (y quitar los alias sin uso
-  `ProfileResponse`, `GamesResponse`, `PokemonResponse` si siguen sin usarse).
+  `ProfileResponse` y `GamesResponse` si siguen sin usarse).
 - Las subclases de `Error` no pasan por el manejador de 500 JSON y devuelven el cuerpo por defecto de Micronaut.
 - El login distingue por tiempo entre correo desconocido y contraseña errónea (igual que Node).
 - Un cuerpo mal formado de un anónimo en `POST /api/feedback` da 400 antes que 401 (Node comprueba la autenticación primero).
 - No se valida `nbf` del JWT (la comprobación de `jose` en Node sí).
 - Caché del catálogo Pokémon: desde 2B la recarga horaria también carga movimientos, todas las filas de learnset y
-  todas las entradas de Pokédex por JPA, y Java ya sirve `/api/pokemon` en producción. La recarga es de un solo vuelo
-  (`CatalogSnapshotCache`, probado con lectores concurrentes en `PokemonCatalogServiceCacheTest`). Mejora opcional:
-  una proyección ligera solo para `/api/pokemon` que no cargue learnsets ni Pokédex.
+  todas las entradas de Pokédex por JPA, y Java sirve `/api/pokemon/selector` (solo `id`, `name` y sprite opaco; el
+  antiguo `/api/pokemon` se retiró en la Fase 1 de minijuegos). La recarga es de un solo vuelo (`CatalogSnapshotCache`,
+  probado con lectores concurrentes en `PokemonCatalogServiceCacheTest`). Mejora opcional: una proyección ligera solo
+  para `/api/pokemon/selector` que no cargue learnsets ni Pokédex.
 - El procesamiento incremental de anotaciones está desactivado para que el OpenAPI sea determinista; ralentiza la compilación.
 - CI: los pushes en cola esperan a un build nativo en curso (concurrencia serie); un push solo de documentación
   redespliega PRE con imágenes idénticas; volver a lanzar un Main antiguo reetiqueta el `:pre` actual; las listas de rutas de
@@ -336,7 +337,8 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
     setter público que solo usan los tests.
   - Cargador de assets: el test de 9 MiB no comprueba que se corte pronto, el test del límite de pendientes no detecta
     más de 8 cargas a la vez, y el ejecutor estático del watchdog no se cierra nunca (es daemon; inofensivo).
-  - `/api/pokemon` omite también `paletteWeights` (Node solo omite `palette`): divergencia defendible.
+  - `/api/pokemon` ya no existe en Java (Fase 1 de minijuegos): el buscador usa `/api/pokemon/selector`, que solo
+    envía `id`, `name` y sprite opaco; la divergencia de `paletteWeights` con Node desaparece.
   - `domain/pokemon/conditions` importa `EngineException` del paquete de motores.
   - Pokémon Connections: la vuelta del respaldo curado no tiene test y `PuzzleOptions` es posicional. En Pokémon
     Impostor, la media rama «no es candidato» es inalcanzable. `SketchmonTypes` es largo (856 líneas con

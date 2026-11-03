@@ -139,6 +139,7 @@ Se toman de las recomendaciones del propio documento. Si no hay ninguna, se elig
 13. **Se retira `GET /api/pokemon`.** El documento ofrece «uso interno o de administración, o retirarlo», y §11.7 confirma que no hay consumidores. Dejarlo público anula todo el trabajo anti-trampas.
     - Se borra `PublicPokemon.java` si nada más lo usa, y el `PokemonResponse` de `api-contract.ts:28`.
 14. **Fuera de alcance, pero anotado.** El sprite de `currentPokemon` en Higher or Lower (`higher-lower/server.ts:24`, `pokemonView`) sigue llevando el id de PokéAPI, así que en la categoría `DEX_NUMBER` la URL revela el valor antes de tiempo. El nombre del Pokémon ya lo hace consultable (§8.7, «Ojo»). Se deja para la Fase 2.
+15. **Residuo aceptado del selector.** `GET /api/pokemon/selector?generations=N` sigue filtrando por generación, así que un cliente puede recuperar la generación de un Pokémon con unas 9 llamadas (una por generación). Se acepta: una fase posterior puede derivar las generaciones de la configuración de la sala en el servidor en vez de aceptarlas del cliente.
 
 ## Global Constraints
 

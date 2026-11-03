@@ -2754,6 +2754,13 @@ export interface operations {
                 };
                 content?: never;
             };
+            /** @description El origen no devolvió una imagen */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
             /** @description Demasiados recursos en curso */
             503: {
                 headers: {
