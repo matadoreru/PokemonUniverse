@@ -98,6 +98,12 @@ describe('skipRowInLayout', () => {
     expect(skipRowInLayout({ ...connections, phase: 'ROUND_RESULTS' } as never)).toBe(false);
     expect(skipRowInLayout({ ...connections, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Pokémon Bingo la lleva dentro de su pantalla salvo en los resultados', () => {
+    const bingo = { ...(base as object), selectedGameId: 'pokemon-bingo', game: { gameId: 'pokemon-bingo' } };
+    expect(skipRowInLayout(bingo as never)).toBe(false);
+    expect(skipRowInLayout({ ...bingo, phase: 'ROUND_RESULTS' } as never)).toBe(false);
+    expect(skipRowInLayout({ ...bingo, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);

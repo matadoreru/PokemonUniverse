@@ -1,32 +1,197 @@
-import { describeBingoCondition, type BingoPublicBoard, type PokemonBingoPlayerState, type PokemonBingoPublicState, type RoomView } from '@pokemon-universe/shared/public';
-import { ArrowRight, Clock3, Eye, Plus, Search, Trash2, Trophy } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import type { BingoPublicCell, PokemonBingoConfig, PokemonBingoPlayerState, PokemonBingoPublicState, RoomView } from '@pokemon-universe/shared/public';
+import { ArrowRight, CheckCircle2, Clock3, Eye, Grid3x3, Hourglass, Lock, Trash2, Trophy, X } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { ServerTimer } from '../components/ServerTimer';
+import { BingoBoard, BingoHud, BingoPlayers } from '../games/pokemon-bingo/BingoParts';
+import { bingoAnnouncement, bingoAttemptText, bingoCellLabel, bingoFocusKey, bingoMoveText, bingoPlateKind, bingoProgressText, type BingoPlateKind } from '../games/pokemon-bingo/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { PokemonSelector } from './PokemonSelector';
+import { useSfxCue } from '../hooks/useSfxCue';
+import { Chip, Cutin, cx, Dialog, Icon, Panel, Pill, ScreenSplit } from '../ui';
+import { useFocusOnTransition } from './focus-transition';
+import { GameSkipSlot } from './GameSkipSlot';
+import { GuessPanel, guessSeconds, type GuessPlateContent } from './guess-kit';
+import s from '../games/pokemon-bingo/PokemonBingo.module.css';
 
-export function PokemonBingoBoard({ board, width, selectedCellId, interactive = false, onSelect }: { board: BingoPublicBoard; width: number; selectedCellId?: string | null; interactive?: boolean; onSelect?(cellId: string): void }) {
-  return <div className="max-w-full overflow-x-auto overscroll-x-contain pb-1"><div className="grid w-max min-w-full gap-2" style={{ gridTemplateColumns: `repeat(${width}, minmax(${width <= 3 ? '12rem' : '9rem'}, 1fr))` }}>{board.cells.map((cell) => { const selected = cell.id === selectedCellId; return <button type="button" key={cell.id} disabled={!interactive} onClick={() => onSelect?.(cell.id)} className={`relative flex min-h-40 flex-col gap-2 rounded-xl border p-3 text-left transition-colors ${selected ? 'border-electric bg-electric/10 ring-2 ring-electric/30' : cell.assignment ? 'border-leaf/45 bg-leaf/10' : 'border-ink/10 bg-surface-raised'} ${interactive ? 'hover:border-aqua hover:bg-aqua/[.06]' : 'cursor-default'}`}><span className="block text-sm font-black uppercase leading-snug tracking-wide">{cell.conditions.map(describeBingoCondition).map((label, index) => <span key={label} className="block">{index > 0 && <small className="text-electric">＋ </small>}{label}</span>)}</span>{cell.assignment ? <span className="flex min-h-28 flex-1 items-center justify-center gap-3"><img src={cell.assignment.sprite} alt="" className="h-28 w-28 shrink-0 object-contain [image-rendering:pixelated]" /><span className="min-w-0"><strong className="block truncate text-lg">{cell.assignment.name}</strong><small className="font-extrabold text-leaf">✓ Completa</small></span></span> : <span className="flex min-h-24 flex-1 items-center justify-center gap-2 rounded-xl bg-ink/[.025] font-bold text-ink/55"><Plus size={18} aria-hidden="true" /> Vacía</span>}{cell.possibleSolutions.length > 0 && <span className="block border-t border-ink/10 pt-2"><small className="font-extrabold text-ink/65">Podías usar:</small>{cell.possibleSolutions.map((pokemon) => <span key={pokemon.id} className="mt-1 flex items-center gap-2 text-sm font-bold"><img src={pokemon.sprite} alt="" className="h-10 w-10 object-contain [image-rendering:pixelated]" />{pokemon.name}</span>)}</span>}</button>; })}</div></div>;
+/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
+const ignoreFailure = () => undefined;
+
+/** Mover un Pokémon que ya está en otra casilla: espera la confirmación del `Dialog`. */
+interface PendingMove { pokemonId: string; pokemonName: string; from: BingoPublicCell; to: BingoPublicCell }
+
+/**
+ * Pokémon Bingo (spec §2 y §6 «Juegos»). Arriba se mira: la placa del tablero con el plazo y el tablero propio, una
+ * rejilla de `Card`s (condición, Pokémon colocado o vacía) que se eligen con `aria-pressed`. Abajo se actúa: la casilla
+ * elegida con «Quitar Pokémon» y, al lado (debajo en el móvil), el buscador. Al lado, los tableros de todos: el de cada
+ * rival se abre en un `Dialog`. Mover un Pokémon ya colocado se confirma en otro `Dialog`.
+ *
+ * Al cantar bingo (`ROUND_RESULTS`, 8 s): un `Cutin` «¡BINGO!» con el ganador y, en la placa, quién ganó, la cuenta
+ * atrás de la clasificación y, para el host, «Saltar y continuar».
+ */
+export function PokemonBingoGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+  const game = room.game as PokemonBingoPublicState;
+  const player = room.gamePlayerState as PokemonBingoPlayerState | null;
+  const config = room.selectedGameConfig as Partial<PokemonBingoConfig> | null;
+  const offset = useServerOffset(room.serverNow);
+  const { pokemon, error: poolError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [] });
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
+
+  const own = game.boards[selfId] ?? null;
+  const kind = bingoPlateKind(game.phase, { hasBoard: own !== null, canAct: player?.canAct ?? false });
+  const [selectedCellId, setSelectedCellId] = useState<string | null>(null);
+  const [rivalId, setRivalId] = useState<string | null>(null);
+  const [pending, setPending] = useState<PendingMove | null>(null);
+  const [skipping, setSkipping] = useState(false);
+  // Fuera de la ronda no se puede mover nada: la confirmación pendiente se cierra.
+  useEffect(() => { if (kind !== 'pick') setPending(null); }, [kind]);
+
+  // Por defecto, la primera casilla (también si la elegida ya no está en el tablero).
+  const chosen = own?.cells.findIndex((cell) => cell.id === selectedCellId) ?? -1;
+  const selectedIndex = own ? chosen >= 0 ? chosen : own.cells.length > 0 ? 0 : -1 : -1;
+  const selectedCell = own && selectedIndex >= 0 ? own.cells[selectedIndex]! : null;
+  const cooldownMs = useRemainingMs(player?.cooldownUntil ?? null, offset);
+  const attempt = kind === 'pick' ? player?.lastAttempt ?? null : null;
+  useSfxCue(attempt ? attempt.correct ? 'hit' : 'miss' : null, attempt?.attemptedAt ?? null);
+  // Último acierto: el buscador se vuelve a montar vacío (la bandeja abierta quitaría sitio al tablero).
+  const [placedAt, setPlacedAt] = useState<number | null>(attempt?.correct ? attempt.attemptedAt : null);
+  if (attempt?.correct && attempt.attemptedAt !== placedAt) setPlacedAt(attempt.attemptedAt);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(bingoFocusKey(kind, placedAt), titleRef);
+
+  async function assign(pokemonId: string) {
+    if (kind !== 'pick' || !own || !selectedCell) return;
+    const from = own.cells.find((cell) => cell.assignment?.id === pokemonId && cell.id !== selectedCell.id);
+    if (from) {
+      setPending({ pokemonId, pokemonName: from.assignment!.name, from, to: selectedCell });
+      return;
+    }
+    await onAction({ type: 'ASSIGN_POKEMON', cellId: selectedCell.id, pokemonId, moveExisting: false }).catch(ignoreFailure);
+  }
+  function confirmMove(move: PendingMove) {
+    void onAction({ type: 'ASSIGN_POKEMON', cellId: move.to.id, pokemonId: move.pokemonId, moveExisting: true }).catch(ignoreFailure);
+  }
+  function remove() {
+    if (!selectedCell?.assignment) return;
+    void onAction({ type: 'REMOVE_POKEMON', cellId: selectedCell.id }).catch(ignoreFailure);
+  }
+  async function skip() {
+    setSkipping(true);
+    try {
+      await onAction({ type: 'SKIP_RESULTS' }).catch(ignoreFailure);
+    } finally {
+      setSkipping(false);
+    }
+  }
+
+  // Quien no tiene tablero (espectador) ve en grande el del que va primero; todos se abren desde el lateral.
+  const shownId = own ? selfId : Object.keys(game.boards)[0] ?? null;
+  const shown = shownId ? game.boards[shownId] ?? null : null;
+  const winnerName = game.winnerId ? nameOf(game.winnerId) : null;
+  const remaining = Math.ceil(useRemainingMs(game.nextTransitionAt, offset) / 1000);
+  const durationMs = Math.max(1, (config?.durationSeconds ?? 120) * 1_000);
+  const timer = game.phase === 'ROUND_ACTIVE'
+    ? <ServerTimer deadline={game.roundEndsAt} serverOffset={offset} totalMs={durationMs} label="Tiempo" />
+    : game.phase === 'ROUND_RESULTS' ? <ServerTimer deadline={game.nextTransitionAt} serverOffset={offset} label="Clasificación" /> : null;
+  const heading = kind === 'bingo' ? '¡BINGO!' : own ? 'Completa tu tablero' : 'Tableros en directo';
+  const points = members.get(selfId)?.sessionPoints ?? null;
+
+  const top = <div className={s.top}>
+    <BingoHud width={game.width} height={game.height} heading={heading} progress={own} points={own ? points : null} timer={timer} />
+    {shown && <Panel variant="cream" scroll scrollLabel={own ? 'Tu tablero' : `Tablero de ${nameOf(shown.playerId)}`} className={cx(s.boardPanel)} bodyClassName={cx(s.boardBody)}
+      title={own ? 'Tu tablero' : `Tablero de ${nameOf(shown.playerId)}`} right={<Chip tone={shown.completed === shown.total ? 'ok' : 'neutral'}>{bingoProgressText(shown)}</Chip>}>
+      <BingoBoard board={shown} width={game.width} height={game.height} fill selectedCellId={kind === 'pick' ? selectedCell?.id ?? null : null}
+        onSelect={kind === 'pick' ? setSelectedCellId : undefined} label={own ? 'Tu tablero: elige una casilla' : `Tablero de ${nameOf(shown.playerId)}`} />
+    </Panel>}
+  </div>;
+
+  const side = <div className={s.sideColumn}>
+    <BingoPlayers game={game} members={members} colors={colors} selfId={selfId} onOpen={setRivalId} className={s.sidePanel} />
+    <GameSkipSlot className={s.skip} />
+  </div>;
+
+  const content = plateContent({
+    kind, cell: selectedCell, index: selectedIndex, total: own?.total ?? 0, cooldownMs, attempt, winnerName, selfWon: game.winnerId === selfId,
+    host: room.hostId === selfId, remaining, skipping, onRemove: remove, onSkip: () => void skip(),
+  });
+  const bottom = <GuessPanel kind={kind === 'pick' && selectedCell ? 'guess' : 'waiting'} titleRef={titleRef} question="" content={content} cooldownMs={cooldownMs}
+    selector={{ pokemon, loading: poolLoading, loadError: poolError, onRetry: retryPool, inputLabel: `Buscar Pokémon para la casilla ${selectedIndex + 1}`, roundKey: `bingo-${placedAt ?? 0}`, onGuess: assign }} />;
+
+  const rival = rivalId ? game.boards[rivalId] ?? null : null;
+  const rivalDialog = <Dialog open={rival !== null} title={`Tablero de ${rivalId ? nameOf(rivalId) : ''}`} width={1200} onClose={() => setRivalId(null)} actions={[{ label: 'Cerrar', variant: 'blue', onClick: () => undefined }]}>
+    {rival && <>
+      <p className={s.dialogMeta}>
+        <Chip tone={rival.completed === rival.total ? 'ok' : 'neutral'} icon={<Icon icon={Grid3x3} size={18} />}>{bingoProgressText(rival)}</Chip>
+        {rival.playerId === game.winnerId && <Chip tone="ok" icon={<Icon icon={Trophy} size={18} />}>¡Bingo!</Chip>}
+      </p>
+      <BingoBoard board={rival} width={game.width} height={game.height} label={`Tablero de ${nameOf(rival.playerId)}`} />
+    </>}
+  </Dialog>;
+
+  const move = pending ? bingoMoveText({ pokemonName: pending.pokemonName, from: pending.from, to: pending.to }) : null;
+  const moveDialog = <Dialog open={pending !== null} title={move?.title ?? ''} onClose={() => setPending(null)}
+    actions={[{ label: 'Mover aquí', variant: 'yellow', autoFocus: true, onClick: () => { if (pending) confirmMove(pending); } }, { label: 'Cancelar', variant: 'blue', onClick: () => undefined }]}>
+    {move && <div className={s.moveText}><p>{move.used}</p><p><strong>{move.question}</strong></p></div>}
+  </Dialog>;
+
+  const announcement = bingoAnnouncement({ kind, attempt });
+  return <>
+    {rivalDialog}
+    {moveDialog}
+    {/* El bingo lo anuncia el cut-in (su propia región, solo esos segundos): la de la pantalla no lo repite. */}
+    {kind === 'bingo' && winnerName && <Cutin key={game.bingoAt ?? 0} tone="yellow" title="¡BINGO!" subtitle={game.winnerId === selfId ? '¡Has completado tu tablero!' : `${winnerName} ha completado el tablero`} />}
+    <div className={cx('content-row', s.screen)} data-testid="pokemon-bingo-screen">
+      <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
+      <ScreenSplit fill top={top} side={side} bottom={bottom} />
+    </div>
+  </>;
 }
 
-export function PokemonBingoGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const game = room.game as PokemonBingoPublicState; const playerState = room.gamePlayerState as PokemonBingoPlayerState; const config = room.selectedGameConfig as { generations: number[]; durationSeconds: number };
-  const { pokemon, error: poolError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config.generations }); const [selectedCellId, setSelectedCellId] = useState<string | null>(null); const [selectedRival, setSelectedRival] = useState<string | null>(null); const [actionError, setActionError] = useState('');
-  const serverOffset = useServerOffset(room.serverNow); const deadline = game.roundEndsAt ?? game.nextTransitionAt; const remainingMs = useRemainingMs(deadline, serverOffset); const remaining = Math.ceil(remainingMs / 1000);
-  const own = game.boards[selfId]; useEffect(() => { if (!selectedCellId && own?.cells[0]) setSelectedCellId(own.cells[0].id); }, [own, selectedCellId]);
-  const selectedCell = own?.cells.find((cell) => cell.id === selectedCellId); const rivals = Object.keys(game.boards).filter((id) => id !== selfId); const rivalId = selectedRival && game.boards[selectedRival] ? selectedRival : rivals[0] ?? null; const rival = rivalId ? game.boards[rivalId] : null;
-  const name = (id: string) => room.members.find((member) => member.id === id)?.displayName ?? id; const cooldownMs = useRemainingMs(playerState.cooldownUntil, serverOffset);
-  async function assign(pokemonId: string) {
-    if (!selectedCell || !own) return; setActionError(''); const source = own.cells.find((cell) => cell.assignment?.id === pokemonId && cell.id !== selectedCell.id);
-    const moveExisting = Boolean(source); if (source && !window.confirm(`${source.assignment?.name} ya está usado en “${source.conditions.map(describeBingoCondition).join(' + ')}”.\n\n¿Moverlo a “${selectedCell.conditions.map(describeBingoCondition).join(' + ')}”?`)) return;
-    try { await onAction({ type: 'ASSIGN_POKEMON', cellId: selectedCell.id, pokemonId, moveExisting }); } catch (error) { setActionError(error instanceof Error ? error.message : 'No se pudo asignar.'); }
+function plateContent({ kind, cell, index, total, cooldownMs, attempt, winnerName, selfWon, host, remaining, skipping, onRemove, onSkip }: {
+  kind: BingoPlateKind;
+  cell: BingoPublicCell | null;
+  index: number;
+  total: number;
+  cooldownMs: number;
+  attempt: PokemonBingoPlayerState['lastAttempt'];
+  winnerName: string | null;
+  selfWon: boolean;
+  host: boolean;
+  remaining: number;
+  skipping: boolean;
+  onRemove(): void;
+  onSkip(): void;
+}): GuessPlateContent {
+  switch (kind) {
+    case 'pick': {
+      if (!cell) return { icon: Clock3, tone: 'info', kicker: 'Pokémon Bingo', title: 'Preparando el tablero…', text: 'El servidor prepara las casillas.' };
+      // La espera se ve (oculta a los lectores: ya lo dijo la región viva); si no, lo que dijo el último intento.
+      const note = cooldownMs > 0
+        ? <span aria-hidden="true" data-testid="bingo-cooldown"><Chip tone="warn" icon={<Icon icon={Hourglass} size={18} />}>Espera {guessSeconds(cooldownMs)} · puedes cambiar de casilla</Chip></span>
+        : attempt
+          ? <span data-testid="bingo-feedback"><Chip tone={attempt.correct ? 'ok' : 'bad'} icon={<Icon icon={attempt.correct ? CheckCircle2 : X} size={18} />}>{bingoAttemptText(attempt.message)}</Chip></span>
+          : null;
+      return {
+        icon: Grid3x3, tone: cell.assignment ? 'ok' : 'warn', kicker: `Casilla seleccionada · ${index + 1} de ${total}`, title: bingoCellLabel(cell),
+        text: cell.assignment ? 'Elige otro Pokémon para cambiarlo o quítalo.' : 'Vacía: busca un Pokémon que cumpla la condición.',
+        ...(note || cell.assignment ? {
+          aside: <span className={s.plateNotes}>
+            {note}
+            {/* A la vista a cualquier tamaño (la ayuda de la placa se oculta en el móvil y en el escritorio bajo). */}
+            {cell.assignment && <span className={s.current}>Actualmente: <strong>{cell.assignment.name}</strong></span>}
+            {cell.assignment && <Pill variant="ghost" size="small" icon={Trash2} onClick={onRemove}>Quitar Pokémon</Pill>}
+          </span>,
+        } : {}),
+      };
+    }
+    case 'blocked': return { icon: Lock, tone: 'bad', kicker: 'Tu tablero', title: 'No puedes colocar Pokémon', text: 'Ahora no puedes modificar tu tablero: sigue a la vista, con los de los demás.' };
+    case 'watching': return { icon: Eye, tone: 'info', kicker: 'Espectador', title: 'Estás observando', text: 'Los tableros de todos se actualizan en directo: ábrelos desde «Tableros».' };
+    case 'bingo': return {
+      icon: Trophy, tone: 'ok', kicker: '¡BINGO!', title: selfWon ? '¡Has completado tu tablero!' : `${winnerName ?? 'Alguien'} ha completado el tablero`,
+      text: `La clasificación aparecerá en ${Math.max(0, remaining)}s.${host ? '' : ' El host puede continuar antes.'}`,
+      ...(host ? { aside: <span className={s.bingoAside}><Pill variant="yellow" icon={ArrowRight} loading={skipping} onClick={onSkip}>Saltar y continuar</Pill></span> } : {}),
+    };
+    default: return { icon: Clock3, tone: 'info', kicker: 'Pokémon Bingo', title: 'Preparando el tablero…', text: 'El servidor prepara las casillas.' };
   }
-  async function remove() { if (!selectedCell?.assignment) return; setActionError(''); try { await onAction({ type: 'REMOVE_POKEMON', cellId: selectedCell.id }); } catch (error) { setActionError(error instanceof Error ? error.message : 'No se pudo quitar.'); } }
-  return <section className="mx-auto max-w-[96rem] px-3 py-4 sm:px-5 md:py-6">
-    <header className="mb-4 grid gap-3 rounded-2xl border border-ink/10 bg-surface/90 p-4 sm:grid-cols-[1fr_auto_1fr] sm:items-center"><div><span className="label !mb-0">Tu progreso</span><strong className="font-display text-3xl">{own?.completed ?? 0}/{own?.total ?? 0}</strong></div><div className="text-center"><span className="label !mb-0">Pokémon Bingo</span><strong className={`font-display text-3xl ${remaining <= 10 && game.phase === 'ROUND_ACTIVE' ? 'timer-pulse text-berry' : ''}`}><Clock3 className="mr-2 inline" />{Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}</strong></div><div className="flex justify-end"><span className="chip"><Trophy className="mr-1" size={16} /> {room.members.find((member) => member.id === selfId)?.sessionPoints ?? 0} pts</span></div></header>
-    {game.phase === 'ROUND_RESULTS' && game.winnerId && <div className="reveal-pop mb-5 rounded-2xl border border-electric bg-electric/15 p-6 text-center"><div className="text-6xl">🎉</div><h1 className="font-display text-5xl text-electric">¡BINGO!</h1><p className="mt-2 text-xl font-extrabold">{name(game.winnerId)} ha completado el tablero</p><p className="mt-2 font-bold text-ink/65">La clasificación aparecerá en {remaining}s.</p>{room.hostId === selfId ? <button type="button" className="btn-secondary mt-4" onClick={() => void onAction({ type: 'SKIP_RESULTS' })}><ArrowRight size={18} /> Saltar y continuar</button> : <p className="mt-3 text-sm font-bold text-ink/55">El host puede continuar antes.</p>}</div>}
-    {own && <section className="card mb-5 !p-3 sm:!p-5"><div className="mb-3 flex items-center justify-between gap-3"><div><span className="label !mb-0">Tu tablero</span><h1 className="font-display text-2xl">{name(selfId)}</h1></div><span className="chip bg-leaf/10 text-leaf">{own.completed}/{own.total}</span></div><PokemonBingoBoard board={own} width={game.width} selectedCellId={selectedCellId} interactive={game.phase === 'ROUND_ACTIVE' && playerState.canAct} onSelect={setSelectedCellId} /></section>}
-    {game.phase === 'ROUND_ACTIVE' && selectedCell && <section className="card mb-5 !p-4"><div className="mb-3 flex flex-wrap items-start justify-between gap-3"><div><span className="label !mb-0">Casilla seleccionada</span><h2 className="font-display text-2xl">{selectedCell.conditions.map(describeBingoCondition).join(' + ')}</h2>{selectedCell.assignment && <p className="font-bold text-leaf">Actualmente: {selectedCell.assignment.name}</p>}</div>{selectedCell.assignment && <button className="btn-ghost" onClick={() => void remove()}><Trash2 size={17} /> Quitar Pokémon</button>}</div>{playerState.lastAttempt && <p className={`mb-3 rounded-xl p-3 font-extrabold ${playerState.lastAttempt.correct ? 'bg-leaf/10 text-leaf' : 'bg-berry/10 text-berry'}`} role="status">{playerState.lastAttempt.message}</p>}{actionError && <p className="mb-3 rounded-xl bg-berry/10 p-3 font-extrabold text-berry" role="alert">{actionError}</p>}{cooldownMs > 0 && <p className="mb-3 font-bold text-electric">Cooldown: {(cooldownMs / 1000).toFixed(1)}s. Puedes seguir buscando o cambiar de casilla.</p>}<div className="mb-2 flex items-center gap-2"><Search size={18} className="text-aqua" /><strong>Buscar Pokémon</strong></div><PokemonSelector loading={poolLoading} loadError={poolError} onRetry={retryPool} pokemon={pokemon} locked={new Set()} disabled={false} confirmationDisabled={cooldownMs > 0} variant="embedded" onSelect={assign} /></section>}
-    {rivals.length > 0 && <section><div className="mb-3"><span className="label !mb-0">Rivales</span><h2 className="font-display text-2xl">Progreso en directo</h2></div><div className="mb-3 flex gap-2 overflow-x-auto pb-2" role="tablist">{rivals.map((id) => { const board = game.boards[id]!; return <button key={id} role="tab" aria-selected={rivalId === id} onClick={() => setSelectedRival(id)} className={`min-w-max rounded-2xl border px-4 py-3 text-left ${rivalId === id ? 'border-electric bg-electric/10' : 'border-ink/10 bg-surface-raised'}`}><strong className="block">{name(id)}</strong><small className="font-extrabold text-ink/65">{board.completed}/{board.total}</small></button>; })}</div>{rival && <div><div className="mb-2 flex items-center gap-2"><Eye size={18} className="text-aqua" /><strong className="font-display text-xl">Tablero de {name(rival.playerId)}</strong></div><PokemonBingoBoard board={rival} width={game.width} /></div>}</section>}
-  </section>;
 }

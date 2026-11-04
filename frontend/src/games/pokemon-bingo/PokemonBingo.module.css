@@ -1,0 +1,467 @@
+/*
+ * Pokémon Bingo (spec §2 y §6 «Juegos»): alto del `main` como `SessionScreen`, sin scroll de página en escritorio.
+ * Arriba la placa del tablero y el tablero propio (rejilla de `--cols` columnas dentro de un `Panel` que se desplaza por
+ * dentro si no cabe); abajo la casilla elegida con el buscador al lado; en la columna lateral, los tableros de todos.
+ */
+.screen {
+  /* Contiene el texto `sr-only` (absoluto) de la región viva. */
+  position: relative;
+  min-height: 100%;
+  padding-top: var(--sp-4);
+}
+@media (min-width: 1024px) {
+  .screen {
+    height: 100%;
+    padding-block: var(--sp-5);
+  }
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+  /* Hueco para la sombra dura del panel. */
+  padding-bottom: var(--sp-2);
+}
+.top > * {
+  flex: none;
+}
+@media (min-width: 1024px) {
+  .top {
+    height: 100%;
+  }
+  .top > .boardPanel {
+    flex: 1 1 0;
+    min-height: 12rem;
+  }
+}
+
+/* Placa del tablero: tamaño, progreso y puntos arriba, el título debajo, el plazo a la derecha. */
+.hud {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+}
+.hudMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.hudMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.hudPoints {
+  display: inline-flex;
+}
+.heading {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 800 var(--fs-34) / 1.1 var(--font-display);
+  color: var(--yellow);
+}
+.hudTimer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Panel del tablero: el cuerpo contiene la rejilla y se desplaza por dentro si las filas no caben. */
+.boardBody {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Rejilla: `--cols` columnas; cada casilla es una `Card` con la condición arriba, el sprite y el estado debajo. */
+.grid {
+  --row-min: 9rem;
+  display: grid;
+  flex: 1 0 auto;
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  grid-auto-rows: minmax(var(--row-min), auto);
+  gap: var(--sp-2);
+  min-width: 0;
+  /* Hueco para el contorno de la casilla elegida y la sombra dura. */
+  padding: 3px 4px var(--sp-2) 3px;
+  container-type: inline-size;
+}
+@media (min-width: 1024px) {
+  .gridFill {
+    --row-min: 7rem;
+    /* `auto` y no `1fr`: cada fila mide lo que pide su contenido y el sobrante se reparte (con `1fr`, una casilla de
+       dos líneas estiraría todas las filas). */
+    grid-template-rows: repeat(var(--rows, 3), minmax(var(--row-min), auto));
+    gap: var(--sp-3);
+  }
+}
+.grid > [data-bingo-cell] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(2.5rem, 1fr) auto;
+  grid-template-areas: 'name' 'art' 'state' 'sol';
+  justify-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2);
+}
+/* El hueco del sprite no aporta alto propio (el sprite va absoluto): las filas reparten el alto, no lo dicta la imagen. */
+.grid > [data-bingo-cell] > span:first-child {
+  grid-area: art;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+.grid > [data-bingo-cell] > span:first-child > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+/* La condición es lo que se lee primero: arriba y en hasta tres líneas (con `title` si no cabe). */
+.grid > [data-bingo-cell] > span:nth-child(2) {
+  grid-area: name;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  white-space: normal;
+  overflow-wrap: break-word;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: var(--fs-15);
+  line-height: 1.15;
+}
+/* Casilla vacía: hueco crema con el «+» (el texto «Vacía» va debajo). */
+.grid > [data-filled='false'] > span:first-child {
+  background: var(--cream-2);
+  color: var(--ink-2);
+}
+.filled,
+.empty {
+  grid-area: state;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  max-width: 100%;
+  min-width: 0;
+}
+.assigned {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 800 var(--fs-15) / 1.2 var(--font-display);
+}
+.empty {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+.grid > [data-filled='true'] {
+  border-color: var(--ok);
+}
+.grid > [data-filled='true'][aria-pressed='true'] {
+  border-color: var(--yellow-d);
+}
+
+/* Resultados: hasta tres Pokémon que valían en una casilla vacía. */
+.solutions {
+  grid-area: sol;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding-top: var(--sp-1);
+  border-top: var(--ol-1-5) solid var(--navy);
+}
+.solutionsTitle {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+.solutionList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.solution {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+  font: 700 var(--fs-13) / 1.2 var(--font-text);
+}
+.solution img {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.solution span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Columna lateral: los tableros de todos y «Saltar minijuego». */
+.sideColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-height: 0;
+}
+.sideColumn > * {
+  flex: none;
+}
+.sidePanel {
+  max-height: 22rem;
+}
+@media (min-width: 1024px) {
+  .sideColumn {
+    height: 100%;
+  }
+  .sideColumn > .sidePanel {
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: none;
+  }
+}
+.skip {
+  display: flex;
+  justify-content: flex-end;
+}
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.rowProgress {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  font-variant-numeric: tabular-nums;
+}
+.rowValue {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.rowValue small {
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+/* Franja de un rival: toda ella es el botón que abre su tablero (objetivo ≥44 px; el foco rodea la franja). */
+.rowButton {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-franja);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  transition: transform var(--t-press) var(--ease);
+}
+.rowButton:hover {
+  transform: translateY(-1px);
+}
+.rowButton:active {
+  transform: translateY(2px);
+}
+.open {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+
+/* Placa inferior: lo que dijo el último intento y «Quitar Pokémon», en línea. */
+.plateNotes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.current {
+  font: 700 var(--fs-15) / 1.3 var(--font-text);
+  color: var(--ink);
+}
+.current strong {
+  font-weight: 800;
+}
+.bingoAside {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+}
+
+/* Diálogos: el tablero de un rival y la confirmación de mover. */
+.dialogMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+.moveText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  font: 700 var(--fs-15) / 1.4 var(--font-text);
+  color: var(--ink);
+}
+.moveText strong {
+  font-weight: 800;
+}
+
+/* Móvil y tableta: tableros de 4 o más columnas en 3 (el bingo es el tablero entero: el orden se conserva). */
+@media (max-width: 1023px) {
+  .grid {
+    --row-min: 8rem;
+  }
+  .many {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 639px) {
+  .hud {
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .heading {
+    font-size: var(--fs-22);
+    white-space: normal;
+  }
+  .grid {
+    --row-min: 7.5rem;
+    gap: var(--sp-1);
+  }
+  .grid > [data-bingo-cell] {
+    padding: var(--sp-1);
+  }
+  .grid > [data-bingo-cell] > span:nth-child(2) {
+    font-size: var(--fs-13);
+  }
+  .assigned {
+    font-size: var(--fs-13);
+  }
+  /* El chip «Completa» sin icono: cabe en una casilla de un tercio de la pantalla. */
+  .filled svg {
+    display: none;
+  }
+}
+/*
+ * Casilla compacta en escritorio: la condición a todo el ancho y, debajo, el sprite pequeño a la izquierda del estado.
+ * Siempre en el escritorio bajo (720 px) y, a cualquier alto, en tableros de 4 filas o más (`dense`): así un 5×5
+ * cabe entero a 1920 y a 1280 se desplaza poco dentro de su panel.
+ */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .hud {
+    padding-block: var(--sp-2);
+  }
+  /* El título en la misma línea que el tamaño y el progreso: el alto que gana es para el tablero. */
+  .hudMain {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: var(--sp-4);
+  }
+  .hudMain > .heading {
+    order: -1;
+  }
+  .heading {
+    font-size: var(--fs-26);
+  }
+  /* Más específico que el relleno del cuerpo del `Panel`. */
+  .boardPanel > .boardBody {
+    padding-block: var(--sp-2);
+  }
+  .gridFill {
+    --row-min: 4.75rem;
+    gap: var(--sp-2);
+    padding-bottom: 6px;
+  }
+  .gridFill > [data-bingo-cell] {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas: 'name name' 'art state';
+    justify-items: start;
+    align-items: center;
+    text-align: left;
+    column-gap: var(--sp-2);
+  }
+  .gridFill > [data-bingo-cell] > span:first-child {
+    width: 2.5rem;
+    height: 2.5rem;
+    align-self: center;
+  }
+  .gridFill .filled,
+  .gridFill .empty {
+    justify-content: flex-start;
+  }
+}
+@media (min-width: 1024px) {
+  .gridFill.dense {
+    --row-min: 5.25rem;
+    gap: var(--sp-2);
+  }
+  .gridFill.dense > [data-bingo-cell] {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas: 'name name' 'art state';
+    justify-items: start;
+    align-items: center;
+    text-align: left;
+    column-gap: var(--sp-2);
+  }
+  .gridFill.dense > [data-bingo-cell] > span:first-child {
+    width: 2.75rem;
+    height: 2.75rem;
+    align-self: center;
+  }
+  .gridFill.dense .filled,
+  .gridFill.dense .empty {
+    justify-content: flex-start;
+  }
+}
+
+/* Escritorio grande (≥1600×900): la pantalla se llena; la condición, los nombres y el título crecen con el tablero. */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .hud {
+    padding: var(--sp-4) var(--sp-5);
+  }
+  .heading {
+    font-size: var(--fs-44);
+  }
+  .gridFill:not(.dense) {
+    --row-min: 9rem;
+  }
+  .gridFill:not(.dense) > [data-bingo-cell] {
+    padding: var(--sp-3);
+    gap: var(--sp-2);
+  }
+  .gridFill:not(.dense) > [data-bingo-cell] > span:nth-child(2) {
+    font-size: clamp(var(--fs-18), calc(5cqw / var(--cols, 3) * 3), var(--fs-26));
+  }
+  .gridFill:not(.dense) .assigned {
+    font-size: clamp(var(--fs-18), calc(4cqw / var(--cols, 3) * 3), var(--fs-22));
+  }
+}
