@@ -127,19 +127,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .label { @apply mb-1.5 block text-sm font-extrabold normal-case tracking-normal text-ink/70; }
   .chip { @apply inline-flex items-center rounded-full bg-ink/[.07] px-2.5 py-1 text-sm font-extrabold text-ink/75; }
   .step-number { @apply grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-aqua text-sm font-black text-night; }
-  .permission-chip { @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-ink/10 bg-ink/[.06] px-2.5 py-1 text-xs font-extrabold text-ink/65; }
   .permission-help { @apply mt-3 text-sm font-bold text-ink/65; }
-  /* Opción de un grupo de botones de configuración (`aria-pressed`); la elegida añade su color de acento con utilidades. */
-  .toggle-option { @apply min-h-11 rounded-xl border border-ink/10 bg-surface-raised px-3 py-2 font-extrabold text-ink/70 transition-colors hover:border-aqua/50 disabled:cursor-not-allowed disabled:opacity-55; }
   .experimental-badge { @apply inline-flex min-h-6 items-center rounded-full px-2 py-0.5 text-xs font-black text-white; background: #c92a42; }
   .recommended-badge { @apply inline-flex min-h-6 items-center rounded-full bg-electric px-2 py-0.5 text-xs font-black text-night; }
   .status-error { @apply rounded-xl border border-berry/25 bg-berry/10 px-3.5 py-3 text-sm font-extrabold text-berry; }
   .empty-state { @apply rounded-xl border border-dashed border-ink/20 bg-ink/[.025] p-6 text-center text-ink/65; }
   .skeleton { @apply animate-pulse rounded-lg bg-ink/10; }
   .ranking-row { @apply grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-xl border border-ink/10 bg-surface-raised p-3 sm:grid-cols-[auto_auto_minmax(0,1fr)_auto]; }
-  /* Fila compacta para barras laterales (marcador en vivo): las 4 celdas en todos los anchos; `-solved` marca a quien ya acertó. */
-  .ranking-row-compact { @apply grid-cols-[auto_auto_minmax(0,1fr)_auto] gap-2 p-2 sm:grid-cols-[auto_auto_minmax(0,1fr)_auto]; }
-  .ranking-row-solved { @apply border-leaf/40 bg-leaf/10; }
   /* Barra de acción fija abajo: la acción principal sigue a la vista aunque el contenido no quepa (voto, intro). */
   .sticky-action-bar { @apply sticky bottom-3 z-sticky flex flex-col gap-3 rounded-xl border border-ink/10 bg-surface/95 p-3 sm:flex-row; }
 }
@@ -147,7 +141,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 /* Insignia de tipo Pokémon: borde y fondo con el token del tipo (`--type-*`), texto con `ink`.
    Los tipos de tinta blanca llevan un anillo blanco para despegarse del azul noche. */
 .type-badge { border-color: rgb(var(--type-rgb) / .5); background-color: rgb(var(--type-rgb) / .12); }
-.type-badge-icon { background-color: rgb(var(--type-rgb) / .21); }
 .type-badge-normal { --type-rgb: var(--type-normal-rgb); }
 .type-badge-fire { --type-rgb: var(--type-fire-rgb); }
 .type-badge-water { --type-rgb: var(--type-water-rgb); }
@@ -192,22 +185,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .zoomed-image { transition: transform 300ms cubic-bezier(.2,.75,.25,1); will-change: transform; }
 @media (max-width: 640px) { .zoomed-answer { position: sticky; bottom: .5rem; z-index: var(--z-sticky); border-radius: .75rem; border: 1px solid rgb(var(--color-ink) / .1); background: rgb(var(--color-surface) / .97); padding: .75rem; } }
 /* Vocabulario de movimiento común: solo transform/opacity y ≤400 ms. La reducción de movimiento se apaga abajo, en una sola regla. */
-.timer-track { border: 1px solid rgb(var(--color-ink) / .15); background: rgb(var(--color-ink) / .12); }
 .motion-bump { animation: motion-bump 300ms cubic-bezier(.2,.8,.3,1); }
 .motion-enter-up { animation: motion-enter-up 260ms cubic-bezier(.16,1,.3,1) both; }
 .motion-enter-left { animation: motion-enter-left 320ms cubic-bezier(.16,1,.3,1) both; }
 .motion-enter-right { animation: motion-enter-right 320ms cubic-bezier(.16,1,.3,1) both; }
-.motion-grow-x { transform-origin: left; animation: motion-grow-x 400ms cubic-bezier(.16,1,.3,1) both; }
-.motion-flip { animation: motion-flip 360ms cubic-bezier(.16,1,.3,1) both; }
 .motion-delay-1s { animation-delay: 1s; animation-fill-mode: both; }
 @keyframes motion-bump { 50% { transform: scale(1.12); } }
 @keyframes motion-enter-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes motion-enter-left { from { opacity: 0; transform: translateX(-1.5rem); } to { opacity: 1; transform: translateX(0); } }
 @keyframes motion-enter-right { from { opacity: 0; transform: translateX(1.5rem); } to { opacity: 1; transform: translateX(0); } }
-@keyframes motion-grow-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes motion-flip { from { transform: rotateY(90deg); } to { transform: rotateY(0); } }
-/* Regla de la revelación de Pokédex Distance: el objetivo en el 50 % y cada respuesta a su distancia, en carriles de 4 rem. */
-/* isolate contiene los z-index inline de los marcadores (DistanceRuler.tsx) para que no pasen sobre la cabecera fija. */
 /* Reducción de movimiento global: apaga todas las animaciones y transiciones en un único sitio. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }

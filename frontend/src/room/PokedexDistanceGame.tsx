@@ -1,6 +1,7 @@
 import type { PokedexDistanceConfig, PokedexDistancePlayerState, PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
-import type { ReactNode } from 'react';
+import type { ReactNode, RefObject } from 'react';
+import { useRef } from 'react';
 import { Check, Clock3, Crosshair, Eye, Hourglass, Lock, Ruler, Swords, Target, TimerOff, Trophy, UserX } from 'lucide-react';
 import { RevealCutIn } from '../components/RevealCutIn';
 import { Avatar } from '../components/Avatar';
@@ -13,10 +14,11 @@ import { formatDexNumber } from './distance-ruler';
 import { DexStrip } from './DexStrip';
 import { DistanceRuler } from './DistanceRuler';
 import { GameSkipSlot } from './GameSkipSlot';
+import { useFocusOnTransition } from './focus-transition';
 import { PlayerList } from './PlayerList';
 import { playerColor } from './player-color';
 import { PokemonSelector } from './PokemonSelector';
-import { DISTANCE_EXACT_HIT_TITLE, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint } from './pokedex-distance-selection';
+import { DISTANCE_EXACT_HIT_TITLE, distanceAnnouncement, distanceFocusKey, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint } from './pokedex-distance-selection';
 import s from './PokedexDistanceGame.module.css';
 
 /** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
@@ -52,6 +54,13 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
   const colorOf = (playerId: string) => playerColor(Math.max(0, room.members.findIndex((item) => item.id === playerId)));
   // La elección propia sale del catálogo público del buscador (nombre y sprite, nunca el número).
   const ownPick = playerState?.selection ? pokemon.find((entry) => entry.id === playerState.selection!.pokemonId) ?? null : null;
+  // Al bloquear la elección el buscador se desmonta y, al revelar, cambia la placa: el foco va a su título.
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(distanceFocusKey(game.phase, roundKey, hasSelection), titleRef);
+  const announcement = distanceAnnouncement({
+    phase: game.phase, roundNumber: game.roundNumber, target: targetLabel, eligible, hasSelection,
+    exactHit: Boolean(playerState?.exactHit), ownPickName: ownPick?.name ?? null, lastRound, selfId,
+  });
 
   const hud = <Panel variant="dark" as="div" className={cx(s.hudPanel)} bodyClassName={cx(s.hud)}>
     <div className={s.round}>
@@ -103,6 +112,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
             name={name}
             color={colorOf(row.playerId)}
             self={row.playerId === selfId}
+            disconnected={rowMember?.presence !== undefined && rowMember.presence !== 'CONNECTED'}
             avatar={selection ? <img className={s.rowSprite} src={selection.sprite} alt="" /> : <Avatar name={name} avatar={rowMember?.avatar} size="sm" />}
             meta={<span className={s.rowMeta}>
               {selection ? <span className={s.clip}>{selection.pokemonName} · {formatDexNumber(selection.dexNumber)}</span> : <span className={s.strong}>Sin respuesta</span>}
@@ -121,7 +131,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
   const side = <div className={s.side}>{panel}<GameSkipSlot className={s.skip} /></div>;
 
   const bottom = revealing
-    ? <ActionStatus icon={lastRound.reason === 'NO_RESPONSE' ? TimerOff : lastRound.tiedIds.length > 0 ? Swords : Ruler} kicker={`Ronda ${game.roundNumber}${game.tiebreakDepth > 0 ? ` · desempate ${game.tiebreakDepth}` : ''}`} title={outcome!.title} text={outcome!.note ?? 'Cae quien quedó más lejos del objetivo.'} tone={outcome!.note ? 'warn' : 'info'} />
+    ? <ActionStatus icon={lastRound.reason === 'NO_RESPONSE' ? TimerOff : lastRound.tiedIds.length > 0 ? Swords : Ruler} kicker={`Ronda ${game.roundNumber}${game.tiebreakDepth > 0 ? ` · desempate ${game.tiebreakDepth}` : ''}`} title={outcome!.title} text={outcome!.note ?? 'Cae quien quedó más lejos del objetivo.'} tone={outcome!.note ? 'warn' : 'info'} titleRef={titleRef} />
     : activePhase && eligible && !hasSelection
       ? <div className={s.selector}><PokemonSelector pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set(game.lockedPokemonIds)} disabled={false} onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId }).catch(ignoreFailure)} /></div>
       : member?.role === 'SPECTATOR' || !eligible
@@ -131,22 +141,26 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
             title={playerState?.exactHit ? DISTANCE_EXACT_HIT_TITLE : '¡Selección confirmada!'}
             text={playerState?.exactHit ? 'Has elegido exactamente el Pokémon objetivo.' : 'Ya está bloqueada en el servidor.'}
             tone={playerState?.exactHit ? 'ok' : 'info'}
+            titleRef={titleRef}
             aside={ownPick ? <span className={s.pick}><Card size="sm" name={ownPick.name} sprite={ownPick.sprite} decorativeSprite state={playerState?.exactHit ? 'correct' : 'selected'} /></span> : null} />
           : <ActionStatus icon={Clock3} kicker="Pokédex Distance" title="Siguiente ronda en breve…" text="El servidor prepara el próximo objetivo." tone="info" />;
 
   return <div className={cx('content-row', s.screen)}>
+    {/* Primero: tras el armazón, su posición estática (absoluta, sin ancestro posicionado) alargaría la página en el móvil. */}
+    <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
     <ScreenSplit fill top={top} side={side} bottom={bottom} />
     {exactHitNow && <RevealCutIn key={roundKey} tone="electric" title={DISTANCE_EXACT_HIT_TITLE} subtitle={targetLabel} />}
   </div>;
 }
 
 /** Pantalla inferior sin buscador: placa crema con icono, estado y, a la derecha, el tiempo o la carta elegida. */
-function ActionStatus({ icon, kicker, title, text, tone, aside }: { icon: LucideIcon; kicker: string; title: string; text: string; tone: 'ok' | 'info' | 'warn'; aside?: ReactNode }) {
+function ActionStatus({ icon, kicker, title, text, tone, aside, titleRef }: { icon: LucideIcon; kicker: string; title: string; text: string; tone: 'ok' | 'info' | 'warn'; aside?: ReactNode; titleRef?: RefObject<HTMLHeadingElement | null> }) {
   return <Panel variant="cream" as="div" bodyClassName={cx(s.actionBody)}>
     <span className={cx(s.actionIcon, s[tone])}><Icon icon={icon} size={32} /></span>
     <div className={s.status}>
       <span className={s.kicker}>{kicker}</span>
-      <h2 className={s.actionTitle}>{title}</h2>
+      {/* Destino del foco (`useFocusOnTransition`): sin anillo, por la regla global de los títulos con tabindex -1. */}
+      <h2 ref={titleRef} tabIndex={-1} className={s.actionTitle}>{title}</h2>
       <p className={s.help}>{text}</p>
     </div>
     {aside && <div className={s.aside}>{aside}</div>}

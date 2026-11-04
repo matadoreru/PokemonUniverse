@@ -2,7 +2,7 @@ import type { PokedexDistancePublicState } from '@pokemon-universe/shared/public
 import { describe, expect, it } from 'vitest';
 import {
   DISTANCE_HIDDEN_PICKED_LABEL, DISTANCE_SELECTION_VISIBILITY_LABEL, distanceMemberStatus, distanceSelectionVisibilityLabels,
-  DISTANCE_EXACT_HIT_TITLE, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint,
+  DISTANCE_EXACT_HIT_TITLE, distanceAnnouncement, distanceFocusKey, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint,
 } from './pokedex-distance-selection';
 
 function game(overrides: Partial<PokedexDistancePublicState>): PokedexDistancePublicState {
@@ -104,5 +104,35 @@ describe('distanceRoundRows', () => {
   it('en un empate forzado el eliminado no lleva «Empate»', () => {
     const rows = distanceRoundRows({ eligibleIds: ['a', 'b'], selections: { a: sel(5), b: sel(5) }, reason: 'FARTHEST', eliminatedIds: ['b'], tiedIds: ['a', 'b'] });
     expect(rows.map((row) => [row.playerId, row.tied, row.eliminated])).toEqual([['a', true, false], ['b', false, true]]);
+  });
+});
+
+describe('foco y avisos', () => {
+  const sel = (distance: number) => ({ pokemonId: `p${distance}`, pokemonName: `P${distance}`, sprite: '/s.png', dexNumber: 25 + distance, distance, selectedAt: 1 });
+  const base = { phase: 'ROUND_ACTIVE' as const, roundNumber: 2, target: '#025', eligible: true, hasSelection: false, exactHit: false, ownPickName: null, lastRound: null, selfId: 'a' };
+  it('la clave del foco solo existe con la elección bloqueada o en la revelación, y cambia con el desempate', () => {
+    expect(distanceFocusKey('ROUND_ACTIVE', '2-0', false)).toBeNull();
+    expect(distanceFocusKey('ROUND_ACTIVE', '2-0', true)).toBe('locked:2-0');
+    expect(distanceFocusKey('TIEBREAKER_ACTIVE', '2-1', true)).toBe('locked:2-1');
+    expect(distanceFocusKey('ROUND_RESULTS', '2-0', true)).toBe('reveal:2-0');
+    expect(distanceFocusKey('ROUND_RESULTS', '2-0', false)).toBe('reveal:2-0');
+    expect(distanceFocusKey('GAME_RESULTS', '2-0', true)).toBeNull();
+  });
+  it('anuncia la ronda, la elección bloqueada y el acierto exacto', () => {
+    expect(distanceAnnouncement(base)).toBe('Ronda 2: busca el Pokémon más cercano al objetivo #025.');
+    expect(distanceAnnouncement({ ...base, hasSelection: true, ownPickName: 'Pikachu' })).toBe('Has elegido Pikachu: tu elección queda bloqueada hasta la revelación.');
+    expect(distanceAnnouncement({ ...base, hasSelection: true, exactHit: true, ownPickName: 'Pikachu' })).toBe('Distancia 0 con Pikachu: es el objetivo #025.');
+    expect(distanceAnnouncement({ ...base, eligible: false })).toBe('');
+  });
+  it('anuncia el veredicto de la ronda con la distancia propia y la eliminación', () => {
+    const lastRound = { eligibleIds: ['a', 'b'], selections: { a: sel(3) }, reason: 'NO_RESPONSE' as const, eliminatedIds: ['b'], tiedIds: [] };
+    const reveal = { ...base, phase: 'ROUND_RESULTS' as const, lastRound };
+    expect(distanceAnnouncement(reveal)).toBe('Ronda 2 revelada: ⏱️ Tiempo agotado. Cae el más alejado del objetivo. Te quedaste a 3.');
+    expect(distanceAnnouncement({ ...reveal, selfId: 'b' })).toBe('Ronda 2 revelada: ⏱️ Tiempo agotado. Cae el más alejado del objetivo. No elegiste a tiempo. Quedas fuera de la partida.');
+    expect(distanceAnnouncement({ ...reveal, selfId: 'c' })).toBe('Ronda 2 revelada: ⏱️ Tiempo agotado. Cae el más alejado del objetivo.');
+    const forced = distanceAnnouncement({ ...reveal, selfId: 'c', lastRound: { ...lastRound, reason: 'FARTHEST', tiedIds: ['a', 'b'] } });
+    expect(forced).toBe('Ronda 2 revelada: ⚔️ Empate tras 3 desempates. Sin más desempates: cae quien eligió más tarde.');
+    expect(forced).not.toContain(distanceRoundOutcome({ ...lastRound, reason: 'FARTHEST', tiedIds: ['a', 'b'] }).note!);
+    expect(distanceAnnouncement({ ...reveal, selfId: 'c', lastRound: { ...lastRound, reason: 'TIE', eliminatedIds: [], tiedIds: ['a', 'b'] } })).toBe('Ronda 2 revelada: ⚔️ Empate en la peor distancia. Los empatados juegan un desempate.');
   });
 });

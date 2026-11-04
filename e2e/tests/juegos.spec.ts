@@ -792,7 +792,11 @@ test('pokedex-distance: elección de los rivales oculta y panel de visibilidad',
     await buscador.fill('Pikachu', { timeout: 20_000 });
     // El catálogo del buscador llega por HTTP: se espera a la coincidencia antes de elegirla.
     await eligeAntes!.page.getByRole('button', { name: 'Pikachu', exact: true }).click({ timeout: 10_000 });
-    await expect(eligeAntes!.page.getByRole('heading', { name: /Selección confirmada|Acierto exacto/ })).toBeVisible({ timeout: 10_000 });
+    const confirmada = eligeAntes!.page.getByRole('heading', { name: /Selección confirmada|Acierto exacto/ });
+    await expect(confirmada).toBeVisible({ timeout: 10_000 });
+    // El buscador se desmonta al elegir: el foco va al título de la placa, no se pierde en `body`.
+    await expect(confirmada).toBeFocused();
+    expect(await eligeAntes!.page.evaluate(() => document.activeElement === document.body)).toBe(false);
     const yaHaElegido = host.page.getByText('✓ Ya ha elegido', { exact: true });
     await expect(yaHaElegido).toHaveCount(1, { timeout: 10_000 });
     await expect(host.page.getByText(/→ Pikachu/)).toHaveCount(0);

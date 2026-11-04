@@ -107,3 +107,47 @@ export function distanceRoundRows(round: Pick<PokedexDistancePublicState['lastRo
   const key = (row: DistanceRoundRow) => row.distance ?? Number.POSITIVE_INFINITY;
   return rows.map((row, index) => ({ row, index })).sort((a, b) => key(a.row) - key(b.row) || a.index - b.index).map(({ row }) => row);
 }
+
+/**
+ * Clave del foco de la pantalla (`useFocusOnTransition`): al bloquear la elección propia (el buscador se desmonta) y al
+ * revelar la ronda, el foco va al título de la placa inferior. `null` mientras se elige o sin nada que enfocar.
+ */
+export function distanceFocusKey(phase: PokedexDistancePublicState['phase'], roundKey: string, hasSelection: boolean): string | null {
+  if (phase === 'ROUND_RESULTS') return `reveal:${roundKey}`;
+  const active = phase === 'ROUND_ACTIVE' || phase === 'TIEBREAKER_ACTIVE';
+  return active && hasSelection ? `locked:${roundKey}` : null;
+}
+
+/**
+ * Texto de la región `role="status"` de la pantalla: la ronda que empieza, la elección propia bloqueada o el veredicto
+ * de la ronda (con la distancia propia). Con otras palabras que la pantalla: no repite los textos que buscan las E2E.
+ */
+export function distanceAnnouncement({ phase, roundNumber, target, eligible, hasSelection, exactHit, ownPickName, lastRound, selfId }: {
+  phase: PokedexDistancePublicState['phase'];
+  roundNumber: number;
+  /** Objetivo ya formateado (`#025`). */
+  target: string;
+  eligible: boolean;
+  hasSelection: boolean;
+  exactHit: boolean;
+  ownPickName: string | null;
+  lastRound: Pick<PokedexDistancePublicState['lastRound'] & object, 'eligibleIds' | 'selections' | 'reason' | 'eliminatedIds' | 'tiedIds'> | null;
+  selfId: string;
+}): string {
+  if (phase === 'ROUND_RESULTS' && lastRound) {
+    const outcome = distanceRoundOutcome(lastRound);
+    // La regla con otras palabras que la nota de la placa (`outcome.note`), que las E2E buscan como texto.
+    const rule = lastRound.reason === 'TIE' ? 'Los empatados juegan un desempate.'
+      : outcome.note ? 'Sin más desempates: cae quien eligió más tarde.' : 'Cae el más alejado del objetivo.';
+    const verdict = `Ronda ${roundNumber} revelada: ${outcome.title}. ${rule}`;
+    if (!lastRound.eligibleIds.includes(selfId)) return verdict;
+    const distance = lastRound.selections[selfId]?.distance;
+    const own = distance === undefined ? 'No elegiste a tiempo.' : `Te quedaste a ${distance}.`;
+    return `${verdict} ${own}${lastRound.eliminatedIds.includes(selfId) ? ' Quedas fuera de la partida.' : ''}`;
+  }
+  const active = phase === 'ROUND_ACTIVE' || phase === 'TIEBREAKER_ACTIVE';
+  if (!active || !eligible) return '';
+  if (exactHit) return `Distancia 0 con ${ownPickName ?? 'tu Pokémon'}: es el objetivo ${target}.`;
+  if (hasSelection) return `${ownPickName ? `Has elegido ${ownPickName}` : 'Has elegido'}: tu elección queda bloqueada hasta la revelación.`;
+  return `Ronda ${roundNumber}: busca el Pokémon más cercano al objetivo ${target}.`;
+}
