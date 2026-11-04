@@ -1,29 +1,51 @@
 import type { ZoomedPokemonConfig, ZoomedPokemonHintKind, ZoomedPokemonImageMode } from '@pokemon-universe/shared/public';
-import { Image, Images, Lightbulb, Sparkles } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
+import { ConfigRange } from '../../room/ConfigRange';
+import { Segmented, Toggle } from '../../ui';
+import s from './ConfigPanel.module.css';
 export { validateZoomedPokemonConfig } from './validation';
 
-const roundTimes = [15, 20, 30, 45, 60];
-const roundCounts = [5, 10, 15, 20];
-const modes: Array<{ id: ZoomedPokemonImageMode; label: string; description: string }> = [
-  { id: 'MIXED', label: 'Mixto', description: 'Alterna artworks y sprites, con fallback seguro.' },
-  { id: 'SPRITE', label: 'Sprites', description: 'Usa el sprite del catálogo actual.' },
-  { id: 'ARTWORK', label: 'Artworks', description: 'Solo PNG locales válidos.' },
+const IMAGE_LABEL = 'Imagen';
+const HINT_KINDS_LABEL = 'Qué pistas salen';
+const modes: Array<{ value: ZoomedPokemonImageMode; label: string; description: string }> = [
+  { value: 'MIXED', label: 'Mixto', description: 'Alterna artworks y sprites, con fallback seguro.' },
+  { value: 'SPRITE', label: 'Sprites', description: 'Usa el sprite del catálogo actual.' },
+  { value: 'ARTWORK', label: 'Artworks', description: 'Solo PNG locales válidos.' },
 ];
 const hintOptions: Array<{ id: ZoomedPokemonHintKind; label: string }> = [
   { id: 'GENERATION', label: 'Generación' }, { id: 'TYPE', label: 'Tipo' }, { id: 'TYPE_COUNT', label: 'Nº de tipos' },
   { id: 'EVOLUTION', label: 'Etapa evolutiva' }, { id: 'CATEGORY', label: 'Legendario / Mítico' },
 ];
 
+/**
+ * Ajustes de Zoomed Pokémon con los controles del catálogo: generaciones, de dónde sale la imagen (`Segmented`), las
+ * formas y las pistas adicionales con sus tipos (`Toggle`) y los tiempos (`ConfigRange`, en los límites del contrato:
+ * 15–60 s y 1–20 rondas).
+ */
 export function ZoomedPokemonConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as ZoomedPokemonConfig;
   const update = (next: Partial<ZoomedPokemonConfig>) => void onChange({ ...value, ...next });
-  const toggleHint = (hint: ZoomedPokemonHintKind) => update({ hintKinds: value.hintKinds.includes(hint) ? value.hintKinds.filter((item) => item !== hint) : [...value.hintKinds, hint] });
-  return <fieldset disabled={disabled} className="space-y-6">
+  const toggleHint = (hint: ZoomedPokemonHintKind, on: boolean) => update({ hintKinds: on ? [...value.hintKinds.filter((item) => item !== hint), hint] : value.hintKinds.filter((item) => item !== hint) });
+  const mode = modes.find((option) => option.value === value.imageMode) ?? modes[0]!;
+  return <fieldset disabled={disabled} className={s.panel}>
     <GenerationSelector selected={value.generations} onChange={(generations) => update({ generations })} />
-    <section><span className="label">Imagen</span><div className="grid gap-2 md:grid-cols-3">{modes.map((mode) => <button type="button" key={mode.id} aria-pressed={value.imageMode === mode.id} onClick={() => update({ imageMode: mode.id })} className={`flex min-h-24 items-center gap-3 rounded-2xl border p-3 text-left ${value.imageMode === mode.id ? 'border-electric bg-electric/10' : 'border-ink/10 bg-surface-raised'}`}><span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${value.imageMode === mode.id ? 'bg-electric text-night' : 'bg-ink/5 text-ink/65'}`}>{mode.id === 'MIXED' ? <Images /> : mode.id === 'ARTWORK' ? <Sparkles /> : <Image />}</span><span><strong className="block font-display text-lg">{mode.label}</strong><small className="font-bold text-ink/65">{mode.description}</small></span></button>)}</div>{value.imageMode === 'ARTWORK' && <p className="mt-2 text-sm font-bold text-electric">El servidor validará que exista al menos un artwork para estas generaciones al empezar.</p>}</section>
-    <div className="grid gap-5 lg:grid-cols-2"><section><span className="label">Tiempo</span><div className="grid grid-cols-5 gap-2">{roundTimes.map((seconds) => <button type="button" key={seconds} aria-pressed={value.roundSeconds === seconds} onClick={() => update({ roundSeconds: seconds })} className={`min-h-11 rounded-xl border font-extrabold ${value.roundSeconds === seconds ? 'border-berry bg-berry text-night' : 'border-ink/10 bg-surface-raised text-ink/65'}`}>{seconds}s</button>)}</div></section><section><span className="label">Rondas</span><div className="grid grid-cols-4 gap-2">{roundCounts.map((rounds) => <button type="button" key={rounds} aria-pressed={value.rounds === rounds} onClick={() => update({ rounds })} className={`min-h-11 rounded-xl border font-extrabold ${value.rounds === rounds ? 'border-berry bg-berry text-night' : 'border-ink/10 bg-surface-raised text-ink/65'}`}>{rounds}</button>)}</div></section></div>
-    <section className="rounded-2xl border border-ink/10 bg-ink/[.025] p-4"><button type="button" aria-pressed={value.hintsEnabled} onClick={() => update({ hintsEnabled: !value.hintsEnabled })} className="flex w-full items-center gap-3 text-left"><span className={`grid h-11 w-11 place-items-center rounded-xl ${value.hintsEnabled ? 'bg-electric text-night' : 'bg-ink/10'}`}><Lightbulb /></span><span className="flex-1"><strong className="block font-display text-xl">Pistas adicionales</strong><small className="font-bold text-ink/65">{value.hintsEnabled ? 'Visibles desde el primer segundo.' : 'Desactivadas por defecto.'}</small></span><span className={`rounded-full px-3 py-1 text-xs font-black ${value.hintsEnabled ? 'bg-leaf text-night' : 'bg-ink/10 text-ink/60'}`}>{value.hintsEnabled ? 'ON' : 'OFF'}</span></button>{value.hintsEnabled && <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{hintOptions.map((hint) => <label key={hint.id} className="flex min-h-11 cursor-pointer items-center gap-2 rounded-xl bg-surface-raised px-3 font-bold"><input type="checkbox" checked={value.hintKinds.includes(hint.id)} onChange={() => toggleHint(hint.id)} /> {hint.label}</label>)}</div>}</section>
-    <p className="text-sm font-bold text-ink/65">Las formas regionales, Mega, Gigamax y demás variantes se incluyen cuando el catálogo contiene una clave e imagen propias. Nunca se usa altura o peso como pista.</p>
+    <div className={s.group}>
+      <span className={s.label} aria-hidden="true">{IMAGE_LABEL}</span>
+      <Segmented<ZoomedPokemonImageMode> label={IMAGE_LABEL} value={value.imageMode} options={modes.map((option) => ({ value: option.value, label: option.label, disabled }))} onChange={(imageMode) => update({ imageMode })} />
+      <p className={s.help}>{mode.description}{value.imageMode === 'ARTWORK' ? ' El servidor validará que exista al menos un artwork para estas generaciones al empezar.' : ''}</p>
+    </div>
+    <div className={s.ranges}>
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="La cámara se aleja cada cuarto de ronda: cuanto antes aciertes, más bonificación." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
+    </div>
+    <div className={s.toggles}>
+      <Toggle label="Formas y variantes" hint="Regionales, Mega y Gigamax cuando el catálogo tiene su clave e imagen propias." checked={value.includeForms} disabled={disabled} onChange={(includeForms) => update({ includeForms })} />
+      <Toggle label="Pistas adicionales" hint={value.hintsEnabled ? 'Visibles desde el primer segundo.' : 'Solo se muestra el recorte.'} checked={value.hintsEnabled} disabled={disabled} onChange={(hintsEnabled) => update({ hintsEnabled })} />
+    </div>
+    {value.hintsEnabled && <div className={s.group} role="group" aria-label={HINT_KINDS_LABEL}>
+      <span className={s.label} aria-hidden="true">{HINT_KINDS_LABEL}</span>
+      <div className={s.kinds}>{hintOptions.map((hint) => <Toggle key={hint.id} label={hint.label} checked={value.hintKinds.includes(hint.id)} disabled={disabled} onChange={(on) => toggleHint(hint.id, on)} />)}</div>
+    </div>}
+    <p className={s.note}>Nunca se usa la altura ni el peso como pista.</p>
   </fieldset>;
 }

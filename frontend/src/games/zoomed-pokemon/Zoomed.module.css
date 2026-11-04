@@ -1,0 +1,49 @@
+/*
+ * Zoomed Pokémon: el recorte ampliado llena la zona de la pista y escala con ella (unidades del contenedor del cuerpo
+ * de `GuessClue`): a 1920 crece, a 390 cabe en la franja. El recorte lo hace el servidor por etapas (×5, ×3.5, ×2.5,
+ * ×1.7): aquí solo cambia la imagen, sin escalas ni transformaciones propias.
+ */
+.stage > div {
+  position: relative;
+  background: radial-gradient(circle at center, rgb(143 208 255 / 0.22) 0, transparent 62%);
+}
+.viewport {
+  position: relative;
+  display: block;
+  width: min(92cqw, 92cqh);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--band);
+  box-shadow: inset 0 0 70px rgb(5 8 17 / 0.55);
+}
+.viewport > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* El recorte llega ya ampliado (bilineal, 512 px): suave, sin escalones al crecer a 1920. */
+  image-rendering: auto;
+}
+/* Cuándo se aleja la cámara: esquina inferior del recorte, en texto. */
+.next {
+  position: absolute;
+  right: var(--sp-3);
+  bottom: var(--sp-3);
+}
+/* Revelación: el recorte con el que empezó la ronda, junto a la carta. */
+.revealCrop {
+  width: 9rem;
+}
+@media (max-width: 639px) {
+  .revealCrop {
+    width: 6rem;
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .revealCrop {
+    width: clamp(14rem, 30vh, 22rem);
+  }
+}

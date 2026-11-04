@@ -38,6 +38,12 @@ describe('skipRowInLayout', () => {
     expect(skipRowInLayout({ ...whos, phase: 'ROUND_RESULTS' } as never)).toBe(false);
     expect(skipRowInLayout({ ...whos, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Zoomed Pokémon la lleva dentro de su pantalla salvo en los resultados', () => {
+    const zoomed = { ...(base as object), selectedGameId: 'zoomed-pokemon', game: { gameId: 'zoomed-pokemon' } };
+    expect(skipRowInLayout(zoomed as never)).toBe(false);
+    expect(skipRowInLayout({ ...zoomed, phase: 'ROUND_RESULTS' } as never)).toBe(false);
+    expect(skipRowInLayout({ ...zoomed, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);

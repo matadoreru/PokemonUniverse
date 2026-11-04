@@ -1,8 +1,43 @@
 import type { RoomView, ZoomedPokemonPublicState } from '@pokemon-universe/shared/public';
-import { RotateCcw, Search, StopCircle } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
+import { CheckCircle2, Equal, Timer, ZoomIn } from 'lucide-react';
+import { Chip, Icon } from '../ui';
+import { guessRecords, guessStatsLine, guessTop } from './guess-kit';
+import { playerColor } from './player-color';
+import { sharesPosition } from './results-ties';
+import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
+import { ResultsShell, type ResultsStanding } from './ResultsShell';
 
+/**
+ * Resultados de Zoomed Pokémon: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
+ * insignia y «+N» y, en texto, aciertos, sin acertar, intentos, precisión, media, mejor tiempo, al primer intento y
+ * los aciertos a máximo zoom) y, al lado, los récords de la partida (más aciertos, acierto más rápido y a máximo zoom;
+ * empates juntos). Abajo, la acción del host. Un empate a cero no corona.
+ */
 export function ZoomedPokemonResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
   const game = room.game as ZoomedPokemonPublicState; const host = room.hostId === selfId;
-  return <section className="mx-auto max-w-4xl px-3 py-8"><div className="rounded-2xl border border-ink/10 bg-surface/95 p-4 shadow-card sm:p-7"><Search className="mx-auto text-aqua" size={50} /><span className="label mt-2 text-center">Zoomed Pokémon</span><h1 className="text-center font-display text-3xl sm:text-4xl">Clasificación final</h1><p className="mb-6 mt-1 text-center text-sm font-bold text-ink/60">Resolver con más zoom otorga una bonificación mayor.</p><div className="space-y-2">{game.results?.standings.map((entry) => { const member = room.members.find((item) => item.id === entry.playerId); const correct = entry.stats.correct ?? 0; return <article key={entry.playerId} className={`ranking-row ${entry.position === 1 ? 'border-electric/50 bg-electric/[.08]' : ''}`}><strong className="w-9 text-center font-display text-2xl">{entry.position <= 3 ? ['🥇', '🥈', '🥉'][entry.position - 1] : entry.position}</strong><span className="hidden sm:block"><Avatar name={member?.displayName ?? entry.playerId} avatar={member?.avatar} size="md" /></span><div className="min-w-0"><strong className="block truncate font-display text-xl">{member?.displayName ?? entry.playerId}</strong><p className="text-sm font-bold text-ink/65">{correct} Pokémon · {entry.stats.firstPositions ?? 0} primeras posiciones · {entry.stats.firstTry ?? 0} al primer intento · {entry.stats.maxZoomSolves ?? 0} a máximo zoom</p></div><strong className="text-right text-lg text-berry sm:text-xl">{entry.points} pts</strong></article>; })}</div>{host ? <div className="mt-7 flex flex-wrap justify-center gap-3"><button className="btn-primary" onClick={onLobby}><RotateCcw /> Continuar sesión</button><button className="btn-ghost" onClick={onEnd}><StopCircle /> Terminar sesión</button></div> : <p className="mt-6 text-center font-bold text-ink/65">Esperando al host…</p>}</div></section>;
+  const standings = game.results?.standings ?? [];
+  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
+  const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
+  const rows: ResultsStanding[] = standings.map((standing) => {
+    const index = room.members.findIndex((member) => member.id === standing.playerId);
+    return {
+      id: standing.playerId,
+      position: standing.position,
+      name: nameOf(standing.playerId),
+      points: standing.points,
+      avatar: room.members[index]?.avatar,
+      color: playerColor(Math.max(0, index)),
+      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{guessStatsLine(standing.stats, [`${standing.stats.maxZoomSolves ?? 0} a máximo zoom`])}</span></>,
+    };
+  });
+  const entries = standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats }));
+  const records = guessRecords(entries);
+  const maxZoom = guessTop(entries, 'maxZoomSolves');
+  const aside = <ResultsRecords id="zoomed-records-title" records={[
+    { key: 'correct', title: 'Más aciertos', icon: CheckCircle2, names: records.correct?.names ?? null, value: records.correct?.value ?? '', unit: records.correct?.value === '1' ? 'Pokémon reconocido' : 'Pokémon reconocidos' },
+    { key: 'fastest', title: 'Acierto más rápido', icon: Timer, names: records.fastest?.names ?? null, value: records.fastest?.value ?? '', unit: 'desde que salió el recorte' },
+    { key: 'maxZoom', title: 'A máximo zoom', icon: ZoomIn, names: maxZoom?.names ?? null, value: maxZoom ? String(maxZoom.value) : '', unit: maxZoom?.value === 1 ? 'acierto con el primer recorte' : 'aciertos con el primer recorte' },
+  ]} />;
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación final" subtitle={`Zoomed Pokémon · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
 }

@@ -1,48 +1,108 @@
-import type { PokemonLegendaryStatus, PokemonType, RoomView, ZoomedPokemonHint, ZoomedPokemonPlayerState, ZoomedPokemonPublicState } from '@pokemon-universe/shared/public';
-import { CheckCircle2, Eye, History, Lightbulb, Search, XCircle, ZoomOut } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
-import { ServerTimer } from '../components/ServerTimer';
+import type { RoomView, ZoomedPokemonConfig, ZoomedPokemonPlayerState, ZoomedPokemonPublicState } from '@pokemon-universe/shared/public';
+import { ZoomOut } from 'lucide-react';
+import { useMemo, useRef } from 'react';
+import { describeZoomedHint, zoomedSourceLabel, zoomLabel } from '../games/zoomed-pokemon/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { PokemonSelector } from './PokemonSelector';
-import type { PokemonSearchOption } from './pokemon-search';
+import { useSfxCue } from '../hooks/useSfxCue';
+import { Chip, cx, Icon } from '../ui';
+import { useFocusOnTransition } from './focus-transition';
+import {
+  GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
+  guessAnnouncement, guessFocusKey, guessOwnLastAttempt, guessPanelKind, guessRevealLines, guessScoreboard, guessSolvedOrders, guessVerdict,
+} from './guess-kit';
+import s from '../games/zoomed-pokemon/Zoomed.module.css';
 
-const EMPTY_LOCKED = new Set<string>();
-const typeLabels: Record<PokemonType, string> = { normal: 'Normal', fire: 'Fuego', water: 'Agua', electric: 'Eléctrico', grass: 'Planta', ice: 'Hielo', fighting: 'Lucha', poison: 'Veneno', ground: 'Tierra', flying: 'Volador', psychic: 'Psíquico', bug: 'Bicho', rock: 'Roca', ghost: 'Fantasma', dragon: 'Dragón', dark: 'Siniestro', steel: 'Acero', fairy: 'Hada' };
-const categoryLabels: Record<PokemonLegendaryStatus, string> = { NORMAL: 'No legendario', LEGENDARY: 'Legendario', MYTHICAL: 'Mítico' };
+const GAME_NAME = 'Zoomed Pokémon';
+const QUESTION = '¿Qué Pokémon es?';
+const SCORING = 'Cuanto antes aciertes, más zoom queda y más bonificación sumas.';
 
-function hintLabel(hint: ZoomedPokemonHint): string {
-  if (hint.kind === 'GENERATION') return `Generación ${hint.value}`;
-  if (hint.kind === 'TYPE') return hint.values.map((type) => typeLabels[type]).join(' / ');
-  if (hint.kind === 'TYPE_COUNT') return hint.value === 1 ? 'Monotipo' : `${hint.value} tipos`;
-  if (hint.kind === 'CATEGORY') return categoryLabels[hint.value];
-  if (hint.stages <= 1) return 'No evoluciona'; if (hint.stage === 1) return 'Pokémon base'; if (hint.stage >= hint.stages) return 'Evolución final'; return 'Evolución intermedia';
+/**
+ * Visor del recorte ampliado: una imagen opaca sin nombre (`role="img"` con `alt` genérico). El servidor sirve un
+ * recorte por etapa (`stage-N`, ya ampliado y centrado en un punto con relieve); aquí solo se pinta, suave al crecer.
+ */
+export function ZoomViewport({ source, sourceType, alt, className }: { source: string; sourceType: 'SPRITE' | 'ARTWORK'; zoom: number; alt: string; className?: string | undefined }) {
+  return <span role="img" aria-label={alt} className={cx(s.viewport, className)} data-source-type={sourceType}>
+    {source && <img src={source} alt="" />}
+  </span>;
 }
 
-export function ZoomViewport({ source, sourceType, alt }: { source: string; sourceType: 'SPRITE' | 'ARTWORK'; zoom: number; alt: string }) {
-  return <div className="zoomed-viewport relative aspect-square w-full overflow-hidden rounded-2xl border border-aqua/25 bg-night" aria-label={alt} data-source-type={sourceType}><div className="absolute inset-0 bg-[radial-gradient(circle,rgba(82,199,232,.16),transparent_70%)]" /><img src={source} alt="" className="zoomed-image absolute inset-0 h-full w-full object-contain [image-rendering:auto]" /></div>;
-}
-
-function GuessPanel({ pokemon, poolLoading, onRetry, player, game, serverOffset, participating, loadError, onAction }: { pokemon: readonly PokemonSearchOption[]; poolLoading: boolean; onRetry(): void; player: ZoomedPokemonPlayerState; game: ZoomedPokemonPublicState; serverOffset: number; participating: boolean; loadError: string; onAction(action: unknown): Promise<void> }) {
-  const cooldownMs = useRemainingMs(player.cooldownUntil, serverOffset);
-  if (!participating) return <div className="grid min-h-28 place-items-center rounded-2xl bg-ink/[.04] text-center"><div><Eye className="mx-auto text-aqua" /><strong className="block font-display text-xl">Estás observando</strong><span className="text-sm font-bold text-ink/65">Los espectadores no pueden responder.</span></div></div>;
-  if (player.solved) return <div className="reveal-pop grid min-h-32 place-items-center rounded-2xl border border-leaf/30 bg-leaf/[.08] text-center"><div><CheckCircle2 className="mx-auto text-leaf" size={40} /><strong className="block font-display text-2xl text-leaf">¡Has acertado!</strong><span className="font-bold text-ink/70">Eres el {player.solveOrder}º · +{player.roundPoints} pts<br />Esperando al resto…</span></div></div>;
-  return <section><div className="mb-2 flex items-end justify-between"><div><span className="label !mb-0">Tu respuesta</span><h2 className="flex items-center gap-2 font-display text-xl"><Search size={19} /> Buscar Pokémon</h2></div><small className="font-bold text-ink/60">{player.attemptCount} intentos</small></div>{player.lastAttempt?.result === 'INCORRECT' && <p className="mb-2 flex justify-between gap-2 rounded-xl bg-berry/[.08] px-3 py-2 text-sm font-extrabold text-berry" role="status"><span>❌ No es ese Pokémon.</span><span>{cooldownMs > 0 ? `Nuevo intento en ${(cooldownMs / 1000).toFixed(1)}s` : 'Ya puedes intentarlo'}</span></p>}<PokemonSelector loading={poolLoading} loadError={loadError} onRetry={onRetry} key={game.roundNumber} pokemon={pokemon} locked={EMPTY_LOCKED} disabled={!player.canGuess} confirmationDisabled={cooldownMs > 0} variant="embedded" autoFocus={false} onSelect={(pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId })} /></section>;
-}
-
-function SocialPanels({ room, game }: { room: RoomView; game: ZoomedPokemonPublicState }) {
-  return <aside className="grid gap-4 md:grid-cols-2 xl:sticky xl:top-4 xl:grid-cols-1"><section className="rounded-2xl border border-ink/10 bg-surface/85 p-4"><h2 className="mb-3 font-display text-xl">Jugadores</h2><div className="space-y-2">{room.members.map((member) => { const solve = game.solves[member.id]; return <div key={member.id} className="flex items-center gap-2 rounded-xl bg-ink/[.035] p-2"><Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} size="sm" /><span className="min-w-0 flex-1"><strong className="block truncate text-sm">{member.displayName}</strong><small className="font-bold text-ink/55">{game.scores[member.id] ?? 0} pts</small></span>{member.role === 'SPECTATOR' ? <span className="text-xs font-bold text-ink/55">Espectador</span> : solve ? <span className="text-xs font-black text-leaf">✓ Ha acertado</span> : <span className="text-xs font-bold text-ink/60">buscando…</span>}</div>; })}</div></section><section className="rounded-2xl border border-ink/10 bg-surface/85 p-4"><h2 className="mb-3 flex items-center gap-2 font-display text-xl"><History size={20} className="text-berry" /> Intentos recientes</h2>{game.attempts.length ? <div className="max-h-64 space-y-1.5 overflow-y-auto">{game.attempts.slice(-30).reverse().map((attempt, index) => { const member = room.members.find((item) => item.id === attempt.playerId); return <div key={`${attempt.attemptedAt}-${index}`} className="flex items-center gap-2 rounded-xl bg-berry/[.06] p-2 text-sm"><Avatar name={member?.displayName ?? attempt.playerId} avatar={member?.avatar} size="xs" /><strong className="truncate">{member?.displayName}</strong><span className="text-ink/55">→</span><img src={attempt.guessedPokemon.sprite} alt="" className="h-7 w-7 object-contain [image-rendering:auto]" /><span className="min-w-0 flex-1 truncate font-bold">{attempt.guessedPokemon.name}</span><XCircle size={15} className="text-berry" /></div>; })}</div> : <p className="text-center text-sm font-bold text-ink/60">Sin intentos fallidos todavía.</p>}</section></aside>;
-}
-
-function RoundReveal({ room, game, serverOffset }: { room: RoomView; game: ZoomedPokemonPublicState; serverOffset: number }) {
-  const result = game.lastRound!; const ordered = room.members.filter((member) => member.role === 'PLAYER').sort((a, b) => (result.solves[a.id]?.solveOrder ?? Infinity) - (result.solves[b.id]?.solveOrder ?? Infinity));
-  return <section className="mx-auto max-w-6xl px-3 py-5"><div className="rounded-2xl border border-leaf/25 bg-surface/95 p-4 shadow-card sm:p-6"><header className="mb-5 flex items-start justify-between"><div><span className="label">Reveal · Ronda {game.roundNumber}</span><h1 className="font-display text-3xl text-leaf sm:text-5xl">¡Era {result.pokemon.name}!</h1></div><ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Siguiente ronda" /></header><div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem_minmax(18rem,1fr)] lg:items-center"><div><ZoomViewport source={result.initialCropUrl} sourceType={result.imageSourceType} zoom={game.zoomStages[0]!} alt="Recorte inicial" /><strong className="mt-2 block text-center font-display text-xl">Así empezó · Zoom ×{game.zoomStages[0]}</strong></div><div className="text-center"><ZoomOut className="mx-auto text-aqua" size={42} /><span className="font-display text-2xl">zoom out</span></div><div><ZoomViewport source={result.imageUrl} sourceType={result.imageSourceType} zoom={1} alt={`Imagen completa de ${result.pokemon.name}`} /><strong className="mt-2 block text-center font-display text-2xl">{result.pokemon.name}</strong></div></div><div className="mt-6 grid gap-2 sm:grid-cols-2">{ordered.map((member) => { const solve = result.solves[member.id]; return <article key={member.id} className="flex items-center gap-3 rounded-2xl border border-ink/10 bg-ink/[.03] p-3"><strong className="w-8 text-center text-xl">{solve?.solveOrder && solve.solveOrder <= 3 ? ['🥇', '🥈', '🥉'][solve.solveOrder - 1] : solve?.solveOrder ?? '—'}</strong><Avatar name={member.displayName} avatar={member.avatar} size="sm" /><span className="min-w-0 flex-1"><strong className="block truncate">{member.displayName}</strong><small className={solve ? 'font-bold text-leaf' : 'font-bold text-berry'}>{solve ? `Zoom ×${solve.zoom} · bonificación +${solve.zoomBonus}` : 'No acertó'}</small></span><strong>+{solve?.points ?? 0}</strong></article>; })}</div></div></section>;
-}
-
+/**
+ * Zoomed Pokémon con el kit de adivinar (spec §2 y §6 «Juegos»). Arriba se mira: la placa de la ronda con el zoom y su
+ * bonificación, el recorte ampliado (escala con el sitio libre; la cámara se aleja a cada cuarto de la ronda) y las
+ * pistas adicionales; en la revelación, la carta del Pokémon con el recorte con el que empezó. Abajo se actúa: el
+ * buscador, el acierto con sus puntos o el veredicto. Al lado, el marcador y los intentos (o los puntos de la ronda).
+ *
+ * Privacidad: el recorte es una imagen opaca sin nombre. La respuesta (nombre e imagen completa) solo llega en
+ * `lastRound`, que el servidor manda al revelar; aun así la pantalla solo la usa en `ROUND_RESULTS`.
+ */
 export function ZoomedPokemonGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const game = room.game as ZoomedPokemonPublicState; const player = room.gamePlayerState as ZoomedPokemonPlayerState; const config = room.selectedGameConfig as { generations: number[]; includeForms: boolean; hintsEnabled: boolean };
-  const serverOffset = useServerOffset(room.serverNow); const { pokemon, error: loadError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config.generations, includeForms: config.includeForms });
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} serverOffset={serverOffset} />;
-  const sourceType = game.imageSourceType ?? 'SPRITE'; const zoom = game.zoomStages[game.currentZoomStage] ?? game.zoomStages[0]!; const participating = room.members.find((member) => member.id === selfId)?.role === 'PLAYER';
-  return <section className="mx-auto max-w-[90rem] overflow-x-clip px-3 py-4 sm:px-5"><header className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-ink/10 bg-surface/85 px-4 py-3 shadow-card"><div><span className="label !mb-0">Ronda {game.roundNumber} / {game.totalRounds}</span><h1 className="font-display text-2xl sm:text-3xl">Zoomed Pokémon</h1></div><ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} /></header><div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]"><main className="rounded-2xl border border-ink/10 bg-surface/90 p-4 shadow-card sm:p-6"><h2 className="mb-3 text-center font-display text-2xl">¿Qué Pokémon es?</h2><div className="mx-auto max-w-[36rem]"><ZoomViewport source={game.imageUrl ?? ''} sourceType={sourceType} zoom={zoom} alt="Detalle ampliado del Pokémon misterioso" /><div className="mt-2 flex items-center justify-between gap-3"><strong className="font-display text-xl text-aqua">Zoom ×{zoom}</strong><span className="rounded-full bg-electric/10 px-3 py-1 text-xs font-black uppercase tracking-wider text-electric">Nivel {game.currentZoomStage + 1} · Bonificación +{game.currentZoomBonus} pts</span></div></div>{game.visibleHints.length > 0 && <section className="mx-auto mt-4 max-w-[42rem] rounded-2xl border border-electric/20 bg-electric/[.06] p-3"><strong className="flex items-center gap-2 font-display"><Lightbulb size={18} className="text-electric" /> Pistas</strong><div className="mt-2 flex flex-wrap gap-2">{game.visibleHints.map((hint, index) => <span key={`${hint.kind}-${index}`} className="rounded-full bg-electric/10 px-3 py-1 text-sm font-extrabold text-electric">{hintLabel(hint)}</span>)}</div></section>}<div className="zoomed-answer mx-auto mt-5 max-w-[52rem] border-t border-ink/10 pt-4"><GuessPanel pokemon={pokemon} poolLoading={poolLoading} onRetry={retryPool} player={player} game={game} serverOffset={serverOffset} participating={Boolean(participating)} loadError={loadError} onAction={onAction} /></div></main><SocialPanels room={room} game={game} /></div></section>;
+  const game = room.game as ZoomedPokemonPublicState;
+  const player = room.gamePlayerState as ZoomedPokemonPlayerState | null;
+  const config = room.selectedGameConfig as Partial<ZoomedPokemonConfig> | null;
+  const { pokemon, error: loadError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [], includeForms: config?.includeForms ?? false });
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const offset = useServerOffset(room.serverNow);
+  const cooldownMs = useRemainingMs(player?.cooldownUntil ?? null, offset);
+  const transitionRemaining = Math.ceil(useRemainingMs(game.nextTransitionAt, offset) / 1_000);
+  const active = game.phase === 'ROUND_ACTIVE';
+  const participating = members.get(selfId)?.role === 'PLAYER';
+  const lastRound = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
+  const kind = guessPanelKind(game.phase, player ? { participating, canGuess: player.canGuess, solved: player.solved } : null, lastRound !== null);
+  const ownLast = active ? guessOwnLastAttempt(game.attempts, selfId) : null;
+
+  // Todos los hooks van antes de elegir la escena: el número de hooks no cambia entre fases.
+  useSfxCue('hit', active && player?.solved ? game.roundNumber : null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(guessFocusKey(kind, game.roundNumber), titleRef);
+
+  const last = game.roundNumber >= game.totalRounds;
+  const stages = game.zoomStages.length;
+  const zoom = game.zoomStages[game.currentZoomStage] ?? game.zoomStages[0] ?? 1;
+  const firstZoom = game.zoomStages[0] ?? zoom;
+  const heading = lastRound ? `¡Era ${lastRound.pokemon.name}!` : QUESTION;
+  const announcement = guessAnnouncement({ kind, roundNumber: game.roundNumber, answer: lastRound?.pokemon.name ?? null, solveOrder: player?.solveOrder ?? null, roundPoints: player?.roundPoints ?? 0, lastWrong: ownLast?.guessedPokemon.name ?? null, attemptCount: player?.attemptCount ?? 0 });
+
+  const meta = active ? <>
+    <Chip tone="info">Zoom {zoomLabel(zoom)}</Chip>
+    <Chip tone="warn">Nivel {game.currentZoomStage + 1} de {stages} · bonificación +{game.currentZoomBonus}</Chip>
+  </> : null;
+
+  const nextZoom = game.nextTransitionAt
+    ? <Chip tone="neutral" icon={<Icon icon={ZoomOut} size={18} />}>Menos zoom en {Math.max(1, transitionRemaining)}s</Chip>
+    : <Chip tone="neutral" icon={<Icon icon={ZoomOut} size={18} />}>Último nivel de zoom</Chip>;
+
+  const clue = lastRound
+    ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.imageUrl }]} details={<>Generación {lastRound.pokemon.generation} · {zoomedSourceLabel(lastRound.imageSourceType)}</>}
+      clueTitle={`Así empezó · Zoom ${zoomLabel(firstZoom)}`} clue={<ZoomViewport className={s.revealCrop} source={lastRound.initialCropUrl} sourceType={lastRound.imageSourceType} zoom={firstZoom} alt={`Recorte inicial, zoom ${zoomLabel(firstZoom)}`} />} />
+    : <GuessClue label="Recorte ampliado del Pokémon misterioso" variant="dark" className={s.stage}>
+      <ZoomViewport source={game.imageUrl ?? ''} sourceType={game.imageSourceType ?? 'SPRITE'} zoom={zoom} alt="Detalle ampliado del Pokémon misterioso" />
+      {active && <span className={s.next}>{nextZoom}</span>}
+    </GuessClue>;
+
+  const hints = active && game.visibleHints.length > 0
+    ? <GuessHints hints={game.visibleHints.map((hint, index) => ({ key: `${hint.kind}-${index}`, label: describeZoomedHint(hint) }))} />
+    : null;
+
+  const side = lastRound
+    ? <GuessRevealBoard lines={guessRevealLines(room.members, lastRound.solves, lastRound.attemptCounts)} selfId={selfId}
+      detail={({ solve }) => solve ? `Zoom ${zoomLabel(solve.zoom)} · +${solve.zoomBonus} extra` : null} />
+    : <>
+      <GuessPlayersPanel lines={guessScoreboard(room.members, game.scores, guessSolvedOrders(game.solves))} selfId={selfId} />
+      <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />
+    </>;
+
+  const bottom = <GuessPanel kind={kind} titleRef={titleRef} question={QUESTION} guessText={SCORING} gameName={GAME_NAME}
+    selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para la ronda ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }}
+    cooldownMs={cooldownMs} lastWrong={ownLast?.guessedPokemon.name ?? null} attemptCount={player?.attemptCount ?? 0}
+    solveOrder={player?.solveOrder ?? null} roundPoints={player?.roundPoints ?? 0}
+    verdict={lastRound ? guessVerdict(lastRound.solves, selfId, participating) : null} countdown={`${last ? 'Clasificación' : 'Siguiente ronda'} en ${Math.max(1, transitionRemaining)}s`} />;
+
+  const timer = active
+    ? { deadline: game.roundEndsAt, serverOffset: offset, label: 'Tiempo', totalMs: config?.roundSeconds ? config.roundSeconds * 1_000 : undefined }
+    : { deadline: game.nextTransitionAt, serverOffset: offset, label: last ? 'Clasificación' : 'Siguiente ronda' };
+
+  return <GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} meta={meta} timer={timer}
+    announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} />;
 }
