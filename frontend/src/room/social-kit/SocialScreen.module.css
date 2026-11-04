@@ -2,3 +2,16 @@
 .screen {
   min-width: 0;
 }
+/* Móvil: el título de la fase puede ocupar dos líneas («La respuesta favorita», «La red flag de la ronda») antes que cortarse. */
+@media (max-width: 639px) {
+  .screen h1 {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
+    text-overflow: clip;
+    line-height: 1.15;
+  }
+}

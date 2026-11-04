@@ -1,0 +1,79 @@
+/* Carta de texto: como `Card` (crema, contorno azul noche, sombra dura), con el texto a lo ancho y partido en líneas. */
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--sp-3);
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--cream);
+  color: var(--navy);
+  --focus-ring: var(--navy);
+  box-shadow: var(--sh-hard-4);
+  text-align: left;
+  font-family: var(--font-text);
+}
+.button {
+  cursor: pointer;
+  transition: transform var(--t-press) var(--ease);
+}
+.button:hover,
+.hover {
+  transform: translateY(-1px);
+}
+.button:active,
+.active {
+  transform: translateY(4px);
+}
+.button:focus-visible,
+.focus {
+  outline: var(--ol-3) solid var(--navy);
+  outline-offset: 2px;
+}
+.selected {
+  background: var(--yellow-l);
+  border-color: var(--yellow-d);
+  outline: var(--ol-3) solid var(--navy);
+  outline-offset: 1px;
+}
+.media {
+  flex: none;
+  display: inline-flex;
+}
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.name {
+  font: 800 var(--fs-15) / 1.2 var(--font-display);
+  color: var(--navy);
+}
+.text {
+  overflow-wrap: anywhere;
+  font: 800 var(--fs-18) / 1.25 var(--font-text);
+  color: var(--ink);
+}
+.detail {
+  overflow-wrap: anywhere;
+  font: 700 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+@media (max-width: 639px) {
+  .text {
+    font-size: var(--fs-15);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+  .button:hover,
+  .button:active {
+    transform: none;
+  }
+}

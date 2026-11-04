@@ -35,6 +35,11 @@ describe('social-kit: presentación', () => {
     const shared = [{ number: 1, candidateIds: ['p1', 'p2'], votes: { p3: 'p1', p1: 'p2' } }, { number: 2, candidateIds: ['p1', 'p2'], votes: { p3: 'p1', p1: 'p2' } }];
     expect(tallyOutcome(['p1', 'p2'], shared)).toBe('shared');
     expect(tallySummary(['p1', 'p2'], shared, nameOf)).toBe('Empate a 1 voto entre Snorlax y Psyduck tras la segunda vuelta: victoria compartida.');
+    // Empate final decidido por sorteo (One of Us) y empate sin ganador.
+    expect(tallyOutcome(['p1'], shared)).toBe('lot');
+    expect(tallySummary(['p1'], shared, nameOf, undefined, 'Sale')).toBe('Empate a 1 voto entre Snorlax y Psyduck tras la segunda vuelta: el sorteo eligió a Snorlax.');
+    expect(tallyOutcome([], shared)).toBe('tie');
+    expect(tallySummary([], shared, nameOf)).toBe('Empate a 1 voto entre Snorlax y Psyduck tras la segunda vuelta: no hay ganador.');
   });
 
   it('papeleta: manda el voto del servidor; la elección local solo vale en su ronda y vuelta y entre los candidatos', () => {

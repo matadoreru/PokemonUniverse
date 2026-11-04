@@ -54,62 +54,6 @@
   color: var(--ink-2);
 }
 
-/* Opción de texto (respuesta o jugador): como una carta, con el texto entero. */
-.text {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-3);
-  min-height: 44px;
-  padding: var(--sp-3);
-  border: var(--ol-3) solid var(--navy);
-  border-radius: var(--r-card);
-  background: var(--cream);
-  color: var(--navy);
-  box-shadow: var(--sh-hard-4);
-  text-align: left;
-  font-family: var(--font-text);
-}
-.textButton {
-  cursor: pointer;
-  transition: transform var(--t-press) var(--ease);
-}
-.textButton:hover {
-  transform: translateY(-1px);
-}
-.textButton:active {
-  transform: translateY(4px);
-}
-.textButton:focus-visible {
-  outline: var(--ol-3) solid var(--navy);
-  outline-offset: 2px;
-}
-.textSelected {
-  background: var(--yellow-l);
-  border-color: var(--yellow-d);
-  outline: var(--ol-3) solid var(--navy);
-  outline-offset: 1px;
-}
-.textMedia {
-  flex: none;
-  display: inline-flex;
-}
-.textBody {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--sp-1);
-  min-width: 0;
-}
-.textName {
-  font: 800 var(--fs-15) / 1.2 var(--font-display);
-  color: var(--navy);
-}
-.textAnswer {
-  overflow-wrap: anywhere;
-  font: 800 var(--fs-18) / 1.25 var(--font-text);
-  color: var(--ink);
-}
-
 /* Confirmación: fuera de la rejilla que se desplaza, siempre a la vista. */
 .actions {
   display: flex;
@@ -141,9 +85,6 @@
   }
   .textOptions {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .textAnswer {
-    font-size: var(--fs-15);
   }
   .choice {
     font-size: var(--fs-13);
@@ -184,14 +125,5 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .textButton {
-    transition: none;
-  }
-  .textButton:hover,
-  .textButton:active {
-    transform: none;
   }
 }

@@ -3397,7 +3397,7 @@ test('intro: los pasos antes de la primera ronda', async ({ browser }) => {
 
 /**
  * Most Likely To con tres jugadores y una ronda, con un empate forzado: el host y A se votan entre sí y B no vota, así
- * que al agotarse los 30 s de la votación hay segunda vuelta solo entre el host y A. En ella A gana 2–1. Se comprueban
+ * que al agotarse los 45 s de la votación hay segunda vuelta solo entre el host y A. En ella A gana 2–1. Se comprueban
  * el secreto de las respuestas y los votos hasta la revelación (también tras recargar con el voto bloqueado), la
  * papeleta y su confirmación a la vista a 390×844, la región viva única y el recuento con sus dos vueltas.
  */
@@ -3409,7 +3409,7 @@ test('most-likely-to: elegir, votar con empate, segunda vuelta, revelación y cl
     const [a, b] = invitados as [Jugador, Jugador];
     await seleccionarJuego(host.page, 'Most Likely To');
     await host.page.getByRole('tab', { name: 'Configuración' }).click();
-    for (const [nombre, teclas, valor] of [['Número de rondas', ['Home'], '1'], ['Tiempo para votar', ['Home', 'ArrowRight', 'ArrowRight', 'ArrowRight'], '30']] as const) {
+    for (const [nombre, teclas, valor] of [['Número de rondas', ['Home'], '1'], ['Tiempo para votar', ['Home', ...Array<string>(30).fill('ArrowRight')], '45']] as const) {
       const rango = host.page.getByRole('slider', { name: nombre });
       await rango.focus();
       for (const tecla of teclas) await rango.press(tecla);
@@ -3481,7 +3481,7 @@ test('most-likely-to: elegir, votar con empate, segunda vuelta, revelación y cl
     await b.page.setViewportSize({ width: 1280, height: 720 });
 
     // Segunda vuelta solo entre el host y A (empate 1–1): B ve dos opciones, ninguna suya.
-    await expect(titulo(b.page)).toHaveText('Segunda vuelta', { timeout: 45_000 });
+    await expect(titulo(b.page)).toHaveText('Segunda vuelta', { timeout: 60_000 });
     await expect(papeleta(b.page).locator('[data-ballot-option]')).toHaveCount(2);
     await expect(opcion(b.page, 'Pikachu', a)).toBeVisible();
     await expect(opcion(b.page, 'Bulbasaur', host)).toBeVisible();
@@ -3494,6 +3494,13 @@ test('most-likely-to: elegir, votar con empate, segunda vuelta, revelación y cl
     await b.page.setViewportSize({ width: 1280, height: 720 });
     await opcion(b.page, 'Pikachu', a).click();
     await confirmar(b.page).click();
+    await expect(b.page.getByRole('heading', { name: 'Voto bloqueado' })).toBeVisible({ timeout: 5_000 });
+    // Recargar en la segunda vuelta con el voto bloqueado: vuelve bloqueado y sin votos de la primera vuelta ni ajenos.
+    await b.page.reload();
+    await b.page.getByRole('button', { name: 'Volver a la sala' }).click({ timeout: 8_000 });
+    await expect(b.page.getByRole('heading', { name: 'Voto bloqueado' })).toBeVisible({ timeout: 15_000 });
+    await expect(titulo(b.page)).toHaveText('Segunda vuelta');
+    await sinVotosAjenos(b.page, 'segunda vuelta tras recargar');
     await opcion(host.page, 'Pikachu', a).click();
     await confirmar(host.page).click();
     await opcion(a.page, 'Bulbasaur', host).click();

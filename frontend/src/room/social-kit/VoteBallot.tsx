@@ -1,7 +1,7 @@
 import { CheckCircle2, Eye, Lock, Scale, Vote } from 'lucide-react';
 import { useState, type ReactNode, type Ref } from 'react';
 import { useRunoffVote } from '../../hooks/useRunoffVote';
-import { Card, Chip, cx, Icon, Pill } from '../../ui';
+import { Card, Chip, cx, Icon, Pill, TextCard } from '../../ui';
 import { ballotState } from './presentation';
 import { SocialPlate, type SocialPlateContent } from './SocialPlate';
 import s from './VoteBallot.module.css';
@@ -118,7 +118,8 @@ export function VoteBallot(props: VoteBallotProps) {
               {option.detail && <span className={s.detail}>{option.detail}</span>}
               {note}
             </Card>
-            : <TextOption option={option} selected={isSelected} note={note} {...(votable ? { onSelect: choose } : {})} />}
+            : <TextCard name={option.name} {...(option.text != null ? { text: option.text } : {})} {...(option.detail != null ? { detail: option.detail } : {})} {...(option.media != null ? { media: option.media } : {})}
+              selected={isSelected} {...(votable ? { ariaLabel: option.ariaLabel, onSelect: choose } : {})}>{note}</TextCard>}
         </li>;
       })}
     </ul>
@@ -127,21 +128,4 @@ export function VoteBallot(props: VoteBallotProps) {
       <Pill variant="yellow" icon={Vote} loading={sending} disabled={!picked && !sending} onClick={() => { if (picked) void vote(picked); }} data-testid="ballot-confirm">{confirmLabel}</Pill>
     </div>}
   </SocialPlate>;
-}
-
-/** Opción de texto (respuesta escrita o jugador): crema con contorno, como `Card`, y el texto entero partido en líneas. */
-function TextOption({ option, selected, note, onSelect }: { option: BallotOption; selected: boolean; note: ReactNode; onSelect?: () => void }) {
-  const body = <>
-    {option.media && <span className={s.textMedia}>{option.media}</span>}
-    <span className={s.textBody}>
-      <span className={s.textName}>{option.name}</span>
-      {option.text && <span className={s.textAnswer}>{option.text}</span>}
-      {option.detail && <span className={s.detail}>{option.detail}</span>}
-      {note}
-    </span>
-  </>;
-  const cls = cx(s.text, selected && s.textSelected, onSelect && s.textButton);
-  return onSelect
-    ? <button type="button" className={cls} aria-pressed={selected} aria-label={option.ariaLabel} onClick={onSelect}>{body}</button>
-    : <div className={cls}>{body}</div>;
 }

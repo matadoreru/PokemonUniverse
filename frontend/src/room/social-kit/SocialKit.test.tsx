@@ -136,6 +136,34 @@ describe('social-kit: recuento', () => {
     expect(single).not.toContain('Ganadora');
   });
 
+  it('empate decidido por sorteo: nunca «Gana X con N votos»; «Empate · sorteo» en los empatados', () => {
+    const rounds = [{ number: 1, candidateIds: ['p1', 'p2', 'p3'], votes: { p3: 'p1', p1: 'p2' } }, { number: 2, candidateIds: ['p1', 'p2'], votes: { p3: 'p1', p1: 'p2' } }];
+    const html = renderToStaticMarkup(<VoteTally idBase="t" options={tallyOptions} rounds={rounds} winnerIds={['p2']} voterName={voterName} winnerLabel="Más votado" winnerIcon={null} verb="Sale" />);
+    expect(html).toContain('Empate a 1 voto entre Snorlax y Psyduck tras la segunda vuelta: el sorteo eligió a Psyduck.');
+    expect(html).not.toMatch(/Sale Psyduck con|Gana Psyduck con/);
+    expect(html.match(/Empate · sorteo/g)).toHaveLength(2);
+    expect(html).toContain('Más votado');
+    expect(html).not.toContain('lucide-crown');
+  });
+
+  it('empate sin ganador y resumen propio', () => {
+    const rounds = [{ number: 1, candidateIds: ['p1', 'p2'], votes: { p3: 'p1', p1: 'p2' } }];
+    const tie = renderToStaticMarkup(<VoteTally idBase="t" options={tallyOptions} rounds={rounds} winnerIds={[]} voterName={voterName} />);
+    expect(tie).toContain('Empate a 1 voto entre Snorlax y Psyduck: no hay ganador.');
+    expect(tie.match(/Empate</g)).toHaveLength(2);
+    const own = renderToStaticMarkup(<VoteTally idBase="t" options={tallyOptions} rounds={rounds} winnerIds={[]} voterName={voterName} summary="La sala quedó dividida." />);
+    expect(own).toContain('La sala quedó dividida.');
+  });
+
+  it('la ganadora destaca (highlight); la propia perdedora solo lleva el chip «Tuya»', () => {
+    const rounds = [{ number: 1, candidateIds: ['p1', 'p2'], votes: { p3: 'p2', p1: 'p2' } }];
+    const html = renderToStaticMarkup(<VoteTally idBase="t" options={tallyOptions.map((option) => ({ ...option, self: option.id === 'p1' }))} rounds={rounds} winnerIds={['p2']} voterName={voterName} />);
+    expect(html.match(/data-highlight="true"/g)).toHaveLength(1);
+    expect(html).toMatch(/data-tally-winner="true"[^]*?data-highlight="true"/);
+    expect(html).toContain('Tuya');
+    expect(html).not.toMatch(/_self_/);
+  });
+
   it('sin respuestas: el vacío, sin región viva', () => {
     const html = renderToStaticMarkup(<VoteTally idBase="t" options={[]} rounds={[]} winnerIds={[]} voterName={voterName} />);
     expect(html).toContain('Nadie respondió a tiempo.');

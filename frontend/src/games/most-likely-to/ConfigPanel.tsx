@@ -29,8 +29,8 @@ export function MostLikelyToConfigPanel({ config, disabled, room, selfId, onChan
     <GenerationSelector selected={value.generations} label="Generaciones" description="Cada jugador busca su respuesta dentro de este pool; las elecciones duplicadas están permitidas." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={s.pair}>
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={10} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
-      <ConfigRange label="Tiempo para responder" value={value.selectionSeconds} min={15} max={120} step={5} disabled={disabled} formatValue={seconds} hint="La votación empieza antes si todos han respondido." onCommit={(selectionSeconds) => onChange({ ...value, selectionSeconds })} />
-      <ConfigRange label="Tiempo para votar" value={value.votingSeconds} min={15} max={120} step={5} disabled={disabled} formatValue={seconds} hint="Con empate hay una segunda vuelta con el mismo tiempo." onCommit={(votingSeconds) => onChange({ ...value, votingSeconds })} />
+      <ConfigRange label="Tiempo para responder" value={value.selectionSeconds} min={15} max={120} disabled={disabled} formatValue={seconds} hint="La votación empieza antes si todos han respondido." onCommit={(selectionSeconds) => onChange({ ...value, selectionSeconds })} />
+      <ConfigRange label="Tiempo para votar" value={value.votingSeconds} min={15} max={120} disabled={disabled} formatValue={seconds} hint="Con empate hay una segunda vuelta con el mismo tiempo." onCommit={(votingSeconds) => onChange({ ...value, votingSeconds })} />
     </div>
     <div className={s.field}>
       <span className={s.label}>Fuente de preguntas</span>

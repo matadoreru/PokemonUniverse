@@ -1,4 +1,5 @@
-import { Crown, Equal, Scale } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import { Crown, Dices, Equal, Scale, UserRound } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { Badge, Bar, Chip, cx, Icon, Panel, Row, TabPanel, Tabs } from '../../ui';
 import { namesList, runoffCounts, runoffLeaders, runoffTotal, tallyOutcome, tallySummary, votesText, type RunoffRoundLike } from './presentation';
@@ -18,7 +19,7 @@ export interface TallyOption {
   text?: ReactNode;
   /** Color del jugador (`playerColor`) para la banda de la franja. */
   color?: string;
-  /** Es la propia (franja amarilla). */
+  /** Es la propia: chip «Tuya» (`selfLabel`). El fondo amarillo de «propia» no se usa aquí: la que destaca es la ganadora. */
   self?: boolean;
 }
 
@@ -27,7 +28,11 @@ export interface VoteTallyProps {
   options: readonly TallyOption[];
   /** Vueltas del motor (`lastRound.voteRounds`, en orden): la última decide. Vacío: no hubo votación. */
   rounds: readonly RunoffRoundLike[];
-  /** Ganadores del motor (`lastRound.winnerIds`; la mayoría votada o el fake expulsado). */
+  /**
+   * Ganadores del motor, en ids de OPCIÓN (los mismos que `options[].id` y que las `rounds`). Ojo en Red Flag: su
+   * `lastRound.winnerIds` son autores; pasa los ids de las respuestas ganadoras (`answers.filter(won).map(id)`) y
+   * traduce `points` de la respuesta a su autor.
+   */
   winnerIds: readonly string[];
   /** Nombre de quien votó (los votos solo se ven aquí, en la revelación). */
   voterName(playerId: string): string;
@@ -40,6 +45,14 @@ export interface VoteTallyProps {
   title?: string;
   /** Insignia de quien gana (por defecto «Ganadora»; One of Us: «Más votado»). */
   winnerLabel?: string;
+  /** Icono de esa insignia (por defecto la corona; `null`, sin icono). */
+  winnerIcon?: LucideIcon | null;
+  /** Resumen propio en lugar del calculado (`tallySummary`); úsalo también en la región viva. */
+  summary?: string;
+  /** Verbo del resumen calculado («Gana»; One of Us: «Sale»). */
+  verb?: string;
+  /** Chip de la opción propia (por defecto «Tuya»; One of Us: «Tú»). */
+  selfLabel?: string;
   /** Pestañas de las vueltas (por defecto «Primera vuelta», «Segunda vuelta»). */
   roundLabels?: readonly string[];
   emptyText?: string;
@@ -59,32 +72,38 @@ const DEFAULT_LABELS = ['Primera vuelta', 'Segunda vuelta'] as const;
  * Nunca pone «Ganadora» junto a «0 votos»: si nadie votó, «Empate sin votos»; con una sola respuesta, «Única respuesta».
  * Solo se monta en la revelación: es lo único del kit que pinta votos de otros.
  */
-export function VoteTally({ options, rounds, winnerIds, voterName, points, summaryName, intro, title = 'Recuento de votos', winnerLabel = 'Ganadora', roundLabels = DEFAULT_LABELS, emptyText = 'Nadie respondió a tiempo.', idBase, className }: VoteTallyProps) {
+export function VoteTally({ options, rounds, winnerIds, voterName, points, summaryName, intro, title = 'Recuento de votos', winnerLabel = 'Ganadora', winnerIcon = Crown, summary: ownSummary, verb = 'Gana', selfLabel = 'Tuya', roundLabels = DEFAULT_LABELS, emptyText = 'Nadie respondió a tiempo.', idBase, className }: VoteTallyProps) {
   const [active, setActive] = useState(String(Math.max(0, rounds.length - 1)));
   const byId = new Map(options.map((option) => [option.id, option]));
   const nameOf = summaryName ?? ((id: string) => byId.get(id)?.name ?? id);
-  const summary = tallySummary(winnerIds, rounds, nameOf, emptyText);
+  const summary = ownSummary ?? tallySummary(winnerIds, rounds, nameOf, emptyText, verb);
   const outcome = tallyOutcome(winnerIds, rounds);
   const winners = new Set(winnerIds);
 
   const list = (round: RunoffRoundLike | null, final: boolean) => {
     const counts = round ? runoffCounts(round) : options.map((option) => ({ id: option.id, votes: 0, voterIds: [] }));
     const total = runoffTotal(counts);
-    const leaders = round && !final ? new Set(runoffLeaders(counts)) : new Set<string>();
+    // Empatados de la vuelta (también en la final: un empate decidido por sorteo o sin ganador se dice en texto).
+    const leaders = round && total > 0 ? new Set(runoffLeaders(counts)) : new Set<string>();
     const ordered = counts.map((count, index) => ({ count, index })).sort((a, b) => b.count.votes - a.count.votes || a.index - b.index).map(({ count }) => count);
     return <ol className={s.rows} aria-label={round ? `Votos de la ${(roundLabels[round.number - 1] ?? `vuelta ${round.number}`).toLowerCase()}` : 'Respuestas'}>{ordered.map((count) => {
       const option = byId.get(count.id);
       const name = option?.name ?? count.id;
       const won = final && winners.has(count.id);
-      const tied = final ? won && winnerIds.length > 1 : leaders.has(count.id) && leaders.size > 1;
+      const tied = leaders.has(count.id) && leaders.size > 1;
       const pts = final ? points?.(count.id) ?? null : null;
+      const badgeIcon = winnerIcon ? <Icon icon={winnerIcon} size={18} /> : null;
       const chips: ReactNode[] = [];
       if (won && outcome === 'noVotes') chips.push(<Chip key="novotes" tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate sin votos</Chip>);
-      else if (won && outcome === 'unopposed') chips.push(<Badge key="win"><Icon icon={Crown} size={18} />Única respuesta</Badge>);
-      else if (won) chips.push(<Badge key="win"><Icon icon={Crown} size={18} />{winnerLabel}</Badge>);
-      if (tied && outcome !== 'noVotes') chips.push(<Chip key="tie" tone="warn" icon={<Icon icon={final ? Equal : Scale} size={18} />}>{final ? 'Empate' : 'Empate · pasa a la segunda vuelta'}</Chip>);
+      else if (won && outcome === 'unopposed') chips.push(<Badge key="win">{badgeIcon}Única respuesta</Badge>);
+      else if (won) chips.push(<Badge key="win">{badgeIcon}{winnerLabel}</Badge>);
+      if (tied && outcome !== 'noVotes') {
+        const text = !final ? 'Empate · pasa a la segunda vuelta' : outcome === 'lot' ? 'Empate · sorteo' : 'Empate';
+        chips.push(<Chip key="tie" tone="warn" icon={<Icon icon={!final ? Scale : outcome === 'lot' ? Dices : Equal} size={18} />}>{text}</Chip>);
+      }
+      if (option?.self) chips.push(<Chip key="self" tone="neutral" icon={<Icon icon={UserRound} size={18} />}>{selfLabel}</Chip>);
       return <li key={count.id} data-testid="tally-row" data-tally-winner={won || undefined}>
-        <Row name={name} {...(option?.color ? { color: option.color } : {})} self={Boolean(option?.self)} {...(option?.media ? { avatar: option.media } : {})}
+        <Row name={name} {...(option?.color ? { color: option.color } : {})} highlight={won} {...(option?.media ? { avatar: option.media } : {})}
           meta={<span className={s.meta}>
             {option?.text && <span className={s.text}>{option.text}</span>}
             {round

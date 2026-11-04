@@ -52,39 +52,49 @@ export const runoffTotal = (counts: readonly RunoffCount[]) => counts.reduce((su
 
 /**
  * Cómo acabó una votación, para el titular y la región viva:
- * - `none`: nadie respondió (no hay ganador).
+ * - `none`: nadie respondió (no hay ganador ni votación).
  * - `unopposed`: una sola respuesta, gana sin votación (el motor no abre la votación).
  * - `noVotes`: nadie votó y todos los candidatos empatan a cero (comparten la victoria): nunca «Ganadora · 0 votos».
  * - `solo`: un ganador con votos. `shared`: empate con votos (victoria compartida).
+ * - `lot`: empate en la vuelta final y el motor eligió a uno por sorteo (One of Us Is Fake): nunca «Gana X con N votos».
+ * - `tie`: empate en la vuelta final sin ganador (p. ej. Would You Rather con la sala dividida).
  */
-export type TallyOutcome = 'none' | 'unopposed' | 'noVotes' | 'solo' | 'shared';
+export type TallyOutcome = 'none' | 'unopposed' | 'noVotes' | 'solo' | 'shared' | 'lot' | 'tie';
 
 export function tallyOutcome(winnerIds: readonly string[], rounds: readonly RunoffRoundLike[]): TallyOutcome {
-  if (winnerIds.length === 0) return 'none';
   const last = rounds.at(-1);
+  const counts = last ? runoffCounts(last) : [];
+  const leaders = runoffLeaders(counts);
+  if (winnerIds.length === 0) return last && leaders.length > 1 && runoffTotal(counts) > 0 ? 'tie' : 'none';
   if (!last) return 'unopposed';
-  const counts = runoffCounts(last);
   const winnerVotes = Math.max(0, ...counts.filter((count) => winnerIds.includes(count.id)).map((count) => count.votes));
   if (winnerVotes === 0) return 'noVotes';
+  if (winnerIds.length === 1 && leaders.length > 1) return 'lot';
   return winnerIds.length === 1 ? 'solo' : 'shared';
 }
 
 /**
  * Resumen en una frase del recuento («Gana Psyduck con 2 votos tras la segunda vuelta.», «Empate a 1 voto entre A y
- * B: victoria compartida.», «Nadie votó: …»). `nameOf` da el nombre de cada candidato tal como se muestra.
+ * B: victoria compartida.», «Empate a 1 voto entre A y B: el sorteo eligió a A.», «Nadie votó: …»). `nameOf` da el nombre
+ * de cada candidato tal como se muestra; `verb` es el verbo del ganador («Gana», o «Sale» para un expulsado).
  */
-export function tallySummary(winnerIds: readonly string[], rounds: readonly RunoffRoundLike[], nameOf: (id: string) => string, emptyText = 'Nadie respondió a tiempo.'): string {
+export function tallySummary(winnerIds: readonly string[], rounds: readonly RunoffRoundLike[], nameOf: (id: string) => string, emptyText = 'Nadie respondió a tiempo.', verb = 'Gana'): string {
   const outcome = tallyOutcome(winnerIds, rounds);
   const names = namesList(winnerIds.map(nameOf));
   const after = rounds.length > 1 ? ' tras la segunda vuelta' : '';
   const last = rounds.at(-1);
-  const votes = last ? runoffCounts(last).find((count) => count.id === winnerIds[0])?.votes ?? 0 : 0;
+  const counts = last ? runoffCounts(last) : [];
+  const leaders = runoffLeaders(counts);
+  const top = counts.find((count) => count.id === leaders[0])?.votes ?? 0;
+  const tiedNames = namesList(leaders.map(nameOf));
   switch (outcome) {
     case 'none': return emptyText;
     case 'unopposed': return `Única respuesta: ${names} gana sin votación.`;
     case 'noVotes': return winnerIds.length === 1 ? `Nadie votó: ${names} gana sin votos.` : `Nadie votó: empate sin votos entre ${names}.`;
-    case 'solo': return `Gana ${names} con ${votesText(votes)}${after}.`;
-    default: return `Empate a ${votesText(votes)} entre ${names}${after}: victoria compartida.`;
+    case 'solo': return `${verb} ${names} con ${votesText(top)}${after}.`;
+    case 'lot': return `Empate a ${votesText(top)} entre ${tiedNames}${after}: el sorteo eligió a ${names}.`;
+    case 'tie': return `Empate a ${votesText(top)} entre ${tiedNames}${after}: no hay ganador.`;
+    default: return `Empate a ${votesText(top)} entre ${names}${after}: victoria compartida.`;
   }
 }
 

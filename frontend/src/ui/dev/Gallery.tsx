@@ -21,6 +21,7 @@ import { typeColors } from '../../styles/tokens';
 import { Badge, Chip, TypeBadge, TypeOption } from '../Badge';
 import { Bar } from '../Bar';
 import { Card } from '../Card';
+import { TextCard } from '../TextCard';
 import type { CardState } from '../Card';
 import { Cutin } from '../Cutin';
 import type { CutinTone } from '../Cutin';
@@ -613,6 +614,7 @@ const BULBASAUR_TYPES = [
 function CardSection() {
   const [selected, setSelected] = useState(false);
   const [gameSelected, setGameSelected] = useState(true);
+  const [textSelected, setTextSelected] = useState(false);
   return (
     <Section name="card" title="Card">
       {CARD_STATES.map((c) => (
@@ -655,6 +657,17 @@ function CardSection() {
       </Fig>
       <Fig id="card-photo-selected" caption="Avatar · elegido">
         <Card name="Berry" art={<Avatar name="Berry" size="xl" />} state="selected" onSelect={() => undefined} />
+      </Fig>
+      <Fig id="text-card" caption="TextCard · seleccionable (respuesta escrita)">
+        <TextCard name="Respuesta 1" text="Se come los pasteles de los demás sin pedir permiso y encima se queja de que están secos." selected={textSelected} onSelect={() => setTextSelected((v) => !v)} />
+      </Fig>
+      <Fig id="text-card-states" caption="TextCard · pasar, foco, pulsada">
+        <TextCard name="Respuesta 2" text="Ronca." forced="hover" onSelect={() => undefined} />
+        <TextCard name="Respuesta 3" text="Nunca devuelve lo que pide." forced="focus" onSelect={() => undefined} />
+        <TextCard name="Respuesta 4" text="Llega tarde siempre." forced="active" onSelect={() => undefined} />
+      </Fig>
+      <Fig id="text-card-player" caption="TextCard · jugador con avatar, fija (propia)">
+        <TextCard name="Aqua" media={<Avatar name="Aqua" size="sm" />} detail="Eres tú"><Chip tone="neutral">Tu respuesta</Chip></TextCard>
       </Fig>
     </Section>
   );

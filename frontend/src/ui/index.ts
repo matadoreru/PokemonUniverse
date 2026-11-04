@@ -28,6 +28,8 @@ export { Row, RowLink } from './Row';
 export type { RowLinkProps, RowProps } from './Row';
 export { Card } from './Card';
 export type { CardAttrs, CardProps, CardState } from './Card';
+export { TextCard } from './TextCard';
+export type { TextCardProps } from './TextCard';
 export { HudPlate } from './HudPlate';
 export type { HudPlateProps } from './HudPlate';
 export { Dialog, createDialogController, dialogCloseReason } from './Dialog';
