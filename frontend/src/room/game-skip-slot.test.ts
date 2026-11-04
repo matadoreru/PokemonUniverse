@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { skipRowInLayout } from './game-skip-slot';
 
 const skip = { gameInstanceId: 'g1', votes: 0, requiredVotes: 2, currentUserVoted: false, canVote: true } as never;
-const base = { phase: 'ROUND_ACTIVE', gameIntro: null, gameSkipState: skip, selectedGameId: 'learnset-guess', game: { gameId: 'learnset-guess' } } as never;
+const base = { phase: 'ROUND_ACTIVE', gameIntro: null, gameSkipState: skip, selectedGameId: 'zoomed-pokemon', game: { gameId: 'zoomed-pokemon' } } as never;
 
 describe('skipRowInLayout', () => {
   it('pone la fila encima de los juegos sin rediseñar', () => {
@@ -25,6 +25,12 @@ describe('skipRowInLayout', () => {
     expect(skipRowInLayout(duel as never)).toBe(false);
     expect(skipRowInLayout({ ...duel, phase: 'ROUND_RESULTS' } as never)).toBe(false);
     expect(skipRowInLayout({ ...duel, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
+  it('Learnset Guess la lleva dentro de su pantalla salvo en los resultados', () => {
+    const learnset = { ...(base as object), selectedGameId: 'learnset-guess', game: { gameId: 'learnset-guess' } };
+    expect(skipRowInLayout(learnset as never)).toBe(false);
+    expect(skipRowInLayout({ ...learnset, phase: 'ROUND_RESULTS' } as never)).toBe(false);
+    expect(skipRowInLayout({ ...learnset, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };

@@ -1,0 +1,56 @@
+/* Ajustes de Learnset Guess en el lobby. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+/* Learnset de referencia: aviso informativo (no se elige, sale de las generaciones). */
+.reference {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--cream-2);
+  color: var(--ink);
+}
+.referenceIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: var(--ol-2-5) solid var(--navy);
+  border-radius: 50%;
+  background: var(--info);
+  color: var(--navy);
+}
+.referenceText {
+  min-width: 0;
+}
+.label {
+  display: block;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+.referenceName {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-1);
+  font: 800 var(--fs-18) / var(--lh-display) var(--font-display);
+}
+.hint {
+  margin-top: var(--sp-1);
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.toggles,
+.ranges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--sp-4);
+}

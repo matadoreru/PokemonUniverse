@@ -1359,7 +1359,7 @@ test('learnset-guess: último aviso a 390', async ({ browser }) => {
     // Desde arriba: el aviso ya cabe en la vista y así la cabecera fija no tapa contenido.
     await invitado.page.evaluate(() => window.scrollTo(0, 0));
     await expect(chip).toBeInViewport();
-    await capturarAnotando(invitado.page, 'juego-learnset-guess-ultimo-aviso', chip, [SIZES[2]]);
+    await capturarAnotando(invitado.page, 'juego-learnset-guess-ultimo-aviso', chip, [SIZES[2]], ARCADE);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -1373,6 +1373,14 @@ test('learnset-guess: marcador en vivo', async ({ browser }) => {
     const { host, invitados, jugadores } = sala;
     const [primero, segundo] = invitados as [Jugador, Jugador];
     await seleccionarJuego(host.page, 'Learnset Guess');
+    // Una sola ronda: tras la revelación se llega a la clasificación.
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    const rondas = host.page.getByRole('slider', { name: 'Número de rondas' });
+    await rondas.focus();
+    await rondas.press('Home');
+    await rondas.blur();
+    await expect(rondas).toHaveValue('1');
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     let estado: LearnsetVisible | null = null;
     for (const ws of host.sockets.filter((s) => JAVA_WS.test(s.url()))) ws.on('framereceived', ({ payload }) => { estado = learnsetEnTrama(payload) ?? estado; });
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
@@ -1408,15 +1416,46 @@ test('learnset-guess: marcador en vivo', async ({ browser }) => {
     await primero.page.emulateMedia({ reducedMotion: 'reduce' });
     await primero.page.getByRole('textbox', { name: 'Buscar Pokémon' }).blur();
     await primero.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(primero.page, 'juego-learnset-guess', { sigue: enJuego });
+    // La captura enseña una pista recién llegada (arriba, marcada «Nueva»): llega a los 7 s de la ronda.
+    await expect(primero.page.locator('li[data-stage]:not([data-stage="0"])').first()).toBeVisible({ timeout: 15_000 });
+    await capturarTamanos(primero.page, 'juego-learnset-guess-pistas', { sigue: enJuego, opts: ARCADE });
+    // A 390×844, sin desplazar: la última pista y el buscador a la vista, y la pantalla inferior no tapa la pista.
+    await primero.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
+    await primero.page.evaluate(() => window.scrollTo(0, 0));
+    const ultimaPista = primero.page.getByRole('list', { name: 'Movimientos conocidos' }).getByRole('listitem').first();
+    await expect(ultimaPista).toBeInViewport({ ratio: 1 });
+    await expect(primero.page.getByRole('textbox', { name: 'Buscar Pokémon' })).toBeInViewport({ ratio: 1 });
+    const inferior = (await primero.page.locator('[data-layer="screen-bottom"]').boundingBox())!;
+    const pista = (await ultimaPista.boundingBox())!;
+    expect(pista.y + pista.height, 'última pista entera sobre la pantalla inferior').toBeLessThanOrEqual(inferior.y);
+    // Escribiendo (la bandeja de resultados abierta): el primer resultado y la última pista siguen a la vista.
+    const buscadorPrimero = primero.page.getByRole('textbox', { name: 'Buscar Pokémon' });
+    await buscadorPrimero.fill('a');
+    const primerResultado = primero.page.locator('.pokemon-selector-results button').first();
+    await expect(primerResultado).toBeInViewport({ ratio: 1 });
+    await expect(ultimaPista).toBeInViewport({ ratio: 1 });
+    const inferiorAbierta = (await primero.page.locator('[data-layer="screen-bottom"]').boundingBox())!;
+    const pistaAbierta = (await ultimaPista.boundingBox())!;
+    expect(pistaAbierta.y + pistaAbierta.height, 'última pista sobre la pantalla inferior con la bandeja abierta').toBeLessThanOrEqual(inferiorAbierta.y);
+    await primero.page.setViewportSize({ width: 1280, height: 720 });
+    await buscadorPrimero.blur();
+    await capturarTamanos(primero.page, 'juego-learnset-guess-busqueda', { sigue: primerResultado, opts: ARCADE });
+    await buscadorPrimero.fill('');
 
     // Si alguien se va sin acertar, la revelación dice «Sin conexión» y no «No acertó».
     await segundo.context.close();
-    await expect(host.page.getByRole('heading', { name: /^¡Era / })).toBeVisible({ timeout: 45_000 });
+    const era = host.page.getByRole('heading', { name: /^¡Era / });
+    await expect(era).toBeVisible({ timeout: 45_000 });
     const tarjetas = host.page.getByTestId('learnset-reveal-row');
     await expect(tarjetas.filter({ hasText: segundo.name })).toContainText('Sin conexión');
     await expect(tarjetas.filter({ hasText: segundo.name })).not.toContainText('No acertó');
     await expect(tarjetas.filter({ hasText: primero.name })).toContainText('✗ No acertó');
+    // La revelación dura 4 s: lo que mida el medidor se anota.
+    await capturarAnotando(host.page, 'juego-learnset-guess-revelacion', era, SIZES, ARCADE);
+
+    // Clasificación de la partida (una ronda).
+    await expect(host.page.getByRole('heading', { name: 'Clasificación Learnset Guess' })).toBeVisible({ timeout: 15_000 });
+    await capturarTamanos(host.page, 'juego-learnset-guess-clasificacion', { opts: ARCADE });
     for (const jugador of [host, primero]) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

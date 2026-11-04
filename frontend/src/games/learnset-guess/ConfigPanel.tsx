@@ -1,22 +1,34 @@
 import { GENERATION_LEARNSET_SOURCES, type LearnsetGuessConfig } from '@pokemon-universe/shared/public';
-import { BookOpenCheck, Eye, EyeOff } from 'lucide-react';
+import { BookOpenCheck } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
+import { Badge, Icon, Toggle } from '../../ui';
+import s from './ConfigPanel.module.css';
 
+/**
+ * Ajustes de Learnset Guess con los controles del catálogo: generaciones (el learnset de referencia sale de la más
+ * alta), niveles e información evolutiva (`Toggle`) y los tiempos (`ConfigRange`). El ritmo de las pistas y el
+ * enfriamiento entre intentos los fija el servidor.
+ */
 export function LearnsetGuessConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as LearnsetGuessConfig; const reference = Math.max(...value.generations) as keyof typeof GENERATION_LEARNSET_SOURCES;
-  return <fieldset disabled={disabled} className="space-y-6">
+  return <fieldset disabled={disabled} className={s.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones de Pokémon" accent="electric" onChange={(generations) => void onChange({ ...value, generations })} />
-    <div className="flex items-start gap-3 rounded-2xl border border-aqua/25 bg-aqua/10 p-4"><BookOpenCheck className="shrink-0 text-aqua" /><div><span className="label !mb-0">Generación de learnset automática</span><strong className="block font-display text-lg">Gen {reference} · {GENERATION_LEARNSET_SOURCES[reference].label}</strong><p className="text-sm font-bold text-ink/65">Se utiliza la generación más alta que hayas activado.</p></div></div>
-    <div className="grid gap-3 md:grid-cols-2">
-      <Toggle icon={value.showLevels ? Eye : EyeOff} label="Mostrar niveles" description="Indica el nivel exacto de cada movimiento." active={value.showLevels} onClick={() => void onChange({ ...value, showLevels: !value.showLevels })} />
-      <Toggle icon={value.showEvolution ? Eye : EyeOff} label="Información evolutiva" description="Muestra únicamente la etapa, nunca nombres." active={value.showEvolution} onClick={() => void onChange({ ...value, showEvolution: !value.showEvolution })} />
+    <div className={s.reference}>
+      <span className={s.referenceIcon}><Icon icon={BookOpenCheck} size={24} /></span>
+      <div className={s.referenceText}>
+        <span className={s.label}>Generación de learnset automática</span>
+        <strong className={s.referenceName}><Badge tone="navy">Gen {reference}</Badge> {GENERATION_LEARNSET_SOURCES[reference].label}</strong>
+        <p className={s.hint}>Se utiliza la generación más alta que hayas activado.</p>
+      </div>
     </div>
-    <div className="grid gap-4 md:grid-cols-2"><ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={120} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} /><ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => `${rounds} rondas`} onCommit={(rounds) => onChange({ ...value, rounds })} /></div>
-    <p className="text-sm font-bold text-ink/65">Nuevas pistas cada 7 segundos · cooldown de 1 segundo tras un fallo.</p>
+    <div className={s.toggles}>
+      <Toggle label="Mostrar niveles" hint="Indica el nivel exacto de cada movimiento." checked={value.showLevels} disabled={disabled} onChange={(showLevels) => void onChange({ ...value, showLevels })} />
+      <Toggle label="Información evolutiva" hint="Muestra únicamente la etapa, nunca nombres." checked={value.showEvolution} disabled={disabled} onChange={(showEvolution) => void onChange({ ...value, showEvolution })} />
+    </div>
+    <div className={s.ranges}>
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={120} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Nuevas pistas cada 7 segundos · 1 segundo de espera tras un fallo." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
+    </div>
   </fieldset>;
-}
-
-function Toggle({ icon: Icon, label, description, active, onClick }: { icon: typeof Eye; label: string; description: string; active: boolean; onClick(): void }) {
-  return <button type="button" aria-pressed={active} onClick={onClick} className={`flex min-h-24 items-start gap-3 rounded-2xl border p-4 text-left ${active ? 'border-leaf bg-leaf/10' : 'border-ink/10 bg-surface-raised'}`}><Icon className={active ? 'text-leaf' : 'text-ink/55'} /><span><strong className="block font-display text-lg">{label}: {active ? 'Sí' : 'No'}</strong><small className="font-bold text-ink/65">{description}</small></span></button>;
 }

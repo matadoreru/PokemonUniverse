@@ -1,0 +1,557 @@
+/*
+ * Learnset Guess (spec §2 y §6 «Juegos»): alto del `main` como `SessionScreen`, sin scroll de página en escritorio.
+ * Arriba la placa de la ronda, los avisos y las pistas (o la revelación); abajo el buscador o el veredicto; al lado, el
+ * marcador en vivo y los intentos públicos.
+ */
+.screen {
+  /* Contiene el texto `sr-only` (absoluto) de la región viva. */
+  position: relative;
+  min-height: 100%;
+  padding-top: var(--sp-4);
+}
+@media (min-width: 1024px) {
+  .screen {
+    height: 100%;
+    padding-block: var(--sp-5);
+  }
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+  /* Hueco para la sombra dura de las placas (la columna recorta lo que se sale al desplazarse). */
+  padding-bottom: var(--sp-2);
+}
+.top > * {
+  flex: none;
+}
+@media (min-width: 1024px) {
+  .top {
+    height: 100%;
+  }
+  /* Las pistas (o la revelación) llenan el alto que dejan la placa de la ronda y los avisos. */
+  .top > :last-child:not(:first-child) {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+}
+
+/* Placa de la ronda: ronda, learnset y pista evolutiva arriba, el título debajo, el tiempo a la derecha. */
+.hud {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+}
+.hudMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.hudMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.hudMeta > * {
+  max-width: 100%;
+}
+.evolution {
+  display: inline-flex;
+  max-width: 100%;
+}
+/* Los chips de la placa pueden partir su texto en dos líneas antes que salirse de su hueco. */
+.hudMeta > span,
+.evolution > span {
+  white-space: normal;
+}
+.heading {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 800 var(--fs-34) / 1.1 var(--font-display);
+  color: var(--white);
+}
+.hudTimer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Región viva: los avisos en chips; sin avisos visibles no ocupa sitio (anula el hueco de la columna). */
+.notices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.noticesIdle {
+  margin-top: calc(-1 * var(--sp-3));
+}
+.warning,
+.solver {
+  display: inline-flex;
+  max-width: 100%;
+}
+.warning > span,
+.solver > span {
+  min-height: 34px;
+  padding-inline: var(--sp-3);
+  font-size: var(--fs-15);
+  white-space: normal;
+}
+
+/* Pistas: una franja por movimiento en rejilla; la última pista arriba. */
+.cluesPanel {
+  min-height: 10rem;
+}
+.cluesRight {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.stake {
+  display: inline-flex;
+}
+.clues {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: var(--sp-2);
+}
+.level {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 4.25rem;
+}
+.fresh {
+  display: inline-flex;
+}
+.moveMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.empty {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--sky-2);
+}
+.empty > svg {
+  flex: none;
+}
+.empty strong {
+  color: var(--white);
+}
+
+/* Columna lateral: el marcador, los intentos (o los puntos de la ronda) y «Saltar minijuego». */
+.sideColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-height: 0;
+}
+.sideColumn > * {
+  flex: none;
+}
+.sidePanel,
+.attemptsPanel {
+  max-height: 22rem;
+}
+@media (min-width: 1024px) {
+  .sideColumn {
+    height: 100%;
+  }
+  .sideColumn > .sidePanel {
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: 60%;
+  }
+  .sideColumn > .attemptsPanel {
+    flex: 1 1 auto;
+    min-height: 8rem;
+    max-height: none;
+  }
+}
+.skip {
+  display: flex;
+  justify-content: flex-end;
+}
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+/* Un chip largo parte su texto antes que meterse bajo los puntos. */
+.rowMeta > span {
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.15;
+}
+.score {
+  display: inline-block;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.score small {
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+.attemptSprite {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.attemptBy {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 700 var(--fs-13) / 1.2 var(--font-text);
+}
+
+/* Revelación: la carta del Pokémon con sus datos y el learnset, partido en lo visto y lo que quedó oculto. */
+.revealPanel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+/* La carta a la izquierda con sus datos al lado; el learnset debajo (en escritorio, bajo los datos). */
+.reveal {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: 'card text' 'list list';
+  align-items: center;
+  gap: var(--sp-3) var(--sp-5);
+}
+@media (min-width: 1024px) {
+  .reveal {
+    grid-template-areas: 'card text' 'card list';
+    grid-template-rows: auto auto;
+    align-items: start;
+    /* Con sitio de sobra, el conjunto va centrado en la losa (sin recortar si no cabe). */
+    align-content: safe center;
+  }
+}
+@media (min-width: 1024px) {
+  .reveal {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+}
+.revealCard {
+  grid-area: card;
+  perspective: 900px;
+}
+.revealText {
+  grid-area: text;
+  min-width: 0;
+}
+.kicker {
+  display: block;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.revealTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font: 800 var(--fs-44) / 1.05 var(--font-display);
+  color: var(--ink);
+}
+.help {
+  margin-top: var(--sp-1);
+  font: 700 var(--fs-15) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.learnset {
+  grid-area: list;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.moveChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+/* Pantalla inferior: placa crema con icono, estado y, a la derecha, el aviso o los puntos; debajo, el buscador. */
+.plate {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.plateRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.plateIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: 50%;
+  color: var(--navy);
+  box-shadow: var(--sh-hard-3);
+}
+.tone_ok {
+  background: var(--ok);
+}
+.tone_bad {
+  background: var(--bad);
+}
+.tone_info {
+  background: var(--info);
+}
+.tone_warn {
+  background: var(--warn);
+}
+.plateText {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.plateTitle {
+  width: fit-content;
+  max-width: 100%;
+  /* Hueco para el anillo de foco (3 px fuera): no pisa el kicker ni el texto. */
+  margin-block: 3px;
+  font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
+  color: var(--ink);
+}
+.plateAside {
+  flex: none;
+  min-width: 0;
+}
+.noteName {
+  display: inline-block;
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
+.points {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  font: 800 var(--fs-44) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.points small {
+  font: 800 var(--fs-15) / 1 var(--font-text);
+}
+.points > :global(.score-pop) {
+  position: absolute;
+  right: 100%;
+  top: -0.5rem;
+  margin-right: var(--sp-2);
+}
+
+/* Buscador: la bandeja de resultados con tope de alto, para que las pistas sigan a la vista. */
+.search {
+  min-width: 0;
+}
+.search :global(.pokemon-selector-results) {
+  max-height: clamp(7.5rem, 22dvh, 20rem);
+}
+@media (min-width: 1024px) {
+  /* Escritorio: título y aviso a la izquierda, el buscador a la derecha. */
+  .plateSearch {
+    display: grid;
+    grid-template-columns: minmax(15rem, 20rem) minmax(0, 1fr);
+    align-items: start;
+  }
+  .plateSearch .plateRow {
+    flex-wrap: wrap;
+  }
+  .plateSearch .plateAside {
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 639px) {
+  /* Móvil: placa de la ronda y pistas compactas; la placa inferior sin icono ni kicker al buscar. */
+  .hud {
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .heading {
+    font-size: var(--fs-22);
+  }
+  .clues {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* El fuente del learnset se lee en la revelación; aquí basta la generación. */
+  .source {
+    display: none;
+  }
+  /* Cabecera de las pistas: lo que vale un acierto y la próxima pista; el título queda para los lectores. */
+  .cluesPanel > header > h2 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .cluesPanel > header > div {
+    margin-left: 0;
+  }
+  /* El nombre ya lo dice el título de la placa: en el móvil, la carta y los datos. */
+  .revealTitle {
+    display: none;
+  }
+  .plateIcon,
+  .plateSearch .kicker {
+    display: none;
+  }
+  .plateTitle {
+    font-size: var(--fs-18);
+  }
+  .plateRow {
+    flex-wrap: wrap;
+    row-gap: var(--sp-2);
+  }
+  .plateSearch {
+    gap: var(--sp-2);
+  }
+  .points {
+    font-size: var(--fs-34);
+  }
+  .search :global(.pokemon-selector-results) {
+    max-height: 8.5rem;
+  }
+}
+/* Escritorio bajo (720 px): la placa de la ronda algo más baja y la bandeja del buscador de una fila de cartas. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .hud {
+    padding-block: var(--sp-2);
+  }
+  .search :global(.pokemon-selector-results) {
+    max-height: 9rem;
+  }
+  .heading {
+    font-size: var(--fs-26);
+  }
+}
+
+/*
+ * Escritorio grande (≥1600×900): la pantalla se llena. Título a 44 px, franjas de movimiento más altas y con letra
+ * mayor, la carta de la revelación más grande y los puntos a 68 px.
+ */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .hud {
+    padding: var(--sp-4) var(--sp-5);
+  }
+  .heading {
+    font-size: var(--fs-44);
+  }
+  /* Dos columnas de franjas altas: las pistas iniciales ya llenan media losa y las nuevas se desplazan dentro. */
+  .clues {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--sp-4);
+    --row-name-fs: var(--fs-26);
+    --row-meta-fs: var(--fs-15);
+  }
+  .clues > li > * {
+    min-height: 104px;
+    gap: var(--sp-4);
+    padding-inline-start: var(--sp-5);
+  }
+  .clues .moveMeta > span {
+    min-height: 30px;
+    padding-inline: var(--sp-3);
+    font-size: var(--fs-15);
+  }
+  .clues .level > span,
+  .clues .fresh > span {
+    min-height: 30px;
+    font-size: var(--fs-18);
+  }
+  .moveMeta {
+    gap: var(--sp-2);
+  }
+  .cluesRight > span > span,
+  .cluesRight > span:not(.stake) {
+    min-height: 30px;
+    font-size: var(--fs-15);
+  }
+  .empty {
+    font-size: var(--fs-15);
+  }
+  .rows {
+    --row-name-fs: var(--fs-18);
+    --row-value-fs: var(--fs-22);
+  }
+  .revealTitle {
+    font-size: var(--fs-68);
+  }
+  .help {
+    font-size: var(--fs-18);
+  }
+  .reveal {
+    column-gap: var(--sp-6);
+  }
+  .revealCard [data-answer-card] > span:first-child {
+    width: 192px;
+    height: 192px;
+  }
+  .revealCard [data-answer-card] img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .learnset {
+    gap: var(--sp-3);
+  }
+  .learnset .kicker {
+    font-size: var(--fs-15);
+  }
+  .moveChips {
+    gap: var(--sp-3);
+  }
+  .moveChips > li > span {
+    min-height: 36px;
+    padding-inline: var(--sp-3);
+    font-size: var(--fs-18);
+  }
+  .hudMeta > span:not(.evolution),
+  .evolution > span {
+    min-height: 30px;
+    padding-inline: var(--sp-3);
+    font-size: var(--fs-15);
+  }
+  .plateTitle {
+    font-size: var(--fs-26);
+  }
+  .points {
+    font-size: var(--fs-68);
+  }
+}

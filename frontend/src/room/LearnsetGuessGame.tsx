@@ -1,63 +1,112 @@
-import type { LearnsetGuessPlayerState, LearnsetGuessPublicState, LearnsetMoveHint, MoveCategory, PokemonType, RoomView } from '@pokemon-universe/shared/public';
-import { AlarmClock, BookOpen, CheckCircle2, Clock3, Coins, Eye, History, Lightbulb, Sparkles, Trophy, WifiOff, XCircle } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
-import { ScorePop } from '../components/ScorePop';
+import type { LearnsetGuessConfig, LearnsetGuessPlayerState, LearnsetGuessPublicState, RoomView } from '@pokemon-universe/shared/public';
+import { useMemo, useRef } from 'react';
+import { ServerTimer } from '../components/ServerTimer';
+import { LearnsetAttempts, LearnsetClues, LearnsetHud, LearnsetNotices, LearnsetPlate, LearnsetRevealBoard, LearnsetRevealScene, LearnsetScoreboard, LearnsetSearchNote, learnsetOwnLastAttempt, type ScoreLine } from '../games/learnset-guess/LearnsetGuessParts';
+import { learnsetAnnouncement, learnsetFocusKey, learnsetLatestStage, learnsetPlateKind, learnsetPositions, learnsetVerdict } from '../games/learnset-guess/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { useTimedVisibility } from '../hooks/useTimedVisibility';
-import { revealedLearnsetFlags } from './learnset-reveal';
-import { learnsetLastWarningText, learnsetRevealStatus, learnsetScoreboard, learnsetSolvedAnnouncement, learnsetStakeText } from './learnset-texts';
+import { cx, ScreenSplit } from '../ui';
+import { GameSkipSlot } from './GameSkipSlot';
+import { useFocusOnTransition } from './focus-transition';
+import { learnsetLastWarningText, learnsetScoreboard, learnsetSolvedAnnouncement, learnsetStakeText } from './learnset-texts';
 import { PokemonSelector } from './PokemonSelector';
+import s from '../games/learnset-guess/LearnsetGuess.module.css';
 
-const typeLabels: Record<PokemonType, [string, string]> = {
-  normal: ['⚪', 'Normal'], fire: ['🔥', 'Fuego'], water: ['💧', 'Agua'], electric: ['⚡', 'Eléctrico'], grass: ['🌿', 'Planta'], ice: ['❄️', 'Hielo'], fighting: ['🥊', 'Lucha'], poison: ['☠️', 'Veneno'], ground: ['⛰️', 'Tierra'], flying: ['🪽', 'Volador'], psychic: ['🔮', 'Psíquico'], bug: ['🐛', 'Bicho'], rock: ['🪨', 'Roca'], ghost: ['👻', 'Fantasma'], dragon: ['🐉', 'Dragón'], dark: ['🌑', 'Siniestro'], steel: ['⚙️', 'Acero'], fairy: ['🧚', 'Hada'],
-};
-const categoryLabels: Record<MoveCategory, [string, string]> = { physical: ['⚔️', 'Físico'], special: ['✨', 'Especial'], status: ['◯', 'Estado'] };
-const ordinal = (value: number) => `${value}.º`;
 /** Lo que dura en pantalla el aviso «X ha acertado» para los demás. */
 const SOLVED_NOTICE_MS = 2_000;
 
+/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
+const ignoreFailure = () => undefined;
+
+/**
+ * Learnset Guess (spec §2 y §6 «Juegos»). Arriba se mira: la placa de la ronda, los avisos (último aviso, quién acaba de
+ * acertar) y las pistas de movimientos, la última arriba; en la revelación, la carta del Pokémon y su learnset. Abajo
+ * se actúa: el buscador, el acierto con sus puntos o el veredicto. Al lado, el marcador en vivo y los intentos públicos
+ * (en la revelación, los puntos de la ronda de cada uno).
+ *
+ * Privacidad: solo se pinta lo proyectado. La respuesta solo llega en `lastRound`, que el servidor manda únicamente en
+ * `ROUND_RESULTS`; aun así la pantalla solo la usa en esa fase.
+ */
 export function LearnsetGuessGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const game = room.game as LearnsetGuessPublicState; const player = room.gamePlayerState as LearnsetGuessPlayerState;
-  const generations = (room.selectedGameConfig as { generations: number[] }).generations; const { pokemon, loading: poolLoading, error: poolError, retry: retryPool } = usePokemonPool({ generations });
+  const game = room.game as LearnsetGuessPublicState;
+  const player = room.gamePlayerState as LearnsetGuessPlayerState | null;
+  const config = room.selectedGameConfig as Partial<LearnsetGuessConfig> | null;
+  const { pokemon, loading: poolLoading, error: poolError, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [] });
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
   const offset = useServerOffset(room.serverNow);
   const roundRemaining = Math.ceil(useRemainingMs(game.roundEndsAt, offset) / 1_000);
   const transitionRemaining = Math.ceil(useRemainingMs(game.nextTransitionAt, offset) / 1_000);
-  const cooldownRemaining = useRemainingMs(player.cooldownUntil, offset); const active = game.phase === 'ROUND_ACTIVE';
-  const self = room.members.find((member) => member.id === selfId); const participating = self?.role === 'PLAYER';
-  const lastWarningText = active ? learnsetLastWarningText(game.lastWarning, player.solved || !participating || !player.canGuess, roundRemaining) : null;
-  const latestStage = Math.max(0, ...game.visibleGroups.map((group) => group.stage));
+  const cooldownMs = useRemainingMs(player?.cooldownUntil ?? null, offset);
+  const active = game.phase === 'ROUND_ACTIVE';
+  const self = members.get(selfId);
+  const participating = self?.role === 'PLAYER';
+  const solved = player?.solved === true;
+  const canGuess = participating && player?.canGuess === true;
+  const lastRound = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
+  const kind = learnsetPlateKind(game.phase, player ? { canGuess, solved } : null, lastRound !== null);
+  const latestStage = learnsetLatestStage(game.visibleGroups);
   const latestSolver = game.solvedPlayers.at(-1);
-  const latestSolverMember = latestSolver && latestSolver.playerId !== selfId ? room.members.find((member) => member.id === latestSolver.playerId) : undefined;
-  // Todos los hooks van antes del `return` de la revelación: el número de hooks no cambia entre fases.
+  const latestSolverMember = latestSolver && latestSolver.playerId !== selfId ? members.get(latestSolver.playerId) : undefined;
+
+  // Todos los hooks van antes de elegir la escena: el número de hooks no cambia entre fases.
   const solvedNoticeVisible = useTimedVisibility(SOLVED_NOTICE_MS, `${game.roundNumber}:${game.solvedPlayers.length}`);
   useSfxCue('tick', active && latestStage > 0 ? `${game.roundNumber}:${latestStage}` : null);
-  useSfxCue('hit', active && player.solved ? game.roundNumber : null);
-  const stakeText = active && participating && player.canGuess && !player.solved ? learnsetStakeText(game.visibleGroups, game.solvedPlayers.length) : null;
+  useSfxCue('hit', active && solved ? game.roundNumber : null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(learnsetFocusKey(kind, game.roundNumber), titleRef);
+
+  const lastWarning = active ? learnsetLastWarningText(game.lastWarning, solved || !canGuess, roundRemaining) : null;
+  const stake = active && canGuess ? learnsetStakeText(game.visibleGroups, game.solvedPlayers.length) : null;
+  const solver = active && solvedNoticeVisible && latestSolverMember ? { key: `${game.roundNumber}:${game.solvedPlayers.length}`, member: latestSolverMember, text: learnsetSolvedAnnouncement(latestSolverMember.displayName) } : null;
+  const announcement = learnsetAnnouncement({ kind, game, roundPoints: player?.roundPoints ?? 0 });
+
   const scoreboard = learnsetScoreboard(room.members, game.scores);
+  const positions = learnsetPositions(scoreboard.map((line) => line.points));
+  const lines: ScoreLine[] = scoreboard.map(({ member, points }, index) => ({
+    member, points, position: positions[index]!, colorIndex: colors.get(member.id) ?? 0,
+    solveOrder: game.solvedPlayers.find((entry) => entry.playerId === member.id)?.solveOrder,
+    tied: points > 0 && positions.filter((position) => position === positions[index]).length > 1,
+  }));
 
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} remaining={transitionRemaining} />;
-  return <section className="mx-auto max-w-7xl px-4 py-5 md:px-7">
-    <header className="mb-5 flex flex-wrap items-end justify-between gap-3"><div><span className="label">Ronda {game.roundNumber} de {game.totalRounds}</span><h1 className="font-display text-3xl font-bold sm:text-4xl"><BookOpen className="mr-2 inline text-aqua" />¿Qué Pokémon es?</h1><p className="mt-1 font-bold text-ink/65">Learnset de Gen {game.referenceGeneration} · {game.referenceSource}</p></div><span className={`chip text-lg ${roundRemaining <= 5 ? 'timer-pulse text-berry' : ''}`}><Clock3 /> {roundRemaining}s</span></header>
-    <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_20rem]">
-      <main className="space-y-5">
-        {game.evolutionHint && <div className="flex items-center gap-3 rounded-2xl border border-electric/25 bg-electric/10 p-3"><Sparkles className="text-electric" /><div><span className="label !mb-0">Pista evolutiva</span><strong className="font-display text-lg">{game.evolutionHint}</strong></div></div>}
-        <section className="card !p-4 md:!p-5"><div className="mb-4 flex flex-wrap items-center justify-between gap-2"><div><span className="label !mb-0">Movimientos conocidos</span><h2 className="font-display text-2xl">Pistas reveladas</h2></div><div className="flex flex-wrap items-center gap-2">{active && solvedNoticeVisible && latestSolverMember && <span key={`${game.roundNumber}:${game.solvedPlayers.length}`} role="status" className="chip motion-bump gap-1.5 border border-leaf/40 bg-leaf/10 text-leaf"><Avatar name={latestSolverMember.displayName} avatar={latestSolverMember.avatar} size="xs" /> {learnsetSolvedAnnouncement(latestSolverMember.displayName)}</span>}{stakeText && <span key={stakeText} className="chip motion-bump gap-1.5 border border-electric/40 bg-electric/10 text-electric" data-testid="learnset-stake"><Coins size={16} aria-hidden="true" /> {stakeText}</span>}{lastWarningText && <span role="status" className="chip timer-pulse gap-1.5 border border-berry bg-berry/10 text-berry"><AlarmClock size={16} aria-hidden="true" /> {lastWarningText}</span>}{active && game.nextTransitionAt && <span className="chip bg-aqua/10 text-aqua"><Lightbulb size={16} /> Nueva pista en {transitionRemaining}s</span>}</div></div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{game.visibleGroups.map((group, index) => <div key={`${group.level ?? 'hidden'}-${group.stage}-${index}`} className={`rounded-2xl border p-3 ${group.stage > 0 ? 'motion-enter-up' : ''} ${group.stage > 0 && group.stage === latestStage ? 'border-aqua bg-aqua/10' : 'border-ink/10 bg-surface-raised'}`} data-stage={group.stage}><div className="mb-2 flex items-center justify-between"><span className="label !mb-0">{group.level === null ? 'Movimiento' : `Nv. ${group.level}`}</span>{group.stage > 0 && <span className="rounded-full bg-aqua px-2 py-0.5 text-xs font-black uppercase text-night">Nueva pista</span>}</div><div className="space-y-2">{group.moves.map((move, moveIndex) => <MoveHint key={`${move.moveId}-${move.level ?? 'x'}-${moveIndex}`} move={move} />)}</div></div>)}</div>
-        </section>
-        {active && participating && player.canGuess && <div><PokemonSelector pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set()} disabled={false} confirmationDisabled={cooldownRemaining > 0} onSelect={(pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId })} />{cooldownRemaining > 0 && <p className="mt-2 text-center text-sm font-extrabold text-berry">Espera {(cooldownRemaining / 1_000).toFixed(1)}s para confirmar otro intento.</p>}</div>}
-        {active && player.solved && <div className="card reveal-pop grid min-h-52 place-items-center border-leaf bg-leaf/10 text-center"><div><CheckCircle2 className="mx-auto text-leaf" size={56} /><h2 className="mt-3 font-display text-3xl text-leaf">¡Has acertado!</h2><p className="font-bold text-ink/65">{ordinal(player.solveOrder!)} en acertar · +{player.roundPoints} puntos.</p><small className="font-bold text-ink/55">La respuesta sigue oculta para los demás.</small></div></div>}
-        {active && (!participating || (!player.canGuess && !player.solved)) && <div className="card grid min-h-44 place-items-center text-center"><div><Eye className="mx-auto text-aqua" size={44} /><h2 className="mt-2 font-display text-2xl">Estás observando</h2></div></div>}
-      </main>
-      <aside className="space-y-4 xl:sticky xl:top-4"><div className="card !p-4"><h2 className="mb-3 flex items-center gap-2 font-display text-xl"><Trophy className="text-electric" aria-hidden="true" /> Marcador</h2><ol className="space-y-2" aria-label="Marcador">{scoreboard.map(({ member, points }, index) => { const order = game.solvedPlayers.find((entry) => entry.playerId === member.id)?.solveOrder; return <li key={member.id} className={`ranking-row ranking-row-compact ${order ? 'ranking-row-solved' : ''}`} data-testid="learnset-score-row"><span className="w-5 text-center font-display font-bold tabular-nums text-ink/65">{index + 1}</span><Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} size="sm" /><span className="flex min-w-0 items-center gap-1.5"><strong className="min-w-0 truncate" title={member.displayName}>{member.displayName}</strong>{order && <span className="chip shrink-0 gap-1 bg-leaf/15 px-2 py-0.5 text-xs text-leaf"><CheckCircle2 size={14} aria-hidden="true" /> {ordinal(order)}</span>}</span><span className="flex items-center gap-1.5">{active && member.id === selfId && player.solved && <ScorePop key={game.roundNumber} points={player.roundPoints} tone="leaf" self />}<strong key={points} className="motion-bump inline-block font-display text-lg tabular-nums" data-testid="learnset-score">{points} pts</strong></span></li>; })}</ol></div>
-        <div className="card !p-4"><h2 className="mb-3 flex items-center gap-2 font-display text-xl"><History className="text-berry" /> Intentos públicos</h2>{game.attempts.length ? <div className="max-h-72 space-y-2 overflow-y-auto">{game.attempts.slice().reverse().map((attempt, index) => { const member = room.members.find((entry) => entry.id === attempt.playerId); return <div key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`} className="flex items-center gap-2 rounded-xl bg-berry/10 p-2"><img src={attempt.sprite} alt="" className="h-9 w-9 object-contain [image-rendering:pixelated]" /><div className="min-w-0 flex-1"><small className="block truncate font-bold text-ink/65">{member?.displayName ?? attempt.playerId} probó</small><strong className="block truncate">{attempt.pokemonName}</strong></div><XCircle className="text-berry" size={18} /></div>; })}</div> : <p className="text-sm font-bold text-ink/60">Todavía no hay intentos incorrectos.</p>}</div></aside>
-    </div>
-  </section>;
-}
+  const last = game.roundNumber >= game.totalRounds;
+  const deadline = active ? game.roundEndsAt : game.nextTransitionAt;
+  const timer = deadline !== null ? <ServerTimer deadline={deadline} serverOffset={offset} label={active ? 'Tiempo' : last ? 'Clasificación' : 'Siguiente ronda'}
+    {...(active && config?.roundSeconds ? { totalMs: config.roundSeconds * 1_000 } : {})} /> : null;
+  const heading = lastRound ? `¡Era ${lastRound.pokemon.name}!` : '¿Qué Pokémon es?';
 
-function MoveHint({ move }: { move: LearnsetMoveHint }) { const type = typeLabels[move.type]; const category = categoryLabels[move.category]; return <div className="rounded-xl bg-ink/[.06] p-3"><strong className="block font-display text-lg">{move.name}</strong><div className="mt-1 flex flex-wrap gap-2 text-xs font-extrabold"><span>{type[0]} {type[1]}</span><span className="text-ink/55">·</span><span>{category[0]} {category[1]}</span></div></div>; }
+  const top = <div className={s.top}>
+    <LearnsetHud roundNumber={game.roundNumber} totalRounds={game.totalRounds} referenceGeneration={game.referenceGeneration} referenceSource={game.referenceSource}
+      evolutionHint={active ? game.evolutionHint : null} heading={heading} timer={timer} />
+    <LearnsetNotices lastWarning={lastWarning} solver={solver} announcement={announcement} />
+    {lastRound
+      ? <LearnsetRevealScene result={lastRound} />
+      : <LearnsetClues groups={game.visibleGroups} latestStage={latestStage} stake={stake} nextClueIn={active && game.nextTransitionAt ? transitionRemaining : null} />}
+  </div>;
 
-function RoundReveal({ room, game, remaining }: { room: RoomView; game: LearnsetGuessPublicState; remaining: number }) {
-  const result = game.lastRound!; const revealed = revealedLearnsetFlags(result.learnset, result.revealedMoves); const ordered = room.members.filter((member) => member.role !== 'SPECTATOR').sort((left, right) => (result.solves[left.id]?.solveOrder ?? Infinity) - (result.solves[right.id]?.solveOrder ?? Infinity)); return <section className="mx-auto max-w-6xl px-4 py-6"><div className="card reveal-pop"><div className="mb-5 flex items-start justify-between gap-3"><div><span className="label">Resultado de la ronda</span><h1 className="font-display text-4xl text-leaf">¡Era {result.pokemon.name}!</h1><p className="font-bold text-ink/65">#{String(result.pokemon.nationalDexNumber).padStart(3, '0')} · Generación {result.pokemon.generation} · Learnset Gen {result.referenceGeneration}</p><p className="text-sm font-bold text-aqua">{result.referenceSource}</p></div><span className="chip"><Clock3 size={16} /> {Math.max(1, remaining)}s</span></div><div className="grid gap-5 lg:grid-cols-[15rem_1fr]"><div className="grid place-items-center rounded-2xl bg-leaf/10 p-4"><img src={result.pokemon.sprite} alt={result.pokemon.name} className="h-44 w-44 object-contain [image-rendering:pixelated]" /></div><div className="grid gap-2 sm:grid-cols-2">{ordered.map((member) => { const solve = result.solves[member.id]; const status = learnsetRevealStatus(Boolean(solve), !result.absentIds.includes(member.id)); return <div key={member.id} data-testid="learnset-reveal-row" className={`flex items-center gap-3 rounded-2xl border p-3 ${status === 'solved' ? 'border-leaf bg-leaf/10' : status === 'missed' ? 'border-berry/30 bg-berry/10' : 'border-ink/10 bg-ink/[.035]'}`}><strong className="w-8 text-center text-xl">{solve ? solve.solveOrder <= 3 ? ['🥇', '🥈', '🥉'][solve.solveOrder - 1] : solve.solveOrder : '—'}</strong><Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} size="md" /><div className="min-w-0 flex-1"><strong className="block truncate" title={member.displayName}>{member.displayName}</strong>{solve ? <small className="font-bold text-leaf">{ordinal(solve.solveOrder)} · {solve.revealStage === 0 ? 'Pistas iniciales' : `Después de ${solve.revealStage} reveal${solve.revealStage === 1 ? '' : 's'}`}</small> : status === 'offline' ? <small className="inline-flex items-center gap-1 font-bold text-ink/60"><WifiOff size={14} aria-hidden="true" /> Sin conexión</small> : <small className="font-bold text-berry">✗ No acertó</small>}</div><strong className={solve ? 'text-leaf' : 'text-ink/50'}>+{solve?.points ?? 0}</strong></div>; })}</div></div><div className="mt-5"><span className="label">Learnset utilizado · {result.revealedMoves.length} pistas llegaron a verse</span><div className="flex max-h-52 flex-wrap gap-2 overflow-y-auto">{result.learnset.map((move, index) => <span key={`${move.moveId}-${index}`} className={`chip ${revealed[index] ? 'bg-aqua/15 text-aqua' : 'opacity-45'}`}>{move.level !== null && `Nv. ${move.level} · `}{move.name}</span>)}</div></div></div></section>;
+  const side = <div className={s.sideColumn}>
+    {lastRound
+      ? <LearnsetRevealBoard result={lastRound} members={room.members} colors={colors} selfId={selfId} className={s.sidePanel} />
+      : <>
+        <LearnsetScoreboard lines={lines} selfId={selfId} className={s.sidePanel} />
+        <LearnsetAttempts attempts={game.attempts} members={members} colors={colors} className={s.attemptsPanel} />
+      </>}
+    <GameSkipSlot className={s.skip} />
+  </div>;
+
+  const search = kind === 'guess' && <div className={s.search}>
+    <PokemonSelector key={game.roundNumber} pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set()} disabled={false}
+      confirmationDisabled={cooldownMs > 0} variant="embedded"
+      onSelect={(pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }).catch(ignoreFailure)} />
+  </div>;
+
+  const bottom = <LearnsetPlate kind={kind} search={search} searchNote={<LearnsetSearchNote cooldownMs={cooldownMs} lastAttempt={learnsetOwnLastAttempt(game, selfId)} />}
+    solveOrder={player?.solveOrder ?? null} roundPoints={player?.roundPoints ?? 0} verdict={lastRound ? learnsetVerdict(lastRound, selfId, participating) : null}
+    countdown={`${last ? 'Clasificación' : 'Siguiente ronda'} en ${Math.max(1, transitionRemaining)}s`} titleRef={titleRef} />;
+
+  return <div className={cx('content-row', s.screen)}>
+    <ScreenSplit fill top={top} side={side} bottom={bottom} />
+  </div>;
 }
