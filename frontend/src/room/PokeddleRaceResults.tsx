@@ -59,7 +59,7 @@ export function PokeddleRaceResults({ room, selfId, onLobby, onEnd }: { room: Ro
     { key: 'fastest', title: 'Resolución más rápida', icon: Timer, names: fastest?.names ?? null, value: fastest ? guessSeconds(fastest.value) : '', unit: 'desde el inicio de la partida' },
   ]} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación final" subtitle={`${GAME_SUBTITLE} · ${game.roundNumber} ${game.roundNumber === 1 ? 'ronda' : 'rondas'}`}
-    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
 }
 
 const GAME_SUBTITLE = 'Pokédle Race';

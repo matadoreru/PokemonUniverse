@@ -1,6 +1,7 @@
 import { Hourglass } from 'lucide-react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
+import { GUESS_SIDE_FIT } from '../guess-kit';
 import { AuctionAward, AuctionLot, AuctionScreen, BidControls, BidHistory, BudgetPlate, bidBlock, bidLog, type BidBlockInput, type BidControlsProps } from '.';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
@@ -114,6 +115,16 @@ describe('auction-kit: lateral y marco', () => {
     expect(many).toContain('role="tablist"');
     expect(many).toContain('Aún no hay pujas.');
     expect(many).not.toMatch(/role="(status|alert)"|aria-live/);
+  });
+
+  it('historial: sin ninguna puja no llena el alto de la columna lateral; con pujas, sí', () => {
+    expect(GUESS_SIDE_FIT).not.toBe('');
+    const fit = new RegExp(`<section class="[^"]*\\b${GUESS_SIDE_FIT}\\b`);
+    const entries = bidLog([{ playerId: 'p1', type: 'BID', amount: 3 }], () => 'Ana');
+    expect(renderToStaticMarkup(<BidHistory views={[{ key: 'round', label: 'Ronda', entries: [], emptyText: 'Nada' }]} />)).toMatch(fit);
+    expect(renderToStaticMarkup(<BidHistory views={[{ key: 'round', label: 'Ronda', entries, emptyText: 'Nada' }]} />)).not.toMatch(fit);
+    // Con pestañas basta una vista con franjas para que llene (cambiar de pestaña no cambia el alto).
+    expect(renderToStaticMarkup(<BidHistory views={[{ key: 'lot', label: 'Lote', entries: [], emptyText: 'Nada' }, { key: 'closed', label: 'Cerrados', entries, emptyText: 'Nada' }]} />)).not.toMatch(fit);
   });
 
   it('el marco tiene una sola región viva y su testid', () => {

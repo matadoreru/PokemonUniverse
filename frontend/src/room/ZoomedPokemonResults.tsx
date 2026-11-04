@@ -39,5 +39,5 @@ export function ZoomedPokemonResults({ room, selfId, onLobby, onEnd }: { room: R
     { key: 'maxZoom', title: 'A máximo zoom', icon: ZoomIn, names: maxZoom?.names ?? null, value: maxZoom ? String(maxZoom.value) : '', unit: maxZoom?.value === 1 ? 'acierto con el primer recorte' : 'aciertos con el primer recorte' },
   ]} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación final" subtitle={`Zoomed Pokémon · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
-    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
 }

@@ -36,7 +36,7 @@ export function TypeDuelResults({ room, selfId, onLobby, onEnd }: { room: RoomVi
     { key: 'winRate', title: 'Mejor porcentaje', icon: Percent, names: records.winRate?.names ?? null, value: records.winRate?.value ?? '', unit: 'de los duelos jugados' },
     { key: 'fastest', title: 'Acierto más rápido', icon: Timer, names: records.fastest?.names ?? null, value: records.fastest?.value ?? '', unit: 'de media por acierto' },
   ]} />;
-  const actions = <ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} />;
+  const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Type Duel" subtitle={`Type Duel · ${game.totalRounds} ${game.totalRounds === 1 ? 'duelo' : 'duelos'}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge />;
 }

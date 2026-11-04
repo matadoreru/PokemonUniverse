@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperti
 import { useServerOffset } from '../hooks/useServerTime';
 import { Chip, cx, Pill } from '../ui';
 import {
-  previousTurnGuess, secretsReady, TEAM_COLOR, TEAM_NAME, whoAnnouncement, whoFocusKey, whoHeading, whoRole, whoRoundLabel, type WhoRole,
+  otherTeam, previousTurnGuess, secretsReady, TEAM_COLOR, TEAM_NAME, whoAnnouncement, whoFocusKey, whoHeading, whoRole, whoRoundLabel, type WhoRole,
 } from '../games/who-is-who-pokemon/presentation';
 import { WhoBoard, WhoGuessesFeed, WhoPickDialog, WhoSecretPanel, WhoTeamsPanel } from '../games/who-is-who-pokemon/WhoIsWhoParts';
 import { useFocusOnTransition } from './focus-transition';
@@ -97,7 +97,7 @@ export function WhoIsWhoPokemonGame({ room, selfId, onAction }: { room: RoomView
     content = { icon: Eye, tone: 'info', kicker: `Turno ${game.turnNumber} · Observando`, title: `Pregunta el ${TEAM_NAME[game.currentTeam]}`, text: 'Los secretos y las cartas bajadas solo los ve cada equipo; se revelan al final.' };
   } else {
     const turnText = role === 'turn'
-      ? `Preguntad al ${TEAM_NAME[game.currentTeam === 'BLUE' ? 'RED' : 'BLUE']} por voz (sí o no) y bajad las cartas que no encajen. Un intento por turno: fallar pasa el turno.`
+      ? `Preguntad al ${TEAM_NAME[otherTeam(game.currentTeam)]} por voz (sí o no) y bajad las cartas que no encajen. Un intento por turno: fallar pasa el turno.`
       : `El ${TEAM_NAME[game.currentTeam]} pregunta: responded por voz con sí o no. Podéis seguir bajando cartas.`;
     const missText = ownMiss ? `${ownMiss.playerId === selfId ? 'Tu' : 'Vuestro'} intento con ${game.board.find((pokemon) => pokemon.id === ownMiss.pokemonId)?.name ?? 'ese Pokémon'} no era: turno terminado. ` : '';
     content = {

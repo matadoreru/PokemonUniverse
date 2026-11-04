@@ -36,7 +36,7 @@ export function LearnsetGuessResults({ room, selfId, onLobby, onEnd }: { room: R
     { key: 'initial', title: 'Con las pistas iniciales', icon: Lightbulb, names: records.initial?.names ?? null, value: records.initial?.value ?? '', unit: 'aciertos antes de la primera pista nueva' },
     { key: 'bestRound', title: 'Mejor ronda', icon: Trophy, names: records.bestRound?.names ?? null, value: records.bestRound?.value ?? '', unit: 'puntos en una sola ronda' },
   ]} />;
-  const actions = <ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />;
+  const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Learnset Guess" subtitle={`Learnset Guess · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge />;
 }

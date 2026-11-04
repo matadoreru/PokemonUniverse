@@ -43,7 +43,7 @@ export function TcgHigherLowerResults({ room, selfId, onLobby, onEnd }: { room: 
     const value = record ? (key === 'accuracy' ? `${record.value}%` : String(record.value)) : '';
     return { key, title, icon, names: record?.names ?? null, value, unit: record ? unit(record.value) : '', valueInHelp: true };
   })} />;
-  const actions = <ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} />;
+  const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Higher or Lower: Cartas" subtitle={`Precios de cartas TCG · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge />;
 }

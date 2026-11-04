@@ -4593,6 +4593,17 @@ test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación,
     await expect(viva(p2)).toContainText(`Lote 1:`);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
     await capturarTamanos(p2, 'juego-pokemon-team-auction-adjudicacion', { sigue: banda.filter({ hasText: 'Lote 1 adjudicado' }), opts: ARCADE });
+    // A 390×844, arriba del todo, la placa pegada al fondo no tapa la última cifra del lote (el medidor trata esa placa
+    // como capa permitida y no lo vería).
+    await p2.setViewportSize({ width: 390, height: 844 });
+    await p2.evaluate(() => window.scrollTo(0, 0));
+    await expect.poll(() => p2.evaluate(() => {
+      const ultima = document.querySelector('[data-testid="auction-lot"] dl > div:last-child');
+      const placaFija = document.querySelector('[data-layer="screen-bottom"]');
+      if (!ultima || !placaFija) return Number.NaN;
+      return Math.round(placaFija.getBoundingClientRect().top - ultima.getBoundingClientRect().bottom);
+    }), 'la placa no tapa las cifras del lote a 390').toBeGreaterThanOrEqual(0);
+    await p2.setViewportSize({ width: 1280, height: 720 });
 
     // El equipo de un rival en su diálogo; Esc lo cierra y el foco vuelve a su botón.
     const ver = p1.getByRole('button', { name: `Ver equipo de ${nombreDe(p2)}` });
@@ -5005,6 +5016,12 @@ test('who-is-who-pokemon: secretos elegidos, cartas bajadas, cursores, un rechaz
     const [cajaEtiqueta, cajaNombre] = await Promise.all([etiqueta.boundingBox(), carta(azul, c1).locator('[data-part="name"]').boundingBox()]);
     const pisa = cajaEtiqueta!.x < cajaNombre!.x + cajaNombre!.width && cajaNombre!.x < cajaEtiqueta!.x + cajaEtiqueta!.width && cajaEtiqueta!.y < cajaNombre!.y + cajaNombre!.height && cajaNombre!.y < cajaEtiqueta!.y + cajaEtiqueta!.height;
     expect(pisa, 'la etiqueta del cursor no pisa el nombre de la carta señalada').toBe(false);
+    // Ni la marca «Bajada» de la carta señalada (c1 está bajada).
+    const marca = await carta(azul, c1).getByText('Bajada', { exact: true }).boundingBox();
+    if (marca) {
+      const tapa = cajaEtiqueta!.x < marca.x + marca.width && marca.x < cajaEtiqueta!.x + cajaEtiqueta!.width && cajaEtiqueta!.y < marca.y + marca.height && marca.y < cajaEtiqueta!.y + cajaEtiqueta!.height;
+      expect(tapa, 'la etiqueta del cursor no tapa la marca «Bajada»').toBe(false);
+    }
     await expect(etiqueta).toHaveAttribute('data-quiet', 'true', { timeout: 3_000 });
     await senalar(companero, c1);
     // Con movimiento reducido (por defecto en la suite) no se anima; sin él, una transición corta de `transform`.

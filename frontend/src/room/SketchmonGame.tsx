@@ -73,7 +73,7 @@ export function SketchmonGame({ room, selfId, onAction }: { room: RoomView; self
     : { deadline: game.nextTransitionAt, serverOffset: offset, label: last ? 'Clasificación' : 'Siguiente dibujo' };
   const announcement = sketchAnnouncement({
     phase: game.phase, roundNumber: game.roundNumber, role, drawerName, secretName: secret?.name ?? null, ownLast, hints: game.visibleHints,
-    syncError: drawing ? pad.syncError : null, result, nameOf, typeLabel,
+    syncError: drawing ? pad.syncError : null, syncErrorSeq: pad.syncErrorSeq, result, nameOf, typeLabel,
   });
   const heading = sketchHeading({ phase: game.phase, role, drawerName, secretName: secret?.name ?? null, result });
   const meta = drawerName && <Chip tone="warn" icon={<Icon icon={Palette} size={18} />}>{role === 'drawer' && !result ? 'Dibujas tú' : `Dibuja ${drawerName}`}</Chip>;

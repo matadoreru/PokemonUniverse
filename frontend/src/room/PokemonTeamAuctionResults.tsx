@@ -1,4 +1,4 @@
-import { isSessionComplete, type PokemonTeamAuctionPublicState, type RoomView } from '@pokemon-universe/shared/public';
+import { type PokemonTeamAuctionPublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { Coins, Equal, Gavel, Sparkles } from 'lucide-react';
 import { useMemo } from 'react';
 import { teamStatsLine } from '../games/pokemon-team-auction/presentation';
@@ -21,7 +21,6 @@ export function PokemonTeamAuctionResults({ room, selfId, onLobby, onEnd }: { ro
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
   const unowned = game.lotHistory.filter((lot) => lot.winnerId === null);
-  const sessionComplete = isSessionComplete(room.sessionMode, room.gamesPlayed, room.sessionStandings.map((standing) => standing.sessionPoints));
   const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
   const nameOf = (playerId: string) => members.get(playerId)?.displayName ?? 'Entrenador';
   const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
@@ -59,7 +58,7 @@ export function PokemonTeamAuctionResults({ room, selfId, onLobby, onEnd }: { ro
   </Panel>;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="La mesa final" subtitle="Pokémon Team Auction · Resultados"
     standings={rows} selfId={selfId} winnersNeedPoints pointsLabel={(points) => `${points} BST`} aside={<>{records}{unownedPanel}</>}
-    actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} continueLabel={sessionComplete ? 'Ver clasificación final' : 'Continuar sesión'} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
+    actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>Gana el equipo con mayor BST. En caso de empate cuentan las monedas, los legendarios y los míticos.</p>
   </ResultsShell>;
 }

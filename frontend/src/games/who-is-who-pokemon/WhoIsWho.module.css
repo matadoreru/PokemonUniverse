@@ -159,6 +159,7 @@
 .above {
   bottom: 22px;
 }
+/* Al lado de la flecha (primera fila); el `top` lo pone `cursorLabel`, arrimado al borde de arriba del tablero. */
 .beside {
   top: -16px;
   left: 22px;

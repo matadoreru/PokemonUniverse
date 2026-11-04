@@ -276,33 +276,61 @@
   .kicker {
     display: none;
   }
-  /* La cantidad baja a su propia línea (bajo el texto) y el kicker parte antes que pisarla. */
+  /*
+   * Banda compacta en dos líneas (la placa pegada al fondo no debe tapar las cifras del lote): el título arriba y, debajo,
+   * «Nuevo» y la cantidad. El kicker («Lote 2 adjudicado») queda solo para lectores: el título y la cantidad ya lo dicen,
+   * y la región viva lo anuncia entero.
+   */
   .award {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    grid-template-areas: 'art title title' 'art new detail';
+    align-items: center;
     gap: 2px var(--sp-2);
     padding: var(--sp-1) var(--sp-2);
   }
-  .awardText {
-    flex: 1 1 0;
-  }
+  .awardText,
   .awardKicker {
-    flex-wrap: wrap;
-    row-gap: 2px;
+    display: contents;
   }
-  .awardDetail {
-    flex-basis: 100%;
-    padding-left: calc(36px + var(--sp-2));
+  .awardKickerText {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .awardNew {
+    grid-area: new;
+    font: 800 var(--fs-13) / 1.2 var(--font-text);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
   .awardSprite,
   .awardIcon {
+    grid-area: art;
     width: 36px;
     height: 36px;
   }
   .awardTitle {
+    grid-area: title;
+    min-width: 0;
     font-size: var(--fs-15);
   }
   .awardDetail {
+    grid-area: detail;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: var(--fs-15);
+  }
+  /* Banda y cifras del lote más juntas: caben enteras sobre la placa de la puja. */
+  .body {
+    gap: var(--sp-2);
+  }
+  .figures {
+    gap: var(--sp-1);
   }
 }
 /* Escritorio bajo (720 px): sin kicker, banda y cifras más bajas; la carta gana alto. */

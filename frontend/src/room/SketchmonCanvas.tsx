@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { SKETCHMON_COLORS, type SketchmonAction, type SketchmonColor, type SketchmonPoint, type SketchmonStroke, type SketchmonTool } from '@pokemon-universe/shared/public';
 import {
-  appendPendingPoints, farEnough, normalizedPoint, sendDrawBatch, sketchmonHistoryShortcut, takeDrawBatch, type DrawOperation, type SketchWidth,
+  appendPendingPoints, farEnough, normalizedPoint, sendDrawBatch, sketchmonHistoryShortcut, strokeStartAllowed, takeDrawBatch, type DrawOperation, type SketchWidth,
 } from '../games/sketchmon/presentation';
 import { typingTarget } from './social-kit';
 import { cx } from '../ui';
@@ -141,6 +141,8 @@ export interface SketchPad {
   handlers: SketchSurfaceHandlers;
   /** Fallo al sincronizar los trazos (el aviso global no lo dice: van con `report: false`). */
   syncError: string | null;
+  /** Cuenta de fallos de sincronización: con el mismo texto repetido, el anuncio se vuelve a decir. */
+  syncErrorSeq: number;
   undo(): void;
   redo(): void;
   clear(): void;
@@ -158,6 +160,7 @@ export function useSketchPad({ strokes, onAction, enabled, resetKey }: { strokes
   const [width, setWidth] = useState<SketchWidth>(8);
   const [optimisticStroke, setOptimisticStroke] = useState<SketchmonStroke | null>(null);
   const [syncError, setSyncError] = useState<string | null>(null);
+  const [syncErrorSeq, setSyncErrorSeq] = useState(0);
   const activePointer = useRef<number | null>(null);
   const activeStroke = useRef<SketchmonStroke | null>(null);
   const pendingOperations = useRef<DrawOperation[]>([]);
@@ -172,7 +175,9 @@ export function useSketchPad({ strokes, onAction, enabled, resetKey }: { strokes
   function queue(send: () => Promise<void>, local: boolean) {
     actionQueue.current = actionQueue.current.catch(() => undefined).then(send).catch((caught: unknown) => {
       dropStroke();
-      if (local) setSyncError(caught instanceof Error && caught.message ? caught.message : 'No se pudo sincronizar el dibujo.');
+      if (!local) return;
+      setSyncError(caught instanceof Error && caught.message ? caught.message : 'No se pudo sincronizar el dibujo.');
+      setSyncErrorSeq((seq) => seq + 1);
     });
   }
 
@@ -192,7 +197,7 @@ export function useSketchPad({ strokes, onAction, enabled, resetKey }: { strokes
   }
 
   function startStroke(event: ReactPointerEvent<HTMLCanvasElement>) {
-    if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
+    if (!strokeStartAllowed(enabled, event)) return;
     event.currentTarget.setPointerCapture?.(event.pointerId); activePointer.current = event.pointerId; setSyncError(null);
     const first = pointFromEvent(event.currentTarget, event.nativeEvent);
     const stroke: SketchmonStroke = { id: crypto.randomUUID(), tool, color, width, points: [first] };
@@ -262,7 +267,7 @@ export function useSketchPad({ strokes, onAction, enabled, resetKey }: { strokes
   }, [enabled, onKeyDown]);
 
   return {
-    tool, setTool, color, setColor, width, setWidth, optimisticStroke, syncError,
+    tool, setTool, color, setColor, width, setWidth, optimisticStroke, syncError, syncErrorSeq,
     handlers: { onPointerDown: startStroke, onPointerMove: continueStroke, onPointerUp: finishStroke },
     undo: () => history('UNDO_STROKE'), redo: () => history('REDO_STROKE'), clear: () => history('CLEAR_DRAWING'),
   };

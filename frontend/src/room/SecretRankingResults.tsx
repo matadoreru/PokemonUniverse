@@ -43,7 +43,7 @@ export function SecretRankingResults({ room, selfId, onLobby, onEnd }: { room: R
     { key: 'closest', title: 'Mente más sincronizada', icon: Crosshair, names: closest?.names ?? null, value: closest ? formatDistance(closest.value) : '', unit: 'de distancia media a los demás' },
   ]} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="La mente más sincronizada" subtitle={`Secret Ranking · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
-    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>Los puntos se obtienen por cercanía en cada ronda. La media de referencia de cada persona excluye siempre su propio ranking.</p>
   </ResultsShell>;
 }

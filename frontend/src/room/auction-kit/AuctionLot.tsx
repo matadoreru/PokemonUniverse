@@ -103,7 +103,7 @@ export function AuctionAward({ tone, kicker, title, detail, sprite, fresh = fals
   return <div className={cx(s.award, tone === 'unsold' && s.unsold, fresh && s.fresh)} data-testid="auction-award" data-fresh={fresh || undefined}>
     {sprite ? <img src={sprite} alt="" className={s.awardSprite} /> : <span className={s.awardIcon}><Icon icon={tone === 'won' ? Gavel : PackageX} size={24} /></span>}
     <span className={s.awardText}>
-      <span className={s.awardKicker}>{kicker}{fresh && <span className={s.awardNew}>Nuevo</span>}</span>
+      <span className={s.awardKicker}><span className={s.awardKickerText}>{kicker}</span>{fresh && <span className={s.awardNew}>Nuevo</span>}</span>
       <strong className={cx(s.awardTitle, 'ol')} title={title}>{title}</strong>
     </span>
     {detail && <span className={s.awardDetail}>{detail}</span>}

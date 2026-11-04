@@ -57,7 +57,7 @@ export function OneOfUsIsFakeResults({ room, selfId, onLobby, onEnd }: { room: R
     { key: 'often', title: 'Más veces fake', icon: ShieldQuestion, names: often?.names ?? null, value: String(often?.value ?? ''), unit: often?.value === 1 ? 'ronda como fake' : 'rondas como fake' },
   ]} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Una partida de sospechas" subtitle={`One of Us Is Fake · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
-    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>Si el grupo expulsa al fake, cada normal gana 2 puntos; si el fake se libra, gana 4.</p>
   </ResultsShell>;
 }

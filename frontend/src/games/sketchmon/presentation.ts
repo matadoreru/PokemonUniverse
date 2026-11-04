@@ -69,6 +69,14 @@ export function sketchmonHistoryShortcut(event: Pick<KeyboardEvent, 'ctrlKey' | 
 }
 
 /** Distancia mínima entre dos puntos seguidos de un trazo (en la escala 0–1 del lienzo). */
+/**
+ * Si una pulsación empieza un trazo: solo con el lienzo habilitado (`canDraw`), el puntero principal y, con ratón, el
+ * botón izquierdo. Sin `canDraw` no se pinta nada en local (el servidor lo rechazaría y saldría el aviso de sincronizar).
+ */
+export function strokeStartAllowed(enabled: boolean, event: Pick<PointerEvent, 'isPrimary' | 'pointerType' | 'button'>): boolean {
+  return enabled && event.isPrimary && (event.pointerType !== 'mouse' || event.button === 0);
+}
+
 export const SKETCH_POINT_DISTANCE = 0.002;
 
 export function farEnough(left: SketchmonPoint, right: SketchmonPoint, distance = SKETCH_POINT_DISTANCE): boolean {
@@ -191,7 +199,7 @@ export function sketchRevealSummary(result: SketchmonRoundResult, nameOf: (id: s
  * Texto de la única región viva: el comienzo del dibujo, el fallo propio, la pista automática más reciente, el fallo al
  * sincronizar el dibujo (quien dibuja) y la revelación.
  */
-export function sketchAnnouncement({ phase, roundNumber, role, drawerName, secretName, ownLast, hints, syncError, result, nameOf, typeLabel }: {
+export function sketchAnnouncement({ phase, roundNumber, role, drawerName, secretName, ownLast, hints, syncError, syncErrorSeq = 0, result, nameOf, typeLabel }: {
   phase: GamePhase;
   roundNumber: number;
   role: SketchRole;
@@ -200,13 +208,18 @@ export function sketchAnnouncement({ phase, roundNumber, role, drawerName, secre
   ownLast: SketchmonAttempt | null;
   hints: readonly SketchmonHint[];
   syncError: string | null;
+  /**
+   * Cuántas veces ha fallado la sincronización: un fallo repetido con el mismo texto alterna un espacio duro final
+   * (invisible) para que la región viva cambie y se vuelva a anunciar.
+   */
+  syncErrorSeq?: number;
   result: SketchmonRoundResult | null;
   nameOf: (id: string) => string;
   typeLabel: (type: string) => string;
 }): string {
   if (result) return `Dibujo ${roundNumber} terminado. ${sketchRevealSummary(result, nameOf)}`;
   if (phase !== 'ROUND_ACTIVE' || !drawerName) return '';
-  if (role === 'drawer' && syncError) return syncError;
+  if (role === 'drawer' && syncError) return syncErrorSeq % 2 ? `${syncError}\u00A0` : syncError;
   if (ownLast) return `${ownLast.guessedPokemon.name} no era. Nuevo intento en un momento.`;
   const hint = hints.at(-1);
   if (hint) return `Pista: ${sketchHintText(hint, typeLabel)}.`;

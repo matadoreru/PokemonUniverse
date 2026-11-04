@@ -1,3 +1,4 @@
+import { isSessionComplete, type RoomView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { RotateCcw, StopCircle } from 'lucide-react';
 import { cx, Icon, Panel, Pill } from '../ui';
@@ -47,12 +48,22 @@ export function ResultsRecords({ id, title = 'Récords de la partida', records }
   </Panel>;
 }
 
+/** Lo de la sala que decide el texto de «Continuar»: si la sesión ya ha terminado. */
+export type ResultsSession = Pick<RoomView, 'sessionMode' | 'gamesPlayed' | 'sessionStandings'>;
+
+/** Texto de la acción del host tras una partida: «Ver clasificación final» si la sesión ha terminado. */
+export function resultsContinueLabel(room: ResultsSession): string {
+  return isSessionComplete(room.sessionMode, room.gamesPlayed, room.sessionStandings.map((standing) => standing.sessionPoints))
+    ? 'Ver clasificación final'
+    : 'Continuar sesión';
+}
+
 /**
- * Acciones de `ResultsShell`: «Continuar sesión» (o `continueLabel`, p. ej. «Ver clasificación final» al acabar la
- * sesión) y «Terminar sesión» para el host; para el resto, la espera.
+ * Acciones de `ResultsShell`: «Continuar sesión» («Ver clasificación final» si la sesión ha terminado, igual en todos
+ * los juegos) y «Terminar sesión» para el host; para el resto, la espera.
  */
-export function ResultsHostActions({ host, onLobby, onEnd, waitingText = 'Esperando al host…', continueLabel = 'Continuar sesión' }: { host: boolean; onLobby(): void; onEnd(): void; waitingText?: string; continueLabel?: string }) {
+export function ResultsHostActions({ room, host, onLobby, onEnd, waitingText = 'Esperando al host…' }: { room: ResultsSession; host: boolean; onLobby(): void; onEnd(): void; waitingText?: string }) {
   return host
-    ? <><Pill variant="yellow" icon={RotateCcw} onClick={onLobby}>{continueLabel}</Pill><Pill variant="ghost" icon={StopCircle} onClick={onEnd}>Terminar sesión</Pill></>
+    ? <><Pill variant="yellow" icon={RotateCcw} onClick={onLobby}>{resultsContinueLabel(room)}</Pill><Pill variant="ghost" icon={StopCircle} onClick={onEnd}>Terminar sesión</Pill></>
     : <p className={s.waiting}>{waitingText}</p>;
 }

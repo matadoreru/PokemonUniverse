@@ -9,6 +9,15 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
+  max-width: 100%;
+  min-width: 0;
+}
+/* Una sola línea (el turno ya lo dice el título): con un nombre largo, puntos suspensivos y el texto en `title`. */
+.turnText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .strip {
   display: inline-flex;

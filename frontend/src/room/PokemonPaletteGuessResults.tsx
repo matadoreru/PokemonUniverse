@@ -37,5 +37,5 @@ export function PokemonPaletteGuessResults({ room, selfId, onLobby, onEnd }: { r
     { key: 'firstTry', title: 'Al primer intento', icon: Target, names: records.firstTry?.names ?? null, value: records.firstTry?.value ?? '', unit: records.firstTry?.value === '1' ? 'acierto sin fallar antes' : 'aciertos sin fallar antes' },
   ]} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación final" subtitle={`Adivina por la Paleta · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
-    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
 }

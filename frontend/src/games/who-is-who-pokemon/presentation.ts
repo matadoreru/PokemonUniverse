@@ -130,17 +130,22 @@ export function boardLayout(count: number, width: number, height: number, gap: n
   return { columns, card: Math.max(1, card), fits: false };
 }
 
-/** Alto que necesita la etiqueta del cursor encima de la punta (si no, va al lado, a la altura de la punta). */
+/** Alto que necesita la etiqueta del cursor encima de la punta (si no, va al lado, pegada al borde de arriba). */
 export const CURSOR_LABEL_ROOM = 44;
+/** Al lado, la etiqueta sube hasta 8 px por encima del tablero (el relleno del panel): no baja a la mitad de la carta. */
+export const CURSOR_LABEL_EDGE = -8;
 /** A los 1,5 s sin moverse la etiqueta se apaga y queda la flecha de color. */
 export const CURSOR_LABEL_MS = 1_500;
 
 /**
- * Etiqueta del cursor de un compañero: encima de la punta, o al lado y a su altura si no cabe encima (primera fila).
- * Nunca debajo: así no tapa la franja del nombre de la carta señalada, que está abajo. Apagada si lleva 1,5 s quieto.
+ * Etiqueta del cursor de un compañero: encima de la punta o, si no cabe encima (primera fila), al lado de la flecha y
+ * arrimada al borde de arriba del tablero (`top`: px desde la punta hasta el borde de arriba de la etiqueta). Así solo
+ * roza el borde superior de la carta: ni la marca «Bajada» (a media carta) ni la franja del nombre (abajo). Apagada
+ * si lleva 1,5 s quieto.
  */
-export function cursorLabel(top: number, sinceMoveMs: number): { beside: boolean; quiet: boolean } {
-  return { beside: top < CURSOR_LABEL_ROOM, quiet: sinceMoveMs > CURSOR_LABEL_MS };
+export function cursorLabel(top: number, sinceMoveMs: number): { beside: boolean; quiet: boolean; top: number | null } {
+  const beside = top < CURSOR_LABEL_ROOM;
+  return { beside, quiet: sinceMoveMs > CURSOR_LABEL_MS, top: beside ? Math.round(CURSOR_LABEL_EDGE - Math.max(0, top)) : null };
 }
 
 /** Foco itinerante del tablero: índice al que lleva la tecla, o `null` si la tecla no mueve. */

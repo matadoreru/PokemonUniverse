@@ -61,7 +61,7 @@ export function PokemonTeamAuctionGame({ room, selfId, onAction }: { room: RoomV
     item={pokemon && <Card size="fill" sprite={pokemon.sprite} name={pokemon.name} decorativeSprite eager attrs={{ 'data-testid': 'auction-pokemon' }}><PokemonFacts pokemon={pokemon} /></Card>}
     currentBid={game.currentBid} minimumBid={game.minimumBid}
     leader={game.currentBidderId ? { name: nameOf(game.currentBidderId), self: game.currentBidderId === selfId, avatar: <Avatar name={nameOf(game.currentBidderId)} avatar={leader?.member.avatar} size="sm" /> } : null}
-    turn={turnText && <span className={s.turn}><Icon icon={Clock3} size={18} />{turnText}</span>}
+    turn={turnText && <span className={s.turn}><Icon icon={Clock3} size={18} /><span className={s.turnText} title={turnText}>{turnText}</span></span>}
     award={award && <AuctionAward {...award} />} />;
 
   const order = game.turnOrder.length > 0 ? game.turnOrder : Object.keys(game.participants);

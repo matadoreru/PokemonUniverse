@@ -40,7 +40,7 @@ export function PokemonConnectionsResults({ room, selfId, onLobby, onEnd }: { ro
     { key: 'fastest', title: 'Tablero más rápido', icon: Timer, names: fastest?.names ?? null, value: fastest ? guessSeconds(fastest.value) : '', unit: 'en completarlo', valueInHelp: true },
     { key: 'podiums', title: 'Más podios de velocidad', icon: Medal, names: podiums?.names ?? null, value: podiums ? String(podiums.value) : '', unit: podiums?.value === 1 ? 'podio' : 'podios', valueInHelp: true },
   ]} />;
-  const actions = <ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />;
+  const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Mentes bien conectadas"
     subtitle={`${game.totalRounds} ${game.totalRounds === 1 ? 'puzle' : 'puzles'} · 1 punto por grupo y 3/2/1 por completar antes`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge />;

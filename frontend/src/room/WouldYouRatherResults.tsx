@@ -57,7 +57,7 @@ export function WouldYouRatherResults({ room, selfId, onLobby, onEnd }: { room: 
     { key: 'perfect', title: 'Rondas perfectas', icon: Sparkles, names: perfect?.names ?? null, value: String(perfect?.value ?? ''), unit: perfect?.value === 1 ? 'ronda con 3 puntos' : 'rondas con 3 puntos' },
   ]} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Quien mejor leyó la sala" subtitle={`Would You Rather Pokémon · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
-    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>Cada ronda daba hasta 3 puntos: 1 por formar parte de la mayoría y 2 por predecirla.</p>
   </ResultsShell>;
 }

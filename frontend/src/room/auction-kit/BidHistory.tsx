@@ -1,6 +1,7 @@
 import { Gavel, PackageX, SkipForward, Trophy } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { Badge, Chip, cx, Icon, Panel, Row, StateBox, TabPanel, Tabs } from '../../ui';
+import { GUESS_SIDE_FIT } from '../guess-kit/GuessScreen';
 import type { BidLogEntry } from './presentation';
 import s from './AuctionSide.module.css';
 
@@ -48,7 +49,10 @@ export function BidHistory({ title = 'Historial de pujas', views, idBase = 'bid-
   const [active, setActive] = useState(views[0]?.key ?? '');
   const current = views.find((view) => view.key === active) ?? views[0];
   const many = views.length > 1;
-  return <Panel title={title} variant="dark" scroll scrollLabel={title} {...(className ? { className } : {})} {...(!many && current?.badge != null ? { right: <Badge tone="cream">{current.badge}</Badge> } : {})}>
+  // Sin ninguna puja en ninguna vista no llena el alto de la columna (a 1920 sería una columna vacía de ~640 px).
+  const idle = views.every((view) => view.entries.length === 0);
+  const panelClass = cx(idle && GUESS_SIDE_FIT, className);
+  return <Panel title={title} variant="dark" scroll scrollLabel={title} {...(panelClass ? { className: panelClass } : {})} {...(!many && current?.badge != null ? { right: <Badge tone="cream">{current.badge}</Badge> } : {})}>
     {many && current
       ? <>
         <Tabs idBase={idBase} label={title} active={current.key} onChange={setActive} items={views.map((view) => ({ key: view.key, label: view.label, ...(view.badge != null ? { badge: view.badge } : {}) }))} />

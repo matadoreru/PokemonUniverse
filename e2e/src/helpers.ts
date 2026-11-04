@@ -231,8 +231,12 @@ export async function seleccionarJuego(page: Page, nombre: string): Promise<void
   const celda = page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').filter({ has: page.getByText(nombre, { exact: true }) });
   await expect(celda).toHaveCount(1);
   const opcion = celda.getByRole('button').first();
-  await opcion.click();
-  await expect(opcion).toHaveAttribute('aria-pressed', 'true');
+  // Idempotente y con reintentos (una vez se quedó en `aria-pressed="false"`: el clic llegó antes de que el lobby
+  // tuviera el estado del `/ws`). Solo pulsa si aún no está elegida: un clic de más la quitaría.
+  await expect(async () => {
+    if ((await opcion.getAttribute('aria-pressed')) !== 'true') await opcion.click({ timeout: 2_000 });
+    await expect(opcion).toHaveAttribute('aria-pressed', 'true', { timeout: 2_000 });
+  }).toPass({ timeout: 15_000 });
 }
 
 /**

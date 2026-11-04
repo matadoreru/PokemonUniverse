@@ -44,7 +44,7 @@ export function PokeTabooResults({ room, selfId, onLobby, onEnd }: { room: RoomV
     { key: 'describer', title: 'Mejor descriptor', icon: Mic, names: describer?.names ?? null, value: String(describer?.value ?? ''), unit: describer?.value === 1 ? 'turno describiendo con acierto' : 'turnos describiendo con acierto' },
   ]} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Así ha ido la partida" subtitle={`PokéTaboo · ${game.totalRounds} ${game.totalRounds === 1 ? 'turno' : 'turnos'}`}
-    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.resultsRule}>Puntos por descubrir Pokémon y por ayudar al grupo a encontrarlos: quien acierta suma de {POKE_TABOO_GUESSER_MAX_POINTS} a {POKE_TABOO_GUESSER_MIN_POINTS} según lo rápido y quien describe, {POKE_TABOO_DESCRIPTOR_POINTS}.</p>
   </ResultsShell>;
 }

@@ -56,7 +56,7 @@ export function WhoIsWhoPokemonResults({ room, selfId, onLobby, onEnd }: { room:
   </Panel>;
   const guesses = game.guesses.length;
   return <ResultsShell won={won} title={whoResultTitle(winner)} subtitle={`Quién es Quién · ${game.turnNumber} ${game.turnNumber === 1 ? 'turno' : 'turnos'} · ${guesses} ${guesses === 1 ? 'intento' : 'intentos'}`}
-    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando al host…" />} fillLarge>
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando al host…" />} fillLarge>
     <p className={s.resultsRule}>{whoResultRule(winner, game.guesses.at(-1)?.correct === true)}</p>
   </ResultsShell>;
 }

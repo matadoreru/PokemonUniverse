@@ -53,5 +53,5 @@ export function TypeChainResults({ room, selfId, onLobby, onEnd }: { room: RoomV
     { key: 'fewest', title: 'Menos fallos', icon: XCircle, names: fewest === null ? null : played.filter((entry) => Number(entry.stats.invalidAttempts ?? 0) === fewest).map((entry) => entry.name), value: String(fewest ?? ''), unit: fewest === 1 ? 'intento que no valió' : 'intentos que no valieron' },
   ]} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación final" subtitle={`Type Chain · cadena más larga: ${game.longestChain} Pokémon`}
-    standings={rows} selfId={selfId} aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
+    standings={rows} selfId={selfId} aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
 }

@@ -41,7 +41,7 @@ export function PokemonBingoResults({ room, selfId, onLobby, onEnd }: { room: Ro
       <BingoBoard board={board} width={game.width} height={game.height} showSolutions label={`Tablero final de ${nameOf(active)}`} />
     </TabPanel>}
   </Panel>;
-  const actions = <ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />;
+  const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title={game.winnerId ? `Bingo de ${nameOf(game.winnerId)}` : 'Tiempo agotado'}
     subtitle={`Pokémon Bingo · tablero ${game.width}×${game.height}${game.winnerId ? '' : ' · nadie completó el tablero'}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge />;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { amountText, bidBlock, bidDraftError, bidShortcutsLive, bidEpoch, bidLog, bidSteps, clampBid, currentBidText, parseBid, safeAmount, type BidBlockInput } from './presentation';
+import { amountText, bidBlock, bidDraftError, bidShortcutsLive, bidEpoch, bidLog, bidSteps, clampBid, parseBid, safeAmount, type BidBlockInput } from './presentation';
 
 const base: BidBlockInput = { participating: true, open: true, canRaise: true, canPass: true, leading: false, passed: false, full: false, min: 5, max: 20, turnName: 'Ana' };
 
@@ -46,15 +46,13 @@ describe('cantidades de la puja', () => {
     expect(bidDraftError('25', 5, 20)).toBe('No te llega: máximo 20 monedas.');
   });
 
-  it('amountText, bidEpoch y currentBidText', () => {
+  it('amountText y bidEpoch', () => {
     expect(amountText(1)).toBe('1 moneda');
     expect(amountText(3)).toBe('3 monedas');
     expect(amountText(-3)).toBe('0 monedas');
     expect(amountText(4, 'Pokémon')).toBe('4 Pokémon');
     expect(bidEpoch(2, 3)).not.toBe(bidEpoch(2, 4));
     expect(bidEpoch(3, 0)).not.toBe(bidEpoch(2, 0));
-    expect(currentBidText(null, null, 1)).toBe('Sin pujas: la mínima es 1');
-    expect(currentBidText(6, 'Ana', 7)).toBe('Puja de Ana: 6 monedas');
   });
 });
 

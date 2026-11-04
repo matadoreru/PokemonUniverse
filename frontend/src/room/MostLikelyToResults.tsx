@@ -58,7 +58,7 @@ export function MostLikelyToResults({ room, selfId, onLobby, onEnd }: { room: Ro
     { key: 'solo', title: 'Victorias en solitario', icon: MessageSquareHeart, names: solo?.names ?? null, value: String(solo?.value ?? ''), unit: solo?.value === 1 ? 'ronda sin empate' : 'rondas sin empate' },
   ]} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Las respuestas favoritas" subtitle={`Most Likely To · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
-    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>Cada victoria vale 3 puntos. Una victoria compartida otorga los mismos 3 puntos a cada autor empatado.</p>
   </ResultsShell>;
 }

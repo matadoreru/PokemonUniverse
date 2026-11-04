@@ -49,7 +49,7 @@ export function SketchmonResults({ room, selfId, onLobby, onEnd }: { room: RoomV
   // La galería va bajo los récords: la columna de la clasificación reparte su alto entre las franjas (`fillLarge`).
   const aside = <>{records}<SketchGallery entries={game.gallery} members={members} /></>;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="La galería de la partida" subtitle={`Sketchmon · ${game.totalRounds} ${game.totalRounds === 1 ? 'dibujo' : 'dibujos'}`}
-    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.resultsRule}>Puntos por reconocer rápido los dibujos y por conseguir que el grupo entienda los tuyos: quien acierta suma de 5 a 2 según lo rápido y quien dibuja, {SKETCHMON_DRAWER_POINTS}.</p>
   </ResultsShell>;
 }

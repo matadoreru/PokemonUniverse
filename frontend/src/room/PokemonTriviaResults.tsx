@@ -47,5 +47,5 @@ export function PokemonTriviaResults({ room, selfId, onLobby, onEnd }: { room: R
     { key: 'accuracy', title: 'Mejor precisión', icon: Target, names: accuracy?.names ?? null, value: accuracy ? `${accuracy.value}%` : '', unit: 'de sus respuestas, correctas' },
   ]} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación final" subtitle={`Pokémon Trivia · ${game.totalRounds} ${game.totalRounds === 1 ? 'pregunta' : 'preguntas'}`}
-    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
 }

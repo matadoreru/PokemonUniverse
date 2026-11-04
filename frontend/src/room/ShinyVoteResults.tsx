@@ -39,7 +39,7 @@ export function ShinyVoteResults({ room, selfId, onLobby, onEnd }: { room: RoomV
     { key: 'correct', title: 'Más aciertos', icon: CheckCircle2, names: records.correct?.names ?? null, value: String(records.correct?.value ?? 0), unit: records.correct?.value === 1 ? 'shiny encontrado' : 'shinies encontrados' },
     { key: 'accuracy', title: 'Mejor precisión', icon: Target, names: records.accuracy?.names ?? null, value: `${records.accuracy?.value ?? 0}%`, unit: 'de aciertos' },
   ]} />;
-  const actions = <ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} />;
+  const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación shiny" subtitle={`Shiny Quiz · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda completada' : 'rondas completadas'}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge />;
 }

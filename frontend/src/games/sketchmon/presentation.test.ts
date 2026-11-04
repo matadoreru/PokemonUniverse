@@ -2,10 +2,20 @@ import { SKETCHMON_COLORS, type SketchmonPublicState, type SketchmonRoundResult 
 import { describe, expect, it, vi } from 'vitest';
 import {
   appendPendingPoints, farEnough, nextPaletteIndex, normalizedPoint, sendDrawBatch, SKETCH_COLOR_NAMES, SKETCH_WIDTHS, sketchAnnouncement, sketchCanvasLabel,
-  sketchHeading, sketchmonHistoryShortcut, sketchRevealSummary, sketchSeconds, sketchStatsLine, sketchTurnStatus, sketchVerdict, takeDrawBatch, type DrawOperation,
+  sketchHeading, sketchmonHistoryShortcut, sketchRevealSummary, sketchSeconds, sketchStatsLine, sketchTurnStatus, sketchVerdict, strokeStartAllowed, takeDrawBatch, type DrawOperation,
 } from './presentation';
 
 describe('Sketchmon: herramientas', () => {
+  it('sin `canDraw` una pulsación no empieza trazo; con él, solo el puntero principal y el botón izquierdo', () => {
+    const mouse = { isPrimary: true, pointerType: 'mouse', button: 0 };
+    expect(strokeStartAllowed(false, mouse)).toBe(false);
+    expect(strokeStartAllowed(false, { ...mouse, pointerType: 'touch' })).toBe(false);
+    expect(strokeStartAllowed(true, mouse)).toBe(true);
+    expect(strokeStartAllowed(true, { ...mouse, button: 2 })).toBe(false);
+    expect(strokeStartAllowed(true, { ...mouse, isPrimary: false })).toBe(false);
+    expect(strokeStartAllowed(true, { isPrimary: true, pointerType: 'pen', button: -1 })).toBe(true);
+  });
+
   it('cada color de la paleta del motor tiene un nombre propio (el color nunca va solo)', () => {
     const names = SKETCHMON_COLORS.map((color) => SKETCH_COLOR_NAMES[color]);
     expect(names.every((name) => typeof name === 'string' && name.length > 0)).toBe(true);
@@ -116,6 +126,16 @@ describe('Sketchmon: pantalla', () => {
     expect(sketchAnnouncement({ ...base, role: 'guesser', hints: [{ kind: 'TYPES', types: ['fighting'] }] })).toBe('Pista: Tipo: Lucha.');
     expect(sketchAnnouncement({ ...base, role: 'guesser', ownLast: { playerId: 'p2', guessedPokemon: { id: 'riolu', name: 'Riolu', sprite: '' }, attemptedAt: 1 } })).toContain('Riolu no era.');
     expect(sketchAnnouncement({ ...base, role: 'guesser', phase: 'ROUND_RESULTS', result: round })).toBe('Dibujo 1 terminado. Pedro acertó Lucario en 1 intento (9,1 s).');
+  });
+
+  it('un fallo de sincronización repetido con el mismo texto cambia el anuncio para volver a decirse', () => {
+    const base = { phase: 'ROUND_ACTIVE' as const, roundNumber: 1, role: 'drawer' as const, drawerName: 'Ana', secretName: null, ownLast: null, hints: [], result: null, nameOf, typeLabel };
+    const error = 'El dibujo ha alcanzado el límite de puntos.';
+    const first = sketchAnnouncement({ ...base, syncError: error, syncErrorSeq: 1 });
+    const second = sketchAnnouncement({ ...base, syncError: error, syncErrorSeq: 2 });
+    expect(first).not.toBe(second);
+    expect(first.trim()).toBe(error);
+    expect(second.trim()).toBe(error);
   });
 
   it('el veredicto propio de la revelación', () => {

@@ -5,6 +5,9 @@ import { GameSkipSlot } from '../GameSkipSlot';
 import s from './GuessScreen.module.css';
 
 /** Plazo de la cabecera: el de la ronda («Tiempo») o el de la siguiente fase («Siguiente ronda», «Clasificación»). */
+/** Clase para un panel de la columna lateral que, aunque sea el último, no debe llenar el alto sobrante (vacío). */
+export const GUESS_SIDE_FIT: string = s.sideFit ?? '';
+
 export interface GuessTimer {
   deadline: number | null;
   serverOffset: number;

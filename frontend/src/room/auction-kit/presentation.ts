@@ -200,9 +200,3 @@ export function bidLog(events: readonly BidEventLike[], nameOf: (id: string) => 
     fresh: index === events.length - 1,
   })).reverse();
 }
-
-/** La puja actual en una frase («Puja de Ana: 6 monedas», «Sin pujas: la mínima es 1»). */
-export function currentBidText(currentBid: number | null, leaderName: string | null, min: number, unit = 'monedas'): string {
-  if (currentBid === null || !leaderName) return `Sin pujas: la mínima es ${Math.max(1, safeAmount(min))}`;
-  return `Puja de ${leaderName}: ${amountText(currentBid, unit)}`;
-}

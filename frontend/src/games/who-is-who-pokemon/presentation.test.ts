@@ -44,8 +44,12 @@ describe('boardLayout', () => {
 
 describe('cursorLabel', () => {
   it('encima de la punta o al lado en la primera fila (nunca sobre la franja del nombre); apagada a los 1,5 s quieta', () => {
-    expect(cursorLabel(120, 0)).toEqual({ beside: false, quiet: false });
+    expect(cursorLabel(120, 0)).toEqual({ beside: false, quiet: false, top: null });
     expect(cursorLabel(20, 0).beside).toBe(true);
+    // Al lado, arrimada al borde de arriba del tablero (8 px por encima), sea cual sea la altura de la punta.
+    expect(cursorLabel(20, 0).top).toBe(-28);
+    expect(cursorLabel(40, 0).top).toBe(-48);
+    expect(cursorLabel(-3, 0).top).toBe(-8);
     expect(cursorLabel(120, 1_400).quiet).toBe(false);
     expect(cursorLabel(120, 1_600).quiet).toBe(true);
   });
