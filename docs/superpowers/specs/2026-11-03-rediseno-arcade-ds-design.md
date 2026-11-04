@@ -1,8 +1,8 @@
 # Sistema de diseño «Arcade DS» — Pokémon Universe
 
-Estado: **borrador para revisión del usuario** (2026-11-03). Plan de fases aprobado:
-`/home/eru/.claude/plans/quiero-que-me-hagas-wild-iverson.md`. Cuando el usuario lo apruebe, este documento manda
-sobre toda la interfaz. Lo que no diga, se decide, se apunta aquí y después se construye.
+Estado: **implementado** (fases F0–F9, 2026-11-04; borrador del 2026-11-03). Plan de fases aprobado:
+`/home/eru/.claude/plans/quiero-que-me-hagas-wild-iverson.md`. Este documento manda sobre toda la interfaz. Lo que no
+diga, se decide, se apunta aquí y después se construye.
 
 Referencia: `InazumaElevenManager/docs/DESIGN.md` («Arcade DS», aprobado allí el 19-10-2026). Este documento lo
 adapta a una web multijugador que se juega también en el móvil. Las diferencias con Inazuma se marcan con **≠**.

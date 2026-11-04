@@ -9,7 +9,7 @@ for (const { w, h } of SIZES) {
     await page.goto('/');
     const empezar = page.getByRole('link', { name: 'Empezar a jugar' });
     await expect(empezar).toBeVisible();
-    await capture(page, 'portada', { minFontPx: 13, noPageScroll: true });
+    await capture(page, 'portada');
 
     await empezar.click();
     await expect(page).toHaveURL(/\/auth$/);
@@ -51,14 +51,14 @@ for (const { w, h } of SIZES) {
     const panel = page.getByRole('region', { name: 'Lo último en el universo' });
     await expect(panel.getByText('Pantalla de título Arcade DS')).toBeVisible();
     await expect(panel.getByRole('link', { name: 'Ver todas' })).toHaveAttribute('href', '/changelog');
-    await capture(page, 'portada-novedades', { minFontPx: 13, noPageScroll: true });
+    await capture(page, 'portada-novedades');
 
     falla = true;
     await page.reload();
     const alerta = panel.getByRole('alert');
     await expect(alerta).toContainText('No se pudieron cargar las novedades');
     await expect(alerta).not.toContainText('Service Unavailable');
-    await capture(page, 'portada-error', { minFontPx: 13, noPageScroll: true });
+    await capture(page, 'portada-error');
 
     falla = false;
     await alerta.getByRole('button', { name: 'Reintentar' }).click();
@@ -108,7 +108,7 @@ async function capturarCabecera(page: Page, nombre: string, { perfil, admin = fa
     await expect(page.getByRole('link', { name: 'Enviar feedback' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Abrir panel de administración' })).toHaveCount(admin ? 1 : 0);
     await page.locator('main').evaluate((main) => main.setAttribute('data-layout-ignore', ''));
-    await capture(page, nombre, { minFontPx: 13 });
+    await capture(page, nombre);
     await placasCaben(page, `${nombre}-${w}`, w);
   }
 }

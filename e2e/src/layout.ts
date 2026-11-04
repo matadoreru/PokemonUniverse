@@ -1,7 +1,7 @@
 /**
  * Medición de encaje y legibilidad en cada captura (portada de la de InazumaElevenManager,
  * `tests/e2e/layout.ts`). Hace fallar el spec cuando aparece:
- * - texto de menos de `minFontPx` (12 px por defecto: `text-xs`);
+ * - texto de menos de `minFontPx` (13 px por defecto: el mínimo de Arcade DS, `text-13`);
  * - textos y controles que se pisan (sin contar capas: diálogos, avisos, tooltips, `[data-layer]`);
  * - texto recortado («…», `line-clamp` u `overflow`) sin `title` con el texto completo en él o en
  *   un antepasado;
@@ -20,7 +20,7 @@ export interface LayoutReport {
   clipped: string[];
 }
 
-export async function measureLayout(page: Page, minFontPx = 12): Promise<LayoutReport> {
+export async function measureLayout(page: Page, minFontPx = 13): Promise<LayoutReport> {
   return page.evaluate((minPx) => {
     const desc = (el: Element): string => {
       const parts: string[] = [];

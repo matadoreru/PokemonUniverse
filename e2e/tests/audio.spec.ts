@@ -124,7 +124,7 @@ for (const { w, h } of SIZES) {
     const dialogo = await abrirAjustes(page);
     await dialogo.getByRole('switch', { name: 'Sonido' }).click();
     await page.evaluate(() => document.fonts.ready.then(() => undefined));
-    await capture(page, 'ajustes-sonido', { minFontPx: 13 });
+    await capture(page, 'ajustes-sonido');
     expect(errors).toEqual([]);
   });
 }

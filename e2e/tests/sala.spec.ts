@@ -90,7 +90,7 @@ for (const { w, h } of SIZES) {
     await expect(page.locator('#room-code')).toBeFocused();
     await expect(page.getByText(/room not found/i)).toHaveCount(0);
     await expect(page).toHaveURL(/\/play$/);
-    await capture(page, 'entrar-en-partida-error', { minFontPx: 13, noPageScroll: true });
+    await capture(page, 'entrar-en-partida-error');
 
     // Un código incompleto no viaja al servidor: el campo dice cuánto falta.
     await page.locator('#room-code').fill('AB');
@@ -108,7 +108,7 @@ test('con una sala activa, Jugar ofrece volver o salir sin solaparse con la fila
   await expect(page.getByRole('heading', { name: 'Ya tienes una sala activa' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Volver a la sala' })).toBeEnabled();
   await expect(page.getByRole('button', { name: 'Salir de la sala' })).toBeEnabled();
-  await capture(page, 'entrar-en-partida-sala-activa', { minFontPx: 13, noPageScroll: true });
+  await capture(page, 'entrar-en-partida-sala-activa');
   await page.getByRole('button', { name: 'Salir de la sala' }).click();
   await expect(page.getByRole('heading', { name: 'Entrar en partida' })).toBeVisible();
   expect(errors).toEqual([]);
@@ -122,7 +122,7 @@ for (const { w, h } of SIZES) {
     await joinRoom(guest.page, code);
     await esperarInvitado(host.page, guest.name);
     // Escritorio: sin scroll de página ni del `main`, y «¡Empezar partida!» a la vista sin desplazar.
-    await capture(host.page, 'lobby', { minFontPx: 13, noPageScroll: true });
+    await capture(host.page, 'lobby');
     await expect(host.page.getByRole('button', { name: '¡Empezar partida!' })).toBeInViewport({ ratio: 1 });
     await expect(guest.page.getByRole('button', { name: 'Marcarme listo' })).toBeInViewport({ ratio: 1 });
 
@@ -144,7 +144,7 @@ test('lobby: pestañas del invitado, modo de la sesión y búsqueda sin resultad
   await expect(guest.page.getByText('Solo el host y los co-hosts pueden cambiar estos ajustes.')).toBeVisible();
   for (const { w, h } of SIZES) {
     await guest.page.setViewportSize({ width: w, height: h });
-    await capture(guest.page, 'lobby-invitado-configuracion', { minFontPx: 13, noPageScroll: true });
+    await capture(guest.page, 'lobby-invitado-configuracion');
   }
 
   // Host: el modo de la sesión con el minijuego fijo (sin rotación).
@@ -153,7 +153,7 @@ test('lobby: pestañas del invitado, modo de la sesión y búsqueda sin resultad
   await expect(host.page.getByRole('button', { name: /^Infinita/ })).toHaveAttribute('aria-pressed', 'true');
   for (const { w, h } of SIZES) {
     await host.page.setViewportSize({ width: w, height: h });
-    await capture(host.page, 'lobby-modo-sesion', { minFontPx: 13, noPageScroll: true });
+    await capture(host.page, 'lobby-modo-sesion');
   }
 
   // Búsqueda de minijuegos sin coincidencias: estado vacío con acción para volver a la rejilla.
@@ -163,7 +163,7 @@ test('lobby: pestañas del invitado, modo de la sesión y búsqueda sin resultad
   await expect(host.page.getByText('No hay minijuegos que coincidan con “zzzz”.')).toBeVisible();
   for (const { w, h } of SIZES) {
     await host.page.setViewportSize({ width: w, height: h });
-    await capture(host.page, 'lobby-busqueda-vacia', { minFontPx: 13, noPageScroll: true });
+    await capture(host.page, 'lobby-busqueda-vacia');
   }
   await host.page.getByRole('button', { name: 'Borrar búsqueda' }).click();
   await expect(buscar).toHaveValue('');
@@ -263,7 +263,7 @@ test('un rechazo del servidor sale una sola vez, en español, en el aviso de la 
   await expect(guest.page.getByText('This setting can only be changed in the lobby')).toHaveCount(0);
   for (const { w, h } of SIZES) {
     await guest.page.setViewportSize({ width: w, height: h });
-    await capture(guest.page, 'sala-aviso-error', { minFontPx: 13 });
+    await capture(guest.page, 'sala-aviso-error');
   }
   await aviso.getByRole('button', { name: 'Cerrar aviso' }).click();
   await expect(guest.page.getByRole('alert')).toHaveCount(0);
@@ -284,7 +284,7 @@ test('lobby con 8 jugadores a 390×844: la lista tiene tope y las pestañas sigu
     // Las pestañas quedan en la primera pantalla y media (antes la lista las empujaba muy abajo).
     const pestañas = await host.page.getByRole('tablist').first().boundingBox();
     expect(pestañas && pestañas.y < SIZES[2].h * 1.5, `pestañas en y=${pestañas?.y}`).toBe(true);
-    await capture(host.page, 'lobby-8-jugadores', { minFontPx: 13 });
+    await capture(host.page, 'lobby-8-jugadores');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

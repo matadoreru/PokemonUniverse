@@ -52,7 +52,7 @@ test.beforeAll(() => {
 async function capturarPagina(page: Page, nombre: string): Promise<void> {
   for (const { w, h } of SIZES) {
     await page.setViewportSize({ width: w, height: h });
-    await capture(page, nombre, { minFontPx: 13, noPageScroll: true });
+    await capture(page, nombre);
   }
   await page.setViewportSize({ width: 1280, height: 720 });
 }
@@ -62,7 +62,7 @@ async function capturarDialogo(page: Page, nombre: string, dialogo: Locator): Pr
   for (const { w, h } of SIZES) {
     await page.setViewportSize({ width: w, height: h });
     await expect(dialogo).toBeVisible();
-    await capture(page, nombre, { minFontPx: 13 });
+    await capture(page, nombre);
   }
   await page.setViewportSize({ width: 1280, height: 720 });
 }
@@ -160,7 +160,7 @@ test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa
     for (const { w, h } of SIZES) {
       await page.setViewportSize({ width: w, height: h });
       await categorias.scrollIntoViewIfNeeded();
-      await capture(page, 'lobby-one-of-us-is-fake-categorias', { minFontPx: 13 });
+      await capture(page, 'lobby-one-of-us-is-fake-categorias');
     }
     await page.setViewportSize({ width: 1280, height: 720 });
     await categorias.getByRole('button', { name: `Eliminar ${editada}` }).click();
@@ -190,7 +190,7 @@ test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa
     for (const { w, h } of SIZES) {
       await page.setViewportSize({ width: w, height: h });
       await dilemas.scrollIntoViewIfNeeded();
-      await capture(page, 'lobby-would-you-rather-dilemas', { minFontPx: 13 });
+      await capture(page, 'lobby-would-you-rather-dilemas');
     }
     await page.setViewportSize({ width: 1280, height: 720 });
     // Eliminar pide confirmación en un diálogo del catálogo (ya no `window.confirm`); Cancelar no borra.

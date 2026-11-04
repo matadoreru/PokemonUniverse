@@ -1,6 +1,6 @@
 /**
  * Utilidades comunes de los E2E: tamaños de captura, errores de consola, `capture()` (PNG de
- * revisión + sin scroll horizontal + medición de encaje y legibilidad), entrada como invitado y
+ * revisión + sin scroll horizontal ni de página + medición de encaje y legibilidad a 13 px), entrada como invitado y
  * cuentas registradas de prueba (con ADMIN promovido en la BD local).
  */
 import { execFileSync } from 'node:child_process';
@@ -55,20 +55,22 @@ export async function expectNoHorizontalScroll(page: Page, name: string): Promis
 }
 
 export interface CaptureOptions {
-  /** Tamaño mínimo de letra que exige `measureLayout` (12 px por defecto). */
+  /** Tamaño mínimo de letra que exige `measureLayout` (13 px por defecto: el mínimo de Arcade DS, spec §3.2). */
   minFontPx?: number;
   /**
-   * La página no se desplaza en vertical a ningún ancho (`scrollHeight ≤ innerHeight`: el armazón mide 100dvh) y, en
-   * vistas de 1024 px o más, tampoco el `main` del armazón (`main.scrollHeight ≤ main.clientHeight`).
+   * Permite el scroll vertical de página (por defecto, `false`). Sin él, la página no se desplaza a ningún ancho
+   * (`scrollHeight ≤ innerHeight`: el armazón mide 100dvh) y, en vistas de 1024 px o más, tampoco el `main` del armazón
+   * (`main.scrollHeight ≤ main.clientHeight`; spec §2). Solo para páginas que se desplazan a propósito, con un
+   * comentario que diga por qué.
    */
-  noPageScroll?: boolean;
+  allowPageScroll?: boolean;
   /** Captura de página completa en lugar de solo la vista (por defecto, `false`). */
   fullPage?: boolean;
 }
 
 /**
- * Captura de revisión: espera a las fuentes, comprueba que no hay scroll horizontal, guarda el PNG
- * en `e2e/screenshots/<name>-<w>x<h>.png` y mide encaje y legibilidad.
+ * Captura de revisión: espera a las fuentes, comprueba que no hay scroll horizontal ni (salvo `allowPageScroll`) de
+ * página, guarda el PNG en `e2e/screenshots/<name>-<w>x<h>.png` y mide encaje y legibilidad (13 px por defecto).
  * Con `PU_LAYOUT_LOG=<fichero>` solo anota los problemas (barrido sin cortar los specs).
  */
 export async function capture(page: Page, name: string, opts: CaptureOptions = {}): Promise<void> {
@@ -77,7 +79,7 @@ export async function capture(page: Page, name: string, opts: CaptureOptions = {
 
 /**
  * Lo mismo que `capture()`, sin guardar el PNG cuando `screenshot` es `false`: sin scroll
- * horizontal y `measureLayout` vacío (o anotado en `PU_LAYOUT_LOG`).
+ * horizontal ni de página y `measureLayout` vacío (o anotado en `PU_LAYOUT_LOG`).
  */
 export async function checkLayout(page: Page, name: string, screenshot = false, opts: CaptureOptions = {}): Promise<void> {
   const { id, problems } = await layoutProblems(page, name, screenshot, opts.fullPage ?? false, opts);
@@ -90,9 +92,9 @@ export async function checkLayout(page: Page, name: string, screenshot = false, 
 }
 
 /**
- * Espera a las fuentes, exige que no haya scroll horizontal, guarda opcionalmente
- * `e2e/screenshots/<name>-<w>x<h>.png` (de página completa con `fullPage`; el nombre lleva el tamaño de la vista) y
- * devuelve lo que encuentra `measureLayout` sin fallar.
+ * Espera a las fuentes, exige que no haya scroll horizontal ni (salvo `allowPageScroll`) vertical de página ni, en
+ * escritorio, del `main`, guarda opcionalmente `e2e/screenshots/<name>-<w>x<h>.png` (de página completa con
+ * `fullPage`; el nombre lleva el tamaño de la vista) y devuelve lo que encuentra `measureLayout` sin fallar.
  */
 export async function layoutProblems(page: Page, name: string, screenshot: boolean, fullPage = false, opts: CaptureOptions = {}): Promise<{ id: string; problems: string[] }> {
   const vp = page.viewportSize();
@@ -101,12 +103,12 @@ export async function layoutProblems(page: Page, name: string, screenshot: boole
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
   await page.waitForTimeout(250);
   await expectNoHorizontalScroll(page, id);
-  if (opts.noPageScroll) {
+  if (!opts.allowPageScroll) {
     // El armazón mide 100dvh a cualquier ancho: si la página crece, algo (p. ej. un `sr-only` absoluto) se sale del `main`.
     const over = await page.evaluate(() => Math.max(document.documentElement.scrollHeight, document.body.scrollHeight) - window.innerHeight);
     expect(over, `${id}: scroll vertical de página`).toBeLessThanOrEqual(0);
   }
-  if (opts.noPageScroll && vp.width >= 1024) {
+  if (!opts.allowPageScroll && vp.width >= 1024) {
     // El armazón es una rejilla de 100dvh: lo que no cabe se desplaza dentro de `main`, que tampoco debe desbordarse.
     const mainOver = await page.evaluate(() => {
       const main = document.querySelector('main');
@@ -115,7 +117,7 @@ export async function layoutProblems(page: Page, name: string, screenshot: boole
     expect(mainOver, `${id}: scroll vertical del main`).toBeLessThanOrEqual(0);
   }
   if (screenshot) await page.screenshot({ path: `screenshots/${id}.png`, animations: 'disabled', fullPage });
-  const minFontPx = opts.minFontPx ?? 12;
+  const minFontPx = opts.minFontPx ?? 13;
   const m = await measureLayout(page, minFontPx);
   const problems = [
     ...m.small.map((x) => `< ${minFontPx} px: ${x}`),

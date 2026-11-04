@@ -1,8 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { capture, collectErrors, loginAsGuest, SIZES, uniqueName } from '../src/helpers.js';
 
-const CAPTURA = { minFontPx: 13, noPageScroll: true };
-
 for (const { w, h } of SIZES) {
   test(`acceso a ${w}×${h}`, async ({ page }) => {
     const errors = collectErrors(page);
@@ -10,7 +8,7 @@ for (const { w, h } of SIZES) {
 
     await page.goto('/auth');
     await expect(page.getByRole('tab', { name: 'Entrar' })).toHaveAttribute('aria-selected', 'true');
-    await capture(page, 'acceso-entrar', CAPTURA);
+    await capture(page, 'acceso-entrar');
 
     // Foco inicial en el primer campo.
     await expect(page.getByLabel('Email')).toBeFocused();
@@ -24,20 +22,20 @@ for (const { w, h } of SIZES) {
     await expect(alerta).toContainText('El email o la contraseña no son correctos.');
     await expect(alerta).not.toContainText('Invalid');
     await expect(page.locator('[tabindex="-1"]:focus')).toContainText('No se pudo iniciar sesión');
-    await capture(page, 'acceso-error', CAPTURA);
+    await capture(page, 'acceso-error');
 
     // Registro: solo se muestra el formulario, no se envía.
     await page.getByRole('tab', { name: 'Registro' }).click();
     await expect(page.getByLabel('Nombre de usuario')).toBeVisible();
     await expect(page.getByRole('alert')).toHaveCount(0);
-    await capture(page, 'acceso-registro', CAPTURA);
+    await capture(page, 'acceso-registro');
 
     await page.getByRole('tab', { name: 'Invitado' }).click();
     await expect(page.getByLabel('Tu nombre temporal')).toBeVisible();
 
     // El invitado solo pone un nombre: no elige ni sube avatar (usa la inicial de su nombre).
     await expect(page.getByRole('button', { name: /mi imagen/ })).toHaveCount(0);
-    await capture(page, 'acceso-invitado', CAPTURA);
+    await capture(page, 'acceso-invitado');
 
     // «Entrar como invitado» de la portada abre la pestaña Invitado.
     await page.goto('/auth?mode=guest');
@@ -48,7 +46,7 @@ for (const { w, h } of SIZES) {
     await expect(page.getByRole('heading', { name: 'Entrar en partida' })).toBeVisible();
     // Con la sala conectada: el aviso «Conectando» de la cabecera no entra en la captura.
     await expect(page.getByRole('button', { name: '¡Crear sala!' })).toBeEnabled();
-    await capture(page, 'entrar-en-partida', CAPTURA);
+    await capture(page, 'entrar-en-partida');
 
     // El login inválido provoca (a propósito) un 401 de `/api/auth/login`, que Chromium registra
     // como error de consola sin URL. Se descuenta exactamente una vez ese mensaje; el resto debe

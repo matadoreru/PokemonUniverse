@@ -97,7 +97,7 @@ async function simularAdmin(page: Page, estado: { vacio: boolean; fallo: boolean
 async function capturarPagina(page: Page, nombre: string): Promise<void> {
   for (const { w, h } of SIZES) {
     await page.setViewportSize({ width: w, height: h });
-    await capture(page, nombre, { minFontPx: 13, noPageScroll: true });
+    await capture(page, nombre);
   }
   await page.setViewportSize({ width: 1280, height: 720 });
 }
@@ -135,7 +135,7 @@ test('un ADMIN recorre las secciones de administración a los tres tamaños', as
     await abrir.click();
     await expect(page.getByRole('heading', { name: `Sala ${salasActivas[1]!.code}` })).toBeFocused();
     await expect(page.getByRole('list', { name: 'Salas activas' })).toBeHidden();
-    await capture(page, 'admin-salas-detalle', { minFontPx: 13, noPageScroll: true });
+    await capture(page, 'admin-salas-detalle');
     await page.getByRole('button', { name: 'Volver' }).click();
     await expect(page.getByRole('list', { name: 'Salas activas' })).toBeVisible();
     await expect(abrir).toBeFocused();
@@ -185,7 +185,7 @@ test('un ADMIN recorre las secciones de administración a los tres tamaños', as
     for (const { w, h } of SIZES) {
       await page.setViewportSize({ width: w, height: h });
       await expect(full).toBeVisible();
-      await capture(page, 'admin-dialogo-full-sync', { minFontPx: 13 });
+      await capture(page, 'admin-dialogo-full-sync');
     }
     await page.setViewportSize({ width: 1280, height: 720 });
     await full.getByRole('button', { name: 'Cancelar' }).click();

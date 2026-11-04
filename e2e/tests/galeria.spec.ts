@@ -47,8 +47,10 @@ for (const { w, h } of SIZES) {
     const errors = collectErrors(page);
     await page.setViewportSize({ width: w, height: h });
     await abrirGaleria(page);
-    // Captura de página completa, sin scroll horizontal y `measureLayout(page, 13)` vacío (la página sí se desplaza en vertical).
-    await capture(page, 'galeria', { minFontPx: 13, fullPage: true });
+    // Excepción al medidor: la galería (`/dev/ui`) va fuera del armazón de 100dvh y es una página larga que se desplaza
+    // en vertical a propósito (todas las figuras del catálogo en todos sus estados). Captura de página completa, sin
+    // scroll horizontal y con `measureLayout` vacío a 13 px.
+    await capture(page, 'galeria', { allowPageScroll: true, fullPage: true });
     expect(errors).toEqual([]);
   });
 }
@@ -106,7 +108,8 @@ test('con el diálogo abierto el aviso se monta dentro de él y se cierra con su
   const pila = dialogo.locator('[popover]');
   await expect(pila.getByText('Aviso sobre el diálogo')).toBeVisible();
   await expect(dialogo.getByRole('status').filter({ hasText: 'Aviso sobre el diálogo' })).toHaveCount(1);
-  await capture(page, 'galeria-aviso-sobre-dialogo', { minFontPx: 13 });
+  // Excepción al medidor: debajo del diálogo sigue la galería, una página larga fuera del armazón que se desplaza a propósito.
+  await capture(page, 'galeria-aviso-sobre-dialogo', { allowPageScroll: true });
 
   await pila.getByRole('button', { name: 'Cerrar aviso' }).click();
   await expect(page.getByText('Aviso sobre el diálogo', { exact: true })).toHaveCount(0);

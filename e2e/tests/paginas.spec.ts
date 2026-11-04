@@ -56,7 +56,7 @@ for (const { w, h } of SIZES) {
     const detalle = page.getByRole('heading', { name: 'Pantalla de título Arcade DS' });
     if (movil) await expect(detalle).toBeHidden();
     else await expect(detalle).toBeVisible();
-    await capture(page, 'novedades', { minFontPx: 13, noPageScroll: true });
+    await capture(page, 'novedades');
 
     // Abrir otra versión: va en la URL y el detalle cambia; en móvil la lista se oculta y aparece «Volver».
     await lista.getByRole('link', { name: /v0\.8\.0/ }).click();
@@ -68,7 +68,7 @@ for (const { w, h } of SIZES) {
     if (movil) {
       await expect(lista).toBeHidden();
       await expect(volver).toBeVisible();
-      await capture(page, 'novedades-detalle', { minFontPx: 13, noPageScroll: true });
+      await capture(page, 'novedades-detalle');
       // Atrás del navegador y «Volver» llevan los dos a la lista.
       await page.goBack();
       await expect(page).toHaveURL(/\/changelog$/);
@@ -88,7 +88,7 @@ for (const { w, h } of SIZES) {
     const alerta = page.getByRole('alert');
     await expect(alerta).toContainText('No se pudieron cargar las novedades');
     await expect(alerta).not.toContainText('Service Unavailable');
-    await capture(page, 'novedades-error', { minFontPx: 13, noPageScroll: true });
+    await capture(page, 'novedades-error');
     falla = false;
     await alerta.getByRole('button', { name: 'Reintentar' }).click();
     await expect(lista.getByRole('link')).toHaveCount(3);
@@ -136,7 +136,7 @@ for (const { w, h } of SIZES) {
     await page.getByLabel('Descripción').fill('Me gustaría poder repetir la última ronda con los mismos Pokémon.');
     await expect(page.getByText(/^\d+ \/ 2000$/)).toHaveText('65 / 2000');
     await expect(enviar).toBeEnabled();
-    await capture(page, 'feedback', { minFontPx: 13, noPageScroll: true });
+    await capture(page, 'feedback');
 
     // Fallo del servidor en inglés: el aviso es español y recibe el foco.
     await enviar.click();
@@ -144,7 +144,7 @@ for (const { w, h } of SIZES) {
     await expect(alerta).toContainText('No se pudo enviar el feedback');
     await expect(alerta).not.toContainText('Internal');
     await expect(alerta.locator('xpath=..')).toBeFocused();
-    await capture(page, 'feedback-error', { minFontPx: 13, noPageScroll: true });
+    await capture(page, 'feedback-error');
 
     // Segundo intento: confirmación en el panel con la vuelta a la partida.
     await enviar.click();
@@ -153,7 +153,7 @@ for (const { w, h } of SIZES) {
     await expect(gracias).toBeFocused();
     await expect(page.getByRole('status').filter({ hasText: 'Gracias por avisar' })).toContainText('Shiny Quiz');
     expect(cuerpos[1]).toMatchObject({ reference: 'MINIGAME', type: 'SUGGESTION', gameId: 'shiny-vote', roomCode: 'PIKA42' });
-    await capture(page, 'feedback-enviado', { minFontPx: 13, noPageScroll: true });
+    await capture(page, 'feedback-enviado');
     await page.getByRole('button', { name: 'Enviar otro comentario' }).click();
     await expect(page.getByLabel('Descripción')).toHaveValue('');
 

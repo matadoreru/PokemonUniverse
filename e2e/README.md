@@ -66,7 +66,7 @@ juego por su nombre del manifest, los invitados se marcan listos y el host pulsa
 Después comprueba que todos salen del lobby y pintan la pantalla de juego, que cada página abrió el
 WebSocket `/ws` de Java y ninguno de Socket.IO, que
 nunca sale «Este minijuego todavía no está disponible en el servidor Java.», que no hay errores de
-consola y que a 1280×720 no hay scroll horizontal (`measureLayout` se anota, ver «Encaje»). En `whos-that-pokemon`,
+consola y que a 1280×720 no hay scroll horizontal ni de página (`measureLayout` se anota, ver «Encaje»). En `whos-that-pokemon`,
 `zoomed-pokemon`, `shiny-vote` y `pokemon-cry-quiz` exige además que la primera respuesta a
 `/api/rooms/*/games/*/rounds/*/options/*/(sprite|audio)` sea 200 con `image/png` o `audio/*`.
 
@@ -82,19 +82,13 @@ consola y que a 1280×720 no hay scroll horizontal (`measureLayout` se anota, ve
 - **Capturas**: un juego de cada lote (`type-duel`, `poke-taboo`, `most-likely-to`, `learnset-guess`,
   `whos-that-pokemon`, `who-is-who-pokemon`, `pokemon-bingo`, `sketchmon`) se guarda como
   `screenshots/juego-<id>-<ancho>x<alto>.png` a los tres tamaños, antes de la aserción de encaje.
-- **Encaje**: a 1280×720 el scroll horizontal siempre hace fallar el test, pero lo que encuentre
-  `measureLayout` se adjunta como anotación `encaje` del test y no lo hace fallar. Para la pasada de
+- **Encaje**: a 1280×720 el scroll horizontal y el de página (o del `main`) siempre hacen fallar el test, pero lo
+  que encuentre `measureLayout` se adjunta como anotación `encaje` del test y no lo hace fallar. Para la pasada de
   contrato (`measureLayout` vacío), `PU_LAYOUT_STRICT=1 npm run test:e2e -- juegos` (con filtro `-g`, lánzalo desde
-  `e2e/` con `npx playwright test juegos -g …`: `npm run` lee `-g` como `--global`). Estado de la pasada estricta
-  (2026-11-03, Fase 2 de minijuegos): los 6 minijuegos de la fase (`pokedex-distance`, `shiny-vote`,
-  `pokemon-impostor`, `higher-lower`, `type-duel`, `learnset-guess`) y sus tests propios pasan limpios. De los otros 22,
-  según las anotaciones `encaje` de la suite completa (no una pasada estricta de los 22), 6 fallarían a 1280×720 solo
-  por texto de 10–11 px de su propia pantalla (`pokeddle-race`, `whos-that-pokemon`, `pokedex-entry-guess`,
-  `type-chain`, `guess-from-stats`, `who-is-who-pokemon`) y `most-likely-to` lo tiene solo a 390. Ninguno anota
-  solapes ni recortes (a 1280×720; a los tres tamaños en los juegos con capturas), y la cabecera fija ya no tapa nada
-  (el buscador enfoca sin desplazar).
-  Además, 9 juegos no muestran el título del manifest en pantalla (anotación `pantalla`): los 6 de la fase usan un
-  título propio. Es deuda de UI de esos juegos, apuntada en `docs/visual-review.md` («Seguimientos»).
+  `e2e/` con `npx playwright test juegos -g …`: `npm run` lee `-g` como `--global`). Las pantallas propias de cada
+  juego (rediseñadas con Arcade DS en F5–F8) se miden en sus tests a los tres tamaños; solo las fases que duran poco
+  (`capturarAnotando`) anotan en vez de fallar. Además, 9 juegos no muestran el título del manifest en pantalla
+  (anotación `pantalla`): los 6 de la Fase 2 de minijuegos usan un título propio. Es deuda de UI de esos juegos, apuntada en `docs/visual-review.md` («Seguimientos»).
 - **Detalle por juego**: el spec deja anotaciones (recurso comprobado, título visible y encaje a
   los tres tamaños). `npm run` se come `--reporter`, así que para verlas lánzalo desde `e2e/`:
   `PLAYWRIGHT_JSON_OUTPUT_FILE=juegos.json npx playwright test juegos --reporter=list,json`.
@@ -135,16 +129,21 @@ con el límite de `/api/auth`. Las salas viven en memoria: reiniciar el backend 
 
 ## Medición de encaje: `PU_LAYOUT_LOG`
 
-`capture()` hace fallar el spec si hay scroll horizontal o si `measureLayout` (`src/layout.ts`)
-encuentra texto de menos de 12 px, solapes, texto recortado sin `title` o controles fuera de su caja.
-Para barrer todas las pantallas sin cortar en el primer fallo:
+`capture()` (y `layoutProblems()`, que usan los helpers de `juegos.spec.ts`) hace fallar el spec si hay scroll
+horizontal, si la página se desplaza en vertical a cualquier ancho o el `main` del armazón a 1024 px o más (spec
+Arcade DS §2: en escritorio no hay scroll de página), o si `measureLayout` (`src/layout.ts`) encuentra texto de menos
+de 13 px, solapes, texto recortado sin `title` o controles fuera de su caja. Las dos cosas son el valor por defecto:
+no se pasan opciones para pedirlas. Una captura que necesite una excepción la pide explícitamente
+(`{ allowPageScroll: true }` o un `minFontPx` distinto) con un comentario que diga por qué; hoy solo la galería
+(`/dev/ui`, fuera del armazón y larga a propósito) permite el scroll de página. Para barrer todas las pantallas sin
+cortar en el primer fallo:
 
 ```sh
 PU_LAYOUT_LOG=$PWD/layout.log npm run test:e2e
 ```
 
 Los problemas se añaden al fichero bajo una cabecera `## <captura>-<ancho>x<alto>` y los specs no
-fallan por ellos (el scroll horizontal sigue fallando). `[data-layout-ignore]` excluye un elemento
+fallan por ellos (el scroll horizontal y el de página siguen fallando). `[data-layout-ignore]` excluye un elemento
 solo si es un falso positivo del medidor; cada uso se apunta en `docs/visual-review.md`.
 
 ## Añadir un spec

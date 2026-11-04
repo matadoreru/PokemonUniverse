@@ -6,7 +6,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page, type Response, type Route } from '@playwright/test';
-import { animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, introDePartida, layoutProblems, psql, saltarIntro, seleccionarJuego, sinTapar, SIZES, type CaptureOptions, type Jugador, type SalaConJugadores } from '../src/helpers.js';
+import { animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, introDePartida, layoutProblems, psql, saltarIntro, seleccionarJuego, sinTapar, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
 
 interface Manifest {
   id: string;
@@ -37,17 +37,8 @@ const SOCKET_IO = /\/socket\.io\//;
 /** Estado de un jugador de Pokédex Distance que ya ha elegido con las elecciones ocultas (`pokedex-distance-selection.ts`). */
 const DISTANCE_PICKED = '✓ Ya ha elegido';
 
-/** Pantallas rediseñadas con Arcade DS (F5): texto de 13 px o más y, en escritorio, sin scroll de página ni del `main`. */
-const ARCADE: CaptureOptions = { minFontPx: 13, noPageScroll: true };
-
 /** Lo que el backend Java dice de un juego sin motor portado: nunca debe salir. */
 const NOT_PORTED = 'Este minijuego todavía no está disponible en el servidor Java.';
-
-/**
- * Juegos de la captura genérica rediseñados con Arcade DS (F6, F7 y F8): su captura a los tres tamaños se mide con `ARCADE`
- * (13 px y sin scroll de página ni del `main`).
- */
-const ARCADE_GAMES = new Set(['most-likely-to', 'whos-that-pokemon', 'zoomed-pokemon', 'pokemon-palette-guess', 'pokemon-cry-quiz', 'pokedex-entry-guess', 'guess-from-stats', 'pokeddle-race', 'type-chain', 'pokemon-trivia', 'tcg-higher-lower', 'pokemon-connections', 'pokemon-bingo', 'poke-taboo', 'sketchmon', 'pokemon-team-auction', 'pokemon-bluff-auction', 'who-is-who-pokemon']);
 
 /** Un juego de cada lote de la etapa 2B: se captura a los tres tamaños de revisión (Higher or Lower, en su propio test). */
 const SCREENSHOT_GAMES = new Set(['shiny-vote', 'type-duel', 'poke-taboo', 'most-likely-to', 'learnset-guess', 'whos-that-pokemon', 'zoomed-pokemon', 'pokemon-palette-guess', 'pokemon-cry-quiz', 'pokedex-entry-guess', 'guess-from-stats', 'pokeddle-race', 'type-chain', 'pokemon-trivia', 'tcg-higher-lower', 'pokemon-connections', 'who-is-who-pokemon', 'pokemon-bingo', 'sketchmon', 'pokemon-team-auction', 'pokemon-bluff-auction']);
@@ -149,7 +140,7 @@ for (const manifest of registry) {
         // fuera de 1280×720 lo que mida el medidor solo se anota.
         for (const { w, h } of SIZES) {
           await host.page.setViewportSize({ width: w, height: h });
-          const { id, problems } = await layoutProblems(host.page, `juego-${manifest.id}`, true, false, ARCADE_GAMES.has(manifest.id) ? ARCADE : {});
+          const { id, problems } = await layoutProblems(host.page, `juego-${manifest.id}`, true);
           if (problems.length && w !== 1280) test.info().annotations.push({ type: 'encaje', description: `${id}: ${problems.join(' · ')}` });
         }
         await host.page.setViewportSize({ width: 1280, height: 720 });
@@ -169,7 +160,7 @@ for (const manifest of registry) {
         for (const { w, h } of SIZES) {
           await turno!.setViewportSize({ width: w, height: h });
           await expect(dialogo).toBeVisible();
-          const { id, problems } = await layoutProblems(turno!, 'dialogo-adivinar', true, false, { minFontPx: 13 });
+          const { id, problems } = await layoutProblems(turno!, 'dialogo-adivinar', true);
           expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
         }
         await turno!.setViewportSize({ width: 1280, height: 720 });
@@ -178,8 +169,8 @@ for (const manifest of registry) {
       }
       for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
 
-      // A 1280×720 el scroll horizontal siempre falla; lo que mida `measureLayout` se anota (deuda de
-      // UI previa, ver README) y solo hace fallar el test con `PU_LAYOUT_STRICT=1`.
+      // A 1280×720 el scroll horizontal y el de página (o del `main`) siempre fallan; lo que mida `measureLayout` se
+      // anota y solo hace fallar el test con `PU_LAYOUT_STRICT=1`.
       const { id, problems } = await layoutProblems(host.page, `juego-${manifest.id}`, false);
       for (const problem of problems) test.info().annotations.push({ type: 'encaje', description: `${id}: ${problem}` });
       if (process.env.PU_LAYOUT_STRICT === '1') expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
@@ -194,12 +185,12 @@ for (const manifest of registry) {
  * después de cada captura se comprueba que sigue visible: una fase que avanza sola no debe fotografiar la siguiente.
  * Con `completa`, el PNG es de página completa (para paneles más altos que la vista; el medidor ya mide toda la página).
  */
-async function capturarTamanos(page: Page, nombre: string, { sigue, completa = false, opts }: { sigue?: Locator; completa?: boolean; opts?: CaptureOptions } = {}): Promise<void> {
+async function capturarTamanos(page: Page, nombre: string, { sigue, completa = false }: { sigue?: Locator; completa?: boolean } = {}): Promise<void> {
   const comprobar = async () => { if (sigue) await expect(sigue, `${nombre}: la fase sigue en pantalla`).toBeVisible({ timeout: 1_000 }); };
   for (const { w, h } of SIZES) {
     await page.setViewportSize({ width: w, height: h });
     await page.waitForFunction(() => [...document.images].every((img) => img.complete), undefined, { timeout: 3_000 }).catch(() => undefined);
-    const { id, problems } = await layoutProblems(page, nombre, true, completa, opts);
+    const { id, problems } = await layoutProblems(page, nombre, true, completa);
     await comprobar();
     expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
   }
@@ -249,7 +240,7 @@ test('type-duel: elección secreta, VS, búsqueda con un fallo, victoria y clasi
     await expect(primero.getByRole('button', { name: 'Elegir tipo Fuego' })).toHaveAttribute('aria-pressed', 'false');
     await expect(observador!.getByText('Estás observando la selección.')).toBeVisible();
     await expect(observador!.locator('[data-type]'), 'el observador no ve ningún tipo').toHaveCount(0);
-    await capturarTamanos(primero, 'juego-type-duel-eleccion', { opts: ARCADE });
+    await capturarTamanos(primero, 'juego-type-duel-eleccion');
     // A 390×844, sin desplazar, los 18 tipos caben en la pantalla inferior.
     await primero.setViewportSize({ width: 390, height: 844 });
     for (const tipo of ['Normal', 'Hada']) await expect(primero.getByRole('button', { name: `Elegir tipo ${tipo}` }), `${tipo} a la vista a 390×844`).toBeInViewport({ ratio: 1 });
@@ -285,7 +276,7 @@ test('type-duel: elección secreta, VS, búsqueda con un fallo, victoria y clasi
     // Los dos eligieron Fuego: «Monotipo» en vez de repetir la insignia, y el título no repite los nombres.
     await expect(versus.getByText('Monotipo', { exact: true })).toBeVisible();
     await expect(host.page.getByRole('heading', { level: 1, name: 'Duelo de tipos' })).toBeVisible();
-    await capturarTamanos(host.page, 'juego-type-duel-vs', { sigue: versus, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-type-duel-vs', { sigue: versus });
     expect(await animacionDe(vs.locator('..')), 'VS con reducción de movimiento').toBe('none');
     await conMovimiento(host.page);
     expect(await animacionDe(vs.locator('..')), 'VS con movimiento').toBe('motion-bump');
@@ -310,7 +301,7 @@ test('type-duel: elección secreta, VS, búsqueda con un fallo, victoria y clasi
     const cajaLosa = await losa.locator('.motion-enter-left [data-type]').boundingBox();
     const inferior = await primero.locator('[data-layer="screen-bottom"]').boundingBox();
     expect(cajaLosa!.y + cajaLosa!.height, 'la pantalla inferior no tapa los tipos').toBeLessThanOrEqual(inferior!.y);
-    const busqueda = await layoutProblems(primero, 'juego-type-duel-vs-busqueda', true, false, ARCADE);
+    const busqueda = await layoutProblems(primero, 'juego-type-duel-vs-busqueda', true);
     expect(busqueda.problems, `${busqueda.id}: encaje y legibilidad`).toEqual([]);
     await primero.setViewportSize({ width: 1280, height: 720 });
 
@@ -321,7 +312,7 @@ test('type-duel: elección secreta, VS, búsqueda con un fallo, victoria y clasi
     await expect(host.page.getByText('No coincide con los tipos').first()).toBeVisible({ timeout: 10_000 });
     await expect(primero.locator('[data-layer="screen-bottom"]').getByText(/no coincide/)).toBeVisible();
     await buscador.fill('char');
-    await capturarTamanos(primero, 'juego-type-duel-busqueda', { opts: ARCADE });
+    await capturarTamanos(primero, 'juego-type-duel-busqueda');
 
     // Charmander es Fuego puro: gana el duelo.
     await buscador.fill('charmander');
@@ -334,14 +325,14 @@ test('type-duel: elección secreta, VS, búsqueda con un fallo, victoria y clasi
     await expect(resultado.locator('[data-type="fire"]').first()).toBeVisible();
     await expect(resultado.locator('[data-winning-card]')).toContainText('Charmander');
     await expect(primero.locator('[data-layer="screen-bottom"]').getByText('¡Ganaste el duelo!')).toBeVisible();
-    await capturarTamanos(host.page, 'juego-type-duel-resultado', { sigue: titulo, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-type-duel-resultado', { sigue: titulo });
 
     // Un solo duelo: el host pasa a la clasificación.
     await host.page.getByRole('button', { name: 'Ver clasificación' }).click();
     const clasificacion = host.page.getByRole('heading', { level: 1, name: 'Clasificación Type Duel' });
     await expect(clasificacion).toBeVisible({ timeout: 10_000 });
     await expect(host.page.getByText('Récords de la partida')).toBeVisible();
-    await capturarTamanos(host.page, 'juego-type-duel-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-type-duel-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -357,7 +348,7 @@ test('pokemon-impostor: roles, pistas, votación con Saltar y victoria por tres 
     // Cada página en un tamaño de revisión: las fases cortas (roles 5 s, recuento 3 s) se capturan a la vez en las tres.
     const ajustar = async () => { for (const [i, page] of pages.entries()) await page.setViewportSize({ width: SIZES[i]!.w, height: SIZES[i]!.h }); };
     const enParalelo = async (nombre: string) => {
-      const medidas = await Promise.all(pages.map((page) => layoutProblems(page, nombre, true, false, ARCADE)));
+      const medidas = await Promise.all(pages.map((page) => layoutProblems(page, nombre, true)));
       for (const { id, problems } of medidas) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     };
     await seleccionarJuego(host.page, 'Pokémon Impostor');
@@ -394,7 +385,7 @@ test('pokemon-impostor: roles, pistas, votación con Saltar y victoria por tres 
       for (let turno = 0; turno < 3; turno++) {
         const page = await primeraVisible(pages, campo);
         if (ronda === 1 && turno === 1) {
-          await capturarTamanos(page, 'juego-pokemon-impostor-pistas', { sigue: campo(page), opts: ARCADE });
+          await capturarTamanos(page, 'juego-pokemon-impostor-pistas', { sigue: campo(page) });
           await ajustar();
         }
         await campo(page).fill(`pista ${ronda}`);
@@ -404,7 +395,7 @@ test('pokemon-impostor: roles, pistas, votación con Saltar y victoria por tres 
 
       for (const page of pages) await expect(saltar(page)).toBeVisible({ timeout: 15_000 });
       if (ronda === 1) {
-        await capturarTamanos(host.page, 'juego-pokemon-impostor-votacion', { sigue: saltar(host.page), opts: ARCADE });
+        await capturarTamanos(host.page, 'juego-pokemon-impostor-votacion', { sigue: saltar(host.page) });
         await ajustar();
       }
       for (const page of pages) {
@@ -423,7 +414,7 @@ test('pokemon-impostor: roles, pistas, votación con Saltar y victoria por tres 
     const titulo = host.page.getByRole('heading', { name: 'Ganan los impostores' });
     await expect(titulo).toBeVisible({ timeout: 15_000 });
     await expect(host.page.getByText('Tres rondas seguidas sin expulsar a nadie.')).toBeVisible();
-    await capturarTamanos(host.page, 'juego-pokemon-impostor-resultados', { sigue: titulo, completa: true, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-impostor-resultados', { sigue: titulo, completa: true });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -489,7 +480,7 @@ test.describe('pokemon-impostor: eliminación', () => {
         await expect(banda(page)).toContainText(expulsado.name);
         await expect(banda(page)).toContainText('…era');
       }
-      const medidas = await Promise.all(capturas.map(({ page }) => layoutProblems(page, nombre, true, false, ARCADE)));
+      const medidas = await Promise.all(capturas.map(({ page }) => layoutProblems(page, nombre, true)));
       for (const page of pages) await expect(banda(page), 'el cut-in sigue a la vista tras la captura').toBeVisible({ timeout: 500 });
       for (const { id, problems } of medidas) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
 
@@ -649,7 +640,7 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     const barras = (page: Page) => page.getByTestId('higher-lower-bars');
     await expect(barras(host.page)).toHaveCount(0);
     await expect(host.page.locator('[data-hl-card="current"]').getByText('???', { exact: true })).toBeVisible();
-    await capturarTamanos(host.page, 'juego-higher-lower', { sigue: mayor(host.page), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-higher-lower', { sigue: mayor(host.page) });
 
     // Todos responden: la ronda se revela en cuanto contesta el último y el revelado dura 3 s. Para que quepan los
     // tres tamaños, cada página se fija a un tamaño antes de la última respuesta y se capturan a la vez.
@@ -698,7 +689,7 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     await expect(host.page.locator('[data-outcome="miss"]')).toHaveText(['✗ Fallo', '✗ Fallo']);
     await expect(host.page.locator('[data-outcome-line]', { hasText: /^Racha 1( · \+\d+ rapidez)?$/ })).toHaveCount(1);
     const nombre = 'juego-higher-lower-revelacion';
-    const medidas = await Promise.all(capturas.map(({ page }) => layoutProblems(page, nombre, true, false, ARCADE)));
+    const medidas = await Promise.all(capturas.map(({ page }) => layoutProblems(page, nombre, true)));
     for (const { page } of capturas) await expect(revelado(page), 'el revelado sigue en pantalla tras la captura').toBeVisible({ timeout: 500 });
     for (const { id, problems } of medidas) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     const vistos = await Promise.all(jugadores.map(({ page }) => page.evaluate(() => (window as unknown as { scorePopVisto?: boolean }).scorePopVisto === true)));
@@ -710,7 +701,7 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     // Plurales de las estadísticas: nunca «1 aciertos» ni «1 iguales».
     await expect(host.page.getByText(/\d+ aciertos? · \d+ igual(es)? · mejor racha/).first()).toBeVisible();
     await expect(host.page.getByText(/(^|\D)1 (aciertos|iguales)/)).toHaveCount(0);
-    await capturarTamanos(host.page, 'juego-higher-lower-clasificacion', { sigue: clasificacion, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-higher-lower-clasificacion', { sigue: clasificacion });
     const delatoras = imagenes.filter((url) => /githubusercontent|\/sprites\/pokemon\/|\/\d+\.(png|gif|webp|svg)(\?|$)|\/pokemon\/\d+(\/|$)/.test(url));
     expect(delatoras, 'ninguna imagen de la partida delata el número de Pokédex').toEqual([]);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
@@ -738,7 +729,7 @@ test('pokedex-distance: elección de los rivales oculta y panel de visibilidad',
     // Desde arriba, como el resto de capturas del lobby: con la página desplazada la cabecera fija solapa las pestañas.
     await host.page.evaluate(() => window.scrollTo(0, 0));
     // Página completa: a 390×844 el grupo «Elecciones de los rivales» queda bajo las generaciones.
-    await capturarTamanos(host.page, 'lobby-config-pokedex-distance', { completa: true, opts: { minFontPx: 13 } });
+    await capturarTamanos(host.page, 'lobby-config-pokedex-distance', { completa: true });
     await ocultas.click();
     await expect(ocultas).toHaveAttribute('aria-checked', 'true');
     await expect(aviso).toHaveCount(0);
@@ -762,7 +753,7 @@ test('pokedex-distance: elección de los rivales oculta y panel de visibilidad',
     await expect(host.page.getByText(/→ Pikachu/)).toHaveCount(0);
     await expect(host.page.getByRole('heading', { name: 'En la ronda' })).toBeVisible();
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'juego-pokedex-distance-oculta', { sigue: yaHaElegido, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokedex-distance-oculta', { sigue: yaHaElegido });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -780,10 +771,10 @@ async function elegirPokemon(page: Page, nombre: string): Promise<void> {
 }
 
 /** Capturas de una fase que dura poco: lo que mida `measureLayout` se anota en vez de hacer fallar el test. */
-async function capturarAnotando(page: Page, nombre: string, sigue: Locator, sizes: readonly { w: number; h: number }[] = SIZES, opts: CaptureOptions = {}): Promise<void> {
+async function capturarAnotando(page: Page, nombre: string, sigue: Locator, sizes: readonly { w: number; h: number }[] = SIZES): Promise<void> {
   for (const { w, h } of sizes) {
     await page.setViewportSize({ width: w, height: h });
-    const { id, problems } = await layoutProblems(page, nombre, true, false, opts);
+    const { id, problems } = await layoutProblems(page, nombre, true);
     await expect(sigue, `${id}: la fase sigue en pantalla`).toBeVisible({ timeout: 1_000 });
     if (problems.length) test.info().annotations.push({ type: 'encaje', description: `${id}: ${problems.join(' · ')}` });
   }
@@ -831,7 +822,7 @@ test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
     }
     const enLaRonda = host.page.getByRole('heading', { name: 'En la ronda' });
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'juego-pokedex-distance-ronda-oculta', { sigue: enLaRonda, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokedex-distance-ronda-oculta', { sigue: enLaRonda });
 
     // El tercero recarga: la app le ofrece «Volver a la sala» y vuelve al buscador antes de que venza la gracia de 8 s,
     // con la ronda aún abierta.
@@ -866,7 +857,7 @@ test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
     expect(await animacionDe(marcadores.first()), 'marcador con movimiento').toBe('motion-enter-up');
     await host.page.emulateMedia({ reducedMotion: 'reduce' });
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'juego-pokedex-distance-revelacion', { sigue: regla, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokedex-distance-revelacion', { sigue: regla });
     expect(antiguas, 'peticiones a /api/pokemon').toEqual([]);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
@@ -912,7 +903,7 @@ test('pokedex-distance: acierto exacto con cut-in', async ({ browser }) => {
     try {
       await expect(banda).toContainText(`#${String(numero).padStart(3, '0')}`);
       await host.page.evaluate(() => window.scrollTo(0, 0));
-      await capturarTamanos(host.page, 'juego-pokedex-distance-acierto-exacto', { sigue: banda, opts: ARCADE });
+      await capturarTamanos(host.page, 'juego-pokedex-distance-acierto-exacto', { sigue: banda });
     } finally {
       await host.page.clock.resume();
     }
@@ -959,7 +950,7 @@ test('pokedex-distance: buscador sin coincidencias', async ({ browser }) => {
     await expect(vacio).toBeVisible({ timeout: 10_000 });
     const borrar = host.page.getByRole('button', { name: 'Borrar búsqueda' });
     await expect(borrar).toBeVisible();
-    await capturarTamanos(host.page, 'juego-buscador-vacio', { sigue: vacio, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-buscador-vacio', { sigue: vacio });
     await borrar.click();
     await expect(buscador).toHaveValue('');
     await expect(buscador).toBeFocused();
@@ -967,7 +958,7 @@ test('pokedex-distance: buscador sin coincidencias', async ({ browser }) => {
 
     const alerta = invitado.page.getByRole('alert').filter({ hasText: 'No se pudo cargar el buscador de Pokémon.' });
     await expect(alerta).toBeVisible({ timeout: 20_000 });
-    await capturarTamanos(invitado.page, 'juego-buscador-error', { sigue: alerta, opts: ARCADE });
+    await capturarTamanos(invitado.page, 'juego-buscador-error', { sigue: alerta });
     bloqueado = false;
     await alerta.getByRole('button', { name: 'Reintentar' }).click();
     await expect(alerta).toHaveCount(0, { timeout: 10_000 });
@@ -1044,7 +1035,7 @@ test('pokedex-distance: empate forzado tras tres desempates', async ({ browser }
     await expect(host.page.getByText('Cae quien eligió último; si eligieron a la vez, caen todos.')).toBeVisible();
     await expect(host.page.getByRole('list', { name: 'Distancias de la ronda' }).getByRole('listitem').filter({ hasText: invitado.name })).toContainText('Eliminado');
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarAnotando(host.page, 'juego-pokedex-distance-empate-forzado', forzado, SIZES, ARCADE);
+    await capturarAnotando(host.page, 'juego-pokedex-distance-empate-forzado', forzado);
 
     // Resultados propios: clasificación con la ronda de caída, mejor acierto y distancia por ronda (R1 y sus tres
     // desempates), sin NaN ni scroll horizontal de la página aunque la tabla tenga muchas columnas.
@@ -1061,7 +1052,7 @@ test('pokedex-distance: empate forzado tras tres desempates', async ({ browser }
     await host.page.setViewportSize({ width: 390, height: 844 });
     expect(await host.page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'sin scroll horizontal de la página a 390').toBe(true);
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'juego-pokedex-distance-resultados', { sigue: tabla, completa: true, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokedex-distance-resultados', { sigue: tabla, completa: true });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -1097,7 +1088,7 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     await host.page.evaluate(() => window.scrollTo(0, 0));
     // El modo de candidatos (cartas seleccionables) a la vista: está arriba del panel, que se ha desplazado hasta los deslizadores.
     await host.page.getByRole('group', { name: 'Opciones de Pokémon' }).scrollIntoViewIfNeeded();
-    await capturarTamanos(host.page, 'lobby-config-shiny-vote', { completa: true, opts: { minFontPx: 13 } });
+    await capturarTamanos(host.page, 'lobby-config-shiny-vote', { completa: true });
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, [invitado.page]);
     await saltarIntro([host.page, invitado.page]);
@@ -1123,10 +1114,10 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     await expect(invitado.page.locator('[data-shiny-option="B"]')).toHaveAttribute('aria-pressed', 'true');
     await expect(invitado.page.getByText('Has seleccionado')).toBeVisible();
     await invitado.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(invitado.page, 'juego-shiny-vote-votos-al-revelar', { sigue: invitado.page.getByRole('button', { name: 'Confirmar voto' }), opts: ARCADE });
+    await capturarTamanos(invitado.page, 'juego-shiny-vote-votos-al-revelar', { sigue: invitado.page.getByRole('button', { name: 'Confirmar voto' }) });
     // El host, con el voto ya bloqueado: cartas fijas y su elección en la pantalla inferior.
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'juego-shiny-vote-voto-confirmado', { sigue: host.page.getByText('Voto confirmado:'), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-shiny-vote-voto-confirmado', { sigue: host.page.getByText('Voto confirmado:') });
 
     // Antes de revelar nadie ha pedido el sprite normal: daría la respuesta.
     expect(normales).toEqual([]);
@@ -1163,7 +1154,7 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     await invitado.page.setViewportSize({ width: 1280, height: 720 });
     await invitado.page.evaluate(() => window.scrollTo(0, 0));
     // Página completa: en el móvil el antes y después y el marcador quedan bajo las cartas.
-    await capturarTamanos(invitado.page, 'juego-shiny-vote-revelacion', { sigue: franja(invitado.page), completa: true, opts: ARCADE });
+    await capturarTamanos(invitado.page, 'juego-shiny-vote-revelacion', { sigue: franja(invitado.page), completa: true });
 
     // Una sola ronda: llegan los resultados con la clasificación del catálogo.
     for (const { page } of jugadores) await expect(page.getByRole('heading', { name: 'Clasificación shiny' })).toBeVisible({ timeout: 15_000 });
@@ -1171,7 +1162,7 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     await expect(clasificacion.getByRole('listitem')).toHaveCount(2);
     await expect(host.page.getByText(/NaN|Infinity/)).toHaveCount(0);
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'juego-shiny-vote-resultados', { sigue: clasificacion, completa: true, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-shiny-vote-resultados', { sigue: clasificacion, completa: true });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -1323,7 +1314,7 @@ test('learnset-guess: último aviso a 390', async ({ browser }) => {
     // Desde arriba: el aviso ya cabe en la vista y así la cabecera fija no tapa contenido.
     await invitado.page.evaluate(() => window.scrollTo(0, 0));
     await expect(chip).toBeInViewport();
-    await capturarAnotando(invitado.page, 'juego-learnset-guess-ultimo-aviso', chip, [SIZES[2]], ARCADE);
+    await capturarAnotando(invitado.page, 'juego-learnset-guess-ultimo-aviso', chip, [SIZES[2]]);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -1382,7 +1373,7 @@ test('learnset-guess: marcador en vivo', async ({ browser }) => {
     await primero.page.evaluate(() => window.scrollTo(0, 0));
     // La captura enseña una pista recién llegada (arriba, marcada «Nueva»): llega a los 7 s de la ronda.
     await expect(primero.page.locator('li[data-stage]:not([data-stage="0"])').first()).toBeVisible({ timeout: 15_000 });
-    await capturarTamanos(primero.page, 'juego-learnset-guess-pistas', { sigue: enJuego, opts: ARCADE });
+    await capturarTamanos(primero.page, 'juego-learnset-guess-pistas', { sigue: enJuego });
     // A 390×844, sin desplazar: la última pista y el buscador a la vista, y la pantalla inferior no tapa la pista.
     await primero.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await primero.page.evaluate(() => window.scrollTo(0, 0));
@@ -1403,7 +1394,7 @@ test('learnset-guess: marcador en vivo', async ({ browser }) => {
     expect(pistaAbierta.y + pistaAbierta.height, 'última pista sobre la pantalla inferior con la bandeja abierta').toBeLessThanOrEqual(inferiorAbierta.y);
     await primero.page.setViewportSize({ width: 1280, height: 720 });
     await buscadorPrimero.blur();
-    await capturarTamanos(primero.page, 'juego-learnset-guess-busqueda', { sigue: primerResultado, opts: ARCADE });
+    await capturarTamanos(primero.page, 'juego-learnset-guess-busqueda', { sigue: primerResultado });
     await buscadorPrimero.fill('');
 
     // Si alguien se va sin acertar, la revelación dice «Sin conexión» y no «No acertó».
@@ -1417,11 +1408,11 @@ test('learnset-guess: marcador en vivo', async ({ browser }) => {
     // La revelación dura 4 s: lo que mida el medidor se anota.
     // La carta de la respuesta carga con prioridad (`Card eager`): se captura con el sprite ya descodificado.
     await expect.poll(() => host.page.locator('[data-answer-card] img').evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), { timeout: 3_000 }).toBe(true);
-    await capturarAnotando(host.page, 'juego-learnset-guess-revelacion', era, SIZES, ARCADE);
+    await capturarAnotando(host.page, 'juego-learnset-guess-revelacion', era);
 
     // Clasificación de la partida (una ronda).
     await expect(host.page.getByRole('heading', { name: 'Clasificación Learnset Guess' })).toBeVisible({ timeout: 15_000 });
-    await capturarTamanos(host.page, 'juego-learnset-guess-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-learnset-guess-clasificacion');
     for (const jugador of [host, primero]) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -1523,7 +1514,7 @@ test('whos-that-pokemon: una ronda corta con un fallo, la revelación por tiempo
     // Lo que había en el DOM antes de revelar (se compara con la respuesta al final).
     const antes = await textoDeMain(host.page);
 
-    await capturarTamanos(primero.page, 'juego-whos-that-pokemon-pista', { sigue: primero.page.getByRole('img', { name: 'Silueta de un Pokémon misterioso' }), opts: ARCADE });
+    await capturarTamanos(primero.page, 'juego-whos-that-pokemon-pista', { sigue: primero.page.getByRole('img', { name: 'Silueta de un Pokémon misterioso' }) });
     if (resultado === 'fallo') {
       // A 390×844, sin desplazar: la silueta y el buscador a la vista.
       await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
@@ -1537,7 +1528,7 @@ test('whos-that-pokemon: una ronda corta con un fallo, la revelación por tiempo
       await expect(silueta).toBeInViewport();
       await host.page.setViewportSize({ width: 1280, height: 720 });
       await buscador(host.page).blur();
-      await capturarTamanos(host.page, 'juego-whos-that-pokemon-busqueda', { sigue: primerResultado, opts: ARCADE });
+      await capturarTamanos(host.page, 'juego-whos-that-pokemon-busqueda', { sigue: primerResultado });
       await buscador(host.page).fill('');
     }
 
@@ -1553,11 +1544,11 @@ test('whos-that-pokemon: una ronda corta con un fallo, la revelación por tiempo
     // La carta de la respuesta carga con prioridad (`Card eager`): se captura con el sprite ya descodificado.
     await expect.poll(() => host.page.locator('[data-answer-card] img').evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), { timeout: 3_000 }).toBe(true);
     // La revelación dura 4 s: lo que mida el medidor se anota.
-    await capturarAnotando(host.page, 'juego-whos-that-pokemon-revelacion', era, SIZES, ARCADE);
+    await capturarAnotando(host.page, 'juego-whos-that-pokemon-revelacion', era);
 
     await expect(host.page.getByRole('heading', { name: 'Clasificación final' })).toBeVisible({ timeout: 15_000 });
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-whos-that-pokemon-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-whos-that-pokemon-clasificacion');
     for (const jugador of [host, primero]) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -1714,7 +1705,7 @@ test('zoomed-pokemon: una ronda con un fallo, el acierto, la revelación y la cl
     // Marcador: una fila por jugador; los intentos vacíos enseñan a jugar.
     await expect(host.page.getByTestId('guess-score-row')).toHaveCount(3);
     await expect(host.page.getByText('Todavía no hay intentos incorrectos.')).toBeVisible();
-    await capturarTamanos(host.page, 'juego-zoomed-pokemon-pista', { sigue: recorte, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-zoomed-pokemon-pista', { sigue: recorte });
     // A 390×844, sin desplazar: el recorte y el buscador a la vista.
     await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await host.page.evaluate(() => window.scrollTo(0, 0));
@@ -1740,7 +1731,7 @@ test('zoomed-pokemon: una ronda con un fallo, el acierto, la revelación y la cl
     await expect(recorte).toBeInViewport();
     await host.page.setViewportSize({ width: 1280, height: 720 });
     await buscador(host.page).blur();
-    await capturarTamanos(host.page, 'juego-zoomed-pokemon-busqueda', { sigue: primerResultado, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-zoomed-pokemon-busqueda', { sigue: primerResultado });
     await buscador(host.page).fill('');
 
     // El acierto: se prueban los candidatos por orden (casi siempre basta el primero; cada fallo espera 1 s).
@@ -1751,8 +1742,8 @@ test('zoomed-pokemon: una ronda con un fallo, el acierto, la revelación y la cl
     await expect(acertado).toBeFocused();
     await expect(host.page.getByText('1.º en acertar', { exact: true })).toBeVisible();
     await expect(primero.page.getByTestId('guess-score-row').first()).toContainText('Acertó · 1.º');
-    await capturarTamanos(host.page, 'juego-zoomed-pokemon-acertado', { sigue: acertado, opts: ARCADE });
-    await capturarTamanos(primero.page, 'juego-zoomed-pokemon-marcador', { sigue: buscador(primero.page), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-zoomed-pokemon-acertado', { sigue: acertado });
+    await capturarTamanos(primero.page, 'juego-zoomed-pokemon-marcador', { sigue: buscador(primero.page) });
 
     // El segundo también acierta y el tercero se va: la revelación lo dice en texto («No acertó»).
     test.info().annotations.push({ type: 'tiempo', description: `quedan ${await primero.page.getByRole('timer').first().innerText()} s antes del acierto del segundo` });
@@ -1769,11 +1760,11 @@ test('zoomed-pokemon: una ronda con un fallo, el acierto, la revelación y la cl
     await expect(host.page.getByText(/^Así empezó · Zoom ×5$/)).toBeVisible();
     await expect.poll(() => host.page.locator('[data-answer-card] img').evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), { timeout: 3_000 }).toBe(true);
     // La revelación dura poco: lo que mida el medidor se anota.
-    await capturarAnotando(host.page, 'juego-zoomed-pokemon-revelacion', era, SIZES, ARCADE);
+    await capturarAnotando(host.page, 'juego-zoomed-pokemon-revelacion', era);
 
     await expect(host.page.getByRole('heading', { name: 'Clasificación final' })).toBeVisible({ timeout: 15_000 });
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-zoomed-pokemon-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-zoomed-pokemon-clasificacion');
     for (const jugador of [host, primero]) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -1872,7 +1863,7 @@ test('pokemon-palette-guess: una ronda con un fallo, el acierto, la revelación 
     // Marcador: una fila por jugador; los intentos vacíos enseñan a jugar.
     await expect(host.page.getByTestId('guess-score-row')).toHaveCount(3);
     await expect(host.page.getByText('Todavía no hay intentos incorrectos.')).toBeVisible();
-    await capturarTamanos(host.page, 'juego-pokemon-palette-guess-pista', { sigue: barra, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-palette-guess-pista', { sigue: barra });
     // A 390×844, sin desplazar: la barra, la leyenda entera y el buscador a la vista.
     await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await host.page.evaluate(() => window.scrollTo(0, 0));
@@ -1898,7 +1889,7 @@ test('pokemon-palette-guess: una ronda con un fallo, el acierto, la revelación 
     await expect(barra).toBeInViewport();
     await host.page.setViewportSize({ width: 1280, height: 720 });
     await buscador(host.page).blur();
-    await capturarTamanos(host.page, 'juego-pokemon-palette-guess-busqueda', { sigue: primerResultado, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-palette-guess-busqueda', { sigue: primerResultado });
     await buscador(host.page).fill('');
 
     // El acierto: la placa lo dice con el puesto y los puntos, y el foco va a su título (no cae al body).
@@ -1908,8 +1899,8 @@ test('pokemon-palette-guess: una ronda con un fallo, el acierto, la revelación 
     await expect(acertado).toBeFocused();
     await expect(host.page.getByText('1.º en acertar', { exact: true })).toBeVisible();
     await expect(primero.page.getByTestId('guess-score-row').first()).toContainText('Acertó · 1.º');
-    await capturarTamanos(host.page, 'juego-pokemon-palette-guess-acertado', { sigue: acertado, opts: ARCADE });
-    await capturarTamanos(primero.page, 'juego-pokemon-palette-guess-marcador', { sigue: buscador(primero.page), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-palette-guess-acertado', { sigue: acertado });
+    await capturarTamanos(primero.page, 'juego-pokemon-palette-guess-marcador', { sigue: buscador(primero.page) });
 
     // El segundo también acierta y el tercero se va: la revelación lo dice en texto («No acertó»).
     test.info().annotations.push({ type: 'tiempo', description: `quedan ${await primero.page.getByRole('timer').first().innerText()} s antes del acierto del segundo` });
@@ -1925,11 +1916,11 @@ test('pokemon-palette-guess: una ronda con un fallo, el acierto, la revelación 
     await expect(host.page.getByText('Su paleta', { exact: true })).toBeVisible();
     await expect.poll(() => host.page.locator('[data-answer-card] img').evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), { timeout: 3_000 }).toBe(true);
     // La revelación dura poco: lo que mida el medidor se anota.
-    await capturarAnotando(host.page, 'juego-pokemon-palette-guess-revelacion', era, SIZES, ARCADE);
+    await capturarAnotando(host.page, 'juego-pokemon-palette-guess-revelacion', era);
 
     await expect(host.page.getByRole('heading', { name: 'Clasificación final' })).toBeVisible({ timeout: 15_000 });
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-pokemon-palette-guess-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-palette-guess-clasificacion');
     for (const jugador of [host, primero]) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -2003,7 +1994,7 @@ test('pokemon-cry-quiz: una ronda corta con un fallo, el grito, la revelación p
     await expect(reproducir).toHaveText('Sonando…', { timeout: 5_000 });
     await expect(reproducir).toHaveText('Reproducir grito', { timeout: 8_000 });
 
-    await capturarTamanos(primero.page, 'juego-pokemon-cry-quiz-pista', { sigue: primero.page.getByRole('region', { name: 'Grito del Pokémon misterioso' }), opts: ARCADE });
+    await capturarTamanos(primero.page, 'juego-pokemon-cry-quiz-pista', { sigue: primero.page.getByRole('region', { name: 'Grito del Pokémon misterioso' }) });
     // A 390×844, sin desplazar: el botón del grito y el buscador a la vista; con la bandeja abierta, el primer
     // resultado y el botón (por encima de la bandeja, sin quedar tapado).
     if (resultado === 'fallo') {
@@ -2018,7 +2009,7 @@ test('pokemon-cry-quiz: una ronda corta con un fallo, el grito, la revelación p
       expect(tapado, 'el botón del grito no queda tapado por la bandeja').toBe(false);
       await host.page.setViewportSize({ width: 1280, height: 720 });
       await buscadorRespuesta(host.page).blur();
-      await capturarTamanos(host.page, 'juego-pokemon-cry-quiz-busqueda', { sigue: primerResultado, opts: ARCADE });
+      await capturarTamanos(host.page, 'juego-pokemon-cry-quiz-busqueda', { sigue: primerResultado });
     }
 
     // Se agota el tiempo: la revelación da el nombre, que no estaba antes en el DOM.
@@ -2034,11 +2025,11 @@ test('pokemon-cry-quiz: una ronda corta con un fallo, el grito, la revelación p
     await expect(reproducir).toHaveText('Volver a escuchar');
     await expect.poll(() => host.page.locator('[data-answer-card] img').evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), { timeout: 3_000 }).toBe(true);
     // La revelación dura poco: lo que mida el medidor se anota.
-    await capturarAnotando(host.page, 'juego-pokemon-cry-quiz-revelacion', era, SIZES, ARCADE);
+    await capturarAnotando(host.page, 'juego-pokemon-cry-quiz-revelacion', era);
 
     await expect(host.page.getByRole('heading', { name: 'Clasificación final' })).toBeVisible({ timeout: 15_000 });
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-pokemon-cry-quiz-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-cry-quiz-clasificacion');
     for (const jugador of [host, primero]) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -2126,7 +2117,7 @@ test('pokedex-entry-guess: una ronda con un fallo, el acierto, la revelación y 
     // Marcador: una fila por jugador; los intentos vacíos enseñan a jugar.
     await expect(host.page.getByTestId('guess-score-row')).toHaveCount(3);
     await expect(host.page.getByText('Todavía no hay intentos incorrectos.')).toBeVisible();
-    await capturarTamanos(host.page, 'juego-pokedex-entry-guess-pista', { sigue: entrada, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokedex-entry-guess-pista', { sigue: entrada });
     // A 390×844, sin desplazar: la entrada y el buscador a la vista.
     await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await host.page.evaluate(() => window.scrollTo(0, 0));
@@ -2150,7 +2141,7 @@ test('pokedex-entry-guess: una ronda con un fallo, el acierto, la revelación y 
     await expect(entrada).toBeInViewport();
     await host.page.setViewportSize({ width: 1280, height: 720 });
     await buscadorRespuesta(host.page).blur();
-    await capturarTamanos(host.page, 'juego-pokedex-entry-guess-busqueda', { sigue: primerResultado, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokedex-entry-guess-busqueda', { sigue: primerResultado });
     await buscadorRespuesta(host.page).fill('');
 
     // El acierto: la placa lo dice con el puesto y los puntos, y el foco va a su título (no cae al body).
@@ -2160,8 +2151,8 @@ test('pokedex-entry-guess: una ronda con un fallo, el acierto, la revelación y 
     await expect(acertado).toBeFocused();
     await expect(host.page.getByText('1.º en acertar', { exact: true })).toBeVisible();
     await expect(primero.page.getByTestId('guess-score-row').first()).toContainText('Acertó · 1.º');
-    await capturarTamanos(host.page, 'juego-pokedex-entry-guess-acertado', { sigue: acertado, opts: ARCADE });
-    await capturarTamanos(primero.page, 'juego-pokedex-entry-guess-marcador', { sigue: buscadorRespuesta(primero.page), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokedex-entry-guess-acertado', { sigue: acertado });
+    await capturarTamanos(primero.page, 'juego-pokedex-entry-guess-marcador', { sigue: buscadorRespuesta(primero.page) });
 
     // El segundo también acierta y el tercero se va: la revelación lo dice en texto («No acertó»).
     test.info().annotations.push({ type: 'tiempo', description: `quedan ${await primero.page.getByRole('timer').first().innerText()} s antes del acierto del segundo` });
@@ -2177,11 +2168,11 @@ test('pokedex-entry-guess: una ronda con un fallo, el acierto, la revelación y 
     await expect(host.page.getByText('La entrada completa', { exact: true })).toBeVisible();
     await expect.poll(() => host.page.locator('[data-answer-card] img').evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), { timeout: 3_000 }).toBe(true);
     // La revelación dura poco: lo que mida el medidor se anota.
-    await capturarAnotando(host.page, 'juego-pokedex-entry-guess-revelacion', era, SIZES, ARCADE);
+    await capturarAnotando(host.page, 'juego-pokedex-entry-guess-revelacion', era);
 
     await expect(host.page.getByRole('heading', { name: 'Clasificación final' })).toBeVisible({ timeout: 15_000 });
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-pokedex-entry-guess-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokedex-entry-guess-clasificacion');
     for (const jugador of [host, primero]) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -2271,7 +2262,7 @@ test('guess-from-stats: una ronda con un fallo, el acierto, la revelación y la 
     // Marcador: una fila por jugador; los intentos vacíos enseñan a jugar.
     await expect(host.page.getByTestId('guess-score-row')).toHaveCount(3);
     await expect(host.page.getByText('Todavía no hay intentos incorrectos.')).toBeVisible();
-    await capturarTamanos(host.page, 'juego-guess-from-stats-pista', { sigue: filasStats.first(), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-guess-from-stats-pista', { sigue: filasStats.first() });
     // A 390×844, sin desplazar: la primera y la última estadística y el buscador a la vista.
     await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await host.page.evaluate(() => window.scrollTo(0, 0));
@@ -2296,7 +2287,7 @@ test('guess-from-stats: una ronda con un fallo, el acierto, la revelación y la 
     await expect(filasStats.first()).toBeInViewport({ ratio: 1 });
     await host.page.setViewportSize({ width: 1280, height: 720 });
     await buscadorRespuesta(host.page).blur();
-    await capturarTamanos(host.page, 'juego-guess-from-stats-busqueda', { sigue: primerResultado, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-guess-from-stats-busqueda', { sigue: primerResultado });
     await buscadorRespuesta(host.page).fill('');
 
     // El acierto: la placa lo dice con el puesto y los puntos, y el foco va a su título (no cae al body).
@@ -2306,8 +2297,8 @@ test('guess-from-stats: una ronda con un fallo, el acierto, la revelación y la 
     await expect(acertado).toBeFocused();
     await expect(host.page.getByText('1.º en acertar', { exact: true })).toBeVisible();
     await expect(primero.page.getByTestId('guess-score-row').first()).toContainText('Acertó · 1.º');
-    await capturarTamanos(host.page, 'juego-guess-from-stats-acertado', { sigue: acertado, opts: ARCADE });
-    await capturarTamanos(primero.page, 'juego-guess-from-stats-marcador', { sigue: buscadorRespuesta(primero.page), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-guess-from-stats-acertado', { sigue: acertado });
+    await capturarTamanos(primero.page, 'juego-guess-from-stats-marcador', { sigue: buscadorRespuesta(primero.page) });
 
     // El segundo también acierta y el tercero se va: la revelación lo dice en texto («No acertó»).
     test.info().annotations.push({ type: 'tiempo', description: `quedan ${await primero.page.getByRole('timer').first().innerText()} s antes del acierto del segundo` });
@@ -2326,11 +2317,11 @@ test('guess-from-stats: una ronda con un fallo, el acierto, la revelación y la 
     await expect(host.page.getByRole('list', { name: `Estadísticas de ${respuesta}`, exact: true }).getByTestId('stat-row')).toHaveCount(7);
     await expect.poll(() => host.page.locator('[data-answer-card] img').first().evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), { timeout: 3_000 }).toBe(true);
     // La revelación dura poco: lo que mida el medidor se anota.
-    await capturarAnotando(host.page, 'juego-guess-from-stats-revelacion', era, SIZES, ARCADE);
+    await capturarAnotando(host.page, 'juego-guess-from-stats-revelacion', era);
 
     await expect(host.page.getByRole('heading', { name: 'Clasificación final' })).toBeVisible({ timeout: 15_000 });
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-guess-from-stats-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-guess-from-stats-clasificacion');
     for (const jugador of [host, primero]) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -2477,7 +2468,7 @@ test('pokeddle-race: tres rondas con intentos, las pistas de cada ronda y la cla
       if (ronda === 3) {
         // El tablero con dos intentos: capturas a los tres tamaños y, a 390×844, el último intento y el buscador a la vista.
         await expect(host.page.getByTestId('pokeddle-row')).toHaveCount(2);
-        await capturarTamanos(host.page, 'juego-pokeddle-race-tablero', { sigue: buscadorRespuesta(host.page), opts: ARCADE });
+        await capturarTamanos(host.page, 'juego-pokeddle-race-tablero', { sigue: buscadorRespuesta(host.page) });
         await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
         await host.page.evaluate(() => window.scrollTo(0, 0));
         const ultimo = host.page.locator('[data-testid="pokeddle-row"][data-latest="true"]');
@@ -2502,7 +2493,7 @@ test('pokeddle-race: tres rondas con intentos, las pistas de cada ronda y la cla
         await expect(dialogo.getByTestId('pokeddle-row')).toHaveCount(2);
         await expect(dialogo.getByTestId('pokeddle-row').first()).toContainText(relleno[0]!);
         await expect(dialogo.getByRole('list', { name: 'Cómo leer el tablero' })).toBeVisible();
-        await capturarTamanos(host.page, 'juego-pokeddle-race-rival', { sigue: dialogo, opts: ARCADE });
+        await capturarTamanos(host.page, 'juego-pokeddle-race-rival', { sigue: dialogo });
         await host.page.keyboard.press('Escape');
         await expect(dialogo).toBeHidden();
         await expect(verRival).toBeFocused();
@@ -2530,7 +2521,7 @@ test('pokeddle-race: tres rondas con intentos, las pistas de cada ronda y la cla
       if (!resuelto) await expect(host.page.getByText(`Ronda ${ronda} cerrada`, { exact: true })).toBeVisible();
       await expect(host.page.locator('#guess-plate-title')).toBeFocused();
       // La ronda cerrada dura 3 s: un tamaño por ronda.
-      await capturarAnotando(host.page, `juego-pokeddle-race-ronda-${ronda}`, cerrada, [SIZES[ronda - 1]!], ARCADE);
+      await capturarAnotando(host.page, `juego-pokeddle-race-ronda-${ronda}`, cerrada, [SIZES[ronda - 1]!]);
     }
 
     await expect(host.page.getByRole('heading', { name: 'Clasificación final' })).toBeVisible({ timeout: 70_000 });
@@ -2541,7 +2532,7 @@ test('pokeddle-race: tres rondas con intentos, las pistas de cada ronda y la cla
     for (const nombre of secretos.filter((n) => !probados.includes(n) && !relleno.includes(n))) for (const texto of textos) expect(texto).not.toContain(nombre);
     for (const nombre of secretos) await expect(host.page.locator('main')).toContainText(nombre);
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-pokeddle-race-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokeddle-race-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -2615,7 +2606,7 @@ test('type-chain: un fallo, un eslabón válido, dos eliminaciones por tiempo y 
     test.info().annotations.push({ type: 'type-chain', description: `${actual} (${tiposActual.join(', ')}) · fallo ${nombre(fallo)} · válido ${nombre(validos[0]!)}` });
 
     // La pantalla del turno a los tres tamaños y, a 390×844, la carta del Pokémon actual y el buscador a la vista sin desplazar.
-    await capturarTamanos(turno, 'juego-type-chain-turno', { sigue: buscadorCadena(turno), opts: ARCADE });
+    await capturarTamanos(turno, 'juego-type-chain-turno', { sigue: buscadorCadena(turno) });
     await turno.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await turno.evaluate(() => window.scrollTo(0, 0));
     await expect(carta).toBeInViewport({ ratio: 1 });
@@ -2653,14 +2644,14 @@ test('type-chain: un fallo, un eslabón válido, dos eliminaciones por tiempo y 
     // La «revelación» de Type Chain: la franja del último movimiento, a los tres tamaños.
     const segundo = await primeraVisible(otros, buscadorCadena);
     const tercero = otros.find((page) => page !== segundo)!;
-    await capturarTamanos(tercero, 'juego-type-chain-movimiento', { sigue: tercero.getByTestId('type-chain-event').filter({ hasText: 'continúa la cadena' }), opts: ARCADE });
+    await capturarTamanos(tercero, 'juego-type-chain-movimiento', { sigue: tercero.getByTestId('type-chain-event').filter({ hasText: 'continúa la cadena' }) });
 
     // El segundo deja pasar su turno: cae eliminado y lo dice en texto (su placa y la lista de jugadores).
     await expect(segundo.getByRole('heading', { name: 'Observas la cadena' })).toBeVisible({ timeout: 40_000 });
     await expect(segundo.getByText('Eliminado: se le acabó el tiempo')).toBeVisible();
     await expect(turno.getByTestId('type-chain-player').filter({ hasText: /Eliminado.*Se le acabó el tiempo/ })).toHaveCount(1);
     await expect(turno.getByTestId('type-chain-event').filter({ hasText: 'queda eliminado' })).toBeVisible();
-    await capturarTamanos(segundo, 'juego-type-chain-eliminado', { sigue: segundo.getByRole('heading', { name: 'Observas la cadena' }), opts: ARCADE });
+    await capturarTamanos(segundo, 'juego-type-chain-eliminado', { sigue: segundo.getByRole('heading', { name: 'Observas la cadena' }) });
 
     // Cae el tercero: queda uno y sale la clasificación.
     await expect(host.page.getByRole('heading', { name: 'Clasificación final' })).toBeVisible({ timeout: 40_000 });
@@ -2668,7 +2659,7 @@ test('type-chain: un fallo, un eslabón válido, dos eliminaciones por tiempo y 
     await expect(host.page.getByText(/^Eliminado [12]\.º$/)).toHaveCount(2);
     await expect(host.page.getByText(/^Cayó: se le acabó el tiempo/)).toHaveCount(2);
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-type-chain-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-type-chain-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -2713,7 +2704,7 @@ test('pokemon-trivia: tres preguntas con atajos, la revelación de cada una y la
       await expect(host.page.getByTestId('trivia-fact')).toHaveCount(0);
 
       if (ronda === 1) {
-        await capturarTamanos(host.page, 'juego-pokemon-trivia-pregunta', { sigue: opcion(host.page, 1), opts: ARCADE });
+        await capturarTamanos(host.page, 'juego-pokemon-trivia-pregunta', { sigue: opcion(host.page, 1) });
         // A 390×844 sin desplazar: la pregunta, el plazo y todas las opciones.
         await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
         await host.page.evaluate(() => window.scrollTo(0, 0));
@@ -2760,14 +2751,14 @@ test('pokemon-trivia: tres preguntas con atajos, la revelación de cada una y la
           expect(await carta.evaluate((el) => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.left + r.width / 2, r.bottom - 6)); }), 'carta de la revelación sin tapar').toBe(true);
         }
       }
-      await capturarAnotando(host.page, `juego-pokemon-trivia-revelacion-${ronda}`, titulo.filter({ hasText: /^Correcta: / }), [SIZES[ronda - 1]!], ARCADE);
+      await capturarAnotando(host.page, `juego-pokemon-trivia-revelacion-${ronda}`, titulo.filter({ hasText: /^Correcta: / }), [SIZES[ronda - 1]!]);
     }
 
     await expect(host.page.getByRole('heading', { name: 'Clasificación final' })).toBeVisible({ timeout: 15_000 });
     await expect(host.page.getByText(/de 3 · \d+% de precisión$/)).toHaveCount(3);
     await expect(host.page.getByLabel('Aciertos por categoría')).toHaveCount(3);
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-pokemon-trivia-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-trivia-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -2812,7 +2803,7 @@ test('tcg-higher-lower: el duelo de precios, el revelado con lo que eligió cada
     await expect(host.page.locator('[data-tcg-price="current"]')).toHaveText(/^¿\? \S+$/);
     await expect(host.page.getByTestId('tcg-prices')).toHaveCount(0);
     const antes = await textoDeMain(host.page);
-    await capturarTamanos(host.page, 'juego-tcg-higher-lower-duelo', { sigue: pildora(host.page, 'Más'), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-tcg-higher-lower-duelo', { sigue: pildora(host.page, 'Más') });
 
     // A 390×844 sin desplazar: las dos cartas, el tiempo y las tres respuestas, sin que la placa tape las cartas.
     await movil.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
@@ -2848,7 +2839,7 @@ test('tcg-higher-lower: el duelo de precios, el revelado con lo que eligió cada
     for (const { page } of capturas) await page.evaluate(() => window.scrollTo(0, 0));
     for (const { page } of capturas) await expect(page.getByTestId('tcg-prices')).toBeVisible({ timeout: 10_000 });
     const revelado = (page: Page) => page.getByText(/^Respuesta: (Más|Igual|Menos)$/);
-    const medidas = await Promise.all(capturas.map(({ page }) => layoutProblems(page, 'juego-tcg-higher-lower-revelacion', true, false, ARCADE)));
+    const medidas = await Promise.all(capturas.map(({ page }) => layoutProblems(page, 'juego-tcg-higher-lower-revelacion', true)));
     for (const { page } of capturas) await expect(revelado(page), 'el revelado sigue en pantalla tras la captura').toBeVisible({ timeout: 500 });
     for (const { id, problems } of medidas) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     // Qué eligió cada uno, con texto: un acierto y dos fallos; y los dos precios en la franja.
@@ -2875,7 +2866,7 @@ test('tcg-higher-lower: el duelo de precios, el revelado con lo que eligió cada
     await expect(clasificacion).toBeVisible({ timeout: 15_000 });
     await expect(host.page.getByText(/^\d+ aciertos? de 5 · \d+ igual(es)? · mejor racha \d+ · \d+%$/)).toHaveCount(3);
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-tcg-higher-lower-clasificacion', { sigue: clasificacion, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-tcg-higher-lower-clasificacion', { sigue: clasificacion });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -2947,7 +2938,7 @@ test('pokemon-connections: tablero con teclado, errores, la revelación de los g
     await host.page.keyboard.press('Tab');
     await host.page.keyboard.press('Space');
     await expect(host.page.locator('[data-connection-card][aria-pressed="true"]')).toHaveCount(4);
-    await capturarTamanos(host.page, 'juego-pokemon-connections-tablero', { sigue: comprobar(host.page), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-connections-tablero', { sigue: comprobar(host.page) });
 
     await comprobar(host.page).focus();
     await host.page.keyboard.press('Enter');
@@ -2967,7 +2958,7 @@ test('pokemon-connections: tablero con teclado, errores, la revelación de los g
       await expect(host.page.locator('[data-connection-group]')).toHaveCount(0);
       await expect(host.page.getByTestId('connections-lives')).toHaveText('Queda 1 error de 2');
     }
-    await capturarTamanos(host.page, 'juego-pokemon-connections-intento', { sigue: resultado, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-connections-intento', { sigue: resultado });
 
     // Lo que cada uno veía antes de revelar.
     const antes = new Map<Page, string>();
@@ -2995,14 +2986,14 @@ test('pokemon-connections: tablero con teclado, errores, la revelación de los g
       for (const { tema, perdida } of temas) if (perdida) expect(antes.get(page), `«${tema}» no estaba en la página antes de revelar`).not.toContain(tema);
     }
     test.info().annotations.push({ type: 'connections', description: `grupos: ${(await bandas.locator('strong').allInnerTexts()).join(' · ')}` });
-    await capturarTamanos(host.page, 'juego-pokemon-connections-revelacion', { sigue: revelado(host.page), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-connections-revelacion', { sigue: revelado(host.page) });
 
     await host.page.getByRole('button', { name: 'Ver clasificación' }).click();
     const clasificacion = host.page.getByRole('heading', { name: 'Mentes bien conectadas' });
     await expect(clasificacion).toBeVisible({ timeout: 15_000 });
     await expect(host.page.getByText(/^\d+ grupos? · \d+\/1 tableros · \d+ error(es)? · \d+ a una · \d+ podios?$/)).toHaveCount(3);
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-pokemon-connections-clasificacion', { sigue: clasificacion, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-connections-clasificacion', { sigue: clasificacion });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -3176,7 +3167,7 @@ test('pokemon-bingo: casillas con el buscador, un fallo, mover con diálogo, un 
     await expect(mover).toBeVisible();
     await expect(mover).toContainText(`${movido} ya está usado en «`);
     await expect(mover.getByRole('button', { name: 'Mover aquí' })).toBeFocused();
-    await capturarTamanos(host.page, 'juego-pokemon-bingo-mover', { sigue: mover, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-bingo-mover', { sigue: mover });
     await mover.getByRole('button', { name: 'Cancelar' }).click();
     await expect(mover).toBeHidden();
     await expect(casillaBingo(host.page, origen)).toHaveAttribute('data-filled', 'true');
@@ -3220,11 +3211,11 @@ test('pokemon-bingo: casillas con el buscador, un fallo, mover con diálogo, un 
     await casillaBingo(host.page, casillaQuitada).click();
     await expect(host.page.getByRole('button', { name: 'Quitar Pokémon' })).toBeVisible();
     await expect(host.page.getByText(`Actualmente: ${quitado}`, { exact: true })).toBeVisible();
-    await capturarTamanos(host.page, 'juego-pokemon-bingo-tablero', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-bingo-tablero');
     await casillaBingo(host.page, ultima.i).click();
     await host.page.getByRole('textbox', { name: `Buscar Pokémon para la casilla ${ultima.i + 1}` }).fill(ultima.nombre.slice(0, 3));
     await expect(host.page.getByRole('button', { name: ultima.nombre, exact: true })).toBeVisible();
-    await capturarTamanos(host.page, 'juego-pokemon-bingo-busqueda', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-bingo-busqueda');
     await host.page.getByRole('textbox', { name: `Buscar Pokémon para la casilla ${ultima.i + 1}` }).fill('');
 
     await franja.click();
@@ -3233,7 +3224,7 @@ test('pokemon-bingo: casillas con el buscador, un fallo, mover con diálogo, un 
     await expect(rival.locator('[data-bingo-cell]')).toHaveCount(6);
     await expect(rival.locator('[data-bingo-cell][data-filled="true"]')).toHaveCount(1);
     await expect(rival.getByText(repartoPrimero[0]!, { exact: true })).toBeVisible();
-    await capturarTamanos(host.page, 'juego-pokemon-bingo-rival', { sigue: rival, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-bingo-rival', { sigue: rival });
     await rival.getByRole('button', { name: 'Cerrar' }).click();
     await expect(rival).toBeHidden();
 
@@ -3248,7 +3239,7 @@ test('pokemon-bingo: casillas con el buscador, un fallo, mover con diálogo, un 
     await expect(primero.page.getByText('El host puede continuar antes.', { exact: false })).toBeVisible();
     await expect(primero.page.getByRole('button', { name: 'Saltar y continuar' })).toHaveCount(0);
     await expect(cutin).toHaveCount(0, { timeout: 3_000 });
-    await capturarAnotando(host.page, 'juego-pokemon-bingo-bingo', ganador, SIZES, ARCADE);
+    await capturarAnotando(host.page, 'juego-pokemon-bingo-bingo', ganador);
 
     await host.page.getByRole('button', { name: 'Saltar y continuar' }).click();
     const clasificacion = host.page.getByRole('heading', { name: `Bingo de ${host.name}` });
@@ -3259,7 +3250,7 @@ test('pokemon-bingo: casillas con el buscador, un fallo, mover con diálogo, un 
     await host.page.getByRole('tab', { name: new RegExp(primero.name) }).click();
     await expect(host.page.getByRole('tabpanel').getByText('Podías usar').first()).toBeVisible();
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-pokemon-bingo-clasificacion', { sigue: clasificacion, opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-bingo-clasificacion', { sigue: clasificacion });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -3277,7 +3268,7 @@ test('pokemon-bingo: un tablero 5×5 cabe sin scroll de página', async ({ brows
     await iniciarPartida(host.page, invitados.map((j) => j.page));
     await saltarIntro(jugadores.map((j) => j.page));
     await expect(tableroBingo(host.page).locator('[data-bingo-cell]')).toHaveCount(25, { timeout: 20_000 });
-    await capturarTamanos(host.page, 'juego-pokemon-bingo-5x5', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-bingo-5x5');
     for (const { w, h } of SIZES) {
       await host.page.setViewportSize({ width: w, height: h });
       const scroll = await tableroBingo(host.page).evaluate((tablero) => { const cuerpo = tablero.parentElement!; return { alto: cuerpo.scrollHeight, visible: cuerpo.clientHeight }; });
@@ -3324,7 +3315,7 @@ test('intro: los pasos antes de la primera ronda', async ({ browser }) => {
     // En escritorio la intro cabe entera: sin scroll de página ni de `main`, y texto de 13 px o más.
     for (const { w, h } of SIZES) {
       await host.page.setViewportSize({ width: w, height: h });
-      const { id, problems } = await layoutProblems(host.page, 'juego-intro', false, false, { noPageScroll: true, minFontPx: 13 });
+      const { id, problems } = await layoutProblems(host.page, 'juego-intro', false, false);
       expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     }
     await host.page.setViewportSize({ width: 1280, height: 720 });
@@ -3395,7 +3386,7 @@ test('most-likely-to: elegir, votar con empate, segunda vuelta, revelación y cl
     await expect(host.page.getByTestId('social-progress-row').filter({ hasText: a.name })).toContainText('Respondió');
     expect(await textoDeMain(host.page), 'elegir: sin la respuesta de A').not.toContain('Pikachu');
     await expect(host.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
-    await capturarTamanos(host.page, 'juego-most-likely-to-elegir', { sigue: titulo(host.page).filter({ hasText: 'Elige tu respuesta' }), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-most-likely-to-elegir', { sigue: titulo(host.page).filter({ hasText: 'Elige tu respuesta' }) });
     await elegirPokemon(host.page, 'Bulbasaur');
     await elegirPokemon(b.page, 'Charmander');
 
@@ -3420,7 +3411,7 @@ test('most-likely-to: elegir, votar con empate, segunda vuelta, revelación y cl
     await expect(b.page.getByTestId('social-progress-row').filter({ hasText: b.name })).toContainText('Pendiente');
     await sinVotosAjenos(b.page, 'votación');
     await expect(b.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
-    await capturarTamanos(b.page, 'juego-most-likely-to-votacion', { sigue: titulo(b.page).filter({ hasText: 'Votación' }), opts: ARCADE });
+    await capturarTamanos(b.page, 'juego-most-likely-to-votacion', { sigue: titulo(b.page).filter({ hasText: 'Votación' }) });
     // A 390×844 sin desplazar: la pregunta, el plazo, la papeleta y su confirmación.
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await b.page.evaluate(() => window.scrollTo(0, 0));
@@ -3439,7 +3430,7 @@ test('most-likely-to: elegir, votar con empate, segunda vuelta, revelación y cl
     await expect(opcion(b.page, 'Bulbasaur', host)).toBeVisible();
     await expect(b.page.getByText('Charmander', { exact: true })).toHaveCount(0);
     await sinVotosAjenos(b.page, 'segunda vuelta');
-    await capturarTamanos(b.page, 'juego-most-likely-to-segunda-vuelta', { sigue: titulo(b.page).filter({ hasText: 'Segunda vuelta' }), opts: ARCADE });
+    await capturarTamanos(b.page, 'juego-most-likely-to-segunda-vuelta', { sigue: titulo(b.page).filter({ hasText: 'Segunda vuelta' }) });
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     for (const carta of await papeleta(b.page).locator('[data-ballot-option]').all()) await expect(carta).toBeInViewport({ ratio: 1 });
     await expect(confirmar(b.page)).toBeInViewport({ ratio: 1 });
@@ -3466,12 +3457,12 @@ test('most-likely-to: elegir, votar con empate, segunda vuelta, revelación y cl
     await expect(host.page.getByTestId('tally-row')).toHaveCount(2);
     await expect(host.page.getByTestId('tally-row').filter({ hasText: 'Ganadora' })).toContainText(`Votos de`);
     await expect(host.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
-    await capturarAnotando(host.page, 'juego-most-likely-to-revelacion', titulo(host.page).filter({ hasText: 'La respuesta favorita' }), SIZES, ARCADE);
+    await capturarAnotando(host.page, 'juego-most-likely-to-revelacion', titulo(host.page).filter({ hasText: 'La respuesta favorita' }));
 
     await expect(host.page.getByRole('heading', { name: 'Las respuestas favoritas' })).toBeVisible({ timeout: 20_000 });
     await expect(host.page.getByText(/^1 victoria · 1 en solitario · 0 compartidas · 2 votos recibidos · 1\/1 respuestas$/)).toHaveCount(1);
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-most-likely-to-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-most-likely-to-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -3546,7 +3537,7 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
     await campo(host.page).fill(textos.get(host)!);
     await expect(host.page.getByText(`${textos.get(host)!.length} / 100`)).toBeVisible();
     await expect(host.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
-    await capturarTamanos(host.page, 'juego-pokemon-red-flag-escribir', { sigue: titulo(host.page).filter({ hasText: 'Escribe su red flag' }), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-red-flag-escribir', { sigue: titulo(host.page).filter({ hasText: 'Escribe su red flag' }) });
     // A 390×844 con el campo enfocado (como con el teclado abierto): el campo y «Bloquear respuesta» siguen a la vista.
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await campo(b.page).focus();
@@ -3581,7 +3572,7 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
     await expect(b.page.getByTestId('social-progress-row').filter({ hasText: b.name })).toContainText('Votando…');
     await sinVotosAjenos(b.page, 'votación');
     await expect(b.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
-    await capturarTamanos(b.page, 'juego-pokemon-red-flag-votacion', { sigue: titulo(b.page).filter({ hasText: 'Votación' }), opts: ARCADE });
+    await capturarTamanos(b.page, 'juego-pokemon-red-flag-votacion', { sigue: titulo(b.page).filter({ hasText: 'Votación' }) });
     // A 390×844 sin desplazar: la fase, la consigna, el plazo y la confirmación.
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await b.page.evaluate(() => window.scrollTo(0, 0));
@@ -3601,7 +3592,7 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
     await expect(papeleta(b.page).getByText(textos.get(b)!)).toHaveCount(0);
     await anonima(b.page, 'segunda vuelta');
     await sinVotosAjenos(b.page, 'segunda vuelta');
-    await capturarTamanos(b.page, 'juego-pokemon-red-flag-segunda-vuelta', { sigue: titulo(b.page).filter({ hasText: 'Segunda vuelta' }), opts: ARCADE });
+    await capturarTamanos(b.page, 'juego-pokemon-red-flag-segunda-vuelta', { sigue: titulo(b.page).filter({ hasText: 'Segunda vuelta' }) });
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await expect(confirmar(b.page)).toBeInViewport({ ratio: 1 });
     await b.page.setViewportSize({ width: 1280, height: 720 });
@@ -3620,12 +3611,12 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
     await expect(host.page.getByTestId('tally-row')).toHaveCount(2);
     await expect(host.page.getByTestId('tally-row').filter({ hasText: 'Red flag ganadora' })).toContainText(textos.get(a)!);
     await expect(host.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
-    await capturarAnotando(host.page, 'juego-pokemon-red-flag-revelacion', titulo(host.page).filter({ hasText: 'La red flag de la ronda' }), SIZES, ARCADE);
+    await capturarAnotando(host.page, 'juego-pokemon-red-flag-revelacion', titulo(host.page).filter({ hasText: 'La red flag de la ronda' }));
 
     await expect(host.page.getByRole('heading', { name: 'Las señales más votadas' })).toBeVisible({ timeout: 20_000 });
     await expect(host.page.getByText(/^1 victoria · 1 en solitario · 0 compartidas · 2 votos recibidos · 1\/1 respuestas$/)).toHaveCount(1);
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-pokemon-red-flag-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-red-flag-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -3696,8 +3687,8 @@ test('would-you-rather: atajos, papeleta secreta, revelación y clasificación',
     await expect(a.page.getByText('Elegiste A y predijiste B.', { exact: false })).toBeVisible();
     await sinPapeletasAjenas(a.page, 'papeleta tras recargar');
     await expect(host.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
-    await capturarTamanos(host.page, 'juego-would-you-rather-papeleta', { sigue: titulo(host.page).filter({ hasText: '¿Qué preferirías?' }), opts: ARCADE });
-    await capturarTamanos(a.page, 'juego-would-you-rather-bloqueada', { sigue: bloqueada(a.page), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-would-you-rather-papeleta', { sigue: titulo(host.page).filter({ hasText: '¿Qué preferirías?' }) });
+    await capturarTamanos(a.page, 'juego-would-you-rather-bloqueada', { sigue: bloqueada(a.page) });
     // A 390×844 sin desplazar: la fase, el plazo, las dos opciones, la predicción y la confirmación.
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await b.page.evaluate(() => window.scrollTo(0, 0));
@@ -3719,12 +3710,12 @@ test('would-you-rather: atajos, papeleta secreta, revelación y clasificación',
     await expect(host.page.getByTestId('tally-row').filter({ hasText: 'Mayoría' })).toContainText(`Votos de`);
     await expect(host.page.getByTestId('social-progress-row').filter({ hasText: a.name })).toContainText('Eligió A · Predijo B');
     await expect(host.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
-    await capturarAnotando(host.page, 'juego-would-you-rather-revelacion', titulo(host.page).filter({ hasText: 'La mayoría eligió A' }), SIZES, ARCADE);
+    await capturarAnotando(host.page, 'juego-would-you-rather-revelacion', titulo(host.page).filter({ hasText: 'La mayoría eligió A' }));
 
     await expect(host.page.getByRole('heading', { name: 'Quien mejor leyó la sala' })).toBeVisible({ timeout: 20_000 });
     await expect(host.page.getByText(/^1 predicción · 1 en mayoría · 1\/1 papeletas · 1 ronda perfecta$/)).toHaveCount(1);
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-would-you-rather-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-would-you-rather-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -3834,7 +3825,7 @@ test('one-of-us-is-fake: categoría secreta, revelación, debate con empate, seg
     await expect(host.page.getByTestId('social-progress-row').filter({ hasText: a.name })).toContainText('Eligió');
     expect(await textoDeMain(host.page), 'elegir: sin la elección de A').not.toContain('Pikachu');
     await expect(host.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
-    await capturarTamanos(fake!.page, 'juego-one-of-us-is-fake-elegir', { sigue: titulo(fake!.page).filter({ hasText: 'Elige tu Pokémon' }), opts: ARCADE });
+    await capturarTamanos(fake!.page, 'juego-one-of-us-is-fake-elegir', { sigue: titulo(fake!.page).filter({ hasText: 'Elige tu Pokémon' }) });
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await b.page.evaluate(() => window.scrollTo(0, 0));
     for (const objetivo of [b.page.getByTestId('social-prompt'), b.page.getByRole('textbox', { name: 'Buscar Pokémon para tu categoría' })]) await expect(objetivo).toBeInViewport();
@@ -3852,7 +3843,7 @@ test('one-of-us-is-fake: categoría secreta, revelación, debate con empate, seg
     await expect(b.page.getByText('Elecciones reveladas: 2 de 3')).toBeVisible();
     await expect(b.page.getByTestId('fake-choices').getByText('Por revelar')).toHaveCount(1);
     await sinVotosAjenos(b.page, 'revelación');
-    await capturarTamanos(b.page, 'juego-one-of-us-is-fake-revelar-elecciones', { sigue: titulo(b.page).filter({ hasText: 'Las elecciones' }), opts: ARCADE });
+    await capturarTamanos(b.page, 'juego-one-of-us-is-fake-revelar-elecciones', { sigue: titulo(b.page).filter({ hasText: 'Las elecciones' }) });
     retenedor.soltar();
 
     // Debate: las tres elecciones en cartas y la papeleta con los otros dos (la propia, fija).
@@ -3863,7 +3854,7 @@ test('one-of-us-is-fake: categoría secreta, revelación, debate con empate, seg
     await expect(b.page.getByTestId('fake-category')).toContainText(categorias.get(b)!);
     await sinVotosAjenos(b.page, 'debate');
     await expect(b.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
-    await capturarTamanos(b.page, 'juego-one-of-us-is-fake-debate', { sigue: titulo(b.page).filter({ hasText: '¿Quién es el fake?' }), opts: ARCADE });
+    await capturarTamanos(b.page, 'juego-one-of-us-is-fake-debate', { sigue: titulo(b.page).filter({ hasText: '¿Quién es el fake?' }) });
     // A 390×844 sin desplazar: la fase, el plazo, la categoría, la papeleta y su confirmación.
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await b.page.evaluate(() => window.scrollTo(0, 0));
@@ -3881,7 +3872,7 @@ test('one-of-us-is-fake: categoría secreta, revelación, debate con empate, seg
     await expect(host.page.getByRole('heading', { name: 'Voto bloqueado' })).toBeFocused({ timeout: 5_000 });
     await expect(b.page.getByTestId('social-progress-row').filter({ hasText: host.name })).toContainText('Votó');
     await expect(b.page.getByTestId('social-progress-row').filter({ hasText: b.name })).toContainText('Votando…');
-    await capturarTamanos(host.page, 'juego-one-of-us-is-fake-votacion', { sigue: host.page.getByRole('heading', { name: 'Voto bloqueado' }), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-one-of-us-is-fake-votacion', { sigue: host.page.getByRole('heading', { name: 'Voto bloqueado' }) });
     await host.page.reload();
     await host.page.getByRole('button', { name: 'Volver a la sala' }).click({ timeout: 8_000 });
     await expect(host.page.getByRole('heading', { name: 'Voto bloqueado' })).toBeVisible({ timeout: 15_000 });
@@ -3894,7 +3885,7 @@ test('one-of-us-is-fake: categoría secreta, revelación, debate con empate, seg
     await expect(papeleta(b.page).locator('[data-ballot-option]')).toHaveCount(3);
     await expect(b.page.locator('[data-phase="revote"]')).toHaveAttribute('aria-current', 'step');
     await sinVotosAjenos(b.page, 'segunda vuelta');
-    await capturarTamanos(b.page, 'juego-one-of-us-is-fake-segunda-vuelta', { sigue: titulo(b.page).filter({ hasText: 'Segunda vuelta' }), opts: ARCADE });
+    await capturarTamanos(b.page, 'juego-one-of-us-is-fake-segunda-vuelta', { sigue: titulo(b.page).filter({ hasText: 'Segunda vuelta' }) });
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await expect(confirmar(b.page)).toBeInViewport({ ratio: 1 });
     await b.page.setViewportSize({ width: 1280, height: 720 });
@@ -3913,7 +3904,7 @@ test('one-of-us-is-fake: categoría secreta, revelación, debate con empate, seg
     await expect(b.page.getByRole('tab', { name: 'Segunda vuelta' })).toHaveAttribute('aria-selected', 'true');
     await expect(b.page.getByTestId('tally-row').filter({ hasText: 'Más votado' })).toContainText('Votos de');
     await expect(b.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
-    await capturarTamanos(b.page, 'juego-one-of-us-is-fake-revelacion', { sigue: titulo(b.page).filter({ hasText: 'Ganan los normales' }), opts: ARCADE });
+    await capturarTamanos(b.page, 'juego-one-of-us-is-fake-revelacion', { sigue: titulo(b.page).filter({ hasText: 'Ganan los normales' }) });
     retenedor.soltar();
 
     // Clasificación: el fake, descubierto, sin votos correctos (no puede votarse) y sin puntos.
@@ -3921,7 +3912,7 @@ test('one-of-us-is-fake: categoría secreta, revelación, debate con empate, seg
     await expect(host.page.getByText(/^0 victorias como normal · 0 como fake · 0 votos correctos · fake 1 vez · 1 descubierto$/)).toHaveCount(1);
     await expect(host.page.getByText(/^1 victoria como normal · 0 como fake · [12] votos? correctos? · fake 0 veces · 0 descubiertos$/)).toHaveCount(2);
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-one-of-us-is-fake-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-one-of-us-is-fake-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -3955,7 +3946,7 @@ test('secret-ranking: ordenar con teclado, ranking secreto, revelación del cons
     for (const { w, h } of SIZES) {
       await host.page.setViewportSize({ width: w, height: h });
       await ajustes.scrollIntoViewIfNeeded();
-      const { id, problems } = await layoutProblems(host.page, 'lobby-secret-ranking-ajustes', true, false, { minFontPx: 13 });
+      const { id, problems } = await layoutProblems(host.page, 'lobby-secret-ranking-ajustes', true);
       expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     }
     await host.page.setViewportSize({ width: 1280, height: 720 });
@@ -4032,8 +4023,8 @@ test('secret-ranking: ordenar con teclado, ranking secreto, revelación del cons
     await expect(bloqueado(a.page)).toBeVisible({ timeout: 15_000 });
     expect(await orden(a.page)).toEqual(inicial);
     await sinOrdenesAjenos(a.page, 'bloqueado tras recargar');
-    await capturarTamanos(host.page, 'juego-secret-ranking-ordenar', { sigue: titulo(host.page).filter({ hasText: 'Ordena el ranking' }), opts: ARCADE });
-    await capturarTamanos(a.page, 'juego-secret-ranking-espera', { sigue: bloqueado(a.page), opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-secret-ranking-ordenar', { sigue: titulo(host.page).filter({ hasText: 'Ordena el ranking' }) });
+    await capturarTamanos(a.page, 'juego-secret-ranking-espera', { sigue: bloqueado(a.page) });
 
     // A 390×844 sin desplazar: la fase, el plazo, la pregunta, los cinco Pokémon con sus botones y «Bloquear ranking».
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
@@ -4075,7 +4066,7 @@ test('secret-ranking: ordenar con teclado, ranking secreto, revelación del cons
     // La barra es decorativa (la distancia ya va en texto): se busca por su etiqueta, no por el árbol accesible.
     await expect(cercania(host).locator(`[role="meter"][aria-label="Cercanía de ${host.name}"]`)).toHaveCount(1);
     await expect(viva(b.page)).toHaveCount(1);
-    await capturarTamanos(b.page, 'juego-secret-ranking-revelacion', { sigue: titulo(b.page).filter({ hasText: 'El consenso del grupo' }), opts: ARCADE });
+    await capturarTamanos(b.page, 'juego-secret-ranking-revelacion', { sigue: titulo(b.page).filter({ hasText: 'El consenso del grupo' }) });
     retenedor.soltar();
 
     // Clasificación: A y B empatan con más puntos que el host; métricas en texto.
@@ -4083,7 +4074,7 @@ test('secret-ranking: ordenar con teclado, ranking secreto, revelación del cons
     await expect(host.page.getByText(/^1 victoria · 0 coincidencias perfectas · 1\/1 rankings · distancia media 3,00$/)).toHaveCount(2);
     await expect(host.page.getByText(/^0 victorias · 0 coincidencias perfectas · 1\/1 rankings · distancia media 6,00$/)).toHaveCount(1);
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-secret-ranking-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-secret-ranking-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -4117,7 +4108,7 @@ test('poke-taboo: secreto con palabras prohibidas, pistas, un fallo, el acierto,
     for (const { w, h } of SIZES) {
       await host.page.setViewportSize({ width: w, height: h });
       await host.page.getByRole('slider', { name: 'Vueltas' }).scrollIntoViewIfNeeded();
-      const { id, problems } = await layoutProblems(host.page, 'lobby-poke-taboo-ajustes', true, false, { minFontPx: 13 });
+      const { id, problems } = await layoutProblems(host.page, 'lobby-poke-taboo-ajustes', true);
       expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     }
     await host.page.setViewportSize({ width: 1280, height: 720 });
@@ -4160,7 +4151,7 @@ test('poke-taboo: secreto con palabras prohibidas, pistas, un fallo, el acierto,
     }
     for (const page of paginas) await expect(viva(page)).toHaveCount(1);
     await expect(g1.getByText('La descripción se escucha fuera del juego')).toBeVisible();
-    await capturarTamanos(g1, 'juego-poke-taboo-adivinar', { sigue: titulo(g1).filter({ hasText: '¿Qué Pokémon describe' }), opts: ARCADE });
+    await capturarTamanos(g1, 'juego-poke-taboo-adivinar', { sigue: titulo(g1).filter({ hasText: '¿Qué Pokémon describe' }) });
 
     // La pista con el nombre no sale: la ayuda del campo lo dice, la región viva también, y «Enviar pista» no envía.
     await campo(descriptora).fill(`Se parece mucho a ${secreto}`);
@@ -4196,7 +4187,7 @@ test('poke-taboo: secreto con palabras prohibidas, pistas, un fallo, el acierto,
     await expect(pistas(g2).first()).toContainText(larga);
     await expect(pistas(descriptora)).toHaveCount(2);
     await campo(descriptora).fill('Tiene una pose de lucha');
-    await capturarTamanos(descriptora, 'juego-poke-taboo-describir', { sigue: secretoEn(descriptora), opts: ARCADE });
+    await capturarTamanos(descriptora, 'juego-poke-taboo-describir', { sigue: secretoEn(descriptora) });
     // A 390×844 con el campo enfocado (como con el teclado abierto): el campo, el contador y «Enviar pista» a la vista;
     // arriba, lo prohibido, a la vista y sin tapar.
     await descriptora.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
@@ -4217,7 +4208,7 @@ test('poke-taboo: secreto con palabras prohibidas, pistas, un fallo, el acierto,
     await expect(viva(g1)).toContainText(`${fallo} no era.`, { timeout: 5_000 });
     await expect(g2.getByTestId('guess-attempt').filter({ hasText: fallo })).toContainText(`${nombreDe(g1)} probó`, { timeout: 5_000 });
     await expect(g1.getByText('Tu respuesta · 1 intento')).toBeVisible();
-    await capturarTamanos(g2, 'juego-poke-taboo-pistas', { sigue: titulo(g2).filter({ hasText: '¿Qué Pokémon describe' }), opts: ARCADE });
+    await capturarTamanos(g2, 'juego-poke-taboo-pistas', { sigue: titulo(g2).filter({ hasText: '¿Qué Pokémon describe' }) });
     // A 390×844 sin desplazar: la fase, el plazo y el buscador.
     await g2.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await g2.evaluate(() => window.scrollTo(0, 0));
@@ -4243,7 +4234,7 @@ test('poke-taboo: secreto con palabras prohibidas, pistas, un fallo, el acierto,
     await expect(b.page.getByTestId('social-progress-row').filter({ hasText: nombreDe(g1) })).toContainText('Acertó · 2 intentos');
     await expect(b.page.getByTestId('social-progress-row').filter({ hasText: nombreDe(descriptora) })).toContainText('+2');
     await expect(b.page.getByText(primera, { exact: false }).first()).toBeVisible();
-    await capturarTamanos(b.page, 'juego-poke-taboo-revelacion', { sigue: titulo(b.page).filter({ hasText: `¡Era ${secreto}!` }), opts: ARCADE });
+    await capturarTamanos(b.page, 'juego-poke-taboo-revelacion', { sigue: titulo(b.page).filter({ hasText: `¡Era ${secreto}!` }) });
     retenedor.soltar();
 
     // Turnos 2 y 3: quien adivina acierta a la primera.
@@ -4257,7 +4248,7 @@ test('poke-taboo: secreto con palabras prohibidas, pistas, un fallo, el acierto,
     await expect(host.page.getByRole('heading', { name: 'Así ha ido la partida', level: 1 })).toBeVisible({ timeout: 20_000 });
     await expect(host.page.getByText(/^\d+ adivinados? · \d+ al primer intento · 1\/1 turnos describiendo con acierto · \+\d+ adivinando · \+2 describiendo$/)).toHaveCount(3);
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-poke-taboo-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-poke-taboo-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -4287,7 +4278,7 @@ test('sketchmon: dibujar con herramientas, adivinar con un fallo, la revelación
     for (const { w, h } of SIZES) {
       await host.page.setViewportSize({ width: w, height: h });
       await host.page.getByRole('slider', { name: 'Vueltas' }).scrollIntoViewIfNeeded();
-      const { id, problems } = await layoutProblems(host.page, 'lobby-sketchmon-ajustes', true, false, { minFontPx: 13 });
+      const { id, problems } = await layoutProblems(host.page, 'lobby-sketchmon-ajustes', true);
       expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     }
     await host.page.setViewportSize({ width: 1280, height: 720 });
@@ -4370,7 +4361,7 @@ test('sketchmon: dibujar con herramientas, adivinar con un fallo, la revelación
     await herramientas(dibujante).getByRole('radio', { name: 'Lápiz' }).click();
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
 
-    await capturarTamanos(dibujante, 'juego-sketchmon-dibujar', { sigue: secretoEn(dibujante), opts: ARCADE });
+    await capturarTamanos(dibujante, 'juego-sketchmon-dibujar', { sigue: secretoEn(dibujante) });
     // A 1920 el lienzo crece para llenar el hueco.
     const ancho = async (w: number, h: number) => { await dibujante.setViewportSize({ width: w, height: h }); return (await lienzo(dibujante).boundingBox())!.width; };
     const a1280 = await ancho(1280, 720);
@@ -4395,7 +4386,7 @@ test('sketchmon: dibujar con herramientas, adivinar con un fallo, la revelación
     await expect(viva(g1)).toContainText(`${fallo} no era.`, { timeout: 5_000 });
     await expect(g2.getByTestId('guess-attempt').filter({ hasText: fallo })).toContainText(`${nombreDe(g1)} probó`, { timeout: 5_000 });
     await expect(g1.getByText('Tu respuesta · 1 intento')).toBeVisible();
-    await capturarTamanos(g2, 'juego-sketchmon-adivinar', { sigue: titulo(g2).filter({ hasText: '¿Qué Pokémon dibuja' }), opts: ARCADE });
+    await capturarTamanos(g2, 'juego-sketchmon-adivinar', { sigue: titulo(g2).filter({ hasText: '¿Qué Pokémon dibuja' }) });
     // A 390×844 sin desplazar: el lienzo en directo y el buscador.
     await g2.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await g2.evaluate(() => window.scrollTo(0, 0));
@@ -4418,7 +4409,7 @@ test('sketchmon: dibujar con herramientas, adivinar con un fallo, la revelación
     await expect.poll(() => g1.evaluate(() => document.activeElement !== null && document.activeElement !== document.body), { timeout: 3_000 }).toBe(true);
     await expect(b.page.getByTestId('social-progress-row').filter({ hasText: nombreDe(g1) })).toContainText('Acertó · 2 intentos');
     await expect(b.page.getByTestId('social-progress-row').filter({ hasText: nombreDe(dibujante) })).toContainText('+3');
-    await capturarTamanos(b.page, 'juego-sketchmon-revelacion', { sigue: titulo(b.page).filter({ hasText: `¡Era ${secreto}!` }), opts: ARCADE });
+    await capturarTamanos(b.page, 'juego-sketchmon-revelacion', { sigue: titulo(b.page).filter({ hasText: `¡Era ${secreto}!` }) });
     retenedor.soltar();
 
     // Turnos 2 y 3: un trazo y quien adivina acierta a la primera.
@@ -4434,7 +4425,7 @@ test('sketchmon: dibujar con herramientas, adivinar con un fallo, la revelación
     await expect(host.page.getByText(/^\d+ adivinados? · \d+ al primer intento · 1\/1 dibujos descubiertos · \+\d+ adivinando · \+3 dibujando$/)).toHaveCount(3);
     await expect(host.page.getByTestId('sketch-gallery-item')).toHaveCount(3);
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-sketchmon-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-sketchmon-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -4489,7 +4480,7 @@ test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación,
     for (const { w, h } of SIZES) {
       await host.page.setViewportSize({ width: w, height: h });
       await tiempo.scrollIntoViewIfNeeded();
-      const { id, problems } = await layoutProblems(host.page, 'lobby-pokemon-team-auction-ajustes', true, false, { minFontPx: 13 });
+      const { id, problems } = await layoutProblems(host.page, 'lobby-pokemon-team-auction-ajustes', true);
       expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     }
     await host.page.setViewportSize({ width: 1280, height: 720 });
@@ -4533,7 +4524,7 @@ test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación,
     await expect(p1.getByTestId('bid-budget')).toContainText('2');
     await expect(p1.getByTestId('bid-step')).toContainText(['Mínima: 1', 'Todo: 2']);
     for (const page of paginas.filter((page) => page !== p1)) await expect(page.getByRole('heading', { level: 1 })).toHaveText(`Turno de ${nombreDe(p1)}`);
-    await capturarTamanos(p1, 'juego-pokemon-team-auction-lote', { sigue: placa(p1).filter({ hasText: 'Tu turno' }), opts: ARCADE });
+    await capturarTamanos(p1, 'juego-pokemon-team-auction-lote', { sigue: placa(p1).filter({ hasText: 'Tu turno' }) });
     // A 390×844 sin desplazar: el lote, la puja actual y los controles.
     await p1.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await p1.evaluate(() => window.scrollTo(0, 0));
@@ -4569,7 +4560,7 @@ test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación,
     await expect(p2.getByTestId('bid-history-row').first()).toContainText('Pujó 1 moneda');
     await expect(viva(p2)).toContainText(`${nombreDe(p1)} puja 1 moneda por`);
     await expect(pujar(p2)).toHaveText('Pujar 2');
-    await capturarTamanos(p2, 'juego-pokemon-team-auction-puja', { sigue: placa(p2).filter({ hasText: 'Tu turno' }), opts: ARCADE });
+    await capturarTamanos(p2, 'juego-pokemon-team-auction-puja', { sigue: placa(p2).filter({ hasText: 'Tu turno' }) });
 
     // Rechazo forzado (999 monedas): el aviso global, el foco de vuelta en «Pujar» y el turno sigue siendo suyo.
     trucadores.get(p2)!.trucarSiguiente(999);
@@ -4592,7 +4583,7 @@ test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación,
     await expect(p2.getByTestId('budget-row').filter({ hasText: nombreDe(p2) })).toContainText('Equipo 1/6');
     await expect(viva(p2)).toContainText(`Lote 1:`);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
-    await capturarTamanos(p2, 'juego-pokemon-team-auction-adjudicacion', { sigue: banda.filter({ hasText: 'Lote 1 adjudicado' }), opts: ARCADE });
+    await capturarTamanos(p2, 'juego-pokemon-team-auction-adjudicacion', { sigue: banda.filter({ hasText: 'Lote 1 adjudicado' }) });
     // A 390×844, arriba del todo, la placa pegada al fondo no tapa la última cifra del lote (el medidor trata esa placa
     // como capa permitida y no lo vería).
     await p2.setViewportSize({ width: 390, height: 844 });
@@ -4637,7 +4628,7 @@ test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación,
     await expect(host.page.getByRole('heading', { name: 'Pokémon sin dueño' })).toBeVisible();
     await expect(host.page.getByText(/🏆|🥇/u)).toHaveCount(0);
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-pokemon-team-auction-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-team-auction-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -4675,7 +4666,7 @@ test('pokemon-bluff-auction: pujas, un pase confirmado, la demostración, el res
     for (const { w, h } of SIZES) {
       await host.page.setViewportSize({ width: w, height: h });
       await tiempo.scrollIntoViewIfNeeded();
-      const { id, problems } = await layoutProblems(host.page, 'lobby-pokemon-bluff-auction-ajustes', true, false, { minFontPx: 13 });
+      const { id, problems } = await layoutProblems(host.page, 'lobby-pokemon-bluff-auction-ajustes', true);
       expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     }
     await host.page.setViewportSize({ width: 1280, height: 720 });
@@ -4720,7 +4711,7 @@ test('pokemon-bluff-auction: pujas, un pase confirmado, la demostración, el res
     await expect(p1.getByTestId('bid-step')).toContainText(['Mínima: 1', '+2: 3', '+5: 6']);
     await expect(p1.getByTestId('bid-step')).toHaveCount(3);
     for (const page of paginas.filter((page) => page !== p1)) await expect(titulo(page)).toHaveText(`Turno de ${nombreDe(p1)}`);
-    await capturarTamanos(p1, 'juego-pokemon-bluff-auction-subasta', { sigue: placa(p1).filter({ hasText: 'Tu turno' }), opts: ARCADE });
+    await capturarTamanos(p1, 'juego-pokemon-bluff-auction-subasta', { sigue: placa(p1).filter({ hasText: 'Tu turno' }) });
     // A 390×844 sin desplazar: la condición, la puja actual y los controles.
     await p1.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await p1.evaluate(() => window.scrollTo(0, 0));
@@ -4780,12 +4771,12 @@ test('pokemon-bluff-auction: pujas, un pase confirmado, la demostración, el res
     for (const page of paginas) await expect(page.getByTestId('bluff-attempt')).toHaveCount(1, { timeout: 5_000 });
     await expect(viva(p3)).toContainText(`${nombreDe(p2)}: Pikachu,`);
     await expect(p3.locator('[data-testid="bluff-metric"][data-metric="correct"]')).toContainText(/[01] de 2/);
-    await capturarTamanos(p2, 'juego-pokemon-bluff-auction-busqueda', { sigue: buscador(p2), opts: ARCADE });
+    await capturarTamanos(p2, 'juego-pokemon-bluff-auction-busqueda', { sigue: buscador(p2) });
     await p2.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await p2.evaluate(() => window.scrollTo(0, 0));
     await expect(buscador(p2)).toBeInViewport({ ratio: 1 });
     await p2.setViewportSize({ width: 1280, height: 720 });
-    await capturarTamanos(p3, 'juego-pokemon-bluff-auction-demostracion', { sigue: p3.getByText(`${nombreDe(p2)} está buscando`), opts: ARCADE });
+    await capturarTamanos(p3, 'juego-pokemon-bluff-auction-demostracion', { sigue: p3.getByText(`${nombreDe(p2)} está buscando`) });
 
     // B retiene el resultado; el repetido no cuenta y la apuesta de 2 acaba por tiempo.
     retenedor.retenerDesde((payload) => juegoEnTrama<{ phase: string }>(payload, 'pokemon-bluff-auction')?.phase === 'ROUND_RESULTS');
@@ -4800,7 +4791,7 @@ test('pokemon-bluff-auction: pujas, un pase confirmado, la demostración, el res
     await expect(b.page.getByTestId('bluff-round-row').filter({ hasText: nombreDe(p2) })).toContainText('Farol');
     await expect(b.page.getByTestId('bluff-round-row').filter({ hasText: 'Gana la ronda' })).toHaveCount(2);
     await expect(viva(b.page)).toContainText('no lo consiguió');
-    await capturarTamanos(b.page, 'juego-pokemon-bluff-auction-resultado', { sigue: titulo(b.page).filter({ hasText: 'no lo consiguió' }), opts: ARCADE });
+    await capturarTamanos(b.page, 'juego-pokemon-bluff-auction-resultado', { sigue: titulo(b.page).filter({ hasText: 'no lo consiguió' }) });
     retenedor.soltar();
 
     // Ronda 2: quien abre puja el máximo (el pool entero); el siguiente ve «Puja máxima» y puede pasar.
@@ -4814,7 +4805,7 @@ test('pokemon-bluff-auction: pujas, un pase confirmado, la demostración, el res
     await expect(placa(q2)).toHaveText('Puja máxima');
     await expect(pujar(q2)).toBeDisabled();
     await expect(pujar(q2)).toHaveText('Puja máxima');
-    await capturarTamanos(q2, 'juego-pokemon-bluff-auction-puja-maxima', { sigue: placa(q2).filter({ hasText: 'Puja máxima' }), opts: ARCADE });
+    await capturarTamanos(q2, 'juego-pokemon-bluff-auction-puja-maxima', { sigue: placa(q2).filter({ hasText: 'Puja máxima' }) });
     await pasarConfirmando(q2);
     const q3 = await activa(pasar, paginas.filter((page) => page !== q1 && page !== q2));
     await pasarConfirmando(q3);
@@ -4852,7 +4843,7 @@ test('pokemon-bluff-auction: pujas, un pase confirmado, la demostración, el res
     await expect(host.page.getByRole('heading', { name: 'Mayor apuesta cumplida' })).toBeVisible();
     await expect(host.page.getByText(/🏆|🥇|🥈|🥉/u)).toHaveCount(0);
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-pokemon-bluff-auction-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-pokemon-bluff-auction-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -4911,7 +4902,7 @@ test('who-is-who-pokemon: secretos elegidos, cartas bajadas, cursores, un rechaz
     for (const { w, h } of SIZES) {
       await host.page.setViewportSize({ width: w, height: h });
       await host.page.getByRole('radio', { name: '90 s' }).scrollIntoViewIfNeeded();
-      const { id, problems } = await layoutProblems(host.page, 'lobby-who-is-who-ajustes', true, false, { minFontPx: 13 });
+      const { id, problems } = await layoutProblems(host.page, 'lobby-who-is-who-ajustes', true);
       expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     }
     await host.page.setViewportSize({ width: 1280, height: 720 });
@@ -5039,7 +5030,7 @@ test('who-is-who-pokemon: secretos elegidos, cartas bajadas, cursores, un rechaz
       await senalar(companero, c1);
       await expect(cursorDe(azul, nombreDe(companero))).toBeVisible({ timeout: 5_000 });
       await azul.waitForFunction(() => [...document.images].every((img) => img.complete), undefined, { timeout: 3_000 }).catch(() => undefined);
-      const { id, problems } = await layoutProblems(azul, 'juego-who-is-who-tablero', true, false, ARCADE);
+      const { id, problems } = await layoutProblems(azul, 'juego-who-is-who-tablero', true);
       expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
       cartas[w] = Number(await tablero(azul).getAttribute('data-card'));
       // En escritorio el tablero de 24 cabe entero: su panel no se desplaza.
@@ -5069,7 +5060,7 @@ test('who-is-who-pokemon: secretos elegidos, cartas bajadas, cursores, un rechaz
     await dialogo.getByRole('textbox', { name: 'Buscar en el tablero' }).fill(fallo);
     await dialogo.getByRole('button', { name: fallo, exact: true }).click();
     await expect(dialogo.getByTestId('who-confirm')).toHaveText(`Confirmar ${fallo}`);
-    await capturarTamanos(azul, 'dialogo-who-is-who-adivinar', { sigue: dialogo, opts: ARCADE });
+    await capturarTamanos(azul, 'dialogo-who-is-who-adivinar', { sigue: dialogo });
     // Un intento que el servidor rechaza: el aviso global lo dice, el diálogo sigue abierto y el foco vuelve a «Confirmar».
     trucadores.get(azul)!.trucarSiguiente();
     await dialogo.getByTestId('who-confirm').click();
@@ -5096,7 +5087,7 @@ test('who-is-who-pokemon: secretos elegidos, cartas bajadas, cursores, un rechaz
     await expect(titulo(rojo)).toHaveText('Vuestro turno');
     await expect(rojo.getByTestId('who-guess').first()).toContainText(fallo);
     await expect(rojo.getByTestId('who-guess').first()).toContainText('No era');
-    await capturarTamanos(rojo, 'juego-who-is-who-turno-rival', { sigue: titulo(rojo).filter({ hasText: 'Vuestro turno' }), opts: ARCADE });
+    await capturarTamanos(rojo, 'juego-who-is-who-turno-rival', { sigue: titulo(rojo).filter({ hasText: 'Vuestro turno' }) });
 
     // Turno 2: Rojo acierta el secreto azul (leído de la página de Azul) y gana.
     await adivinar(rojo).click();
@@ -5110,7 +5101,7 @@ test('who-is-who-pokemon: secretos elegidos, cartas bajadas, cursores, un rechaz
     await expect(host.page.getByText('El Equipo Rojo adivinó el secreto rival: cada uno de sus jugadores suma 10 puntos.')).toBeVisible();
     await expect(host.page.getByText('1 acierto · 0 fallos')).toBeVisible();
     await sinScorePop(host.page);
-    await capturarTamanos(host.page, 'juego-who-is-who-clasificacion', { opts: ARCADE });
+    await capturarTamanos(host.page, 'juego-who-is-who-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

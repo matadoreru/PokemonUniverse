@@ -11,7 +11,7 @@ import { capture, crearSalaConJugadores, iniciarPartida, layoutProblems, saltarI
 async function capturarPantalla(page: Page, nombre: string, sigue: Locator): Promise<void> {
   for (const { w, h } of SIZES) {
     await page.setViewportSize({ width: w, height: h });
-    const { id, problems } = await layoutProblems(page, nombre, true, false, { noPageScroll: true, minFontPx: 13 });
+    const { id, problems } = await layoutProblems(page, nombre, true);
     await expect(sigue, `${id}: la fase sigue en pantalla`).toBeVisible({ timeout: 1_000 });
     expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
   }
@@ -93,7 +93,7 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     for (const page of pages) await expect(elegidoTexto(page)).toBeVisible({ timeout: 10_000 });
     await expect(host.page.getByRole('list', { name: 'Opciones de voto' }).getByRole('listitem').filter({ hasText: elegido })).toContainText('Ganador');
     await expect(host.page.getByRole('list', { name: 'Opciones de voto' }).getByRole('listitem').filter({ hasText: elegido })).toContainText('2 votos');
-    const medidas = await Promise.all(pages.map((page) => layoutProblems(page, 'sesion-votacion-resultado', true, false, { minFontPx: 13 })));
+    const medidas = await Promise.all(pages.map((page) => layoutProblems(page, 'sesion-votacion-resultado', true)));
     for (const { id, problems } of medidas) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     await invitado.page.setViewportSize({ width: 1280, height: 720 });
 
