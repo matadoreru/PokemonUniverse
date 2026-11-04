@@ -1,30 +1,107 @@
-import type { PokemonLegendaryStatus, PokemonPaletteGuessPlayerState, PokemonPaletteGuessPublicState, PokemonPaletteHint, PokemonType, RoomView } from '@pokemon-universe/shared/public';
-import { CheckCircle2, Eye, History, Lightbulb, Palette, XCircle } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
-import { ServerTimer } from '../components/ServerTimer';
+import type { PokemonPaletteGuessConfig, PokemonPaletteGuessPlayerState, PokemonPaletteGuessPublicState, RoomView } from '@pokemon-universe/shared/public';
+import { useMemo, useRef, type CSSProperties } from 'react';
+import { describePaletteHint, paletteSwatches } from '../games/pokemon-palette-guess/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { PokemonSelector } from './PokemonSelector';
-import type { PokemonSearchOption } from './pokemon-search';
+import { useSfxCue } from '../hooks/useSfxCue';
+import { cx } from '../ui';
+import { useFocusOnTransition } from './focus-transition';
+import {
+  GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
+  guessAnnouncement, guessFocusKey, guessOwnLastAttempt, guessPanelKind, guessRevealLines, guessScoreboard, guessSolvedOrders, guessVerdict,
+} from './guess-kit';
+import s from '../games/pokemon-palette-guess/Palette.module.css';
 
-const EMPTY_LOCKED = new Set<string>();
-const typeLabels: Record<PokemonType, string> = { normal: 'Normal', fire: 'Fuego', water: 'Agua', electric: 'Eléctrico', grass: 'Planta', ice: 'Hielo', fighting: 'Lucha', poison: 'Veneno', ground: 'Tierra', flying: 'Volador', psychic: 'Psíquico', bug: 'Bicho', rock: 'Roca', ghost: 'Fantasma', dragon: 'Dragón', dark: 'Siniestro', steel: 'Acero', fairy: 'Hada' };
-const categoryLabels: Record<PokemonLegendaryStatus, string> = { NORMAL: 'No legendario', LEGENDARY: 'Legendario', MYTHICAL: 'Mítico' };
-function describeHint(hint: PokemonPaletteHint): string { if (hint.kind === 'GENERATION') return `Generación ${hint.value}`; if (hint.kind === 'TYPE') return hint.values.map((type) => typeLabels[type]).join(' / '); if (hint.kind === 'TYPE_COUNT') return hint.value === 1 ? 'Monotipo' : 'Dos tipos'; if (hint.kind === 'CATEGORY') return categoryLabels[hint.value]; if (hint.stages <= 1) return 'No evoluciona'; if (hint.stage <= 1) return 'Pokémon base'; if (hint.stage >= hint.stages) return 'Evolución final'; return 'Evolución intermedia'; }
-function colorName(hex: string): string {
-  const red = Number.parseInt(hex.slice(1, 3), 16) / 255; const green = Number.parseInt(hex.slice(3, 5), 16) / 255; const blue = Number.parseInt(hex.slice(5, 7), 16) / 255; const max = Math.max(red, green, blue); const min = Math.min(red, green, blue); const light = (max + min) / 2; const delta = max - min;
-  if (light < 0.12) return 'negro'; if (light > 0.9 && delta < 0.12) return 'blanco'; if (delta < 0.1) return light < 0.38 ? 'gris oscuro' : light > 0.7 ? 'gris claro' : 'gris';
-  let hue = max === red ? ((green - blue) / delta) % 6 : max === green ? (blue - red) / delta + 2 : (red - green) / delta + 4; hue = (hue * 60 + 360) % 360;
-  const name = hue < 15 || hue >= 345 ? 'rojo' : hue < 45 ? 'naranja' : hue < 70 ? 'amarillo' : hue < 165 ? 'verde' : hue < 195 ? 'turquesa' : hue < 255 ? 'azul' : hue < 290 ? 'morado' : 'rosa'; return `${name}${light < 0.32 ? ' oscuro' : light > 0.72 ? ' claro' : ''}`;
-}
-function PaletteClue({ colors, weights, compact = false }: { colors: readonly string[]; weights: readonly number[]; compact?: boolean }) {
-  const normalized = weights.length === colors.length ? weights : colors.map(() => 1 / colors.length);
-  return <div><div className={`flex w-full overflow-hidden rounded-xl ${compact ? 'h-20' : 'h-56 sm:h-72'}`} role="img" aria-label={`Paleta de ${colors.length} colores con peso aproximado`}>{colors.map((color, index) => { const label = `${colorName(color)}, aproximadamente ${Math.round((normalized[index] ?? 0) * 100)}%`; return <span key={`${color}-${index}`} className="h-full min-w-[3px]" style={{ backgroundColor: color, flexGrow: normalized[index] ?? 1, flexBasis: 0 }} aria-label={label} title={label} />; })}</div><ul className="mt-2 flex flex-wrap justify-center gap-x-3 gap-y-1 text-xs">{colors.map((color, index) => <li key={`label-${color}-${index}`} className="flex items-center gap-1.5 font-bold text-ink/65"><span className="h-3 w-3 rounded-full border border-ink/15" style={{ backgroundColor: color }} aria-hidden="true" />{colorName(color)} · {Math.round((normalized[index] ?? 0) * 100)}%</li>)}</ul></div>;
-}
-function PlayerStatus({ room, game }: { room: RoomView; game: PokemonPaletteGuessPublicState }) { const solved = new Set(game.solvedPlayers.map(({ playerId }) => playerId)); return <section className="rounded-xl border border-ink/10 bg-surface p-3"><h2 className="mb-2 font-display text-lg">Jugadores</h2><div className="space-y-1.5">{room.members.filter((member) => member.role === 'PLAYER').map((member) => <div key={member.id} className="flex items-center gap-2 rounded-lg bg-ink/[.035] p-2"><Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} size="xs" /><strong className="min-w-0 flex-1 truncate text-sm">{member.displayName}</strong><span className="text-xs font-bold text-ink/60">{game.scores[member.id] ?? 0}</span>{solved.has(member.id) && <CheckCircle2 className="text-leaf" size={16} />}</div>)}</div></section>; }
-function HintPanel({ hints }: { hints: PokemonPaletteHint[] }) { if (!hints.length) return null; return <section aria-label="Pistas adicionales" className="flex flex-wrap items-center gap-2 rounded-xl border border-electric/20 bg-electric/[.06] p-3"><strong className="flex items-center gap-1.5 text-sm text-electric"><Lightbulb size={17} /> Pistas</strong>{hints.map((hint, index) => <span key={`${hint.kind}-${index}`} className="rounded-full border border-electric/20 bg-night/20 px-3 py-1.5 text-sm font-extrabold text-electric">{describeHint(hint)}</span>)}</section>; }
-function AttemptsPanel({ room, game }: { room: RoomView; game: PokemonPaletteGuessPublicState }) { return <section className="rounded-xl border border-ink/10 bg-surface p-3"><h2 className="mb-2 flex items-center gap-2 font-display text-lg"><History className="text-berry" size={18} /> Intentos públicos</h2>{game.attempts.length ? <div className="max-h-72 space-y-1.5 overflow-y-auto" aria-live="polite">{game.attempts.slice().reverse().map((attempt, index) => { const member = room.members.find((candidate) => candidate.id === attempt.playerId); return <div key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`} className="flex items-center gap-2 rounded-lg bg-berry/[.07] p-2"><Avatar name={member?.displayName ?? attempt.playerId} avatar={member?.avatar} size="xs" /><span className="min-w-0 flex-1 text-sm"><strong>{member?.displayName ?? attempt.playerId}</strong><span className="text-ink/60"> probó </span><strong>{attempt.guessedPokemon.name}</strong></span><img src={attempt.guessedPokemon.sprite} alt="" className="h-8 w-8 object-contain [image-rendering:pixelated]" /><XCircle className="shrink-0 text-berry" size={16} /></div>; })}</div> : <p className="rounded-lg border border-dashed border-ink/10 p-4 text-center text-sm font-bold text-ink/60">Todavía no hay intentos incorrectos.</p>}</section>; }
-function GuessArea({ pokemon, poolLoading, onRetry, loadError, game, player, offset, onAction }: { pokemon: readonly PokemonSearchOption[]; poolLoading: boolean; onRetry(): void; loadError: string; game: PokemonPaletteGuessPublicState; player: PokemonPaletteGuessPlayerState; offset: number; onAction(action: unknown): Promise<void> }) { const cooldown = useRemainingMs(player.cooldownUntil, offset); if (player.role === 'SPECTATOR') return <div className="py-6 text-center"><Eye className="mx-auto text-aqua" /><strong className="mt-2 block font-display text-xl">Estás observando</strong></div>; if (player.solved) return <div className="rounded-xl bg-leaf/[.09] p-5 text-center"><CheckCircle2 className="mx-auto text-leaf" size={38} /><strong className="block font-display text-2xl text-leaf">¡Paleta acertada!</strong><p className="font-bold text-ink/65">{player.solveOrder}.º · +{player.roundPoints} puntos</p></div>; return <div><div className="mb-2 flex items-center justify-between"><h2 className="font-display text-xl">¿De quién son estos colores?</h2><span className="text-xs font-bold text-ink/60">{player.attemptCount} intentos</span></div>{player.lastAttempt?.result === 'INCORRECT' && <p className="mb-2 flex items-center justify-between rounded-xl bg-berry/[.08] px-3 py-2 text-sm font-extrabold text-berry"><span><XCircle className="mr-1 inline" size={17} />Incorrecto</span><span>{cooldown > 0 ? `${(cooldown / 1_000).toFixed(1)}s` : 'Prueba otra vez'}</span></p>}<PokemonSelector loading={poolLoading} loadError={loadError} onRetry={onRetry} key={game.roundNumber} pokemon={pokemon} locked={EMPTY_LOCKED} disabled={!player.canGuess} confirmationDisabled={cooldown > 0} variant="embedded" autoFocus={false} inputLabel={`Buscar respuesta para la paleta ${game.roundNumber}`} onSelect={(pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId })} /></div>; }
-function Reveal({ room, game, offset }: { room: RoomView; game: PokemonPaletteGuessPublicState; offset: number }) { const result = game.lastRound!; return <section className="mx-auto max-w-5xl px-3 py-5 sm:px-5"><header className="mb-4 flex items-start justify-between gap-3"><div><p className="font-extrabold text-leaf">Ronda {game.roundNumber} resuelta</p><h1 className="font-display text-3xl sm:text-4xl">¡Era {result.pokemon.name}!</h1></div><ServerTimer deadline={game.nextTransitionAt} serverOffset={offset} label="Siguiente ronda" /></header><div className="grid gap-5 rounded-2xl border border-leaf/25 bg-surface p-4 sm:p-6 md:grid-cols-[19rem_1fr]"><div className="text-center"><PaletteClue colors={result.palette} weights={result.paletteWeights} compact /><img src={result.pokemon.sprite} alt={result.pokemon.name} className="mx-auto mt-2 h-52 w-52 object-contain [image-rendering:pixelated]" /><strong className="font-display text-2xl">{result.pokemon.name}</strong><p className="text-sm font-bold text-ink/60">Generación {result.pokemon.generation}</p></div><div className="space-y-2">{room.members.filter((member) => member.role === 'PLAYER').sort((a, b) => (result.solves[a.id]?.solveOrder ?? Infinity) - (result.solves[b.id]?.solveOrder ?? Infinity)).map((member) => { const solve = result.solves[member.id]; return <article key={member.id} className={`flex items-center gap-3 rounded-xl border p-3 ${solve ? 'border-leaf/30 bg-leaf/[.07]' : 'border-ink/10'}`}><Avatar name={member.displayName} avatar={member.avatar} size="sm" /><div className="min-w-0 flex-1"><strong className="block truncate">{member.displayName}</strong><small className="font-bold text-ink/60">{solve ? `${solve.solveOrder}.º · ${(solve.elapsedMs / 1_000).toFixed(1)}s · ${solve.attempts} intentos` : 'No acertó'}</small></div><strong className={solve ? 'text-leaf' : 'text-ink/40'}>+{solve?.points ?? 0}</strong></article>; })}</div></div></section>; }
+const GAME_NAME = 'Adivina por la Paleta';
+const QUESTION = '¿De quién son estos colores?';
+const SCORING = 'Cuanto antes aciertes, más puntos; el primero suma un extra.';
 
-export function PokemonPaletteGuessGame({ room, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) { const game = room.game as PokemonPaletteGuessPublicState; const player = room.gamePlayerState as PokemonPaletteGuessPlayerState; const config = room.selectedGameConfig as { generations: number[] }; const offset = useServerOffset(room.serverNow); const { pokemon, error, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config.generations }); if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <Reveal room={room} game={game} offset={offset} />; return <section className="mx-auto max-w-7xl overflow-x-clip px-3 py-4 sm:px-5"><header className="mb-4 flex items-center justify-between gap-3"><div><p className="text-xs font-extrabold text-ink/60">Ronda {game.roundNumber} / {game.totalRounds}</p><h1 className="font-display text-2xl sm:text-3xl">Adivina por la Paleta</h1></div><ServerTimer deadline={game.roundEndsAt} serverOffset={offset} /></header><div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]"><main className="space-y-4"><section className="overflow-hidden rounded-2xl border border-ink/10 bg-surface"><div className="p-3 sm:p-5"><div className="mb-3 flex items-center gap-2 text-ink/60"><Palette size={20} /><strong>Colores dominantes del sprite</strong></div><PaletteClue colors={game.colors} weights={game.colorWeights} /></div><div className="border-t border-ink/10 p-4 sm:p-5"><GuessArea pokemon={pokemon} poolLoading={poolLoading} onRetry={retryPool} loadError={error} game={game} player={player} offset={offset} onAction={onAction} /></div></section><HintPanel hints={game.hints} /></main><aside className="grid gap-4 md:grid-cols-2 lg:sticky lg:top-4 lg:grid-cols-1"><PlayerStatus room={room} game={game} /><AttemptsPanel room={room} game={game} /></aside></div></section>; }
+/**
+ * La paleta: una barra con una franja por color (tan ancha como su peso aproximado) y, debajo, la leyenda con el nombre
+ * y el porcentaje de cada color en texto, en el mismo orden (en escritorio, en dos filas como mucho). La barra es una imagen con un nombre que lo dice todo.
+ * Es la pista, no la respuesta: los colores no identifican al Pokémon por sí solos.
+ */
+export function PaletteClue({ colors, weights, className }: { colors: readonly string[]; weights: readonly number[]; className?: string | undefined }) {
+  const swatches = paletteSwatches(colors, weights);
+  const summary = swatches.map((swatch) => `${swatch.name}, aproximadamente ${swatch.percent}%`).join('; ');
+  return <div className={cx(s.palette, className)}>
+    <div className={s.bar} role="img" aria-label={`Paleta de ${colors.length} colores con peso aproximado: ${summary}`}>
+      {swatches.map((swatch, index) => <span key={`${swatch.color}-${index}`} className={s.segment} style={{ backgroundColor: swatch.color, flexGrow: swatch.weight || 1 }} title={`${swatch.name}, aproximadamente ${swatch.percent}%`} />)}
+    </div>
+    <ol className={s.legend} aria-label="Colores de la paleta" data-testid="palette-legend" style={{ '--cols': Math.min(4, Math.ceil(swatches.length / 2)) } as CSSProperties}>
+      {swatches.map((swatch, index) => <li key={`${swatch.color}-${index}`} className={s.item}>
+        <span className={s.swatch} style={{ backgroundColor: swatch.color }} aria-hidden="true" />
+        <span className={s.name} title={swatch.name}>{swatch.name}</span>
+        <span className={s.percent}>{swatch.percent}%</span>
+      </li>)}
+    </ol>
+  </div>;
+}
+
+/**
+ * Adivina por la Paleta con el kit de adivinar (spec §2 y §6 «Juegos»). Arriba se mira: la placa de la ronda, la
+ * paleta (barra y leyenda en texto, escalan con el sitio libre) y las pistas adicionales; en la revelación, la carta del
+ * Pokémon con su paleta al lado. Abajo se actúa: el buscador, el acierto con sus puntos o el veredicto. Al lado, el
+ * marcador y los intentos (o los puntos de la ronda).
+ *
+ * Privacidad: la respuesta (nombre y sprite) solo llega en `lastRound`, que el servidor manda al revelar; aun así la
+ * pantalla solo la usa en `ROUND_RESULTS`.
+ */
+export function PokemonPaletteGuessGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+  const game = room.game as PokemonPaletteGuessPublicState;
+  const player = room.gamePlayerState as PokemonPaletteGuessPlayerState | null;
+  const config = room.selectedGameConfig as Partial<PokemonPaletteGuessConfig> | null;
+  const { pokemon, error: loadError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [] });
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const offset = useServerOffset(room.serverNow);
+  const cooldownMs = useRemainingMs(player?.cooldownUntil ?? null, offset);
+  const transitionRemaining = Math.ceil(useRemainingMs(game.nextTransitionAt, offset) / 1_000);
+  const active = game.phase === 'ROUND_ACTIVE';
+  // El espectador viene en el estado del jugador (`player.role`), no en el rol del miembro.
+  const participating = player?.role === 'PLAYER';
+  const lastRound = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
+  const kind = guessPanelKind(game.phase, player ? { participating, canGuess: player.canGuess, solved: player.solved } : null, lastRound !== null);
+  const ownLast = active ? guessOwnLastAttempt(game.attempts, selfId) : null;
+
+  // Todos los hooks van antes de elegir la escena: el número de hooks no cambia entre fases.
+  useSfxCue('hit', active && player?.solved ? game.roundNumber : null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(guessFocusKey(kind, game.roundNumber), titleRef);
+
+  const last = game.roundNumber >= game.totalRounds;
+  const heading = lastRound ? `¡Era ${lastRound.pokemon.name}!` : 'Reconoce sus colores';
+  const announcement = guessAnnouncement({ kind, roundNumber: game.roundNumber, answer: lastRound?.pokemon.name ?? null, solveOrder: player?.solveOrder ?? null, roundPoints: player?.roundPoints ?? 0, lastWrong: ownLast?.guessedPokemon.name ?? null, attemptCount: player?.attemptCount ?? 0 });
+
+  const clue = lastRound
+    ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>Generación {lastRound.pokemon.generation}</>}
+      clueTitle="Su paleta" clue={<PaletteClue className={s.reveal} colors={lastRound.palette} weights={lastRound.paletteWeights} />} />
+    : <GuessClue label={`Paleta de ${game.colors.length} colores dominantes`} className={s.stage}>
+      <PaletteClue colors={game.colors} weights={game.colorWeights} />
+    </GuessClue>;
+
+  const hints = active && game.hints.length > 0
+    ? <GuessHints hints={game.hints.map((hint, index) => ({ key: `${hint.kind}-${index}`, label: describePaletteHint(hint) }))} />
+    : null;
+
+  const side = lastRound
+    ? <GuessRevealBoard lines={guessRevealLines(room.members, lastRound.solves, lastRound.attemptCounts)} selfId={selfId}
+      detail={({ solve }) => solve ? `Rapidez ${solve.speedPoints} + orden ${solve.placementBonus}` : null} />
+    : <>
+      <GuessPlayersPanel lines={guessScoreboard(room.members, game.scores, guessSolvedOrders(game.solvedPlayers))} selfId={selfId} />
+      <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />
+    </>;
+
+  const bottom = <GuessPanel kind={kind} titleRef={titleRef} question={QUESTION} guessText={SCORING} gameName={GAME_NAME} solvedTitle="¡Paleta acertada!"
+    selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para la paleta ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }}
+    cooldownMs={cooldownMs} lastWrong={ownLast?.guessedPokemon.name ?? null} attemptCount={player?.attemptCount ?? 0}
+    solveOrder={player?.solveOrder ?? null} roundPoints={player?.roundPoints ?? 0}
+    verdict={lastRound ? guessVerdict(lastRound.solves, selfId, participating) : null} countdown={`${last ? 'Clasificación' : 'Siguiente ronda'} en ${Math.max(1, transitionRemaining)}s`} />;
+
+  const timer = active
+    ? { deadline: game.roundEndsAt, serverOffset: offset, label: 'Tiempo', totalMs: config?.roundSeconds ? config.roundSeconds * 1_000 : undefined }
+    : { deadline: game.nextTransitionAt, serverOffset: offset, label: last ? 'Clasificación' : 'Siguiente ronda' };
+
+  return <GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
+    announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} />;
+}

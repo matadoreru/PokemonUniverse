@@ -44,6 +44,12 @@ describe('skipRowInLayout', () => {
     expect(skipRowInLayout({ ...zoomed, phase: 'ROUND_RESULTS' } as never)).toBe(false);
     expect(skipRowInLayout({ ...zoomed, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Adivina por la Paleta la lleva dentro de su pantalla salvo en los resultados', () => {
+    const palette = { ...(base as object), selectedGameId: 'pokemon-palette-guess', game: { gameId: 'pokemon-palette-guess' } };
+    expect(skipRowInLayout(palette as never)).toBe(false);
+    expect(skipRowInLayout({ ...palette, phase: 'ROUND_RESULTS' } as never)).toBe(false);
+    expect(skipRowInLayout({ ...palette, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);

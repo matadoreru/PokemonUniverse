@@ -1,14 +1,41 @@
 import type { PokemonPaletteGuessConfig, PokemonPaletteHintKind } from '@pokemon-universe/shared/public';
-import { Lightbulb } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
+import { Segmented, Toggle } from '../../ui';
+import s from './ConfigPanel.module.css';
 
+const SIZE_LABEL = 'Máximo de colores visibles';
+const HINT_KINDS_LABEL = 'Qué pistas salen';
+const SIZES = [5, 6, 7, 8] as const;
+const hintOptions: Array<{ id: PokemonPaletteHintKind; label: string }> = [
+  { id: 'GENERATION', label: 'Generación' }, { id: 'TYPE', label: 'Tipos' }, { id: 'TYPE_COUNT', label: 'Nº de tipos' },
+  { id: 'EVOLUTION', label: 'Etapa evolutiva' }, { id: 'CATEGORY', label: 'Legendario / Mítico' },
+];
+
+/**
+ * Ajustes de Adivina por la Paleta con los controles del catálogo: generaciones, cuántos colores se ven (`Segmented`),
+ * las pistas adicionales con sus tipos (`Toggle`) y los tiempos (`ConfigRange`, en los límites del contrato: 10–60 s y
+ * 1–20 rondas).
+ */
 export function PokemonPaletteGuessConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as PokemonPaletteGuessConfig;
-  const hintOptions: Array<{ id: PokemonPaletteHintKind; label: string }> = [
-    { id: 'GENERATION', label: 'Generación' }, { id: 'TYPE', label: 'Tipos' }, { id: 'TYPE_COUNT', label: 'Nº de tipos' },
-    { id: 'EVOLUTION', label: 'Etapa evolutiva' }, { id: 'CATEGORY', label: 'Legendario / Mítico' },
-  ];
-  const toggleHint = (id: PokemonPaletteHintKind) => void onChange({ ...value, hintKinds: value.hintKinds.includes(id) ? value.hintKinds.filter((kind) => kind !== id) : [...value.hintKinds, id] });
-  return <fieldset disabled={disabled} className="space-y-6"><GenerationSelector selected={value.generations} label="Generaciones" description="Solo entrarán Pokémon cuya paleta haya sido persistida por DataSync." onChange={(generations) => void onChange({ ...value, generations })} /><section><span className="label">Máximo de colores visibles</span><div className="grid max-w-xl grid-cols-4 gap-2">{[5, 6, 7, 8].map((size) => <button key={size} type="button" aria-pressed={value.paletteSize === size} onClick={() => void onChange({ ...value, paletteSize: size })} className={`min-h-12 rounded-xl border font-extrabold transition-colors ${value.paletteSize === size ? 'border-aqua bg-aqua text-night' : 'border-ink/10 bg-surface-raised hover:border-aqua/60'}`}>{size}</button>)}</div><p className="mt-2 text-sm font-bold text-ink/60">Se mostrarán todos los colores dominantes disponibles hasta este máximo; nunca se descartará un Pokémon por tener menos.</p></section><section className="rounded-2xl border border-ink/10 bg-ink/[.025] p-4"><button type="button" aria-pressed={value.hintsEnabled} onClick={() => void onChange({ ...value, hintsEnabled: !value.hintsEnabled })} className="flex w-full items-center gap-3 text-left"><span className={`grid h-11 w-11 place-items-center rounded-xl ${value.hintsEnabled ? 'bg-electric text-night' : 'bg-ink/10'}`}><Lightbulb /></span><span className="flex-1"><strong className="block font-display text-xl">Pistas adicionales</strong><small className="font-bold text-ink/65">{value.hintsEnabled ? 'Visibles públicamente desde el inicio.' : 'Solo se mostrará la paleta.'}</small></span><span className={`rounded-full px-3 py-1 text-xs font-black ${value.hintsEnabled ? 'bg-leaf text-night' : 'bg-ink/10 text-ink/60'}`}>{value.hintsEnabled ? 'ON' : 'OFF'}</span></button>{value.hintsEnabled && <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{hintOptions.map((hint) => <label key={hint.id} className="flex min-h-11 cursor-pointer items-center gap-2 rounded-xl bg-surface-raised px-3 font-bold"><input type="checkbox" checked={value.hintKinds.includes(hint.id)} onChange={() => toggleHint(hint.id)} /> {hint.label}</label>)}</div>}</section><div className="grid gap-4 md:grid-cols-2"><ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} /><ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} accent="aqua" formatValue={(rounds) => `${rounds} rondas`} onCommit={(rounds) => onChange({ ...value, rounds })} /></div></fieldset>;
+  const update = (next: Partial<PokemonPaletteGuessConfig>) => void onChange({ ...value, ...next });
+  const toggleHint = (hint: PokemonPaletteHintKind, on: boolean) => update({ hintKinds: on ? [...value.hintKinds.filter((kind) => kind !== hint), hint] : value.hintKinds.filter((kind) => kind !== hint) });
+  return <fieldset disabled={disabled} className={s.panel}>
+    <GenerationSelector selected={value.generations} label="Generaciones" description="Solo entrarán Pokémon cuya paleta haya sido persistida por DataSync." onChange={(generations) => update({ generations })} />
+    <div className={s.group}>
+      <span className={s.label} aria-hidden="true">{SIZE_LABEL}</span>
+      <Segmented<number> label={SIZE_LABEL} value={value.paletteSize} options={SIZES.map((size) => ({ value: size, label: String(size), disabled }))} onChange={(paletteSize) => update({ paletteSize })} />
+      <p className={s.help}>Se mostrarán todos los colores dominantes disponibles hasta este máximo; nunca se descartará un Pokémon por tener menos.</p>
+    </div>
+    <div className={s.ranges}>
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Cuanto antes aciertes, más puntos; tras un fallo hay una breve espera." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
+    </div>
+    <Toggle label="Pistas adicionales" hint={value.hintsEnabled ? 'Visibles públicamente desde el inicio.' : 'Solo se mostrará la paleta.'} checked={value.hintsEnabled} disabled={disabled} onChange={(hintsEnabled) => update({ hintsEnabled })} />
+    {value.hintsEnabled && <div className={s.group} role="group" aria-label={HINT_KINDS_LABEL}>
+      <span className={s.label} aria-hidden="true">{HINT_KINDS_LABEL}</span>
+      <div className={s.kinds}>{hintOptions.map((hint) => <Toggle key={hint.id} label={hint.label} checked={value.hintKinds.includes(hint.id)} disabled={disabled} onChange={(on) => toggleHint(hint.id, on)} />)}</div>
+    </div>}
+  </fieldset>;
 }
