@@ -63,3 +63,87 @@
 .neutral {
   background: var(--cream-2);
 }
+/* Grande: la insignia protagonista de una revelación. */
+.lg {
+  min-height: 44px;
+  padding: 0 var(--sp-4);
+  border-width: var(--ol-3);
+  font-size: var(--type-badge-fs, var(--fs-26));
+  box-shadow: var(--sh-hard-3);
+}
+.lg.ring {
+  box-shadow: 0 0 0 var(--ol-2) var(--white), var(--sh-hard-3);
+}
+
+/* Tipo seleccionable: la insignia con relieve de píldora (cada pseudo-clase también como clase para la galería). */
+.option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 var(--sp-3);
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-pill);
+  background: var(--type-bg);
+  color: var(--type-fg);
+  font: 800 var(--fs-18) / 1 var(--font-display);
+  cursor: pointer;
+  box-shadow: var(--sh-hard-4);
+  transition: transform var(--t-press) var(--ease);
+  user-select: none;
+}
+.optionWhite {
+  box-shadow: inset 0 0 0 var(--ol-2) var(--white), var(--sh-hard-4);
+}
+.optionLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.optionCheck {
+  flex: none;
+}
+.option:hover:not(:disabled),
+.option.hover {
+  transform: translateY(-1px);
+}
+.option:focus-visible,
+.option.focus {
+  outline: var(--ol-3) solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.option:active:not(:disabled),
+.option.active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 var(--navy-2);
+}
+/* Elegido: contorno amarillo grueso por fuera del azul noche y ✓. */
+.pressed {
+  outline: var(--ol-4) solid var(--yellow);
+  outline-offset: 1px;
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--navy-2);
+}
+.pressed:focus-visible {
+  outline-color: var(--yellow);
+  box-shadow: 0 0 0 calc(var(--ol-4) + 4px) var(--navy), 0 2px 0 var(--navy-2);
+}
+.option:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+/* Enviado: no se apaga (es el que se ha elegido), solo deja de responder. */
+.option.pressed:disabled,
+.optionLoading:disabled {
+  opacity: 1;
+  transform: translateY(2px);
+}
+.optionLoading {
+  cursor: wait;
+}

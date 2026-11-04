@@ -1,32 +1,43 @@
 import type { PokemonType } from '@pokemon-universe/shared/public';
-import { PokemonTypeBadge as TypeBadge } from '../components/PokemonTypeBadge';
+import type { CSSProperties, ReactNode } from 'react';
+import { pokemonTypeLabels } from '../components/PokemonTypeBadge';
+import { Chip, cx, TypeBadge } from '../ui';
 import { typeDuelSolutionsText } from './type-duel-result';
+import s from '../games/type-duel/TypeDuel.module.css';
 
-export interface TypeDuelDuelist { id: string; name: string; type: PokemonType | undefined }
+export interface TypeDuelDuelist { id: string; name: string; type: PokemonType | undefined; /** Avatar del duelista (decorativo: el nombre va escrito). */ avatar?: ReactNode }
 
 /**
- * Enfrentamiento al revelar los tipos: cada duelista entra por su lado y el «VS» rebota entre ellos.
- * En móvil es más compacto para que, durante la búsqueda, el campo y los primeros candidatos quepan sin desplazar.
+ * Losa del enfrentamiento al revelar los tipos: cada mitad teñida con el tipo de su duelista, que entra por su lado
+ * (`motion-enter-left/right`), y el disco «VS» que rebota (`motion-bump`) en medio. Debajo, cuántos Pokémon cumplen la
+ * combinación y el objetivo exacto («Monotipo» si los dos eligieron el mismo). Con `impossible`, la losa va en rojo y
+ * lleva ese aviso en lugar del recuento. En el móvil es compacta para que el buscador quepa debajo.
  */
-export function TypeDuelVersus({ duelists, requiredTypes, solutionCount }: { duelists: readonly [TypeDuelDuelist, TypeDuelDuelist]; requiredTypes: readonly PokemonType[] | null; solutionCount: number | null }) {
+export function TypeDuelVersus({ duelists, requiredTypes, solutionCount, impossible }: { duelists: readonly [TypeDuelDuelist, TypeDuelDuelist]; requiredTypes: readonly PokemonType[] | null; solutionCount: number | null; impossible?: ReactNode }) {
   const [first, second] = duelists;
-  return <div className="mb-3 rounded-2xl border border-aqua bg-aqua/10 p-3 text-center sm:mb-5 sm:p-4" data-testid="type-duel-versus">
-    <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 sm:gap-8">
-      <Duelist duelist={first} className="motion-enter-left sm:items-end sm:text-right" />
-      <span className="font-display text-3xl font-bold text-berry motion-bump sm:text-4xl">VS</span>
-      <Duelist duelist={second} className="motion-enter-right sm:items-start sm:text-left" />
+  const tint = (type: PokemonType | undefined) => type ? `var(--type-${type})` : 'var(--navy-3)';
+  const style = { '--left-type': tint(first.type), '--right-type': tint(second.type) } as CSSProperties;
+  return <div className={cx(s.versus, impossible != null && s.versusImpossible)} style={style} data-testid="type-duel-versus" data-state={impossible != null ? 'impossible' : 'revealed'}>
+    <div className={s.versusRow}>
+      <Duelist duelist={first} className={cx(s.duelistLeft, 'motion-enter-left')} />
+      <span className={cx(s.vsDisc, 'motion-bump')}><span className="ol">VS</span></span>
+      <Duelist duelist={second} className={cx(s.duelistRight, 'motion-enter-right')} />
     </div>
-    {solutionCount !== null && <p className="mt-2 font-display text-lg font-bold tabular-nums sm:mt-4 sm:text-xl">{typeDuelSolutionsText(solutionCount)}</p>}
-    {requiredTypes && (requiredTypes.length === 1
-      // Mismo tipo en los dos lados: los badges ya lo dicen, solo falta aclarar que es un monotipo exacto.
-      ? <p className="mt-1 font-bold sm:mt-2"><span className="chip">Monotipo</span></p>
-      : <div className="mt-2 flex flex-wrap items-center justify-center gap-2 font-bold"><span>Objetivo exacto:</span>{requiredTypes.map((type) => <TypeBadge key={type} type={type} compact />)}</div>)}
+    <div className={s.versusFoot}>
+      {solutionCount !== null && <p className={s.solutions}>{typeDuelSolutionsText(solutionCount)}</p>}
+      {requiredTypes && (requiredTypes.length === 1
+        // Mismo tipo en los dos lados: las insignias ya lo dicen, solo falta aclarar que es un monotipo exacto.
+        ? <Chip tone="warn">Monotipo</Chip>
+        : <span className={s.target}><span>Objetivo exacto:</span>{requiredTypes.map((type) => <TypeBadge key={type} type={type} label={pokemonTypeLabels[type]} size="sm" />)}</span>)}
+      {impossible}
+    </div>
   </div>;
 }
 
 function Duelist({ duelist, className }: { duelist: TypeDuelDuelist; className: string }) {
-  return <div className={`flex min-w-0 flex-col items-center gap-1.5 sm:gap-2 ${className}`}>
-    <strong className="block max-w-full truncate font-display text-lg sm:text-xl" title={duelist.name}>{duelist.name}</strong>
-    {duelist.type && <TypeBadge type={duelist.type} />}
+  return <div className={cx(s.duelist, className)}>
+    {duelist.avatar && <span className={s.duelistAvatar} aria-hidden="true">{duelist.avatar}</span>}
+    <strong className={cx(s.duelistName, 'ol')} title={duelist.name}>{duelist.name}</strong>
+    {duelist.type && <TypeBadge type={duelist.type} label={pokemonTypeLabels[duelist.type]} size="lg" />}
   </div>;
 }

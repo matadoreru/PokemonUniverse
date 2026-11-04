@@ -210,61 +210,126 @@ async function primeraVisible(pages: readonly Page[], localizar: (page: Page) =>
   return encontrada!;
 }
 
-test('type-duel: resultado con tipos', async ({ browser }) => {
-  test.setTimeout(120_000);
+test('type-duel: elección secreta, VS, búsqueda con un fallo, victoria y clasificación', async ({ browser }) => {
+  test.setTimeout(180_000);
   const sala = await crearSalaConJugadores(browser, 3);
   try {
     const { host, invitados, jugadores } = sala;
     await seleccionarJuego(host.page, 'Type Duel');
+    // Un solo duelo (para llegar a la clasificación) y plazos largos: da tiempo a capturar cada fase.
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    for (const [nombre, tecla, valor] of [['Número de rondas', 'Home', '1'], ['Tiempo para elegir tipo', 'End', '60'], ['Tiempo para buscar', 'End', '60']] as const) {
+      const rango = host.page.getByRole('slider', { name: nombre });
+      await rango.focus();
+      await rango.press(tecla);
+      await rango.blur();
+      await expect(rango).toHaveValue(valor);
+    }
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, invitados.map((j) => j.page));
     await saltarIntro(jugadores.map((j) => j.page));
     for (const { page } of jugadores) await expect(page.getByRole('heading', { name: 'Elegid un tipo en secreto' })).toBeVisible({ timeout: 20_000 });
-    // Los dos duelistas son las páginas con los botones de tipo; los dos eligen Fuego.
+
+    // Los dos duelistas son las páginas con los 18 tipos (conmutadores sin pulsar); el tercero observa.
     const duelistas: Page[] = [];
+    let observador: Page | undefined;
     for (const { page } of jugadores) {
-      const fuego = page.getByRole('button', { name: 'Elegir tipo Fuego' });
-      if (await fuego.isVisible()) { await fuego.click(); duelistas.push(page); }
+      if (await page.getByRole('button', { name: 'Elegir tipo Fuego' }).isVisible()) duelistas.push(page);
+      else observador = page;
     }
     expect(duelistas.length, 'duelistas que eligen tipo').toBe(2);
+    const [primero, segundo] = duelistas as [Page, Page];
+    await expect(primero.getByRole('button', { name: /^Elegir tipo / })).toHaveCount(18);
+    await expect(primero.getByRole('button', { name: 'Elegir tipo Fuego' })).toHaveAttribute('aria-pressed', 'false');
+    await expect(observador!.getByText('Estás observando la selección.')).toBeVisible();
+    await expect(observador!.locator('[data-type]'), 'el observador no ve ningún tipo').toHaveCount(0);
+    await capturarTamanos(primero, 'juego-type-duel-eleccion', { opts: ARCADE });
+    // A 390×844, sin desplazar, los 18 tipos caben en la pantalla inferior.
+    await primero.setViewportSize({ width: 390, height: 844 });
+    for (const tipo of ['Normal', 'Hada']) await expect(primero.getByRole('button', { name: `Elegir tipo ${tipo}` }), `${tipo} a la vista a 390×844`).toBeInViewport({ ratio: 1 });
+    await primero.setViewportSize({ width: 1280, height: 720 });
 
-    // Revelación (2 s) y búsqueda (20 s): enfrentamiento VS con cuántos Pokémon cumplen la combinación.
+    // Elige con el teclado: flecha a la derecha desde Normal y Enter; el foco pasa al título de la placa bloqueada.
+    await primero.getByRole('button', { name: 'Elegir tipo Normal' }).focus();
+    await primero.keyboard.press('ArrowRight');
+    await expect(primero.getByRole('button', { name: 'Elegir tipo Fuego' })).toBeFocused();
+    await primero.keyboard.press('Enter');
+    const bloqueado = primero.locator('[data-layer="screen-bottom"] h2');
+    await expect(bloqueado).toContainText('Elegiste');
+    await expect(bloqueado).toBeFocused();
+    await expect(primero.getByText('El tipo rival sigue oculto.')).toBeVisible();
+    // El rival solo sabe que ya ha bloqueado, nunca qué: en su página no hay más tipos que sus 18 opciones.
+    await expect(segundo.getByText('Tipo bloqueado').first()).toBeVisible();
+    await expect(segundo.locator('[data-type]')).toHaveCount(18);
+    await segundo.getByRole('button', { name: 'Elegir tipo Fuego' }).click();
+
+    // Revelación (2 s) y búsqueda: losa VS con cuántos Pokémon cumplen la combinación.
     const versus = host.page.getByTestId('type-duel-versus');
     await expect(versus).toBeVisible({ timeout: 10_000 });
     const vs = versus.getByText('VS', { exact: true });
     await expect(vs).toBeVisible();
     await expect(versus.getByText(/^\d+ Pokémon tienen esta combinación$/)).toBeVisible();
-    for (const lado of ['.motion-enter-left', '.motion-enter-right']) await expect(versus.locator(`${lado} [aria-label="Tipo Fuego"]`)).toBeVisible();
-    // Los dos eligieron Fuego: «Monotipo» en vez de repetir el badge, y el título no repite los nombres.
+    for (const lado of ['.motion-enter-left', '.motion-enter-right']) await expect(versus.locator(`${lado} [data-type="fire"]`)).toHaveText('Fuego');
+    // Los dos eligieron Fuego: «Monotipo» en vez de repetir la insignia, y el título no repite los nombres.
     await expect(versus.getByText('Monotipo', { exact: true })).toBeVisible();
     await expect(host.page.getByRole('heading', { level: 1, name: 'Duelo de tipos' })).toBeVisible();
-    await capturarTamanos(host.page, 'juego-type-duel-vs', { sigue: versus });
-    expect(await animacionDe(vs), 'VS con reducción de movimiento').toBe('none');
+    await capturarTamanos(host.page, 'juego-type-duel-vs', { sigue: versus, opts: ARCADE });
+    expect(await animacionDe(vs.locator('..')), 'VS con reducción de movimiento').toBe('none');
     await conMovimiento(host.page);
-    expect(await animacionDe(vs), 'VS con movimiento').toBe('motion-bump');
+    expect(await animacionDe(vs.locator('..')), 'VS con movimiento').toBe('motion-bump');
     expect(await animacionDe(versus.locator('.motion-enter-left')), 'primer duelista con movimiento').toBe('motion-enter-left');
     await host.page.emulateMedia({ reducedMotion: 'reduce' });
-    // Con el bloque VS encima, el buscador del duelista sigue a la vista en móvil durante la búsqueda.
-    const buscador = duelistas[0]!.getByLabel('Buscar Pokémon con la combinación exacta');
+
+    // Con la losa del VS encima, el buscador del duelista sigue a la vista en móvil durante la búsqueda.
+    const buscador = primero.getByLabel('Buscar Pokémon con la combinación exacta');
     await expect(buscador).toBeVisible({ timeout: 10_000 });
-    await duelistas[0]!.setViewportSize({ width: 390, height: 844 });
+    await primero.setViewportSize({ width: 390, height: 844 });
     await expect(buscador).toBeInViewport();
     // Al escribir, el campo y los dos primeros candidatos caben enteros en la pantalla sin desplazarla.
     await buscador.fill('char');
-    const candidatos = duelistas[0]!.locator('.pokemon-selector-results button');
+    const candidatos = primero.locator('.pokemon-selector-results button');
     await expect(candidatos.first()).toBeVisible({ timeout: 10_000 });
-    expect(await duelistas[0]!.evaluate(() => window.scrollY), 'desplazamiento al buscar').toBe(0);
+    expect(await primero.evaluate(() => window.scrollY), 'desplazamiento al buscar').toBe(0);
     await expect(buscador).toBeInViewport({ ratio: 1 });
     for (const n of [0, 1]) await expect(candidatos.nth(n), `candidato ${n + 1} entero a 390×844`).toBeInViewport({ ratio: 1 });
-    const busqueda = await layoutProblems(duelistas[0]!, 'juego-type-duel-vs-busqueda', true);
+    // Los tipos de la losa se ven enteros y la pantalla inferior no los tapa.
+    const losa = primero.getByTestId('type-duel-versus');
+    for (const lado of ['.motion-enter-left', '.motion-enter-right']) await expect(losa.locator(`${lado} [data-type]`)).toBeInViewport({ ratio: 1 });
+    const cajaLosa = await losa.locator('.motion-enter-left [data-type]').boundingBox();
+    const inferior = await primero.locator('[data-layer="screen-bottom"]').boundingBox();
+    expect(cajaLosa!.y + cajaLosa!.height, 'la pantalla inferior no tapa los tipos').toBeLessThanOrEqual(inferior!.y);
+    const busqueda = await layoutProblems(primero, 'juego-type-duel-vs-busqueda', true, false, ARCADE);
     expect(busqueda.problems, `${busqueda.id}: encaje y legibilidad`).toEqual([]);
-    await duelistas[0]!.setViewportSize({ width: 1280, height: 720 });
+    await primero.setViewportSize({ width: 1280, height: 720 });
 
-    // Nadie busca: la búsqueda de 20 s termina en «Tiempo agotado» y el host no pulsa «Siguiente ronda».
-    const titulo = host.page.getByRole('heading', { name: 'Tiempo agotado' });
-    await expect(titulo).toBeVisible({ timeout: 30_000 });
-    const tarjeta = host.page.locator('.card').filter({ hasText: 'Resultado del duelo' });
-    await expect(tarjeta.locator('[aria-label="Tipo Fuego"]')).toBeVisible();
-    await capturarTamanos(host.page, 'juego-type-duel-resultado', { sigue: titulo });
+    // Un intento fallido (Charizard es Fuego/Volador): sale en los intentos públicos y junto al buscador.
+    await buscador.fill('charizard');
+    await expect(candidatos.first()).toBeVisible({ timeout: 10_000 });
+    await buscador.press('Enter');
+    await expect(host.page.getByText('No coincide con los tipos').first()).toBeVisible({ timeout: 10_000 });
+    await expect(primero.locator('[data-layer="screen-bottom"]').getByText(/no coincide/)).toBeVisible();
+    await buscador.fill('char');
+    await capturarTamanos(primero, 'juego-type-duel-busqueda', { opts: ARCADE });
+
+    // Charmander es Fuego puro: gana el duelo.
+    await buscador.fill('charmander');
+    await expect(candidatos.first()).toContainText('Charmander', { timeout: 10_000 });
+    await expect(candidatos.first()).toBeEnabled({ timeout: 5_000 });
+    await buscador.press('Enter');
+    const titulo = host.page.getByRole('heading', { level: 2, name: / gana$/ });
+    await expect(titulo).toBeVisible({ timeout: 10_000 });
+    const resultado = host.page.getByTestId('type-duel-result');
+    await expect(resultado.locator('[data-type="fire"]').first()).toBeVisible();
+    await expect(resultado.locator('[data-winning-card]')).toContainText('Charmander');
+    await expect(primero.locator('[data-layer="screen-bottom"]').getByText('¡Ganaste el duelo!')).toBeVisible();
+    await capturarTamanos(host.page, 'juego-type-duel-resultado', { sigue: titulo, opts: ARCADE });
+
+    // Un solo duelo: el host pasa a la clasificación.
+    await host.page.getByRole('button', { name: 'Ver clasificación' }).click();
+    const clasificacion = host.page.getByRole('heading', { level: 1, name: 'Clasificación Type Duel' });
+    await expect(clasificacion).toBeVisible({ timeout: 10_000 });
+    await expect(host.page.getByText('Récords de la partida')).toBeVisible();
+    await capturarTamanos(host.page, 'juego-type-duel-clasificacion', { opts: ARCADE });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

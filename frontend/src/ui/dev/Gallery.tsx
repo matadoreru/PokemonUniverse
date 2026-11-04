@@ -18,7 +18,7 @@ import type { ResultsStanding } from '../../room/ResultsShell';
 import { pokemonTypeLabels } from '../../components/PokemonTypeBadge';
 import type { PokemonType } from '../../styles/tokens';
 import { typeColors } from '../../styles/tokens';
-import { Badge, Chip, TypeBadge } from '../Badge';
+import { Badge, Chip, TypeBadge, TypeOption } from '../Badge';
 import { Bar } from '../Bar';
 import { Card } from '../Card';
 import type { CardState } from '../Card';
@@ -464,6 +464,36 @@ function TypeBadgeSection() {
           </span>
         </Fig>
       ))}
+      <Fig id="typesize-lg" caption="Grande (lg): la revelación del VS">
+        <span className={s.iconRow}>
+          <TypeBadge type="fire" label={pokemonTypeLabels.fire} size="lg" />
+          <TypeBadge type="ghost" label={pokemonTypeLabels.ghost} size="lg" />
+        </span>
+      </Fig>
+    </Section>
+  );
+}
+
+function TypeOptionSection() {
+  const states = [
+    { id: 'normal', caption: 'Normal', props: {} },
+    { id: 'hover', caption: 'Hover', props: { forced: 'hover' as const } },
+    { id: 'focus', caption: 'Foco', props: { forced: 'focus' as const } },
+    { id: 'active', caption: 'Pulsado', props: { forced: 'active' as const } },
+    { id: 'pressed', caption: 'Elegido (aria-pressed)', props: { pressed: true } },
+    { id: 'loading', caption: 'Elegido, enviando', props: { pressed: true, loading: true } },
+    { id: 'disabled', caption: 'Deshabilitado', props: { disabled: true } },
+  ];
+  return (
+    <Section name="typeoption" title="TypeOption (tipo seleccionable)">
+      {states.map((state) => (
+        <Fig key={state.id} id={`typeoption-${state.id}`} caption={state.caption}>
+          <span className={s.iconRow}>
+            <TypeOption type="fire" label={pokemonTypeLabels.fire} pressed={false} {...state.props} />
+            <TypeOption type="dark" label={pokemonTypeLabels.dark} pressed={false} {...state.props} />
+          </span>
+        </Fig>
+      ))}
     </Section>
   );
 }
@@ -894,6 +924,7 @@ export function Gallery() {
       <ToggleSection />
       <BadgeSection />
       <TypeBadgeSection />
+      <TypeOptionSection />
       <ChipSection />
       <BarSection />
       <TimerSection />

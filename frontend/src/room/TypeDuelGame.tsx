@@ -1,35 +1,132 @@
-import { POKEMON_TYPES, TYPE_DUEL_MAX_INVALID_COMBINATIONS, type RoomView, type TypeDuelPlayerState, type TypeDuelPublicState } from '@pokemon-universe/shared/public';
-import { ArrowRight, Check, Clock3, Eye, Hourglass, LockKeyhole, Search, Swords, Target, Trophy, X } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { TYPE_DUEL_MAX_INVALID_COMBINATIONS, type PokemonType, type RoomView, type TypeDuelConfig, type TypeDuelPlayerState, type TypeDuelPublicState } from '@pokemon-universe/shared/public';
+import { useMemo, useRef, useState } from 'react';
+import { Avatar } from '../components/Avatar';
+import { ServerTimer } from '../components/ServerTimer';
+import { TypeDuelAttempts, TypeDuelContinue, TypeDuelHud, TypeDuelPickBoard, TypeDuelPlate, TypeDuelResultScene, TypeDuelSearchNote, TypeDuelSidebar, type PickDuelist } from '../games/type-duel/TypeDuelParts';
+import { typeDuelAnnouncement, typeDuelFocusKey, typeDuelOwnLastAttempt, typeDuelPhaseLabel, typeDuelPlateKind, typeDuelTimerLabel, typeDuelVerdict } from '../games/type-duel/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
-import { PokemonTypeBadge as TypeBadge, pokemonTypeLabels as typeLabels, pokemonTypeVisuals as typeVisuals } from '../components/PokemonTypeBadge';
+import { cx, ScreenSplit } from '../ui';
+import { GameSkipSlot } from './GameSkipSlot';
+import { useFocusOnTransition } from './focus-transition';
+import { playerColor } from './player-color';
 import { PokemonSelector } from './PokemonSelector';
 import { typeDuelIsLastResult, typeDuelWillRetry } from './type-duel-flow';
 import { typeDuelHeading, typeDuelResultText } from './type-duel-result';
 import { TypeDuelVersus } from './TypeDuelVersus';
+import s from '../games/type-duel/TypeDuel.module.css';
+
+/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
+const ignoreFailure = () => undefined;
+
+/** Puntos del ganador de un duelo (regla del motor). */
+const WIN_POINTS = 5;
+
+/**
+ * Type Duel (spec §2 y §6 «Juegos»). Arriba se mira: la placa de la ronda y la escena de la fase (la elección secreta
+ * frente a frente, la losa del VS con los tipos y cuántos Pokémon valen, la combinación imposible o el resultado del
+ * duelo). Abajo se actúa: los 18 tipos, el tipo bloqueado, el buscador de la carrera o el resultado con los puntos y la
+ * acción del host. Al lado, el marcador y los intentos públicos.
+ *
+ * Privacidad: solo se pinta lo proyectado. Mientras se elige, del rival solo se sabe si ha bloqueado
+ * (`typeSelectionCompletedIds`); los tipos salen cuando el servidor los revela (`revealedTypes`), el propio antes solo
+ * desde el estado del jugador (`ownType`).
+ */
 export function TypeDuelGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const game = room.game as TypeDuelPublicState; const player = room.gamePlayerState as TypeDuelPlayerState; const members = useMemo(() => new Map(room.members.map((m) => [m.id, m])), [room.members]); const offset = useServerOffset(room.serverNow); const remaining = Math.ceil(useRemainingMs(game.roundEndsAt ?? game.nextTransitionAt, offset) / 1000);
-  const generations = (room.selectedGameConfig as { generations: number[] }).generations; const { pokemon, loading: poolLoading, error: poolError, retry: retryPool } = usePokemonPool({ generations, includeForms: true }); const [pending, setPending] = useState(false); const [error, setError] = useState('');
-  useEffect(() => { setError(''); }, [game.phase, game.roundNumber]);
-  const names = game.participants.map((id) => members.get(id)?.displayName ?? id); const cooldownMs = useRemainingMs(player.cooldownUntil, offset);
-  const roundWinnerName = game.lastRound?.winnerId ? members.get(game.lastRound.winnerId)?.displayName ?? game.lastRound.winnerId : null;
-  const winningAttempt = game.lastRound?.attempts.find((attempt) => attempt.correct) ?? null;
-  const resultText = game.lastRound ? typeDuelResultText(game.lastRound, game.participants, (id) => members.get(id)?.displayName ?? id) : null;
-  const resultTypes = game.lastRound ? game.lastRound.requiredTypes ?? Object.values(game.lastRound.selectedTypes) : [];
+  const game = room.game as TypeDuelPublicState;
+  const player = room.gamePlayerState as TypeDuelPlayerState | null;
+  const config = room.selectedGameConfig as Partial<TypeDuelConfig> | null;
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const nameOf = (id: string) => members.get(id)?.displayName ?? id;
+  const offset = useServerOffset(room.serverNow);
+  const deadline = game.roundEndsAt ?? game.nextTransitionAt;
+  const remaining = Math.ceil(useRemainingMs(deadline, offset) / 1000);
+  const cooldownMs = useRemainingMs(player?.cooldownUntil ?? 0, offset);
+  const { pokemon, loading: poolLoading, error: poolError, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [], includeForms: true });
+  const [pendingType, setPendingType] = useState<PokemonType | null>(null);
+  const [continuing, setContinuing] = useState(false);
+
+  const participant = player?.participant === true;
+  const kind = typeDuelPlateKind(game.phase, player);
+  const names = game.participants.map(nameOf);
+  const lastRound = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
+  const resultText = lastRound ? typeDuelResultText(lastRound, game.participants, nameOf) : null;
+  const resultTypes = lastRound ? lastRound.requiredTypes ?? Object.values(lastRound.selectedTypes) : [];
+  const winningAttempt = lastRound?.attempts.find((attempt) => attempt.correct) ?? null;
+  const lastAttempt = typeDuelOwnLastAttempt(game.attempts, selfId);
+  const verdict = typeDuelVerdict(lastRound, selfId, participant);
+  const wonPoints = lastRound?.winnerId === selfId ? WIN_POINTS : 0;
+  const last = typeDuelIsLastResult(game);
+
   // El choque suena al revelarse los tipos (también tras reintentar una combinación imposible: entre medias la clave es null).
   useSfxCue('clang', game.phase === 'TYPE_REVEAL' ? game.roundNumber : null);
   useSfxCue('win', game.phase === 'ROUND_RESULTS' && game.lastRound?.winnerId === selfId ? game.roundNumber : null);
-  async function act(action: unknown) { setPending(true); setError(''); try { await onAction(action); } catch (caught) { setError(caught instanceof Error ? caught.message : 'Acción rechazada'); } finally { setPending(false); } }
-  return <section className="mx-auto max-w-7xl px-4 py-6"><header className="mb-3 flex flex-wrap items-end justify-between gap-3"><div><span className="label">Ronda {game.roundNumber} de {game.totalRounds}</span><h1 className="font-display text-3xl"><Swords className="mr-2 inline text-berry" />{typeDuelHeading(game.phase, names)}</h1></div><span className="chip text-lg tabular-nums"><Clock3 /> {remaining}s</span></header>
-    <div className="mb-5 h-2 overflow-hidden rounded-full bg-ink/10"><div className="h-full origin-left rounded-full bg-gradient-to-r from-berry to-electric transition-transform duration-300 motion-reduce:transition-none" style={{ transform: `scaleX(${Math.min(100, Math.max(4, game.completedRounds / game.totalRounds * 100)) / 100})` }} /></div>
-    {game.phase === 'SELECTING_TYPES' && <div className="card text-center"><div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-berry/15 text-berry"><LockKeyhole size={32} /></div><h2 className="mt-3 font-display text-3xl">Elegid un tipo en secreto</h2><p className="mt-1 font-bold text-ink/65">Las elecciones se revelarán simultáneamente.</p><div className="mx-auto my-5 grid max-w-xl grid-cols-2 gap-3">{game.participants.map((id) => { const complete = game.typeSelectionCompletedIds.includes(id); return <div key={id} className={`flex items-center gap-3 rounded-2xl border p-3 text-left ${complete ? 'border-leaf/35 bg-leaf/10' : 'border-ink/10 bg-surface-raised'}`}><span className="grid h-10 w-10 place-items-center rounded-xl bg-ink/5 font-display font-bold">{members.get(id)?.displayName.slice(0, 1).toUpperCase()}</span><span className="min-w-0 flex-1"><strong className="block truncate" title={members.get(id)?.displayName}>{members.get(id)?.displayName}</strong><small className={`font-extrabold ${complete ? 'text-leaf' : 'text-ink/55'}`}>{complete ? 'Tipo bloqueado ✓' : 'Eligiendo…'}</small></span></div>; })}</div>{player.canSelectType ? <div className="mx-auto grid max-w-5xl grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">{POKEMON_TYPES.map((type) => { const visual = typeVisuals[type]; return <button key={type} disabled={pending} aria-label={`Elegir tipo ${typeLabels[type]}`} onClick={() => void act({ type: 'SELECT_TYPE', pokemonType: type })} className={`type-badge type-badge-${type} group flex min-h-14 items-center gap-2.5 rounded-xl border px-3 py-2 text-left font-extrabold transition hover:brightness-125 disabled:cursor-wait disabled:opacity-55`}><span className="type-badge-icon grid h-8 w-8 shrink-0 place-items-center rounded-lg text-lg" aria-hidden="true">{visual.icon}</span><span className="truncate" title={typeLabels[type]}>{typeLabels[type]}</span></button>; })}</div> : player.ownType ? <p className="flex flex-wrap items-center justify-center gap-2 font-extrabold text-leaf"><Check /> Elegiste <TypeBadge type={player.ownType} /> El tipo rival sigue oculto.</p> : <p className="font-bold text-ink/65"><Eye className="mr-2 inline" />Estás observando la selección.</p>}</div>}
-    {(game.phase === 'TYPE_REVEAL' || game.phase === 'POKEMON_SEARCH') && <TypeDuelVersus duelists={[{ id: game.participants[0], name: names[0]!, type: game.revealedTypes[game.participants[0]] }, { id: game.participants[1], name: names[1]!, type: game.revealedTypes[game.participants[1]] }]} requiredTypes={game.requiredTypes} solutionCount={game.solutionCount} />}
-    {game.phase === 'INVALID_COMBINATION' && <div className="mb-5 rounded-2xl border border-berry bg-berry/10 p-4 text-center"><div className="flex flex-wrap justify-center gap-5">{game.participants.map((id) => <span key={id} className="flex items-center gap-2 font-display text-xl">{members.get(id)?.displayName} → <TypeBadge type={game.revealedTypes[id]!} /></span>)}</div><p className="mt-3 font-extrabold text-berry">{`No existe ningún Pokémon válido (intento ${game.invalidCombinations} de ${TYPE_DUEL_MAX_INVALID_COMBINATIONS}).`}{typeDuelWillRetry(game) && ' Los mismos jugadores elegirán de nuevo.'}</p></div>}
-    {game.phase === 'POKEMON_SEARCH' && <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]"><div>{player.participant ? <div className="card !p-4 md:!p-5"><div className="mb-3 flex items-center gap-3 text-left sm:mb-4"><span className="hidden h-12 w-12 shrink-0 place-items-center rounded-2xl bg-aqua/15 text-aqua sm:grid"><Target /></span><div><span className="label !mb-0">Carrera activa</span><h2 className="font-display text-xl sm:text-2xl">Encuentra la combinación exacta</h2></div></div>{cooldownMs > 0 && <p className="mb-3 flex items-center gap-2 rounded-xl bg-electric/10 p-3 font-bold text-electric"><Hourglass className="animate-pulse" size={18} /> Espera {(cooldownMs / 1000).toFixed(1)}s antes de volver a intentar.</p>}<PokemonSelector key={`${game.roundNumber}-${game.phase}`} pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set()} disabled={false} confirmationDisabled={pending || cooldownMs > 0} variant="embedded" inputLabel="Buscar Pokémon con la combinación exacta" onSelect={(pokemonId) => onAction({ type: 'ATTEMPT_POKEMON', pokemonId })} /></div> : <div className="card grid min-h-64 place-items-center text-center"><div><Eye className="mx-auto text-aqua" size={52} /><h2 className="mt-3 font-display text-2xl">Observas este duelo</h2><p className="mt-1 font-bold text-ink/65">Los intentos aparecerán en directo.</p></div></div>}</div><AttemptHistory game={game} names={members} /></div>}
-    {game.phase === 'ROUND_RESULTS' && <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_390px]"><div className="card reveal-pop text-center"><div className={`mx-auto grid h-20 w-20 place-items-center rounded-full ${roundWinnerName ? 'bg-electric/20 text-electric' : 'bg-ink/5 text-ink/65'}`}>{roundWinnerName ? <Trophy size={42} /> : <Hourglass size={38} />}</div><span className="label mt-3">Resultado del duelo</span><h2 className="font-display text-4xl">{resultText?.title}</h2>{resultText?.detail && <p className="mt-2 font-bold text-ink/65">{resultText.detail}</p>}{resultTypes.length > 0 && <div className="mt-3 flex flex-wrap items-center justify-center gap-2">{resultTypes.map((type, index) => <TypeBadge key={`${type}-${index}`} type={type} />)}</div>}{roundWinnerName && <span className="mt-2 inline-flex rounded-full bg-leaf/15 px-4 py-1.5 font-display text-xl font-bold tabular-nums text-leaf">+5 puntos</span>}{winningAttempt && <div className="mx-auto mt-5 flex max-w-md items-center justify-center gap-5 rounded-2xl border border-leaf/30 bg-leaf/10 p-4 text-left"><img className="h-32 w-32 object-contain drop-shadow-lg" src={winningAttempt.sprite} alt={winningAttempt.pokemonName} /><div><span className="label !mb-0">Respuesta ganadora</span><strong className="block font-display text-2xl">{winningAttempt.pokemonName}</strong><span className="text-sm font-extrabold text-leaf">✓ Combinación válida</span></div></div>}{game.lastRound?.solutions.length ? <div className="mt-6"><span className="label">{game.lastRound.reason === 'WINNER' ? 'También podíais haber elegido' : 'Podíais haber elegido'}</span><div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{game.lastRound.solutions.map((solution) => <div key={solution.id} className="rounded-2xl border border-ink/10 bg-surface-raised p-2 transition hover:border-aqua/40"><img className="mx-auto h-24 w-24 object-contain" src={solution.sprite} alt="" /><strong className="block truncate text-sm" title={solution.name}>{solution.name}</strong></div>)}</div></div> : null}<div className="mt-6 flex flex-col items-center gap-2 border-t border-ink/10 pt-5"><p className="font-bold tabular-nums text-ink/65">Siguiente ronda en {remaining}s</p>{selfId === room.hostId && <button className="btn-primary" disabled={pending} aria-busy={pending} onClick={() => void act({ type: 'CONTINUE' })}>{typeDuelIsLastResult(game) ? 'Ver clasificación' : 'Siguiente ronda'} <ArrowRight size={18} /></button>}</div></div><AttemptHistory game={game} names={members} large /></div>}
-    {error && <p className="status-error mt-4 text-center" role="alert">{error}</p>}
-  </section>;
+
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(typeDuelFocusKey(kind, game.roundNumber, game.invalidCombinations), titleRef);
+
+  async function pick(type: PokemonType) {
+    if (pendingType || !player?.canSelectType) return;
+    setPendingType(type);
+    try { await onAction({ type: 'SELECT_TYPE', pokemonType: type }).catch(ignoreFailure); } finally { setPendingType(null); }
+  }
+  async function continueNow() {
+    if (continuing) return;
+    setContinuing(true);
+    try { await onAction({ type: 'CONTINUE' }).catch(ignoreFailure); } finally { setContinuing(false); }
+  }
+
+  const totalMs = game.phase === 'SELECTING_TYPES' ? (config?.typeSelectSeconds ?? 15) * 1_000 : game.phase === 'POKEMON_SEARCH' ? (config?.searchSeconds ?? 20) * 1_000 : undefined;
+  const timer = deadline !== null ? <ServerTimer deadline={deadline} serverOffset={offset} label={typeDuelTimerLabel(game)} {...(totalMs ? { totalMs } : {})} /> : null;
+  const countdown = game.phase === 'TYPE_REVEAL' ? `La carrera empieza en ${remaining}s.`
+    : game.phase === 'INVALID_COMBINATION' ? `Sigue en ${remaining}s.`
+      : `${last ? 'Clasificación' : 'Siguiente ronda'} en ${remaining}s`;
+
+  const duelist = (id: string): PickDuelist => ({ id, name: nameOf(id), member: members.get(id), color: playerColor(colors.get(id) ?? 0), locked: game.typeSelectionCompletedIds.includes(id), ownType: id === selfId ? player?.ownType ?? null : null });
+  const versusDuelists = [
+    { id: game.participants[0], name: names[0]!, type: game.revealedTypes[game.participants[0]], avatar: <Avatar name={names[0]!} avatar={members.get(game.participants[0])?.avatar} size="md" /> },
+    { id: game.participants[1], name: names[1]!, type: game.revealedTypes[game.participants[1]], avatar: <Avatar name={names[1]!} avatar={members.get(game.participants[1])?.avatar} size="md" /> },
+  ] as const;
+
+  const scene = game.phase === 'SELECTING_TYPES'
+    ? <TypeDuelPickBoard duelists={[duelist(game.participants[0]), duelist(game.participants[1])]} selfId={selfId} />
+    : game.phase === 'TYPE_REVEAL' || game.phase === 'POKEMON_SEARCH'
+      ? <TypeDuelVersus duelists={versusDuelists} requiredTypes={game.requiredTypes} solutionCount={game.solutionCount} />
+      : game.phase === 'INVALID_COMBINATION'
+        ? <TypeDuelVersus duelists={versusDuelists} requiredTypes={null} solutionCount={null}
+          impossible={<p className={s.impossible}>{`No existe ningún Pokémon válido (intento ${game.invalidCombinations} de ${TYPE_DUEL_MAX_INVALID_COMBINATIONS}).`}{typeDuelWillRetry(game) && ' Los mismos jugadores elegirán de nuevo.'}</p>} />
+        : lastRound && resultText
+          ? <TypeDuelResultScene lastRound={lastRound} title={resultText.title} detail={resultText.detail} types={resultTypes} winningAttempt={winningAttempt} winnerName={lastRound.winnerId ? nameOf(lastRound.winnerId) : null} />
+          : null;
+
+  const top = <div className={cx(s.top, kind === 'search' && s.topSearch, kind === 'pick' && s.topPick)}>
+    <TypeDuelHud roundNumber={game.roundNumber} totalRounds={game.totalRounds} phaseLabel={typeDuelPhaseLabel(game.phase)} heading={typeDuelHeading(game.phase, names)} timer={timer} />
+    {scene}
+  </div>;
+
+  const showAttempts = game.phase === 'POKEMON_SEARCH' || game.phase === 'ROUND_RESULTS';
+  const side = <div className={s.sideColumn}>
+    <TypeDuelSidebar game={game} members={members} colors={colors} selfId={selfId} className={s.sidePanel} />
+    {showAttempts && <TypeDuelAttempts attempts={game.attempts} members={members} colors={colors} className={s.attemptsPanel} />}
+    <GameSkipSlot className={s.skip} />
+  </div>;
+
+  const search = kind === 'search' && <div className={s.search}>
+    <PokemonSelector key={`${game.roundNumber}-${game.phase}`} pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set()} disabled={false}
+      confirmationDisabled={cooldownMs > 0} variant="embedded" inputLabel="Buscar Pokémon con la combinación exacta"
+      onSelect={(pokemonId) => onAction({ type: 'ATTEMPT_POKEMON', pokemonId }).catch(ignoreFailure)} />
+  </div>;
+
+  const announcement = typeDuelAnnouncement({ kind, roundNumber: game.roundNumber, ownType: player?.ownType ?? null, requiredTypes: game.requiredTypes, solutionCount: game.solutionCount, lastAttempt, verdict });
+  const bottom = <TypeDuelPlate kind={kind} ownType={player?.ownType ?? null} pendingType={pendingType} phase={game.phase} countdown={countdown} verdict={verdict} wonPoints={wonPoints}
+    willRetry={typeDuelWillRetry(game)} search={search} searchNote={<TypeDuelSearchNote cooldownMs={cooldownMs} lastAttempt={lastAttempt} />}
+    hostAction={selfId === room.hostId ? <TypeDuelContinue last={last} pending={continuing} onContinue={() => void continueNow()} /> : undefined}
+    titleRef={titleRef} onPick={(type) => void pick(type)} />;
+
+  return <div className={cx('content-row', s.screen)}>
+    <ScreenSplit fill top={top} side={side} bottom={bottom} />
+    <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
+  </div>;
 }
-function AttemptHistory({ game, names, large = false }: { game: TypeDuelPublicState; names: Map<string, RoomView['members'][number]>; large?: boolean }) { return <aside className="card !p-4"><div className="mb-3 flex items-center justify-between"><h2 className="font-display text-xl">Intentos públicos</h2><span className="chip tabular-nums">{game.attempts.length}</span></div><div className="space-y-2">{game.attempts.map((attempt, index) => <div key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`} className={`flex items-center gap-3 rounded-2xl border p-3 ${attempt.correct ? 'border-leaf/25 bg-leaf/10' : 'border-berry/20 bg-berry/10'}`}><img className={`${large ? 'h-20 w-20' : 'h-14 w-14'} shrink-0 object-contain`} src={attempt.sprite} alt="" /><div className="min-w-0 flex-1"><span className="block truncate text-xs font-bold text-ink/65" title={`${names.get(attempt.playerId)?.displayName ?? ''} probó`}>{names.get(attempt.playerId)?.displayName} probó</span><strong className={`${large ? 'text-lg' : ''} block truncate`} title={attempt.pokemonName}>{attempt.pokemonName}</strong><span className={`text-xs font-extrabold ${attempt.correct ? 'text-leaf' : 'text-berry'}`}>{attempt.correct ? 'Combinación válida' : 'No coincide con los tipos'}</span></div>{attempt.correct ? <Check className="shrink-0 text-leaf" size={large ? 26 : 20} /> : <X className="shrink-0 text-berry" size={large ? 26 : 20} />}</div>)}{game.attempts.length === 0 && <div className="empty-state grid min-h-28 place-items-center !p-4"><div><Search className="mx-auto mb-2 text-ink/45" /><p className="text-sm font-bold">Todavía no hay intentos.</p></div></div>}</div></aside>; }
