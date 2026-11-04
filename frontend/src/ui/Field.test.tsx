@@ -1,3 +1,4 @@
+import { Search } from 'lucide-react';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
@@ -8,6 +9,12 @@ import { Toggle } from './Toggle';
 const noop = () => undefined;
 
 describe('Field', () => {
+  it('con icono y grande: el icono es decorativo y el input sigue con su etiqueta', () => {
+    const html = renderToStaticMarkup(createElement(Field, { label: 'Buscar Pokémon', hideLabel: true, icon: Search, large: true, hint: 'Enter elige' }));
+    expect(html).toMatch(/<svg[^>]*aria-hidden="true"/);
+    expect(html).toMatch(/<label for="([^"]+)"[^>]*>Buscar Pokémon<\/label>.*<input[^>]*id="\1"/);
+    expect(html).toContain('aria-describedby=');
+  });
   it('con error marca aria-invalid y apunta al id del error', () => {
     const html = renderToStaticMarkup(createElement(Field, { label: 'Nombre', error: 'Obligatorio' }));
     expect(html).toContain('aria-invalid="true"');

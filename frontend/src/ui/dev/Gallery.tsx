@@ -8,6 +8,13 @@ import { Bell, Heart, LogOut, Newspaper, Settings, ShieldCheck, Star, Trophy, Vo
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { AudioSettingsPanel } from '../../components/AudioSettingsDialog';
+import { Avatar } from '../../components/Avatar';
+import { ServerTimer } from '../../components/ServerTimer';
+import { ConfigRange } from '../../room/ConfigRange';
+import { playerColor } from '../../room/player-color';
+import { PokemonSelector } from '../../room/PokemonSelector';
+import { ResultsShell } from '../../room/ResultsShell';
+import type { ResultsStanding } from '../../room/ResultsShell';
 import { pokemonTypeLabels } from '../../components/PokemonTypeBadge';
 import type { PokemonType } from '../../styles/tokens';
 import { typeColors } from '../../styles/tokens';
@@ -758,6 +765,71 @@ function ScreenSplitSection() {
   );
 }
 
+/* Piezas que comparten los minijuegos (F4): buscador, temporizador de servidor, deslizador, avatar y resultados. */
+const SELECTOR_POKEMON = ['Pikachu', 'Pichu', 'Raichu', 'Pikachu Libre', 'Pikachu Coqueta', 'Chikorita', 'Chinchou'].map((name) => ({ id: name.toLowerCase(), name, sprite: '' }));
+const asyncNoop = async () => undefined;
+const RESULTS: ResultsStanding[] = [
+  { id: 'misty', position: 1, name: 'Misty', points: 12, color: playerColor(0), meta: '4 aciertos · mejor racha 3' },
+  { id: 'ash', position: 2, name: 'Ash', points: 9, color: playerColor(1), meta: '3 aciertos' },
+  { id: 'brock', position: 3, name: 'Brock', points: 4, color: playerColor(2) },
+  { id: 'gary', position: 4, name: 'Entrenador con un nombre larguísimo de verdad', points: 0, color: playerColor(3) },
+];
+
+function GamePiecesSection() {
+  // Plazo fijo al montar: el número corre, pero no depende de cuándo se capture.
+  const [deadline] = useState(() => Date.now() + 45_000);
+  return (
+    <Section name="game-pieces" title="Piezas de juego">
+      <Fig id="selector-prompt" caption="Buscador · sin búsqueda (panel)" wide>
+        <PokemonSelector pokemon={SELECTOR_POKEMON} locked={new Set()} disabled={false} autoFocus={false} onSelect={asyncNoop} />
+      </Fig>
+      <Fig id="selector-results" caption="Buscador · resultados (Pichu bloqueado, Enter elige Pikachu)" wide>
+        <PokemonSelector pokemon={SELECTOR_POKEMON} locked={new Set(['pichu'])} disabled={false} autoFocus={false} initialQuery="chu" onSelect={asyncNoop} />
+      </Fig>
+      <Fig id="selector-loading" caption="Buscador · cargando (incrustado)" wide cream>
+        <PokemonSelector variant="embedded" pokemon={[]} locked={new Set()} disabled={false} autoFocus={false} loading onSelect={asyncNoop} />
+      </Fig>
+      <Fig id="selector-error" caption="Buscador · error con Reintentar" wide cream>
+        <PokemonSelector variant="embedded" pokemon={[]} locked={new Set()} disabled={false} autoFocus={false} loadError="No se pudo cargar el buscador de Pokémon. Comprueba la conexión." onRetry={noop} onSelect={asyncNoop} />
+      </Fig>
+      <Fig id="selector-empty" caption="Buscador · sin coincidencias" wide cream>
+        <PokemonSelector variant="embedded" pokemon={SELECTOR_POKEMON} locked={new Set()} disabled={false} autoFocus={false} initialQuery="zzzz" onSelect={asyncNoop} />
+      </Fig>
+      <Fig id="servertimer-running" caption="Temporizador de servidor · en marcha">
+        <ServerTimer deadline={deadline} serverOffset={0} totalMs={60_000} label="Siguiente ronda" />
+      </Fig>
+      <Fig id="servertimer-idle" caption="Temporizador de servidor · sin plazo">
+        <ServerTimer deadline={null} serverOffset={0} label="Para votar" />
+      </Fig>
+      <Fig id="configrange" caption="Ajuste de configuración (ConfigRange)">
+        <span className={s.barBox}>
+          <ConfigRange label="Tiempo por ronda" value={30} min={10} max={60} step={5} formatValue={(v) => `${v} s`} hint="Lo que tiene cada jugador para elegir." onCommit={asyncNoop} />
+        </span>
+      </Fig>
+      <Fig id="configrange-disabled" caption="Ajuste · solo lectura (invitado)">
+        <span className={s.barBox}>
+          <ConfigRange label="Número de rondas" value={5} min={1} max={10} disabled onCommit={asyncNoop} />
+        </span>
+      </Fig>
+      <Fig id="avatar-sizes" caption="Avatar · inicial en los seis tamaños">
+        {(['xs', 'sm', 'md', 'lg', 'xl', 'xxl'] as const).map((size) => (
+          <Avatar key={size} name="Misty" size={size} />
+        ))}
+      </Fig>
+      <Fig id="avatar-presence" caption="Avatar · imagen y presencia">
+        <Avatar name="Aqua" avatar={{ type: 'PRESET', value: 'trainer-aqua' }} size="lg" presence="CONNECTED" />
+        <Avatar name="Brock" size="lg" presence="TEMPORARILY_DISCONNECTED" />
+        <Avatar name="Gary" size="lg" presence="LEFT" />
+      </Fig>
+      <Fig id="results-shell" caption="Resultados de partida (ResultsShell con clasificación; Ash eres tú)" wide>
+        <ResultsShell title="Resultado de la partida" subtitle="Pokédex Distance · Partida 2" standings={RESULTS} selfId="ash">
+          <p>Aquí cada juego añade lo suyo (mejor acierto, tablas) y las acciones del anfitrión.</p>
+        </ResultsShell>
+      </Fig>
+    </Section>
+  );
+}
+
 export function Gallery() {
   const { toasts, push, close } = useToasts();
 
@@ -796,6 +868,7 @@ export function Gallery() {
       <ScorePopSection />
       <ScreenTransitionSection />
       <ScreenSplitSection />
+      <GamePiecesSection />
       <ToastStack toasts={toasts} onClose={close} />
     </main>
   );

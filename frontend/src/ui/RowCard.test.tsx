@@ -39,6 +39,13 @@ describe('Card', () => {
     expect(html).toContain('<button');
     expect(html).toContain('aria-pressed="true"');
   });
+  it('de acción: botón sin aria-pressed, deshabilitable, pequeña y con sprite decorativo', () => {
+    const html = renderToStaticMarkup(createElement(Card, { name: 'Pichu', sprite: '/p.png', size: 'sm', action: true, decorativeSprite: true, disabled: true, onSelect: () => undefined }));
+    expect(html).toContain('<button');
+    expect(html).not.toContain('aria-pressed');
+    expect(html).toContain('disabled=""');
+    expect(html).toContain('alt=""');
+  });
   it('correcta muestra texto además del color', () => {
     expect(renderToStaticMarkup(createElement(Card, { name: 'Mew', state: 'correct' }))).toContain('Correcta');
   });

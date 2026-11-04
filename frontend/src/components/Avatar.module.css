@@ -1,0 +1,90 @@
+/* Avatar: círculo con el degradado azul de los tokens; la inicial va en blanco con contorno (`.ol`). */
+.avatar {
+  position: relative;
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue), var(--navy-3));
+  color: var(--white);
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1;
+}
+.img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.initial {
+  display: block;
+}
+/* Tamaños de siempre (24, 32, 44, 64, 96 y 112/144 px); la inicial nunca baja de 13 px. */
+.xs {
+  width: 24px;
+  height: 24px;
+  font-size: var(--fs-13);
+}
+.sm {
+  width: 32px;
+  height: 32px;
+  font-size: var(--fs-13);
+}
+.md {
+  width: 44px;
+  height: 44px;
+  font-size: var(--fs-15);
+}
+.lg {
+  width: 64px;
+  height: 64px;
+  font-size: var(--fs-22);
+}
+.xl {
+  width: 96px;
+  height: 96px;
+  font-size: var(--fs-34);
+}
+.xxl {
+  width: 112px;
+  height: 112px;
+  font-size: var(--fs-44);
+}
+@media (min-width: 1024px) {
+  .xxl {
+    width: 144px;
+    height: 144px;
+  }
+}
+/* Punto de presencia: el estado también va en el `title` y en el texto de la lista. */
+.presence {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 28%;
+  height: 28%;
+  min-width: 8px;
+  min-height: 8px;
+  border: var(--ol-1-5) solid var(--navy);
+  border-radius: 50%;
+}
+.connected {
+  background: var(--ok);
+}
+.reconnecting {
+  background: var(--warn);
+}
+.left {
+  background: var(--ink-2);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .reconnecting {
+    animation: blink 1s ease-in-out infinite alternate;
+  }
+}
+@keyframes blink {
+  to {
+    opacity: 0.35;
+  }
+}

@@ -1,7 +1,9 @@
+import type { LucideIcon } from 'lucide-react';
 import { useId } from 'react';
 import type { InputHTMLAttributes, ReactNode, Ref } from 'react';
 import { cx } from './cx';
 import type { ForcedState } from './cx';
+import { Icon } from './Icon';
 import s from './Field.module.css';
 
 export interface FieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'className'> {
@@ -15,6 +17,10 @@ export interface FieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   hideLabel?: boolean;
   /** Código corto (sala): letra grande de display, centrada y espaciada, en mayúsculas y sin autocorrección. */
   code?: boolean;
+  /** Icono decorativo a la izquierda, dentro del campo (por ejemplo, la lupa de un buscador). */
+  icon?: LucideIcon;
+  /** Grande: 56 px de alto y letra de 22 px (buscadores principales). */
+  large?: boolean;
   className?: string;
   /** Solo galería: estado forzado. */
   forced?: ForcedState;
@@ -50,13 +56,21 @@ function describedBy(id: string, error?: string | null, hint?: string): string |
 }
 
 /** Campo de texto: crema con contorno de 3 px y texto en tinta. */
-export function Field({ label, error, hint, hideLabel, code, className, forced, id, ...rest }: FieldProps) {
+export function Field({ label, error, hint, hideLabel, code, icon, large, className, forced, id, ...rest }: FieldProps) {
   const auto = useId();
   const fid = id ?? auto;
   const codeProps = code ? { autoCapitalize: 'characters', autoComplete: 'off', autoCorrect: 'off', spellCheck: false } : {};
+  const input = <input {...codeProps} {...rest} id={fid} className={cx(s.input, code && s.code, large && s.lg, icon && s.withIcon, error && s.invalid, forced && s[forced])} aria-invalid={error ? true : undefined} aria-describedby={describedBy(fid, error, hint)} />;
   return (
     <Shell id={fid} label={label} hideLabel={hideLabel} error={error} hint={hint} className={className}>
-      <input {...codeProps} {...rest} id={fid} className={cx(s.input, code && s.code, error && s.invalid, forced && s[forced])} aria-invalid={error ? true : undefined} aria-describedby={describedBy(fid, error, hint)} />
+      {icon ? (
+        <span className={s.control}>
+          <Icon icon={icon} size={large ? 24 : 22} className={s.icon} />
+          {input}
+        </span>
+      ) : (
+        input
+      )}
     </Shell>
   );
 }

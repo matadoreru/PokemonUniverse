@@ -21,15 +21,29 @@
   cursor: pointer;
   transition: transform var(--t-press) var(--ease);
 }
-.button:hover {
+.button:hover:not(:disabled) {
   transform: translateY(-1px);
 }
 .button:focus-visible {
   outline: var(--ol-3) solid var(--focus-ring);
   outline-offset: 2px;
 }
-.button:active {
+.button:active:not(:disabled) {
   transform: translateY(4px);
+}
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+/* Pequeña: rejillas de resultados (buscador). */
+.sm {
+  gap: var(--sp-1);
+  padding: var(--sp-2);
+}
+.sm .art {
+  width: 56px;
+  height: 56px;
 }
 .selected {
   background: var(--yellow-l);

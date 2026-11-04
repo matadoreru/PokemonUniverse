@@ -1,0 +1,75 @@
+.shell {
+  width: 100%;
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: var(--sp-5) var(--sp-3);
+}
+.body {
+  padding: var(--sp-5) var(--sp-4);
+}
+@media (min-width: 640px) {
+  .body {
+    padding: var(--sp-5);
+  }
+}
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-5);
+  text-align: center;
+}
+.trophy {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: 50%;
+  background: var(--yellow);
+  color: var(--navy);
+  box-shadow: var(--sh-hard-4);
+}
+.subtitle {
+  text-wrap: balance;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sky-2);
+}
+.title {
+  font: 800 var(--fs-34) / var(--lh-display) var(--font-display);
+  color: var(--white);
+  text-wrap: balance;
+}
+.standings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-5);
+}
+/* Podio: algo más de aire; el resto de franjas va compacto. */
+.podium + li:not(.podium) {
+  margin-top: var(--sp-2);
+}
+.points {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+/* El «+N» sube junto a la cifra sin moverla (dentro de la franja, que recorta lo que sobresale). */
+.pop {
+  position: absolute;
+  right: calc(100% + var(--sp-2));
+  top: 50%;
+  margin-top: -11px;
+}
+/* Insignia y estadísticas: bajan de línea en vez de salirse de la franja (390 px). */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  min-width: 0;
+}

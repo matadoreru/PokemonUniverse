@@ -26,13 +26,15 @@ type Panel = ComponentType<{ config: unknown; disabled: boolean; onChange(config
 interface NumericField { minValue: number | null; maxValue: number | null }
 interface Range { min: number; max: number }
 
-/** Reads every `<input type="range">` of the static markup, keyed by its aria-label. */
+/** Reads every `<input type="range">` of the static markup, keyed by its accessible label. */
 function renderRanges(Panel: Panel, config: unknown): Map<string, Range> {
   const markup = renderToStaticMarkup(createElement(Panel, { config, disabled: false, onChange: async () => {} }));
   const ranges = new Map<string, Range>();
   for (const [input] of markup.matchAll(/<input[^>]*type="range"[^>]*>/g)) {
     const attribute = (name: string) => input.match(new RegExp(`${name}="([^"]*)"`))?.[1];
-    const label = attribute('aria-label');
+    // El deslizador del catálogo se nombra con su <label for>; se admite también aria-label.
+    const id = attribute('id');
+    const label = attribute('aria-label') ?? (id ? markup.match(new RegExp(`<label for="${id}"[^>]*>([^<]*)</label>`))?.[1] : undefined);
     if (label) ranges.set(label, { min: Number(attribute('min')), max: Number(attribute('max')) });
   }
   return ranges;

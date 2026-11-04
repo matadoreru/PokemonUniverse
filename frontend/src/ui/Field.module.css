@@ -59,6 +59,27 @@
 .code::placeholder {
   font-weight: 800;
 }
+/* Grande (buscador principal) y con icono a la izquierda. */
+.lg {
+  min-height: 56px;
+  font-size: var(--fs-22);
+}
+.control {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+.icon {
+  position: absolute;
+  left: var(--sp-4);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-2);
+  pointer-events: none;
+}
+.withIcon {
+  padding-left: calc(var(--sp-4) + 24px + var(--sp-3));
+}
 .invalid {
   border-color: var(--red-text);
 }

@@ -20,12 +20,20 @@ export interface CardProps {
    * (`alt=""`), porque el nombre ya va escrito debajo.
    */
   photo?: boolean;
+  /** Pequeña: sprite de 56 px y menos relleno (rejillas de resultados). */
+  size?: 'md' | 'sm';
+  /** Sprite decorativo (`alt=""`) cuando el nombre escrito basta, para que el nombre accesible sea solo el nombre. */
+  decorativeSprite?: boolean;
+  /** Con `onSelect`: botón de acción (elegir) en vez de conmutador, sin `aria-pressed`. */
+  action?: boolean;
+  /** Con `onSelect`: botón deshabilitado. */
+  disabled?: boolean;
   onSelect?: () => void;
   children?: ReactNode;
 }
 
 /** Carta de Pokémon; con `onSelect` es un botón conmutador. Correcta/incorrecta llevan icono y texto además del color. */
-export function Card({ sprite, name, number, types, state = 'idle', photo, onSelect, children }: CardProps) {
+export function Card({ sprite, name, number, types, state = 'idle', photo, size = 'md', decorativeSprite, action, disabled, onSelect, children }: CardProps) {
   // Suena al pasar a `revealing` (la carta se da la vuelta).
   const before = useRef<CardState>(state);
   useEffect(() => {
@@ -35,7 +43,7 @@ export function Card({ sprite, name, number, types, state = 'idle', photo, onSel
   const body = (
     <>
       <span className={cx(s.art, photo && s.photoArt)}>
-        {sprite ? <img src={sprite} alt={photo ? '' : name} loading="lazy" decoding="async" className={cx(s.img, photo && s.photo)} /> : <span className={s.placeholder} aria-hidden="true">?</span>}
+        {sprite ? <img src={sprite} alt={photo || decorativeSprite ? '' : name} loading="lazy" decoding="async" className={cx(s.img, photo && s.photo)} /> : <span className={s.placeholder} aria-hidden="true">?</span>}
       </span>
       <span className={s.name}>{name}</span>
       {number != null && <span className={s.num}>Nº {String(number).padStart(3, '0')}</span>}
@@ -61,10 +69,10 @@ export function Card({ sprite, name, number, types, state = 'idle', photo, onSel
       {children}
     </>
   );
-  const cls = cx(s.card, s[state], onSelect && s.button);
+  const cls = cx(s.card, s[state], size === 'sm' && s.sm, onSelect && s.button);
   if (onSelect) {
     return (
-      <button type="button" className={cls} aria-pressed={state === 'selected'} onClick={onSelect}>
+      <button type="button" className={cls} aria-pressed={action ? undefined : state === 'selected'} disabled={disabled} onClick={onSelect}>
         {body}
       </button>
     );

@@ -1,21 +1,30 @@
-import { Clock3 } from 'lucide-react';
-import { memo, useEffect, useRef } from 'react';
-import { audio } from '../audio';
-import { countdownCue } from '../ui/Timer';
+import { memo, useRef } from 'react';
+import { Timer } from '../ui';
 import { useRemainingMs } from '../hooks/useServerTime';
 
-export const ServerTimer = memo(function ServerTimer({ deadline, serverOffset, label = 'Tiempo' }: { deadline: number | null; serverOffset: number; label?: string }) {
+export interface ServerTimerTotal {
+  deadline: number | null;
+  totalMs: number;
+}
+
+/**
+ * Total de la barra cuando quien llama no lo da: lo que queda al ver un plazo por primera vez, redondeado al segundo de
+ * arriba. Con el mismo plazo se conserva (devuelve el mismo objeto); un plazo nuevo vuelve a medir.
+ */
+export function serverTimerTotal(previous: ServerTimerTotal | null, deadline: number | null, remainingMs: number): ServerTimerTotal {
+  if (deadline === null) return previous?.deadline === null ? previous : { deadline: null, totalMs: 0 };
+  if (previous?.deadline === deadline) return previous;
+  return { deadline, totalMs: Math.ceil(remainingMs / 1_000) * 1_000 };
+}
+
+/**
+ * Plazo del servidor con el `Timer` del catálogo: placa con la etiqueta, el número y la barra. El tictac de los 3
+ * últimos segundos lo pone el propio `Timer` (`useCountdownCue`), con `now` equivalente en el reloj del plazo.
+ */
+export const ServerTimer = memo(function ServerTimer({ deadline, serverOffset, label = 'Tiempo', totalMs }: { deadline: number | null; serverOffset: number; label?: string; /** Duración completa del plazo; sin ella, lo que quedaba al llegar. */ totalMs?: number }) {
   const remainingMs = useRemainingMs(deadline, serverOffset, 250);
-  const remaining = Math.ceil(remainingMs / 1_000);
-  // Cuenta atrás: un tictac por segundo en los 3 últimos; un plazo nuevo reinicia la cuenta.
-  const cued = useRef<{ deadline: number | null; secs: number | null }>({ deadline, secs: null });
-  useEffect(() => {
-    if (cued.current.deadline !== deadline) cued.current = { deadline, secs: null };
-    // `now` equivalente en el reloj del plazo, para reutilizar `countdownCue`.
-    const secs = countdownCue(deadline, deadline === null ? 0 : deadline - remainingMs, cued.current.secs);
-    if (secs === null) return;
-    cued.current.secs = secs;
-    audio.play('game.countdown');
-  }, [deadline, remainingMs]);
-  return <div className="text-center" role="timer" aria-label={`${remaining} segundos restantes`}><span className="block text-xs font-black uppercase tracking-[.15em] text-ink/60">{label}</span><strong className={`inline-flex min-w-[4.5ch] items-center justify-center gap-1.5 font-display text-3xl tabular-nums ${remaining <= 5 ? 'pokeddle-timer-urgent text-berry' : remaining <= 10 ? 'text-electric' : 'text-aqua'}`}><Clock3 size={21} />{remaining}s</strong></div>;
+  const measured = useRef<ServerTimerTotal | null>(null);
+  measured.current = serverTimerTotal(measured.current, deadline, remainingMs);
+  const now = deadline === null ? 0 : deadline - remainingMs;
+  return <Timer endsAt={deadline} now={now} totalMs={totalMs ?? measured.current.totalMs} label={label} showLabel />;
 });

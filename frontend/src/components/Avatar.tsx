@@ -1,9 +1,12 @@
 import { avatarPreset, type AvatarRef, type PresenceStatus } from '@pokemon-universe/shared/public';
 import { useEffect, useState } from 'react';
 import { apiAsset } from '../lib/api';
+import { cx } from '../ui';
+import s from './Avatar.module.css';
 
-const sizeClasses = { xs: 'h-6 w-6 text-xs', sm: 'h-8 w-8 text-xs', md: 'h-11 w-11 text-sm', lg: 'h-16 w-16 text-xl', xl: 'h-24 w-24 text-3xl', xxl: 'h-28 w-28 text-5xl lg:h-36 lg:w-36' } as const;
-const presenceClasses: Record<PresenceStatus, string> = { CONNECTED: 'bg-leaf', TEMPORARILY_DISCONNECTED: 'animate-pulse bg-electric', LEFT: 'bg-ink/30' };
+type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
+const presenceLabel: Record<PresenceStatus, string> = { CONNECTED: 'Conectado', TEMPORARILY_DISCONNECTED: 'Reconectando', LEFT: 'Desconectado' };
+const presenceClass: Record<PresenceStatus, string | undefined> = { CONNECTED: s.connected, TEMPORARILY_DISCONNECTED: s.reconnecting, LEFT: s.left };
 
 export function avatarSource(avatar: AvatarRef | undefined): string | null {
   if (avatar?.type === 'PRESET') return avatarPreset(avatar.value)?.asset ?? null;
@@ -11,11 +14,12 @@ export function avatarSource(avatar: AvatarRef | undefined): string | null {
   return null;
 }
 
-export function Avatar({ name, avatar, size = 'md', presence, className = '' }: { name: string; avatar?: AvatarRef | undefined; size?: keyof typeof sizeClasses; presence?: PresenceStatus | undefined; className?: string }) {
+/** Avatar redondo: la imagen del jugador o, sin ella, su inicial con contorno sobre el degradado azul de los tokens. */
+export function Avatar({ name, avatar, size = 'md', presence, className = '' }: { name: string; avatar?: AvatarRef | undefined; size?: AvatarSize; presence?: PresenceStatus | undefined; className?: string }) {
   const source = avatarSource(avatar); const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [source]);
-  return <span className={`relative inline-grid shrink-0 place-items-center overflow-visible rounded-full bg-gradient-to-br from-aqua to-electric font-display font-bold text-night ${sizeClasses[size]} ${className}`} aria-label={`Avatar de ${name}`}>
-    {source && !failed ? <img className="h-full w-full rounded-full object-cover" src={source} alt="" onError={() => setFailed(true)} /> : <span aria-hidden="true">{name.trim().slice(0, 1).toUpperCase() || '?'}</span>}
-    {presence && <span className={`absolute -bottom-0.5 -right-0.5 h-[28%] min-h-2 min-w-2 w-[28%] rounded-full border border-surface-raised ${presenceClasses[presence]}`} title={presence === 'CONNECTED' ? 'Conectado' : presence === 'TEMPORARILY_DISCONNECTED' ? 'Reconectando' : 'Desconectado'} />}
+  return <span className={cx(s.avatar, s[size], className)} aria-label={`Avatar de ${name}`}>
+    {source && !failed ? <img className={s.img} src={source} alt="" onError={() => setFailed(true)} /> : <span className={cx(s.initial, 'ol')} aria-hidden="true">{name.trim().slice(0, 1).toUpperCase() || '?'}</span>}
+    {presence && <span className={cx(s.presence, presenceClass[presence])} title={presenceLabel[presence]} />}
   </span>;
 }

@@ -1,4 +1,6 @@
 import { useEffect, useReducer, useRef } from 'react';
+import { Slider } from '../ui';
+import s from './ConfigRange.module.css';
 
 export interface RangeDraftState {
   value: number;
@@ -25,13 +27,14 @@ interface Props {
   max: number;
   step?: number;
   disabled?: boolean;
+  /** Sin efecto desde Arcade DS (el deslizador del catálogo tiene un solo tono); se conserva por compatibilidad. */
   accent?: 'berry' | 'aqua' | 'electric';
   formatValue?: (value: number) => string;
   hint?: string;
   onCommit(value: number): Promise<void>;
 }
 
-export function ConfigRange({ label, value, min, max, step = 1, disabled, accent = 'berry', formatValue = String, hint, onCommit }: Props) {
+export function ConfigRange({ label, value, min, max, step = 1, disabled, formatValue = String, hint, onCommit }: Props) {
   const [state, dispatch] = useReducer(rangeDraftReducer, { value, editing: false });
   const editingRef = useRef(false);
   const draftRef = useRef(value);
@@ -60,27 +63,22 @@ export function ConfigRange({ label, value, min, max, step = 1, disabled, accent
     });
   };
 
+  const startEditing = () => { editingRef.current = true; dispatch({ type: 'START_EDITING' }); };
+  const endEditing = () => commit(draftRef.current);
+
+  // El deslizador del catálogo da el valor; el envoltorio recoge el arrastre (puntero) y la salida del foco, que suben
+  // desde el rango, para confirmar al soltar. Con teclado, cada paso se confirma a los 160 ms.
   return (
-    <label className="block min-w-0 rounded-2xl border border-ink/10 bg-surface-raised/55 p-4">
-      <span className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <span className="text-sm font-extrabold text-ink/65">{label}</span>
-        <output className="shrink-0 font-display text-lg font-bold tabular-nums text-ink" aria-live="polite">{formatValue(state.value)}</output>
-      </span>
-      <input
-        className={`config-range config-range-${accent}`}
-        type="range"
+    <div className={s.range} onPointerDown={startEditing} onPointerUp={endEditing} onPointerCancel={endEditing} onBlur={endEditing}>
+      <Slider
+        label={label}
+        value={state.value}
         min={min}
         max={max}
         step={step}
-        value={state.value}
-        disabled={disabled}
-        aria-label={label}
-        onPointerDown={() => { editingRef.current = true; dispatch({ type: 'START_EDITING' }); }}
-        onPointerUp={() => commit(draftRef.current)}
-        onPointerCancel={() => commit(draftRef.current)}
-        onBlur={() => commit(draftRef.current)}
-        onChange={(event) => {
-          const next = Number(event.target.value);
+        disabled={Boolean(disabled)}
+        valueText={formatValue}
+        onChange={(next) => {
           draftRef.current = next;
           dispatch({ type: 'LOCAL_VALUE', value: next });
           if (!editingRef.current) {
@@ -89,7 +87,7 @@ export function ConfigRange({ label, value, min, max, step = 1, disabled, accent
           }
         }}
       />
-      {hint && <span className="mt-2 block text-xs font-bold text-ink/65">{hint}</span>}
-    </label>
+      {hint && <span className={s.hint}>{hint}</span>}
+    </div>
   );
 }

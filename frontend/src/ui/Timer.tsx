@@ -40,14 +40,21 @@ export interface TimerProps {
   now: number;
   totalMs: number;
   label?: string;
+  /** Muestra la etiqueta en la placa, encima del número («Siguiente ronda», «Para votar»…). */
+  showLabel?: boolean;
 }
 
-export function Timer({ endsAt, now, totalMs, label = 'Tiempo restante' }: TimerProps) {
+export function Timer({ endsAt, now, totalMs, label = 'Tiempo restante', showLabel }: TimerProps) {
   useCountdownCue(endsAt, now);
   const secs = timerSeconds(endsAt, now);
   const urgent = timerUrgent(endsAt, now);
   return (
     <div className={cx(s.timer, urgent && s.urgent)}>
+      {showLabel && (
+        <span className={s.label} aria-hidden="true">
+          {label}
+        </span>
+      )}
       <span className={s.num} role="timer" aria-label={`${label}: ${secs} s`}>
         {endsAt == null ? '–' : secs}
       </span>

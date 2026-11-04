@@ -29,3 +29,18 @@ describe('range draft state', () => {
     expect(markup).toContain('20 segundos');
   });
 });
+
+describe('ConfigRange con el deslizador del catálogo', () => {
+  it('es un rango con su etiqueta, el valor con formato y la ayuda, sin las clases antiguas', () => {
+    const markup = renderToStaticMarkup(createElement(ConfigRange, {
+      label: 'Número de rondas', value: 5, min: 1, max: 10, hint: 'Más rondas, partida más larga.',
+      formatValue: (value) => `${value} rondas`, onCommit: async () => undefined,
+    }));
+    expect(markup).toContain('type="range"');
+    expect(markup).toMatch(/<label for="([^"]+)"[^>]*>Número de rondas<\/label>/);
+    expect(markup).toContain('aria-valuetext="5 rondas"');
+    expect(markup).toContain('Más rondas, partida más larga.');
+    expect(markup).not.toContain('config-range');
+    expect(markup).not.toContain('disabled=""');
+  });
+});

@@ -852,7 +852,7 @@ test('pokedex-distance: buscador sin coincidencias', async ({ browser }) => {
     await expect(buscador).toBeFocused();
     expect(await host.page.evaluate(() => window.scrollY), 'desplazamiento tras el autofoco').toBe(0);
     await buscador.fill('zzzz');
-    const vacio = host.page.getByText('No hay ningún Pokémon que coincida con “zzzz”.');
+    const vacio = host.page.getByText('Ningún Pokémon coincide con “zzzz”.');
     await expect(vacio).toBeVisible({ timeout: 10_000 });
     const borrar = host.page.getByRole('button', { name: 'Borrar búsqueda' });
     await expect(borrar).toBeVisible();

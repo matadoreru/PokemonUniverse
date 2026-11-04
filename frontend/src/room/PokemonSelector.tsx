@@ -1,21 +1,42 @@
 import { Search } from 'lucide-react';
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { Badge, Card, Field, Panel, StateBox } from '../ui';
 import { searchPokemonOptions, type PokemonSearchOption } from './pokemon-search';
-import { selectorView } from './pokemon-selector-state';
+import { resultFocusTarget, selectorView } from './pokemon-selector-state';
+import s from './PokemonSelector.module.css';
 
-const SKELETON_ROWS = 6;
+const SKELETON_CARDS = 6;
 
-export function PokemonSelector({ pokemon, locked, disabled, confirmationDisabled = false, variant = 'card', autoFocus = true, inputLabel = 'Buscar Pokémon', maxResults = 40, loading = false, loadError = '', onRetry, onSelect }: { pokemon: readonly PokemonSearchOption[]; locked: Set<string>; disabled: boolean; confirmationDisabled?: boolean; variant?: 'card' | 'embedded'; autoFocus?: boolean; inputLabel?: string; maxResults?: number; loading?: boolean; loadError?: string; onRetry?(): void; onSelect(id: string): Promise<void> }) {
-  const [query, setQuery] = useState('');
+/** Columnas que pinta la rejilla ahora: las cartas que comparten la fila de la primera. */
+function gridColumns(buttons: readonly HTMLElement[]): number {
+  const top = buttons[0]?.offsetTop;
+  if (top === undefined) return 1;
+  let columns = 0;
+  while (columns < buttons.length && buttons[columns]!.offsetTop === top) columns++;
+  return Math.max(1, columns);
+}
+
+export function PokemonSelector({ pokemon, locked, disabled, confirmationDisabled = false, variant = 'card', autoFocus = true, inputLabel = 'Buscar Pokémon', maxResults = 40, loading = false, loadError = '', onRetry, initialQuery = '', onSelect }: { pokemon: readonly PokemonSearchOption[]; locked: Set<string>; disabled: boolean; confirmationDisabled?: boolean; variant?: 'card' | 'embedded'; autoFocus?: boolean; inputLabel?: string; maxResults?: number; loading?: boolean; loadError?: string; onRetry?(): void; /** Búsqueda inicial (galería y pruebas). */ initialQuery?: string; onSelect(id: string): Promise<void> }) {
+  const [query, setQuery] = useState(initialQuery);
   const [pending, setPending] = useState('');
   const [error, setError] = useState('');
-  const hintId = useId();
   const submitting = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const errorRef = useRef<HTMLDivElement>(null);
   const results = useMemo(() => searchPokemonOptions(pokemon, query, maxResults), [maxResults, pokemon, query]);
   const view = selectorView({ loading, loadError, query, resultCount: results.length });
+  const blocked = disabled || confirmationDisabled || Boolean(pending);
   // Foco sin desplazar la página: con `autoFocus` el navegador la desplaza y la cabecera fija tapa el contenido.
   useEffect(() => { if (autoFocus) inputRef.current?.focus({ preventScroll: true }); }, [autoFocus]);
+  // Sin catálogo el campo no sirve: el foco pasa a «Reintentar» si estaba en el buscador (o nadie lo tenía).
+  useEffect(() => {
+    if (view !== 'error') return;
+    const active = document.activeElement;
+    const idle = active === null || active === document.body;
+    if (active !== inputRef.current && !(autoFocus && idle)) return;
+    errorRef.current?.querySelector('button')?.focus({ preventScroll: true });
+  }, [autoFocus, view]);
   // Tras «Reintentar» el botón desaparece: el foco vuelve al campo en vez de caer en <body>.
   function retry() { onRetry?.(); inputRef.current?.focus({ preventScroll: true }); }
   function clearQuery() { setQuery(''); inputRef.current?.focus({ preventScroll: true }); }
@@ -26,12 +47,41 @@ export function PokemonSelector({ pokemon, locked, disabled, confirmationDisable
     try { await onSelect(id); } catch (caught) { setError(caught instanceof Error ? caught.message : 'Selección rechazada'); }
     finally { submitting.current = false; setPending(''); }
   }
-  return <div className={variant === 'card' ? 'card !p-4 md:!p-5' : ''}><label className="relative block"><span className="sr-only">{inputLabel}</span><Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/55" size={21} aria-hidden="true" /><input ref={inputRef} aria-label={inputLabel} aria-describedby={hintId} className="field min-h-12 pl-12 text-base" placeholder="Buscar Pokémon…" value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={(event) => { if (event.key !== 'Enter' || event.nativeEvent.isComposing) return; event.preventDefault(); const first = results.find((entry) => !locked.has(entry.id)); if (first) void select(first.id); }} disabled={disabled} autoComplete="off" /></label>
-    <span id={hintId} className="sr-only">Pulsa Enter para elegir la primera coincidencia disponible.</span>
-    {error && <p className="mt-2 rounded-xl bg-berry/10 p-2 text-sm font-bold text-berry" role="alert">{error}</p>}
-    {view === 'loading' && <div aria-busy="true" role="status" className="pokemon-selector-results mt-3 grid gap-2"><span className="sr-only">Cargando Pokémon…</span>{Array.from({ length: SKELETON_ROWS }, (_, index) => <div key={index} className="skeleton h-16" />)}</div>}
-    {view === 'error' && <div className="status-error mt-3 flex flex-wrap items-center justify-between gap-3" role="alert"><span className="min-w-0 flex-1">{loadError}</span>{onRetry && <button type="button" className="btn-ghost text-ink" onClick={retry}>Reintentar</button>}</div>}
-    {view === 'no-matches' && <div className="empty-state mt-3 grid justify-items-center gap-3" role="status" aria-live="polite"><p className="font-bold">No hay ningún Pokémon que coincida con “{query.trim()}”.</p><p className="text-sm">Prueba con otra parte del nombre: no hace falta escribir tildes.</p><button type="button" className="btn-ghost text-ink" onClick={clearQuery}>Borrar búsqueda</button></div>}
-    {view === 'results' && <div aria-busy={Boolean(pending)} className="pokemon-selector-results mt-3 grid max-h-96 gap-2 overflow-y-auto overscroll-contain pr-1">{results.map((entry) => { const unavailable = locked.has(entry.id); const primary = entry.id === firstSelectableId; return <button type="button" key={entry.id} disabled={disabled || confirmationDisabled || unavailable || Boolean(pending)} onClick={() => void select(entry.id)} className={`flex min-h-24 items-center gap-3 rounded-xl border p-2.5 text-left transition-colors ${unavailable || confirmationDisabled ? 'border-transparent bg-ink/5 opacity-45' : primary ? 'border-aqua/60 bg-aqua/[.07] hover:bg-aqua/10' : 'border-ink/10 bg-surface-raised hover:border-aqua hover:bg-aqua/10'}`}><img className="h-20 w-20 shrink-0 object-contain [image-rendering:auto] sm:h-24 sm:w-24" loading="lazy" src={entry.sprite} alt="" /><strong className="min-w-0 flex-1 truncate text-base">{entry.name}</strong>{primary && <small className="shrink-0 rounded-lg bg-aqua/10 px-2 py-1 font-black text-aqua" aria-hidden="true">Enter ↵</small>}</button>; })}</div>}
+  /** Flechas, Inicio, Fin y Escape entre el campo y la rejilla; Enter en una carta la elige (es un botón). */
+  function moveFocus(event: KeyboardEvent, index: number) {
+    const buttons = Array.from(gridRef.current?.querySelectorAll<HTMLButtonElement>('button') ?? []);
+    const target = resultFocusTarget({ index, key: event.key, columns: gridColumns(buttons), enabled: buttons.map((button) => !button.disabled) });
+    if (target === null) return;
+    event.preventDefault();
+    if (target === 'input') inputRef.current?.focus();
+    else buttons[target]?.focus();
+  }
+  function onInputKey(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.nativeEvent.isComposing) return;
+    if (event.key === 'ArrowDown') { moveFocus(event, -1); return; }
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    if (firstSelectableId) void select(firstSelectableId);
+  }
+  function onGridKey(event: KeyboardEvent<HTMLDivElement>) {
+    const buttons = Array.from(gridRef.current?.querySelectorAll('button') ?? []);
+    const index = buttons.indexOf(event.target as HTMLButtonElement);
+    if (index >= 0) moveFocus(event, index);
+  }
+
+  const body = <div className={s.selector}>
+    <Field ref={inputRef} label={inputLabel} aria-label={inputLabel} hideLabel icon={Search} large placeholder="Buscar Pokémon…" value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onInputKey} disabled={disabled} autoComplete="off" error={error || null} hint="Enter elige la primera · ↓ recorre la lista" />
+    {view === 'loading' && <div aria-busy="true" role="status" className={s.tray}><span className="sr-only">Cargando Pokémon…</span><div className={s.grid} aria-hidden="true">{Array.from({ length: SKELETON_CARDS }, (_, index) => <span key={index} data-skeleton className={s.skeleton}><i className={s.skeletonArt} /><i className={s.skeletonName} /></span>)}</div></div>}
+    {view === 'error' && <div ref={errorRef} className={s.tray}><StateBox kind="error" onCream title={loadError} {...(onRetry ? { action: { label: 'Reintentar', onClick: retry } } : {})} /></div>}
+    {view === 'no-matches' && <div className={s.tray}><StateBox kind="empty" onCream title={`Ningún Pokémon coincide con “${query.trim()}”.`} text="Prueba con otra parte del nombre: no hace falta escribir tildes." action={{ label: 'Borrar búsqueda', onClick: clearQuery }} /></div>}
+    {view === 'results' && <div className={s.tray}><div ref={gridRef} aria-busy={Boolean(pending)} className={`pokemon-selector-results ${s.grid} ${s.scroll}`} onKeyDown={onGridKey}>{results.map((entry) => {
+      const unavailable = locked.has(entry.id);
+      const primary = entry.id === firstSelectableId && !blocked;
+      return <Card key={entry.id} size="sm" action decorativeSprite name={entry.name} sprite={entry.sprite} state={primary ? 'selected' : 'idle'} disabled={blocked || unavailable} onSelect={() => void select(entry.id)}>
+        {primary && <span aria-hidden="true"><Badge tone="navy">Enter ↵</Badge></span>}
+        {unavailable && <span className={s.unavailable} aria-hidden="true">No disponible</span>}
+      </Card>;
+    })}</div></div>}
   </div>;
+  return variant === 'card' ? <Panel variant="cream" as="div">{body}</Panel> : body;
 }

@@ -1,0 +1,85 @@
+/*
+ * Buscador de Pokémon: campo grande y, debajo, una bandeja crema propia con los resultados o el estado (carga, error,
+ * vacío). La bandeja lleva su fondo para verse igual dentro de las pantallas de juego antiguas (claras) y de un panel.
+ */
+.selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.tray {
+  min-width: 0;
+  padding: var(--sp-2);
+  border: var(--ol-2-5) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--cream-2);
+  color: var(--ink);
+  --focus-ring: var(--navy);
+  --focus-ring-on-yellow: var(--navy);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 112px), 1fr));
+  gap: var(--sp-2);
+}
+/* Desplazamiento interior: sitio abajo para la sombra dura de 4 px y a los lados para el anillo de foco. */
+.scroll {
+  max-height: min(24rem, 55dvh);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding: 5px 5px 9px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--navy) transparent;
+}
+/* Carta esqueleto con la forma de la pequeña: late solo con opacidad. */
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+  border-radius: var(--r-card);
+  background: var(--cream);
+  animation: ghost 900ms ease-in-out infinite alternate;
+}
+.skeleton:nth-child(2n) {
+  animation-delay: 300ms;
+}
+.skeleton:nth-child(3n) {
+  animation-delay: 600ms;
+}
+.skeletonArt,
+.skeletonName {
+  display: block;
+  border-radius: var(--r-badge);
+  background: var(--navy);
+  opacity: 0.25;
+}
+.skeletonArt {
+  width: 56px;
+  height: 56px;
+}
+.skeletonName {
+  width: 70%;
+  height: 15px;
+}
+@keyframes ghost {
+  from {
+    opacity: 0.55;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+/* Bloqueado: además de atenuado (la carta deshabilitada), lo dice con texto. */
+.unavailable {
+  font: 800 var(--fs-13) / 1 var(--font-text);
+  color: var(--ink);
+}
