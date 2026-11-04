@@ -88,7 +88,7 @@ consola y que a 1280×720 no hay scroll horizontal ni de página (`measureLayout
   `e2e/` con `npx playwright test juegos -g …`: `npm run` lee `-g` como `--global`). Las pantallas propias de cada
   juego (rediseñadas con Arcade DS en F5–F8) se miden en sus tests a los tres tamaños; solo las fases que duran poco
   (`capturarAnotando`) anotan en vez de fallar. Además, 9 juegos no muestran el título del manifest en pantalla
-  (anotación `pantalla`): los 6 de la Fase 2 de minijuegos usan un título propio. Es deuda de UI de esos juegos, apuntada en `docs/visual-review.md` («Seguimientos»).
+  (anotación `pantalla`): los 6 de la Fase 2 de minijuegos usan un título propio. Es deuda de UI de esos juegos, apuntada en `docs/visual-review.md` («Seguimientos», «Abierto: título del manifest en pantalla»).
 - **Detalle por juego**: el spec deja anotaciones (recurso comprobado, título visible y encaje a
   los tres tamaños). `npm run` se come `--reporter`, así que para verlas lánzalo desde `e2e/`:
   `PLAYWRIGHT_JSON_OUTPUT_FILE=juegos.json npx playwright test juegos --reporter=list,json`.

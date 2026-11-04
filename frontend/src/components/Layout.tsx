@@ -91,8 +91,13 @@ export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(
 }
 
 /**
- * Armazón de pantalla completa (spec §2): rejilla de `100dvh` con la cabecera arriba y el `main` debajo, que se desplaza
- * por dentro mientras haya pantallas sin rediseñar. Cada ruta nueva entra con `ScreenTransition`.
+ * Armazón de pantalla completa (spec §2): rejilla de `100dvh` con la cabecera arriba y el `main` debajo. El `main` se
+ * desplaza por dentro solo en el móvil; en escritorio el E2E exige que no se desborde. Cada ruta nueva entra con
+ * `ScreenTransition`.
+ *
+ * El `main` es `relative` para ser el bloque contenedor de todo lo `absolute` sin antepasado posicionado (los `sr-only`
+ * de una leyenda o de una etiqueta oculta): si no, su bloque contenedor es la vista inicial, escapan del recorte del
+ * `main` y alargan el documento (401 px en la rotación del lobby a 390 px).
  */
 export function Layout() {
   const { user, logout } = useAuth();
@@ -102,7 +107,7 @@ export function Layout() {
     <FeedbackTargetProvider>
       <div className="grid h-[100dvh] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)]">
         <AppHeader user={user} onLogout={() => void logout().then(() => navigate('/'))} />
-        <main className="min-h-0 overflow-y-auto [scrollbar-gutter:stable]">
+        <main className="relative min-h-0 overflow-y-auto [scrollbar-gutter:stable]">
           {/* Hueco de avisos flotantes (conexión de la sala): capa de alto cero pegada arriba, bajo la cabecera. */}
           <div id={HEADER_NOTICES_ID} className="sticky top-0 z-toast h-0" />
           <ScreenTransition routeKey={pathname} focusHeading>

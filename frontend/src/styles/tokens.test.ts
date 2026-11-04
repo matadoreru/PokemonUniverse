@@ -160,8 +160,10 @@ describe('sin alias heredados (§11, F9)', () => {
 
 describe('escala tipográfica (§3.2)', () => {
   it('la escala de Tailwind es la de la spec', () => {
-    const sizes = (tailwind.theme.extend.fontSize ?? {}) as Record<string, [string, { lineHeight: string }]>;
-    const claves = Object.keys(sizes).filter((k) => /^\d+$/.test(k)).map(Number).sort((a, b) => a - b);
+    // En `theme` (no en `extend`): sustituye la escala por defecto, así que `text-xs`, `text-sm`… ya no existen.
+    expect(tailwind.theme.extend).not.toHaveProperty('fontSize');
+    const sizes = tailwind.theme.fontSize as Record<string, [string, { lineHeight: string }]>;
+    const claves = Object.keys(sizes).map(Number).sort((a, b) => a - b);
     expect(claves).toEqual([...fontSizes]);
     for (const n of fontSizes) expect(sizes[String(n)]![0]).toBe(`${n}px`);
   });
@@ -177,6 +179,13 @@ describe('capas (§2)', () => {
   it('sin z-index literales', () => {
     expect(styles).not.toMatch(/z-index:\s*\d/);
     const root = path.join(here, '..');
+    // Tampoco en los CSS Modules: el `z-index` va siempre por una capa `var(--z-*)`.
+    const modulos = (dir: string): string[] => readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+      const p = path.join(dir, e.name);
+      return e.isDirectory() ? modulos(p) : e.name.endsWith('.module.css') ? [p] : [];
+    });
+    const conLiteral = modulos(root).filter((f) => /z-index:\s*-?\d/.test(readFileSync(f, 'utf8'))).map((f) => path.relative(root, f));
+    expect(conLiteral).toEqual([]);
     const permitidas = new Set(Object.keys(layers));
     // Clases `z-*` (con variantes y signo negativo) cuyo nombre no es una capa del sistema.
     const ilegales = (texto: string): string[] =>

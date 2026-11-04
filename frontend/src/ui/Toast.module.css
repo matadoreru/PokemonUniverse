@@ -71,8 +71,14 @@
 .close {
   flex: none;
 }
+/*
+ * Fija y arriba a la izquierda: la región viva de la pila se monta tras el contenido de la pantalla y, como `absolute`, su caja de 1 px
+ * quedaba justo debajo y alargaba el scroll del `main` (1 px en `sala-aviso-error`). Una caja fija no suma desborde.
+ */
 .srOnly {
-  position: absolute;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 1px;
   height: 1px;
   overflow: hidden;

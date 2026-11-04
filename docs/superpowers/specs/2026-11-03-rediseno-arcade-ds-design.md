@@ -188,7 +188,7 @@ carga y error. Ningún componente nuevo ni estado nuevo entra en una pantalla si
 | `Timer` | Temporizador de servidor como placa con número grande y barra; urgencia a los 5 s. Sustituye a `ServerTimer`. | nuevo |
 | `Field`, `SelectField`, `Slider` | Campos de formulario crema con contorno, etiqueta y error. `Slider` sustituye a `ConfigRange`. | Inazuma `Form`, `Slider` |
 | `StateBox` | Vacío, carga (esqueleto) y error con acción («Reintentar»). | Inazuma |
-| `Icon` | Envoltorio de `lucide-react`: tamaños 18, 22, 24 y 32, trazo 2,5 y color por token. Prohibido importar lucide fuera de él (lint en F9). | nuevo |
+| `Icon` | Envoltorio de `lucide-react`: tamaños 18, 22, 24 y 32, trazo 2,5 y color por token. Solo `Icon` pinta lucide: fuera de `ui/` se importa para pasarlo por la prop `icon`, nunca como JSX directo (lint `arcade/no-raw-lucide`, F9). | nuevo |
 | `ScreenSplit` | Pantalla superior e inferior en móvil; columnas principal y lateral en escritorio. | nuevo |
 | `Cutin` | Losa azul noche con bordes del tono, que entra desde la izquierda (200 ms), se para y sale por la derecha. Título en Baloo 2 de 44 px y sprite opcional. Se salta con clic o Espacio; si llega otro, sustituye al actual. `RevealCutIn` queda como envoltorio con su API actual. | Inazuma `Cutin` |
 | `ScorePop` | «+N» que sube y se desvanece sobre una franja, con el color del jugador. | el de la Fase 2, retocado |
@@ -203,8 +203,10 @@ carga y error. Ningún componente nuevo ni estado nuevo entra en una pantalla si
 
 Cada pantalla se rediseña en su fase (F3–F9, ver el plan) con este patrón:
 
-- **Cabecera** (F3): `HudPlate` a la izquierda con el logotipo y, en la sala, el código; a la derecha, sonido,
-  novedades, administración y perfil. En móvil, una sola placa con el logotipo corto y un menú.
+- **Cabecera** (F3, ajustada por el usuario el 2026-11-04): sin logotipo, sin novedades (están en Inicio) y sin
+  menú. Una sola `HudPlate` a la derecha con inicio, sonido, feedback, administración (solo ADMIN), perfil y «Cerrar
+  sesión», todo en píldoras redondas de 44 px que caben a 390 px; en la sala, la placa del código a la izquierda (en
+  móvil, en su propia fila).
 - **Inicio, Acceso y Jugar**: pantalla de título con el logotipo grande en `.ol2` y una pila de píldoras («Crear
   sala», «Unirse», «Entrar»).
 - **Lobby**: arriba (o en la columna lateral), los jugadores en franjas; abajo (o en la columna principal), la

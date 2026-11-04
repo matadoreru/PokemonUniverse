@@ -97,6 +97,10 @@ además llevan un comentario en el spec.
 su fase y la nota está en su commit. Lo de abajo es la línea base histórica: las clases que cita (`.btn-*`,
 `.experimental-badge`, `.empty-state`, `.status-error`, `.lobby-tab`…) se borraron en F9.
 
+**Abierto: título del manifest en pantalla.** 9 juegos no muestran en su pantalla el nombre del manifest (el E2E
+de `juegos` lo anota como `pantalla`): los 6 de la Fase 2 de minijuegos usan un título propio. Es deuda de UI de
+esos juegos, no del medidor; se cierra cuando cada uno muestre su nombre o el spec acepte su título propio.
+
 **Línea base Arcade DS F0 (2026-11-03).** Tokens del sistema Arcade DS, tema único azul noche con escena de Poké
 Balls, Baloo 2 y Nunito autoalojadas y capas por token
 (`docs/superpowers/specs/2026-11-03-rediseno-arcade-ds-design.md`). Ninguna pantalla se ha rediseñado todavía, así

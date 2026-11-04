@@ -92,9 +92,10 @@ export async function checkLayout(page: Page, name: string, screenshot = false, 
 }
 
 /**
- * Espera a las fuentes, exige que no haya scroll horizontal ni (salvo `allowPageScroll`) vertical de página ni, en
- * escritorio, del `main`, guarda opcionalmente `e2e/screenshots/<name>-<w>x<h>.png` (de página completa con
- * `fullPage`; el nombre lleva el tamaño de la vista) y devuelve lo que encuentra `measureLayout` sin fallar.
+ * Espera a las fuentes, guarda opcionalmente `e2e/screenshots/<name>-<w>x<h>.png` (de página completa con `fullPage`;
+ * el nombre lleva el tamaño de la vista; antes de comprobar nada, para que un fallo deje imagen), exige que no haya
+ * scroll horizontal ni (salvo `allowPageScroll`) vertical de página ni, en escritorio, del `main` y devuelve lo que
+ * encuentra `measureLayout` sin fallar.
  */
 export async function layoutProblems(page: Page, name: string, screenshot: boolean, fullPage = false, opts: CaptureOptions = {}): Promise<{ id: string; problems: string[] }> {
   const vp = page.viewportSize();
@@ -102,6 +103,8 @@ export async function layoutProblems(page: Page, name: string, screenshot: boole
   const id = `${name}-${vp.width}x${vp.height}`;
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
   await page.waitForTimeout(250);
+  // La captura va antes de las comprobaciones de scroll: un fallo por scroll deja también su PNG para revisarlo.
+  if (screenshot) await page.screenshot({ path: `screenshots/${id}.png`, animations: 'disabled', fullPage });
   await expectNoHorizontalScroll(page, id);
   if (!opts.allowPageScroll) {
     // El armazón mide 100dvh a cualquier ancho: si la página crece, algo (p. ej. un `sr-only` absoluto) se sale del `main`.
@@ -116,7 +119,6 @@ export async function layoutProblems(page: Page, name: string, screenshot: boole
     });
     expect(mainOver, `${id}: scroll vertical del main`).toBeLessThanOrEqual(0);
   }
-  if (screenshot) await page.screenshot({ path: `screenshots/${id}.png`, animations: 'disabled', fullPage });
   const minFontPx = opts.minFontPx ?? 13;
   const m = await measureLayout(page, minFontPx);
   const problems = [
@@ -233,12 +235,21 @@ export async function seleccionarJuego(page: Page, nombre: string): Promise<void
   const celda = page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').filter({ has: page.getByText(nombre, { exact: true }) });
   await expect(celda).toHaveCount(1);
   const opcion = celda.getByRole('button').first();
-  // Idempotente y con reintentos (una vez se quedó en `aria-pressed="false"`: el clic llegó antes de que el lobby
-  // tuviera el estado del `/ws`). Solo pulsa si aún no está elegida: un clic de más la quitaría.
-  await expect(async () => {
-    if ((await opcion.getAttribute('aria-pressed')) !== 'true') await opcion.click({ timeout: 2_000 });
-    await expect(opcion).toHaveAttribute('aria-pressed', 'true', { timeout: 2_000 });
-  }).toPass({ timeout: 15_000 });
+  // La carta es un conmutador: un clic de más la quitaría. Solo pulsa si aún no está elegida y, tras pulsar, espera
+  // 8 s a que el servidor lo refleje antes de volver a mirar. Así un servidor lento (más de 2 s) no recibe dos
+  // conmutaciones, y un clic que se pierde de verdad (llegó antes de que el lobby tuviera el estado del `/ws`, pasó
+  // una vez) se repite una sola vez.
+  for (let intento = 0; intento < 2; intento += 1) {
+    if ((await opcion.getAttribute('aria-pressed')) === 'true') return;
+    await opcion.click();
+    try {
+      await expect(opcion).toHaveAttribute('aria-pressed', 'true', { timeout: 8_000 });
+      return;
+    } catch {
+      // Sigue sin elegir tras 8 s: el clic se perdió; se vuelve a mirar y, si hace falta, a pulsar.
+    }
+  }
+  await expect(opcion).toHaveAttribute('aria-pressed', 'true', { timeout: 8_000 });
 }
 
 /**

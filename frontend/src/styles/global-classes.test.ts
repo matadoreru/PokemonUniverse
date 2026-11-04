@@ -2,6 +2,9 @@
 /**
  * Clases globales (F9): todo `className` de los `.tsx` nombra una clase que existe. Lo que no es de CSS Modules ni lo
  * genera Tailwind tiene que estar definido en styles.css; así no queda nadie apuntando a una clase heredada borrada.
+ *
+ * Límite aceptado: solo ve los literales escritos en `className`/`*ClassName` o en `cx(…)` (y sus ramas). Una clase que
+ * llega por variable o la devuelve una función (`const c = 'x'; className={c}`, como `RevealCutIn.tsx`) no se revisa.
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';

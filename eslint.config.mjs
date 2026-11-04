@@ -9,6 +9,8 @@ const STYLE_RULES = [
   { re: /(?:^|[\s:!])text-\[/, message: 'Sin `text-[…]`: usa la escala `text-13`…`text-68` y el color por tokens en un CSS Module.' },
   { re: /(?:^|[\s:!])text-(?:xs|sm|base|lg|[2-9]?xl)(?=$|[\s/])/, message: 'Tamaño de letra fuera de la escala del sistema: usa `text-13`…`text-68`.' },
   { re: new RegExp(`(?:^|[\\s:!-])(?:${COLOR_UTIL})-\\[(?:color:|#|rgba?\\(|hsla?\\(|var\\()`), message: 'Sin colores arbitrarios en `className`: el color va por tokens en un CSS Module.' },
+  // Un color dentro de una sombra o un anillo arbitrario (`shadow-[0_0_0_2px_#fff]`, `ring-[…rgba(…)]`): no va justo tras `[`.
+  { re: /(?:^|[\s:!-])(?:shadow|ring|ring-offset|drop-shadow)-\[[^\]]*(?:#|rgba?\(|hsla?\()/, message: 'Sin colores arbitrarios en sombras ni anillos: el color va por tokens (`var(--…)`) o en un CSS Module.' },
   { re: /(?:^|[\s:!-])z-\[/, message: 'Sin `z-[…]`: usa las capas del sistema (`z-content`, `z-hud`, `z-sticky`, `z-cutin`, `z-toast`).' },
   { re: new RegExp(`(?:^|[\\s:!-])(?:${COLOR_UTIL})-(?:${ALIAS})(?=$|[\\s/])`), message: 'Alias de color heredado (borrado en F9): usa los tokens del sistema en un CSS Module.' },
   { re: /(?:^|[\s:!])shadow-(?:card|pop)(?=$|\s)/, message: 'Sombra heredada (borrada en F9): usa los tokens `--sh-*` en un CSS Module.' },
