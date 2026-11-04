@@ -35,10 +35,9 @@ for (const { w, h } of SIZES) {
     await page.getByRole('tab', { name: 'Invitado' }).click();
     await expect(page.getByLabel('Tu nombre temporal')).toBeVisible();
 
-    // Elegir avatar: la píldora queda pulsada y el texto lo dice.
-    await page.getByRole('button', { name: 'Entrenadora Aqua' }).click();
-    await expect(page.getByRole('button', { name: 'Entrenadora Aqua' })).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.getByText('Elegido: Entrenadora Aqua.')).toBeVisible();
+    // El invitado solo pone un nombre: no elige ni sube avatar (usa la inicial de su nombre).
+    await expect(page.getByRole('button', { name: 'Entrenadora Aqua' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /mi imagen/ })).toHaveCount(0);
     await capture(page, 'acceso-invitado', CAPTURA);
 
     // «Entrar como invitado» de la portada abre la pestaña Invitado.
