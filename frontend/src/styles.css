@@ -160,7 +160,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .type-badge-steel { --type-rgb: var(--type-steel-rgb); }
 .type-badge-fairy { --type-rgb: var(--type-fairy-rgb); }
 
-.sketchmon-canvas { display: block; width: 100%; aspect-ratio: 4 / 3; touch-action: none; background: white; }
 
 .pokeball-mark { position: relative; border-radius: 9999px; background: linear-gradient(var(--red) 0 44%, var(--band) 44% 56%, var(--white) 56%); }
 .pokeball-mark::after { content: ''; position: absolute; inset: 32%; border: 3px solid rgb(var(--color-night)); border-radius: 50%; background: rgb(var(--color-surface)); }

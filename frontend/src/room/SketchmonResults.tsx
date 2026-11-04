@@ -1,12 +1,55 @@
 import type { RoomView, SketchmonPublicState } from '@pokemon-universe/shared/public';
-import { Images, Palette, RotateCcw, StopCircle } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
-import { SketchmonCanvasSurface } from './SketchmonCanvas';
+import { SKETCHMON_DRAWER_POINTS } from '@pokemon-universe/shared/public';
+import { Brush, Equal, Search, Target } from 'lucide-react';
+import { useMemo } from 'react';
+import { sketchStatsLine } from '../games/sketchmon/presentation';
+import { SketchGallery } from '../games/sketchmon/SketchParts';
+import { Chip, Icon } from '../ui';
+import { guessTop } from './guess-kit';
+import { playerColor } from './player-color';
+import { sharesPosition } from './results-ties';
+import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
+import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import s from '../games/sketchmon/Sketchmon.module.css';
 
+/**
+ * Resultados de Sketchmon: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con insignia y
+ * «+N» y, en texto, adivinados, al primer intento, dibujos descubiertos y los puntos por adivinar y por dibujar), la
+ * regla de los puntos; al lado, los récords (más adivinados, al primer intento y mejor dibujante; empates juntos) y la
+ * galería con los dibujos de la partida. Abajo, la acción del host. Un empate a cero no corona.
+ */
 export function SketchmonResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
-  const game = room.game as SketchmonPublicState; const host = room.hostId === selfId;
-  return <section className="mx-auto max-w-6xl px-3 py-8 sm:px-5"><div className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-7"><Palette className="mx-auto text-berry" size={50} /><span className="label mt-2 text-center">Sketchmon · Resultados</span><h1 className="mb-2 text-center font-display text-3xl sm:text-4xl">La galería de la partida</h1><p className="mx-auto mb-6 max-w-xl text-center font-bold text-ink/60">Puntos por reconocer rápido los dibujos y por conseguir que el grupo entienda los tuyos.</p>
-    <div className="space-y-2.5">{game.results?.standings.map((entry) => { const member = room.members.find((candidate) => candidate.id === entry.playerId); return <article key={entry.playerId} className={`grid items-center gap-3 rounded-xl border p-3 sm:grid-cols-[auto_auto_1fr_auto] ${entry.position === 1 ? 'border-electric/45 bg-electric/[.07]' : 'border-ink/10 bg-surface-raised/70'}`}><strong className="w-9 text-center font-display text-2xl">{entry.position <= 3 ? ['🥇', '🥈', '🥉'][entry.position - 1] : entry.position}</strong><Avatar name={member?.displayName ?? entry.playerId} avatar={member?.avatar} size="md" /><div className="min-w-0"><strong className="block truncate font-display text-xl">{member?.displayName ?? entry.playerId}</strong><p className="text-sm font-bold text-ink/65">{entry.stats.guessedPokemon ?? 0} adivinados · {entry.stats.firstTry ?? 0} al primer intento · {entry.stats.drawingSuccesses ?? 0}/{entry.stats.drawingRounds ?? 0} dibujos descubiertos</p><div className="mt-1 flex flex-wrap gap-1.5 text-xs font-extrabold"><span className="rounded-full bg-leaf/10 px-2 py-0.5 text-leaf">+{entry.stats.pointsFromGuessing ?? 0} adivinando</span><span className="rounded-full bg-aqua/10 px-2 py-0.5 text-aqua">+{entry.stats.pointsFromDrawing ?? 0} dibujando</span></div></div><strong className="justify-self-end text-xl text-berry">{entry.points} pts</strong></article>; })}</div>
-    <section className="mt-8 border-t border-ink/10 pt-6" aria-labelledby="sketchmon-gallery"><div className="mb-4 flex items-center gap-2"><Images className="text-aqua" /><div><span className="label !mb-0">Recuerdos de la sesión</span><h2 id="sketchmon-gallery" className="font-display text-2xl">Los dibujos de la partida</h2></div></div>{game.gallery.length ? <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{game.gallery.map((entry) => { const drawer = room.members.find((candidate) => candidate.id === entry.drawerId); return <article key={entry.roundNumber} className="overflow-hidden rounded-xl border border-ink/10 bg-surface-raised"><div className="bg-white"><SketchmonCanvasSurface strokes={entry.drawing} label={`Dibujo de ${entry.pokemon.name} por ${drawer?.displayName ?? entry.drawerId}`} /></div><div className="flex items-center gap-3 p-3"><img src={entry.pokemon.sprite} alt="" className="h-12 w-12 object-contain [image-rendering:pixelated]" /><div className="min-w-0 flex-1"><strong className="block truncate font-display text-lg">{entry.pokemon.name}</strong><p className="truncate text-sm font-bold text-ink/60">de {drawer?.displayName ?? entry.drawerId} · Vuelta {entry.lapNumber}</p></div>{entry.winnerId ? <span className="text-xs font-black text-leaf">ADIVINADO</span> : <span className="text-xs font-black text-berry">SIN ACIERTO</span>}</div></article>; })}</div> : <div className="empty-state">No se pudo completar ningún dibujo en esta partida.</div>}</section>
-    {host ? <div className="mt-7 flex flex-wrap justify-center gap-3"><button className="btn-primary" onClick={onLobby}><RotateCcw /> Continuar sesión</button><button className="btn-ghost" onClick={onEnd}><StopCircle /> Terminar sesión</button></div> : <p className="mt-6 text-center font-bold text-ink/65">Esperando a que el host continúe la sesión…</p>}</div></section>;
+  const game = room.game as SketchmonPublicState;
+  const host = room.hostId === selfId;
+  const standings = game.results?.standings ?? [];
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const nameOf = (playerId: string) => members.get(playerId)?.displayName ?? 'Entrenador';
+  const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
+  const rows: ResultsStanding[] = standings.map((standing) => {
+    const index = room.members.findIndex((member) => member.id === standing.playerId);
+    return {
+      id: standing.playerId,
+      position: standing.position,
+      name: nameOf(standing.playerId),
+      points: standing.points,
+      avatar: room.members[index]?.avatar,
+      color: playerColor(Math.max(0, index)),
+      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{sketchStatsLine(standing.stats)}</span></>,
+    };
+  });
+  const entries = standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats }));
+  const guessed = guessTop(entries, 'guessedPokemon');
+  const firstTry = guessTop(entries, 'firstTry');
+  const drawer = guessTop(entries, 'drawingSuccesses');
+  const records = <ResultsRecords id="sketchmon-records-title" records={[
+    { key: 'guessed', title: 'Más Pokémon adivinados', icon: Search, names: guessed?.names ?? null, value: String(guessed?.value ?? ''), unit: guessed?.value === 1 ? 'Pokémon adivinado' : 'Pokémon adivinados' },
+    { key: 'first', title: 'Al primer intento', icon: Target, names: firstTry?.names ?? null, value: String(firstTry?.value ?? ''), unit: firstTry?.value === 1 ? 'acierto sin fallar' : 'aciertos sin fallar' },
+    { key: 'drawer', title: 'Mejor dibujante', icon: Brush, names: drawer?.names ?? null, value: String(drawer?.value ?? ''), unit: drawer?.value === 1 ? 'dibujo descubierto' : 'dibujos descubiertos' },
+  ]} />;
+  // La galería va bajo los récords: la columna de la clasificación reparte su alto entre las franjas (`fillLarge`).
+  const aside = <>{records}<SketchGallery entries={game.gallery} members={members} /></>;
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="La galería de la partida" subtitle={`Sketchmon · ${game.totalRounds} ${game.totalRounds === 1 ? 'dibujo' : 'dibujos'}`}
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
+    <p className={s.resultsRule}>Puntos por reconocer rápido los dibujos y por conseguir que el grupo entienda los tuyos: quien acierta suma de 5 a 2 según lo rápido y quien dibuja, {SKETCHMON_DRAWER_POINTS}.</p>
+  </ResultsShell>;
 }

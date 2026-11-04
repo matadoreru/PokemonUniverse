@@ -1,24 +1,21 @@
-import { Eraser, PaintBucket, Pencil, Redo2, Trash2, Undo2 } from 'lucide-react';
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
-import { SKETCHMON_COLORS, type SketchmonAction, type SketchmonPoint, type SketchmonStroke, type SketchmonTool } from '@pokemon-universe/shared/public';
+import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
+import { SKETCHMON_COLORS, type SketchmonAction, type SketchmonColor, type SketchmonPoint, type SketchmonStroke, type SketchmonTool } from '@pokemon-universe/shared/public';
+import {
+  appendPendingPoints, farEnough, normalizedPoint, sendDrawBatch, sketchmonHistoryShortcut, takeDrawBatch, type DrawOperation, type SketchWidth,
+} from '../games/sketchmon/presentation';
+import { typingTarget } from './social-kit';
+import { cx } from '../ui';
+import s from '../games/sketchmon/Sketchmon.module.css';
 
-type DrawBatchAction = Extract<SketchmonAction, { type: 'DRAW_BATCH' }>;
-type DrawOperation = DrawBatchAction['operations'][number];
+/**
+ * El lienzo de Sketchmon: el dibujo (lápiz, goma y relleno por inundación) sobre un `<canvas>` 4:3 con los puntos en
+ * escala 0–1 (todos ven el mismo dibujo a cualquier tamaño) y, para quien dibuja, `useSketchPad`: el trazo optimista,
+ * el envío de los trazos en lotes y las acciones de historial (deshacer, rehacer y limpiar).
+ */
 
-const WIDTHS = [4, 8, 14, 22] as const;
+type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<void>;
+
 const FLUSH_INTERVAL_MS = 250;
-const POINT_DISTANCE = 0.002;
-const COLOR_LABELS: Record<(typeof SKETCHMON_COLORS)[number], string> = {
-  '#182033': 'Negro', '#ffffff': 'Blanco', '#7b8496': 'Gris', '#e24671': 'Rosa',
-  '#ef4444': 'Rojo', '#f97316': 'Naranja', '#e1a817': 'Amarillo', '#84cc16': 'Lima',
-  '#27965c': 'Verde', '#10a6c3': 'Turquesa', '#2563eb': 'Azul', '#7457c7': 'Morado',
-  '#d946ef': 'Magenta', '#9a5b3c': 'Marrón',
-};
-
-export function sketchmonHistoryShortcut(event: Pick<KeyboardEvent, 'ctrlKey' | 'metaKey' | 'shiftKey' | 'key'>): 'UNDO_STROKE' | 'REDO_STROKE' | null {
-  if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== 'z') return null;
-  return event.shiftKey ? 'REDO_STROKE' : 'UNDO_STROKE';
-}
 
 function colorBytes(color: string): [number, number, number, number] {
   return [Number.parseInt(color.slice(1, 3), 16), Number.parseInt(color.slice(3, 5), 16), Number.parseInt(color.slice(5, 7), 16), 255];
@@ -78,29 +75,32 @@ function renderDrawing(canvas: HTMLCanvasElement, strokes: readonly SketchmonStr
 }
 
 function pointFromEvent(canvas: HTMLCanvasElement, event: PointerEvent): SketchmonPoint {
-  const bounds = canvas.getBoundingClientRect();
-  return {
-    x: Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width)),
-    y: Math.max(0, Math.min(1, (event.clientY - bounds.top) / bounds.height)),
-  };
+  return normalizedPoint(canvas.getBoundingClientRect(), event.clientX, event.clientY);
 }
 
-function farEnough(left: SketchmonPoint, right: SketchmonPoint): boolean {
-  return Math.hypot(left.x - right.x, left.y - right.y) >= POINT_DISTANCE;
+export interface SketchSurfaceHandlers {
+  onPointerDown(event: ReactPointerEvent<HTMLCanvasElement>): void;
+  onPointerMove(event: ReactPointerEvent<HTMLCanvasElement>): void;
+  onPointerUp(event: ReactPointerEvent<HTMLCanvasElement>): void;
 }
 
-export function SketchmonCanvasSurface({ strokes, label, optimisticStroke = null, onPointerDown, onPointerMove, onPointerUp }: {
+/**
+ * El `<canvas>` del dibujo: su tamaño lo pone el CSS (4:3, lo escala su contenedor); el búfer sigue al tamaño en pantalla
+ * (hasta 2× de densidad) y se vuelve a pintar entero. `data-stroke-count` dice cuántos trazos tiene (pruebas E2E).
+ */
+export function SketchmonCanvasSurface({ strokes, label, optimisticStroke = null, handlers, className, testId }: {
   strokes: readonly SketchmonStroke[];
   label: string;
   optimisticStroke?: SketchmonStroke | null;
-  onPointerDown?(event: ReactPointerEvent<HTMLCanvasElement>): void;
-  onPointerMove?(event: ReactPointerEvent<HTMLCanvasElement>): void;
-  onPointerUp?(event: ReactPointerEvent<HTMLCanvasElement>): void;
+  /** Solo quien dibuja: el puntero (ratón, lápiz o dedo) dibuja. */
+  handlers?: SketchSurfaceHandlers | undefined;
+  className?: string | undefined;
+  testId?: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawingRef = useRef({ strokes, optimisticStroke });
   drawingRef.current = { strokes, optimisticStroke };
-  const editable = Boolean(onPointerDown);
+  const editable = Boolean(handlers);
   useEffect(() => {
     const canvas = canvasRef.current; if (!canvas) return undefined;
     const resize = () => {
@@ -120,73 +120,85 @@ export function SketchmonCanvasSurface({ strokes, label, optimisticStroke = null
   }, [optimisticStroke, strokes]);
   return <canvas
     ref={canvasRef}
-    className={`sketchmon-canvas ${editable ? 'cursor-crosshair' : 'cursor-default'}`}
+    className={cx(s.canvas, editable && s.canvasEditable, className)}
     aria-label={label}
     role="img"
-    onPointerDown={onPointerDown}
-    onPointerMove={onPointerMove}
-    onPointerUp={onPointerUp}
-    onPointerCancel={onPointerUp}
+    data-stroke-count={strokes.length}
+    {...(testId ? { 'data-testid': testId } : {})}
+    {...(handlers ? { onPointerDown: handlers.onPointerDown, onPointerMove: handlers.onPointerMove, onPointerUp: handlers.onPointerUp, onPointerCancel: handlers.onPointerUp } : {})}
     onContextMenu={(event) => { if (editable) event.preventDefault(); }}
   />;
 }
 
-export function SketchmonCanvas({ strokes, onAction }: { strokes: readonly SketchmonStroke[]; onAction(action: unknown): Promise<void> }) {
+export interface SketchPad {
+  tool: SketchmonTool;
+  setTool(tool: SketchmonTool): void;
+  color: SketchmonColor;
+  setColor(color: SketchmonColor): void;
+  width: SketchWidth;
+  setWidth(width: SketchWidth): void;
+  optimisticStroke: SketchmonStroke | null;
+  handlers: SketchSurfaceHandlers;
+  /** Fallo al sincronizar los trazos (el aviso global no lo dice: van con `report: false`). */
+  syncError: string | null;
+  undo(): void;
+  redo(): void;
+  clear(): void;
+}
+
+/**
+ * Lo de quien dibuja: la herramienta, el color y el grosor, el trazo optimista (se ve al momento y se retira cuando el
+ * servidor lo tiene entero), los trazos pendientes que salen en lotes cada 250 ms (con `report: false`: dibujar no borra
+ * el aviso global) y deshacer, rehacer y limpiar (con aviso global, como cualquier acción). Ctrl+Z y Ctrl+Mayús+Z, solo
+ * con `enabled` y fuera de los campos de texto. `resetKey` (la ronda) suelta el trazo a medias y lo pendiente.
+ */
+export function useSketchPad({ strokes, onAction, enabled, resetKey }: { strokes: readonly SketchmonStroke[]; onAction: GameAction; enabled: boolean; resetKey: number }): SketchPad {
   const [tool, setTool] = useState<SketchmonTool>('PENCIL');
-  const [color, setColor] = useState<(typeof SKETCHMON_COLORS)[number]>(SKETCHMON_COLORS[0]);
-  const [width, setWidth] = useState<(typeof WIDTHS)[number]>(8);
+  const [color, setColor] = useState<SketchmonColor>(SKETCHMON_COLORS[0]);
+  const [width, setWidth] = useState<SketchWidth>(8);
   const [optimisticStroke, setOptimisticStroke] = useState<SketchmonStroke | null>(null);
-  const [error, setError] = useState('');
+  const [syncError, setSyncError] = useState<string | null>(null);
   const activePointer = useRef<number | null>(null);
   const activeStroke = useRef<SketchmonStroke | null>(null);
   const pendingOperations = useRef<DrawOperation[]>([]);
   const flushTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const actionQueue = useRef<Promise<void>>(Promise.resolve());
+  const onActionRef = useRef(onAction);
+  onActionRef.current = onAction;
 
-  function queueAction(action: unknown) {
-    actionQueue.current = actionQueue.current.catch(() => undefined).then(() => onAction(action)).catch((caught: unknown) => {
-      activePointer.current = null; activeStroke.current = null; setOptimisticStroke(null);
-      setError(caught instanceof Error ? caught.message : 'No se pudo sincronizar el dibujo.');
+  const dropStroke = () => { activePointer.current = null; activeStroke.current = null; setOptimisticStroke(null); };
+
+  /** En orden: un lote no adelanta a otro. Los trazos enseñan su fallo en el lienzo; el resto, en el aviso global. */
+  function queue(send: () => Promise<void>, local: boolean) {
+    actionQueue.current = actionQueue.current.catch(() => undefined).then(send).catch((caught: unknown) => {
+      dropStroke();
+      if (local) setSyncError(caught instanceof Error && caught.message ? caught.message : 'No se pudo sincronizar el dibujo.');
     });
   }
 
   function scheduleFlush() {
     if (flushTimer.current) return;
-    flushTimer.current = setTimeout(() => {
-      flushTimer.current = null; flush(false);
-    }, FLUSH_INTERVAL_MS);
+    flushTimer.current = setTimeout(() => { flushTimer.current = null; flush(false); }, FLUSH_INTERVAL_MS);
   }
 
   function flush(all: boolean) {
     if (flushTimer.current) { clearTimeout(flushTimer.current); flushTimer.current = null; }
     do {
-      const operations = pendingOperations.current.splice(0, 8);
-      if (operations.length) queueAction({ type: 'DRAW_BATCH', operations } satisfies SketchmonAction);
+      const { batch, rest } = takeDrawBatch(pendingOperations.current);
+      pendingOperations.current = rest;
+      if (batch.length) queue(() => sendDrawBatch(onActionRef.current, batch), true);
     } while (all && pendingOperations.current.length);
     if (pendingOperations.current.length) scheduleFlush();
   }
 
-  function appendPending(strokeId: string, points: SketchmonPoint[]) {
-    for (const point of points) {
-      const last = pendingOperations.current.at(-1);
-      if (last?.kind === 'APPEND' && last.strokeId === strokeId && last.points.length < 32) last.points.push(point);
-      else pendingOperations.current.push({ kind: 'APPEND', strokeId, points: [point] });
-    }
-    scheduleFlush();
-  }
-
   function startStroke(event: ReactPointerEvent<HTMLCanvasElement>) {
     if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
-    event.currentTarget.setPointerCapture(event.pointerId); activePointer.current = event.pointerId; setError('');
+    event.currentTarget.setPointerCapture?.(event.pointerId); activePointer.current = event.pointerId; setSyncError(null);
     const first = pointFromEvent(event.currentTarget, event.nativeEvent);
-    const stroke: SketchmonStroke = {
-      id: crypto.randomUUID(), tool, color, width, points: [first],
-    };
+    const stroke: SketchmonStroke = { id: crypto.randomUUID(), tool, color, width, points: [first] };
     activeStroke.current = stroke; setOptimisticStroke(stroke);
-    pendingOperations.current.push({ kind: 'START', stroke: { ...stroke, points: [{ ...first }] } });
-    if (tool === 'FILL') {
-      activePointer.current = null; activeStroke.current = null; flush(true);
-    } else scheduleFlush();
+    pendingOperations.current = [...pendingOperations.current, { kind: 'START', stroke: { ...stroke, points: [{ ...first }] } }];
+    if (tool === 'FILL') { activePointer.current = null; activeStroke.current = null; flush(true); } else scheduleFlush();
   }
 
   function continueStroke(event: ReactPointerEvent<HTMLCanvasElement>) {
@@ -195,19 +207,20 @@ export function SketchmonCanvas({ strokes, onAction }: { strokes: readonly Sketc
     const nativeEvents = event.nativeEvent.getCoalescedEvents?.() ?? [event.nativeEvent];
     const additions: SketchmonPoint[] = [];
     let previous = current.points.at(-1)!;
-    for (const nativeEvent of nativeEvents) {
+    for (const nativeEvent of nativeEvents.length ? nativeEvents : [event.nativeEvent]) {
       const point = pointFromEvent(event.currentTarget, nativeEvent);
       if (farEnough(previous, point)) { additions.push(point); previous = point; }
     }
     if (!additions.length) return;
     current.points.push(...additions); setOptimisticStroke({ ...current, points: [...current.points] });
-    appendPending(current.id, additions.map((point) => ({ ...point })));
+    pendingOperations.current = appendPendingPoints(pendingOperations.current, current.id, additions);
+    scheduleFlush();
   }
 
   function finishStroke(event: ReactPointerEvent<HTMLCanvasElement>) {
     if (activePointer.current !== event.pointerId) return;
     continueStroke(event);
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    if (event.currentTarget.hasPointerCapture?.(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
     activePointer.current = null; activeStroke.current = null;
     flush(true);
   }
@@ -218,57 +231,39 @@ export function SketchmonCanvas({ strokes, onAction }: { strokes: readonly Sketc
     if (serverStroke && serverStroke.points.length >= optimisticStroke.points.length) setOptimisticStroke(null);
   }, [optimisticStroke, strokes]);
 
+  // Ronda nueva: fuera el trazo a medias, lo pendiente y el fallo de la anterior.
+  const firstReset = useRef(true);
+  useEffect(() => {
+    if (firstReset.current) { firstReset.current = false; return; }
+    if (flushTimer.current) { clearTimeout(flushTimer.current); flushTimer.current = null; }
+    pendingOperations.current = [];
+    activePointer.current = null; activeStroke.current = null;
+    setOptimisticStroke(null); setSyncError(null);
+  }, [resetKey]);
+
   useEffect(() => () => { if (flushTimer.current) clearTimeout(flushTimer.current); }, []);
 
-  function undo() {
-    setError(''); setOptimisticStroke(null); activeStroke.current = null; activePointer.current = null;
-    flush(true); queueAction({ type: 'UNDO_STROKE' } satisfies SketchmonAction);
+  function history(type: 'UNDO_STROKE' | 'REDO_STROKE' | 'CLEAR_DRAWING') {
+    setSyncError(null); dropStroke();
+    flush(true); queue(() => onActionRef.current({ type } satisfies SketchmonAction), false);
   }
 
-  function redo() {
-    setError(''); setOptimisticStroke(null); activeStroke.current = null; activePointer.current = null;
-    flush(true); queueAction({ type: 'REDO_STROKE' } satisfies SketchmonAction);
-  }
-
-  function clear() {
-    setError(''); setOptimisticStroke(null); activeStroke.current = null; activePointer.current = null;
-    flush(true); queueAction({ type: 'CLEAR_DRAWING' } satisfies SketchmonAction);
-  }
-
+  const historyRef = useRef(history);
+  historyRef.current = history;
+  const onKeyDown = useCallback((event: KeyboardEvent) => {
+    const action = sketchmonHistoryShortcut(event, typingTarget(event.target));
+    if (!action) return;
+    event.preventDefault(); historyRef.current(action);
+  }, []);
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const action = sketchmonHistoryShortcut(event); if (!action) return;
-      event.preventDefault(); if (action === 'REDO_STROKE') redo(); else undo();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  });
+    if (!enabled) return undefined;
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [enabled, onKeyDown]);
 
-  const empty = strokes.length === 0 && !optimisticStroke;
-  return <div>
-    <div className="relative overflow-hidden rounded-xl border border-night/15 bg-white shadow-inner">
-      <SketchmonCanvasSurface strokes={strokes} optimisticStroke={optimisticStroke} label="Lienzo de Sketchmon. Arrastra para dibujar o toca para rellenar." onPointerDown={startStroke} onPointerMove={continueStroke} onPointerUp={finishStroke} />
-      {empty && <div className="pointer-events-none absolute inset-0 grid place-items-center"><span className="rounded-full bg-night/70 px-3 py-1.5 text-sm font-extrabold text-white">Empieza tu dibujo</span></div>}
-    </div>
-    <div className="mt-3 flex flex-wrap items-center gap-2" aria-label="Herramientas de dibujo">
-      <div className="flex rounded-xl border border-ink/10 bg-surface-raised p-1" role="group" aria-label="Herramienta">
-        <button type="button" className={`icon-button ${tool === 'PENCIL' ? 'bg-aqua/15 text-aqua' : ''}`} aria-pressed={tool === 'PENCIL'} aria-label="Lápiz" onClick={() => setTool('PENCIL')}><Pencil size={20} /></button>
-        <button type="button" className={`icon-button ${tool === 'ERASER' ? 'bg-aqua/15 text-aqua' : ''}`} aria-pressed={tool === 'ERASER'} aria-label="Goma" onClick={() => setTool('ERASER')}><Eraser size={20} /></button>
-        <button type="button" className={`icon-button ${tool === 'FILL' ? 'bg-aqua/15 text-aqua' : ''}`} aria-pressed={tool === 'FILL'} aria-label="Relleno" onClick={() => setTool('FILL')}><PaintBucket size={20} /></button>
-      </div>
-      <div className="flex min-h-12 items-center gap-1 rounded-xl border border-ink/10 bg-surface-raised px-2" role="group" aria-label="Grosor">
-        {WIDTHS.map((option) => <button type="button" key={option} className={`grid h-10 w-10 place-items-center rounded-lg ${width === option ? 'bg-electric/15 ring-2 ring-electric' : 'hover:bg-ink/[.07]'}`} aria-label={`Grosor ${option}`} aria-pressed={width === option} onClick={() => setWidth(option)}><span className="rounded-full bg-ink" style={{ width: Math.max(4, option), height: Math.max(4, option) }} /></button>)}
-      </div>
-      <div className="flex min-h-12 flex-wrap items-center gap-0.5 rounded-xl border border-ink/10 bg-surface-raised p-1.5" role="group" aria-label="Color">
-        {SKETCHMON_COLORS.map((option) => <button type="button" key={option} className={`grid h-8 w-8 place-items-center rounded-md ${color === option ? 'ring-2 ring-aqua' : 'hover:bg-ink/[.07]'}`} aria-label={`Color ${COLOR_LABELS[option]}`} aria-pressed={color === option} onClick={() => setColor(option)}><span className="h-5 w-5 rounded-full border border-night/25" style={{ backgroundColor: option }} /></button>)}
-      </div>
-      <div className="ml-auto flex gap-1">
-        <button type="button" className="icon-button border border-ink/10 bg-surface-raised" aria-label="Deshacer último trazo" onClick={undo}><Undo2 size={20} /></button>
-        <button type="button" className="icon-button border border-ink/10 bg-surface-raised" aria-label="Rehacer último trazo" onClick={redo}><Redo2 size={20} /></button>
-        <button type="button" className="icon-button border border-berry/20 bg-berry/[.06] text-berry" aria-label="Limpiar lienzo" onClick={clear}><Trash2 size={20} /></button>
-      </div>
-    </div>
-    <p className="mt-2 text-xs font-bold text-ink/55">Lápiz, goma y relleno. Ctrl+Z deshace; Ctrl+Mayús+Z rehace.</p>
-    {error && <p className="status-error mt-2" role="alert">{error}</p>}
-  </div>;
+  return {
+    tool, setTool, color, setColor, width, setWidth, optimisticStroke, syncError,
+    handlers: { onPointerDown: startStroke, onPointerMove: continueStroke, onPointerUp: finishStroke },
+    undo: () => history('UNDO_STROKE'), redo: () => history('REDO_STROKE'), clear: () => history('CLEAR_DRAWING'),
+  };
 }

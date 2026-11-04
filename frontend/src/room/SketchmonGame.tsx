@@ -1,90 +1,145 @@
-import type { RoomMemberView, RoomView, SketchmonPlayerState, SketchmonPublicState } from '@pokemon-universe/shared/public';
-import { CheckCircle2, Clock3, Eye, EyeOff, History, Lightbulb, Palette, Search, XCircle } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
-import { PokemonTypeBadge } from '../components/PokemonTypeBadge';
-import { ServerTimer } from '../components/ServerTimer';
+import type { PokemonType, RoomView, SketchmonConfig, SketchmonPlayerState, SketchmonPublicState } from '@pokemon-universe/shared/public';
+import { SKETCHMON_DRAWER_POINTS } from '@pokemon-universe/shared/public';
+import type { LucideIcon } from 'lucide-react';
+import { ArrowRight, Brush, Check, Clock3, Eye, Hourglass, Palette, Radio, Trophy, X } from 'lucide-react';
+import { useMemo, useRef } from 'react';
+import { pokemonTypeLabels } from '../components/PokemonTypeBadge';
+import {
+  SKETCH_STEPS, SKETCH_TURN_TEXT, sketchAnnouncement, sketchCanvasLabel, sketchCurrentStep, sketchHeading, sketchRevealSummary, sketchRole, sketchRoundLabel,
+  sketchTurnStatus, sketchVerdict, type SketchTurnStatus,
+} from '../games/sketchmon/presentation';
+import { SketchCanvasPanel, SketchHints, SketchSecretPanel, SketchToolbar } from '../games/sketchmon/SketchParts';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { PokemonSelector } from './PokemonSelector';
-import type { PokemonSearchOption } from './pokemon-search';
-import { SketchmonCanvas, SketchmonCanvasSurface } from './SketchmonCanvas';
+import { Chip, cx, Icon, TypeBadge, type ChipProps } from '../ui';
+import { useFocusOnTransition } from './focus-transition';
+import { GuessAttemptsFeed, GuessPanel, GuessRoundReveal, guessOwnLastAttempt, pointsWord } from './guess-kit';
+import { useSketchPad } from './SketchmonCanvas';
+import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, type ProgressStatus } from './social-kit';
+import s from '../games/sketchmon/Sketchmon.module.css';
 
-const EMPTY_LOCKED = new Set<string>();
+const GAME_NAME = 'Sketchmon';
+const SCORING = 'Cuanto antes aciertes, más puntos (de 5 a 2); tras un fallo hay una breve espera.';
+const RULE = `Quien acierta suma de 5 a 2 puntos según lo rápido; quien dibuja, ${SKETCHMON_DRAWER_POINTS} si alguien acierta.`;
+const typeLabel = (type: string) => pokemonTypeLabels[type as PokemonType] ?? type;
 
-function memberFor(room: RoomView, id: string | null): RoomMemberView | undefined {
-  return id ? room.members.find((member) => member.id === id) : undefined;
-}
+const TURN_ICON: Record<SketchTurnStatus, LucideIcon> = { drawing: Brush, drew: Brush, next: ArrowRight, done: Check, pending: Hourglass };
+const TURN_TONE: Record<SketchTurnStatus, NonNullable<ChipProps['tone']>> = { drawing: 'warn', drew: 'info', next: 'info', done: 'neutral', pending: 'neutral' };
 
-function DrawerBanner({ room, game }: { room: RoomView; game: SketchmonPublicState }) {
-  const drawer = memberFor(room, game.drawerId); const next = memberFor(room, game.nextDrawerId);
-  return <div className="flex min-w-0 flex-wrap items-center gap-3">
-    {drawer && <Avatar name={drawer.displayName} avatar={drawer.avatar} presence={drawer.presence} size="md" />}
-    <div className="min-w-0"><span className="flex items-center gap-1.5 text-xs font-black text-berry"><Palette size={15} /> DIBUJANDO</span><strong className="block truncate font-display text-xl sm:text-2xl">{drawer?.displayName ?? 'Preparando turno…'}</strong>{next && <span className="block truncate text-sm font-bold text-ink/60">Siguiente: {next.displayName}</span>}</div>
-  </div>;
-}
+type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<void>;
 
-function SecretPokemon({ player, serverOffset }: { player: Extract<SketchmonPlayerState, { role: 'DRAWER' }>; serverOffset: number }) {
-  const pokemon = player.secretPokemon;
-  const previewRemainingMs = useRemainingMs(pokemon?.previewEndsAt, serverOffset);
-  if (!pokemon) return <div className="skeleton min-h-56" />;
-  const spriteVisible = Boolean(pokemon.sprite) && (pokemon.previewEndsAt === null || previewRemainingMs > 0);
-  return <aside className="rounded-xl border border-berry/20 bg-berry/[.06] p-4 text-center" aria-labelledby="sketchmon-secret">
-    <span className="text-xs font-black text-berry">SOLO TÚ PUEDES VER ESTO</span>
-    <h2 id="sketchmon-secret" className="font-display text-xl">Tu Pokémon</h2>
-    <div className="grid h-36 place-items-center">
-      {spriteVisible ? <div className="relative"><img src={pokemon.sprite!} alt={pokemon.name} className="h-32 w-32 object-contain [image-rendering:pixelated]" />{pokemon.previewEndsAt !== null && <span className="absolute right-0 top-0 rounded-full bg-night px-2 py-1 text-xs font-black text-white">{Math.max(1, Math.ceil(previewRemainingMs / 1_000))}s</span>}</div> : <div className="text-ink/45"><EyeOff className="mx-auto" size={42} /><strong className="mt-2 block text-sm">Referencia oculta</strong></div>}
-    </div>
-    <strong className="block break-words font-display text-2xl text-aqua">{pokemon.name}</strong>
-    <div className="mt-2 flex flex-wrap justify-center gap-1.5">{pokemon.types.map((type) => <PokemonTypeBadge key={type} type={type} compact />)}</div>
-    {pokemon.previewEndsAt !== null && <p className="mt-2 text-xs font-bold text-ink/60">{spriteVisible ? 'Memoriza su aspecto antes de que desaparezca.' : 'Ahora dibuja de memoria: solo conservarás el nombre.'}</p>}
-    <p className="mt-3 text-sm font-extrabold text-berry">No escribas letras, números, nombres ni símbolos que revelen directamente el Pokémon.</p>
-  </aside>;
-}
+/**
+ * Sketchmon con el kit social (spec §2 y §6 «Juegos»): Poké Taboo con un lienzo en lugar de pistas de texto. Arriba, la
+ * placa del dibujo («Dibujo N de M · Vuelta a de b», quién dibuja y el plazo), las fases y la escena: quien dibuja ve
+ * su Pokémon secreto y el lienzo; los demás, el lienzo en directo y las pistas automáticas. Abajo, la acción: las
+ * herramientas (quien dibuja), el buscador con los intentos (quien adivina) o el veredicto. Al lado, el orden de turnos
+ * en texto con los puntos y los intentos públicos.
+ *
+ * Privacidad: el secreto solo llega en el estado propio de quien dibuja (`secretPokemon`) y solo se pinta con él; la
+ * respuesta para los demás solo llega en `lastRound`, que la pantalla lee únicamente en `ROUND_RESULTS`.
+ */
+export function SketchmonGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction: GameAction }) {
+  const game = room.game as SketchmonPublicState;
+  const player = room.gamePlayerState as SketchmonPlayerState | null;
+  const config = room.selectedGameConfig as Partial<SketchmonConfig> | null;
+  const role = sketchRole(player);
+  const active = game.phase === 'ROUND_ACTIVE';
+  const canGuess = active && player?.role === 'GUESSER' && player.canGuess;
+  const secret = active && player?.role === 'DRAWER' ? player.secretPokemon : null;
+  const drawing = active && player?.role === 'DRAWER';
+  // La revelación solo en su fase: un `lastRound` sobrante nunca llega al DOM.
+  const result = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
+  const { pokemon, error: loadError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [], includeForms: config?.includeForms ?? false, enabled: canGuess });
+  const offset = useServerOffset(room.serverNow);
+  const cooldownMs = useRemainingMs(player?.role === 'GUESSER' ? player.cooldownUntil : null, offset);
+  const transitionMs = useRemainingMs(result ? game.nextTransitionAt : null, offset);
+  const pad = useSketchPad({ strokes: game.strokes, onAction, enabled: drawing && player.canDraw, resetKey: game.roundNumber });
 
-function HintPanel({ game }: { game: SketchmonPublicState }) {
-  if (!game.visibleHints.length) return null;
-  return <section className="mt-4 rounded-xl border border-electric/25 bg-electric/[.06] p-3" aria-labelledby="sketchmon-hints">
-    <h2 id="sketchmon-hints" className="flex items-center gap-2 font-display text-lg"><Lightbulb className="text-electric" size={19} /> Pistas automáticas</h2>
-    <div className="mt-2 flex flex-wrap gap-2" aria-live="polite">{game.visibleHints.map((hint, index) => {
-      if (hint.kind === 'GENERATION') return <span key={hint.kind} className="chip bg-electric/10 text-electric">Generación {hint.generation}</span>;
-      if (hint.kind === 'TYPES') return <span key={hint.kind} className="flex flex-wrap gap-1.5">{hint.types.map((type) => <PokemonTypeBadge key={type} type={type} compact />)}</span>;
-      return <span key={`${hint.kind}-${index}`} className="chip bg-electric/10 text-electric">{hint.text}</span>;
-    })}</div>
-  </section>;
-}
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
+  const drawerId = result?.drawerId ?? game.drawerId;
+  const drawerName = drawerId ? nameOf(drawerId) : null;
+  const participating = player !== null && player.role !== 'SPECTATOR';
+  const ownLast = canGuess ? guessOwnLastAttempt(game.attempts, selfId) : null;
 
-function GuessPanel({ pokemon, poolLoading, onRetry, player, game, serverOffset, loadError, onAction }: { pokemon: readonly PokemonSearchOption[]; poolLoading: boolean; onRetry(): void; player: Extract<SketchmonPlayerState, { role: 'GUESSER' }>; game: SketchmonPublicState; serverOffset: number; loadError: string; onAction(action: unknown): Promise<void> }) {
-  const cooldownMs = useRemainingMs(player.cooldownUntil, serverOffset);
-  if (!player.canGuess) return <div className="grid min-h-28 place-items-center rounded-xl bg-ink/[.04] font-bold text-ink/65">Esperando al siguiente dibujo…</div>;
-  return <section className="mt-4 border-t border-ink/10 pt-4" aria-labelledby="sketchmon-answer">
-    <div className="mb-2 flex items-end justify-between gap-2"><div><span className="text-xs font-black text-aqua">TU RESPUESTA</span><h2 id="sketchmon-answer" className="flex items-center gap-2 font-display text-xl"><Search size={19} /> Buscar Pokémon</h2></div><span className="text-xs font-bold text-ink/60">{player.attemptCount} intento{player.attemptCount === 1 ? '' : 's'}</span></div>
-    {cooldownMs > 0 && <p className="mb-2 flex items-center gap-2 rounded-xl bg-berry/[.08] px-3 py-2 text-sm font-extrabold text-berry" role="status"><XCircle size={17} /> Incorrecto · nuevo intento en {(cooldownMs / 1_000).toFixed(1)}s</p>}
-    <PokemonSelector loading={poolLoading} loadError={loadError} onRetry={onRetry} key={game.roundNumber} pokemon={pokemon} locked={EMPTY_LOCKED} disabled={false} confirmationDisabled={cooldownMs > 0} variant="embedded" autoFocus={false} inputLabel={`Buscar respuesta para el dibujo ${game.roundNumber}`} onSelect={(pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId })} />
-  </section>;
-}
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  // Cambia con la fase, el dibujo y el rol (quien dibuja pasa a ver la revelación como uno más).
+  useFocusOnTransition(`${game.phase}-${game.roundNumber}-${role}`, titleRef);
 
-function AttemptsPanel({ room, game }: { room: RoomView; game: SketchmonPublicState }) {
-  return <section className="rounded-xl border border-ink/10 bg-surface p-4" aria-labelledby="sketchmon-attempts"><h2 id="sketchmon-attempts" className="mb-3 flex items-center gap-2 font-display text-xl"><History className="text-berry" size={20} /> Intentos</h2>{game.attempts.length ? <div className="max-h-80 space-y-1.5 overflow-y-auto overscroll-contain" aria-live="polite">{game.attempts.slice().reverse().map((attempt, index) => { const member = memberFor(room, attempt.playerId); return <div key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`} className="flex items-center gap-2 rounded-xl bg-berry/[.06] p-2"><Avatar name={member?.displayName ?? attempt.playerId} avatar={member?.avatar} size="xs" /><span className="min-w-0 flex-1 truncate text-sm"><strong>{member?.displayName ?? attempt.playerId}</strong><span className="text-ink/55"> → </span>{attempt.guessedPokemon.name}</span><img src={attempt.guessedPokemon.sprite} alt="" className="h-8 w-8 object-contain [image-rendering:pixelated]" /><XCircle className="shrink-0 text-berry" size={16} /></div>; })}</div> : <p className="rounded-xl border border-dashed border-ink/15 p-5 text-center text-sm font-bold text-ink/60">Aún no hay respuestas incorrectas.</p>}</section>;
-}
+  const last = game.roundNumber >= game.totalRounds;
+  const timer = active
+    ? { deadline: game.roundEndsAt, serverOffset: offset, label: 'Tiempo', totalMs: config?.roundSeconds ? config.roundSeconds * 1_000 : undefined }
+    : { deadline: game.nextTransitionAt, serverOffset: offset, label: last ? 'Clasificación' : 'Siguiente dibujo' };
+  const announcement = sketchAnnouncement({
+    phase: game.phase, roundNumber: game.roundNumber, role, drawerName, secretName: secret?.name ?? null, ownLast, hints: game.visibleHints,
+    syncError: drawing ? pad.syncError : null, result, nameOf, typeLabel,
+  });
+  const heading = sketchHeading({ phase: game.phase, role, drawerName, secretName: secret?.name ?? null, result });
+  const meta = drawerName && <Chip tone="warn" icon={<Icon icon={Palette} size={18} />}>{role === 'drawer' && !result ? 'Dibujas tú' : `Dibuja ${drawerName}`}</Chip>;
+  const hints = game.visibleHints.length > 0 && !result ? <SketchHints hints={game.visibleHints} /> : null;
 
-function TurnOrder({ room, game }: { room: RoomView; game: SketchmonPublicState }) {
-  return <section className="rounded-xl border border-ink/10 bg-surface p-4" aria-labelledby="sketchmon-order"><h2 id="sketchmon-order" className="mb-1 font-display text-xl">Orden de esta vuelta</h2><p className="mb-3 text-xs font-bold text-ink/55">Se vuelve a mezclar en la siguiente.</p><div className="space-y-1.5">{game.drawerOrder.map((id, index) => { const member = memberFor(room, id); const current = id === game.drawerId; const next = id === game.nextDrawerId; return <div key={id} className={`flex items-center gap-2 rounded-xl px-2.5 py-2 ${current ? 'bg-berry/[.09]' : next ? 'bg-aqua/[.07]' : 'bg-ink/[.03]'}`}><span className="w-5 text-center text-xs font-black text-ink/50">{index + 1}</span><Avatar name={member?.displayName ?? id} avatar={member?.avatar} presence={member?.presence} size="xs" /><strong className="min-w-0 flex-1 truncate text-sm">{member?.displayName ?? id}</strong>{current ? <span className="flex items-center gap-1 text-xs font-black text-berry"><Palette size={14} /> Ahora</span> : next ? <span className="text-xs font-black text-aqua">Siguiente</span> : null}</div>; })}</div></section>;
-}
+  // Escena: el secreto y el lienzo (quien dibuja), el lienzo en directo (los demás) o la revelación con el dibujo final.
+  let stage;
+  if (result) {
+    stage = <div className={s.pair}>
+      <GuessRoundReveal answers={[{ id: result.pokemon.id, name: result.pokemon.name, sprite: result.pokemon.sprite }]} kicker={`Dibujo ${game.roundNumber} · resultado`} className={s.reveal}
+        details={<><span className={s.revealSummary} data-testid="sketch-reveal-summary">{sketchRevealSummary(result, nameOf)}</span>
+          <span className={s.revealFacts}>{result.pokemon.types.map((type) => <TypeBadge key={type} type={type} label={typeLabel(type)} size="sm" />)}<span>Generación {result.pokemon.generation}</span></span></>} />
+      <SketchCanvasPanel strokes={result.drawing} title={`Dibujo de ${drawerName ?? 'Entrenador'}`} label={`Dibujo final de ${result.pokemon.name}`} emptyText="Sin trazos" testId="sketch-final" className={s.finalPanel} />
+    </div>;
+  } else if (role === 'drawer' && active) {
+    stage = <div className={s.drawStage}>
+      {secret && <SketchSecretPanel pokemon={secret} serverOffset={offset} titleRef={titleRef} />}
+      <div className={s.drawMain}>
+        <SketchCanvasPanel strokes={game.strokes} label={sketchCanvasLabel(pad.tool)} pad={pad} emptyText="Empieza tu dibujo" testId="sketch-canvas" />
+        {hints}
+      </div>
+    </div>;
+  } else {
+    stage = <div className={s.drawMain}>
+      <SketchCanvasPanel strokes={game.strokes} title={drawerName ? `Dibujo de ${drawerName}` : 'Dibujo'} label={`Dibujo en directo de ${drawerName ?? 'otro jugador'}`}
+        right={active ? <Chip tone="info" icon={<Icon icon={Radio} size={18} />}>En directo</Chip> : undefined}
+        emptyText={active ? 'Esperando el primer trazo…' : 'Preparando el dibujo…'} testId="sketch-live" />
+      {hints}
+    </div>;
+  }
 
-function RoundReveal({ room, game, serverOffset }: { room: RoomView; game: SketchmonPublicState; serverOffset: number }) {
-  const result = game.lastRound!; const winner = memberFor(room, result.winnerId); const drawer = memberFor(room, result.drawerId);
-  return <section className="mx-auto max-w-6xl px-3 py-5 sm:px-5"><div className="overflow-hidden rounded-2xl border border-leaf/25 bg-surface shadow-card reveal-pop"><header className="flex flex-wrap items-start justify-between gap-3 border-b border-ink/10 px-4 py-4 sm:px-6"><div><span className="label !mb-0">Dibujo {game.roundNumber} · Reveal</span><h1 className="font-display text-3xl text-leaf sm:text-4xl">¡Era {result.pokemon.name}!</h1></div><ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Siguiente dibujo" /></header>
-    <div className="grid gap-5 p-4 sm:p-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(17rem,.65fr)]"><div><div className="overflow-hidden rounded-xl border border-night/15 bg-white"><SketchmonCanvasSurface strokes={result.drawing} label={`Dibujo final de ${result.pokemon.name}`} /></div><p className="mt-2 text-center text-sm font-bold text-ink/60">Dibujo de {drawer?.displayName ?? result.drawerId}</p></div><div className="flex flex-col justify-center text-center"><img src={result.pokemon.sprite} alt={result.pokemon.name} className="mx-auto h-48 w-48 object-contain [image-rendering:pixelated]" /><div className="flex flex-wrap justify-center gap-1.5">{result.pokemon.types.map((type) => <PokemonTypeBadge key={type} type={type} compact />)}</div>{winner ? <><CheckCircle2 className="mx-auto mt-4 text-leaf" size={36} /><h2 className="mt-1 font-display text-2xl">{winner.displayName} lo adivinó</h2><p className="font-bold text-ink/65">En {(result.elapsedMs / 1_000).toFixed(1)}s · {result.winnerAttemptCount} intento{result.winnerAttemptCount === 1 ? '' : 's'}</p><div className="mt-4 grid gap-2 text-left"><div className="flex items-center gap-3 rounded-xl bg-leaf/[.08] p-3"><Avatar name={winner.displayName} avatar={winner.avatar} size="sm" /><strong className="min-w-0 flex-1 truncate">{winner.displayName}</strong><strong className="text-leaf">+{result.guesserPoints}</strong></div>{drawer && <div className="flex items-center gap-3 rounded-xl bg-aqua/[.07] p-3"><Avatar name={drawer.displayName} avatar={drawer.avatar} size="sm" /><span className="min-w-0 flex-1"><strong className="block truncate">{drawer.displayName}</strong><small className="font-bold text-ink/60">Dibujante</small></span><strong className="text-aqua">+{result.drawerPoints}</strong></div>}</div></> : <><Clock3 className="mx-auto mt-4 text-electric" size={36} /><h2 className="mt-1 font-display text-2xl">Se acabó el tiempo</h2><p className="font-bold text-ink/65">Nadie acertó este dibujo. No se reparten puntos.</p></>}</div></div></div></section>;
-}
+  const turnOrder = <ResponseProgress title="Orden de turnos" members={room.members} playerIds={game.drawerOrder} doneIds={[]} selfId={selfId} count={false}
+    status={(id): ProgressStatus => { const status = sketchTurnStatus(game, id); return { tone: TURN_TONE[status], text: SKETCH_TURN_TEXT[status], icon: TURN_ICON[status] }; }}
+    value={(id) => `${game.scores[id] ?? 0} pts`} note="Cada jugador dibuja una vez por vuelta; el orden se vuelve a mezclar en la siguiente." />;
+  const turnPoints = result && <ResponseProgress title="Puntos del dibujo" members={room.members} playerIds={game.drawerOrder} doneIds={[]} selfId={selfId} count={false}
+    status={(id): ProgressStatus => {
+      if (id === result.winnerId) return { tone: 'ok', text: `Acertó · ${result.winnerAttemptCount ?? 1} ${result.winnerAttemptCount === 1 ? 'intento' : 'intentos'}`, icon: Trophy };
+      if (id === result.drawerId) return result.winnerId ? { tone: 'ok', text: 'Dibujó', icon: Brush } : { tone: 'bad', text: 'Dibujó · nadie acertó', icon: Brush };
+      return { tone: 'neutral', text: 'No acertó', icon: X };
+    }}
+    value={(id) => `+${id === result.winnerId ? result.guesserPoints : id === result.drawerId ? result.drawerPoints : 0}`} />;
+  const side = <>
+    {turnPoints || turnOrder}
+    <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} emptyText="Cada fallo sale aquí para todos. Tras un fallo hay una breve espera antes del siguiente intento." />
+  </>;
 
-export function SketchmonGame({ room, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const game = room.game as SketchmonPublicState; const player = room.gamePlayerState as SketchmonPlayerState;
-  const config = room.selectedGameConfig as { generations: number[]; includeForms: boolean };
-  const canLoadPool = player.role === 'GUESSER' && player.canGuess;
-  const { pokemon, error: loadError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config.generations, includeForms: config.includeForms, enabled: canLoadPool });
-  const serverOffset = useServerOffset(room.serverNow); const drawer = memberFor(room, game.drawerId);
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} serverOffset={serverOffset} />;
-  return <section className="mx-auto max-w-[90rem] overflow-x-clip px-3 py-4 sm:px-5"><header className="mb-4 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-ink/10 bg-surface px-4 py-3 shadow-card"><div><span className="text-xs font-black text-ink/60">Vuelta {game.lapNumber}/{game.totalLaps} · Dibujo {game.roundNumber}/{game.totalRounds}</span><h1 className="font-display text-2xl sm:text-3xl">Sketchmon</h1></div><DrawerBanner room={room} game={game} /><ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} /></header>
-    <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]"><main className="min-w-0 rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-5"><div className={player.role === 'DRAWER' ? 'grid items-start gap-4 lg:grid-cols-[14rem_minmax(0,1fr)]' : ''}>{player.role === 'DRAWER' && <SecretPokemon player={player} serverOffset={serverOffset} />}<div className="min-w-0">{player.role !== 'DRAWER' && <div className="mb-3 text-center"><Eye className="mx-auto text-aqua" size={30} /><h2 className="font-display text-xl">{drawer?.displayName ?? 'El dibujante'} está dibujando</h2><p className="text-sm font-bold text-ink/60">Observa los trazos en tiempo real y prueba todas las respuestas que necesites.</p></div>}{player.role === 'DRAWER' ? <SketchmonCanvas key={game.roundNumber} strokes={game.strokes} onAction={onAction} /> : <div className="relative overflow-hidden rounded-xl border border-night/15 bg-white shadow-inner"><SketchmonCanvasSurface strokes={game.strokes} label={`Dibujo en directo de ${drawer?.displayName ?? 'otro jugador'}`} /></div>}{player.role !== 'DRAWER' && !game.strokes.length && <p className="mt-2 text-center text-sm font-bold text-ink/55">Esperando el primer trazo…</p>}<HintPanel game={game} />{player.role === 'GUESSER' && <GuessPanel pokemon={pokemon} poolLoading={poolLoading} onRetry={retryPool} player={player} game={game} serverOffset={serverOffset} loadError={loadError} onAction={onAction} />}{player.role === 'SPECTATOR' && <div className="mt-4 rounded-xl bg-ink/[.04] p-4 text-center font-bold text-ink/65">Estás observando esta ronda.</div>}</div></div></main><aside className="grid gap-4 md:grid-cols-2 xl:grid-cols-1"><AttemptsPanel room={room} game={game} /><TurnOrder room={room} game={game} /></aside></div>
-  </section>;
+  let bottom;
+  if (result) {
+    const verdict = sketchVerdict(result, selfId, participating);
+    const seconds = Math.max(1, Math.ceil(transitionMs / 1_000));
+    bottom = <SocialPlate titleRef={titleRef} textClassName={s.plateHelp} content={{
+      icon: verdict.tone === 'ok' ? Trophy : verdict.tone === 'bad' ? X : Eye, tone: verdict.tone, kicker: verdict.text, title: `${last ? 'Clasificación' : 'Siguiente dibujo'} en ${seconds}s`, text: RULE,
+      ...(verdict.points > 0 ? { aside: <strong className={s.points}>+{verdict.points}<small> {pointsWord(verdict.points)}</small></strong> } : {}),
+    }} />;
+  } else if (drawing) {
+    bottom = <SketchToolbar pad={pad} disabled={!player.canDraw} />;
+  } else if (role === 'guesser' || role === 'watcher') {
+    bottom = <GuessPanel kind={canGuess ? 'guess' : role === 'watcher' ? 'watching' : 'waiting'} titleRef={titleRef} question="Busca el Pokémon dibujado" guessText={SCORING} gameName={GAME_NAME}
+      cooldownMs={cooldownMs} lastWrong={ownLast?.guessedPokemon.name ?? null} attemptCount={player?.role === 'GUESSER' ? player.attemptCount : 0}
+      watchingText="Estás observando: puedes seguir el dibujo y los intentos."
+      selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para el dibujo ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
+  } else {
+    bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Preparando el dibujo…', text: 'El dibujo empieza en un momento.' }} />;
+  }
+
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} roundLabel={sketchRoundLabel(game)} heading={heading} meta={meta} timer={timer}
+    announcement={announcement} phases={<PhaseRail steps={SKETCH_STEPS} current={sketchCurrentStep(game.phase)} className={s.phases} />} stage={stage} side={side} bottom={bottom}
+    className={cx(s.screen, drawing && s.drawing, active && s.active)} />;
 }

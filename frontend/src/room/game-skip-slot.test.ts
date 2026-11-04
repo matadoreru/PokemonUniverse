@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { skipRowInLayout } from './game-skip-slot';
 
 const skip = { gameInstanceId: 'g1', votes: 0, requiredVotes: 2, currentUserVoted: false, canVote: true } as never;
-const base = { phase: 'ROUND_ACTIVE', gameIntro: null, gameSkipState: skip, selectedGameId: 'sketchmon', game: { gameId: 'sketchmon' } } as never;
+const base = { phase: 'ROUND_ACTIVE', gameIntro: null, gameSkipState: skip, selectedGameId: 'who-is-who-pokemon', game: { gameId: 'who-is-who-pokemon' } } as never;
 
 describe('skipRowInLayout', () => {
   it('pone la fila encima de los juegos sin rediseñar', () => {
@@ -133,6 +133,11 @@ describe('skipRowInLayout', () => {
     const taboo = { ...(base as object), selectedGameId: 'poke-taboo', game: { gameId: 'poke-taboo' } };
     for (const phase of ['ROUND_ACTIVE', 'ROUND_RESULTS']) expect(skipRowInLayout({ ...taboo, phase } as never)).toBe(false);
     expect(skipRowInLayout({ ...taboo, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
+  it('Sketchmon la lleva dentro de su pantalla al dibujar y en la revelación, no en los resultados', () => {
+    const sketch = { ...(base as object), selectedGameId: 'sketchmon', game: { gameId: 'sketchmon' } };
+    for (const phase of ['ROUND_ACTIVE', 'ROUND_RESULTS']) expect(skipRowInLayout({ ...sketch, phase } as never)).toBe(false);
+    expect(skipRowInLayout({ ...sketch, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
