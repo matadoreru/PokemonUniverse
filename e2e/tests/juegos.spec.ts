@@ -4,7 +4,6 @@
  * sala nueva con `max(3, minPlayers)` invitados, selección del juego, listos, «Empezar partida» y
  * comprobación de que la partida sale del lobby y pinta su pantalla sin desbordes a 1280×720.
  */
-import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page, type Response, type Route } from '@playwright/test';
 import { animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, introDePartida, layoutProblems, psql, saltarIntro, seleccionarJuego, SIZES, type CaptureOptions, type Jugador, type SalaConJugadores } from '../src/helpers.js';
@@ -2043,154 +2042,102 @@ test('pokemon-palette-guess: una ronda con un fallo, el acierto, la revelación 
   }
 });
 
-/** Lo que el test lee del estado público de Adivina el Grito. */
-interface CryVisible { phase: string; cryUrl: string | null }
-
-/** SHA-256 (hex) del grito opaco de la ronda, descargado en la página (mismo origen, con la sesión). */
-async function hashEnPagina(page: Page, url: string): Promise<string> {
-  return page.evaluate(async (url) => {
-    const respuesta = await fetch(url, { credentials: 'include' });
-    const digest = await crypto.subtle.digest('SHA-256', await respuesta.arrayBuffer());
-    return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
-  }, url);
+/** Texto, `alt` y `title` de `main`: lo que vería quien busca la respuesta en el DOM. */
+async function textoDeMain(page: Page): Promise<string> {
+  return page.locator('main').evaluate((main) => [(main as HTMLElement).innerText, ...[...main.querySelectorAll('[alt], [title]')].map((el) => `${el.getAttribute('alt') ?? ''} ${el.getAttribute('title') ?? ''}`)].join('\n'));
 }
 
 /**
- * Candidatos a la respuesta de Adivina el Grito: el servidor sirve por la ruta opaca los mismos bytes que el
- * `CRY_LATEST` del catálogo (`PokemonAssetReference`), así que se descargan los gritos del buscador (en lotes de 16) y
- * se comparan por SHA-256 con el de la ronda. Devuelve los que coinciden y otro que seguro no (para el fallo).
+ * Adivina el Grito sin red ni respuesta conocida: una ronda corta (15 s) con un fallo (el enfriamiento, el anuncio y
+ * los intentos), el botón del grito con su estado y, al agotarse el tiempo, la revelación («¡Era X!» da el nombre, que
+ * no estaba antes en el DOM) y la clasificación. El acierto («¡Grito acertado!», el marcador) lo cubren los tests de
+ * render de `PokemonCryQuizGame.test.tsx`.
  */
-async function gritosQueCoinciden(hash: string, ids: readonly string[]): Promise<{ encajan: string[]; otro: string }> {
-  const filas = psql(
-    `SELECT "pokemonId", url FROM "PokemonAssetReference" WHERE kind = 'CRY_LATEST' AND "pokemonId" = ANY(string_to_array(:'ids', ',')) ORDER BY "pokemonId";`,
-    { ids: ids.join(',') },
-  ).split('\n').filter(Boolean).map((fila) => fila.split('|') as [string, string]);
-  const encajan: string[] = [];
-  let otro = '';
-  for (let inicio = 0; inicio < filas.length; inicio += 16) {
-    await Promise.all(filas.slice(inicio, inicio + 16).map(async ([id, url]) => {
-      const respuesta = await fetch(url).catch(() => null);
-      if (!respuesta?.ok) return;
-      const suyo = createHash('sha256').update(Buffer.from(await respuesta.arrayBuffer())).digest('hex');
-      if (suyo === hash) encajan.push(id);
-      else if (!otro) otro = id;
-    }));
-  }
-  return { encajan, otro };
-}
-
-test('pokemon-cry-quiz: una ronda con un fallo, el acierto, la revelación y la clasificación', async ({ browser }) => {
-  test.setTimeout(240_000);
+test('pokemon-cry-quiz: una ronda corta con un fallo, el grito, la revelación por tiempo y la clasificación', async ({ browser }) => {
+  test.setTimeout(120_000);
   const sala = await crearSalaConJugadores(browser, 3);
   try {
     const { host, invitados, jugadores } = sala;
-    const [primero, segundo] = invitados as [Jugador, Jugador];
+    const [primero] = invitados as [Jugador, Jugador];
     await seleccionarJuego(host.page, 'Adivina el Grito');
-    // Una ronda (para llegar a la clasificación) de 60 s (el máximo), solo la Gen 1 y el grito actual (el del catálogo).
+    // Una ronda (para llegar a la clasificación) de 15 s y solo la Gen 1.
     await host.page.getByRole('tab', { name: 'Configuración' }).click();
     for (const gen of [2, 3, 4, 5, 6, 7, 8, 9]) {
       const boton = host.page.getByRole('button', { name: `Gen ${gen}`, exact: true });
       await boton.click();
       await expect(boton).toHaveAttribute('aria-pressed', 'false');
     }
-    await expect(host.page.getByRole('radio', { name: 'Actual', exact: true })).toHaveAttribute('aria-checked', 'true');
-    for (const [nombre, tecla, valor] of [['Número de rondas', 'Home', '1'], ['Tiempo por ronda', 'End', '60']] as const) {
+    for (const [nombre, teclas, valor] of [['Número de rondas', ['Home'], '1'], ['Tiempo por ronda', ['Home', 'ArrowRight'], '15']] as const) {
       const rango = host.page.getByRole('slider', { name: nombre });
       await rango.focus();
-      await rango.press(tecla);
+      for (const tecla of teclas) await rango.press(tecla);
       await rango.blur();
       await expect(rango).toHaveValue(valor);
     }
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
 
-    let estado: CryVisible | null = null;
-    for (const ws of host.sockets.filter((s) => JAVA_WS.test(s.url()))) ws.on('framereceived', ({ payload }) => { estado = juegoEnTrama<CryVisible>(payload, 'pokemon-cry-quiz') ?? estado; });
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
     await saltarIntro(jugadores.map((j) => j.page));
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
-    const nombres = new Map(catalogo.map((p) => [p.id, p.name]));
     const grito = host.page.getByRole('region', { name: 'Grito del Pokémon misterioso' });
     const reproducir = host.page.getByTestId('cry-play');
     await expect(reproducir).toHaveText('Reproducir grito', { timeout: 20_000 });
     await expect(buscadorRespuesta(host.page)).toBeVisible();
-    await expect.poll(() => (estado as CryVisible | null)?.phase === 'ROUND_ACTIVE' && Boolean((estado as CryVisible | null)?.cryUrl), { timeout: 10_000 }).toBe(true);
-    const { cryUrl } = estado as unknown as CryVisible;
     // La ruta del grito es opaca: ni nombre ni número del Pokémon.
-    expect(cryUrl).toMatch(ASSET_URL);
-    const { encajan, otro } = await gritosQueCoinciden(await hashEnPagina(host.page, cryUrl!), catalogo.map((p) => p.id));
-    test.info().annotations.push({ type: 'grito', description: `coinciden: ${encajan.map((id) => nombres.get(id)).join(', ') || 'ninguno'}` });
-    expect(encajan.length, 'ningún grito del buscador coincide con el de la ronda').toBeGreaterThanOrEqual(1);
-    expect(encajan.length, `demasiados gritos iguales: ${encajan.join(', ')}`).toBeLessThanOrEqual(4);
-    const candidatos = encajan.map((id) => nombres.get(id)!);
-    const fallo = nombres.get(otro)!;
+    expect(new URL(await grito.locator('audio').getAttribute('src') ?? '', host.page.url()).pathname).toMatch(ASSET_URL);
 
-    // La respuesta no está en el DOM: ni en el texto, ni en `alt` o `title`.
-    for (const nombre of candidatos) {
-      await expect(host.page.locator('main')).not.toContainText(nombre);
-      expect(await host.page.locator(`main [alt="${nombre}"], main [title="${nombre}"]`).count()).toBe(0);
+    // Un intento con un Pokémon cualquiera: casi siempre falla (1 entre ~150 de acertar por azar, que se anota).
+    const intento = catalogo[0]!.name;
+    await adivinar(host.page, intento);
+    const resultado = await Promise.race([
+      host.page.getByTestId('guess-cooldown').waitFor({ timeout: 5_000 }).then(() => 'fallo' as const),
+      host.page.getByRole('heading', { name: '¡Grito acertado!' }).waitFor({ timeout: 5_000 }).then(() => 'acierto' as const),
+    ]);
+    if (resultado === 'acierto') test.info().annotations.push({ type: 'grito', description: `${intento} acertó por azar: sin enfriamiento que comprobar` });
+    else {
+      await expect(host.page.getByRole('status').filter({ hasText: /^Incorrecto \(1 intento\)/ })).toHaveCount(1);
+      await expect(primero.page.getByTestId('guess-attempt')).toHaveCount(1, { timeout: 5_000 });
+      await expect(host.page.getByTestId('guess-cooldown')).toHaveCount(0, { timeout: 5_000 });
+      await expect(host.page.getByText(`${intento} no era`, { exact: true })).toBeVisible();
     }
+    // Lo que había en el DOM antes de revelar (se compara con la respuesta al final).
+    const antes = await textoDeMain(host.page);
+
     // El botón dice su estado en texto: «Sonando…» mientras suena y vuelve al terminar (nunca suena solo).
     await reproducir.click();
     await expect(reproducir).toHaveText('Sonando…', { timeout: 5_000 });
-    await expect(reproducir).toHaveText('Reproducir grito', { timeout: 15_000 });
+    await expect(reproducir).toHaveText('Reproducir grito', { timeout: 8_000 });
 
-    // Marcador: una fila por jugador; los intentos vacíos enseñan a jugar.
-    await expect(host.page.getByTestId('guess-score-row')).toHaveCount(3);
-    await expect(host.page.getByText('Todavía no hay intentos incorrectos.')).toBeVisible();
-    await capturarTamanos(host.page, 'juego-pokemon-cry-quiz-pista', { sigue: grito, opts: ARCADE });
-    // A 390×844, sin desplazar: el botón del grito y el buscador a la vista.
-    await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
-    await host.page.evaluate(() => window.scrollTo(0, 0));
-    await expect(reproducir).toBeInViewport({ ratio: 1 });
-    await expect(buscadorRespuesta(host.page)).toBeInViewport({ ratio: 1 });
-    await host.page.setViewportSize({ width: 1280, height: 720 });
+    await capturarTamanos(primero.page, 'juego-pokemon-cry-quiz-pista', { sigue: primero.page.getByRole('region', { name: 'Grito del Pokémon misterioso' }), opts: ARCADE });
+    // A 390×844, sin desplazar: el botón del grito y el buscador a la vista; con la bandeja abierta, el primer
+    // resultado y el botón (por encima de la bandeja, sin quedar tapado).
+    if (resultado === 'fallo') {
+      await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
+      await expect(reproducir).toBeInViewport({ ratio: 1 });
+      await expect(buscadorRespuesta(host.page)).toBeInViewport({ ratio: 1 });
+      await buscadorRespuesta(host.page).fill('a');
+      const primerResultado = host.page.locator('.pokemon-selector-results button').first();
+      await expect(primerResultado).toBeInViewport({ ratio: 1 });
+      await expect(reproducir).toBeInViewport({ ratio: 1 });
+      const tapado = await reproducir.evaluate((boton) => { const caja = boton.getBoundingClientRect(); const encima = document.elementFromPoint(caja.left + caja.width / 2, caja.top + caja.height / 2); return !boton.contains(encima); });
+      expect(tapado, 'el botón del grito no queda tapado por la bandeja').toBe(false);
+      await host.page.setViewportSize({ width: 1280, height: 720 });
+      await buscadorRespuesta(host.page).blur();
+      await capturarTamanos(host.page, 'juego-pokemon-cry-quiz-busqueda', { sigue: primerResultado, opts: ARCADE });
+    }
 
-    // Un fallo seguro (otro grito): el aviso de la espera se ve, la región viva lo dice una vez y los demás ven el intento.
-    await adivinar(host.page, fallo);
-    await expect(host.page.getByTestId('guess-cooldown')).toBeVisible({ timeout: 5_000 });
-    await expect(host.page.getByRole('status').filter({ hasText: /^Incorrecto \(1 intento\)/ })).toHaveCount(1);
-    await expect(primero.page.getByTestId('guess-attempt')).toHaveCount(1, { timeout: 5_000 });
-    await expect(host.page.getByTestId('guess-cooldown')).toHaveCount(0, { timeout: 5_000 });
-    await expect(host.page.getByText(`${fallo} no era`, { exact: true })).toBeVisible();
-    // Buscando (la bandeja abierta): a 390×844 el primer resultado y el botón del grito siguen a la vista.
-    await buscadorRespuesta(host.page).fill('a');
-    const primerResultado = host.page.locator('.pokemon-selector-results button').first();
-    await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
-    await host.page.evaluate(() => window.scrollTo(0, 0));
-    await expect(primerResultado).toBeInViewport({ ratio: 1 });
-    // El botón del grito queda por encima de la bandeja (se puede volver a escuchar mientras se busca).
-    await expect(reproducir).toBeInViewport({ ratio: 1 });
-    const tapado = await reproducir.evaluate((boton) => { const caja = boton.getBoundingClientRect(); const encima = document.elementFromPoint(caja.left + caja.width / 2, caja.top + caja.height / 2); return !boton.contains(encima); });
-    expect(tapado, 'el botón del grito no queda tapado por la bandeja').toBe(false);
-    await host.page.setViewportSize({ width: 1280, height: 720 });
-    await buscadorRespuesta(host.page).blur();
-    await capturarTamanos(host.page, 'juego-pokemon-cry-quiz-busqueda', { sigue: primerResultado, opts: ARCADE });
-    await buscadorRespuesta(host.page).fill('');
-
-    // El acierto: la placa lo dice con el puesto y los puntos, y el foco va a su título (no cae al body).
-    const respuesta = await acertarEnOrden(host.page, candidatos, '¡Grito acertado!');
-    const acertado = host.page.getByRole('heading', { name: '¡Grito acertado!' });
-    await expect(acertado).toBeVisible({ timeout: 5_000 });
-    await expect(acertado).toBeFocused();
-    await expect(host.page.getByText('1.º en acertar', { exact: true })).toBeVisible();
-    await expect(primero.page.getByTestId('guess-score-row').first()).toContainText('Acertó · 1.º');
-    await capturarTamanos(host.page, 'juego-pokemon-cry-quiz-acertado', { sigue: acertado, opts: ARCADE });
-    await capturarTamanos(primero.page, 'juego-pokemon-cry-quiz-marcador', { sigue: buscadorRespuesta(primero.page), opts: ARCADE });
-
-    // El segundo también acierta y el tercero se va: la revelación lo dice en texto («No acertó»).
-    test.info().annotations.push({ type: 'tiempo', description: `quedan ${await primero.page.getByRole('timer').first().innerText()} s antes del acierto del segundo` });
-    await adivinar(primero.page, respuesta);
-    await expect(primero.page.getByRole('heading', { name: '¡Grito acertado!' })).toBeVisible({ timeout: 5_000 });
-    await segundo.context.close();
-    const era = host.page.getByRole('heading', { name: `¡Era ${respuesta}!`, level: 1 });
-    await expect(era).toBeVisible({ timeout: 65_000 });
+    // Se agota el tiempo: la revelación da el nombre, que no estaba antes en el DOM.
+    const era = host.page.getByRole('heading', { name: /^¡Era .+!$/, level: 1 });
+    await expect(era).toBeVisible({ timeout: 25_000 });
+    const respuesta = (await era.innerText()).replace(/^¡Era (.+)!$/, '$1');
+    test.info().annotations.push({ type: 'grito', description: `era ${respuesta}` });
+    expect(antes, 'la respuesta no estaba en el DOM antes de revelar').not.toContain(respuesta);
     const filas = host.page.getByTestId('guess-reveal-row');
     await expect(filas).toHaveCount(3);
-    await expect(filas.first()).toContainText(host.name);
-    await expect(filas.filter({ hasText: segundo.name })).toContainText('No acertó');
+    await expect(filas.filter({ hasText: primero.name })).toContainText('No acertó');
     await expect(host.page.getByText('Su grito', { exact: true })).toBeVisible();
-    await expect(host.page.getByTestId('cry-play')).toHaveText('Volver a escuchar');
+    await expect(reproducir).toHaveText('Volver a escuchar');
     await expect.poll(() => host.page.locator('[data-answer-card] img').evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), { timeout: 3_000 }).toBe(true);
     // La revelación dura poco: lo que mida el medidor se anota.
     await capturarAnotando(host.page, 'juego-pokemon-cry-quiz-revelacion', era, SIZES, ARCADE);

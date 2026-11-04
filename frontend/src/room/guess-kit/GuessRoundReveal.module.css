@@ -164,4 +164,8 @@
     width: 160px;
     height: 160px;
   }
+  /* Una sola respuesta con su detalle: la ficha también crece. */
+  .cards:not(.several) .withDetail .answerDetail {
+    width: clamp(20rem, 20vw, 24rem);
+  }
 }

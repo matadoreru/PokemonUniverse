@@ -101,8 +101,20 @@
   padding-top: 2px;
   border-top: var(--ol-2) solid var(--navy);
 }
+/* 1920: la ficha de una sola respuesta crece con la losa (letra y barras), sin dejar texto pequeño en un panel grande. */
 @media (min-width: 1600px) and (min-height: 900px) {
   .sheet .stats {
     font-size: var(--fs-15);
+  }
+  .big .stats {
+    gap: var(--sp-2);
+    font-size: var(--fs-22);
+  }
+  .big .row {
+    grid-template-columns: 5.4em minmax(0, 1fr) 3.2ch;
+  }
+  /* Con la ficha al lado, el nombre a 68 px no cabe: a 44 px se lee entero. */
+  .scene :global(#guess-reveal-title) {
+    font-size: var(--fs-44);
   }
 }

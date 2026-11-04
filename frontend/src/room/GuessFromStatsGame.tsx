@@ -29,8 +29,8 @@ export function StatRows({ stats, label = 'Estadísticas base', compact = false 
 }
 
 /** Ficha completa de una respuesta en la revelación: sus tipos y sus siete estadísticas. */
-function AnswerSheet({ pokemon }: { pokemon: GuessFromStatsPokemonReveal }) {
-  return <div className={s.sheet}>
+function AnswerSheet({ pokemon, big = false }: { pokemon: GuessFromStatsPokemonReveal; /** Una sola respuesta: a ≥1600 crece con la losa. */ big?: boolean }) {
+  return <div className={cx(s.sheet, big && s.big)}>
     <span className={s.types}>{pokemon.types.map((type) => <TypeBadge key={type} type={type} label={pokemonTypeLabels[type]} size="sm" />)}</span>
     <StatRows stats={fullStats(pokemon)} label={`Estadísticas de ${pokemon.name}`} compact />
   </div>;
@@ -56,8 +56,8 @@ export function GuessFromStatsGame({ room, selfId, onAction }: { room: RoomView;
   const heading = lastRound ? several ? `¡Valían ${lastRound.answers.length} Pokémon!` : `¡Era ${lastRound.answers[0]?.name ?? ''}!` : 'Reconoce sus stats';
 
   const clue = lastRound
-    ? <GuessRoundReveal answers={lastRound.answers.map((answer) => ({ id: answer.id, name: answer.name, sprite: answer.sprite, detail: <AnswerSheet pokemon={answer} /> }))}
-      details={several ? <>Todas coinciden exactamente con lo que se mostró.</> : <>Generación {lastRound.answers[0]?.generation}</>} />
+    ? <GuessRoundReveal answers={lastRound.answers.map((answer) => ({ id: answer.id, name: answer.name, sprite: answer.sprite, detail: <AnswerSheet pokemon={answer} big={!several} /> }))}
+      details={several ? <>Todas coinciden exactamente con lo que se mostró.</> : <>Generación {lastRound.answers[0]?.generation}</>} className={s.scene} />
     : <GuessClue label="Estadísticas del Pokémon misterioso" className={s.stage}>
       <StatRows stats={game.visibleStats} />
     </GuessClue>;
