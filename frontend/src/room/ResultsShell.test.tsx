@@ -13,6 +13,11 @@ const STANDINGS: ResultsStanding[] = [
 const shell = (props: Partial<Parameters<typeof ResultsShell>[0]> = {}) => renderToStaticMarkup(createElement(ResultsShell, { title: 'Resultado de la partida', subtitle: 'Pokédex Distance · Partida 1', children: createElement('p', null, 'Acciones'), ...props }));
 
 describe('ResultsShell', () => {
+  it('fillLarge solo cambia la pantalla ancha (con aside): sin aside no hace nada', () => {
+    expect(shell({ aside: createElement('p', null, 'Métricas'), fillLarge: true })).toMatch(/class="[^"]*fillLarge/);
+    expect(shell({ aside: createElement('p', null, 'Métricas') })).not.toMatch(/fillLarge/);
+    expect(shell({ fillLarge: true })).not.toMatch(/fillLarge/);
+  });
   it('sin clasificación: título h1, subtítulo e hijos, sin las clases antiguas', () => {
     const html = shell();
     expect(html).toContain('<h1');

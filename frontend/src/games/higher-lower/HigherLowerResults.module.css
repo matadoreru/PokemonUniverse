@@ -74,6 +74,13 @@
 @media (min-width: 1600px) and (min-height: 900px) {
   .records {
     gap: var(--sp-4);
+    flex: 1 1 auto;
+  }
+  .recordList {
+    flex: 1 1 auto;
+  }
+  .record {
+    flex: 1 1 0;
   }
   .sectionTitle {
     font-size: var(--fs-26);

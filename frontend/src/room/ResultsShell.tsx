@@ -57,8 +57,11 @@ export function ResultsStandings({ standings, selfId, pointsLabel = defaultPoint
  * Con `aside` (las métricas propias del juego) pasa a pantalla ancha: desde 1024 px llena el alto del `main` sin scroll
  * de página, con la clasificación (y `children`) a la izquierda y `aside` a la derecha, cada columna con su propio
  * desplazamiento; en el móvil, una columna. `actions` queda abajo, siempre a la vista en escritorio.
+ *
+ * Con `fillLarge` (y `aside`), en escritorio grande (≥1600×900) el panel llena todo el alto y la clasificación va en
+ * grande, para no dejar tres franjas pequeñas flotando en media pantalla vacía.
  */
-export function ResultsShell({ title, subtitle, won = false, podium = false, standings, selfId, pointsLabel, winnersNeedPoints, aside, actions, children }: { title: string; subtitle: string; won?: boolean; podium?: boolean; standings?: readonly ResultsStanding[]; selfId?: string; pointsLabel?: (points: number) => string; /** Ver `ResultsStandings`. */ winnersNeedPoints?: boolean; aside?: ReactNode; actions?: ReactNode; children?: ReactNode }) {
+export function ResultsShell({ title, subtitle, won = false, podium = false, standings, selfId, pointsLabel, winnersNeedPoints, aside, actions, fillLarge = false, children }: { title: string; subtitle: string; won?: boolean; podium?: boolean; standings?: readonly ResultsStanding[]; selfId?: string; pointsLabel?: (points: number) => string; /** Ver `ResultsStandings`. */ winnersNeedPoints?: boolean; aside?: ReactNode; actions?: ReactNode; /** Ver arriba: pantalla llena en escritorio grande. */ fillLarge?: boolean; children?: ReactNode }) {
   // Solo al montar: un cambio posterior de `won` no repite el sonido.
   const initial = useRef({ podium, won });
   useEffect(() => {
@@ -67,7 +70,7 @@ export function ResultsShell({ title, subtitle, won = false, podium = false, sta
   }, []);
   const wide = aside != null;
   const ranking = standings && <ResultsStandings standings={standings} selfId={selfId} {...(pointsLabel ? { pointsLabel } : {})} {...(winnersNeedPoints ? { winnersNeedPoints } : {})} />;
-  return <section className={cx(s.shell, wide && s.wide)}>
+  return <section className={cx(s.shell, wide && s.wide, wide && fillLarge && s.fillLarge)}>
     <Panel variant="dark" as="div" className={cx(wide && s.widePanel)} bodyClassName={cx(s.body, wide && s.wideBody)}>
       <header className={cx(s.head, wide && s.wideHead)}>
         <span className={s.trophy}><Icon icon={Trophy} size={32} /></span>

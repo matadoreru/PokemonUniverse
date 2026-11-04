@@ -157,3 +157,26 @@
     margin-top: var(--sp-4);
   }
 }
+
+/*
+ * `fillLarge`: en escritorio grande el panel llena el alto del `main` y la clasificación crece (`zoom` vuelve a
+ * maquetar las franjas: texto, avatar y cifra a la vez, sin escalar con transform).
+ */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .fillLarge .widePanel {
+    height: 100%;
+  }
+  .fillLarge .wideBody {
+    flex: 1 1 auto;
+  }
+  .fillLarge .title {
+    font-size: var(--fs-44);
+  }
+  .fillLarge .standings {
+    zoom: 1.4;
+    gap: var(--sp-3);
+  }
+  .fillLarge .column > :only-child {
+    min-height: 100%;
+  }
+}
