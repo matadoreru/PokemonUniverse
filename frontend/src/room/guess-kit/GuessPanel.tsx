@@ -106,6 +106,7 @@ function plateContent({ kind, question, guessText, cooldownMs = 0, lastWrong, at
       text: 'La respuesta sigue oculta para los demás.', aside: points(roundPoints, true),
     };
     case 'watching': return { icon: Eye, tone: 'info', kicker: 'No adivinas en esta ronda', title: 'Estás observando', text: watchingText ?? 'Los espectadores no pueden enviar respuestas: la pista y los aciertos aparecen en directo.' };
+    case 'out': return { icon: Eye, tone: 'info', kicker: 'Estás observando', title: 'No juegas esta partida', text: 'Entraste con la partida empezada: jugarás en la siguiente. La pista y los aciertos aparecen en directo.' };
     case 'reveal': return {
       icon: verdict?.tone === 'ok' ? CheckCircle2 : verdict?.tone === 'bad' ? X : Eye, tone: verdict?.tone ?? 'info', kicker: verdict?.text ?? 'Resultado de la ronda', title: countdown ?? 'Resultado de la ronda',
       ...(verdict && verdict.points > 0 ? { aside: points(verdict.points, false) } : {}),

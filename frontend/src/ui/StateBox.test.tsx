@@ -26,5 +26,9 @@ describe('StateBox', () => {
     expect(renderToStaticMarkup(createElement(StateBox, { kind: 'empty', title: 'Vacío' }))).toContain('role="status"');
     expect(renderToStaticMarkup(createElement(StateBox, { kind: 'empty', title: 'Vacío', live: false }))).not.toContain('role=');
     expect(renderToStaticMarkup(createElement(StateBox, { kind: 'error', title: 'Fallo', live: false }))).toContain('role="alert"');
+    const quiet = renderToStaticMarkup(createElement(StateBox, { kind: 'loading', title: 'Cargando', live: false }));
+    expect(quiet).not.toContain('aria-label');
+    expect(quiet).toContain('<span class="sr-only">Cargando</span>');
+    expect(renderToStaticMarkup(createElement(StateBox, { kind: 'loading', title: 'Cargando' }))).toContain('aria-label="Cargando"');
   });
 });

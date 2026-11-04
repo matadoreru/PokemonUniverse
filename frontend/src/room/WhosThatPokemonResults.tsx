@@ -1,7 +1,7 @@
 import type { RoomView, WhosThatPokemonPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, Target, Timer } from 'lucide-react';
-import { whosThatRecords, whosThatStatsLine } from '../games/whos-that-pokemon/presentation';
 import { Chip, Icon } from '../ui';
+import { guessRecords, guessStatsLine } from './guess-kit';
 import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
@@ -27,10 +27,10 @@ export function WhosThatPokemonResults({ room, selfId, onLobby, onEnd }: { room:
       points: standing.points,
       avatar: room.members[index]?.avatar,
       color: playerColor(Math.max(0, index)),
-      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{whosThatStatsLine(standing.stats)}</span></>,
+      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{guessStatsLine(standing.stats)}</span></>,
     };
   });
-  const records = whosThatRecords(standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats })));
+  const records = guessRecords(standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats })));
   const aside = <ResultsRecords id="whos-that-records-title" records={[
     { key: 'correct', title: 'Más aciertos', icon: CheckCircle2, names: records.correct?.names ?? null, value: records.correct?.value ?? '', unit: records.correct?.value === '1' ? 'silueta reconocida' : 'siluetas reconocidas' },
     { key: 'fastest', title: 'Acierto más rápido', icon: Timer, names: records.fastest?.names ?? null, value: records.fastest?.value ?? '', unit: 'desde que salió la silueta' },

@@ -46,8 +46,32 @@
 .several {
   max-width: min(100%, 36rem);
 }
+/*
+ * Varias respuestas con su detalle (Guess from Stats): una rejilla de fichas que llena el ancho; la escena va entonces
+ * en una columna (cartas arriba, título debajo) y la losa se desplaza por dentro si no caben.
+ */
+.reveal:has(.several .withDetail) {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'text' 'cards' 'clue';
+  align-content: start;
+}
+.several:has(.withDetail) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  max-width: none;
+}
 .card {
   display: flex;
+}
+.withDetail {
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.answerDetail {
+  min-width: 0;
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
 }
 .text {
   grid-area: text;

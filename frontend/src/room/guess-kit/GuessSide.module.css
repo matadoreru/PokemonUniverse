@@ -17,6 +17,10 @@
   white-space: normal;
   line-height: 1.15;
 }
+/* Las cifras (tiempo, intentos, detalle) no se parten: una línea, con elipsis y `title` si no caben. */
+.rowMeta > .stat {
+  white-space: nowrap;
+}
 .score {
   display: inline-block;
   white-space: nowrap;

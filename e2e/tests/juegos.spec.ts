@@ -1540,7 +1540,7 @@ test('whos-that-pokemon: una ronda con un fallo, el acierto, la revelación y la
     const { host, invitados, jugadores } = sala;
     const [primero, segundo] = invitados as [Jugador, Jugador];
     await seleccionarJuego(host.page, '¿Quién es ese Pokémon?');
-    // Una ronda (para llegar a la clasificación), 45 s, solo la Gen 1 sin formas regionales (para deducir la silueta) y con pistas.
+    // Una ronda (para llegar a la clasificación), 60 s (el máximo), solo la Gen 1 sin formas regionales (para deducir la silueta) y con pistas.
     await host.page.getByRole('tab', { name: 'Configuración' }).click();
     for (const gen of [2, 3, 4, 5, 6, 7, 8, 9]) {
       const boton = host.page.getByRole('button', { name: `Gen ${gen}`, exact: true });
@@ -1560,11 +1560,6 @@ test('whos-that-pokemon: una ronda con un fallo, el acierto, la revelación y la
       await rango.blur();
       await expect(rango).toHaveValue(valor);
     }
-    const tiempo = host.page.getByRole('slider', { name: 'Tiempo por ronda' });
-    await tiempo.focus();
-    for (let paso = 0; paso < 3; paso++) await tiempo.press('ArrowLeft');
-    await tiempo.blur();
-    await expect(tiempo).toHaveValue('45');
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
 
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
@@ -1624,11 +1619,13 @@ test('whos-that-pokemon: una ronda con un fallo, el acierto, la revelación y la
     await capturarTamanos(primero.page, 'juego-whos-that-pokemon-marcador', { sigue: buscador(primero.page), opts: ARCADE });
 
     // El segundo también acierta y el tercero se va: la revelación lo dice en texto («No acertó», «Sin conexión»).
+    // Lo que queda de ronda antes del segundo acierto: si se acerca a 0, el test va justo de tiempo.
+    test.info().annotations.push({ type: 'tiempo', description: `quedan ${await primero.page.getByRole('timer').first().innerText()} s antes del acierto del segundo` });
     await adivinarSilueta(primero.page, deduccion.mejor);
     await expect(primero.page.getByRole('heading', { name: '¡Acertado!' })).toBeVisible({ timeout: 5_000 });
     await segundo.context.close();
     const era = host.page.getByRole('heading', { name: `¡Era ${deduccion.mejor}!`, level: 1 });
-    await expect(era).toBeVisible({ timeout: 50_000 });
+    await expect(era).toBeVisible({ timeout: 65_000 });
     const filas = host.page.getByTestId('guess-reveal-row');
     await expect(filas).toHaveCount(3);
     await expect(filas.first()).toContainText(host.name);

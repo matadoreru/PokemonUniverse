@@ -23,18 +23,21 @@ export const pointsWord = (value: number) => (value === 1 ? 'punto' : 'puntos');
 export const guessSprite = (sprite: string) => (sprite.startsWith('/api/') ? apiAsset(sprite) : sprite);
 
 /** Pantalla inferior: qué placa toca. */
-export type GuessPanelKind = 'guess' | 'solved' | 'watching' | 'waiting' | 'reveal';
+export type GuessPanelKind = 'guess' | 'solved' | 'watching' | 'out' | 'waiting' | 'reveal';
 
 /**
  * Placa de la pantalla inferior. `participating` lo calcula el juego (rol `PLAYER` del miembro o `player.role`). En
  * `ROUND_RESULTS` sin `lastRound` (no debería pasar) se espera.
+ *
+ * Un jugador que no puede adivinar en plena ronda sin haber acertado es `out`: entró con la partida empezada (el motor
+ * fija sus jugadores al empezar y lo rechaza toda la partida), así que «Esperando al servidor…» mentiría.
  */
 export function guessPanelKind(phase: GamePhase, player: { participating: boolean; canGuess: boolean; solved: boolean } | null, hasLastRound: boolean): GuessPanelKind {
   if (phase === 'ROUND_RESULTS') return hasLastRound ? 'reveal' : 'waiting';
   if (phase !== 'ROUND_ACTIVE' || !player) return 'waiting';
   if (!player.participating) return 'watching';
   if (player.solved) return 'solved';
-  return player.canGuess ? 'guess' : 'waiting';
+  return player.canGuess ? 'guess' : 'out';
 }
 
 /** Clave del foco (ver `useFocusOnTransition`): al acertar y al revelar, el título de la placa inferior. */

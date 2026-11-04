@@ -69,9 +69,9 @@ export function GuessRevealBoard<S extends GuessRevealSolveLike>({ lines, selfId
         <Row {...(solve ? { rank: solve.solveOrder } : {})} name={member.displayName} color={playerColor(colorIndex)} self={member.id === selfId} disconnected={offline(member)}
           avatar={<Avatar name={member.displayName} avatar={member.avatar} size="sm" />}
           meta={<span className={s.rowMeta}>{solve
-            ? <><Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Acertó · {ordinal(solve.solveOrder)}</Chip><span className={s.stat}>{guessSeconds(solve.elapsedMs)} · {attemptsText(attempts)}</span></>
+            ? <><Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Acertó · {ordinal(solve.solveOrder)}</Chip><span className={s.stat} title={`${guessSeconds(solve.elapsedMs)} · ${attemptsText(attempts)}`}>{guessSeconds(solve.elapsedMs)} · {attemptsText(attempts)}</span></>
             : <><Chip tone="bad" icon={<Icon icon={X} size={18} />}>No acertó</Chip><span className={s.stat}>{attemptsText(attempts)}</span></>}
-          {extra && <span className={s.stat}>{extra}</span>}</span>}
+          {extra && <span className={s.stat} {...(typeof extra === 'string' ? { title: extra } : {})}>{extra}</span>}</span>}
           value={<span className={s.score}>+{solve?.points ?? 0}</span>} />
       </li>;
     })}</ol>

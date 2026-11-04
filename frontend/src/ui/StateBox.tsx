@@ -22,7 +22,9 @@ export interface StateBoxProps {
 export function StateBox({ kind, title, text, action, onCream, live = true }: StateBoxProps) {
   if (kind === 'loading') {
     return (
-      <div className={s.ghost} {...(live ? { role: 'status', 'aria-live': 'polite' as const } : {})} aria-busy="true" aria-label={title}>
+      <div className={s.ghost} {...(live ? { role: 'status', 'aria-live': 'polite' as const, 'aria-label': title } : {})} aria-busy="true">
+        {/* Sin rol, `aria-label` no vale en un elemento genérico: el título va como texto para lectores. */}
+        {!live && <span className="sr-only">{title}</span>}
         {[0, 1, 2].map((i) => (
           <i key={i} className={cx(s.row, onCream && s.onCream)} />
         ))}

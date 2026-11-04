@@ -16,3 +16,5 @@ export {
   guessSolvedOrders, guessSprite, guessVerdict, ordinal, pointsWord,
 } from './presentation';
 export type { GuessAttemptLike, GuessPanelKind, GuessRevealLine, GuessRevealSolveLike, GuessScoreLine, GuessVerdict } from './presentation';
+export { guessRecords, guessRoundFirsts, guessStatsLine, guessTop } from './results';
+export type { GuessRecord, GuessStats } from './results';

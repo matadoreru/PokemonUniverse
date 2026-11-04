@@ -21,7 +21,7 @@ describe('guess-kit: presentación', () => {
     expect(guessPanelKind('ROUND_ACTIVE', player, false)).toBe('guess');
     expect(guessPanelKind('ROUND_ACTIVE', { ...player, canGuess: false, solved: true }, false)).toBe('solved');
     expect(guessPanelKind('ROUND_ACTIVE', { ...player, participating: false }, false)).toBe('watching');
-    expect(guessPanelKind('ROUND_ACTIVE', { ...player, canGuess: false }, false)).toBe('waiting');
+    expect(guessPanelKind('ROUND_ACTIVE', { ...player, canGuess: false }, false)).toBe('out');
     expect(guessPanelKind('ROUND_ACTIVE', null, false)).toBe('waiting');
     expect(guessPanelKind('ROUND_RESULTS', player, true)).toBe('reveal');
     expect(guessPanelKind('ROUND_RESULTS', player, false)).toBe('waiting');
@@ -97,6 +97,11 @@ describe('guess-kit: GuessPanel', () => {
     expect(watching).toContain('Estás observando');
     expect(watching).not.toContain('Buscar respuesta');
     expect(panel({ kind: 'waiting' })).toContain('Esperando al servidor…');
+    // Quien entró con la partida empezada no puede adivinar en toda la partida: se le dice, sin «Esperando al servidor…».
+    const out = panel({ kind: 'out' });
+    expect(out).toContain('No juegas esta partida');
+    expect(out).not.toContain('Esperando al servidor');
+    expect(out).not.toContain('Buscar respuesta');
     const reveal = panel({ kind: 'reveal', verdict: { tone: 'ok', text: '¡Acertaste! 1.º en acertar', points: 13 }, countdown: 'Siguiente ronda en 4s' });
     expect(reveal).toContain('¡Acertaste! 1.º en acertar');
     expect(reveal).toContain('Siguiente ronda en 4s');
@@ -155,6 +160,20 @@ describe('guess-kit: paneles', () => {
     expect(one).toContain('Así era su silueta');
     const several = renderToStaticMarkup(<GuessRoundReveal answers={[{ name: 'Mew' }, { name: 'Mewtwo' }]} />);
     expect(several).toContain('2 respuestas válidas');
+  });
+
+  it('escena de la revelación con 6 respuestas: cada una con su clave y su detalle bajo la carta', () => {
+    // Dos formas pueden compartir nombre: la clave es el id (React avisaría de claves repetidas con el nombre).
+    const answers = ['a', 'b', 'c', 'd', 'e', 'f'].map((letter, index) => ({ id: `rotom-${letter}`, name: index < 2 ? 'Rotom' : `Rotom ${letter}`, sprite: `/rotom-${letter}.png`, detail: <span data-testid="answer-detail">PS {50 + index}</span> }));
+    const errors = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const html = renderToStaticMarkup(<GuessRoundReveal answers={answers} />);
+    expect(errors).not.toHaveBeenCalled();
+    errors.mockRestore();
+    expect(html).toContain('6 respuestas válidas');
+    expect(html.match(/data-answer-card="true"/g)).toHaveLength(6);
+    expect(html.match(/data-testid="answer-detail"/g)).toHaveLength(6);
+    expect(html.indexOf('/rotom-f.png')).toBeLessThan(html.indexOf('PS 55'));
+    expect(html).toContain('aria-label="Respuestas válidas"');
   });
 
   it('marco: una sola región viva (siempre montada) con el anuncio, la ronda, el juego y el título', () => {

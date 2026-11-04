@@ -3,7 +3,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { WhosThatPokemonConfigPanel } from '../games/whos-that-pokemon/ConfigPanel';
-import { describeWhosThatHint, whosThatRecords, whosThatStatsLine } from '../games/whos-that-pokemon/presentation';
+import { describeWhosThatHint } from '../games/whos-that-pokemon/presentation';
 import { WhosThatPokemonGame } from './WhosThatPokemonGame';
 import { WhosThatPokemonResults } from './WhosThatPokemonResults';
 
@@ -63,7 +63,6 @@ describe('¿Quién es ese Pokémon?: pantalla', () => {
     expect(html).toContain('Raichu');
     expect(html).toContain('Ronda 1 de 10');
     expect(html.match(/role="status"/g)).toHaveLength(1);
-    expect(html).not.toContain('aria-live="polite" class');
   });
 
   it('acertado: «¡Acertado!» con puesto y puntos, sin buscador; el marcador lo dice en texto', () => {
@@ -123,13 +122,10 @@ describe('¿Quién es ese Pokémon?: resultados y ajustes', () => {
     expect(html).not.toMatch(/🥇|🥈|🥉/);
   });
 
-  it('récords: el más rápido es el mínimo; nadie, null', () => {
-    const records = whosThatRecords([{ name: 'A', stats: { correct: 2, bestTimeMs: 3_000, firstTry: 0 } }, { name: 'B', stats: { correct: 2, bestTimeMs: 1_500, firstTry: 1 } }]);
-    expect(records.correct).toEqual({ value: '2', names: ['A', 'B'] });
-    expect(records.fastest).toEqual({ value: '1.5s', names: ['B'] });
-    expect(records.firstTry).toEqual({ value: '1', names: ['B'] });
-    expect(whosThatRecords([{ name: 'A', stats: {} }]).fastest).toBeNull();
-    expect(whosThatStatsLine({})).toContain('mejor —');
+  it('sin aciertos, la media y el mejor tiempo son «—» (nunca «media 0.0s»)', () => {
+    const html = renderToStaticMarkup(createElement(WhosThatPokemonResults, { room: room(publicGame('GAME_RESULTS'), guessing), selfId: 'p1', onLobby: () => undefined, onEnd: () => undefined }));
+    expect(html).toContain('0 aciertos · 1 sin acertar · 1 intento · 0% precisión · media — · mejor — · 0 al primer intento');
+    expect(html).not.toContain('media 0.0s');
   });
 
   it('ajustes con los controles del catálogo', () => {

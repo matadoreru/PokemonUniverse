@@ -5,9 +5,13 @@ import s from './GuessRoundReveal.module.css';
 
 /** Una respuesta de la ronda (Guess from Stats puede tener varias; Zoomed no manda sprite: va su imagen en `clue`). */
 export interface GuessAnswer {
+  /** Clave estable de la respuesta (dos formas pueden compartir nombre); si falta, el nombre. */
+  id?: string | undefined;
   name: string;
   sprite?: string | undefined;
   number?: number | undefined;
+  /** Datos de esta respuesta bajo su carta (p. ej. Guess from Stats: sus tipos y sus estadísticas). */
+  detail?: ReactNode;
 }
 
 /**
@@ -23,8 +27,9 @@ export function GuessRoundReveal({ answers, kicker = 'Resultado de la ronda', de
   const title = several ? `${answers.length} respuestas válidas` : answers[0]?.name ?? '';
   return <Panel variant="cream" as="section" aria-labelledby="guess-reveal-title" className={cx(s.panel, className)} bodyClassName={cx(s.reveal, clue != null && s.withClue)}>
     <ul className={cx(s.cards, several && s.several)} aria-label={several ? 'Respuestas válidas' : 'Respuesta'}>
-      {answers.map((answer) => <li key={answer.name} className={s.card}>
+      {answers.map((answer) => <li key={answer.id ?? answer.name} className={cx(s.card, answer.detail != null && s.withDetail)}>
         <Card name={answer.name} {...(answer.sprite ? { sprite: guessSprite(answer.sprite) } : {})} {...(answer.number != null ? { number: answer.number } : {})} state="correct" flip eager attrs={{ 'data-answer-card': 'true' }} />
+        {answer.detail != null && <div className={s.answerDetail}>{answer.detail}</div>}
       </li>)}
     </ul>
     <div className={s.text}>

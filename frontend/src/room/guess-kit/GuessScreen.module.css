@@ -207,6 +207,10 @@
 }
 /* Escritorio grande (≥1600×900): la pantalla se llena; la placa de la ronda y su título crecen. */
 @media (min-width: 1600px) and (min-height: 900px) {
+  /* La columna lateral crece (las franjas de la revelación caben en una línea): pisa los 320 px de `ScreenSplit`. */
+  .screen > div {
+    grid-template-columns: minmax(0, 1fr) clamp(320px, 22vw, 420px);
+  }
   .hud {
     padding: var(--sp-4) var(--sp-5);
   }
