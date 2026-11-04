@@ -1,0 +1,90 @@
+/*
+ * Pokédex Entry Guess: la entrada llena la zona de la pista (un `Panel` crema). El tamaño de letra se ajusta al sitio
+ * libre (`fitFontSize`: lo más grande que quepa sin desplazarse, nunca menos de 15 px) y el nombre tapado se ve como
+ * una tira azul noche con «???» en texto.
+ */
+.stage > div {
+  position: relative;
+  padding: var(--sp-3) clamp(var(--sp-3), 4cqw, var(--sp-6));
+}
+.mark {
+  position: absolute;
+  top: var(--sp-2);
+  right: var(--sp-3);
+  width: min(22cqh, 6rem);
+  height: min(22cqh, 6rem);
+  color: var(--navy);
+  opacity: 0.1;
+  pointer-events: none;
+}
+/* Sin `position`: el «nombre oculto» (sr-only, absoluto) no cuenta como desbordamiento de la entrada. */
+.entry {
+  max-width: min(100%, 36em);
+  max-height: 100%;
+  margin: 0;
+  /* Baloo 2 dibuja por encima y por debajo de su línea: el relleno recoge esos trazos y no salta el desplazamiento. */
+  padding-block: 0.25em;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  font: 700 clamp(15px, 3cqw, 32px) / 1.38 var(--font-display);
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.quote {
+  color: var(--navy-3);
+}
+.mask {
+  display: inline-block;
+  padding: 0 0.3em;
+  border-radius: 6px;
+  background: var(--navy);
+  color: var(--yellow);
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+}
+
+/* Revelación: la entrada completa (con el nombre) junto a la carta, en una caja con su propio desplazamiento. */
+.reveal {
+  width: min(100%, 24rem);
+  max-height: 12rem;
+  margin: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  padding: var(--sp-3);
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--cream-2);
+  font: 700 var(--fs-15) / 1.4 var(--font-text);
+  color: var(--ink);
+  text-align: left;
+}
+/* Móvil: sin el libro decorativo (la entrada usa todo el ancho de la franja). */
+@media (max-width: 639px) {
+  .mark {
+    display: none;
+  }
+}
+
+/* Escritorio: más estrecha, para que el nombre y los datos de la carta no se queden sin sitio. */
+@media (min-width: 1024px) {
+  .reveal {
+    width: 17rem;
+  }
+}
+@media (max-width: 639px) {
+  .reveal {
+    width: 100%;
+    max-height: 7.5rem;
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  /* Con la entrada al lado, el nombre a 68 px no cabe entre la carta y la caja: a 44 px se lee entero. */
+  .scene :global(#guess-reveal-title) {
+    font-size: var(--fs-44);
+  }
+  .reveal {
+    width: clamp(20rem, 18vw, 26rem);
+    max-height: 40vh;
+    font-size: var(--fs-18);
+  }
+}
