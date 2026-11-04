@@ -1,27 +1,11 @@
 import type { RoomView, TypeDuelPublicState } from '@pokemon-universe/shared/public';
-import type { LucideIcon } from 'lucide-react';
-import { Equal, Percent, RotateCcw, StopCircle, Swords, Timer } from 'lucide-react';
+import { Equal, Percent, Swords, Timer } from 'lucide-react';
 import { sharesPosition } from './results-ties';
-import { typeDuelRecords, typeDuelStatsLine, type TypeDuelRecord } from '../games/type-duel/presentation';
-import { Chip, cx, Icon, Panel, Pill } from '../ui';
+import { typeDuelRecords, typeDuelStatsLine } from '../games/type-duel/presentation';
+import { Chip, Icon } from '../ui';
 import { playerColor } from './player-color';
+import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
-import s from '../games/type-duel/TypeDuelResults.module.css';
-
-/** Récord: quién y el valor grande; la línea de ayuda solo da el contexto (sin repetir el número). */
-function RecordTile({ title, icon, record, unit }: { title: string; icon: LucideIcon; record: TypeDuelRecord | null; unit: string }) {
-  const names = record?.names.join(', ') ?? '';
-  return <li className={s.record}>
-    <span className={cx(s.recordIcon, record && s.recordIconOn)}><Icon icon={icon} size={24} /></span>
-    <div className={s.recordText}>
-      <h3 className={s.kicker}>{title}</h3>
-      {record
-        ? <><strong className={s.recordName} title={names}>{names}</strong><p className={s.help}>{unit}</p></>
-        : <p className={s.help}>Nadie lo consiguió en esta partida.</p>}
-    </div>
-    {record && <strong className={s.recordValue}>{record.value}</strong>}
-  </li>;
-}
 
 /**
  * Resultados de Type Duel: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con insignia y
@@ -47,17 +31,12 @@ export function TypeDuelResults({ room, selfId, onLobby, onEnd }: { room: RoomVi
     };
   });
   const records = typeDuelRecords(standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats })));
-  const aside = <Panel variant="cream" as="section" aria-labelledby="type-duel-records-title" bodyClassName={cx(s.records)}>
-    <h2 id="type-duel-records-title" className={s.sectionTitle}>Récords de la partida</h2>
-    <ul className={s.recordList}>
-      <RecordTile title="Más duelos ganados" icon={Swords} record={records.wins} unit={records.wins?.value === '1' ? 'duelo ganado' : 'duelos ganados'} />
-      <RecordTile title="Mejor porcentaje" icon={Percent} record={records.winRate} unit="de los duelos jugados" />
-      <RecordTile title="Acierto más rápido" icon={Timer} record={records.fastest} unit="de media por acierto" />
-    </ul>
-  </Panel>;
-  const actions = host
-    ? <><Pill variant="yellow" icon={RotateCcw} onClick={onLobby}>Continuar sesión</Pill><Pill variant="ghost" icon={StopCircle} onClick={onEnd}>Terminar sesión</Pill></>
-    : <p className={s.waiting}>Esperando al host…</p>;
+  const aside = <ResultsRecords id="type-duel-records-title" records={[
+    { key: 'wins', title: 'Más duelos ganados', icon: Swords, names: records.wins?.names ?? null, value: records.wins?.value ?? '', unit: records.wins?.value === '1' ? 'duelo ganado' : 'duelos ganados' },
+    { key: 'winRate', title: 'Mejor porcentaje', icon: Percent, names: records.winRate?.names ?? null, value: records.winRate?.value ?? '', unit: 'de los duelos jugados' },
+    { key: 'fastest', title: 'Acierto más rápido', icon: Timer, names: records.fastest?.names ?? null, value: records.fastest?.value ?? '', unit: 'de media por acierto' },
+  ]} />;
+  const actions = <ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Type Duel" subtitle={`Type Duel · ${game.totalRounds} ${game.totalRounds === 1 ? 'duelo' : 'duelos'}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge />;
 }

@@ -1,4 +1,7 @@
-/* Récords de Type Duel junto a la clasificación de `ResultsShell`. */
+/*
+ * Récords de la partida junto a la clasificación de `ResultsShell` (los comparten los resultados de los juegos
+ * rediseñados) y la línea de espera de quien no es host.
+ */
 .records {
   display: flex;
   flex-direction: column;
