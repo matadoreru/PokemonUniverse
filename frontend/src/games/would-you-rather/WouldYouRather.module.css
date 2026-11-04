@@ -1,0 +1,93 @@
+/* Would You Rather: el dilema, la fila de la predicción y la confirmación, el recuento, los puntos y los resultados. */
+.choice {
+  min-width: 0;
+}
+@media (min-width: 1024px) {
+  /* El dilema llena el alto libre de la pantalla de arriba (las cartas crecen con él). */
+  .choice {
+    height: 100%;
+    min-height: 9rem;
+  }
+}
+.tally {
+  height: 100%;
+}
+
+/* Placa de abajo: «Mayoría A / B», en qué va la papeleta y «Bloquear papeleta». */
+.ballotRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.predictions {
+  display: flex;
+  gap: var(--sp-2);
+}
+.prediction {
+  min-width: 9rem;
+}
+.status {
+  flex: 1 1 12rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font: 700 var(--fs-15) / 1.3 var(--font-text);
+  color: var(--ink-2);
+}
+.confirm {
+  flex: none;
+}
+@media (max-width: 639px) {
+  .ballotRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-2);
+  }
+  .predictions > * {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .status {
+    flex: none;
+    font-size: var(--fs-13);
+  }
+  .confirm {
+    width: 100%;
+  }
+}
+
+.points {
+  display: inline-flex;
+  align-items: baseline;
+  font: 800 var(--fs-44) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.points small {
+  font: 800 var(--fs-15) / 1 var(--font-text);
+}
+@media (max-width: 639px) {
+  .points {
+    font-size: var(--fs-34);
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .points {
+    font-size: var(--fs-68);
+  }
+}
+/* La ayuda de la placa: fuera donde falta alto (el título y la fila ya lo dicen; la regla sale en los resultados). */
+@media (max-width: 639px), (min-width: 1024px) and (max-height: 800px) {
+  .plateHelp {
+    display: none;
+  }
+}
+
+/* Regla de puntos bajo la clasificación final. */
+.rule {
+  margin-top: var(--sp-3);
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--sky-2);
+}

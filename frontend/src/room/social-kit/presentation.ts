@@ -147,3 +147,21 @@ export function ballotState({ epoch, pick, candidateIds, ownId, ownVote, busyId,
   const picked = open && pick?.epoch === epoch && pick.id !== ownId && candidateIds.includes(pick.id) ? pick.id : null;
   return { locked, sending, open, picked, selected: locked ? ownVote : sending ? busyId : picked };
 }
+
+/**
+ * Atajos de las opciones (`1`, `2`…) de `ChoicePair`: la opción de la tecla pulsada, o `null`. No cuenta con
+ * modificadores, con la tecla mantenida, si otro ya la atendió (`defaultPrevented`) ni mientras se escribe en un campo
+ * (`input`, `textarea`, `select` o `contenteditable`).
+ */
+export function choiceFromKey<T extends string>(event: { key: string; repeat?: boolean; altKey?: boolean; ctrlKey?: boolean; metaKey?: boolean; defaultPrevented?: boolean; target?: unknown }, ids: readonly T[]): T | null {
+  if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey || typingTarget(event.target)) return null;
+  if (!/^[1-9]$/.test(event.key)) return null;
+  return ids[Number(event.key) - 1] ?? null;
+}
+
+/** ¿Se está escribiendo en un campo? (los atajos de las opciones no se disparan). */
+export function typingTarget(target: unknown): boolean {
+  const element = target as { closest?: (selector: string) => unknown } | null | undefined;
+  if (!element || typeof element.closest !== 'function') return false;
+  return Boolean(element.closest('input, textarea, select, [contenteditable="true"], [contenteditable=""]'));
+}

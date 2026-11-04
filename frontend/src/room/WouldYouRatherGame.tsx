@@ -1,40 +1,135 @@
-import type { RoomMemberView, RoomView, WouldYouRatherOption, WouldYouRatherPlayerState, WouldYouRatherPublicState, WouldYouRatherRoundResult } from '@pokemon-universe/shared/public';
-import { Check, Eye, LockKeyhole, Send, Sparkles, Users } from 'lucide-react';
-import { useState } from 'react';
-import { Avatar } from '../components/Avatar';
-import { ServerTimer } from '../components/ServerTimer';
-import { useServerOffset } from '../hooks/useServerTime';
+import type { RoomView, WouldYouRatherConfig, WouldYouRatherOption, WouldYouRatherPlayerState, WouldYouRatherPublicState } from '@pokemon-universe/shared/public';
+import { CheckCircle2, Clock3, Eye, Lock, Scale, Send, Trophy, Users, X } from 'lucide-react';
+import { useMemo, useRef, useState } from 'react';
+import {
+  WYR_OPTIONS, wouldYouRatherAnnouncement, wouldYouRatherCurrentStep, wouldYouRatherHeading, wouldYouRatherPlayerLine, wouldYouRatherRound,
+  wouldYouRatherSteps, wouldYouRatherSummary, wouldYouRatherVerdict,
+} from '../games/would-you-rather/presentation';
+import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
+import { Chip, Icon, Pill } from '../ui';
+import { useFocusOnTransition } from './focus-transition';
+import { pointsWord } from './guess-kit';
+import { ChoicePair, PhaseRail, ResponseProgress, SocialPlate, SocialScreen, VoteTally, socialFocusKey, type ChoiceOption, type TallyOption } from './social-kit';
+import s from '../games/would-you-rather/WouldYouRather.module.css';
 
-function member(room: RoomView, playerId: string): RoomMemberView | undefined {
-  return room.members.find((candidate) => candidate.id === playerId);
-}
+const GAME_NAME = 'Would You Rather Pokémon';
 
-function OptionPanel({ letter, text, selected, disabled, onClick }: { letter: WouldYouRatherOption; text: string; selected: boolean; disabled: boolean; onClick(): void }) {
-  const selectedStyle = letter === 'A' ? 'border-aqua bg-aqua/10' : 'border-electric bg-electric/10';
-  return <button type="button" aria-pressed={selected} disabled={disabled} onClick={onClick} className={`min-h-36 rounded-2xl border p-4 text-left transition-colors sm:min-h-44 sm:p-5 ${selected ? selectedStyle : 'border-ink/10 bg-surface-raised hover:border-aqua/50'}`}><span className={`mb-3 grid h-10 w-10 place-items-center rounded-xl font-display text-xl ${letter === 'A' ? 'bg-aqua text-night' : 'bg-electric text-night'}`}>{letter}</span><strong className="block font-display text-xl leading-tight sm:text-2xl">{text}</strong></button>;
-}
+/**
+ * Would You Rather con el kit social (spec §2 y §6 «Juegos»). Arriba: la placa de la ronda, las fases y el dilema como
+ * dos cartas grandes enfrentadas (atajos 1 y 2) para elegir; al revelar, el recuento de cada opción con su barra y quién
+ * la eligió. Abajo, la acción: la predicción de la mayoría y «Bloquear papeleta», la papeleta bloqueada o el veredicto con
+ * los puntos. Al lado, quién ha enviado su papeleta (nunca el qué) o, al revelar, qué eligió y predijo cada uno.
+ *
+ * Privacidad: la papeleta propia solo vuelve en `ownBallot`; las de los demás solo en `lastRound`, que la pantalla lee
+ * únicamente en `ROUND_RESULTS`.
+ */
+export function WouldYouRatherGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+  const game = room.game as WouldYouRatherPublicState;
+  const player = room.gamePlayerState as WouldYouRatherPlayerState | null;
+  const config = room.selectedGameConfig as Partial<WouldYouRatherConfig> | null;
+  const offset = useServerOffset(room.serverNow);
+  const participating = player?.role === 'PLAYER';
+  const active = game.phase === 'ROUND_ACTIVE';
+  // La revelación (papeletas de todos) solo en su fase: un `lastRound` sobrante nunca llega al DOM.
+  const result = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
+  const transitionMs = useRemainingMs(result ? game.nextTransitionAt : null, offset);
+  const own = participating ? player.ownBallot : null;
+  const locked = active && own !== null;
 
-function Ballot({ game, player, onSubmit }: { game: WouldYouRatherPublicState; player: WouldYouRatherPlayerState; onSubmit(preference: WouldYouRatherOption, prediction: WouldYouRatherOption): Promise<void> }) {
-  const [preference, setPreference] = useState<WouldYouRatherOption | null>(null); const [prediction, setPrediction] = useState<WouldYouRatherOption | null>(null);
-  const [busy, setBusy] = useState(false); const [error, setError] = useState('');
-  if (player.role === 'SPECTATOR') return <div className="empty-state"><Eye className="mx-auto mb-2 text-aqua" />Estás observando esta ronda.</div>;
-  if (player.ownBallot) return <div className="rounded-2xl border border-leaf/30 bg-leaf/[.07] p-5 text-center"><Check className="mx-auto text-leaf" size={36} /><h2 className="mt-2 font-display text-2xl">Papeleta bloqueada</h2><p className="mt-2 font-bold text-ink/65">Elegiste <strong>{player.ownBallot.preference}</strong> y predijiste <strong>{player.ownBallot.prediction}</strong>. Solo tú puedes verlo hasta el reveal.</p></div>;
-  const send = async () => { if (!preference || !prediction || busy) return; setBusy(true); setError(''); try { await onSubmit(preference, prediction); } catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudo enviar la papeleta.'); setBusy(false); } };
-  return <div className="space-y-6"><section aria-labelledby="wyr-preference"><div className="mb-3"><span className="label !mb-0">Paso 1 · Tu decisión</span><h2 id="wyr-preference" className="font-display text-2xl">¿Qué preferirías tú?</h2></div><div className="grid gap-3 md:grid-cols-2"><OptionPanel letter="A" text={game.prompt.optionA} selected={preference === 'A'} disabled={!player.canSubmit || busy} onClick={() => setPreference('A')} /><OptionPanel letter="B" text={game.prompt.optionB} selected={preference === 'B'} disabled={!player.canSubmit || busy} onClick={() => setPreference('B')} /></div></section><section aria-labelledby="wyr-prediction"><div className="mb-3"><span className="label !mb-0">Paso 2 · Lee la sala</span><h2 id="wyr-prediction" className="font-display text-2xl">¿Cuál será la mayoría?</h2><p className="font-bold text-ink/60">Puedes predecir la misma opción que elegiste o la contraria.</p></div><div className="grid grid-cols-2 gap-3"><button type="button" aria-pressed={prediction === 'A'} disabled={!player.canSubmit || busy} onClick={() => setPrediction('A')} className={`min-h-14 rounded-xl border font-display text-lg ${prediction === 'A' ? 'border-aqua bg-aqua/10 text-aqua' : 'border-ink/10 bg-surface-raised'}`}>Mayoría A</button><button type="button" aria-pressed={prediction === 'B'} disabled={!player.canSubmit || busy} onClick={() => setPrediction('B')} className={`min-h-14 rounded-xl border font-display text-lg ${prediction === 'B' ? 'border-electric bg-electric/10 text-electric' : 'border-ink/10 bg-surface-raised'}`}>Mayoría B</button></div></section><button type="button" className="btn-primary w-full justify-center" disabled={!preference || !prediction || busy || !player.canSubmit} onClick={() => void send()}><Send size={18} /> {busy ? 'Enviando…' : 'Bloquear papeleta'}</button>{error && <p className="status-error" role="alert">{error}</p>}</div>;
-}
+  // Elección local (preferencia y predicción) de esta ronda: empieza de cero en cada ronda.
+  const [pick, setPick] = useState<{ round: number; preference: WouldYouRatherOption | null; prediction: WouldYouRatherOption | null }>({ round: game.roundNumber, preference: null, prediction: null });
+  const current = pick.round === game.roundNumber ? pick : { round: game.roundNumber, preference: null, prediction: null };
+  // Enviando en esta ronda: tras el éxito sigue así hasta que el servidor devuelve la papeleta (sin doble envío).
+  const [busyRound, setBusyRound] = useState<number | null>(null);
+  const busy = busyRound === game.roundNumber;
+  const open = active && participating && player.canSubmit && !locked;
 
-function PlayerProgress({ room, game }: { room: RoomView; game: WouldYouRatherPublicState }) {
-  const submitted = new Set(game.submittedPlayerIds);
-  return <aside className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card" aria-labelledby="wyr-progress"><div className="mb-3 flex items-center gap-2"><Users className="text-aqua" /><h2 id="wyr-progress" className="font-display text-xl">Papeletas</h2></div><div className="space-y-2">{game.playerIds.map((playerId) => { const person = member(room, playerId); return <div key={playerId} className="flex min-h-12 items-center gap-2 rounded-xl bg-surface-raised p-2.5"><Avatar name={person?.displayName ?? playerId} avatar={person?.avatar} presence={person?.presence} size="sm" /><strong className="min-w-0 flex-1 truncate">{person?.displayName ?? playerId}</strong>{submitted.has(playerId) ? <span className="inline-flex items-center gap-1 text-sm font-extrabold text-leaf"><Check size={16} /> Lista</span> : <span className="text-sm font-bold text-ink/55">Pensando…</span>}</div>; })}</div><p className="mt-3 flex gap-2 text-sm font-bold text-ink/60"><LockKeyhole className="mt-0.5 shrink-0 text-electric" size={16} />Elección y predicción permanecen secretas hasta el reveal.</p></aside>;
-}
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
 
-function RoundReveal({ room, game, result, serverOffset }: { room: RoomView; game: WouldYouRatherPublicState; result: WouldYouRatherRoundResult; serverOffset: number }) {
-  const total = result.totals.A + result.totals.B; const aPercent = total === 0 ? 50 : Math.round(result.totals.A / total * 100);
-  return <section className="page-shell"><div className="overflow-hidden rounded-2xl border border-electric/30 bg-surface shadow-card reveal-pop"><header className="flex flex-wrap items-start justify-between gap-3 border-b border-ink/10 p-4 sm:p-6"><div><span className="label !mb-0">Ronda {game.roundNumber} · Reveal</span><h1 className="font-display text-3xl text-electric sm:text-4xl">{result.majority ? `La mayoría eligió ${result.majority}` : 'La sala quedó dividida'}</h1><p className="mt-2 font-bold text-ink/60">{result.majority ? '1 punto por estar en la mayoría y 2 por haberla predicho.' : 'En empate no se reparten puntos de elección ni de predicción.'}</p></div><ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Siguiente ronda" /></header><div className="p-4 sm:p-6"><div className="grid gap-3 md:grid-cols-2"><article className={`rounded-2xl border p-4 ${result.majority === 'A' ? 'border-aqua/50 bg-aqua/[.08]' : 'border-ink/10 bg-surface-raised'}`}><span className="label !mb-1 text-aqua">Opción A · {result.totals.A} votos</span><strong className="block font-display text-xl leading-tight sm:text-2xl">{result.prompt.optionA}</strong></article><article className={`rounded-2xl border p-4 ${result.majority === 'B' ? 'border-electric/50 bg-electric/[.08]' : 'border-ink/10 bg-surface-raised'}`}><span className="label !mb-1 text-electric">Opción B · {result.totals.B} votos</span><strong className="block font-display text-xl leading-tight sm:text-2xl">{result.prompt.optionB}</strong></article></div><div className="mt-4 flex h-3 overflow-hidden rounded-full bg-electric" aria-label={`${aPercent}% eligió A`}><span className="bg-aqua" style={{ width: `${aPercent}%` }} /></div><div className="mt-6 space-y-2">{result.players.map((entry) => { const person = member(room, entry.playerId); return <article key={entry.playerId} className="grid items-center gap-3 rounded-xl border border-ink/10 bg-surface-raised/70 p-3 sm:grid-cols-[auto_1fr_auto]"><Avatar name={person?.displayName ?? entry.playerId} avatar={person?.avatar} size="sm" /><div><strong className="font-display text-lg">{person?.displayName ?? entry.playerId}</strong><p className="text-sm font-bold text-ink/60">Eligió <span className={entry.preference === 'A' ? 'text-aqua' : 'text-electric'}>{entry.preference}</span> · Predijo <span className={entry.prediction === 'A' ? 'text-aqua' : 'text-electric'}>{entry.prediction}</span></p></div><strong className={entry.totalPoints > 0 ? 'text-leaf' : 'text-ink/45'}>+{entry.totalPoints} pts</strong></article>; })}</div>{result.missingPlayerIds.length > 0 && <p className="mt-4 rounded-xl bg-ink/[.04] p-3 text-sm font-bold text-ink/60">Sin papeleta: {result.missingPlayerIds.map((id) => member(room, id)?.displayName ?? id).join(', ')}.</p>}</div></div></section>;
-}
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(socialFocusKey(game.phase, game.roundNumber, 1, locked), titleRef);
 
-export function WouldYouRatherGame({ room, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const game = room.game as WouldYouRatherPublicState; const player = room.gamePlayerState as WouldYouRatherPlayerState; const serverOffset = useServerOffset(room.serverNow);
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} result={game.lastRound} serverOffset={serverOffset} />;
-  return <section className="page-shell"><header className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card"><div className="flex flex-wrap items-start justify-between gap-3"><div><span className="label !mb-0">Ronda {game.roundNumber} de {game.totalRounds}</span><h1 className="font-display text-2xl sm:text-3xl">Would You Rather Pokémon</h1></div><ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} label="Para decidir" /></div></header><section className="my-4 rounded-2xl border border-berry/20 bg-berry/[.045] px-4 py-5 text-center shadow-card"><Sparkles className="mx-auto text-berry" /><span className="label mt-2 !mb-0">El dilema</span><h2 className="font-display text-2xl">Elige con sinceridad. Predice con malicia.</h2></section><div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]"><main className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-5"><Ballot key={game.roundNumber} game={game} player={player} onSubmit={(preference, prediction) => onAction({ type: 'SUBMIT_BALLOT', preference, prediction })} /></main><PlayerProgress room={room} game={game} /></div></section>;
+  const last = game.roundNumber >= game.totalRounds;
+  const timer = active
+    ? { deadline: game.roundEndsAt, serverOffset: offset, label: 'Para decidir', totalMs: config?.roundSeconds ? config.roundSeconds * 1_000 : undefined }
+    : { deadline: game.nextTransitionAt, serverOffset: offset, label: last ? 'Clasificación' : 'Siguiente ronda' };
+
+  const prompt = result?.prompt ?? game.prompt;
+  const optionText = (id: WouldYouRatherOption) => (id === 'A' ? prompt.optionA : prompt.optionB);
+  const choiceOption = (id: WouldYouRatherOption): ChoiceOption<WouldYouRatherOption> => ({ id, name: `Opción ${id}`, text: optionText(id), ariaLabel: `Opción ${id}: ${optionText(id)}` });
+  const choiceOptions = [choiceOption('A'), choiceOption('B')] as const;
+  const choose = (preference: WouldYouRatherOption) => setPick({ ...current, preference });
+  const predict = (prediction: WouldYouRatherOption) => setPick({ ...current, prediction });
+
+  const submit = async () => {
+    if (!open || busy || !current.preference || !current.prediction) return;
+    const round = game.roundNumber;
+    setBusyRound(round);
+    try {
+      await onAction({ type: 'SUBMIT_BALLOT', preference: current.preference, prediction: current.prediction });
+    } catch {
+      // El fallo ya sale en el aviso global de la sala (un dueño por error): aquí solo se suelta el botón.
+      setBusyRound((value) => (value === round ? null : value));
+    }
+  };
+
+  const ownPreference = result?.players.find((entry) => entry.playerId === selfId)?.preference ?? null;
+  const tallyOptions: TallyOption[] = WYR_OPTIONS.map((id) => ({ id, name: `Opción ${id}`, text: optionText(id), self: ownPreference === id }));
+  const stage = result
+    ? <VoteTally idBase="wyr-tally" title="Lo que eligió la sala" options={tallyOptions} rounds={wouldYouRatherRound(result)} winnerIds={result.majority ? [result.majority] : []}
+      voterName={nameOf} winnerLabel="Mayoría" winnerIcon={Users} selfLabel="Tu elección" summary={wouldYouRatherSummary(result)} className={s.tally} />
+    : <ChoicePair kicker={locked ? 'El dilema · Tu decisión (bloqueada)' : 'El dilema · Paso 1: tu decisión'} options={choiceOptions}
+      value={own?.preference ?? current.preference} onChange={choose} disabled={!open || busy}
+      help={open ? 'Elige con sinceridad. Predice con malicia. Atajos: 1 y 2.' : undefined}
+      aside={own ? <Chip tone="ok" icon={<Icon icon={Lock} size={18} />}>Elegiste {own.preference}</Chip> : current.preference ? <Chip tone="info">Tu elección: {current.preference}</Chip> : null}
+      className={s.choice} />;
+
+  const side = result
+    ? <ResponseProgress title="Puntos de la ronda" members={room.members} playerIds={game.playerIds} doneIds={[]} selfId={selfId} count={false}
+      status={(id) => { const line = wouldYouRatherPlayerLine(result, id); return { ...line, ...(line.tone === 'bad' ? { icon: X } : {}) }; }}
+      value={(id) => `+${result.players.find((entry) => entry.playerId === id)?.totalPoints ?? 0}`} />
+    : <ResponseProgress title="Papeletas" members={room.members} playerIds={game.playerIds} doneIds={game.submittedPlayerIds} selfId={selfId}
+      doneText="Lista" pendingText="Pensando…" note="Elección y predicción permanecen secretas hasta el resultado." />;
+
+  let bottom;
+  if (open) {
+    const ready = current.preference !== null && current.prediction !== null;
+    bottom = <SocialPlate titleRef={titleRef} textClassName={s.plateHelp} content={{
+      icon: Scale, tone: 'info', kicker: 'Paso 2 · Lee la sala', title: '¿Cuál será la mayoría?',
+      text: 'Puedes predecir la misma opción que elegiste o la contraria. Acertarla vale 2 puntos.',
+    }}>
+      <div className={s.ballotRow}>
+        <div className={s.predictions} role="group" aria-label="Tu predicción de la mayoría">
+          {WYR_OPTIONS.map((id) => <Pill key={id} variant={current.prediction === id ? 'yellow' : 'cream'} aria-pressed={current.prediction === id} disabled={busy} onClick={() => predict(id)} className={s.prediction}>Mayoría {id}</Pill>)}
+        </div>
+        <p className={s.status}>{!current.preference ? 'Elige primero una opción arriba (1 o 2).' : !current.prediction ? `Elegiste ${current.preference}. Falta tu predicción.` : `Eliges ${current.preference} y predices ${current.prediction}.`}</p>
+        <Pill variant="yellow" icon={Send} loading={busy} disabled={!ready} onClick={() => void submit()} className={s.confirm} data-testid="wyr-confirm">Bloquear papeleta</Pill>
+      </div>
+    </SocialPlate>;
+  } else if (active && own) {
+    bottom = <SocialPlate titleRef={titleRef} content={{
+      icon: CheckCircle2, tone: 'ok', kicker: 'Tu papeleta', title: 'Papeleta bloqueada',
+      text: <>Elegiste <strong>{own.preference}</strong> y predijiste <strong>{own.prediction}</strong>. Solo tú puedes verlo hasta el resultado.</>,
+      aside: <Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>Enviada</Chip>,
+    }} />;
+  } else if (active && participating) {
+    bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'warn', kicker: 'Papeleta cerrada', title: 'Se acabó el tiempo', text: 'Esta ronda ya no admite papeletas. Verás el resultado en un momento.' }} />;
+  } else if (active) {
+    bottom = <SocialPlate titleRef={titleRef} content={{ icon: Eye, tone: 'info', kicker: 'No votas en esta ronda', title: 'Estás observando', text: 'Verás qué eligió cada uno al final de la ronda.' }} />;
+  } else if (result) {
+    const verdict = wouldYouRatherVerdict(result, selfId, participating);
+    const seconds = Math.max(1, Math.ceil(transitionMs / 1_000));
+    bottom = <SocialPlate titleRef={titleRef} textClassName={s.plateHelp} content={{
+      icon: verdict.tone === 'ok' ? Trophy : verdict.tone === 'bad' ? X : Eye, tone: verdict.tone, kicker: verdict.text, title: `${last ? 'Clasificación' : 'Siguiente ronda'} en ${seconds}s`,
+      text: verdict.detail,
+      ...(verdict.points > 0 ? { aside: <strong className={s.points}>+{verdict.points}<small> {pointsWord(verdict.points)}</small></strong> } : {}),
+    }} />;
+  } else {
+    bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Preparando el resultado…', text: 'La ronda sigue en un momento.' }} />;
+  }
+
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={wouldYouRatherHeading(game.phase, result)} timer={timer}
+    announcement={wouldYouRatherAnnouncement({ phase: game.phase, roundNumber: game.roundNumber, locked, result })}
+    phases={<PhaseRail steps={wouldYouRatherSteps} current={wouldYouRatherCurrentStep(game.phase)} />} stage={stage} side={side} bottom={bottom} />;
 }

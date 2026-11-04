@@ -114,6 +114,11 @@ describe('skipRowInLayout', () => {
     for (const phase of ['ROUND_ACTIVE', 'VOTING', 'REVOTE', 'ROUND_RESULTS']) expect(skipRowInLayout({ ...redFlag, phase } as never)).toBe(false);
     expect(skipRowInLayout({ ...redFlag, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Would You Rather la lleva dentro de su pantalla en la ronda y la revelación, no en los resultados', () => {
+    const wyr = { ...(base as object), selectedGameId: 'would-you-rather', game: { gameId: 'would-you-rather' } };
+    for (const phase of ['ROUND_ACTIVE', 'ROUND_RESULTS']) expect(skipRowInLayout({ ...wyr, phase } as never)).toBe(false);
+    expect(skipRowInLayout({ ...wyr, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);

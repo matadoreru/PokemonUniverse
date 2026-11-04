@@ -168,8 +168,28 @@ test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa
     await dilemas.getByLabel('Editar opción A').fill(`Surcar el cielo con Rayquaza ${code}`);
     await dilemas.getByRole('button', { name: 'Guardar' }).click();
     await expect(dilemas.getByText(`Surcar el cielo con Rayquaza ${code}`)).toBeVisible();
-    aceptarConfirmacion(page);
+    // Importación JSON: un error de formato sale en castellano bajo el campo, con el dilema y la opción.
+    await dilemas.getByRole('button', { name: 'Importar dilemas desde JSON' }).click();
+    await dilemas.getByLabel('JSON para importar').fill('{"version": 1, "prompts": [{"optionA": "abc", "optionB": "Volar con Dragonite"}]}');
+    await dilemas.getByRole('button', { name: 'Validar e importar' }).click();
+    await expect(dilemas.getByRole('alert')).toContainText('prompts.0.optionA (dilema 1, opción A): Escribe al menos 4 caracteres.');
+    for (const { w, h } of SIZES) {
+      await page.setViewportSize({ width: w, height: h });
+      await dilemas.scrollIntoViewIfNeeded();
+      await capture(page, 'lobby-would-you-rather-dilemas', { minFontPx: 13 });
+    }
+    await page.setViewportSize({ width: 1280, height: 720 });
+    // Eliminar pide confirmación en un diálogo del catálogo (ya no `window.confirm`); Cancelar no borra.
     await dilemas.getByRole('button', { name: 'Eliminar dilema' }).click();
+    const confirmacion = page.getByRole('dialog', { name: '¿Eliminar este dilema?' });
+    await expect(confirmacion).toBeVisible();
+    await expect(confirmacion.getByRole('button', { name: 'Cancelar' })).toBeFocused();
+    await capturarDialogo(page, 'dialogo-eliminar-dilema', confirmacion);
+    await confirmacion.getByRole('button', { name: 'Cancelar' }).click();
+    await expect(confirmacion).toBeHidden();
+    await expect(dilemas.getByText(`Surcar el cielo con Rayquaza ${code}`)).toBeVisible();
+    await dilemas.getByRole('button', { name: 'Eliminar dilema' }).click();
+    await confirmacion.getByRole('button', { name: 'Eliminar' }).click();
     await expect(dilemas.getByText('Todavía no has creado dilemas personales.')).toBeVisible();
 
     // ADMIN: cuenta nueva promovida en la BD; el panel lista la sala del USER como activa.

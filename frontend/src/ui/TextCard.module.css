@@ -68,6 +68,63 @@
     font-size: var(--fs-15);
   }
 }
+/* Grande: dos opciones enfrentadas (Would You Rather); el texto manda, centrado, y la carta llena su celda. */
+.lg {
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  text-align: center;
+}
+.lg .body {
+  align-items: center;
+}
+.lg .name {
+  font-size: var(--fs-18);
+}
+.lg .text {
+  font: 800 var(--fs-22) / 1.2 var(--font-display);
+}
+@media (max-width: 639px) {
+  .lg {
+    padding: var(--sp-3);
+  }
+  .lg .name {
+    font-size: var(--fs-15);
+  }
+  .lg .text {
+    font-size: var(--fs-15);
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .lg .name {
+    font-size: var(--fs-22);
+  }
+  .lg .text {
+    font-size: var(--fs-34);
+  }
+}
+/* Insignia del atajo de teclado (la misma que la de `Pill`): en la esquina, sin tapar el texto. */
+.withShortcut {
+  position: relative;
+  padding-right: calc(var(--sp-3) + 22px);
+}
+.shortcut {
+  position: absolute;
+  top: -8px;
+  right: -4px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-pill);
+  border: var(--ol-2) solid var(--navy);
+  background: var(--white);
+  font: 800 var(--fs-13) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--navy);
+}
 @media (prefers-reduced-motion: reduce) {
   .button {
     transition: none;

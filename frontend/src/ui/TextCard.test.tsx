@@ -19,4 +19,13 @@ describe('TextCard', () => {
     expect(html).toContain('Eres tú');
     expect(html).toContain('nota');
   });
+
+  it('con atajo: aria-keyshortcuts y la insignia del número (decorativa); grande sin cambiar el nombre accesible', () => {
+    const html = renderToStaticMarkup(<TextCard name="Opción A" text="Vivir con Gengar" shortcut="1" size="lg" onSelect={() => undefined} />);
+    expect(html).toContain('aria-keyshortcuts="1"');
+    expect(html).toMatch(/<span class="[^"]*" aria-hidden="true">1<\/span>/);
+    expect(html).toContain('Vivir con Gengar');
+    const plain = renderToStaticMarkup(<TextCard name="Opción A" text="Vivir con Gengar" onSelect={() => undefined} />);
+    expect(plain).not.toContain('aria-keyshortcuts');
+  });
 });

@@ -2,7 +2,7 @@ import type { RoomMemberView } from '@pokemon-universe/shared';
 import { Search } from 'lucide-react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, type BallotOption, type VoteBallotProps } from '.';
+import { ChoicePair, PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, type BallotOption, type ChoiceOption, type VoteBallotProps } from '.';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('../RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -188,5 +188,30 @@ describe('social-kit: marco', () => {
       timer={{ deadline: null, serverOffset: 0, label: 'Tiempo' }} stage={null} side={null} bottom={null} />);
     expect(label).toContain('Turno 3 de 6 · Vuelta 1 de 2');
     expect(label).not.toContain('Ronda 3 de 6');
+  });
+});
+
+describe('social-kit: papeleta de dos opciones', () => {
+  const pair: readonly [ChoiceOption<'A' | 'B'>, ChoiceOption<'A' | 'B'>] = [
+    { id: 'A', name: 'Opción A', text: 'Vivir con Gengar', ariaLabel: 'Opción A: Vivir con Gengar' },
+    { id: 'B', name: 'Opción B', text: 'Viajar con Magikarp', ariaLabel: 'Opción B: Viajar con Magikarp' },
+  ];
+  it('abierta: dos cartas grandes con aria-pressed, atajos 1 y 2 con su insignia, «VS» y la ayuda', () => {
+    const html = renderToStaticMarkup(<ChoicePair kicker="El dilema · Tu decisión" help="Atajos: 1 y 2." options={pair} value="B" onChange={() => undefined} aside={<span>Tu elección: B</span>} />);
+    expect(html).toContain('aria-label="El dilema · Tu decisión"');
+    expect(html.match(/aria-pressed=/g)).toHaveLength(2);
+    expect(html).toContain('aria-pressed="true" aria-label="Opción B: Viajar con Magikarp" aria-keyshortcuts="2"');
+    expect(html).toContain('aria-keyshortcuts="1"');
+    expect(html).toContain('>VS<');
+    expect(html).toContain('Atajos: 1 y 2.');
+    expect(html).toContain('Tu elección: B');
+    expect(html).not.toMatch(/aria-live|role="status"/);
+  });
+  it('deshabilitada: las opciones fijas, sin botones ni atajos; la elegida sigue marcada', () => {
+    const html = renderToStaticMarkup(<ChoicePair kicker="Tu decisión" options={pair} value="A" onChange={() => undefined} disabled />);
+    expect(html).not.toContain('aria-pressed');
+    expect(html).not.toContain('aria-keyshortcuts');
+    expect(html).toContain('Vivir con Gengar');
+    expect(html).not.toContain('<button');
   });
 });

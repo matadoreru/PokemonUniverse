@@ -666,6 +666,10 @@ function CardSection() {
         <TextCard name="Respuesta 3" text="Nunca devuelve lo que pide." forced="focus" onSelect={() => undefined} />
         <TextCard name="Respuesta 4" text="Llega tarde siempre." forced="active" onSelect={() => undefined} />
       </Fig>
+      <Fig id="text-card-pair" caption="TextCard · grande con atajo (dos opciones enfrentadas)">
+        <TextCard name="Opción A" text="Vivir un año dentro de una Poké Ball" shortcut="1" size="lg" selected onSelect={() => undefined} />
+        <TextCard name="Opción B" text="Viajar siempre a lomos de un Magikarp" shortcut="2" size="lg" onSelect={() => undefined} />
+      </Fig>
       <Fig id="text-card-player" caption="TextCard · jugador con avatar, fija (propia)">
         <TextCard name="Aqua" media={<Avatar name="Aqua" size="sm" />} detail="Eres tú"><Chip tone="neutral">Tu respuesta</Chip></TextCard>
       </Fig>

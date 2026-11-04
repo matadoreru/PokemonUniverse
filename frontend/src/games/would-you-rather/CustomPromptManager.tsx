@@ -1,21 +1,34 @@
 import type { CustomWouldYouRatherPromptView } from '@pokemon-universe/shared/public';
-import { Check, FileJson, Pencil, Plus, Power, Save, Trash2, Upload, X } from 'lucide-react';
+import { CheckCircle2, FileJson, Pencil, Plus, Power, Save, Trash2, Upload, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { api } from '../../lib/api';
+import { Chip, cx, Dialog, Field, Icon, Pill, StateBox, TextArea } from '../../ui';
 import { parseWouldYouRatherImportJson, WOULD_YOU_RATHER_JSON_EXAMPLE } from './json-import';
+import s from './CustomPromptManager.module.css';
 
+const MIN = 4;
+const MAX = 180;
+const valid = (a: string, b: string) => a.trim().length >= MIN && b.trim().length >= MIN;
+
+/**
+ * Dilemas personales del host (Would You Rather) con los controles del catálogo: alta con dos `Field` y «Añadir»,
+ * importación JSON (con los errores en castellano bajo el campo), y la lista con activar/desactivar, editar y eliminar
+ * (con confirmación en un `Dialog`). Se guardan en la cuenta del host.
+ */
 export function CustomWouldYouRatherPromptManager({ disabled }: { disabled: boolean }) {
   const [prompts, setPrompts] = useState<CustomWouldYouRatherPromptView[]>([]);
   const [optionA, setOptionA] = useState(''); const [optionB, setOptionB] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingA, setEditingA] = useState(''); const [editingB, setEditingB] = useState('');
   const [busyId, setBusyId] = useState(''); const [loading, setLoading] = useState(true); const [error, setError] = useState('');
-  const [importJson, setImportJson] = useState('');
+  const [importOpen, setImportOpen] = useState(false);
+  const [importJson, setImportJson] = useState(''); const [importError, setImportError] = useState('');
+  const [removing, setRemoving] = useState<CustomWouldYouRatherPromptView | null>(null);
 
   useEffect(() => {
     let active = true;
     void api<{ prompts: CustomWouldYouRatherPromptView[] }>('/would-you-rather-prompts').then((body) => { if (active) setPrompts(body.prompts); })
-      .catch((caught: unknown) => { if (active) setError(caught instanceof Error ? caught.message : 'No se pudieron cargar tus parejas.'); })
+      .catch((caught: unknown) => { if (active) setError(caught instanceof Error ? caught.message : 'No se pudieron cargar tus dilemas.'); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, []);
@@ -26,7 +39,7 @@ export function CustomWouldYouRatherPromptManager({ disabled }: { disabled: bool
     finally { setBusyId(''); }
   };
   const create = async () => {
-    const a = optionA.trim(); const b = optionB.trim(); if (a.length < 4 || b.length < 4) return;
+    const a = optionA.trim(); const b = optionB.trim(); if (!valid(a, b)) return;
     await run('new', async () => {
       const body = await api<{ prompt: CustomWouldYouRatherPromptView }>('/would-you-rather-prompts', { method: 'POST', body: JSON.stringify({ optionA: a, optionB: b }) });
       setPrompts((current) => [...current, body.prompt]); setOptionA(''); setOptionB('');
@@ -34,29 +47,80 @@ export function CustomWouldYouRatherPromptManager({ disabled }: { disabled: bool
   };
   const update = async (id: string, patch: { optionA?: string; optionB?: string; enabled?: boolean }) => run(id, async () => {
     const body = await api<{ prompt: CustomWouldYouRatherPromptView }>(`/would-you-rather-prompts/${id}`, { method: 'PATCH', body: JSON.stringify(patch) });
-    setPrompts((current) => current.map((prompt) => prompt.id === id ? body.prompt : prompt)); setEditingId(null);
+    setPrompts((current) => current.map((prompt) => (prompt.id === id ? body.prompt : prompt))); setEditingId(null);
   });
-  const remove = async (prompt: CustomWouldYouRatherPromptView) => {
-    if (!window.confirm(`¿Eliminar “${prompt.optionA}” vs “${prompt.optionB}”?`)) return;
-    await run(prompt.id, async () => { await api(`/would-you-rather-prompts/${prompt.id}`, { method: 'DELETE' }); setPrompts((current) => current.filter((item) => item.id !== prompt.id)); });
-  };
-  const enabledCount = prompts.filter((prompt) => prompt.enabled).length;
+  const remove = async (prompt: CustomWouldYouRatherPromptView) => run(prompt.id, async () => {
+    await api(`/would-you-rather-prompts/${prompt.id}`, { method: 'DELETE' });
+    setPrompts((current) => current.filter((item) => item.id !== prompt.id));
+  });
   const importPrompts = async () => {
     let payload;
-    try { payload = parseWouldYouRatherImportJson(importJson); } catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudo leer el JSON.'); return; }
+    try { payload = parseWouldYouRatherImportJson(importJson); } catch (caught) { setImportError(caught instanceof Error ? caught.message : 'No se pudo leer el JSON.'); return; }
+    setImportError('');
     await run('import', async () => {
       const body = await api<{ prompts: CustomWouldYouRatherPromptView[] }>('/would-you-rather-prompts/import', { method: 'POST', body: JSON.stringify(payload) });
       setPrompts((current) => [...current, ...body.prompts]); setImportJson('');
     });
   };
+  const enabledCount = prompts.filter((prompt) => prompt.enabled).length;
+  const locked = disabled || Boolean(busyId);
 
-  return <section className="rounded-2xl border border-ink/10 bg-surface-raised/70 p-4" aria-labelledby="custom-wyr-title">
-    <div className="flex flex-wrap items-start justify-between gap-3"><div><span className="label !mb-0">Cuenta del host</span><h3 id="custom-wyr-title" className="font-display text-xl">Mis dilemas</h3><p className="mt-1 text-sm font-bold text-ink/60">Se guardan en tu cuenta y solo se usan en Would You Rather.</p></div><span className={`chip ${enabledCount >= 1 ? '!bg-leaf/10 !text-leaf' : '!bg-electric/10 !text-electric'}`}><Check size={14} /> {enabledCount} activos</span></div>
-    <div className="mt-4 grid gap-2 lg:grid-cols-[1fr_auto_1fr_auto]"><label><span className="sr-only">Nueva opción A</span><input className="field min-h-11" maxLength={180} value={optionA} onChange={(event) => setOptionA(event.target.value)} placeholder="Opción A" disabled={disabled || busyId === 'new'} /></label><strong className="self-center text-center font-display text-berry">VS</strong><label><span className="sr-only">Nueva opción B</span><input className="field min-h-11" maxLength={180} value={optionB} onChange={(event) => setOptionB(event.target.value)} placeholder="Opción B" disabled={disabled || busyId === 'new'} onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); void create(); } }} /></label><button type="button" className="btn-secondary shrink-0" disabled={disabled || optionA.trim().length < 4 || optionB.trim().length < 4 || Boolean(busyId)} onClick={() => void create()}><Plus size={18} /> Añadir</button></div>
-    {error && <p className="mt-3 rounded-xl bg-berry/10 px-3 py-2 text-sm font-bold text-berry" role="alert">{error}</p>}
-    <details className="mt-4 rounded-xl border border-ink/10 bg-ink/[.025] p-3"><summary className="flex cursor-pointer list-none items-center gap-2 font-extrabold"><FileJson className="text-aqua" size={18} /> Importar dilemas desde JSON</summary><div className="mt-3"><p className="text-sm font-bold text-ink/65">Formato: objeto con <code>version: 1</code> y <code>prompts</code> (1–100 elementos). Cada elemento necesita <code>optionA</code> y <code>optionB</code>, textos distintos de 4–180 caracteres.</p><div className="mt-2 flex flex-wrap gap-2"><button type="button" className="btn-ghost min-h-9 !px-3 text-sm" disabled={disabled || Boolean(busyId)} onClick={() => setImportJson(WOULD_YOU_RATHER_JSON_EXAMPLE)}>Cargar ejemplo</button></div><label className="mt-3 block"><span className="label">JSON para importar</span><textarea className="field min-h-44 resize-y font-mono text-sm" value={importJson} onChange={(event) => setImportJson(event.target.value)} disabled={disabled || Boolean(busyId)} spellCheck={false} placeholder={WOULD_YOU_RATHER_JSON_EXAMPLE} /></label><button type="button" className="btn-secondary mt-3" disabled={disabled || !importJson.trim() || Boolean(busyId)} onClick={() => void importPrompts()}><Upload size={18} />{busyId === 'import' ? 'Importando…' : 'Validar e importar'}</button></div></details>
-    {loading ? <p className="py-5 text-sm font-bold text-ink/60">Cargando dilemas…</p> : prompts.length === 0 ? <p className="mt-4 rounded-xl border border-dashed border-ink/15 p-4 text-center text-sm font-bold text-ink/55">Todavía no has creado dilemas personales.</p> : <ul className="mt-4 max-h-96 space-y-2 overflow-y-auto pr-1">{prompts.map((prompt) => <li key={prompt.id} className={`rounded-xl border p-2.5 ${prompt.enabled ? 'border-aqua/20 bg-aqua/[.04]' : 'border-ink/10 bg-ink/[.025] opacity-70'}`}>
-      {editingId === prompt.id ? <div className="grid gap-2 lg:grid-cols-[1fr_1fr_auto_auto]"><input className="field min-h-10" maxLength={180} value={editingA} onChange={(event) => setEditingA(event.target.value)} aria-label="Editar opción A" autoFocus /><input className="field min-h-10" maxLength={180} value={editingB} onChange={(event) => setEditingB(event.target.value)} aria-label="Editar opción B" /><button type="button" className="btn-ghost min-h-10 !px-3" disabled={editingA.trim().length < 4 || editingB.trim().length < 4 || Boolean(busyId)} onClick={() => void update(prompt.id, { optionA: editingA.trim(), optionB: editingB.trim() })}><Save size={17} /> Guardar</button><button type="button" className="btn-ghost min-h-10 !px-3" onClick={() => setEditingId(null)}><X size={17} /> Cancelar</button></div> : <div className="flex items-center gap-2"><button type="button" className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${prompt.enabled ? 'bg-leaf/15 text-leaf' : 'bg-ink/10 text-ink/50'}`} aria-label={prompt.enabled ? 'Desactivar dilema' : 'Activar dilema'} disabled={disabled || Boolean(busyId)} onClick={() => void update(prompt.id, { enabled: !prompt.enabled })}><Power size={17} /></button><p className="min-w-0 flex-1 text-sm font-bold leading-snug"><span className="text-aqua">A.</span> {prompt.optionA} <span className="mx-1 text-berry">VS</span> <span className="text-electric">B.</span> {prompt.optionB}</p><button type="button" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-ink/55 hover:bg-aqua/10 hover:text-aqua" aria-label="Editar dilema" disabled={disabled || Boolean(busyId)} onClick={() => { setEditingId(prompt.id); setEditingA(prompt.optionA); setEditingB(prompt.optionB); }}><Pencil size={17} /></button><button type="button" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-ink/55 hover:bg-berry/10 hover:text-berry" aria-label="Eliminar dilema" disabled={disabled || Boolean(busyId)} onClick={() => void remove(prompt)}><Trash2 size={17} /></button></div>}
-    </li>)}</ul>}
+  return <section className={s.manager} aria-labelledby="custom-wyr-title">
+    <div className={s.head}>
+      <div className={s.headText}>
+        <span className={s.kicker}>Cuenta del host</span>
+        <h3 id="custom-wyr-title" className={s.title}>Mis dilemas</h3>
+        <p className={s.help}>Se guardan en tu cuenta y solo se usan en Would You Rather.</p>
+      </div>
+      <Chip tone={enabledCount >= 1 ? 'ok' : 'warn'} icon={<Icon icon={CheckCircle2} size={18} />}>{enabledCount} activos</Chip>
+    </div>
+
+    <div className={s.create}>
+      <Field label="Nueva opción A" maxLength={MAX} value={optionA} onChange={(event) => setOptionA(event.target.value)} disabled={disabled || busyId === 'new'} className={cx(s.grow)} />
+      <span className={s.versus} aria-hidden="true">VS</span>
+      <Field label="Nueva opción B" maxLength={MAX} value={optionB} onChange={(event) => setOptionB(event.target.value)} disabled={disabled || busyId === 'new'} className={cx(s.grow)}
+        onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); void create(); } }} />
+      <Pill icon={Plus} loading={busyId === 'new'} disabled={locked || !valid(optionA, optionB)} onClick={() => void create()} className={s.add}>Añadir</Pill>
+    </div>
+    {error && <p className={s.error} role="alert">{error}</p>}
+
+    <div className={s.import}>
+      <Pill variant="cream" size="small" icon={FileJson} aria-expanded={importOpen} aria-controls="wyr-import" onClick={() => setImportOpen((value) => !value)}>Importar dilemas desde JSON</Pill>
+      {importOpen && <div id="wyr-import" className={s.importBody}>
+        <p className={s.help}>Formato: objeto con <code>version: 1</code> y <code>prompts</code> (1–100 elementos). Cada elemento necesita <code>optionA</code> y <code>optionB</code>, textos distintos de 4–180 caracteres.</p>
+        <TextArea label="JSON para importar" value={importJson} rows={8} onChange={(value) => { setImportJson(value); setImportError(''); }} disabled={locked} error={importError || null} className={cx(s.json)} />
+        <div className={s.importActions}>
+          <Pill variant="cream" size="small" disabled={locked} onClick={() => { setImportJson(WOULD_YOU_RATHER_JSON_EXAMPLE); setImportError(''); }}>Cargar ejemplo</Pill>
+          <Pill size="small" icon={Upload} loading={busyId === 'import'} disabled={locked || !importJson.trim()} onClick={() => void importPrompts()}>Validar e importar</Pill>
+        </div>
+      </div>}
+    </div>
+
+    {loading
+      ? <StateBox kind="loading" title="Cargando dilemas…" onCream live={false} />
+      : prompts.length === 0
+        ? <p className={s.empty}>Todavía no has creado dilemas personales.</p>
+        : <ul className={s.list}>{prompts.map((prompt) => <li key={prompt.id} className={prompt.enabled ? s.item : s.itemOff}>
+          {editingId === prompt.id
+            ? <div className={s.editRow}>
+              <Field label="Editar opción A" maxLength={MAX} value={editingA} onChange={(event) => setEditingA(event.target.value)} autoFocus className={cx(s.grow)} />
+              <Field label="Editar opción B" maxLength={MAX} value={editingB} onChange={(event) => setEditingB(event.target.value)} className={cx(s.grow)} />
+              <div className={s.editActions}>
+                <Pill size="small" icon={Save} disabled={locked || !valid(editingA, editingB)} onClick={() => void update(prompt.id, { optionA: editingA.trim(), optionB: editingB.trim() })}>Guardar</Pill>
+                <Pill variant="cream" size="small" icon={X} onClick={() => setEditingId(null)}>Cancelar</Pill>
+              </div>
+            </div>
+            : <div className={s.row}>
+              <Pill size="round" variant={prompt.enabled ? 'yellow' : 'cream'} icon={Power} aria-pressed={prompt.enabled} aria-label={prompt.enabled ? 'Desactivar dilema' : 'Activar dilema'} title={prompt.enabled ? 'Desactivar dilema' : 'Activar dilema'} disabled={locked} onClick={() => void update(prompt.id, { enabled: !prompt.enabled })} />
+              <p className={s.text}><strong>A.</strong> {prompt.optionA} <span className={s.vs}>VS</span> <strong>B.</strong> {prompt.optionB}{!prompt.enabled && <span className={s.off}> (desactivado)</span>}</p>
+              <Pill size="round" variant="cream" icon={Pencil} aria-label="Editar dilema" title="Editar dilema" disabled={locked} onClick={() => { setEditingId(prompt.id); setEditingA(prompt.optionA); setEditingB(prompt.optionB); }} />
+              <Pill size="round" variant="cream" icon={Trash2} aria-label="Eliminar dilema" title="Eliminar dilema" disabled={locked} onClick={() => setRemoving(prompt)} />
+            </div>}
+        </li>)}</ul>}
+
+    <Dialog open={removing !== null} title="¿Eliminar este dilema?" onClose={() => setRemoving(null)}
+      actions={[{ label: 'Eliminar', variant: 'danger', onClick: () => { if (removing) void remove(removing); } }, { label: 'Cancelar', variant: 'cream', autoFocus: true, onClick: () => undefined }]}>
+      {removing && <p>«{removing.optionA}» contra «{removing.optionB}». No se puede deshacer.</p>}
+    </Dialog>
   </section>;
 }

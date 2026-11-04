@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ballotState, namesList, phaseIndex, runoffCounts, runoffLeaders, socialFocusKey, tallyOutcome, tallySummary, votesText } from './presentation';
+import { ballotState, choiceFromKey, namesList, phaseIndex, runoffCounts, runoffLeaders, socialFocusKey, tallyOutcome, tallySummary, typingTarget, votesText } from './presentation';
 
 const names: Record<string, string> = { p1: 'Snorlax', p2: 'Psyduck', p3: 'Gengar' };
 const nameOf = (id: string) => names[id] ?? id;
@@ -63,5 +63,29 @@ describe('social-kit: presentación', () => {
     const steps = [{ key: 'choose' }, { key: 'vote' }, { key: 'result' }];
     expect(phaseIndex(steps, 'vote')).toBe(1);
     expect(phaseIndex(steps, null)).toBe(-1);
+  });
+});
+
+describe('social-kit: atajos de las opciones', () => {
+  const ids = ['A', 'B'] as const;
+  const field = (tag: string) => ({ closest: (selector: string) => (selector.split(', ').some((part) => part === tag || part.startsWith(`[${tag}`)) ? {} : null) });
+  it('1 y 2 eligen la primera y la segunda; el resto de teclas, nada', () => {
+    expect(choiceFromKey({ key: '1' }, ids)).toBe('A');
+    expect(choiceFromKey({ key: '2' }, ids)).toBe('B');
+    expect(choiceFromKey({ key: '3' }, ids)).toBeNull();
+    expect(choiceFromKey({ key: 'a' }, ids)).toBeNull();
+    expect(choiceFromKey({ key: 'Enter' }, ids)).toBeNull();
+  });
+  it('no se disparan mientras se escribe en un campo, con modificadores, al mantener la tecla ni si otro ya la atendió', () => {
+    for (const tag of ['input', 'textarea', 'select', 'contenteditable']) expect(choiceFromKey({ key: '1', target: field(tag) }, ids), tag).toBeNull();
+    expect(choiceFromKey({ key: '1', target: field('button') }, ids)).toBe('A');
+    expect(choiceFromKey({ key: '1', target: null }, ids)).toBe('A');
+    expect(choiceFromKey({ key: '1', ctrlKey: true }, ids)).toBeNull();
+    expect(choiceFromKey({ key: '1', altKey: true }, ids)).toBeNull();
+    expect(choiceFromKey({ key: '1', metaKey: true }, ids)).toBeNull();
+    expect(choiceFromKey({ key: '1', repeat: true }, ids)).toBeNull();
+    expect(choiceFromKey({ key: '1', defaultPrevented: true }, ids)).toBeNull();
+    expect(typingTarget(field('textarea'))).toBe(true);
+    expect(typingTarget({})).toBe(false);
   });
 });

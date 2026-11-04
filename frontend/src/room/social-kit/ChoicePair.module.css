@@ -1,0 +1,104 @@
+/* Papeleta de dos opciones enfrentadas: panel crema con el kicker, las dos cartas grandes con «VS» en medio y la ayuda. */
+.panel {
+  min-height: 0;
+}
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-height: 0;
+  height: 100%;
+}
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.kicker {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.options {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: var(--sp-3);
+  min-height: 0;
+  /* Hueco para la sombra dura, el anillo de foco y la insignia del atajo. */
+  padding: 10px 6px var(--sp-1);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.option {
+  display: flex;
+  min-width: 0;
+}
+.option > * {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.versus {
+  display: grid;
+  place-items: center;
+}
+.versus span {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: var(--sh-hard-3);
+  font: 800 var(--fs-22) / 1 var(--font-display);
+  color: var(--white);
+}
+.help {
+  font: 700 var(--fs-15) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+@media (max-width: 639px) {
+  /* Móvil: las dos cartas lado a lado (así la placa de abajo no las tapa) con un «VS» pequeño entre ellas; sin ayuda. */
+  .options {
+    position: relative;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    /* Hueco del «VS» (30 px): queda entre las cartas sin pisarlas. */
+    column-gap: 36px;
+    padding-top: 10px;
+  }
+  .versus {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .versus span {
+    width: 30px;
+    height: 30px;
+    font-size: var(--fs-13);
+  }
+  .help {
+    display: none;
+  }
+}
+@media (min-width: 1024px) and (max-height: 800px) {
+  .help {
+    display: none;
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .versus span {
+    width: 64px;
+    height: 64px;
+    font-size: var(--fs-26);
+  }
+  .help {
+    font-size: var(--fs-18);
+  }
+}
