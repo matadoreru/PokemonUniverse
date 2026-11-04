@@ -45,7 +45,8 @@
 .head,
 .row {
   display: grid;
-  grid-template-columns: var(--anchor-w) minmax(0, 1fr);
+  /* `min-content`, no 0: si las casillas no caben, el tablero se ensancha y se desplaza dentro del panel (nunca rebosan la fila). */
+  grid-template-columns: var(--anchor-w) minmax(min-content, 1fr);
   column-gap: var(--sp-2);
 }
 .head {

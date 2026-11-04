@@ -64,7 +64,8 @@ function Cell({ column, entry }: { column: PokeddleColumn; entry: PokeddleFeedba
  */
 export const PokeddleBoard = memo(function PokeddleBoard({ board, clues, title = 'Tu tablero', mode = 'self', owner, className }: PokeddleBoardProps) {
   const columns = useMemo(() => getPokeddleColumns(clues), [clues]);
-  const template = columns.map((column) => (column.wide ? 'minmax(5.5rem, 1.7fr)' : 'minmax(3rem, 1fr)')).join(' ');
+  // Mínimo de 46 px por casilla: a 1280×720 caben todas las pistas sin desplazamiento («999.9» a 13 px cabe entero).
+  const template = columns.map((column) => (column.wide ? 'minmax(5.5rem, 1.7fr)' : 'minmax(2.875rem, 1fr)')).join(' ');
   const latestRound = latestGuessRound(board.rows);
   const rows = [...board.rows].reverse();
   const self = mode === 'self';

@@ -66,7 +66,8 @@ export function Card({ sprite, name, number, types, state = 'idle', photo, size 
   }, [turning]);
   const body = (
     <>
-      <span className={cx(s.art, photo && s.photoArt)}>
+      {/* `data-part` («art», «name»): ganchos estables para el CSS de los juegos, que no dependen del orden de los hijos. */}
+      <span className={cx(s.art, photo && s.photoArt)} data-part="art">
         {sprite ? (
           <img src={sprite} alt={photo || decorativeSprite ? '' : name} loading={eager ? 'eager' : 'lazy'} decoding="async" {...(eager ? { fetchPriority: 'high' as const } : {})} className={cx(s.img, photo && s.photo)} />
         ) : art != null ? (
@@ -78,7 +79,7 @@ export function Card({ sprite, name, number, types, state = 'idle', photo, size 
         )}
       </span>
       {/* Llena, el nombre largo se recorta con elipsis: `title` deja leerlo entero. */}
-      <span className={s.name} {...(size === 'fill' ? { title: name } : {})}>{name}</span>
+      <span className={s.name} data-part="name" {...(size === 'fill' ? { title: name } : {})}>{name}</span>
       {number != null && <span className={s.num}>Nº {String(number).padStart(3, '0')}</span>}
       {types && types.length > 0 && (
         <span className={s.types}>

@@ -542,7 +542,7 @@
   .reveal {
     column-gap: var(--sp-6);
   }
-  .revealCard [data-answer-card] > span:first-child {
+  .revealCard [data-answer-card] > span[data-part='art'] {
     width: 192px;
     height: 192px;
   }

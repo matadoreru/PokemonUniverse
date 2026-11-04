@@ -97,6 +97,22 @@ describe('PokemonBingoGame', () => {
     const after = render(room(publicGame(), { ...wrong, cooldownUntil: null }));
     expect(after).toContain('data-testid="bingo-feedback"');
     expect(after).toContain('Pikachu no cumple esta casilla.');
+    // …y la región viva se vacía (el chip se ve, pero ya no se anuncia).
+    expect(after).toContain('role="status" aria-live="polite"></p>');
+  });
+
+  it('dos fallos idénticos seguidos se anuncian los dos: la región se vacía entre uno y otro', () => {
+    const fallo = (attemptedAt: number) => ({ cellId: 'a', pokemonId: 'x', pokemonName: 'X', attemptedAt, correct: false, message: '❌ X no cumple esta casilla.' });
+    const texto = 'Incorrecto: X no cumple esta casilla. Hay una breve espera antes del siguiente intento.';
+    // Lo que va diciendo la región: el primer fallo, vacía al acabar la espera y el segundo fallo (mismo texto) otra vez.
+    const region = [
+      bingoAnnouncement({ kind: 'pick', attempt: fallo(1_000), cooldownMs: 1_000 }),
+      bingoAnnouncement({ kind: 'pick', attempt: fallo(1_000), cooldownMs: 0 }),
+      bingoAnnouncement({ kind: 'pick', attempt: fallo(2_500), cooldownMs: 1_000 }),
+    ];
+    expect(region).toEqual([texto, '', texto]);
+    // Cada paso cambia el contenido de la región: ningún fallo queda en silencio.
+    expect(region.every((actual, i) => i === 0 || actual !== region[i - 1])).toBe(true);
   });
 
   it('no pinta las soluciones posibles durante la ronda aunque llegaran', () => {
@@ -208,7 +224,7 @@ describe('presentación de Pokémon Bingo', () => {
   it('el anuncio: el intento una vez, con la espera solo si falló; el bingo no', () => {
     const attempt = { cellId: 'a', pokemonId: 'x', pokemonName: 'X', attemptedAt: 1, correct: true, message: 'X colocado correctamente.' };
     expect(bingoAnnouncement({ kind: 'pick', attempt })).toBe('X colocado correctamente.');
-    expect(bingoAnnouncement({ kind: 'pick', attempt: { ...attempt, correct: false, message: '❌ X no cumple esta casilla.' } })).toBe('Incorrecto: X no cumple esta casilla. Hay una breve espera antes del siguiente intento.');
+    expect(bingoAnnouncement({ kind: 'pick', attempt: { ...attempt, correct: false, message: '❌ X no cumple esta casilla.' }, cooldownMs: 800 })).toBe('Incorrecto: X no cumple esta casilla. Hay una breve espera antes del siguiente intento.');
     expect(bingoAnnouncement({ kind: 'pick', attempt: null })).toBe('');
     expect(bingoAnnouncement({ kind: 'bingo', attempt })).toBe('');
   });

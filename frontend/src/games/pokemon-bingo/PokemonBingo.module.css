@@ -111,7 +111,7 @@
   padding: var(--sp-2);
 }
 /* El hueco del sprite no aporta alto propio (el sprite va absoluto): las filas reparten el alto, no lo dicta la imagen. */
-.grid > [data-bingo-cell] > span:first-child {
+.grid > [data-bingo-cell] > span[data-part='art'] {
   grid-area: art;
   position: relative;
   width: 100%;
@@ -119,7 +119,7 @@
   min-height: 0;
   overflow: hidden;
 }
-.grid > [data-bingo-cell] > span:first-child > img {
+.grid > [data-bingo-cell] > span[data-part='art'] > img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -127,7 +127,7 @@
   object-fit: contain;
 }
 /* La condición es lo que se lee primero: arriba y en hasta tres líneas (con `title` si no cabe). */
-.grid > [data-bingo-cell] > span:nth-child(2) {
+.grid > [data-bingo-cell] > span[data-part='name'] {
   grid-area: name;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -141,7 +141,7 @@
   line-height: 1.15;
 }
 /* Casilla vacía: hueco crema con el «+» (el texto «Vacía» va debajo). */
-.grid > [data-filled='false'] > span:first-child {
+.grid > [data-filled='false'] > span[data-part='art'] {
   background: var(--cream-2);
   color: var(--ink-2);
 }
@@ -357,7 +357,7 @@
   .grid > [data-bingo-cell] {
     padding: var(--sp-1);
   }
-  .grid > [data-bingo-cell] > span:nth-child(2) {
+  .grid > [data-bingo-cell] > span[data-part='name'] {
     font-size: var(--fs-13);
   }
   .assigned {
@@ -408,7 +408,7 @@
     text-align: left;
     column-gap: var(--sp-2);
   }
-  .gridFill > [data-bingo-cell] > span:first-child {
+  .gridFill > [data-bingo-cell] > span[data-part='art'] {
     width: 2.5rem;
     height: 2.5rem;
     align-self: center;
@@ -432,7 +432,7 @@
     text-align: left;
     column-gap: var(--sp-2);
   }
-  .gridFill.dense > [data-bingo-cell] > span:first-child {
+  .gridFill.dense > [data-bingo-cell] > span[data-part='art'] {
     width: 2.75rem;
     height: 2.75rem;
     align-self: center;
@@ -458,7 +458,7 @@
     padding: var(--sp-3);
     gap: var(--sp-2);
   }
-  .gridFill:not(.dense) > [data-bingo-cell] > span:nth-child(2) {
+  .gridFill:not(.dense) > [data-bingo-cell] > span[data-part='name'] {
     font-size: clamp(var(--fs-18), calc(5cqw / var(--cols, 3) * 3), var(--fs-26));
   }
   .gridFill:not(.dense) .assigned {

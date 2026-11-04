@@ -135,7 +135,7 @@ export function PokemonBingoGame({ room, selfId, onAction }: { room: RoomView; s
     {move && <div className={s.moveText}><p>{move.used}</p><p><strong>{move.question}</strong></p></div>}
   </Dialog>;
 
-  const announcement = bingoAnnouncement({ kind, attempt });
+  const announcement = bingoAnnouncement({ kind, attempt, cooldownMs });
   return <>
     {rivalDialog}
     {moveDialog}

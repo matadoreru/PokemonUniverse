@@ -99,7 +99,7 @@
   padding: var(--sp-2);
   gap: var(--sp-1);
 }
-.grid > [data-connection-card] > :not(:first-child) {
+.grid > [data-connection-card] > :not([data-part='art']) {
   flex: none;
 }
 
@@ -304,7 +304,7 @@
   .grid > [data-connection-card] {
     min-height: 4.75rem;
   }
-  .grid > [data-connection-card] > span:first-child {
+  .grid > [data-connection-card] > span[data-part='art'] {
     max-height: 3rem;
   }
   .bandPokemon {
@@ -362,7 +362,7 @@
     justify-content: flex-start;
     gap: var(--sp-2);
   }
-  .grid > [data-connection-card] > span:first-child {
+  .grid > [data-connection-card] > span[data-part='art'] {
     flex: none;
     width: auto;
     height: 100%;
