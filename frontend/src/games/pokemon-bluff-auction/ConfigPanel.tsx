@@ -1,22 +1,46 @@
 import type { PokemonBluffAuctionConfig } from '@pokemon-universe/shared/public';
-import { Clock3, Layers3, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
+import { ConfigRange } from '../../room/ConfigRange';
+import { Icon, Segmented } from '../../ui';
+import s from './BluffAuction.module.css';
 
-const times = [20, 30, 45, 60];
-const rounds = [5, 10, 15, 20];
+const times = [20, 30, 45, 60] as const;
+const rounds = [5, 10, 15, 20] as const;
 
+/**
+ * Ajustes de Pokémon Bluff Auction con los controles del catálogo: generaciones (el selector heredado, F9), tiempo
+ * inicial para demostrar y rondas (`Segmented` con las opciones del motor), tiempo por puja (`ConfigRange` de 0 a 120,
+ * 0 sin límite) y la nota de las especies normales.
+ */
 export function PokemonBluffAuctionConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as PokemonBluffAuctionConfig;
-  return <fieldset disabled={disabled} className="space-y-7">
+  return <fieldset disabled={disabled} className={s.config}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="La condición y el buscador usarán únicamente especies normales de estas generaciones." onChange={(generations) => void onChange({ ...value, generations })} />
-    <div className="grid gap-6 lg:grid-cols-2">
-      <section aria-labelledby="bluff-time"><div className="mb-2 flex items-center gap-2"><Clock3 className="text-aqua" size={19} /><span id="bluff-time" className="font-extrabold">Tiempo inicial para demostrar</span></div><div className="grid grid-cols-4 gap-2">{times.map((seconds) => <Option key={seconds} selected={value.demonstrationSeconds === seconds} onClick={() => void onChange({ ...value, demonstrationSeconds: seconds })}>{seconds}s</Option>)}</div><p className="mt-2 text-sm font-bold text-ink/60">Cada Pokémon nuevo enviado añade 5 segundos.</p></section>
-      <section aria-labelledby="bluff-rounds"><div className="mb-2 flex items-center gap-2"><Layers3 className="text-aqua" size={19} /><span id="bluff-rounds" className="font-extrabold">Rondas</span></div><div className="grid grid-cols-4 gap-2">{rounds.map((count) => <Option key={count} selected={value.rounds === count} onClick={() => void onChange({ ...value, rounds: count })}>{count}</Option>)}</div><p className="mt-2 text-sm font-bold text-ink/60">Cada ronda renueva condición y orden de puja.</p></section>
+    <div className={s.pair}>
+      <div className={s.field}>
+        <span className={s.label}>Tiempo inicial para demostrar</span>
+        <Segmented label="Tiempo inicial para demostrar" value={value.demonstrationSeconds}
+          options={times.map((seconds) => ({ value: seconds, label: `${seconds} s`, disabled }))}
+          onChange={(demonstrationSeconds) => void onChange({ ...value, demonstrationSeconds })} />
+        <p className={s.help}>Cada acierto añade 5 segundos y cada fallo quita 3.</p>
+      </div>
+      <div className={s.field}>
+        <span className={s.label}>Rondas</span>
+        <Segmented label="Rondas" value={value.rounds} options={rounds.map((count) => ({ value: count, label: String(count), disabled }))}
+          onChange={(count) => void onChange({ ...value, rounds: count })} />
+        <p className={s.help}>Cada ronda renueva condición y orden de puja.</p>
+      </div>
     </div>
-    <div className="flex items-start gap-3 rounded-xl border border-leaf/20 bg-leaf/[.06] p-4"><ShieldCheck className="mt-0.5 shrink-0 text-leaf" size={21} /><div><strong className="block">Solo especies normales</strong><p className="mt-1 text-sm font-bold leading-relaxed text-ink/65">Este modo excluye regionales, Mega, Gigamax y cualquier variante que comparta número de Pokédex. Las condiciones se verifican con datos autoritativos.</p></div></div>
-  <label className="block font-extrabold">Tiempo por puja (segundos)<input className="field mt-2" type="number" min={0} max={120} value={value.bidSeconds ?? 20} onChange={(event) => { const bidSeconds = Number(event.target.value); if (Number.isInteger(bidSeconds) && bidSeconds >= 0 && bidSeconds <= 120) void onChange({ ...value, bidSeconds }); }} /><span className="mt-2 block text-sm font-bold text-ink/60">Al agotarse el tiempo, pasas. Usa 0 para jugar sin límite.</span></label></fieldset>;
-}
-
-function Option({ selected, onClick, children }: { selected: boolean; onClick(): void; children: React.ReactNode }) {
-  return <button type="button" aria-pressed={selected} onClick={onClick} className={`min-h-11 rounded-xl border font-extrabold ${selected ? 'border-electric bg-electric text-night' : 'border-ink/10 bg-surface-raised text-ink/65 hover:border-aqua'}`}>{children}</button>;
+    <ConfigRange label="Tiempo por puja" value={value.bidSeconds ?? 20} min={0} max={120} disabled={disabled}
+      formatValue={(seconds) => (seconds === 0 ? 'Sin límite' : `${seconds} s`)} hint="Al agotarse el tiempo, pasas. Usa 0 para jugar sin límite."
+      onCommit={(bidSeconds) => onChange({ ...value, bidSeconds })} />
+    <div className={s.info}>
+      <Icon icon={ShieldCheck} size={22} />
+      <div>
+        <strong className={s.infoTitle}>Solo especies normales</strong>
+        <p className={s.help}>Este modo excluye regionales, Mega, Gigamax y cualquier variante que comparta número de Pokédex. Las condiciones se verifican con datos autoritativos.</p>
+      </div>
+    </div>
+  </fieldset>;
 }

@@ -45,6 +45,22 @@ describe('auction-kit: controles de la puja', () => {
     expect(controls({ budget: null })).not.toContain('Tu presupuesto');
   });
 
+  it('sin llegar a la mínima pero con permiso del servidor para pasar, «Pasar» sigue activo (Bluff en el máximo)', () => {
+    const html = controls({ min: 1026, max: 1025, budget: null, allIn: false }, { min: 1026, max: 1025, texts: { noBudget: { title: 'Puja máxima', text: 'Nadie puede subir más.' } } });
+    expect(html).toContain('>Puja máxima</h2>');
+    expect(html).toMatch(/<button[^>]*disabled=""[^>]*data-testid="bid-submit"|<button[^>]*data-testid="bid-submit"[^>]*disabled=""/);
+    expect(html).not.toMatch(/<button[^>]*disabled=""[^>]*data-testid="bid-pass"|data-testid="bid-pass"[^>]*disabled=""/);
+    // Team Auction (el motor no da `canPass` a quien no llega): los dos bloqueados.
+    const team = controls({ max: 2 }, { max: 2, canRaise: false, canPass: false });
+    expect(team).toMatch(/<button[^>]*disabled=""[^>]*data-testid="bid-pass"|data-testid="bid-pass"[^>]*disabled=""/);
+  });
+
+  it('sin `allIn` no hay «Todo»', () => {
+    const html = controls({ allIn: false });
+    expect(html).not.toContain('Todo:');
+    expect(html.match(/data-testid="bid-step"/g)).toHaveLength(3);
+  });
+
   it('con poco presupuesto los incrementos no se pasan del máximo', () => {
     const html = controls({ max: 6 }, { max: 6 });
     expect(html).toContain('Mínima: 5');

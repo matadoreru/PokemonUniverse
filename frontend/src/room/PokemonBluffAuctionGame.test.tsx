@@ -1,14 +1,23 @@
-import type { PokemonBluffAuctionPlayerState, PokemonBluffAuctionPublicState, RoomView } from '@pokemon-universe/shared';
+import { defaultPokemonBluffAuctionConfig, type BluffAuctionRoundResult, type GameResults, type PokemonBluffAuctionPlayerState, type PokemonBluffAuctionPublicState, type RoomView } from '@pokemon-universe/shared';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
-import { confirmBluffAuctionPass, PokemonBluffAuctionGame } from './PokemonBluffAuctionGame';
+import { describe, expect, it, vi } from 'vitest';
+import { PokemonBluffAuctionConfigPanel } from '../games/pokemon-bluff-auction/ConfigPanel';
+import { bluffAnnouncement, bluffBlockInput, bluffHeading, bluffMetrics, bluffResultReason, bluffRoundLines, bluffSelfVerdict, bluffStatsLine } from '../games/pokemon-bluff-auction/presentation';
+import { bidBlock } from './auction-kit';
+import { PokemonBluffAuctionGame } from './PokemonBluffAuctionGame';
+import { PokemonBluffAuctionResults } from './PokemonBluffAuctionResults';
+
+// «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala); el `ConfigPanel` usa el selector de generaciones.
+vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { kind: 'GUEST' } }) }));
 
 const players = ['Ana', 'Pedro', 'Carlos'].map((displayName, index) => ({
   id: `p${index + 1}`, displayName, avatar: { type: 'DEFAULT' as const }, connected: true,
   presence: 'CONNECTED' as const, roomRole: index === 0 ? 'HOST' as const : 'MEMBER' as const,
   role: 'PLAYER' as const, isHost: index === 0, ready: false, sessionPoints: 0,
 }));
+const nameOf = (id: string) => players.find((player) => player.id === id)?.displayName ?? id;
 
 function game(phase: PokemonBluffAuctionPublicState['phase'] = 'ROUND_ACTIVE'): PokemonBluffAuctionPublicState {
   return {
@@ -19,59 +28,239 @@ function game(phase: PokemonBluffAuctionPublicState['phase'] = 'ROUND_ACTIVE'): 
     bidHistory: [{ playerId: 'p2', type: 'PASS' }, { playerId: 'p3', type: 'BID', amount: 5 }],
     maxBid: 1025, bidderId: phase === 'ROUND_ACTIVE' ? null : 'p3', targetBid: phase === 'ROUND_ACTIVE' ? null : 5,
     attempts: [], correctCount: 0, incorrectCount: 0, remainingCount: phase === 'ROUND_ACTIVE' ? 0 : 5,
-    scores: { p1: 0, p2: 0, p3: 0 }, roundEndsAt: phase === 'POKEMON_SEARCH' ? 31_000 : null,
-    nextTransitionAt: null, lastRound: null, results: null,
+    scores: { p1: 2, p2: 0, p3: 5 }, roundEndsAt: phase === 'POKEMON_SEARCH' ? 31_000 : null,
+    nextTransitionAt: phase === 'ROUND_RESULTS' ? 6_000 : null, lastRound: null, results: null,
   };
 }
+
+/** Resultado de ronda con un número que no debe salir antes de su revelación (cuántas respuestas válidas había). */
+const impossible: BluffAuctionRoundResult = {
+  bidderId: 'p3', bid: 9000, success: false, reason: 'IMPOSSIBLE', condition: { description: 'Tipo Agua + Velocidad > 80', clauses: ['Tipo Agua', 'Velocidad > 80'] },
+  attempts: [], correctCount: 0, incorrectCount: 0, validPokemonCount: 4321, pointsAwarded: { p1: 2, p2: 2, p3: 0 },
+};
 
 function room(publicGame: PokemonBluffAuctionPublicState, player: PokemonBluffAuctionPlayerState): RoomView {
   return {
     code: 'ABC234', phase: publicGame.phase, hostId: 'p1', maxPlayers: 8, members: players,
     availableGames: [{ id: 'pokemon-bluff-auction', name: 'Pokémon Bluff Auction', icon: '🔨', description: 'Pujas', minPlayers: 2, profileStats: { metrics: [] } }],
-    selectedGameId: 'pokemon-bluff-auction', selectedGameConfig: { generations: [1, 2, 3], demonstrationSeconds: 30, rounds: 10 },
+    selectedGameId: 'pokemon-bluff-auction', selectedGameConfig: { generations: [1, 2, 3], demonstrationSeconds: 30, rounds: 10, bidSeconds: 20 },
     sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null,
     gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: publicGame, gamePlayerState: player, serverNow: 1_000,
   };
 }
 
-describe('Pokémon Bluff Auction presentation', () => {
-  it('makes condition, current bid, active turn and passed players immediately clear', () => {
-    const html = renderToStaticMarkup(createElement(PokemonBluffAuctionGame, {
-      room: room(game(), { role: 'PLAYER', canRaise: true, canPass: true, canSubmitPokemon: false }), selfId: 'p1', onAction: async () => undefined,
-    }));
-    expect(html).toContain('Tipo Agua + Velocidad &gt; 80'); expect(html).toContain('Puja actual'); expect(html).toContain('5');
-    expect(html).toContain('Ana'); expect(html).toContain('ESTÁ PUJANDO'); expect(html).toContain('PASÓ'); expect(html).toContain('Pasar esta ronda');
-    expect(html).not.toContain('validPokemon'); expect(html).not.toContain('respuestas válidas');
+const turn: PokemonBluffAuctionPlayerState = { role: 'PLAYER', canRaise: true, canPass: true, canSubmitPokemon: false };
+const idle: PokemonBluffAuctionPlayerState = { role: 'PLAYER', canRaise: false, canPass: false, canSubmitPokemon: false };
+const searcher: PokemonBluffAuctionPlayerState = { role: 'PLAYER', canRaise: false, canPass: false, canSubmitPokemon: true };
+const spectator: PokemonBluffAuctionPlayerState = { role: 'SPECTATOR', canRaise: false, canPass: false, canSubmitPokemon: false };
+const play = (publicGame: PokemonBluffAuctionPublicState, player: PokemonBluffAuctionPlayerState, selfId = 'p1') => renderToStaticMarkup(createElement(PokemonBluffAuctionGame, { room: room(publicGame, player), selfId, onAction: async () => undefined }));
+/** Texto visible más `alt`, `title` y `aria-label` (lo que un lector o la vista pueden sacar del DOM). */
+const visible = (html: string) => [html.replace(/<[^>]+>/g, ' '), ...[...html.matchAll(/(?:alt|title|aria-label|aria-valuetext)="([^"]*)"/g)].map((match) => match[1])].join(' ');
+
+describe('Pokémon Bluff Auction: subasta', () => {
+  it('con el kit: la condición, la puja actual, el turno, la mesa con quien pasó y una sola región viva', () => {
+    const html = play(game(), turn);
+    expect(html).toContain('data-testid="auction-screen"');
+    expect(html.match(/aria-live/g)).toHaveLength(1);
+    expect(html).not.toContain('role="alert"');
+    expect(html).toContain('Ronda 2 de 10 · Subasta');
+    expect(html).toContain('Tipo Agua + Velocidad &gt; 80');
+    expect(html).toContain('data-testid="bluff-condition"');
+    expect(html).toMatch(/data-testid="auction-current-bid"><span[^>]*><strong>5<\/strong> <small>Pokémon<\/small>/);
+    expect(html).toMatch(/data-testid="auction-leader">.*Carlos/);
+    expect(html).toContain('6 Pokémon');
+    expect(html).toContain('>Tu turno</h1>');
+    expect(html).toContain('Bluff por voz externa');
+    // La mesa: orden, estado en texto y la última puja o «Pasó».
+    expect(html).toContain('Mesa de pujas');
+    expect(html.match(/data-testid="budget-row"/g)).toHaveLength(3);
+    expect(html).toContain('Orden 1 · 0 pts');
+    expect(html).toContain('Está pujando');
+    expect(html).toContain('Fuera de la ronda');
+    expect(html).toContain('Va ganando');
+    expect(html).toContain('Pasó');
+    // Historial y controles: sin «Todo» (el máximo es el pool entero), «Pasar esta ronda».
+    expect(html).toContain('Pujó 5 Pokémon');
+    expect(html).toContain('Mínima: 6');
+    expect(html).toContain('+2: 8');
+    expect(html).toContain('+5: 11');
+    expect(html).not.toContain('Todo:');
+    expect(html).toContain('Pujar 6');
+    expect(html).toContain('Pasar esta ronda');
+    expect(html).not.toContain('Tu presupuesto');
+    expect(html).not.toMatch(/class="[^"]*\b(btn-|card\b|chip\b|label\b|field\b|status-error|empty-state|ranking-row)/);
   });
 
-  it('requires explicit confirmation before passing', () => {
-    let message = '';
-    expect(confirmBluffAuctionPass((value) => { message = value; return false; })).toBe(false);
-    expect(message).toContain('Quedarás fuera de esta ronda');
-    expect(confirmBluffAuctionPass(() => true)).toBe(true);
+  it('pasar pide confirmación con un `Dialog` del catálogo (nunca `window.confirm`)', () => {
+    const block = bidBlock(bluffBlockInput(game(), turn, 'p1', nameOf));
+    expect(block).toMatchObject({ reason: 'open', canRaise: true, canPass: true, title: 'Tu turno' });
+    expect(play(game(), turn)).toContain('data-testid="bid-pass"');
   });
 
-  it('shows the shared search only to the bidder and exposes public progress without solution count', () => {
+  it('con la puja en el máximo, quien tiene el turno no sube pero puede pasar («Puja máxima»)', () => {
+    const top = { ...game(), currentBid: 1025, minimumBid: 1026 };
+    const block = bidBlock(bluffBlockInput(top, turn, 'p1', nameOf));
+    expect(block).toMatchObject({ reason: 'noBudget', canRaise: false, canPass: true, title: 'Puja máxima' });
+    const html = play(top, turn);
+    expect(html).toContain('>Puja máxima</h2>');
+    expect(html).toMatch(/<button[^>]*data-testid="bid-pass"[^>]*>/);
+    expect(html).not.toMatch(/<button[^>]*disabled=""[^>]*data-testid="bid-pass"|data-testid="bid-pass"[^>]*disabled=""/);
+    expect(html).not.toContain('NaN');
+  });
+
+  it('los textos del bloqueo hablan de rondas, no de lotes ni presupuestos', () => {
+    for (const [publicGame, player, selfId, title] of [
+      [game(), idle, 'p2', 'Has pasado'],
+      [game(), idle, 'p3', 'Ya vas ganando'],
+      [game(), spectator, 'x', 'Estás observando'],
+    ] as const) {
+      const block = bidBlock(bluffBlockInput(publicGame, player, selfId, nameOf));
+      expect(block.title).toBe(title);
+      expect(block.text).not.toMatch(/lote|presupuesto|equipo/i);
+    }
+  });
+
+  it('la región viva dice la última puja y el turno', () => {
+    expect(bluffAnnouncement(game(), 'p1', nameOf)).toBe('Carlos puja 5 Pokémon. Es tu turno.');
+    expect(bluffAnnouncement({ ...game(), bidHistory: [] }, 'p2', nameOf)).toBe('Ronda 2 de 10: Tipo Agua + Velocidad > 80. Turno de Ana.');
+    expect(bluffHeading(game(), 'p2', nameOf)).toBe('Turno de Ana');
+  });
+});
+
+describe('Pokémon Bluff Auction: demostración', () => {
+  const searching = () => {
     const publicGame = game('POKEMON_SEARCH'); publicGame.attempts = [
       { pokemon: { id: 'dragonite', name: 'Dragonite', sprite: '/dragonite.png' }, result: 'CORRECT', submittedAt: 2_000 },
       { pokemon: { id: 'pikachu', name: 'Pikachu', sprite: '/pikachu.png' }, result: 'INCORRECT', submittedAt: 3_000 },
+      { pokemon: { id: 'pikachu', name: 'Pikachu', sprite: '/pikachu.png' }, result: 'DUPLICATE', submittedAt: 4_000 },
     ]; publicGame.correctCount = 1; publicGame.incorrectCount = 1; publicGame.remainingCount = 4;
-    const bidder = renderToStaticMarkup(createElement(PokemonBluffAuctionGame, {
-      room: room(publicGame, { role: 'PLAYER', canRaise: false, canPass: false, canSubmitPokemon: true }), selfId: 'p3', onAction: async () => undefined,
-    }));
-    expect(bidder).toContain('Nombra Pokémon'); expect(bidder).toContain('Acierto: +5 segundos · Fallo: −3 segundos.'); expect(bidder).toContain('Dragonite'); expect(bidder).toContain('Pikachu'); expect(bidder).toContain('Correctos'); expect(bidder).toContain('1/5');
-    const watcher = renderToStaticMarkup(createElement(PokemonBluffAuctionGame, {
-      room: room(publicGame, { role: 'PLAYER', canRaise: false, canPass: false, canSubmitPokemon: false }), selfId: 'p1', onAction: async () => undefined,
-    }));
-    expect(watcher).not.toContain('Buscar Pokémon para demostrar la apuesta'); expect(watcher).toContain('Todos veis los intentos');
-    expect(watcher).not.toContain('Solo existían');
+    return publicGame;
+  };
+
+  it('quien apostó ve el buscador; las métricas son `Bar`s con la cifra en texto; una sola región viva', () => {
+    const html = play(searching(), searcher, 'p3');
+    expect(html).toContain('Ronda 2 de 10 · Demostración');
+    expect(html).toContain('>Demuestra tu apuesta</h1>');
+    expect(html).toContain('Nombra Pokémon');
+    expect(html).toContain('Acierto: +5 segundos · Fallo: −3 segundos.');
+    expect(html).toContain('Buscar Pokémon para demostrar la apuesta');
+    expect(html.match(/aria-live/g)).toHaveLength(1);
+    expect(html.match(/data-testid="bluff-metric"/g)).toHaveLength(3);
+    for (const label of ['Correctos', 'Faltan', 'Incorrectos']) expect(html).toContain(`role="meter" aria-label="${label}"`);
+    expect(html).toContain('1 de 5');
+    expect(html).toContain('4 de 5');
+    expect(html).toContain('1 de 3 enviados');
+    expect(html).toContain('Apostó 5 Pokémon');
+    // Los intentos, públicos, con el veredicto en texto (y el repetido explicado).
+    expect(html.match(/data-testid="bluff-attempt"/g)).toHaveLength(3);
+    expect(html).toContain('Correcto');
+    expect(html).toContain('Incorrecto');
+    expect(html).toContain('Ya utilizado');
+    expect(html).toContain('No cambia el tiempo');
   });
 
-  it('explains duplicates publicly without presenting them as valid credit', () => {
-    const publicGame = game('POKEMON_SEARCH'); publicGame.attempts = [{ pokemon: { id: 'garchomp', name: 'Garchomp', sprite: '/garchomp.png' }, result: 'DUPLICATE', submittedAt: 4_000 }];
-    const html = renderToStaticMarkup(createElement(PokemonBluffAuctionGame, {
-      room: room(publicGame, { role: 'SPECTATOR', canRaise: false, canPass: false, canSubmitPokemon: false }), selfId: 'spectator', onAction: async () => undefined,
-    }));
-    expect(html).toContain('Garchomp'); expect(html).toContain('Ya utilizado · no cambia el tiempo');
+  it('los demás ven quién busca, los intentos y las métricas, sin buscador', () => {
+    for (const [player, selfId] of [[idle, 'p1'], [spectator, 'x']] as const) {
+      const html = play(searching(), player, selfId);
+      expect(html).not.toContain('Buscar Pokémon para demostrar la apuesta');
+      expect(html).toContain('Carlos está buscando');
+      expect(html).toContain('Todos veis los intentos en tiempo real.');
+      expect(html).toContain('>Carlos demuestra</h1>');
+      expect(html).toContain('Dragonite');
+      expect(html.match(/aria-live/g)).toHaveLength(1);
+    }
+    // Quien apostó y recarga sin su permiso de búsqueda todavía: lo dice.
+    expect(play(searching(), idle, 'p3')).toContain('Reconectando con la demostración…');
+  });
+});
+
+describe('Pokémon Bluff Auction: privacidad', () => {
+  it('cuántos Pokémon cumplen la condición no entra en el DOM antes del resultado, ni con un `lastRound` rancio', () => {
+    for (const phase of ['ROUND_ACTIVE', 'POKEMON_SEARCH'] as const) {
+      const poisoned = { ...game(phase), lastRound: impossible };
+      for (const [player, selfId] of [[phase === 'ROUND_ACTIVE' ? turn : searcher, phase === 'ROUND_ACTIVE' ? 'p1' : 'p3'], [idle, 'p2'], [spectator, 'x']] as const) {
+        const text = visible(play(poisoned, player, selfId));
+        expect(text, `${phase} ${selfId}`).not.toContain('4321');
+        expect(text).not.toContain('9000');
+        expect(text).not.toMatch(/respuestas válidas|Apuesta imposible|Farol|Cumplió/);
+      }
+    }
+  });
+
+  it('el resultado sí lo dice, en su fase', () => {
+    const text = visible(play({ ...game('ROUND_RESULTS'), lastRound: impossible }, idle, 'p1'));
+    expect(text).toContain('Apuesta imposible');
+    expect(text).toContain('Carlos apostó 9000, pero solo existían 4321 respuestas válidas.');
+  });
+});
+
+describe('Pokémon Bluff Auction: resultado de la ronda', () => {
+  const timeout: BluffAuctionRoundResult = {
+    bidderId: 'p3', bid: 2, success: false, reason: 'TIMEOUT', condition: { description: 'Tipo Agua', clauses: ['Tipo Agua'] },
+    attempts: [{ pokemon: { id: 'pikachu', name: 'Pikachu', sprite: '/pikachu.png' }, result: 'INCORRECT', submittedAt: 3_000 }],
+    correctCount: 0, incorrectCount: 1, validPokemonCount: null, pointsAwarded: { p1: 2, p2: 2, p3: 0 },
+  };
+  const completed: BluffAuctionRoundResult = { ...timeout, success: true, reason: 'COMPLETED', correctCount: 2, incorrectCount: 0, attempts: [], pointsAwarded: { p1: 0, p2: 0, p3: 5 } };
+
+  it('quién cumplió y quién se marcó un farol, con los puntos de cada uno y una sola región viva', () => {
+    const html = play({ ...game('ROUND_RESULTS'), lastRound: timeout }, idle, 'p1');
+    expect(html).toContain('Ronda 2 de 10 · Resultado');
+    expect(html).toContain('>Carlos no lo consiguió</h1>');
+    expect(html).toContain('Ronda 2 · Farol');
+    expect(html).toContain('Se agotó el tiempo: 0 de 2 correctos.');
+    expect(html.match(/data-testid="bluff-round-row"/g)).toHaveLength(3);
+    expect(html).toContain('Gana la ronda');
+    expect(html).toContain('El farol te da puntos');
+    expect(html).toContain('+2');
+    expect(html.match(/data-testid="bluff-metric"/g)).toHaveLength(3);
+    expect(html.match(/aria-live/g)).toHaveLength(1);
+    expect(html).toContain('Siguiente ronda');
+    const done = play({ ...game('ROUND_RESULTS'), lastRound: completed }, idle, 'p3');
+    expect(done).toContain('>Carlos lo consiguió</h1>');
+    expect(done).toContain('Cumpliste tu apuesta');
+    expect(done).toContain('Ronda 2 · Cumplió');
+  });
+
+  it('textos puros del resultado', () => {
+    expect(bluffResultReason(completed, nameOf)).toBe('Carlos nombró 2 Pokémon correctos: cumplió su apuesta.');
+    expect(bluffResultReason({ ...timeout, reason: 'BIDDER_LEFT' }, nameOf)).toBe('Carlos abandonó la demostración.');
+    expect(bluffRoundLines(timeout, ['p1', 'p2', 'p3']).map((line) => [line.playerId, line.text, line.points])).toEqual([['p3', 'Farol', 0], ['p1', 'Gana la ronda', 2], ['p2', 'Gana la ronda', 2]]);
+    expect(bluffSelfVerdict(completed, 'p1', true)).toMatchObject({ tone: 'bad', points: 0 });
+    expect(bluffSelfVerdict(completed, 'x', false)).toMatchObject({ tone: 'info', text: 'Resultado de la ronda' });
+    expect(bluffAnnouncement({ ...game('ROUND_RESULTS'), lastRound: timeout }, 'p1', nameOf)).toBe('Carlos no lo consiguió. Se agotó el tiempo: 0 de 2 correctos. +2 para cada rival.');
+    // Las métricas nunca dan NaN ni dividen por cero.
+    expect(bluffMetrics({ correct: 0, incorrect: 0, target: 0, attempts: 0 }).map((metric) => metric.max)).toEqual([1, 1, 1]);
+  });
+});
+
+describe('Pokémon Bluff Auction: resultados finales y ajustes', () => {
+  const results: GameResults = {
+    winnerId: 'p3', standings: [
+      { playerId: 'p3', position: 1, points: 7, won: true, stats: { roundsWon: 2, bidderRounds: 2, completedBids: 1, failedBids: 1, correctPokemon: 4, incorrectPokemon: 1, highestCompletedBid: 3, highestAttemptedBid: 5, impossibleBids: 0 } },
+      { playerId: 'p1', position: 2, points: 2, won: false, stats: { roundsWon: 1, bidderRounds: 0, completedBids: 0, failedBids: 0, correctPokemon: 0, incorrectPokemon: 0, highestCompletedBid: 0, highestAttemptedBid: 0, impossibleBids: 0 } },
+      { playerId: 'p2', position: 2, points: 2, won: false, stats: { roundsWon: 1, bidderRounds: 1, completedBids: 0, failedBids: 1, correctPokemon: 0, incorrectPokemon: 2, highestCompletedBid: 0, highestAttemptedBid: 9, impossibleBids: 1 } },
+    ],
+  };
+
+  it('la clasificación del catálogo, la línea de métricas en texto, los récords y sin medallas', () => {
+    const publicGame = { ...game('GAME_RESULTS'), results };
+    const html = renderToStaticMarkup(createElement(PokemonBluffAuctionResults, { room: room(publicGame, idle), selfId: 'p1', onLobby: () => undefined, onEnd: () => undefined }));
+    expect(html).toContain('La mesa final');
+    expect(html).toContain('2 rondas ganadas · 1/2 apuestas cumplidas · récord 3 · 4 correctos · 0 imposibles');
+    expect(html).toContain('Empate');
+    expect(html).toContain('Mayor apuesta cumplida');
+    expect(html).toContain('Continuar sesión');
+    expect(html).not.toMatch(/🏆|🥇|🥈|🥉/u);
+    expect(bluffStatsLine({ roundsWon: 1, impossibleBids: 1, correctPokemon: 1 })).toBe('1 ronda ganada · 0/0 apuestas cumplidas · récord 0 · 1 correcto · 1 imposible');
+  });
+
+  it('ajustes con los controles del catálogo', () => {
+    const html = renderToStaticMarkup(createElement(PokemonBluffAuctionConfigPanel, { config: defaultPokemonBluffAuctionConfig, disabled: false, onChange: async () => undefined }));
+    expect(html).toContain('role="radiogroup" aria-label="Tiempo inicial para demostrar"');
+    expect(html).toContain('role="radiogroup" aria-label="Rondas"');
+    expect(html).toContain('Tiempo por puja');
+    expect(html).toContain('Solo especies normales');
+    // Lo rediseñado (todo menos el selector de generaciones heredado, F9) sin clases heredadas.
+    expect(html.slice(html.indexOf('</section>'))).not.toMatch(/class="[^"]*\b(btn-|field\b|label\b|text-ink|bg-surface)/);
   });
 });

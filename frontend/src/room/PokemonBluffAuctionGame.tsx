@@ -1,67 +1,223 @@
-import type { PokemonBluffAuctionConfig, PokemonBluffAuctionPlayerState, PokemonBluffAuctionPublicState, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
-import { ArrowUp, CheckCircle2, Clock3, Gavel, Mic2, Search, ShieldQuestion, XCircle } from 'lucide-react';
-import { useEffect, useState, type FormEvent } from 'react';
+import type { BluffAuctionAttempt, BluffAuctionRoundResult, PokemonBluffAuctionConfig, PokemonBluffAuctionPlayerState, PokemonBluffAuctionPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { LucideIcon } from 'lucide-react';
+import { CheckCircle2, Clock3, Copy, Crown, Eye, Gavel, Hourglass, Mic2, Search, ShieldQuestion, SkipForward, X, XCircle } from 'lucide-react';
+import { useMemo, useRef, type ReactNode } from 'react';
 import { Avatar } from '../components/Avatar';
-import { ServerTimer } from '../components/ServerTimer';
-import { useSfxCue } from '../hooks/useSfxCue';
+import {
+  ATTEMPT_TEXT, bluffAnnouncement, bluffBlockInput, bluffHeading, bluffMetrics, bluffResultReason, bluffResultTitle, bluffRoundLabel, bluffRoundLines, bluffRoundResult,
+  bluffSeatStatus, bluffSelfVerdict, GAME_NAME, latestBids, PASS_RULE, SEAT_STATUS_TEXT, TIME_RULE, UNIT, type BluffSeatStatus,
+} from '../games/pokemon-bluff-auction/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
+import { useSfxCue } from '../hooks/useSfxCue';
 import { useServerOffset } from '../hooks/useServerTime';
-import { PokemonSelector } from './PokemonSelector';
+import { Badge, Bar, Chip, cx, Icon, Panel, Row, type ChipProps } from '../ui';
+import { AuctionAward, AuctionLot, AuctionScreen, BidControls, BidHistory, BudgetPlate, amountText, bidBlock, bidEpoch, bidLog, type BudgetEntry } from './auction-kit';
+import { useFocusOnTransition } from './focus-transition';
+import { GuessPanel } from './guess-kit';
+import { playerColor } from './player-color';
+import b from '../games/pokemon-bluff-auction/BluffAuction.module.css';
 
-const EMPTY_LOCKED = new Set<string>();
+const SEAT_ICON: Record<BluffSeatStatus, LucideIcon> = { turn: Gavel, leading: Crown, passed: SkipForward, bidding: Hourglass, demonstrating: Search, waiting: Eye };
+const SEAT_TONE: Record<BluffSeatStatus, NonNullable<ChipProps['tone']>> = { turn: 'warn', leading: 'ok', passed: 'neutral', bidding: 'neutral', demonstrating: 'warn', waiting: 'neutral' };
+const ATTEMPT_ICON: Record<BluffAuctionAttempt['result'], LucideIcon> = { CORRECT: CheckCircle2, INCORRECT: XCircle, DUPLICATE: Copy };
+const ATTEMPT_TONE: Record<BluffAuctionAttempt['result'], NonNullable<ChipProps['tone']>> = { CORRECT: 'ok', INCORRECT: 'bad', DUPLICATE: 'neutral' };
 
-export function confirmBluffAuctionPass(confirm: (message: string) => boolean): boolean {
-  return confirm('¿Seguro que quieres pasar? Quedarás fuera de esta ronda.');
+type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<void>;
+
+/** La condición de la ronda: lo que se subasta (texto grande que escala con su hueco y las cláusulas en chips). */
+function Condition({ description, clauses, compact = false }: { description: string; clauses?: readonly string[]; compact?: boolean }) {
+  return <div className={b.condition} data-testid="bluff-condition">
+    {!compact && <span className={b.conditionIcon}><Icon icon={ShieldQuestion} size={32} /></span>}
+    <p className={b.conditionText}>{description}</p>
+    {!compact && clauses && clauses.length > 1 && <span className={b.clauses}>{clauses.map((clause) => <Chip key={clause} tone="info">{clause}</Chip>)}</span>}
+  </div>;
 }
 
-function member(room: RoomView, id: string | null): RoomMemberView | undefined { return id ? room.members.find((candidate) => candidate.id === id) : undefined; }
-
-function Condition({ game }: { game: PokemonBluffAuctionPublicState }) {
-  return <section className="rounded-2xl border border-electric/25 bg-surface px-4 py-6 text-center sm:px-7" aria-label="Condición de la ronda"><ShieldQuestion className="mx-auto text-electric" size={30} /><p className="mt-2 font-display text-3xl leading-tight text-wrap-balance sm:text-5xl">{game.condition?.description}</p></section>;
+/** Métricas de la demostración: `Bar`s del catálogo con la cifra en texto al lado. */
+function Metrics({ correct, incorrect, target, attempts }: { correct: number; incorrect: number; target: number; attempts: number }) {
+  return <div className={b.metrics} data-testid="bluff-metrics">{bluffMetrics({ correct, incorrect, target, attempts }).map((metric) => <div key={metric.key} className={b.metric} data-testid="bluff-metric" data-metric={metric.key}>
+    <span className={b.metricLabel}>{metric.label}</span>
+    <Bar value={metric.value} max={metric.max} tone={metric.tone} label={metric.label} showValue valueText={metric.text} size="lg" />
+  </div>)}</div>;
 }
 
-function PlayerAuctionList({ room, game }: { room: RoomView; game: PokemonBluffAuctionPublicState }) {
-  const latestBid = new Map<string, number>(); for (const event of game.bidHistory) if (event.type === 'BID') latestBid.set(event.playerId, event.amount);
-  return <section className="rounded-2xl bg-surface p-4" aria-labelledby="auction-table"><h2 id="auction-table" className="mb-3 font-display text-xl">Mesa de pujas</h2><div className="space-y-2">{game.bidOrder.map((id, index) => { const person = member(room, id); const passed = game.passedPlayerIds.includes(id); const turn = id === game.currentTurnPlayerId; return <div key={id} className={`flex min-h-14 items-center gap-3 rounded-xl border px-3 py-2 ${turn ? 'border-aqua/45 bg-aqua/[.07]' : passed ? 'border-transparent bg-ink/[.035] opacity-60' : 'border-ink/10 bg-surface-raised'}`}><span className="w-5 text-center text-xs font-black text-ink/45">{index + 1}</span><Avatar name={person?.displayName ?? id} avatar={person?.avatar} presence={person?.presence} size="sm" /><span className="min-w-0 flex-1"><strong className="block truncate">{person?.displayName ?? id}</strong><small className={`font-extrabold ${turn ? 'text-aqua' : 'text-ink/50'}`}>{turn ? 'Está pujando' : passed ? 'Fuera de la ronda' : 'En la subasta'}</small></span><strong className={passed ? 'text-berry' : 'text-electric'}>{passed ? 'PASÓ' : latestBid.has(id) ? latestBid.get(id) : '—'}</strong></div>; })}</div></section>;
+/** Respuestas enviadas (columna lateral): número, sprite, nombre y el veredicto en texto. Sin región viva propia. */
+function AttemptsPanel({ attempts }: { attempts: readonly BluffAuctionAttempt[] }) {
+  return <Panel title="Respuestas enviadas" variant="dark" scroll scrollLabel="Respuestas enviadas" right={<Badge tone="cream">{`${attempts.length} ${attempts.length === 1 ? 'intento' : 'intentos'}`}</Badge>}
+    status={attempts.length === 0 ? { kind: 'empty', title: 'Aún no hay respuestas.', text: 'Los intentos aparecen aquí para todo el grupo.', live: false } : null}>
+    <ol className={b.rows} aria-label="Respuestas de la demostración">{attempts.map((attempt, index) => <li key={`${attempt.pokemon.id}-${attempt.submittedAt}-${index}`} data-testid="bluff-attempt" data-result={attempt.result}>
+      <Row rank={index + 1} name={attempt.pokemon.name} avatar={<img className={b.sprite} src={attempt.pokemon.sprite} alt="" />}
+        meta={<span className={b.rowMeta}>
+          <Chip tone={ATTEMPT_TONE[attempt.result]} icon={<Icon icon={ATTEMPT_ICON[attempt.result]} size={18} />}>{ATTEMPT_TEXT[attempt.result]}</Chip>
+          {attempt.result === 'DUPLICATE' && <span className={b.note}>No cambia el tiempo</span>}
+        </span>} />
+    </li>)}</ol>
+  </Panel>;
 }
 
-function BidControls({ game, player, onAction }: { game: PokemonBluffAuctionPublicState; player: PokemonBluffAuctionPlayerState; onAction(action: unknown): Promise<void> }) {
-  const [amount, setAmount] = useState(game.minimumBid); const [busy, setBusy] = useState(false); const [error, setError] = useState('');
-  useEffect(() => setAmount(game.minimumBid), [game.minimumBid]);
-  async function send(action: unknown) { if (busy) return; setBusy(true); setError(''); try { await onAction(action); } catch (caught) { setError(caught instanceof Error ? caught.message : 'La acción fue rechazada.'); } finally { setBusy(false); } }
-  function submit(event: FormEvent) { event.preventDefault(); void send({ type: 'RAISE_BID', amount }); }
-  if (!player.canRaise) return <div className="rounded-2xl border border-ink/10 bg-surface p-5 text-center"><Gavel className="mx-auto text-ink/35" size={34} /><strong className="mt-2 block font-display text-xl">Esperando tu turno</strong><p className="mt-1 text-sm font-bold text-ink/60">Puedes hablar por voz externa y decidir hasta dónde quieres bluffear.</p></div>;
-  return <form onSubmit={submit} className="rounded-2xl border border-aqua/30 bg-aqua/[.05] p-4" aria-labelledby="bid-controls"><h2 id="bid-controls" className="font-display text-2xl">Tu turno</h2><p className="mt-1 text-sm font-bold text-ink/60">Sube la puja o abandona esta subasta.</p><div className="mt-4 flex items-stretch gap-2"><label className="min-w-0 flex-1"><span className="sr-only">Nueva puja</span><input className="field min-h-12 text-center text-xl font-black tabular-nums" type="number" min={game.minimumBid} max={game.maxBid} value={amount} onChange={(event) => setAmount(Number(event.target.value))} /></label><button type="submit" className="btn-primary shrink-0" disabled={busy || amount < game.minimumBid || amount > game.maxBid}><ArrowUp size={18} /> Pujar</button></div><div className="mt-2 flex flex-wrap gap-2">{[game.minimumBid, Math.min(game.maxBid, game.minimumBid + 2), Math.min(game.maxBid, game.minimumBid + 4)].filter((value, index, values) => values.indexOf(value) === index).map((value) => <button key={value} type="button" className="btn-ghost min-h-9 !px-3 text-sm" onClick={() => setAmount(value)}>Pujar {value}</button>)}</div><button type="button" className="mt-4 min-h-11 w-full rounded-xl border border-berry/25 bg-berry/[.06] font-extrabold text-berry hover:bg-berry/10" disabled={busy || !player.canPass} onClick={() => { if (confirmBluffAuctionPass(window.confirm)) void send({ type: 'PASS_BID' }); }}>Pasar esta ronda</button>{error && <p className="status-error mt-3" role="alert">{error}</p>}</form>;
-}
-
-function Attempts({ game }: { game: PokemonBluffAuctionPublicState }) {
-  return <section className="rounded-2xl bg-surface p-4" aria-labelledby="attempt-list"><div className="mb-3 flex items-center justify-between gap-3"><h2 id="attempt-list" className="font-display text-xl">Respuestas enviadas</h2><span className="chip">{game.attempts.length} intentos</span></div>{game.attempts.length ? <ol className="max-h-[30rem] space-y-2 overflow-y-auto pr-1" aria-live="polite">{game.attempts.map((attempt, index) => <li key={`${attempt.pokemon.id}-${attempt.submittedAt}-${index}`} className={`flex items-center gap-3 rounded-xl px-3 py-2 ${attempt.result === 'CORRECT' ? 'bg-leaf/[.08]' : 'bg-berry/[.07]'}`}><strong className="w-6 text-right text-sm tabular-nums text-ink/45">{index + 1}.</strong><img src={attempt.pokemon.sprite} alt="" className="h-12 w-12 shrink-0 object-contain" /><span className="min-w-0 flex-1"><strong className="block truncate">{attempt.pokemon.name}</strong>{attempt.result === 'DUPLICATE' && <small className="font-bold text-berry">Ya utilizado · no cambia el tiempo</small>}</span>{attempt.result === 'CORRECT' ? <CheckCircle2 className="shrink-0 text-leaf" /> : <XCircle className="shrink-0 text-berry" />}</li>)}</ol> : <div className="empty-state !p-5">Los intentos aparecerán aquí para todo el grupo.</div>}</section>;
-}
-
-function Demonstration({ room, selfId, game, player, onAction }: { room: RoomView; selfId: string; game: PokemonBluffAuctionPublicState; player: PokemonBluffAuctionPlayerState; onAction(action: unknown): Promise<void> }) {
-  const bidder = member(room, game.bidderId); const config = room.selectedGameConfig as PokemonBluffAuctionConfig;
-  const { pokemon, error, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config.generations, includeForms: false, enabled: player.canSubmitPokemon });
-  const serverOffset = useServerOffset(room.serverNow);
-  return <section className="mx-auto max-w-[90rem] overflow-x-clip px-3 py-4 sm:px-5"><header className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-surface p-4 shadow-card"><div><span className="label !mb-0">Ronda {game.roundNumber}/{game.totalRounds} · Demostrar la apuesta</span><h1 className="font-display text-2xl sm:text-4xl">Pokémon Bluff Auction</h1></div><ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} label="Tiempo restante" /></header><main className="mt-4 grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]"><div className="min-w-0 space-y-4"><Condition game={game} /><section className="rounded-2xl border border-ink/10 bg-surface p-4 sm:p-5"><div className="flex flex-wrap items-center gap-3"><Avatar name={bidder?.displayName ?? game.bidderId ?? 'Apostador'} avatar={bidder?.avatar} presence={bidder?.presence} size="lg" /><div className="min-w-0 flex-1"><span className="font-extrabold text-aqua">DEMOSTRANDO</span><h2 className="truncate font-display text-2xl">{bidder?.displayName} apostó {game.targetBid}</h2></div><div className="grid grid-cols-3 gap-2 text-center"><Metric label="Correctos" value={`${game.correctCount}/${game.targetBid}`} tone="leaf" /><Metric label="Incorrectos" value={String(game.incorrectCount)} tone="berry" /><Metric label="Faltan" value={String(game.remainingCount)} tone="electric" /></div></div></section>{player.canSubmitPokemon ? <section className="rounded-2xl border border-aqua/20 bg-surface p-4 sm:p-5" aria-labelledby="demonstration-search"><div className="mb-3"><span className="label !mb-0">Tu demostración</span><h2 id="demonstration-search" className="flex items-center gap-2 font-display text-2xl"><Search className="text-aqua" /> Nombra Pokémon</h2><p className="mt-1 text-sm font-bold text-ink/60">Acierto: +5 segundos · Fallo: −3 segundos.</p></div><PokemonSelector loading={poolLoading} loadError={error} onRetry={retryPool} key={game.roundNumber} pokemon={pokemon} locked={EMPTY_LOCKED} disabled={false} variant="embedded" autoFocus={false} inputLabel="Buscar Pokémon para demostrar la apuesta" maxResults={5} onSelect={(pokemonId) => onAction({ type: 'SUBMIT_POKEMON', pokemonId })} /></section> : <div className="rounded-2xl bg-ink/[.04] p-6 text-center"><Clock3 className="mx-auto text-electric" size={34} /><strong className="mt-2 block font-display text-xl">{selfId === game.bidderId ? 'Reconectando con la demostración…' : `${bidder?.displayName} está buscando`}</strong><p className="mt-1 font-bold text-ink/60">Todos veis los intentos en tiempo real.</p></div>}</div><aside><Attempts game={game} /></aside></main></section>;
-}
-
-function Metric({ label, value, tone }: { label: string; value: string; tone: 'leaf' | 'berry' | 'electric' }) {
-  const colors = { leaf: 'text-leaf', berry: 'text-berry', electric: 'text-electric' };
-  return <span className="min-w-16 rounded-xl bg-ink/[.04] px-2 py-2"><small className="block text-[10px] font-black uppercase text-ink/50">{label}</small><strong className={`font-display text-xl tabular-nums ${colors[tone]}`}>{value}</strong></span>;
-}
-
-function RoundResult({ room, game }: { room: RoomView; game: PokemonBluffAuctionPublicState }) {
-  const result = game.lastRound!; const bidder = member(room, result.bidderId); const serverOffset = useServerOffset(room.serverNow);
-  const title = result.success ? `${bidder?.displayName} lo consiguió` : result.reason === 'IMPOSSIBLE' ? 'Apuesta imposible' : `${bidder?.displayName} no lo consiguió`;
-  return <section className="mx-auto max-w-6xl overflow-x-clip px-3 py-5 sm:px-5"><div className={`overflow-hidden rounded-2xl border bg-surface ${result.success ? 'border-leaf/35' : 'border-berry/35'}`}><header className="flex flex-wrap items-start justify-between gap-3 border-b border-ink/10 p-4 sm:p-6"><div><span className="label !mb-0">Ronda {game.roundNumber} · Resultado</span><h1 className={`font-display text-3xl text-wrap-balance sm:text-5xl ${result.success ? 'text-leaf' : 'text-berry'}`}>{title}</h1><p className="mt-2 font-bold text-ink/65">{result.correctCount}/{result.bid} Pokémon correctos · {result.incorrectCount} incorrectos</p></div><ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Siguiente ronda" /></header><div className="grid gap-4 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_20rem]"><main><div className="rounded-xl bg-ink/[.04] p-4 text-center"><strong className="font-display text-2xl">{result.condition.description}</strong>{result.reason === 'IMPOSSIBLE' && <p className="mt-3 font-extrabold text-berry">{bidder?.displayName} apostó {result.bid}, pero solo existían {result.validPokemonCount} respuestas válidas.</p>}{result.reason === 'TIMEOUT' && <p className="mt-3 font-extrabold text-berry">Se agotó el tiempo.</p>}{result.reason === 'BIDDER_LEFT' && <p className="mt-3 font-extrabold text-berry">El apostador abandonó la demostración.</p>}</div><div className="mt-4"><Attempts game={{ ...game, attempts: result.attempts }} /></div></main><aside className={`rounded-2xl p-5 text-center ${result.success ? 'bg-leaf/[.08]' : 'bg-electric/[.08]'}`}><Avatar name={bidder?.displayName ?? result.bidderId} avatar={bidder?.avatar} size="xl" /><h2 className="mt-3 font-display text-2xl">{bidder?.displayName}</h2>{result.success ? <><CheckCircle2 className="mx-auto mt-3 text-leaf" size={36} /><strong className="mt-2 block text-xl text-leaf">+{result.pointsAwarded[result.bidderId]} puntos</strong></> : <><XCircle className="mx-auto mt-3 text-berry" size={36} /><strong className="mt-2 block text-berry">Apostador · +0</strong><p className="mt-2 text-sm font-bold text-ink/65">Ganan los demás · +{Object.entries(result.pointsAwarded).find(([id]) => id !== result.bidderId)?.[1] ?? 0} cada uno</p></>}</aside></div></div></section>;
-}
-
-export function PokemonBluffAuctionGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const serverOffset = useServerOffset(room.serverNow);
-  const game = room.game as PokemonBluffAuctionPublicState; const player = room.gamePlayerState as PokemonBluffAuctionPlayerState;
+/**
+ * Pokémon Bluff Auction con el kit de subasta (spec §2 y §6 «Juegos»), en un único `AuctionScreen` para toda la ronda:
+ * - Subasta: la condición en la escena con la puja actual, quién va ganando y la mínima; abajo los controles (Mínima,
+ *   +2 y +5, campo, «Pujar N» y «Pasar esta ronda» con confirmación); al lado la mesa (orden, estado, última puja,
+ *   puntos) y las pujas de la ronda.
+ * - Demostración: la condición, quién apostó y las métricas en `Bar`s; abajo el buscador (solo quien apostó) o quién
+ *   está buscando; al lado la mesa y las respuestas enviadas.
+ * - Resultado: si cumplió o era un farol y por qué, las métricas; al lado los puntos de cada jugador y las respuestas.
+ *
+ * Privacidad: lo único oculto es cuántos Pokémon cumplen la condición; `lastRound` solo se lee en `ROUND_RESULTS`.
+ */
+export function PokemonBluffAuctionGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction: GameAction }) {
+  const game = room.game as PokemonBluffAuctionPublicState;
+  const player = room.gamePlayerState as PokemonBluffAuctionPlayerState | null;
+  const config = room.selectedGameConfig as Partial<PokemonBluffAuctionConfig> | null;
+  const offset = useServerOffset(room.serverNow);
   useSfxCue(game.currentBid != null ? 'game.bid' : null, `${game.roundNumber}:${game.currentBid ?? ''}`);
-  if (game.phase === 'POKEMON_SEARCH') return <Demonstration room={room} selfId={selfId} game={game} player={player} onAction={onAction} />;
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundResult room={room} game={game} />;
-  const turn = member(room, game.currentTurnPlayerId); const leader = member(room, game.currentBidderId);
-  return <section className="mx-auto max-w-[90rem] overflow-x-clip px-3 py-4 sm:px-5"><header className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-surface p-4 shadow-card"><div><span className="label !mb-0">Ronda {game.roundNumber}/{game.totalRounds} · Subasta</span><h1 className="font-display text-2xl sm:text-4xl">Pokémon Bluff Auction</h1></div><div className="flex items-center gap-3 rounded-xl bg-aqua/[.07] px-3 py-2"><>{game.roundEndsAt !== null && <ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} label="Turno de puja" />}</><Mic2 className="text-aqua" /><span><strong className="block text-sm">Bluff por voz externa</strong><small className="font-bold text-ink/55">Sin desafíos: la última persona demuestra</small></span></div></header><main className="mt-4 grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]"><div className="min-w-0 space-y-4"><Condition game={game} /><section className="rounded-2xl bg-surface p-4 sm:p-5"><div className="flex flex-wrap items-center justify-between gap-4"><div><span className="font-bold text-ink/60">Puja actual</span><strong className="block font-display text-4xl text-electric">{game.currentBid ?? 'Empieza en 1'}{game.currentBid !== null && <small className="ml-2 text-lg text-ink/55">Pokémon</small>}</strong>{leader && <span className="text-sm font-bold text-ink/60">de {leader.displayName}</span>}</div><div className="flex items-center gap-3"><Avatar name={turn?.displayName ?? 'Turno'} avatar={turn?.avatar} presence={turn?.presence} size="md" /><span><small className="block font-black text-aqua">ESTÁ PUJANDO</small><strong className="block font-display text-xl">{turn?.displayName}</strong></span></div></div></section><BidControls game={game} player={player} onAction={onAction} /></div><aside><PlayerAuctionList room={room} game={game} /></aside></main></section>;
+
+  const members = useMemo(() => new Map(room.members.map((member, index) => [member.id, { member, index }])), [room.members]);
+  const nameOf = (id: string) => members.get(id)?.member.displayName ?? 'Entrenador';
+  const colorOf = (id: string) => playerColor(members.get(id)?.index ?? 0);
+  const avatarOf = (id: string, size: 'sm' | 'md' | 'lg' = 'sm') => <Avatar name={nameOf(id)} avatar={members.get(id)?.member.avatar} size={size} />;
+
+  const result = bluffRoundResult(game);
+  const searching = game.phase === 'POKEMON_SEARCH' && game.bidderId !== null;
+  const block = bidBlock(bluffBlockInput(game, player, selfId, nameOf));
+  const epoch = bidEpoch(game.roundNumber, game.bidHistory.length);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  // Cambia con la fase, la ronda y el estado propio: el foco va al título de la placa de abajo (nunca cae al `body`).
+  useFocusOnTransition(`${game.phase}-${game.roundNumber}-${result ? 'result' : searching ? 'search' : block.reason}`, titleRef);
+
+  const canSearch = Boolean(player?.canSubmitPokemon);
+  const pool = usePokemonPool({ generations: config?.generations ?? [], includeForms: false, enabled: canSearch });
+  const bidSeconds = config?.bidSeconds ?? 20;
+  const order = game.bidOrder.length > 0 ? game.bidOrder : game.playerIds;
+  const bids = latestBids(game);
+
+  // --- Escena ---
+  let stage: ReactNode;
+  if (result) {
+    stage = <Panel variant="cream" as="section" aria-label={`Resultado de la ronda ${game.roundNumber}`} className={cx(b.scene)} bodyClassName={cx(b.sceneBody)}>
+      <AuctionAward tone={result.success ? 'won' : 'unsold'} kicker={result.success ? `Ronda ${game.roundNumber} · Cumplió` : `Ronda ${game.roundNumber} · Farol`}
+        title={bluffResultTitle(result, nameOf)} detail={`Apostó ${amountText(result.bid, UNIT)}`} fresh />
+      <ResultScene result={result} nameOf={nameOf} avatar={avatarOf(result.bidderId, 'lg')} />
+    </Panel>;
+  } else if (searching && game.bidderId) {
+    stage = <Panel variant="cream" as="section" aria-label={`Demostración de la ronda ${game.roundNumber}`} className={cx(b.scene)} bodyClassName={cx(b.sceneBody)}>
+      <div className={b.sceneGrid}>
+        <div className={b.sceneCondition}>
+          <span className={b.kicker}>Condición de la ronda</span>
+          <Condition description={game.condition?.description ?? ''} clauses={game.condition?.clauses ?? []} />
+        </div>
+        <div className={b.figures}>
+          <div className={b.bidder} data-testid="bluff-bidder">
+            {avatarOf(game.bidderId, 'lg')}
+            <span className={b.bidderText}>
+              <span className={b.kicker}>Demostrando</span>
+              <strong className={b.bidderName} title={nameOf(game.bidderId)}>{game.bidderId === selfId ? 'Tú' : nameOf(game.bidderId)}</strong>
+              <span className={b.bidderBid}>{`Apostó ${amountText(game.targetBid ?? 0, UNIT)}`}</span>
+            </span>
+          </div>
+          <Metrics correct={game.correctCount} incorrect={game.incorrectCount} target={game.targetBid ?? 0} attempts={game.attempts.length} />
+        </div>
+      </div>
+    </Panel>;
+  } else {
+    const turnText = game.currentTurnPlayerId ? (game.currentTurnPlayerId === selfId ? 'Tu turno' : `Turno de ${nameOf(game.currentTurnPlayerId)}`) : null;
+    stage = <AuctionLot kicker={`Ronda ${Math.max(1, game.roundNumber)} · condición`} className={b.lot} unit={UNIT} emptyText="Preparando la primera ronda…"
+      item={game.condition && <Condition description={game.condition.description} clauses={game.condition.clauses} />}
+      facts={game.condition && <span className={b.rule}>{PASS_RULE}</span>}
+      currentBid={game.currentBid} minimumBid={game.minimumBid}
+      leader={game.currentBidderId ? { name: nameOf(game.currentBidderId), self: game.currentBidderId === selfId, avatar: avatarOf(game.currentBidderId) } : null}
+      turn={turnText && <span className={b.turn}><Icon icon={Clock3} size={18} />{turnText}</span>} />;
+  }
+
+  // --- Lateral ---
+  const table: BudgetEntry[] = order.map((id, index) => {
+    const status = bluffSeatStatus(game, id);
+    const member = members.get(id)?.member;
+    const passed = game.passedPlayerIds.includes(id);
+    const bid = bids.get(id);
+    return {
+      id, name: nameOf(id), budget: null, color: colorOf(id), self: id === selfId,
+      disconnected: member?.presence !== undefined && member.presence !== 'CONNECTED',
+      avatar: avatarOf(id),
+      status: { tone: SEAT_TONE[status], text: SEAT_STATUS_TEXT[status], icon: SEAT_ICON[status] },
+      detail: `Orden ${index + 1} · ${game.scores[id] ?? 0} pts`,
+      value: passed && game.phase === 'ROUND_ACTIVE' ? <span>Pasó</span> : bid !== undefined ? <><strong>{bid}</strong><small>{UNIT}</small></> : <span aria-label="Sin pujas">—</span>,
+    };
+  });
+  const tablePlate = <BudgetPlate title="Mesa de pujas" entries={table} badge={`${order.length} ${order.length === 1 ? 'jugador' : 'jugadores'}`} />;
+  let side: ReactNode;
+  if (result) side = <><RoundPoints result={result} order={order} selfId={selfId} nameOf={nameOf} colorOf={colorOf} avatarOf={avatarOf} /><AttemptsPanel attempts={result.attempts} /></>;
+  else if (searching) side = <>{tablePlate}<AttemptsPanel attempts={game.attempts} /></>;
+  else side = <>{tablePlate}<BidHistory title="Pujas de la ronda" idBase="bluff-auction-history" views={[{ key: 'round', label: 'Pujas de la ronda', entries: bidLog(game.bidHistory, nameOf, { colorOf, selfId, unit: UNIT }), emptyText: 'Aún no hay pujas en esta ronda.' }]} /></>;
+
+  // --- Abajo ---
+  let bottom: ReactNode;
+  if (result) {
+    const verdict = bluffSelfVerdict(result, selfId, player?.role === 'PLAYER');
+    bottom = <GuessPanel kind="reveal" titleRef={titleRef} question="" content={{
+      icon: verdict.tone === 'ok' ? CheckCircle2 : verdict.tone === 'bad' ? X : Eye, tone: verdict.tone, kicker: verdict.text, title: 'Resultado de la ronda',
+      text: game.roundNumber >= game.totalRounds ? 'Era la última ronda: después, la clasificación.' : 'La siguiente ronda empieza en un momento.',
+      ...(verdict.points > 0 ? { aside: <strong className={b.plateAside}>{`+${verdict.points}`}</strong> } : {}),
+    }} />;
+  } else if (searching && game.bidderId) {
+    const bidder = game.bidderId === selfId;
+    bottom = canSearch
+      ? <GuessPanel kind="guess" titleRef={titleRef} question="Nombra Pokémon" content={{ icon: Search, tone: 'info', kicker: `Tu demostración · ${game.correctCount} de ${game.targetBid ?? 0}`, title: 'Nombra Pokémon', text: TIME_RULE }}
+        selector={{ pokemon: pool.pokemon, loading: pool.loading, loadError: pool.error, onRetry: pool.retry, inputLabel: 'Buscar Pokémon para demostrar la apuesta', roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'SUBMIT_POKEMON', pokemonId }) }} />
+      : <GuessPanel kind="watching" titleRef={titleRef} question="" content={{
+        icon: bidder ? Clock3 : Eye, tone: 'info', kicker: bidder ? 'Tu demostración' : 'Demostración',
+        title: bidder ? 'Reconectando con la demostración…' : `${nameOf(game.bidderId)} está buscando`, text: 'Todos veis los intentos en tiempo real.',
+      }} />;
+  } else {
+    bottom = <BidControls titleRef={titleRef} block={block} min={game.minimumBid} max={game.maxBid} unit={UNIT} epoch={epoch} allIn={false} passLabel="Pasar esta ronda"
+      confirmPass={{ title: '¿Pasar esta ronda?', text: 'Quedarás fuera de esta ronda.', confirmLabel: 'Pasar' }}
+      onBid={(amount) => onAction({ type: 'RAISE_BID', amount })} onPass={() => onAction({ type: 'PASS_BID' })} />;
+  }
+
+  const timer = result
+    ? { deadline: game.nextTransitionAt ?? null, serverOffset: offset, label: 'Siguiente ronda' }
+    : searching
+      ? { deadline: game.roundEndsAt ?? null, serverOffset: offset, label: 'Tiempo restante' }
+      : { deadline: game.roundEndsAt ?? null, serverOffset: offset, label: 'Turno de puja', ...(bidSeconds > 0 ? { totalMs: bidSeconds * 1_000 } : {}) };
+  return <AuctionScreen gameName={GAME_NAME} roundNumber={Math.max(1, game.roundNumber)} totalRounds={game.totalRounds} roundLabel={bluffRoundLabel(game)}
+    heading={bluffHeading(game, selfId, nameOf)}
+    meta={<><Chip tone="info" icon={<Icon icon={Mic2} size={18} />}>Bluff por voz externa</Chip>{!result && !searching && bidSeconds === 0 && <Chip tone="neutral">Sin límite de tiempo</Chip>}</>}
+    timer={timer} announcement={bluffAnnouncement(game, selfId, nameOf)} stage={stage} side={side} bottom={bottom} />;
+}
+
+/** Escena del resultado: la condición, quién apostó, por qué acabó así y las métricas finales. */
+function ResultScene({ result, nameOf, avatar }: { result: BluffAuctionRoundResult; nameOf: (id: string) => string; avatar: ReactNode }) {
+  return <div className={b.sceneGrid}>
+    <div className={b.sceneCondition}>
+      <span className={b.kicker}>Condición de la ronda</span>
+      <Condition description={result.condition.description} clauses={result.condition.clauses} />
+    </div>
+    <div className={b.figures}>
+      <div className={b.bidder} data-testid="bluff-bidder">
+        {avatar}
+        <span className={b.bidderText}>
+          <span className={b.kicker}>{result.success ? 'Cumplió su apuesta' : 'Farol'}</span>
+          <strong className={b.bidderName} title={nameOf(result.bidderId)}>{nameOf(result.bidderId)}</strong>
+          <span className={b.bidderBid}>{`Apostó ${amountText(result.bid, UNIT)}`}</span>
+        </span>
+      </div>
+      <p className={b.reason} data-testid="bluff-reason">{bluffResultReason(result, nameOf)}</p>
+      <Metrics correct={result.correctCount} incorrect={result.incorrectCount} target={result.bid} attempts={result.attempts.length} />
+    </div>
+  </div>;
+}
+
+/** Puntos de la ronda (columna lateral): quien apostó («Cumplió» o «Farol») y cada rival, con lo que suma. */
+function RoundPoints({ result, order, selfId, nameOf, colorOf, avatarOf }: { result: BluffAuctionRoundResult; order: readonly string[]; selfId: string; nameOf(id: string): string; colorOf(id: string): string; avatarOf(id: string): ReactNode }) {
+  return <Panel title="Puntos de la ronda" variant="dark" scroll scrollLabel="Puntos de la ronda">
+    <ol className={b.rows} aria-label="Resultado de cada jugador">{bluffRoundLines(result, order).map((line) => <li key={line.playerId} data-testid="bluff-round-row" data-role={line.role}>
+      <Row name={nameOf(line.playerId)} color={colorOf(line.playerId)} self={line.playerId === selfId} avatar={avatarOf(line.playerId)}
+        meta={<span className={b.rowMeta}>
+          <Chip tone={line.tone} icon={<Icon icon={line.tone === 'ok' ? CheckCircle2 : line.tone === 'bad' ? XCircle : Eye} size={18} />}>{line.text}</Chip>
+          <span className={b.note}>{line.role === 'bidder' ? `Apostó ${amountText(result.bid, UNIT)}` : 'Rival'}</span>
+        </span>}
+        value={<span className={b.points}>{`+${line.points}`}</span>} />
+    </li>)}</ol>
+  </Panel>;
 }

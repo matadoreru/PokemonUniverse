@@ -107,25 +107,36 @@ export interface BidBlockInput {
 
 /**
  * Estado de la puja propia con su texto. Orden: observa → puja cerrada → va ganando → equipo completo → sin
- * presupuesto → ya pasó (el motor pasa solo a quien no llega a la mínima: así se dice por qué) → tu turno (lo que diga
- * el servidor) → espera. La placa nunca muestra un botón activo que el servidor rechazaría por esas razones.
+ * presupuesto (sin subir, pero pasar si el servidor lo deja) → ya pasó (el motor pasa solo a quien no llega a la mínima:
+ * así se dice por qué) → tu turno (lo que diga el servidor) → espera. La placa nunca muestra un botón activo que el
+ * servidor rechazaría por esas razones.
  */
 export function bidBlock(input: BidBlockInput): BidBlock {
   const unit = input.unit ?? 'monedas';
   const min = Math.max(1, safeAmount(input.min));
   const max = safeAmount(input.max);
-  const blocked = (reason: BidBlockReason, title: string, text: string): BidBlock => ({ reason, canRaise: false, canPass: false, ...(input.texts?.[reason] ?? { title, text }) });
+  const blocked = (reason: BidBlockReason, title: string, text: string, canPass = false): BidBlock => ({ reason, canRaise: false, canPass, ...(input.texts?.[reason] ?? { title, text }) });
   const waitText = input.turnName ? `Turno de ${input.turnName}.` : 'Esperando el siguiente turno.';
   if (!input.participating) return blocked('watching', 'Estás observando', 'La puja actual, los presupuestos y los equipos son públicos.');
   if (!input.open) return blocked('closed', 'Puja cerrada', 'Este lote ya no admite pujas.');
   if (input.leading) return blocked('leading', 'Ya vas ganando', `Tu puja es la más alta. ${waitText}`);
   if (input.full) return blocked('full', 'Equipo completo', 'Ya tienes seis Pokémon: no pujas más en esta subasta.');
-  if (max < min) return blocked('noBudget', 'Sin presupuesto', `La mínima es ${amountText(min, unit)} y tienes ${max}.`);
+  // Sin llegar a la mínima no se sube, pero se puede pasar si el servidor lo deja (Bluff: la puja llegó al máximo y quien
+  // tiene el turno debe poder pasar para cerrar la ronda; Team Auction pasa solo a quien no llega).
+  if (max < min) return blocked('noBudget', 'Sin presupuesto', `La mínima es ${amountText(min, unit)} y tienes ${max}.`, input.canPass && !input.passed);
   if (input.passed) return blocked('passed', 'Has pasado', `Vuelves a pujar en el siguiente lote. ${waitText}`);
   if (input.canRaise || input.canPass) {
     return { reason: 'open', canRaise: input.canRaise, canPass: input.canPass, ...(input.texts?.open ?? { title: 'Tu turno', text: `Mínima ${min} · puedes llegar a ${max} ${unit}.` }) };
   }
   return blocked('waiting', 'Esperando tu turno', waitText);
+}
+
+/**
+ * ¿Escuchan los atajos 1–4 de los incrementos? Solo si se puede subir, sin un envío en curso y sin el `Dialog` de
+ * confirmar el pase abierto (con él abierto no deben cambiar el campo por detrás).
+ */
+export function bidShortcutsLive({ canRaise, busy, confirming }: { canRaise: boolean; busy: boolean; confirming: boolean }): boolean {
+  return canRaise && !busy && !confirming;
 }
 
 /** Validación de lo escrito en el campo (texto bajo el campo; `null` si vale). */

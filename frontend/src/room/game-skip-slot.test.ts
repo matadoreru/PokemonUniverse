@@ -144,6 +144,11 @@ describe('skipRowInLayout', () => {
     expect(skipRowInLayout({ ...auction, phase: 'ROUND_ACTIVE' } as never)).toBe(false);
     expect(skipRowInLayout({ ...auction, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Pokémon Bluff Auction la lleva dentro de su pantalla en la subasta, la demostración y el resultado de ronda, no en los resultados', () => {
+    const bluff = { ...(base as object), selectedGameId: 'pokemon-bluff-auction', game: { gameId: 'pokemon-bluff-auction' } };
+    for (const phase of ['ROUND_ACTIVE', 'POKEMON_SEARCH', 'ROUND_RESULTS']) expect(skipRowInLayout({ ...bluff, phase } as never)).toBe(false);
+    expect(skipRowInLayout({ ...bluff, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);

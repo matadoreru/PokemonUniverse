@@ -5,7 +5,7 @@ import { cx, Dialog, Field, Icon, Panel, Pill } from '../../ui';
 import { useRefocusAfterReject } from '../focus-transition';
 import g from '../guess-kit/GuessPanel.module.css';
 import { bindChoiceShortcuts } from '../social-kit';
-import { bidDraftError, bidSteps, clampBid, parseBid, safeAmount, type BidBlock, type BidBlockReason } from './presentation';
+import { bidDraftError, bidShortcutsLive, bidSteps, clampBid, parseBid, safeAmount, type BidBlock, type BidBlockReason } from './presentation';
 import s from './BidControls.module.css';
 
 const REASON_ICON: Record<BidBlockReason, LucideIcon> = { open: Gavel, watching: Eye, closed: Lock, leading: Crown, full: PackageCheck, noBudget: Coins, waiting: Hourglass, passed: SkipForward };
@@ -72,11 +72,12 @@ export function BidControls({ titleRef, block, min, max, unit = 'monedas', epoch
   useRefocusAfterReject(epoch, busy !== null, block.canRaise, bidRef);
 
   const raising = block.canRaise && busy === null;
+  const shortcuts = bidShortcutsLive({ canRaise: block.canRaise, busy: busy !== null, confirming });
   useEffect(() => {
-    if (!raising || steps.length === 0) return undefined;
+    if (!shortcuts || steps.length === 0) return undefined;
     const values = new Map(steps.map((step) => [step.key, step.value]));
     return bindChoiceShortcuts(window, steps.map((step) => step.key), (key) => setDraft(String(values.get(key) ?? low)));
-  }, [raising, steps, low]);
+  }, [shortcuts, steps, low]);
 
   const amount = parseBid(draft);
   const draftError = block.canRaise ? bidDraftError(draft, low, high, unit) : null;

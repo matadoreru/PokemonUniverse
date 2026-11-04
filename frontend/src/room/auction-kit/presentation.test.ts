@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { amountText, bidBlock, bidDraftError, bidEpoch, bidLog, bidSteps, clampBid, currentBidText, parseBid, safeAmount, type BidBlockInput } from './presentation';
+import { amountText, bidBlock, bidDraftError, bidShortcutsLive, bidEpoch, bidLog, bidSteps, clampBid, currentBidText, parseBid, safeAmount, type BidBlockInput } from './presentation';
 
 const base: BidBlockInput = { participating: true, open: true, canRaise: true, canPass: true, leading: false, passed: false, full: false, min: 5, max: 20, turnName: 'Ana' };
 
@@ -70,7 +70,7 @@ describe('bloqueo de la puja', () => {
       [{ leading: true, canRaise: false, canPass: false }, 'leading', 'Ya vas ganando'],
       [{ full: true }, 'full', 'Equipo completo'],
       [{ passed: true, canRaise: false, canPass: false }, 'passed', 'Has pasado'],
-      [{ max: 3, canRaise: false }, 'noBudget', 'Sin presupuesto'],
+      [{ max: 3, canRaise: false, canPass: false }, 'noBudget', 'Sin presupuesto'],
       [{ canRaise: false, canPass: false }, 'waiting', 'Esperando tu turno'],
     ];
     for (const [input, reason, title] of cases) {
@@ -90,6 +90,24 @@ describe('bloqueo de la puja', () => {
     const block = bidBlock({ ...base, min: Number.NaN, max: -4 });
     expect(block.reason).toBe('noBudget');
     expect(block.text).toBe('La mínima es 1 moneda y tienes 0.');
+  });
+
+  it('sin llegar a la mínima se puede pasar si el servidor lo deja (Bluff: la puja llegó al máximo)', () => {
+    // El servidor de Bluff da `canRaise` y `canPass` a quien tiene el turno aunque la mínima supere el máximo.
+    const block = bidBlock({ ...base, min: 1026, max: 1025, canRaise: true, canPass: true, unit: 'Pokémon' });
+    expect(block).toMatchObject({ reason: 'noBudget', canRaise: false, canPass: true });
+    // Sin el permiso del servidor (no es su turno), no; y quien ya pasó, tampoco.
+    expect(bidBlock({ ...base, min: 1026, max: 1025, canRaise: false, canPass: false })).toMatchObject({ reason: 'noBudget', canPass: false });
+    expect(bidBlock({ ...base, min: 1026, max: 1025, passed: true })).toMatchObject({ reason: 'noBudget', canPass: false });
+    // Team Auction: el motor pasa solo a quien no llega, así que nunca le da `canPass`: sigue bloqueado del todo.
+    expect(bidBlock({ ...base, max: 3, canRaise: false, canPass: false })).toMatchObject({ reason: 'noBudget', canRaise: false, canPass: false, title: 'Sin presupuesto' });
+  });
+
+  it('los atajos 1–4 no escuchan con el diálogo de pasar abierto, enviando ni sin poder subir', () => {
+    expect(bidShortcutsLive({ canRaise: true, busy: false, confirming: false })).toBe(true);
+    expect(bidShortcutsLive({ canRaise: true, busy: false, confirming: true })).toBe(false);
+    expect(bidShortcutsLive({ canRaise: true, busy: true, confirming: false })).toBe(false);
+    expect(bidShortcutsLive({ canRaise: false, busy: false, confirming: false })).toBe(false);
   });
 
   it('textos propios por motivo (Bluff)', () => {
