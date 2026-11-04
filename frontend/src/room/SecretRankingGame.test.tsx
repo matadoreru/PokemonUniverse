@@ -69,6 +69,9 @@ describe('Secret Ranking: ordenar', () => {
     expect(html).toContain('Después de enviarlo no podrás cambiar el orden.');
     // El aviso de que no hay vuelta atrás va en el título de la placa: se ve a todos los tamaños.
     expect(html).toContain('Una vez bloqueado, no se cambia');
+    // El botón lleva el aviso como descripción (sr-only, no se oculta con la ayuda de la placa).
+    expect(html).toMatch(/data-testid="ranking-submit"[^>]*aria-describedby="ranking-submit-warning"|aria-describedby="ranking-submit-warning"[^>]*data-testid="ranking-submit"/);
+    expect(html).toMatch(/id="ranking-submit-warning" class="sr-only">Después de bloquearlo no podrás cambiar el orden\./);
     expect(html).toContain('Rankings recibidos');
     expect(html).toContain('Ordenando…');
     expect(html).toContain('Listo');

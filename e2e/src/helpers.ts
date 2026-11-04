@@ -233,9 +233,14 @@ export async function seleccionarJuego(page: Page, nombre: string): Promise<void
  */
 export async function iniciarPartida(host: Page, invitados: readonly Page[]): Promise<void> {
   for (const page of invitados) {
-    const listo = page.getByRole('button', { name: /Marcarme listo|Estoy listo/ });
-    if ((await listo.getAttribute('aria-pressed')) !== 'true') await listo.click();
-    await expect(page.getByRole('button', { name: 'Estoy listo' })).toHaveAttribute('aria-pressed', 'true');
+    // Idempotente y con reintentos: tras recargar, el lobby se pinta antes de que llegue el estado propio por el `/ws`
+    // (el botón puede cambiar de «Marcarme listo» a «Estoy listo» entre la lectura y el clic).
+    await expect(async () => {
+      const listo = page.getByRole('button', { name: /Marcarme listo|Estoy listo/ });
+      await expect(listo).toBeVisible({ timeout: 2_000 });
+      if ((await listo.getAttribute('aria-pressed')) !== 'true') await listo.click({ timeout: 2_000 });
+      await expect(page.getByRole('button', { name: 'Estoy listo' })).toHaveAttribute('aria-pressed', 'true', { timeout: 2_000 });
+    }).toPass({ timeout: 15_000 });
   }
   await expect(host.locator('#start-help')).toHaveText('La sala está lista.');
   await host.getByRole('button', { name: 'Empezar partida' }).click();

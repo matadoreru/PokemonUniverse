@@ -153,6 +153,14 @@ export async function submitRanking(round: number, submit: () => Promise<void>, 
   }
 }
 
+/**
+ * ¿Se devuelve el foco a «Bloquear ranking»? Solo tras un rechazo: en la misma ronda deja de estar ocupado, sigue
+ * abierto (un envío aceptado lo cierra) y el foco se había perdido en el `body` (el botón se deshabilitó al enviar).
+ */
+export function shouldRefocusSubmit(previous: { round: number; busy: boolean }, next: { round: number; busy: boolean; open: boolean }, activeIsBody: boolean): boolean {
+  return previous.round === next.round && previous.busy && !next.busy && next.open && activeIsBody;
+}
+
 type Stats = Record<string, number | undefined>;
 const num = (stats: Stats, key: string) => Number(stats[key] ?? 0);
 

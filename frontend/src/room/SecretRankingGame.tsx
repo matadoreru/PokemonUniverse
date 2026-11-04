@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject }
 import { Avatar } from '../components/Avatar';
 import {
   MAX_RANKING_DISTANCE, formatDistance, moveRankingItem, rankingFocusAfterMove, rankingMoveText, rankingPlayerStatus, rankingPositionOf, rankingStandings,
-  secretRankingAnnouncement, secretRankingCurrentStep, secretRankingHeading, secretRankingSteps, secretRankingVerdict, submitRanking,
+  secretRankingAnnouncement, secretRankingCurrentStep, secretRankingHeading, secretRankingSteps, secretRankingVerdict, shouldRefocusSubmit, submitRanking,
   type MoveDirection,
 } from '../games/secret-ranking/presentation';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
@@ -31,12 +31,14 @@ interface Draft {
  * franja lleva «Subir X» y «Bajar X» (teclado y puntero; sin arrastrar). Sin `onMove` (bloqueada u observando), solo
  * el orden.
  */
-function RankingBoard({ kicker, prompt, help, order, onMove, listRef, locked }: {
+function RankingBoard({ kicker, prompt, help, order, onMove, movesDisabled = false, listRef, locked }: {
   kicker: string;
   prompt: string;
   help?: string | undefined;
   order: readonly SecretRankingPokemon[];
   onMove?: ((index: number, direction: MoveDirection) => void) | undefined;
+  /** Enviando: los botones siguen en su sitio (el foco no se pierde) pero deshabilitados. */
+  movesDisabled?: boolean;
   listRef: RefObject<HTMLOListElement | null>;
   locked: boolean;
 }) {
@@ -50,8 +52,8 @@ function RankingBoard({ kicker, prompt, help, order, onMove, listRef, locked }: 
       {order.map((pokemon, index) => <li key={pokemon.id} className={s.item} data-ranking-item={pokemon.id}>
         <Row rank={index + 1} name={pokemon.name} avatar={<img className={s.sprite} src={guessSprite(pokemon.sprite)} alt="" />}>
           {onMove && <span className={s.moves}>
-            <Pill size="round" variant="cream" icon={ArrowUp} aria-label={`Subir ${pokemon.name}`} data-move={`${pokemon.id}:up`} disabled={index === 0} onClick={() => onMove(index, -1)} />
-            <Pill size="round" variant="cream" icon={ArrowDown} aria-label={`Bajar ${pokemon.name}`} data-move={`${pokemon.id}:down`} disabled={index === order.length - 1} onClick={() => onMove(index, 1)} />
+            <Pill size="round" variant="cream" icon={ArrowUp} aria-label={`Subir ${pokemon.name}`} data-move={`${pokemon.id}:up`} disabled={movesDisabled || index === 0} onClick={() => onMove(index, -1)} />
+            <Pill size="round" variant="cream" icon={ArrowDown} aria-label={`Bajar ${pokemon.name}`} data-move={`${pokemon.id}:down`} disabled={movesDisabled || index === order.length - 1} onClick={() => onMove(index, 1)} />
           </span>}
         </Row>
       </li>)}
@@ -186,9 +188,8 @@ export function SecretRankingGame({ room, selfId, onAction }: { room: RoomView; 
   useEffect(() => {
     const previous = previousBusy.current;
     previousBusy.current = { round: game.roundNumber, busy };
-    if (previous.round !== game.roundNumber || !previous.busy || busy || !open) return;
     const active = document.activeElement;
-    if (active && active !== document.body) return;
+    if (!shouldRefocusSubmit(previous, { round: game.roundNumber, busy, open }, !active || active === document.body)) return;
     document.querySelector<HTMLButtonElement>('[data-testid="ranking-submit"]')?.focus();
   }, [busy, open, game.roundNumber]);
 
@@ -209,7 +210,7 @@ export function SecretRankingGame({ room, selfId, onAction }: { room: RoomView; 
     : <RankingBoard listRef={listRef} prompt={game.prompt} locked={locked}
       kicker={open ? 'Ordena según esta pregunta' : locked ? 'Tu ranking · solo lo ves tú' : 'Los cinco Pokémon de la ronda'}
       help={open ? 'Tu posición 1 debe ser la que mejor encaja con el primer extremo.' : undefined}
-      order={own ?? (participating ? current.order : game.pokemon)} onMove={open && !busy ? move : undefined} />;
+      order={own ?? (participating ? current.order : game.pokemon)} onMove={open ? move : undefined} movesDisabled={busy} />;
 
   const side = result
     ? <ClosenessPanel result={result} room={room} selfId={selfId} />
@@ -221,7 +222,9 @@ export function SecretRankingGame({ room, selfId, onAction }: { room: RoomView; 
     bottom = <SocialPlate titleRef={titleRef} textClassName={s.plateHelp} content={{
       icon: ListOrdered, tone: 'info', kicker: <span className={s.plateKicker}>Tu ranking secreto</span>, title: 'Una vez bloqueado, no se cambia',
       text: 'Usa Subir y Bajar en cada uno. Después de enviarlo no podrás cambiar el orden.',
-      aside: <Pill variant="yellow" icon={LockKeyhole} loading={busy} disabled={current.order.length !== 5} onClick={() => void submit()} className={s.submit} data-testid="ranking-submit">Bloquear ranking</Pill>,
+      aside: <><Pill variant="yellow" icon={LockKeyhole} loading={busy} disabled={current.order.length !== 5} onClick={() => void submit()} className={s.submit} data-testid="ranking-submit" aria-describedby="ranking-submit-warning">Bloquear ranking</Pill>
+        {/* El aviso completo para lectores a todos los tamaños (la ayuda de la placa se oculta donde falta alto). */}
+        <span id="ranking-submit-warning" className="sr-only">Después de bloquearlo no podrás cambiar el orden.</span></>,
     }} />;
   } else if (locked) {
     bottom = <SocialPlate titleRef={titleRef} content={{
