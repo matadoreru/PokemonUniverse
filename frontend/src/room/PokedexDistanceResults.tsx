@@ -1,8 +1,9 @@
 import type { PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared/public';
-import { Crosshair, RotateCcw, StopCircle, Target } from 'lucide-react';
-import { cx, Icon, Panel, Pill } from '../ui';
+import { Crosshair, Target } from 'lucide-react';
+import { cx, Icon, Panel } from '../ui';
 import { playerColor } from './player-color';
 import { distanceBestLabel, distanceCell, type DistanceCellTone, distanceResultsSummary, distanceRoundLabel, distanceStandingLabel, distanceStatsLine } from './pokedex-distance-results';
+import { ResultsHostActions } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
 import s from './PokedexDistanceResults.module.css';
 
@@ -75,9 +76,7 @@ export function PokedexDistanceResults({ room, selfId, onLobby, onEnd }: { room:
     <p className={s.foot}>Distancia al número de Pokédex objetivo. ✓ acierto exacto · en azul, a 10 o menos · ✗ ronda en la que cayó · — sin respuesta o no jugaba. D1, D2… son los desempates.</p>
   </Panel>;
 
-  const actions = host
-    ? <><Pill variant="yellow" icon={RotateCcw} onClick={onLobby}>Continuar sesión</Pill><Pill variant="ghost" icon={StopCircle} onClick={onEnd}>Terminar sesión</Pill></>
-    : <p className={s.waiting}>Esperando al host…</p>;
+  const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} />;
 
   return <ResultsShell won={winnerId === selfId} title={winnerId ? 'Resultado de la partida' : 'Partida desierta'} subtitle={`Pokédex Distance · Partida ${room.gamesPlayed}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={<div className={s.aside}>{bestHit}{rounds}</div>} actions={actions} fillLarge />;

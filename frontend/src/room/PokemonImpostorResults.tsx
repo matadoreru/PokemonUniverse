@@ -1,9 +1,10 @@
 import type { GameStanding, ImpostorRole, PokemonImpostorPlayerState, PokemonImpostorPublicState, RoomView } from '@pokemon-universe/shared/public';
-import { Crown, RotateCcw, ShieldCheck, Skull, StopCircle } from 'lucide-react';
+import { Crown, ShieldCheck, Skull } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
-import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row } from '../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Row } from '../ui';
 import { playerColor } from './player-color';
 import { impostorFinishText } from './pokemon-impostor-texts';
+import { ResultsHostActions } from './ResultsRecords';
 import { ResultsShell } from './ResultsShell';
 import s from '../games/pokemon-impostor/PokemonImpostorResults.module.css';
 
@@ -73,9 +74,7 @@ export function PokemonImpostorResults({ room, selfId, onLobby, onEnd }: { room:
     </Panel>}
   </div>;
 
-  const actions = host
-    ? <><Pill variant="yellow" icon={RotateCcw} onClick={onLobby}>Continuar sesión</Pill><Pill variant="ghost" icon={StopCircle} onClick={onEnd}>Terminar sesión</Pill></>
-    : <p className={s.waiting}>Esperando al host…</p>;
+  const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} />;
 
   return <ResultsShell won={won} title={`Ganan ${impostorsWon ? 'los impostores' : 'los inocentes'}`} subtitle="Pokémon Impostor · Partida terminada" aside={aside} actions={actions}>
     <div className={s.teams}>{impostorsWon ? <>{team('IMPOSTOR')}{team('INNOCENT')}</> : <>{team('INNOCENT')}{team('IMPOSTOR')}</>}</div>

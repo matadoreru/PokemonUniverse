@@ -132,11 +132,6 @@
   font: 700 var(--fs-13) / 1.35 var(--font-text);
   color: var(--ink-2);
 }
-.waiting {
-  font: 800 var(--fs-15) / 1.3 var(--font-text);
-  color: var(--sky-2);
-}
-
 /* Escritorio grande (`fillLarge`): el mejor acierto y la tabla, en grande. */
 @media (min-width: 1600px) and (min-height: 900px) {
   .aside {
