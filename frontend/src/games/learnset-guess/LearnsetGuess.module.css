@@ -106,6 +106,20 @@
   font-size: var(--fs-15);
   white-space: normal;
 }
+/* Aviso de plazo: late (solo `transform`) mientras está a la vista; sin movimiento, se queda quieto. */
+.warning {
+  animation: warning-pulse 400ms ease-in-out infinite alternate;
+}
+@keyframes warning-pulse {
+  to {
+    transform: scale(1.06);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .warning {
+    animation: none;
+  }
+}
 
 /* Pistas: una franja por movimiento en rejilla; la última pista arriba. */
 .cluesPanel {

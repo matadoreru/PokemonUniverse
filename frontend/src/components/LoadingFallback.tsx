@@ -1,4 +1,4 @@
-import { Panel } from '../ui';
+import { Panel, StateBox } from '../ui';
 
 /** Carga de una pantalla perezosa: el esqueleto de `StateBox` dentro de un `Panel`, a lo ancho del armazón. */
 export function RouteLoadingFallback() {
@@ -9,15 +9,15 @@ export function RouteLoadingFallback() {
   );
 }
 
+/**
+ * Carga del código de un minijuego: el esqueleto de `StateBox` (su única región viva, `role="status"`). Compacto, tal
+ * cual (dentro de los ajustes, sobre crema); a pantalla, dentro de un `Panel` como el de las rutas.
+ */
 export function GameLoadingFallback({ compact = false }: { compact?: boolean }) {
-  return <div className={compact ? 'space-y-3 py-2' : 'page-shell'} role="status" aria-live="polite" aria-busy="true">
-    <span className="sr-only">Cargando minijuego…</span>
-    <div className={`${compact ? '' : 'panel p-5'} space-y-4`} aria-hidden="true">
-      <div className="skeleton h-6 w-40" />
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div className="skeleton h-20" />
-        <div className="skeleton h-20" />
-      </div>
+  if (compact) return <StateBox kind="loading" title="Cargando minijuego…" onCream />;
+  return (
+    <div className="mx-auto w-full max-w-[1600px] p-3 sm:p-4 lg:p-6">
+      <Panel status={{ kind: 'loading', title: 'Cargando minijuego…' }} />
     </div>
-  </div>;
+  );
 }

@@ -9,6 +9,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { AudioSettingsPanel } from '../../components/AudioSettingsDialog';
 import { Avatar } from '../../components/Avatar';
+import { GenerationSelector } from '../../components/GenerationSelector';
 import { ServerTimer } from '../../components/ServerTimer';
 import { ConfigRange } from '../../room/ConfigRange';
 import { playerColor } from '../../room/player-color';
@@ -858,11 +859,25 @@ const RESULTS: ResultsStanding[] = [
   { id: 'gary', position: 4, name: 'Entrenador con un nombre larguísimo de verdad', points: 0, color: playerColor(3) },
 ];
 
+/** Selector de generaciones que cambia de verdad (nunca vacío), como en un `ConfigPanel`. */
+function GenerationSelectorDemo() {
+  const [generations, setGenerations] = useState<number[]>([1, 2, 3, 4]);
+  return <GenerationSelector selected={generations} label="Generaciones" description="El Pokémon secreto y todas las respuestas pertenecerán a estas generaciones." onChange={setGenerations} />;
+}
+
 function GamePiecesSection() {
   // Plazo fijo al montar: el número corre, pero no depende de cuándo se capture.
   const [deadline] = useState(() => Date.now() + 45_000);
   return (
     <Section name="game-pieces" title="Piezas de juego">
+      <Fig id="generation-selector" caption="Selector de generaciones · Gen 1–4 elegidas (ajustes, sobre crema)" wide cream>
+        <GenerationSelectorDemo />
+      </Fig>
+      <Fig id="generation-selector-disabled" caption="Selector de generaciones · sin permiso (fieldset deshabilitado)" wide cream>
+        <fieldset disabled>
+          <GenerationSelector selected={[1, 9]} label="Generaciones del pool" onChange={noop} />
+        </fieldset>
+      </Fig>
       <Fig id="selector-prompt" caption="Buscador · sin búsqueda (panel)" wide>
         <PokemonSelector pokemon={SELECTOR_POKEMON} locked={new Set()} disabled={false} autoFocus={false} onSelect={asyncNoop} />
       </Fig>

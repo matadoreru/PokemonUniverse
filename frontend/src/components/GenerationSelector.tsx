@@ -1,18 +1,45 @@
 import { GENERATIONS } from '@pokemon-universe/shared/public';
+import { Check } from 'lucide-react';
+import { useId } from 'react';
+import { Pill } from '../ui';
+import s from './GenerationSelector.module.css';
 
 interface GenerationSelectorProps {
   selected: readonly number[];
   onChange(generations: number[]): void;
   label?: string;
   description?: string;
+  /** Sin efecto desde Arcade DS: la generación elegida es siempre la píldora amarilla con ✓ (se acepta por compatibilidad). */
   accent?: 'aqua' | 'electric';
 }
 
-/** Shared non-empty generation picker used by minigame configuration strategies. */
-export function GenerationSelector({ selected, onChange, label = 'Generaciones', description, accent = 'aqua' }: GenerationSelectorProps) {
+/** La selección tras pulsar una generación, ordenada; `null` si dejaría la lista vacía (siempre queda al menos una). */
+export function toggleGeneration(selected: readonly number[], generation: number): number[] | null {
+  const next = selected.includes(generation) ? selected.filter((value) => value !== generation) : [...selected, generation];
+  return next.length ? [...next].sort((left, right) => left - right) : null;
+}
+
+/**
+ * Selector de generaciones de los `ConfigPanel` (nunca vacío): un grupo con su etiqueta y una píldora conmutadora por
+ * generación (`aria-pressed`). Elegida: amarilla y con ✓ (el color nunca va solo); sin elegir: crema. La última que
+ * queda elegida no se puede quitar. Va dentro de un `fieldset`: si está deshabilitado, las píldoras también.
+ */
+export function GenerationSelector({ selected, onChange, label = 'Generaciones', description }: GenerationSelectorProps) {
+  const labelId = useId();
+  const helpId = useId();
   function toggle(generation: number) {
-    const next = selected.includes(generation) ? selected.filter((value) => value !== generation) : [...selected, generation];
-    if (next.length) onChange([...next].sort((left, right) => left - right));
+    const next = toggleGeneration(selected, generation);
+    if (next) onChange(next);
   }
-  return <section><span className="label">{label}</span>{description && <p className="mb-3 text-sm font-bold text-ink/65">{description}</p>}<div className="grid grid-cols-3 gap-2 sm:grid-cols-5">{GENERATIONS.map((generation) => { const active = selected.includes(generation); return <button type="button" key={generation} aria-pressed={active} onClick={() => toggle(generation)} className={`min-h-11 rounded-xl border py-2 font-bold ${active ? accent === 'electric' ? 'border-electric bg-electric text-night' : 'border-aqua bg-aqua text-night' : 'border-ink/10 bg-surface-raised text-ink/65'}`}>Gen {generation}</button>; })}</div></section>;
+  return <div className={s.group} role="group" aria-labelledby={labelId} {...(description ? { 'aria-describedby': helpId } : {})}>
+    <span id={labelId} className={s.label}>{label}</span>
+    {description && <p id={helpId} className={s.help}>{description}</p>}
+    <div className={s.options}>
+      {GENERATIONS.map((generation) => {
+        const active = selected.includes(generation);
+        return <Pill key={generation} size="small" block variant={active ? 'yellow' : 'cream'} aria-pressed={active} className={s.option}
+          {...(active ? { icon: Check } : {})} onClick={() => toggle(generation)}>Gen {generation}</Pill>;
+      })}
+    </div>
+  </div>;
 }

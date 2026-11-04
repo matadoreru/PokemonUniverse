@@ -68,6 +68,7 @@ const fuentes = [
   { source: 'TCGDEX', status: 'FAILED', ready: true, lastSyncAt: hace(60 * 26), lastAttemptAt: hace(40), lastFullSyncAt: null, durationMs: 9_400, recordsProcessed: 18_240, inserted: 120, updated: 0, skipped: 41, recordsAvailable: 18_240, error: 'TCGdex respondió 503: la última versión válida se conserva.', nextSyncAt: hace(-20) },
 ];
 
+// Los GET van simulados (aquí se mide la pantalla); la API real de la administración la cubre `contenido-y-admin.spec.ts`.
 /** Respuestas simuladas de los GET de la administración; `vacio` y `fallo` cambian las listas. */
 async function simularAdmin(page: Page, estado: { vacio: boolean; fallo: boolean }): Promise<void> {
   await page.route('**/api/admin/**', async (route: Route) => {

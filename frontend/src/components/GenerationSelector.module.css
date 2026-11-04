@@ -1,0 +1,25 @@
+/* Selector de generaciones de los ajustes (siempre dentro de un panel crema): la etiqueta, la ayuda y las píldoras. */
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.label {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+.help {
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.75rem, 1fr));
+  gap: var(--sp-3) var(--sp-2);
+  /* La sombra dura y el área pulsable de 44 px de las píldoras pequeñas no se recortan. */
+  padding-block: var(--sp-1);
+}
+.options > .option {
+  padding-inline: var(--sp-2);
+}

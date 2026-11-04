@@ -21,7 +21,7 @@ const sourceName = (item: AdminDataSyncItem) => (item.source === 'POKEAPI' ? 'Po
 
 /**
  * Fuentes de datos: las acciones globales arriba («Forzar Full Sync» pide confirmación en un diálogo) y una ficha por
- * fuente con sus cifras, su último error y su píldora de sincronizar, con scroll propio.
+ * fuente con su píldora de sincronizar arriba, sus cifras y su último error, con scroll propio.
  */
 export function AdminSyncView({ items, loading, error, syncing, onSync, onRetry }: AdminSyncViewProps) {
   const [confirmFull, setConfirmFull] = useState(false);
@@ -51,6 +51,10 @@ export function AdminSyncView({ items, loading, error, syncing, onSync, onRetry 
         <div className="grid gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-2 lg:grid-rows-[minmax(0,1fr)] 2xl:gap-6">
           {items.map((item) => (
             <Panel key={item.source} variant="cream" title={sourceName(item)} right={<StatusChip value={item.status} />} scroll className="lg:min-h-0" bodyClassName="flex flex-col gap-5 lg:px-6 lg:py-5">
+              {/* La acción de la fuente va arriba: a 1280×720 se alcanza sin desplazar las cifras. */}
+              <Pill variant="yellow" icon={RefreshCw} className="self-start" loading={item.status === 'RUNNING'} disabled={active} onClick={() => onSync(item.source === 'POKEAPI' ? 'pokemon' : 'tcg')}>
+                {item.source === 'POKEAPI' ? 'Sincronizar Pokémon' : 'Sincronizar TCG'}
+              </Pill>
               <DetailGrid>
                 <Detail label="Última sync">{item.lastSyncAt ? formatAdminDate(item.lastSyncAt) : 'Nunca'}</Detail>
                 <Detail label="Duración">{item.durationMs === null ? '—' : formatDuration(item.durationMs)}</Detail>
@@ -62,9 +66,6 @@ export function AdminSyncView({ items, loading, error, syncing, onSync, onRetry 
                 <Detail label="Próxima">{formatAdminDate(item.nextSyncAt)}</Detail>
               </DetailGrid>
               {item.error && <p className="rounded-[var(--r-franja)] border-[2.5px] border-[color:var(--red-text)] bg-[var(--cream-2)] px-3 py-2 text-15 font-bold text-[color:var(--red-text)]" role="status">{item.error}</p>}
-              <Pill variant="yellow" icon={RefreshCw} className="self-start" loading={item.status === 'RUNNING'} disabled={active} onClick={() => onSync(item.source === 'POKEAPI' ? 'pokemon' : 'tcg')}>
-                {item.source === 'POKEAPI' ? 'Sincronizar Pokémon' : 'Sincronizar TCG'}
-              </Pill>
             </Panel>
           ))}
         </div>

@@ -39,7 +39,7 @@ export function LearnsetHud({ roundNumber, totalRounds, referenceGeneration, ref
 export function LearnsetNotices({ lastWarning, lastWarningAnnouncement, solver, announcement }: { lastWarning: string | null; /** Texto fijo del último aviso para lectores (el chip visible cuenta los segundos y no se anuncia). */ lastWarningAnnouncement: string | null; solver: { key: string; member: RoomMemberView; text: string } | null; announcement: string }) {
   const visible = Boolean(lastWarning || solver);
   return <div role="status" aria-live="polite" className={cx(s.notices, !visible && s.noticesIdle)}>
-    {lastWarning && <span className={cx(s.warning, 'timer-pulse')} aria-hidden="true"><Chip tone="bad" icon={<Icon icon={AlarmClock} size={18} />}>{lastWarning}</Chip></span>}
+    {lastWarning && <span className={s.warning} aria-hidden="true"><Chip tone="bad" icon={<Icon icon={AlarmClock} size={18} />}>{lastWarning}</Chip></span>}
     {lastWarningAnnouncement && <span className="sr-only">{lastWarningAnnouncement}</span>}
     {solver && <span key={solver.key} className={cx(s.solver, 'motion-bump')}><Chip tone="ok" icon={<Avatar name={solver.member.displayName} avatar={solver.member.avatar} size="xs" />}>{solver.text}</Chip></span>}
     <span className="sr-only">{announcement}</span>

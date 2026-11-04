@@ -1,5 +1,6 @@
 import type { RoomView } from '@pokemon-universe/shared/public';
 import { GameSelectionConfig } from '../room/GameSelectionConfig';
+import { Panel, Screen } from '../ui';
 
 const games = [
   { id: 'pokedex-distance', name: 'Pokédex Distance', icon: '🎯', description: 'Elige un Pokémon cuyo número esté lo más cerca posible del objetivo.', minPlayers: 2, profileStats: { metrics: [] } },
@@ -20,6 +21,16 @@ const room: RoomView = {
   gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: null, gamePlayerState: null, serverNow: Date.now(),
 };
 
+/**
+ * Vista previa de la rotación (desarrollo y revisión): el editor de la rotación con datos ficticios, en una pantalla del
+ * catálogo y sobre el `Panel` crema de la pestaña «Modo y sesión» del lobby. El `main` lo pone el armazón.
+ */
 export function RotationPreview() {
-  return <main className="page-shell max-w-[90rem] py-8"><section className="panel p-4 sm:p-6"><GameSelectionConfig availableGames={games} mode={room.gameSelectionMode} playerCount={3} disabled={false} room={room} selfId="host" onChange={() => undefined} onConfig={async () => undefined} /></section></main>;
+  return (
+    <Screen>
+      <Panel variant="cream" as="div">
+        <GameSelectionConfig availableGames={games} mode={room.gameSelectionMode} playerCount={3} disabled={false} room={room} selfId="host" onChange={() => undefined} onConfig={async () => undefined} />
+      </Panel>
+    </Screen>
+  );
 }
