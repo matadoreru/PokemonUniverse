@@ -1,9 +1,47 @@
 import type { PokemonConnectionsPublicState, RoomView } from '@pokemon-universe/shared/public';
-import { Puzzle, RotateCcw, StopCircle } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
+import { Equal, Medal, Puzzle, Timer } from 'lucide-react';
+import { connectionsStatsLine } from '../games/pokemon-connections/presentation';
+import { Chip, Icon } from '../ui';
+import { guessSeconds, guessTop } from './guess-kit';
+import { playerColor } from './player-color';
+import { sharesPosition } from './results-ties';
+import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
+import { ResultsShell, type ResultsStanding } from './ResultsShell';
 
+/**
+ * Resultados de Pokémon Connections: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
+ * insignia y «+N», y la línea de grupos, tableros, errores, intentos a una y podios de cada uno) y, al lado, los récords
+ * de la partida (más grupos, resolución más rápida y más podios; empates juntos). Un empate a cero no corona.
+ */
 export function PokemonConnectionsResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
   const game = room.game as PokemonConnectionsPublicState;
   const host = room.hostId === selfId;
-  return <section className="mx-auto max-w-5xl px-3 py-8 sm:px-5"><div className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-7"><Puzzle className="mx-auto text-aqua" size={50} /><span className="label mt-2 text-center">Pokémon Connections · Resultados</span><h1 className="mb-2 text-center font-display text-3xl sm:text-4xl">Mentes bien conectadas</h1><p className="mx-auto mb-6 max-w-2xl text-center font-bold text-ink/60">Un punto por grupo y bonificaciones 3/2/1 para quienes completaron antes cada tablero.</p><div className="space-y-2.5">{game.results?.standings.map((entry) => { const person = room.members.find((candidate) => candidate.id === entry.playerId); return <article key={entry.playerId} className={`grid items-center gap-3 rounded-xl border p-3 sm:grid-cols-[auto_auto_1fr_auto] ${entry.position === 1 ? 'border-electric/45 bg-electric/[.07]' : 'border-ink/10 bg-surface-raised/70'}`}><strong className="w-9 text-center font-display text-2xl">{entry.position <= 3 ? ['🥇', '🥈', '🥉'][entry.position - 1] : entry.position}</strong><Avatar name={person?.displayName ?? entry.playerId} avatar={person?.avatar} size="md" /><div className="min-w-0"><strong className="block truncate font-display text-xl">{person?.displayName ?? entry.playerId}</strong><p className="text-sm font-bold text-ink/65">{entry.stats.groupsFound ?? 0} grupos · {entry.stats.boardsSolved ?? 0}/{entry.stats.roundsPlayed ?? 0} tableros · {entry.stats.mistakes ?? 0} errores</p><div className="mt-1 flex flex-wrap gap-1.5 text-xs font-extrabold"><span className="rounded-full bg-electric/10 px-2 py-0.5 text-electric">{entry.stats.podiumFinishes ?? 0} podios</span><span className="rounded-full bg-aqua/10 px-2 py-0.5 text-aqua">{entry.stats.nearMisses ?? 0} a una</span></div></div><strong className="justify-self-end text-xl text-berry">{entry.points} pts</strong></article>; })}</div>{host ? <div className="mt-7 flex flex-wrap justify-center gap-3"><button className="btn-primary" onClick={onLobby}><RotateCcw /> Continuar sesión</button><button className="btn-ghost" onClick={onEnd}><StopCircle /> Terminar sesión</button></div> : <p className="mt-6 text-center font-bold text-ink/65">Esperando a que el host continúe la sesión…</p>}</div></section>;
+  const standings = game.results?.standings ?? [];
+  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
+  const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
+  const rows: ResultsStanding[] = standings.map((standing) => {
+    const index = room.members.findIndex((member) => member.id === standing.playerId);
+    return {
+      id: standing.playerId,
+      position: standing.position,
+      name: nameOf(standing.playerId),
+      points: standing.points,
+      avatar: room.members[index]?.avatar,
+      color: playerColor(Math.max(0, index)),
+      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{connectionsStatsLine(standing.stats)}</span></>,
+    };
+  });
+  const entries = standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats }));
+  const groups = guessTop(entries, 'groupsFound');
+  const fastest = guessTop(entries, 'bestSolveTimeMs', true);
+  const podiums = guessTop(entries, 'podiumFinishes');
+  const aside = <ResultsRecords id="pokemon-connections-records-title" records={[
+    { key: 'groups', title: 'Más grupos', icon: Puzzle, names: groups?.names ?? null, value: groups ? String(groups.value) : '', unit: groups?.value === 1 ? 'grupo encontrado' : 'grupos encontrados', valueInHelp: true },
+    { key: 'fastest', title: 'Tablero más rápido', icon: Timer, names: fastest?.names ?? null, value: fastest ? guessSeconds(fastest.value) : '', unit: 'en completarlo', valueInHelp: true },
+    { key: 'podiums', title: 'Más podios de velocidad', icon: Medal, names: podiums?.names ?? null, value: podiums ? String(podiums.value) : '', unit: podiums?.value === 1 ? 'podio' : 'podios', valueInHelp: true },
+  ]} />;
+  const actions = <ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />;
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Mentes bien conectadas"
+    subtitle={`${game.totalRounds} ${game.totalRounds === 1 ? 'puzle' : 'puzles'} · 1 punto por grupo y 3/2/1 por completar antes`}
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge />;
 }

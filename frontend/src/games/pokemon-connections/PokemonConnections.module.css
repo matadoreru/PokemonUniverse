@@ -1,0 +1,418 @@
+/*
+ * Pokémon Connections (spec §2 y §6 «Juegos»): alto del `main` como `SessionScreen`, sin scroll de página en escritorio.
+ * Arriba la placa del puzle y el tablero (una rejilla de `--cols` × `--rows` que llena el hueco: bandas de los grupos
+ * encontrados y cartas); abajo la selección y «Comprobar»; en la columna lateral, el progreso de cada jugador.
+ */
+.screen {
+  /* Contiene el texto `sr-only` (absoluto) de la región viva. */
+  position: relative;
+  min-height: 100%;
+  padding-top: var(--sp-4);
+}
+@media (min-width: 1024px) {
+  .screen {
+    height: 100%;
+    padding-block: var(--sp-5);
+  }
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+  /* Hueco para la sombra dura de las cartas. */
+  padding-bottom: var(--sp-2);
+}
+.top > * {
+  flex: none;
+}
+@media (min-width: 1024px) {
+  .top {
+    height: 100%;
+  }
+  .top > .board {
+    flex: 1 1 0;
+    min-height: 14rem;
+  }
+}
+
+/* Placa del puzle: el puzle y su forma arriba, el título debajo, el plazo a la derecha. */
+.hud {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+}
+.hudMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.hudMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.heading {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 800 var(--fs-34) / 1.1 var(--font-display);
+  color: var(--yellow);
+}
+.shape {
+  display: inline-flex;
+}
+.hudTimer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Tablero: rejilla de `--cols` columnas y `--rows` filas iguales que llena el alto libre. */
+.board {
+  display: flex;
+  min-width: 0;
+}
+.grid {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
+  grid-auto-rows: minmax(4.75rem, auto);
+  gap: var(--sp-2);
+  min-width: 0;
+  container-type: inline-size;
+}
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-rows: repeat(var(--rows, 4), minmax(0, 1fr));
+    grid-auto-rows: unset;
+    gap: var(--sp-3);
+  }
+}
+/* Cartas: solo el hueco del sprite encoge; el nombre conserva su alto. */
+.grid > [data-connection-card] {
+  padding: var(--sp-2);
+  gap: var(--sp-1);
+}
+.grid > [data-connection-card] > :not(:first-child) {
+  flex: none;
+}
+
+/* Bandas de los grupos: una fila entera de la rejilla cada una. */
+.bands {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-auto-rows: minmax(0, 1fr);
+  gap: inherit;
+  min-height: 0;
+}
+.band {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: 0;
+  padding: var(--sp-2) var(--sp-4);
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-card);
+  color: var(--navy);
+  box-shadow: var(--sh-hard-4);
+  animation: band-in var(--t-reveal) var(--ease) both;
+}
+.band0 { background: var(--yellow-l); }
+.band1 { background: var(--sky-2); }
+.band2 { background: var(--ok); }
+.band3 { background: var(--cream); }
+.band4 { background: var(--warn); }
+/* Grupo que no encontraste: banda crema con borde rojo (además del chip «No encontrada»). */
+.bandMissed {
+  background: var(--cream);
+  border-color: var(--bad);
+}
+@keyframes band-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.bandText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.bandMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.bandMeta:empty {
+  display: none;
+}
+.foundBy {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+}
+.bandLabel,
+.bandExplanation {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bandLabel {
+  font: 800 var(--fs-22) / 1.15 var(--font-display);
+}
+.bandExplanation {
+  font: 700 var(--fs-13) / 1.3 var(--font-text);
+}
+.bandPokemon {
+  display: flex;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.bandPokemon > li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 4.5rem;
+  min-width: 0;
+}
+.bandPokemon img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.bandPokemon span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+}
+
+/* Columna lateral: el progreso (o la clasificación de la ronda) y «Saltar minijuego». */
+.sideColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-height: 0;
+}
+.sideColumn > * {
+  flex: none;
+}
+.sidePanel {
+  max-height: 22rem;
+}
+@media (min-width: 1024px) {
+  .sideColumn {
+    height: 100%;
+  }
+  .sideColumn > .sidePanel {
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: none;
+  }
+}
+.skip {
+  display: flex;
+  justify-content: flex-end;
+}
+.sideHint {
+  margin-bottom: var(--sp-2);
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--sky-2);
+}
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.groups {
+  display: inline-block;
+  font: 800 var(--fs-13) / 1.3 var(--font-text);
+  white-space: nowrap;
+}
+.roundLine {
+  flex-basis: 100%;
+  font: 800 var(--fs-13) / 1.3 var(--font-text);
+}
+.score {
+  white-space: nowrap;
+}
+.score small {
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+
+/* Placa inferior: el último intento y los errores que quedan, en línea; «Comprobar» a la derecha. */
+.plateNotes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+}
+.submit {
+  min-width: 11rem;
+}
+.revealAside {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+}
+.points {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  font: 800 var(--fs-34) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.points small {
+  font: 800 var(--fs-15) / 1 var(--font-text);
+}
+.points > :global(.score-pop) {
+  position: absolute;
+  right: 100%;
+  top: -0.5rem;
+  margin-right: var(--sp-2);
+}
+
+/* Móvil y tableta: tablero compacto (cabe entero sobre la placa pegada al fondo); bandas con los nombres en texto. */
+@media (max-width: 1023px) {
+  .grid > [data-connection-card] {
+    min-height: 4.75rem;
+  }
+  .grid > [data-connection-card] > span:first-child {
+    max-height: 3rem;
+  }
+  .bandPokemon {
+    display: none;
+  }
+  .band {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 639px) {
+  .hud {
+    padding: var(--sp-2) var(--sp-3);
+  }
+  /* La forma del puzle ya se ve en el tablero: en el móvil, la placa en menos líneas. */
+  .shape {
+    display: none;
+  }
+  /* En el móvil el título se parte en dos líneas antes que recortarse. */
+  .heading {
+    font-size: var(--fs-22);
+    white-space: normal;
+  }
+  .grid {
+    gap: var(--sp-1);
+  }
+  .grid > [data-connection-card] {
+    padding: var(--sp-1);
+  }
+  .grid > [data-connection-card] > span:nth-of-type(2) {
+    font-size: var(--fs-13);
+  }
+  .band {
+    padding: var(--sp-1) var(--sp-3);
+  }
+  .bandLabel {
+    font-size: var(--fs-15);
+  }
+  .submit {
+    min-width: 0;
+  }
+}
+/*
+ * Escritorio bajo (720 px): la placa, algo más baja; las cartas, con el sprite a la izquierda del nombre (con 4 filas
+ * en ~80 px el sprite encima del nombre se quedaría en 30 px); las bandas, sin los nombres de los Pokémon.
+ */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .hud {
+    padding-block: var(--sp-2);
+  }
+  .heading {
+    font-size: var(--fs-26);
+  }
+  .grid > [data-connection-card] {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--sp-2);
+  }
+  .grid > [data-connection-card] > span:first-child {
+    flex: none;
+    width: auto;
+    height: 100%;
+    aspect-ratio: 1;
+  }
+  .grid > [data-connection-card] > span:nth-of-type(2) {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: left;
+  }
+  .bandPokemon span {
+    display: none;
+  }
+}
+
+/* Escritorio grande (≥1600×900): la pantalla se llena; el título, las bandas y los nombres crecen. */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .hud {
+    padding: var(--sp-4) var(--sp-5);
+  }
+  .heading {
+    font-size: var(--fs-44);
+  }
+  .grid > [data-connection-card] > span:nth-of-type(2) {
+    font-size: var(--fs-22);
+  }
+  .bandLabel {
+    font-size: var(--fs-26);
+  }
+  .bandExplanation,
+  .foundBy {
+    font-size: var(--fs-15);
+  }
+  .bandPokemon > li {
+    width: 6rem;
+  }
+  .bandPokemon img {
+    width: 64px;
+    height: 64px;
+  }
+  .points {
+    font-size: var(--fs-44);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .band {
+    animation: none;
+  }
+}
+:global(body.static) .band {
+  animation: none;
+}

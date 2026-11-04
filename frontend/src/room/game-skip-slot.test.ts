@@ -92,6 +92,12 @@ describe('skipRowInLayout', () => {
     expect(skipRowInLayout({ ...tcg, phase: 'ROUND_RESULTS' } as never)).toBe(false);
     expect(skipRowInLayout({ ...tcg, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Pokémon Connections la lleva dentro de su pantalla salvo en los resultados', () => {
+    const connections = { ...(base as object), selectedGameId: 'pokemon-connections', game: { gameId: 'pokemon-connections' } };
+    expect(skipRowInLayout(connections as never)).toBe(false);
+    expect(skipRowInLayout({ ...connections, phase: 'ROUND_RESULTS' } as never)).toBe(false);
+    expect(skipRowInLayout({ ...connections, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);
