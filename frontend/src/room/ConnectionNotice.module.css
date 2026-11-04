@@ -23,7 +23,8 @@
   background: var(--cream);
   color: var(--ink);
   box-shadow: var(--sh-hard-4);
-  pointer-events: auto;
+  /* Sin controles: los clics pasan a lo que hay debajo (no tapa la fila de placas ni el lobby). */
+  pointer-events: none;
   animation: enter var(--t-screen) var(--ease) both;
 }
 @keyframes enter {

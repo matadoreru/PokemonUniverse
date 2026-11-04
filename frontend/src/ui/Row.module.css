@@ -18,6 +18,8 @@
   bottom: 0;
   width: 6px;
   background: var(--player);
+  /* Filo azul noche por dentro: la banda se ve también cuando su color es el de la franja (amarillo sobre la propia). */
+  box-shadow: inset -2px 0 0 var(--navy);
 }
 .self {
   background: var(--yellow);

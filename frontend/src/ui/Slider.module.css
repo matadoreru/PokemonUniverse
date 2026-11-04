@@ -7,15 +7,22 @@
 }
 .head {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--sp-3);
+  column-gap: var(--sp-3);
+  row-gap: 2px;
 }
+/* En una celda estrecha la etiqueta y el valor bajan de línea en vez de salirse sobre la celda vecina. */
 .label {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font: 800 var(--fs-15) / 1.2 var(--font-display);
 }
 .value {
-  font: 800 var(--fs-15) / 1 var(--font-display);
+  min-width: 0;
+  margin-left: auto;
+  font: 800 var(--fs-15) / 1.2 var(--font-display);
   font-variant-numeric: tabular-nums;
 }
 /* Zona de 44 px de alto; la pista visible va centrada. */
