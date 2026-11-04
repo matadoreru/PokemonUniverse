@@ -1,0 +1,309 @@
+/*
+ * Pokémon Trivia (spec §2 y §6 «Juegos»), dentro del marco del kit (`GuessScreen`): la pregunta en un panel azul noche
+ * y las opciones en cartas que llenan el alto libre en escritorio; en el móvil, la pregunta y una rejilla de 2 columnas
+ * (3 con tres opciones) con las cartas a la vista sobre la placa pegada al fondo.
+ */
+.screen {
+  min-width: 0;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+@media (min-width: 1024px) {
+  .board {
+    height: 100%;
+    min-height: 0;
+  }
+}
+
+/* La pregunta. */
+.question {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+}
+.questionIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: 50%;
+  background: var(--yellow);
+  color: var(--navy);
+  box-shadow: var(--sh-hard-3);
+}
+.questionText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.prompt {
+  font: 800 var(--fs-26) / 1.2 var(--font-display);
+  color: var(--white);
+  text-wrap: pretty;
+}
+.fact {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  font: 700 var(--fs-15) / 1.35 var(--font-text);
+  color: var(--sky-2);
+}
+
+/* Las opciones: una fila en escritorio que llena el alto; cada carta con su atajo en la esquina. */
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.options_3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+@media (min-width: 1024px) {
+  .options {
+    flex: 1 1 auto;
+    min-height: 0;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--sp-4);
+  }
+  .options_3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.option {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  /* Hueco para la sombra dura de la carta. */
+  padding-bottom: 4px;
+}
+.option > * {
+  flex: 1 1 auto;
+}
+.shortcut {
+  position: absolute;
+  top: var(--sp-2);
+  left: var(--sp-2);
+  display: grid;
+  place-items: center;
+  min-width: 32px;
+  height: 32px;
+  padding-inline: var(--sp-1);
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-pill);
+  background: var(--yellow);
+  color: var(--navy);
+  font: 800 var(--fs-15) / 1 var(--font-display);
+  box-shadow: var(--sh-hard-3);
+}
+.option [data-trivia-card] > span:nth-of-type(2) {
+  font-size: var(--fs-18);
+}
+/* Solo el hueco del sprite encoge: el nombre, el veredicto y la ficha conservan su alto. */
+.option [data-trivia-card] > :not(:first-child) {
+  flex: none;
+}
+.mine {
+  display: inline-flex;
+}
+/* La revelación dentro de la carta: el dato comparado, la ficha y quién la eligió. */
+.reveal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  max-width: 100%;
+  min-width: 0;
+}
+.compared {
+  font: 800 var(--fs-18) / 1.15 var(--font-display);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.detailsLine {
+  font: 700 var(--fs-13) / 1.3 var(--font-text);
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.pickers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-1);
+  max-width: 100%;
+}
+.picker {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 1px var(--sp-2) 1px calc(var(--sp-2) + 2px);
+  border: var(--ol-2) solid var(--navy);
+  border-left: 6px solid var(--player);
+  border-radius: var(--r-badge);
+  background: var(--cream-2);
+  color: var(--navy);
+  font: 800 var(--fs-13) / 1.3 var(--font-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pickerSelf {
+  background: var(--yellow);
+}
+.nobody {
+  font: 700 var(--fs-13) / 1.3 var(--font-text);
+  color: var(--ink-2);
+}
+
+/* Columna lateral. */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.choice {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.score {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.score small {
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+
+/* Puntos del veredicto en la placa. */
+.points {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  font: 800 var(--fs-44) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.points small {
+  font: 800 var(--fs-15) / 1 var(--font-text);
+}
+.points > :global(.score-pop) {
+  position: absolute;
+  right: 100%;
+  top: -0.5rem;
+  margin-right: var(--sp-2);
+}
+
+@media (max-width: 1023px) {
+  /* Móvil y tableta: cartas de alto fijo (en la revelación, lo que pidan). */
+  .option {
+    height: clamp(7.5rem, 15svh, 12rem);
+  }
+  .boardReveal .option {
+    height: auto;
+    min-height: 8.5rem;
+  }
+}
+@media (max-width: 639px) {
+  .question {
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .questionIcon {
+    display: none;
+  }
+  .prompt {
+    font-size: var(--fs-18);
+  }
+  .fact {
+    font-size: var(--fs-13);
+  }
+  .options {
+    gap: var(--sp-2);
+  }
+  .shortcut {
+    top: var(--sp-1);
+    left: var(--sp-1);
+    min-width: 26px;
+    height: 26px;
+    font-size: var(--fs-13);
+  }
+  .compared {
+    font-size: var(--fs-15);
+  }
+  .points {
+    font-size: var(--fs-34);
+  }
+}
+/* Escritorio bajo (720 px): la pregunta algo más baja. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .question {
+    padding-block: var(--sp-2);
+  }
+  .prompt {
+    font-size: var(--fs-22);
+  }
+  .fact {
+    font-size: var(--fs-13);
+  }
+}
+/* Escritorio grande (≥1600×900): la pregunta, los atajos y la revelación crecen con la pantalla. */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .question {
+    padding: var(--sp-4) var(--sp-5);
+  }
+  .questionIcon {
+    width: 68px;
+    height: 68px;
+  }
+  .prompt {
+    font-size: var(--fs-44);
+  }
+  .fact {
+    font-size: var(--fs-18);
+  }
+  .options {
+    gap: var(--sp-5);
+  }
+  .option [data-trivia-card] > span:nth-of-type(2) {
+    font-size: var(--fs-26);
+  }
+  .shortcut {
+    top: var(--sp-3);
+    left: var(--sp-3);
+    min-width: 44px;
+    height: 44px;
+    font-size: var(--fs-22);
+  }
+  .compared {
+    font-size: var(--fs-26);
+  }
+  .detailsLine,
+  .picker,
+  .nobody {
+    font-size: var(--fs-15);
+  }
+}
+
+/* Resultados: aciertos por categoría, en su propia línea. */
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px var(--sp-2);
+  flex-basis: 100%;
+}
+.category {
+  white-space: nowrap;
+}

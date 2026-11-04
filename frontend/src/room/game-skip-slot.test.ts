@@ -80,6 +80,12 @@ describe('skipRowInLayout', () => {
     expect(skipRowInLayout({ ...chain, phase: 'TURN_ACTIVE' } as never)).toBe(false);
     expect(skipRowInLayout({ ...chain, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Pokémon Trivia la lleva dentro de su pantalla salvo en los resultados', () => {
+    const trivia = { ...(base as object), selectedGameId: 'pokemon-trivia', game: { gameId: 'pokemon-trivia' } };
+    expect(skipRowInLayout(trivia as never)).toBe(false);
+    expect(skipRowInLayout({ ...trivia, phase: 'ROUND_RESULTS' } as never)).toBe(false);
+    expect(skipRowInLayout({ ...trivia, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);

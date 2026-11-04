@@ -1,12 +1,51 @@
 import type { PokemonTriviaPublicState, RoomView } from '@pokemon-universe/shared/public';
-import { Brain, RotateCcw, StopCircle } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
+import { CheckCircle2, Equal, Target, Timer } from 'lucide-react';
+import { triviaAccuracy, triviaCategoryScores } from '../games/pokemon-trivia/presentation';
+import { Chip, Icon } from '../ui';
+import { guessSeconds, guessTop } from './guess-kit';
+import { playerColor } from './player-color';
+import { sharesPosition } from './results-ties';
+import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
+import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import s from '../games/pokemon-trivia/PokemonTrivia.module.css';
 
-const categories = [
-  ['type', 'Tipos'], ['generation', 'Generación'], ['hp', 'PS'], ['attack', 'Ataque'], ['defense', 'Defensa'], ['special_attack', 'At. Esp.'], ['special_defense', 'Def. Esp.'], ['speed', 'Velocidad'], ['bst', 'BST'], ['height', 'Altura'], ['weight', 'Peso'], ['dex_number', 'Pokédex'],
-] as const;
-
+/**
+ * Resultados de Pokémon Trivia: la clasificación del catálogo (`ResultsShell`: podio, ganador y «+N») con, en texto, los
+ * aciertos, la precisión y los aciertos por categoría de cada jugador («Tipos 2/3»). Al lado, los récords: más
+ * aciertos, la respuesta correcta más rápida y la mejor precisión. Un empate a cero no corona.
+ */
 export function PokemonTriviaResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
   const game = room.game as PokemonTriviaPublicState; const host = room.hostId === selfId;
-  return <section className="mx-auto max-w-4xl px-3 py-8 sm:px-5"><div className="rounded-2xl border border-ink/10 bg-surface p-4 sm:p-7"><Brain className="mx-auto text-aqua" size={48} /><h1 className="mb-6 text-center font-display text-3xl">Resultados · Pokémon Trivia</h1><div className="space-y-2">{game.results?.standings.map((entry) => { const member = room.members.find((candidate) => candidate.id === entry.playerId); const answers = entry.stats.answers ?? 0; const correct = entry.stats.correct ?? 0; const accuracy = answers ? Math.round(correct / answers * 100) : 0; return <article key={entry.playerId} className={`flex items-center gap-3 rounded-xl border p-3 ${entry.position === 1 ? 'border-electric/50 bg-electric/[.08]' : 'border-ink/10 bg-surface-raised'}`}><strong className="w-9 text-center font-display text-2xl">{entry.position <= 3 ? ['🥇', '🥈', '🥉'][entry.position - 1] : entry.position}</strong><Avatar name={member?.displayName ?? entry.playerId} avatar={member?.avatar} size="md" /><div className="min-w-0 flex-1"><strong className="block truncate text-lg">{member?.displayName ?? entry.playerId}</strong><p className="text-sm font-bold text-ink/60">{correct} aciertos · {accuracy}% de precisión</p><p className="mt-1 flex flex-wrap gap-x-2 text-xs font-bold text-ink/50">{categories.flatMap(([key, label]) => { const categoryAnswers = entry.stats[`${key}Answers`] ?? 0; return categoryAnswers ? [<span key={key}>{label}: {entry.stats[`${key}Correct`] ?? 0}/{categoryAnswers}</span>] : []; })}</p></div><strong className="text-xl text-berry">{entry.points} pts</strong></article>; })}</div>{host ? <div className="mt-6 flex flex-wrap justify-center gap-3"><button className="btn-primary" onClick={onLobby}><RotateCcw /> Continuar sesión</button><button className="btn-ghost" onClick={onEnd}><StopCircle /> Terminar sesión</button></div> : <p className="mt-6 text-center font-bold text-ink/60">Esperando al host…</p>}</div></section>;
+  const standings = game.results?.standings ?? [];
+  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
+  const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
+  const rows: ResultsStanding[] = standings.map((standing) => {
+    const index = room.members.findIndex((member) => member.id === standing.playerId);
+    const correct = Number(standing.stats.correct ?? 0); const answers = Number(standing.stats.answers ?? 0);
+    const categories = triviaCategoryScores(standing.stats);
+    return {
+      id: standing.playerId,
+      position: standing.position,
+      name: nameOf(standing.playerId),
+      points: standing.points,
+      avatar: room.members[index]?.avatar,
+      color: playerColor(Math.max(0, index)),
+      meta: <>
+        {sharesPosition(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
+        <span>{`${correct} ${correct === 1 ? 'acierto' : 'aciertos'} de ${answers} · ${triviaAccuracy(standing.stats)}% de precisión`}</span>
+        {categories.length > 0 && <span className={s.categories} aria-label="Aciertos por categoría">{categories.map((category) => <span key={category.type} className={s.category}>{category.label} {category.correct}/{category.answers}</span>)}</span>}
+      </>,
+    };
+  });
+  const entries = standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats }));
+  const most = guessTop(entries, 'correct');
+  const fastest = guessTop(entries, 'fastestCorrectMs', true);
+  const accuracy = guessTop(entries.filter((entry) => Number(entry.stats.answers ?? 0) > 0), triviaAccuracy);
+  const aside = <ResultsRecords id="trivia-records-title" records={[
+    { key: 'correct', title: 'Más aciertos', icon: CheckCircle2, names: most?.names ?? null, value: String(most?.value ?? ''), unit: most?.value === 1 ? 'respuesta correcta' : 'respuestas correctas' },
+    { key: 'fastest', title: 'Acierto más rápido', icon: Timer, names: fastest?.names ?? null, value: fastest ? guessSeconds(fastest.value) : '', unit: 'desde que salió la pregunta' },
+    { key: 'accuracy', title: 'Mejor precisión', icon: Target, names: accuracy?.names ?? null, value: accuracy ? `${accuracy.value}%` : '', unit: 'de sus respuestas, correctas' },
+  ]} />;
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación final" subtitle={`Pokémon Trivia · ${game.totalRounds} ${game.totalRounds === 1 ? 'pregunta' : 'preguntas'}`}
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
 }

@@ -1,49 +1,112 @@
-import type { PokemonTriviaOption, PokemonTriviaOptionDetails, PokemonTriviaPlayerState, PokemonTriviaPublicState, PokemonTriviaQuestionType, RoomView } from '@pokemon-universe/shared/public';
-import { Brain, CheckCircle2, Eye, XCircle } from 'lucide-react';
-import { useState } from 'react';
-import { Avatar } from '../components/Avatar';
-import { ServerTimer } from '../components/ServerTimer';
-import { useServerOffset } from '../hooks/useServerTime';
+import type { PokemonTriviaConfig, PokemonTriviaOptionId, PokemonTriviaPlayerState, PokemonTriviaPublicState, RoomView } from '@pokemon-universe/shared/public';
+import { Check, CheckCircle2, Clock3, Eye, MousePointerClick, TimerOff, X } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { TriviaAnswersBoard, TriviaBoard, TriviaScoreboard } from '../games/pokemon-trivia/TriviaParts';
+import {
+  triviaAnnouncement, triviaCategoryLabels, triviaDifficultyLabels, triviaFocusKey, triviaOptionFromKey, triviaOptionLabel, triviaPlateKind, triviaVerdict, triviaVisibleRound, type TriviaPlateKind, type TriviaVerdict,
+} from '../games/pokemon-trivia/presentation';
+import { ScorePop } from '../components/ScorePop';
+import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
+import { useSfxCue } from '../hooks/useSfxCue';
+import { Chip } from '../ui';
+import { useFocusOnTransition } from './focus-transition';
+import { GuessPanel, GuessScreen, type GuessPlateContent } from './guess-kit';
+import s from '../games/pokemon-trivia/PokemonTrivia.module.css';
 
-const typeLabels: Record<string, string> = { normal: 'Normal', fire: 'Fuego', water: 'Agua', electric: 'Eléctrico', grass: 'Planta', ice: 'Hielo', fighting: 'Lucha', poison: 'Veneno', ground: 'Tierra', flying: 'Volador', psychic: 'Psíquico', bug: 'Bicho', rock: 'Roca', ghost: 'Fantasma', dragon: 'Dragón', dark: 'Siniestro', steel: 'Acero', fairy: 'Hada' };
+/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
+const ignoreFailure = () => undefined;
 
-function comparedValue(type: PokemonTriviaQuestionType | null, details: PokemonTriviaOptionDetails): string | null {
-  if (type === 'HP') return `PS ${details.hp}`;
-  if (type === 'ATTACK') return `Ataque ${details.attack}`;
-  if (type === 'DEFENSE') return `Defensa ${details.defense}`;
-  if (type === 'SPECIAL_ATTACK') return `Ataque Esp. ${details.specialAttack}`;
-  if (type === 'SPECIAL_DEFENSE') return `Defensa Esp. ${details.specialDefense}`;
-  if (type === 'BST') return `BST ${details.baseStatTotal}`;
-  if (type === 'SPEED') return `Velocidad ${details.speed}`;
-  if (type === 'HEIGHT' && details.heightDecimeters !== undefined) return `${(details.heightDecimeters / 10).toLocaleString('es-ES')} m`;
-  if (type === 'WEIGHT' && details.weightHectograms !== undefined) return `${(details.weightHectograms / 10).toLocaleString('es-ES')} kg`;
-  if (type === 'DEX_NUMBER') return `Pokédex N.º ${details.nationalDexNumber}`;
-  if (type === 'GENERATION') return `Generación ${details.generation}`;
-  if (type === 'TYPE') return details.types.map((type) => typeLabels[type] ?? type).join(' · ');
-  return null;
+/** Los atajos 1–4 no se disparan mientras se escribe en un campo. */
+function ignoresGameShortcuts(target: EventTarget | null): boolean {
+  if (!(target instanceof Element)) return false;
+  return Boolean(target.closest('input, textarea, select, [contenteditable="true"]'));
 }
 
-function OptionDetails({ details, questionType }: { details: PokemonTriviaOptionDetails; questionType: PokemonTriviaQuestionType | null }) {
-  return <div className="mt-2 w-full border-t border-ink/10 pt-2 text-xs font-bold text-ink/65"><strong className="mb-1 block text-sm text-aqua">{comparedValue(questionType, details)}</strong><div className="flex flex-wrap gap-x-3 gap-y-1"><span>Gen {details.generation}</span><span>PS {details.hp}</span><span>Atq {details.attack}</span><span>Def {details.defense}</span><span>At. Esp. {details.specialAttack}</span><span>Def. Esp. {details.specialDefense}</span><span>Vel. {details.speed}</span><span>BST {details.baseStatTotal}</span>{details.heightDecimeters !== undefined && <span>{(details.heightDecimeters / 10).toLocaleString('es-ES')} m</span>}{details.weightHectograms !== undefined && <span>{(details.weightHectograms / 10).toLocaleString('es-ES')} kg</span>}</div></div>;
+/**
+ * Pokémon Trivia (spec §2 y §6 «Juegos»), con el marco del kit (`GuessScreen`: placa de la ronda con el plazo y
+ * «Saltar», una sola región viva). Arriba, la pregunta en un `Panel` y las opciones en `Card`s grandes con su atajo
+ * (teclas 1–4). Abajo, la placa: elegir, la respuesta bloqueada, observar o, al revelar, el veredicto con los puntos. Al
+ * lado, el marcador (quién ha respondido, en texto) o, al revelar, qué eligió cada uno.
+ *
+ * Privacidad: la respuesta correcta solo llega en `lastRound`, que el servidor manda en la revelación; aun así la
+ * pantalla solo lo lee en `ROUND_RESULTS` (`triviaVisibleRound`).
+ */
+export function PokemonTriviaGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+  const game = room.game as PokemonTriviaPublicState;
+  const player = room.gamePlayerState as PokemonTriviaPlayerState | null;
+  const config = room.selectedGameConfig as Partial<PokemonTriviaConfig> | null;
+  const offset = useServerOffset(room.serverNow);
+  const [pending, setPending] = useState<PokemonTriviaOptionId | null>(null);
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  // Jugadores de la partida: los que puntúan (los espectadores no), en el orden de la sala.
+  const players = useMemo(() => room.members.map((member) => member.id).filter((id) => id in game.scores), [room.members, game.scores]);
+  const result = triviaVisibleRound(game);
+  const kind = triviaPlateKind({ game, player });
+  const participating = player?.role === 'PLAYER';
+  const canAnswer = kind === 'answer';
+  const verdict = result ? triviaVerdict(result, game.options, selfId, participating) : null;
+  const last = game.roundNumber >= game.totalRounds;
+  const transition = Math.ceil(useRemainingMs(result ? game.nextTransitionAt : null, offset) / 1_000);
+
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(triviaFocusKey(kind, game.roundNumber), titleRef);
+  useSfxCue('tick', player?.answer ? game.roundNumber : null);
+  useSfxCue(verdict && participating ? verdict.tone === 'ok' ? 'hit' : 'miss' : null, result ? game.roundNumber : null);
+
+  const submit = useCallback(async (optionId: PokemonTriviaOptionId) => {
+    if (!canAnswer || pending) return;
+    setPending(optionId);
+    try {
+      await onAction({ type: 'ANSWER', optionId }).catch(ignoreFailure);
+    } finally {
+      setPending(null);
+    }
+  }, [canAnswer, onAction, pending]);
+
+  useEffect(() => {
+    if (!canAnswer || pending) return undefined;
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey || ignoresGameShortcuts(event.target)) return;
+      const optionId = triviaOptionFromKey(event.key, game.options);
+      if (!optionId) return;
+      event.preventDefault();
+      void submit(optionId);
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [canAnswer, pending, submit, game.options]);
+
+  const category = game.questionType ? triviaCategoryLabels[game.questionType] : null;
+  const correct = result ? game.options.find((option) => option.id === result.correctOptionId) : undefined;
+  const heading = correct ? `Correcta: ${correct.pokemon.name}` : category ? `Pregunta · ${category}` : 'Pokémon Trivia';
+  const timer = result
+    ? { deadline: game.nextTransitionAt, serverOffset: offset, label: last ? 'Clasificación' : 'Siguiente pregunta' }
+    : { deadline: game.phase === 'ROUND_ACTIVE' ? game.roundEndsAt : null, serverOffset: offset, label: 'Tiempo', totalMs: (config?.roundSeconds ?? 20) * 1_000 };
+  const selected = pending ?? player?.answer?.optionId ?? null;
+  const content = plateContent({ kind, game, player, verdict, countdown: `${last ? 'Clasificación' : 'Siguiente pregunta'} en ${Math.max(0, transition)}s`, optionCount: game.options.length });
+
+  return <GuessScreen gameName="Pokémon Trivia" roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} className={s.screen}
+    meta={<Chip tone="neutral">{triviaDifficultyLabels[game.difficulty]}</Chip>}
+    timer={timer} announcement={triviaAnnouncement({ kind, game, player, verdict })}
+    clue={<TriviaBoard game={game} result={result} selected={selected} pending={pending} canAnswer={canAnswer} members={members} colors={colors} selfId={selfId} onAnswer={(id) => void submit(id)} />}
+    side={result
+      ? <TriviaAnswersBoard game={game} result={result} players={players} members={members} colors={colors} selfId={selfId} />
+      : <TriviaScoreboard game={game} players={players} members={members} colors={colors} selfId={selfId} />}
+    bottom={<GuessPanel kind={kind === 'reveal' ? 'reveal' : 'waiting'} titleRef={titleRef} question="" content={content} />} />;
 }
 
-function OptionButton({ option, selected, correct, reveal, disabled, details, questionType, onClick }: { option: PokemonTriviaOption; selected: boolean; correct: boolean; reveal: boolean; disabled: boolean; details?: PokemonTriviaOptionDetails | undefined; questionType?: PokemonTriviaQuestionType | null; onClick(): void }) {
-  const tone = reveal ? correct ? 'border-leaf bg-leaf/[.12]' : selected ? 'border-berry bg-berry/[.08]' : 'border-ink/10 bg-surface-raised' : selected ? 'border-aqua bg-aqua/[.1]' : 'border-ink/10 bg-surface-raised hover:border-aqua/70 hover:bg-aqua/[.05]';
-  return <button type="button" disabled={disabled} aria-pressed={selected} onClick={onClick} className={`group relative flex min-h-44 flex-wrap items-center gap-3 rounded-xl border p-3 text-left transition-[border-color,background-color,opacity,transform] ${tone} ${disabled ? 'cursor-default' : 'hover:-translate-y-0.5'}`}><span className={`grid h-11 w-11 shrink-0 place-items-center rounded-lg font-display text-xl ${correct && reveal ? 'bg-leaf text-night' : selected ? 'bg-aqua text-night' : 'bg-ink/[.07]'}`}>{option.id}</span><img src={option.pokemon.sprite} alt="" className="h-28 w-28 shrink-0 object-contain [image-rendering:pixelated] sm:h-32 sm:w-32" /><strong className="min-w-0 flex-1 break-words font-display text-lg sm:text-xl">{option.pokemon.name}</strong>{details && <OptionDetails details={details} questionType={questionType ?? null} />}{reveal && correct && <CheckCircle2 className="absolute right-3 top-3 text-leaf" aria-label="Respuesta correcta" />}{reveal && selected && !correct && <XCircle className="absolute right-3 top-3 text-berry" aria-label="Respuesta incorrecta" />}</button>;
-}
-
-function Players({ room, game }: { room: RoomView; game: PokemonTriviaPublicState }) {
-  return <aside className="rounded-xl border border-ink/10 bg-surface p-3"><h2 className="mb-2 font-display text-lg">Marcador</h2><div className="space-y-1.5">{room.members.filter((member) => member.role === 'PLAYER').map((member) => <div key={member.id} className="flex items-center gap-2 rounded-lg bg-ink/[.035] p-2"><Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} size="xs" /><strong className="min-w-0 flex-1 truncate text-sm">{member.displayName}</strong>{game.answeredPlayerIds.includes(member.id) && <CheckCircle2 className="text-leaf" size={16} aria-label="Ha respondido" />}<span className="text-xs font-extrabold text-berry">{game.scores[member.id] ?? 0}</span></div>)}</div></aside>;
-}
-
-function Reveal({ room, game, offset }: { room: RoomView; game: PokemonTriviaPublicState; offset: number }) {
-  const result = game.lastRound!;
-  return <section className="mx-auto max-w-6xl px-3 py-4 sm:px-5"><header className="mb-4 flex items-start justify-between gap-3"><div><p className="font-extrabold text-leaf">Ronda resuelta</p><h1 className="max-w-3xl text-pretty font-display text-2xl sm:text-4xl">{game.prompt}</h1></div><ServerTimer deadline={game.nextTransitionAt} serverOffset={offset} label="Siguiente pregunta" /></header><div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]"><main><div className="grid gap-3 sm:grid-cols-2">{game.options.map((option) => <OptionButton key={option.id} option={option} selected={false} correct={option.id === result.correctOptionId} reveal disabled details={result.optionDetails[option.id]} questionType={game.questionType} onClick={() => undefined} />)}</div><p className="mt-4 rounded-xl bg-leaf/[.1] p-4 text-center font-extrabold text-leaf">{result.fact}</p></main><aside className="rounded-xl border border-ink/10 bg-surface p-3"><h2 className="mb-3 font-display text-lg">Respuestas</h2><div className="space-y-2">{room.members.filter((member) => member.role === 'PLAYER').map((member) => { const answer = result.answers[member.id]; const correct = answer?.optionId === result.correctOptionId; return <div key={member.id} className="flex items-center gap-2 rounded-lg bg-ink/[.035] p-2"><Avatar name={member.displayName} avatar={member.avatar} size="xs" /><strong className="min-w-0 flex-1 truncate text-sm">{member.displayName}</strong><span className="font-extrabold">{answer?.optionId ?? '—'}</span><strong className={correct ? 'text-leaf' : 'text-berry'}>{correct ? `+${result.points[member.id] ?? 0}` : '✕'}</strong></div>; })}</div></aside></div></section>;
-}
-
-export function PokemonTriviaGame({ room, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const game = room.game as PokemonTriviaPublicState; const player = room.gamePlayerState as PokemonTriviaPlayerState; const offset = useServerOffset(room.serverNow); const [sending, setSending] = useState(false); const [error, setError] = useState('');
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <Reveal room={room} game={game} offset={offset} />;
-  const submit = async (optionId: PokemonTriviaOption['id']) => { if (!player.canAnswer || sending) return; setSending(true); setError(''); try { await onAction({ type: 'ANSWER', optionId }); } catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudo enviar la respuesta.'); } finally { setSending(false); } };
-  return <section className="mx-auto max-w-7xl overflow-x-clip px-3 py-4 sm:px-5"><header className="mb-4 flex items-center justify-between gap-3"><div><p className="text-xs font-extrabold text-ink/60">Pregunta {game.roundNumber} / {game.totalRounds}</p><h1 className="font-display text-2xl sm:text-3xl">Pokémon Trivia</h1></div><ServerTimer deadline={game.roundEndsAt} serverOffset={offset} /></header><div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]"><main><div className="mb-4 flex min-h-28 items-center gap-4 rounded-xl bg-night px-4 py-5 text-white sm:px-6"><Brain className="shrink-0 text-electric" size={38} /><h2 className="text-pretty font-display text-2xl leading-tight sm:text-3xl">{game.prompt}</h2></div><div className="grid gap-3 sm:grid-cols-2">{game.options.map((option) => <OptionButton key={option.id} option={option} selected={player.answer?.optionId === option.id} correct={false} reveal={false} disabled={!player.canAnswer || sending} onClick={() => void submit(option.id)} />)}</div>{player.answer && <p className="mt-3 rounded-xl bg-aqua/[.1] p-3 text-center font-extrabold text-aqua"><CheckCircle2 className="mr-2 inline" size={19} />Respuesta {player.answer.optionId} bloqueada por el servidor.</p>}{player.role === 'SPECTATOR' && <p className="mt-3 rounded-xl bg-ink/[.05] p-3 text-center font-bold"><Eye className="mr-2 inline" size={19} />Estás observando la ronda.</p>}{error && <p role="alert" className="mt-3 rounded-xl bg-berry/[.1] p-3 text-center font-bold text-berry">{error}</p>}</main><Players room={room} game={game} /></div></section>;
+function plateContent({ kind, game, player, verdict, countdown, optionCount }: { kind: TriviaPlateKind; game: PokemonTriviaPublicState; player: PokemonTriviaPlayerState | null; verdict: TriviaVerdict | null; countdown: string; optionCount: number }): GuessPlateContent {
+  switch (kind) {
+    case 'answer': return { icon: MousePointerClick, tone: 'warn', kicker: 'Tu respuesta', title: 'Elige una opción', text: `Pulsa una carta o las teclas 1 a ${optionCount}. Acertar rápido da más puntos.` };
+    case 'locked': return { icon: Check, tone: 'ok', kicker: 'Respuesta bloqueada', title: `${triviaOptionLabel(game.options, player!.answer!.optionId)} bloqueada`, text: 'Esperando al resto de entrenadores.' };
+    case 'watching': return { icon: Eye, tone: 'info', kicker: 'Sin respuesta esta ronda', title: 'Estás observando', text: 'Los espectadores no responden: el marcador y la solución se ven en directo.' };
+    case 'out': return { icon: Eye, tone: 'info', kicker: 'Estás observando', title: 'No respondes esta pregunta', text: 'Entraste con la partida empezada o sin conexión: jugarás en la siguiente.' };
+    case 'reveal': return {
+      icon: verdict?.tone === 'ok' ? CheckCircle2 : verdict?.tone === 'bad' ? (verdict.text === 'Sin respuesta' ? TimerOff : X) : Eye,
+      tone: verdict?.tone ?? 'info', kicker: verdict?.text ?? 'Resultado de la pregunta', title: countdown,
+      ...(verdict && verdict.points > 0 ? { aside: <strong className={s.points}>{verdict.tone === 'ok' && <ScorePop points={verdict.points} tone="leaf" self />}+{verdict.points}<small> puntos</small></strong> } : {}),
+    };
+    default: return { icon: Clock3, tone: 'info', kicker: 'Pokémon Trivia', title: 'Esperando al servidor…', text: 'La pregunta llega en un momento.' };
+  }
 }

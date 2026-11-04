@@ -1,0 +1,37 @@
+/* Ajustes de Pokémon Trivia en el lobby. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--sp-4);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.label {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+.help {
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.kinds {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--sp-2);
+}
