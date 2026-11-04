@@ -3,6 +3,10 @@
  * y un marcador por jugador enmarcado en su color (`--player`).
  */
 .ruler {
+  /* Paso de carril (con sprite y compacto) y ancho de un marcador en px: los lee `DistanceRuler` (ver allí). */
+  --lane-full: 4.25rem;
+  --lane-compact: 2rem;
+  --marker-px: 56;
   min-width: 0;
   padding: var(--sp-3) var(--sp-3) var(--sp-4);
   border: var(--ol-2-5) solid var(--navy);
@@ -153,5 +157,76 @@
 @media (max-width: 639px) {
   .body {
     padding-inline: var(--sp-4);
+  }
+}
+
+/*
+ * Escritorio grande (≥1600×900): la regla crece con el hueco que le da la pantalla (clase del juego) y centra en él los
+ * marcadores, la pista y el objetivo, todo en grande. El paso de carril y el ancho del marcador crecen con el sprite
+ * (72 px), así la separación entre marcadores sigue sin pisarse.
+ */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .ruler {
+    --lane-full: 6.5rem;
+    --lane-compact: 2.5rem;
+    --marker-px: 84;
+    display: flex;
+    flex-direction: column;
+    padding: var(--sp-4) var(--sp-5) var(--sp-5);
+  }
+  .caption {
+    font-size: var(--fs-15);
+  }
+  .body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-inline: var(--sp-6);
+  }
+  .sprite {
+    width: 72px;
+    height: 72px;
+  }
+  .dot {
+    width: 32px;
+    height: 8px;
+  }
+  .track {
+    height: 14px;
+    margin-top: var(--sp-2);
+  }
+  .tick {
+    top: -6px;
+    width: 3px;
+    height: 22px;
+  }
+  .tickTarget {
+    top: -14px;
+    width: 10px;
+    height: 38px;
+    margin-left: -5px;
+  }
+  .scale {
+    margin-top: var(--sp-4);
+  }
+  .edge {
+    font-size: var(--fs-18);
+  }
+  .target {
+    gap: var(--sp-4);
+  }
+  .targetSprite {
+    width: 96px;
+    height: 96px;
+  }
+  .targetNumber {
+    font-size: var(--fs-44);
+  }
+  .targetName {
+    font-size: var(--fs-22);
+  }
+  .missing {
+    margin-top: var(--sp-4);
   }
 }

@@ -301,3 +301,73 @@
     height: 44px;
   }
 }
+
+/*
+ * Escritorio grande (≥1600×900): la pantalla se llena. La columna principal toma todo el alto y lo reparten la placa del
+ * objetivo (contenedor de tamaño: el número crece con ella) y la escena (la tira de la Pokédex o la regla, que crecen
+ * por dentro). Con la bandeja del buscador abierta las dos encogen hasta su mínimo sin desplazar la columna. La pantalla
+ * inferior y el lateral, en grande.
+ */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .top {
+    height: 100%;
+    gap: var(--sp-4);
+  }
+  .top > .hudPanel {
+    flex: 1 1 0;
+    min-height: 9rem;
+    max-height: 22rem;
+    container-type: size;
+  }
+  .top > .scene {
+    flex: 1.6 1 0;
+    min-height: 11rem;
+  }
+  .hud {
+    padding: var(--sp-4) var(--sp-5);
+  }
+  .points {
+    font-size: var(--fs-18);
+  }
+  .target {
+    gap: var(--sp-5);
+  }
+  .targetIcon {
+    width: clamp(56px, 32cqh, 104px);
+    height: clamp(56px, 32cqh, 104px);
+  }
+  .targetIcon svg {
+    width: 55%;
+    height: 55%;
+  }
+  .targetKicker {
+    font-size: var(--fs-18);
+  }
+  .targetNumber {
+    font-size: clamp(var(--fs-68), 46cqh, 10rem);
+  }
+  .pickCount,
+  .lead {
+    font-size: var(--fs-18);
+  }
+  .actionBody {
+    gap: var(--sp-5);
+    padding-block: var(--sp-2);
+  }
+  .actionIcon {
+    width: 72px;
+    height: 72px;
+  }
+  .kicker {
+    font-size: var(--fs-15);
+  }
+  .actionTitle {
+    font-size: var(--fs-34);
+  }
+  .help {
+    font-size: var(--fs-15);
+  }
+  .pick {
+    width: 9rem;
+  }
+}

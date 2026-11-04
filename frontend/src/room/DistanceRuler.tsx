@@ -8,30 +8,37 @@ import s from './DistanceRuler.module.css';
 
 /**
  * Separación vertical entre carriles: un marcador entero (sprite + chip), para que nunca se tapen. Los carriles bajos
- * se pintan encima, así el palo de un marcador alto pasa por detrás de sus vecinos.
+ * se pintan encima, así el palo de un marcador alto pasa por detrás de sus vecinos. El paso de carril y el ancho del
+ * marcador viven en el CSS (`--lane-full`, `--lane-compact`, `--marker-px`): en escritorio grande crecen con el marcador.
  */
-const LANE_REM = 4.25;
+const LANE_VAR = '--lane-full';
 /** Con más de tres carriles los marcadores pasan a ser solo el chip, con carriles más bajos, para no estirar la regla. */
-const COMPACT_LANE_REM = 2;
+const COMPACT_LANE_VAR = '--lane-compact';
 const MAX_FULL_LANES = 3;
-/** Ancho máximo de un marcador (el chip de 3 cifras con icono; el sprite mide 44 px): la separación mínima de un carril. */
+/** Ancho máximo de un marcador por defecto (el chip de 3 cifras con icono; el sprite mide 44 px): la separación mínima de un carril. */
 const MARKER_PX = 56;
 
-/** Ancho en píxeles de la zona de marcadores, para pasar la separación mínima a puntos de la regla. */
-function useElementWidth<T extends HTMLElement>() {
+/** Ancho en píxeles de la zona de marcadores y el ancho de un marcador (`--marker-px`), para pasar la separación mínima a puntos de la regla. */
+function useLanesBox<T extends HTMLElement>() {
   const ref = useRef<T>(null);
-  const [width, setWidth] = useState<number | null>(null);
+  const [box, setBox] = useState<{ width: number; marker: number } | null>(null);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    setWidth(el.clientWidth);
+    const measure = () => {
+      const marker = Number.parseFloat(getComputedStyle(el).getPropertyValue('--marker-px'));
+      setBox({ width: el.clientWidth, marker: Number.isFinite(marker) && marker > 0 ? marker : MARKER_PX });
+    };
+    measure();
     if (typeof ResizeObserver === 'undefined') return;
-    const observer = new ResizeObserver(() => setWidth(el.clientWidth));
+    const observer = new ResizeObserver(measure);
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
-  return [ref, width] as const;
+  return [ref, box] as const;
 }
+/** Múltiplo del paso de carril, en CSS. */
+const laneSpan = (count: number, laneVar: string, extra = '') => `calc(${count} * var(${laneVar})${extra})`;
 const TICKS = [0, 25, 75, 100];
 
 /** Tono del chip de un marcador: cae (rojo, ✗), acierto exacto (verde, ✓), empate (aviso, =) o neutro. */
@@ -47,28 +54,28 @@ const TONE_ICON = { bad: X, ok: Check, warn: Equal, neutral: null } as const;
  * tres, solo el chip, con la banda del color). Los marcadores entran con `motion-enter-up` (las E2E miran ese nombre);
  * la regla global de reducción de movimiento los deja quietos. Quien no respondió queda fuera, en una línea aparte.
  */
-export function DistanceRuler({ round, members, selfId }: { round: PublicRoundResult; members: readonly RoomMemberView[]; selfId: string }) {
-  const [lanesRef, lanesWidth] = useElementWidth<HTMLUListElement>();
-  const minGap = lanesWidth ? Math.max(DEFAULT_LANE_GAP, MARKER_PX / lanesWidth * 100) : DEFAULT_LANE_GAP;
+export function DistanceRuler({ round, members, selfId, className }: { round: PublicRoundResult; members: readonly RoomMemberView[]; selfId: string; className?: string | undefined }) {
+  const [lanesRef, lanesBox] = useLanesBox<HTMLUListElement>();
+  const minGap = lanesBox?.width ? Math.max(DEFAULT_LANE_GAP, lanesBox.marker / lanesBox.width * 100) : DEFAULT_LANE_GAP;
   const { window: span, markers } = rulerLayout(round, minGap);
   const placed = markers.filter((marker) => marker.dexNumber !== null);
   const missing = markers.filter((marker) => marker.dexNumber === null);
-  const lanes = Math.max(0, ...placed.map((marker) => marker.lane)) + 1;
-  const compact = lanes > MAX_FULL_LANES;
-  const pitch = compact ? COMPACT_LANE_REM : LANE_REM;
+  const laneCount = Math.max(0, ...placed.map((marker) => marker.lane)) + 1;
+  const compact = laneCount > MAX_FULL_LANES;
+  const pitch = compact ? COMPACT_LANE_VAR : LANE_VAR;
   const nameOf = (playerId: string) => members.find((member) => member.id === playerId)?.displayName ?? playerId;
   const colorOf = (playerId: string) => playerColor(Math.max(0, members.findIndex((member) => member.id === playerId)));
   const target = round.targetPokemon;
-  return <figure className={s.ruler} data-testid="distance-ruler">
+  return <figure className={cx(s.ruler, className)} data-testid="distance-ruler">
     <figcaption className={s.caption}>{DISTANCE_RULER_CAPTION}</figcaption>
     <div className={s.body}>
-      <ul ref={lanesRef} aria-label="Respuestas en la regla" className={s.lanes} style={{ height: `${lanes * pitch}rem` }}>
+      <ul ref={lanesRef} aria-label="Respuestas en la regla" className={s.lanes} style={{ height: laneSpan(laneCount, pitch) }}>
         {placed.map((marker, index) => {
           const selection = round.selections[marker.playerId]!;
           const tone = markerTone(marker);
           const toneIcon = TONE_ICON[tone];
           const self = marker.playerId === selfId;
-          const style = { left: `${marker.offsetPercent}%`, bottom: `${marker.lane * pitch}rem`, zIndex: lanes - marker.lane, '--player': colorOf(marker.playerId) } as CSSProperties;
+          const style = { left: `${marker.offsetPercent}%`, bottom: laneSpan(marker.lane, pitch), zIndex: laneCount - marker.lane, '--player': colorOf(marker.playerId) } as CSSProperties;
           return <li key={marker.playerId} className={s.marker} style={style} data-tone={tone} data-self={self || undefined}>
             <div className={cx('motion-enter-up', s.markerBody)} style={{ animationDelay: `${index * 60}ms` }} data-testid="distance-ruler-marker">
               {compact
@@ -77,7 +84,7 @@ export function DistanceRuler({ round, members, selfId }: { round: PublicRoundRe
               <span aria-hidden="true"><Chip tone={tone} {...(toneIcon ? { icon: <Icon icon={toneIcon} size={18} /> } : {})}>{marker.distance}</Chip></span>
               <span className="sr-only">{distanceMarkerLabel(nameOf(marker.playerId), marker)}</span>
             </div>
-            {marker.lane > 0 && <span className={s.stem} style={{ height: `${marker.lane * pitch + 0.25}rem` }} aria-hidden="true" />}
+            {marker.lane > 0 && <span className={s.stem} style={{ height: laneSpan(marker.lane, pitch, ' + 0.25rem') }} aria-hidden="true" />}
           </li>;
         })}
       </ul>

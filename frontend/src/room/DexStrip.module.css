@@ -79,3 +79,61 @@
   border-radius: 50%;
   background: var(--yellow);
 }
+/* Tramo de números de cada generación: solo en escritorio grande. */
+.genRange {
+  display: none;
+}
+
+/*
+ * Escritorio grande (≥1600×900): la tira crece con el hueco que le da la pantalla (clase del juego): la pista se hace
+ * una estantería alta con la chincheta de lado a lado, centrada bajo el título, y cada generación lleva su tramo.
+ */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .strip {
+    display: flex;
+    flex-direction: column;
+    padding: var(--sp-4) var(--sp-5) var(--sp-5);
+  }
+  .caption {
+    font-size: var(--fs-15);
+  }
+  .track {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 3rem;
+    max-height: 12rem;
+    margin-top: auto;
+    border-width: var(--ol-3);
+  }
+  .labels {
+    margin-top: var(--sp-3);
+    margin-bottom: auto;
+  }
+  .gen {
+    font-size: var(--fs-26);
+  }
+  .genRange {
+    display: block;
+    margin-top: var(--sp-1);
+    overflow: hidden;
+    font: 800 var(--fs-13) / 1.2 var(--font-text);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--sky-2);
+  }
+  .pin {
+    top: -14px;
+    bottom: -14px;
+    width: 10px;
+    margin-left: -5px;
+    border-width: var(--ol-2);
+    border-radius: 5px;
+  }
+  .head {
+    top: -18px;
+    width: 28px;
+    height: 28px;
+    margin-left: -14px;
+    border-width: var(--ol-2-5);
+  }
+}

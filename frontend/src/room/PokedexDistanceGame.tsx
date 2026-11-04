@@ -53,7 +53,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
   // La elección propia sale del catálogo público del buscador (nombre y sprite, nunca el número).
   const ownPick = playerState?.selection ? pokemon.find((entry) => entry.id === playerState.selection!.pokemonId) ?? null : null;
 
-  const hud = <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
+  const hud = <Panel variant="dark" as="div" className={cx(s.hudPanel)} bodyClassName={cx(s.hud)}>
     <div className={s.round}>
       <Badge>Ronda {game.roundNumber}</Badge>
       {game.tiebreakDepth > 0 && <Chip tone="warn">Desempate {game.tiebreakDepth}</Chip>}
@@ -87,8 +87,8 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
     {hud}
     {picks}
     {revealing
-      ? <DistanceRuler round={lastRound} members={room.members} selfId={selfId} />
-      : <DexStrip target={game.targetDexNumber} generations={config.generations} />}
+      ? <DistanceRuler round={lastRound} members={room.members} selfId={selfId} className={s.scene} />
+      : <DexStrip target={game.targetDexNumber} generations={config.generations} className={s.scene} />}
     {!activePhase && !revealing && <p className={s.lead}>Elige el Pokémon cuyo número de Pokédex esté más cerca del objetivo: cae quien quede más lejos.</p>}
   </div>;
 

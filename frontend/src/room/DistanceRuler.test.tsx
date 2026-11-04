@@ -49,7 +49,7 @@ describe('DistanceRuler', () => {
     const crowded = renderToStaticMarkup(createElement(DistanceRuler, { round: crowd, members, selfId: 'p1' }));
     expect(crowded.match(/data-testid="distance-ruler-marker"/g)).toHaveLength(5);
     expect(crowded.match(/<img /g)).toHaveLength(1);
-    expect(crowded).toContain('height:10rem');
+    expect(crowded).toContain('height:calc(5 * var(--lane-compact))');
   });
 
   it('marca en eléctrico a los empatados que no caen', () => {

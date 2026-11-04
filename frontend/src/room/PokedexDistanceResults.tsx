@@ -80,5 +80,5 @@ export function PokedexDistanceResults({ room, selfId, onLobby, onEnd }: { room:
     : <p className={s.waiting}>Esperando al host…</p>;
 
   return <ResultsShell won={winnerId === selfId} title={winnerId ? 'Resultado de la partida' : 'Partida desierta'} subtitle={`Pokédex Distance · Partida ${room.gamesPlayed}`}
-    standings={rows} selfId={selfId} winnersNeedPoints aside={<div className={s.aside}>{bestHit}{rounds}</div>} actions={actions} />;
+    standings={rows} selfId={selfId} winnersNeedPoints aside={<div className={s.aside}>{bestHit}{rounds}</div>} actions={actions} fillLarge />;
 }
