@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { avatarPresetIdSchema, type AvatarRef } from './avatar.js';
+import type { AvatarRef } from './avatar.js';
 import { displayNameSchema } from './room.js';
 
 export const userRoleSchema = z.enum(['USER', 'ADMIN']);
@@ -11,7 +11,7 @@ export const registerSchema = z.object({
   password: z.string().min(10).max(128),
 });
 export const loginSchema = z.object({ email: z.string().trim().toLowerCase().email(), password: z.string().min(1).max(128) });
-export const guestSchema = z.object({ displayName: displayNameSchema, avatarPresetId: avatarPresetIdSchema.optional() });
+export const guestSchema = z.object({ displayName: displayNameSchema });
 
 export interface AuthUser {
   id: string;

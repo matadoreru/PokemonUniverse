@@ -29,9 +29,9 @@ describe('Avatar', () => {
       expect(html).not.toContain('animate-pulse');
     }
   });
-  it('preset heredado: inicial, sin imagen', () => {
-    const html = renderToStaticMarkup(createElement(Avatar, { name: 'Ana', avatar: { type: 'PRESET', value: 'trainer-aqua' } }));
-    expect(html).not.toContain('<img');
-    expect(html).toContain('>A<');
+  it('avatar subido: imagen versionada', () => {
+    const html = renderToStaticMarkup(createElement(Avatar, { name: 'Ana', avatar: { type: 'CUSTOM', value: '0123456789abcdef0123456789abcdef0123.webp', version: 3 } }));
+    expect(html).toContain('<img');
+    expect(html).toContain('/api/auth/avatars/0123456789abcdef0123456789abcdef0123.webp?v=3');
   });
 });

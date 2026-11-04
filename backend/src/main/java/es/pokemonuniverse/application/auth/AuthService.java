@@ -72,8 +72,7 @@ public class AuthService {
   }
 
   public AuthUser guest(GuestCommand cmd) {
-    AvatarRef avatar = cmd.avatarPresetId() == null ? new AvatarRef.Default() : new AvatarRef.Preset(cmd.avatarPresetId());
-    return guest(cmd.displayName(), avatar);
+    return guest(cmd.displayName(), new AvatarRef.Default());
   }
 
   /** {@code guestIdentity(displayName, avatar)} de Node: id nuevo en cada llamada. */

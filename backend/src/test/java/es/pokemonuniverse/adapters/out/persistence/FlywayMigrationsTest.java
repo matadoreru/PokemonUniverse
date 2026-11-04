@@ -1,6 +1,7 @@
 package es.pokemonuniverse.adapters.out.persistence;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.application.health.SchemaVersionReader;
@@ -138,7 +139,29 @@ class FlywayMigrationsTest {
     assertEquals(SchemaVersionReader.UNKNOWN, reader(createDatabase()).latestMigration());
   }
 
-  /** Los ajustes de producción detenidos en V1: las comprobaciones de V1 no dependen de las {@code V2__…} futuras. */
+  /** V2 pasa los avatares predefinidos guardados a la inicial y desde entonces solo admite DEFAULT o CUSTOM. */
+  @Test
+  void v2TurnsPresetAvatarsIntoDefaultAndForbidsThem() throws Exception {
+    var db = createDatabase();
+    migrateToV1(dataSource(db));
+    execute(dataSource(db), "insert into \"User\" (id, username, email, \"passwordHash\", \"updatedAt\", \"avatarType\","
+        + " \"avatarValue\", \"avatarVersion\") values ('u1', 'ana', 'a@b.c', 'x', now(), 'PRESET', 'trainer-aqua', 3),"
+        + " ('u2', 'eva', 'e@b.c', 'x', now(), 'CUSTOM', '0123456789abcdef0123456789abcdef0123.webp', 2)");
+
+    FlywayMigrations.migrate(dataSource(db));
+
+    var rows = new ArrayList<String>();
+    try (var c = dataSource(db).getConnection(); var st = c.createStatement();
+        var rs = st.executeQuery("select id, \"avatarType\", \"avatarValue\", \"avatarVersion\" from \"User\" order by id")) {
+      while (rs.next()) rows.add(rs.getString(1) + "|" + rs.getString(2) + "|" + rs.getString(3) + "|" + rs.getInt(4));
+    }
+    assertEquals(List.of("u1|DEFAULT|null|3", "u2|CUSTOM|0123456789abcdef0123456789abcdef0123.webp|2"), rows);
+    var rejected = assertThrows(SQLException.class, () -> execute(dataSource(db),
+        "update \"User\" set \"avatarType\" = 'PRESET', \"avatarValue\" = 'trainer-aqua' where id = 'u2'"));
+    assertEquals("23514", rejected.getSQLState(), "viola el CHECK de avatarType");
+  }
+
+  /** Los ajustes de producción detenidos en V1:las comprobaciones de V1 no dependen de las {@code V2__…} futuras. */
   private static void migrateToV1(DataSource ds) {
     FlywayMigrations.configure(ds).target("1").load().migrate();
   }

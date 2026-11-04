@@ -1,9 +1,8 @@
-import { avatarPresetIdSchema, DEFAULT_AVATAR, gameRegistry, guestSchema, loginSchema, registerSchema, type AuthUser, type AvatarRef, type UserProfileResponse, type UserRole } from '@pokemon-universe/shared';
+import { DEFAULT_AVATAR, gameRegistry, guestSchema, loginSchema, registerSchema, type AuthUser, type AvatarRef, type UserProfileResponse, type UserRole } from '@pokemon-universe/shared';
 import bcrypt from 'bcryptjs';
 import express, { Router, type Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import { randomUUID } from 'node:crypto';
-import { z } from 'zod';
 import { AvatarService, MAX_AVATAR_UPLOAD_BYTES } from '../avatar/service.js';
 import { FilesystemAvatarStorage } from '../avatar/storage.js';
 import { prisma } from '../db.js';
@@ -22,10 +21,6 @@ async function establish(res: Response, identity: AuthUser): Promise<void> {
 }
 
 function avatarFromUser(user: { avatarType: string; avatarValue: string | null; avatarVersion: number }): AvatarRef {
-  if (user.avatarType === 'PRESET') {
-    const preset = avatarPresetIdSchema.safeParse(user.avatarValue);
-    if (preset.success) return { type: 'PRESET', value: preset.data };
-  }
   if (user.avatarType === 'CUSTOM' && user.avatarValue && /^[0-9a-f-]{36}\.webp$/.test(user.avatarValue)) return { type: 'CUSTOM', value: user.avatarValue, version: user.avatarVersion };
   return DEFAULT_AVATAR;
 }
@@ -84,8 +79,8 @@ authRouter.post('/login', async (req, res, next) => {
 
 authRouter.post('/guest', async (req, res, next) => {
   try {
-    const { displayName, avatarPresetId } = guestSchema.parse(req.body);
-    const identity = guestIdentity(displayName, avatarPresetId ? { type: 'PRESET', value: avatarPresetId } : DEFAULT_AVATAR);
+    const { displayName } = guestSchema.parse(req.body);
+    const identity = guestIdentity(displayName, DEFAULT_AVATAR);
     await establish(res, identity);
     removePriorGuestAvatar(req.auth);
     res.status(201).json({ user: identity });
@@ -117,14 +112,6 @@ authRouter.get('/avatars/:filename', async (req, res, next) => {
     const contents = await avatarService.read(req.params.filename);
     if (!contents) { res.status(404).end(); return; }
     res.type('image/webp'); res.set('Cache-Control', 'public, max-age=31536000, immutable'); res.send(contents);
-  } catch (error) { next(error); }
-});
-
-authRouter.put('/profile/avatar/preset', requireUser, avatarRateLimit, async (req, res, next) => {
-  try {
-    const { presetId } = z.object({ presetId: avatarPresetIdSchema }).strict().parse(req.body);
-    const user = await applyAvatar(req.auth!.id, { type: 'PRESET', value: presetId });
-    await establish(res, user); res.json({ user });
   } catch (error) { next(error); }
 });
 

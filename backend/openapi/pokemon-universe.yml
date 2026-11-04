@@ -865,43 +865,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
-  /api/auth/profile/avatar/preset:
-    put:
-      tags:
-      - auth
-      summary: Elegir un avatar predefinido
-      operationId: setPresetAvatar
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/PresetAvatarRequest"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserResponse"
-        "400":
-          description: Datos inválidos
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ValidationErrorResponse"
-        "401":
-          description: Cuenta registrada requerida
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
-        "429":
-          description: Demasiadas peticiones
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiError"
   /api/auth/register:
     post:
       tags:
@@ -2035,17 +1998,15 @@ components:
       - GUEST
     AvatarRef:
       type: object
-      description: Avatar de un jugador; el JSON tiene exactamente las formas que
-        acepta el servidor Node.
+      description: "Avatar de un jugador: la inicial (`DEFAULT`) o una imagen subida\
+        \ (`CUSTOM`). Los avatares predefinidos (`PRESET`) ya no existen."
       discriminator:
         propertyName: type
         mapping:
-          PRESET: "#/components/schemas/AvatarRef.Preset"
           CUSTOM: "#/components/schemas/AvatarRef.Custom"
           DEFAULT: "#/components/schemas/AvatarRef.Default"
       oneOf:
       - $ref: "#/components/schemas/AvatarRef.Default"
-      - $ref: "#/components/schemas/AvatarRef.Preset"
       - $ref: "#/components/schemas/AvatarRef.Custom"
     AvatarRef.Custom:
       required:
@@ -2062,15 +2023,6 @@ components:
           type: string
     AvatarRef.Default:
       type: object
-    AvatarRef.Preset:
-      required:
-      - value
-      type: object
-      properties:
-        value:
-          type: string
-        type:
-          type: string
     ChangelogChange:
       required:
       - text
@@ -2450,11 +2402,6 @@ components:
           type: string
           x-pattern-message: El nombre contiene caracteres no permitidos
           x-size-message: El nombre debe tener entre 2 y 24 caracteres
-        avatarPresetId:
-          pattern: ^(trainer-berry|trainer-aqua|trainer-electric|trainer-violet)$
-          type: string
-          nullable: true
-          x-pattern-message: El avatar no es válido
     HealthResponse:
       required:
       - commit
@@ -2533,19 +2480,6 @@ components:
       - CONNECTED
       - TEMPORARILY_DISCONNECTED
       - LEFT
-    PresetAvatarRequest:
-      required:
-      - presetId
-      type: object
-      properties:
-        presetId:
-          type: string
-          enum:
-          - trainer-berry
-          - trainer-aqua
-          - trainer-electric
-          - trainer-violet
-      description: "Estricto: una clave desconocida es un 400 `unrecognized_keys`."
     ProfileResponse:
       required:
       - profile

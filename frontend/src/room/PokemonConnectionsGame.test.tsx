@@ -50,8 +50,8 @@ function room(game: PokemonConnectionsPublicState, player: PokemonConnectionsPla
     sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0,
     sessionStandings: [], sessionHistory: [], serverNow: 1_000, game, gamePlayerState: player,
     members: [
-      { id: 'p1', displayName: 'Eru', avatar: { type: 'PRESET', value: 'trainer-berry' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 7 },
-      { id: 'p2', displayName: 'Ana', avatar: { type: 'PRESET', value: 'trainer-aqua' }, connected: false, presence: 'DISCONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 1 },
+      { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 7 },
+      { id: 'p2', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: false, presence: 'DISCONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 1 },
     ],
   } as RoomView;
 }

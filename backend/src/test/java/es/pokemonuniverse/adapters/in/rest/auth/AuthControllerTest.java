@@ -141,23 +141,27 @@ class AuthControllerTest {
   @Test
   @SuppressWarnings("unchecked")
   void guestIdentity() {
-    var res = post("/api/auth/guest", Map.of("displayName", "Ana 2", "avatarPresetId", "trainer-berry"));
+    var res = post("/api/auth/guest", Map.of("displayName", "Ana 2"));
     assertEquals(HttpStatus.CREATED, res.getStatus());
     var user = user(res);
     assertTrue(((String) user.get("id")).startsWith("guest_"));
     assertFalse(users.existsById((String) user.get("id")));
     assertFalse(stats.existsById((String) user.get("id")));
     assertEquals("GUEST", user.get("kind"));
-    assertEquals(Map.of("type", "PRESET", "value", "trainer-berry"), user.get("avatar"));
+    assertEquals(Map.of("type", "DEFAULT"), user.get("avatar"));
     assertTrue(res.getHeaders().getAll("Set-Cookie").stream().anyMatch(c -> c.startsWith("pu_session=")));
   }
 
   @Test
-  void guestWithoutPresetHasDefaultAvatarAndBadPresetIs400() {
-    var res = post("/api/auth/guest", Map.of("displayName", "Ana"));
-    assertEquals(Map.of("type", "DEFAULT"), user(res).get("avatar"));
-    var e = postFails("/api/auth/guest", Map.of("displayName", "Ana", "avatarPresetId", "nope"));
-    assertEquals(HttpStatus.BAD_REQUEST, e.getStatus());
+  void guestWithFormerPresetAvatarIs400() {
+    // Los avatares predefinidos ya no existen: pedir uno, aunque fuera válido antes, es un error de validación.
+    for (var preset : List.of("trainer-berry", "nope")) {
+      var e = postFails("/api/auth/guest", Map.of("displayName", "Ana", "avatarPresetId", preset));
+      assertEquals(HttpStatus.BAD_REQUEST, e.getStatus());
+      var body = e.getResponse().getBody(String.class).orElseThrow();
+      assertEquals("{\"error\":\"El avatar no es válido\",\"issues\":[{\"path\":\"avatarPresetId\","
+          + "\"message\":\"El avatar no es válido\"}]}", body);
+    }
   }
 
   @Test

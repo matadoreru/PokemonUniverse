@@ -91,10 +91,6 @@ public class IdentityTokens {
     var map = new LinkedHashMap<String, Object>();
     switch (avatar) {
       case AvatarRef.Default d -> map.put("type", "DEFAULT");
-      case AvatarRef.Preset p -> {
-        map.put("type", "PRESET");
-        map.put("value", p.value());
-      }
       case AvatarRef.Custom c -> {
         map.put("type", "CUSTOM");
         map.put("value", c.value());
@@ -104,18 +100,16 @@ public class IdentityTokens {
     return map;
   }
 
-  /** Mismo criterio estricto que el esquema de Node: cualquier desviación cae a {@code DEFAULT}. */
+  /**
+   * Mismo criterio estricto que el esquema compartido: cualquier desviación cae a {@code DEFAULT}, también el
+   * {@code PRESET} de una cookie anterior a la retirada de los avatares predefinidos.
+   */
   private static AvatarRef parseAvatar(Object raw) {
     var fallback = new AvatarRef.Default();
     if (!(raw instanceof Map<?, ?> map) || !(map.get("type") instanceof String type)) return fallback;
     var keys = map.keySet();
     switch (type) {
       case "DEFAULT":
-        return fallback;
-      case "PRESET":
-        if (keys.size() == 2 && map.get("value") instanceof String v && AvatarRef.isValidPreset(v)) {
-          return new AvatarRef.Preset(v);
-        }
         return fallback;
       case "CUSTOM":
         if (keys.size() == 3

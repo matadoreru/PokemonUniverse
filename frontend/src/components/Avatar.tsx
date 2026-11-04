@@ -9,7 +9,6 @@ const presenceLabel: Record<PresenceStatus, string> = { CONNECTED: 'Conectado', 
 const presenceClass: Record<PresenceStatus, string | undefined> = { CONNECTED: s.connected, TEMPORARILY_DISCONNECTED: s.reconnecting, LEFT: s.left };
 
 export function avatarSource(avatar: AvatarRef | undefined): string | null {
-  // Los avatares predefinidos ya no existen: un PRESET guardado se muestra como la inicial (sin pedir imagen).
   if (avatar?.type === 'CUSTOM') return apiAsset(`/api/auth/avatars/${avatar.value}?v=${avatar.version}`);
   return null;
 }

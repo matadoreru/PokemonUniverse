@@ -1,6 +1,5 @@
 package es.pokemonuniverse.adapters.in.rest.auth;
 
-import static es.pokemonuniverse.adapters.in.rest.UserContentRequests.orEmpty;
 import static es.pokemonuniverse.adapters.in.rest.UserContentRequests.registeredUserId;
 
 import es.pokemonuniverse.adapters.in.rest.ApiError;
@@ -30,7 +29,6 @@ import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
 import io.micronaut.http.annotation.QueryValue;
-import io.micronaut.json.tree.JsonNode;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,7 +38,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.micronaut.serde.annotation.Serdeable;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -115,20 +112,6 @@ public class AvatarController {
     }
   }
 
-  @Operation(operationId = "setPresetAvatar", summary = "Elegir un avatar predefinido")
-  @RequestBody(required = true, content = @Content(schema = @Schema(implementation = PresetAvatarBody.class)))
-  @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UserResponse.class)))
-  @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class)))
-  @ApiResponse(responseCode = "401", description = "Cuenta registrada requerida", content = @Content(schema = @Schema(implementation = ApiError.class)))
-  @ApiResponse(responseCode = "429", description = "Demasiadas peticiones", content = @Content(schema = @Schema(implementation = ApiError.class)))
-  @Put("/profile/avatar/preset")
-  public HttpResponse<UserResponse> presetAvatar(@Parameter(hidden = true) @Nullable @Body JsonNode body,
-      @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
-    var userId = registeredUserId(current);
-    var presetId = AvatarRequests.presetId(orEmpty(body));
-    return session(HttpResponse.ok(new UserResponse(assignment.apply(userId, new AvatarRef.Preset(presetId)))));
-  }
-
   @Operation(operationId = "resetAvatar", summary = "Volver al avatar por defecto")
   @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UserResponse.class)))
   @ApiResponse(responseCode = "401", description = "Cuenta registrada requerida", content = @Content(schema = @Schema(implementation = ApiError.class)))
@@ -182,12 +165,4 @@ public class AvatarController {
     cookies.establish(response, tokens.sign(response.body().user(), Instant.now()));
     return response;
   }
-
-  /** Solo documenta el cuerpo en OpenAPI; lo valida {@link AvatarRequests#presetId}. */
-  @Serdeable
-  @Schema(name = "PresetAvatarRequest", additionalProperties = Schema.AdditionalPropertiesValue.FALSE,
-      description = "Estricto: una clave desconocida es un 400 `unrecognized_keys`.")
-  public record PresetAvatarBody(
-      @Schema(requiredMode = Schema.RequiredMode.REQUIRED, type = "string",
-          allowableValues = {"trainer-berry", "trainer-aqua", "trainer-electric", "trainer-violet"}) String presetId) {}
 }

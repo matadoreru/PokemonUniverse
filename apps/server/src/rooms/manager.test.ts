@@ -377,12 +377,13 @@ describe('room multi-game lifecycle', () => {
     const created = (manager as any).create(socket('host-socket'), host, 8);
     const room = manager.store.get(created.room.code)!;
 
-    manager.updateIdentityAvatar(host.id, { type: 'PRESET', value: 'trainer-aqua' });
+    const avatar = { type: 'CUSTOM', value: '0123456789abcdef0123456789abcdef0123.webp', version: 3 } as const;
+    manager.updateIdentityAvatar(host.id, avatar);
 
-    expect(room.members.get(host.id)?.identity.avatar).toEqual({ type: 'PRESET', value: 'trainer-aqua' });
+    expect(room.members.get(host.id)?.identity.avatar).toEqual(avatar);
     expect(transport.to).toHaveBeenCalledWith('host-socket');
     expect(transport.to().emit).toHaveBeenCalledWith('room:state', expect.objectContaining({
-      members: [expect.objectContaining({ id: host.id, avatar: { type: 'PRESET', value: 'trainer-aqua' } })],
+      members: [expect.objectContaining({ id: host.id, avatar })],
     }));
   });
 

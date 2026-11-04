@@ -50,12 +50,10 @@ public class AvatarAssignment {
     String previousValue = previous.getAvatarValue();
     var type = switch (avatar) {
       case AvatarRef.Default d -> "DEFAULT";
-      case AvatarRef.Preset p -> "PRESET";
       case AvatarRef.Custom c -> "CUSTOM";
     };
     String value = switch (avatar) {
       case AvatarRef.Default d -> null;
-      case AvatarRef.Preset p -> p.value();
       case AvatarRef.Custom c -> c.value();
     };
     if (users.updateAvatar(userId, type, value, Instant.now()) == 0) throw missing();

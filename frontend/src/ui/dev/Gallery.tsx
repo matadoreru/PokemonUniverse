@@ -882,8 +882,8 @@ function GamePiecesSection() {
           <Avatar key={size} name="Misty" size={size} />
         ))}
       </Fig>
-      <Fig id="avatar-presence" caption="Avatar · imagen y presencia">
-        <Avatar name="Aqua" avatar={{ type: 'PRESET', value: 'trainer-aqua' }} size="lg" presence="CONNECTED" />
+      <Fig id="avatar-presence" caption="Avatar · inicial y presencia">
+        <Avatar name="Aqua" size="lg" presence="CONNECTED" />
         <Avatar name="Brock" size="lg" presence="TEMPORARILY_DISCONNECTED" />
         <Avatar name="Gary" size="lg" presence="LEFT" />
       </Fig>
