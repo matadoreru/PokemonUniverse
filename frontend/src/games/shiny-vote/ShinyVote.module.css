@@ -244,8 +244,6 @@
   }
 }
 .skip {
-  /* Contiene el texto `sr-only` (absoluto) del control: sin esto su caja sale del `main` y alarga la página en el móvil. */
-  position: relative;
   display: flex;
   justify-content: flex-end;
 }

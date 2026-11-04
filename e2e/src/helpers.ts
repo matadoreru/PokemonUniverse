@@ -58,8 +58,8 @@ export interface CaptureOptions {
   /** Tamaño mínimo de letra que exige `measureLayout` (12 px por defecto). */
   minFontPx?: number;
   /**
-   * En vistas de 1024 px de ancho o más, ni la página ni el `main` del armazón se desplazan en vertical
-   * (`scrollHeight ≤ innerHeight` y `main.scrollHeight ≤ main.clientHeight`).
+   * La página no se desplaza en vertical a ningún ancho (`scrollHeight ≤ innerHeight`: el armazón mide 100dvh) y, en
+   * vistas de 1024 px o más, tampoco el `main` del armazón (`main.scrollHeight ≤ main.clientHeight`).
    */
   noPageScroll?: boolean;
   /** Captura de página completa en lugar de solo la vista (por defecto, `false`). */
@@ -101,9 +101,12 @@ export async function layoutProblems(page: Page, name: string, screenshot: boole
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
   await page.waitForTimeout(250);
   await expectNoHorizontalScroll(page, id);
-  if (opts.noPageScroll && vp.width >= 1024) {
+  if (opts.noPageScroll) {
+    // El armazón mide 100dvh a cualquier ancho: si la página crece, algo (p. ej. un `sr-only` absoluto) se sale del `main`.
     const over = await page.evaluate(() => Math.max(document.documentElement.scrollHeight, document.body.scrollHeight) - window.innerHeight);
     expect(over, `${id}: scroll vertical de página`).toBeLessThanOrEqual(0);
+  }
+  if (opts.noPageScroll && vp.width >= 1024) {
     // El armazón es una rejilla de 100dvh: lo que no cabe se desplaza dentro de `main`, que tampoco debe desbordarse.
     const mainOver = await page.evaluate(() => {
       const main = document.querySelector('main');

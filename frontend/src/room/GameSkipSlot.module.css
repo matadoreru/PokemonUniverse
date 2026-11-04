@@ -1,0 +1,7 @@
+/*
+ * Hueco de «Saltar minijuego» en la pantalla del juego. Contiene los textos `sr-only` (absolutos) de `SkipGameControl`:
+ * sin un antepasado posicionado su caja sale del `main` y alarga la página (unos 1 500 px en el móvil).
+ */
+.slot {
+  position: relative;
+}
