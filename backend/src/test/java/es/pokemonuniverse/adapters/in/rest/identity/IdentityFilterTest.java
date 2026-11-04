@@ -52,10 +52,10 @@ class IdentityFilterTest {
 
   @Test
   void authUserJsonOmitsNullEmailAndRoleAndUsesExactAvatarShape() {
-    var guest = new AuthUser("g1", "G", AuthUser.Kind.GUEST, null, null, new AvatarRef.Preset("trainer-aqua"));
+    var guest = new AuthUser("g1", "G", AuthUser.Kind.GUEST, null, null, new AvatarRef.Default());
     var body = get("/test-identity/user", tokens.sign(guest, Instant.now()));
     assertEquals(Map.of("id", "g1", "displayName", "G", "kind", "GUEST",
-        "avatar", Map.of("type", "PRESET", "value", "trainer-aqua")), body);
+        "avatar", Map.of("type", "DEFAULT")), body);
     var custom = new AuthUser("u1", "A", AuthUser.Kind.USER, "a@b.c", es.pokemonuniverse.domain.identity.UserRole.ADMIN,
         new AvatarRef.Custom("0123456789abcdef0123456789abcdef0123.webp", 42));
     var body2 = get("/test-identity/user", tokens.sign(custom, Instant.now()));

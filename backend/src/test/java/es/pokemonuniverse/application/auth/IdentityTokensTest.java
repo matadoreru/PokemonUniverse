@@ -58,7 +58,8 @@ class IdentityTokensTest {
     assertEquals(AuthUser.Kind.USER, user.kind());
     assertEquals("ana@example.com", user.email());
     assertEquals(UserRole.ADMIN, user.role());
-    assertEquals(new AvatarRef.Preset("trainer-aqua"), user.avatar());
+    // El token de Node lleva el avatar predefinido «trainer-aqua»: tras su retirada se lee como la inicial.
+    assertEquals(new AvatarRef.Default(), user.avatar());
   }
 
   @Test
@@ -93,7 +94,13 @@ class IdentityTokensTest {
 
   @Test
   void invalidAvatarFallsBackToDefault() throws Exception {
-    var token = signRaw(base().claim("avatar", Map.of("type", "PRESET", "value", "nope")));
+    var token = signRaw(base().claim("avatar", Map.of("type", "CUSTOM", "value", "nope", "version", 1)));
+    assertEquals(new AvatarRef.Default(), tokens.verify(token).avatar());
+  }
+
+  @Test
+  void formerPresetAvatarInAnOldCookieFallsBackToDefault() throws Exception {
+    var token = signRaw(base().claim("avatar", Map.of("type", "PRESET", "value", "trainer-aqua")));
     assertEquals(new AvatarRef.Default(), tokens.verify(token).avatar());
   }
 

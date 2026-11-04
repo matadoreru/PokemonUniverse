@@ -157,10 +157,6 @@ class AvatarWriteRoutesTest implements TestPropertyProvider {
     return image(HttpRequest.PUT("/api/auth/profile/avatar/custom", bytes), type);
   }
 
-  private static MutableHttpRequest<String> preset(String jsonBody) {
-    return HttpRequest.PUT("/api/auth/profile/avatar/preset", jsonBody).contentType(MediaType.APPLICATION_JSON_TYPE);
-  }
-
   private static byte[] png() {
     return TestImages.png(64, 64, Color.BLUE);
   }
@@ -296,7 +292,6 @@ class AvatarWriteRoutesTest implements TestPropertyProvider {
     var guest = guestCookie(new AvatarRef.Default());
     for (var cookie : Arrays.asList(null, guest)) {
       var requests = List.<MutableHttpRequest<?>>of(
-          preset("{\"presetId\":\"trainer-aqua\"}"),
           HttpRequest.DELETE("/api/auth/profile/avatar"),
           customUpload(png(), "image/png"),
           customUpload("x".getBytes(), "text/plain"),
@@ -310,32 +305,26 @@ class AvatarWriteRoutesTest implements TestPropertyProvider {
   }
 
   @Test
-  void presetDeleteAndCustomUpdateTheUserAndResignTheCookie() throws IOException {
+  void deleteAndCustomUpdateTheUserAndResignTheCookie() throws IOException {
     var ip = ip();
     var account = register();
 
-    var preset = call(preset("{\"presetId\":\"trainer-aqua\"}"), account.cookie(), ip);
-    assertEquals(HttpStatus.OK, preset.status(), body(preset));
-    var user = user(preset.body());
-    assertEquals(account.id(), user.get("id"));
-    assertEquals(Map.of("type", "PRESET", "value", "trainer-aqua"), avatarOf(user));
-    assertEquals(1, version(account.id()));
-    var cookie = sessionCookie(preset);
-    assertEquals(avatarOf(user), avatarOf(user(call(HttpRequest.GET("/api/auth/me"), cookie, ip).body())));
-
-    var custom = call(customUpload(png(), "image/png"), cookie, ip);
+    var custom = call(customUpload(png(), "image/png"), account.cookie(), ip);
     assertEquals(HttpStatus.OK, custom.status(), body(custom));
-    var first = avatarOf(user(custom.body()));
+    var user = user(custom.body());
+    assertEquals(account.id(), user.get("id"));
+    var first = avatarOf(user);
     assertEquals("CUSTOM", first.get("type"));
-    assertEquals(2, ((Number) first.get("version")).intValue(), "la versión es avatarVersion de la BD");
-    assertEquals(2, version(account.id()));
+    assertEquals(1, ((Number) first.get("version")).intValue(), "la versión es avatarVersion de la BD");
+    assertEquals(1, version(account.id()));
     var firstFile = dir.resolve((String) first.get("value"));
     assertTrue(Files.exists(firstFile));
-    cookie = sessionCookie(custom);
+    var cookie = sessionCookie(custom);
+    assertEquals(first, avatarOf(user(call(HttpRequest.GET("/api/auth/me"), cookie, ip).body())));
 
     var replaced = call(customUpload(png(), "image/png"), cookie, ip);
     var second = avatarOf(user(replaced.body()));
-    assertEquals(3, ((Number) second.get("version")).intValue());
+    assertEquals(2, ((Number) second.get("version")).intValue());
     assertTrue(Files.exists(dir.resolve((String) second.get("value"))));
     assertFalse(Files.exists(firstFile), "el avatar personalizado anterior se borra");
     cookie = sessionCookie(replaced);
@@ -343,7 +332,7 @@ class AvatarWriteRoutesTest implements TestPropertyProvider {
     var removed = call(HttpRequest.DELETE("/api/auth/profile/avatar"), cookie, ip);
     assertEquals(HttpStatus.OK, removed.status());
     assertEquals(Map.of("type", "DEFAULT"), avatarOf(user(removed.body())));
-    assertEquals(4, version(account.id()));
+    assertEquals(3, version(account.id()));
     assertFalse(Files.exists(dir.resolve((String) second.get("value"))));
     var entity = users.findById(account.id()).orElseThrow();
     assertEquals("DEFAULT", entity.getAvatarType());
@@ -352,28 +341,14 @@ class AvatarWriteRoutesTest implements TestPropertyProvider {
   }
 
   @Test
-  void presetBodyIsAStrictZodObject() throws IOException {
+  void formerPresetRouteNoLongerExists() throws IOException {
     var ip = ip();
     var account = register();
-    var values = "\"trainer-berry\",\"trainer-aqua\",\"trainer-electric\",\"trainer-violet\"";
-    var message = "Invalid option: expected one of \\\"trainer-berry\\\"|\\\"trainer-aqua\\\"|\\\"trainer-electric\\\"|"
-        + "\\\"trainer-violet\\\"";
-    var invalid = call(preset("{\"presetId\":\"x\"}"), account.cookie(), ip);
-    assertEquals(HttpStatus.BAD_REQUEST, invalid.status());
-    assertEquals("{\"error\":\"" + message + "\",\"issues\":[{\"code\":\"invalid_value\",\"values\":[" + values
-        + "],\"path\":[\"presetId\"],\"message\":\"" + message + "\"}]}", body(invalid));
-    var missing = call(HttpRequest.PUT("/api/auth/profile/avatar/preset", "").contentType(MediaType.APPLICATION_JSON_TYPE),
-        account.cookie(), ip);
-    assertEquals(HttpStatus.BAD_REQUEST, missing.status());
-    assertTrue(body(missing).contains("\"path\":[\"presetId\"]"), body(missing));
-    var extra = call(preset("{\"presetId\":\"trainer-aqua\",\"x\":1}"), account.cookie(), ip);
-    assertEquals("{\"error\":\"Unrecognized key: \\\"x\\\"\",\"issues\":[{\"code\":\"unrecognized_keys\",\"keys\":[\"x\"],"
-        + "\"path\":[],\"message\":\"Unrecognized key: \\\"x\\\"\"}]}", body(extra));
-    var array = call(preset("[]"), account.cookie(), ip);
-    assertEquals("{\"error\":\"Invalid input: expected object, received array\",\"issues\":[{\"expected\":\"object\","
-        + "\"code\":\"invalid_type\",\"path\":[],\"message\":\"Invalid input: expected object, received array\"}]}",
-        body(array));
+    var res = call(HttpRequest.PUT("/api/auth/profile/avatar/preset", "{\"presetId\":\"trainer-aqua\"}")
+        .contentType(MediaType.APPLICATION_JSON_TYPE), account.cookie(), ip);
+    assertEquals(HttpStatus.NOT_FOUND, res.status());
     assertEquals(0, version(account.id()));
+    assertEquals("DEFAULT", users.findById(account.id()).orElseThrow().getAvatarType());
   }
 
   @Test
@@ -383,15 +358,15 @@ class AvatarWriteRoutesTest implements TestPropertyProvider {
     var guest = guestCookie(new AvatarRef.Default());
     // requireUser va antes del limitador: las peticiones rechazadas con 401 no cuentan.
     for (int i = 0; i < 13; i++) {
-      assertEquals(HttpStatus.UNAUTHORIZED, call(preset("{\"presetId\":\"trainer-aqua\"}"), guest, ip).status());
+      assertEquals(HttpStatus.UNAUTHORIZED, call(HttpRequest.DELETE("/api/auth/profile/avatar"), guest, ip).status());
     }
-    // Un único contador para las cuatro rutas.
+    // Un único contador para las tres rutas.
     var requests = List.<MutableHttpRequest<?>>of(
         guestUpload("?displayName=Ana", png(), "image/png"),
         customUpload(png(), "image/png"),
         HttpRequest.DELETE("/api/auth/profile/avatar"));
     for (int i = 0; i < 12; i++) {
-      var request = i < requests.size() ? requests.get(i) : preset("{\"presetId\":\"trainer-aqua\"}");
+      var request = i < requests.size() ? requests.get(i) : HttpRequest.DELETE("/api/auth/profile/avatar");
       var res = call(request, i == 0 ? null : account.cookie(), ip);
       assertNotEquals(HttpStatus.TOO_MANY_REQUESTS, res.status(), "petición " + (i + 1));
       assertEquals("12", res.header("RateLimit-Limit"));
@@ -413,10 +388,10 @@ class AvatarWriteRoutesTest implements TestPropertyProvider {
     coordinator.create(identity, "conn-avatar", null);
     try {
       events.sent.clear();
-      call(preset("{\"presetId\":\"trainer-violet\"}"), account.cookie(), ip);
-      assertEquals(new AvatarRef.Preset("trainer-violet"), lastAvatar(account.id()));
       var custom = avatarOf(user(call(customUpload(png(), "image/png"), account.cookie(), ip).body()));
-      assertEquals(new AvatarRef.Custom((String) custom.get("value"), 2), lastAvatar(account.id()));
+      assertEquals(new AvatarRef.Custom((String) custom.get("value"), 1), lastAvatar(account.id()));
+      call(HttpRequest.DELETE("/api/auth/profile/avatar"), account.cookie(), ip);
+      assertEquals(new AvatarRef.Default(), lastAvatar(account.id()));
       assertEquals(2, events.sent.stream().filter(s -> s.event().equals("room:state")).count());
     } finally {
       coordinator.leave(account.id());

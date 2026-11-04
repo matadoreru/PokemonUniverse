@@ -50,7 +50,7 @@ const guessing: PokeddleRacePlayerState = { canGuess: true, hasGuessedThisRound:
 
 function roomOf(game: PokeddleRacePublicState, player: PokeddleRacePlayerState | null, spectator = false): RoomView {
   return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, selectedGameId: 'pokeddle-race', selectedGameConfig: { ...defaultPokeddleRaceConfig, generations: [1, 2, 3, 4] }, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], serverNow: Date.now(), availableGames: [], game, gamePlayerState: player,
-    members: ['p1', 'p2', 'p3'].map((id, index) => ({ id, displayName: ['Eru', 'Ana', 'Pedro'][index]!, avatar: { type: 'PRESET', value: 'trainer-berry' }, connected: true, presence: index === 2 ? 'TEMPORARILY_DISCONNECTED' : 'CONNECTED', roomRole: index ? 'MEMBER' : 'HOST', role: index === 0 && spectator ? 'SPECTATOR' : 'PLAYER', isHost: index === 0, ready: false, sessionPoints: 0 })) } as RoomView;
+    members: ['p1', 'p2', 'p3'].map((id, index) => ({ id, displayName: ['Eru', 'Ana', 'Pedro'][index]!, avatar: { type: 'DEFAULT' }, connected: true, presence: index === 2 ? 'TEMPORARILY_DISCONNECTED' : 'CONNECTED', roomRole: index ? 'MEMBER' : 'HOST', role: index === 0 && spectator ? 'SPECTATOR' : 'PLAYER', isHost: index === 0, ready: false, sessionPoints: 0 })) } as RoomView;
 }
 const render = (view: RoomView) => renderToStaticMarkup(createElement(PokeddleRaceGame, { room: view, selfId: 'p1', onAction: async () => undefined }));
 
@@ -304,7 +304,7 @@ describe('Pokédle Race: resultados y ajustes', () => {
 
 describe('Global header accessibility', () => {
   it('puts the brand and actions in HUD plates and exposes profile and logout actions', () => {
-    const user = { id: 'p1', displayName: 'Eru', kind: 'USER' as const, email: 'eru@example.com', avatar: { type: 'PRESET' as const, value: 'trainer-berry' as const } };
+    const user = { id: 'p1', displayName: 'Eru', kind: 'USER' as const, email: 'eru@example.com', avatar: { type: 'DEFAULT' as const } };
     const markup = renderToStaticMarkup(createElement(MemoryRouter, null, createElement(AppHeader, { user, onLogout: () => undefined })));
     expect(markup).toContain('data-layout="hud-plates"');
     expect(markup).not.toContain('Pokémon Universe, inicio');

@@ -1,4 +1,4 @@
-import type { AuthUser, AvatarPresetId } from '@pokemon-universe/shared/public';
+import type { AuthUser } from '@pokemon-universe/shared/public';
 import { createContext, useContext, useEffect, useMemo, useState, type PropsWithChildren } from 'react';
 import { api } from '../lib/api';
 import type { MeResponse, LoginResponse, RegisterResponse, GuestResponse } from '../lib/api-contract';
@@ -8,7 +8,7 @@ interface AuthContextValue {
   loading: boolean;
   login(email: string, password: string): Promise<void>;
   register(username: string, email: string, password: string): Promise<void>;
-  guest(displayName: string, avatar?: AvatarPresetId | Blob): Promise<void>;
+  guest(displayName: string, avatar?: Blob): Promise<void>;
   updateUser(user: AuthUser): void;
   logout(): Promise<void>;
 }
@@ -33,7 +33,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     async guest(displayName, avatar) {
       const body = avatar instanceof Blob
         ? await api<GuestResponse>(`/auth/guest/custom-avatar?displayName=${encodeURIComponent(displayName)}`, { method: 'POST', headers: { 'Content-Type': avatar.type }, body: avatar })
-        : await api<GuestResponse>('/auth/guest', { method: 'POST', body: JSON.stringify({ displayName, ...(avatar ? { avatarPresetId: avatar } : {}) }) });
+        : await api<GuestResponse>('/auth/guest', { method: 'POST', body: JSON.stringify({ displayName }) });
       setUser(body.user);
     },
     updateUser(nextUser) { setUser(nextUser); },

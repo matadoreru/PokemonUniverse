@@ -346,23 +346,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/auth/profile/avatar/preset": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Elegir un avatar predefinido */
-        put: operations["setPresetAvatar"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/auth/register": {
         parameters: {
             query?: never;
@@ -859,8 +842,8 @@ export interface components {
         };
         /** @enum {string} */
         "AuthUser.Kind": "USER" | "GUEST";
-        /** @description Avatar de un jugador; el JSON tiene exactamente las formas que acepta el servidor Node. */
-        AvatarRef: components["schemas"]["AvatarRef.Default"] | components["schemas"]["AvatarRef.Preset"] | components["schemas"]["AvatarRef.Custom"];
+        /** @description Avatar de un jugador: la inicial (`DEFAULT`) o una imagen subida (`CUSTOM`). Los avatares predefinidos (`PRESET`) ya no existen. */
+        AvatarRef: components["schemas"]["AvatarRef.Default"] | components["schemas"]["AvatarRef.Custom"];
         "AvatarRef.Custom": {
             value: string;
             /** Format: int64 */
@@ -877,14 +860,6 @@ export interface components {
              * @enum {string}
              */
             type: "DEFAULT";
-        };
-        "AvatarRef.Preset": {
-            value: string;
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "PRESET";
         };
         /** @description Un cambio de una entrada del changelog (changelogChangeSchema en shared). */
         ChangelogChange: {
@@ -1023,7 +998,6 @@ export interface components {
         };
         GuestRequest: {
             displayName: string;
-            avatarPresetId?: string | null;
         };
         /** @description El orden de los componentes es el del JSON de Node. */
         HealthResponse: {
@@ -1054,11 +1028,6 @@ export interface components {
          * @enum {string}
          */
         PresenceStatus: "CONNECTED" | "TEMPORARILY_DISCONNECTED" | "LEFT";
-        /** @description Estricto: una clave desconocida es un 400 `unrecognized_keys`. */
-        PresetAvatarRequest: {
-            /** @enum {string} */
-            presetId: "trainer-berry" | "trainer-aqua" | "trainer-electric" | "trainer-violet";
-        };
         /** @description Respuesta `{"profile": ...}` de `GET /api/auth/profile` (UserProfileResponse en shared). */
         ProfileResponse: {
             profile: components["schemas"]["ProfileResponse.Profile"];
@@ -2295,57 +2264,6 @@ export interface operations {
             };
             /** @description No es JPEG, PNG ni WEBP */
             415: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-            /** @description Demasiadas peticiones */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    setPresetAvatar: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PresetAvatarRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserResponse"];
-                };
-            };
-            /** @description Datos inválidos */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponse"];
-                };
-            };
-            /** @description Cuenta registrada requerida */
-            401: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -39,8 +39,8 @@ const watching: PokedexEntryGuessPlayerState = { ...guessing, canGuess: false };
 
 function room(game: PokedexEntryGuessPublicState, player: PokedexEntryGuessPlayerState | null, spectator = false): RoomView {
   return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'pokedex-entry-guess', selectedGameConfig: { ...defaultPokedexEntryGuessConfig, generations: [1, 2, 3, 4, 5] }, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], serverNow: Date.now(), game, gamePlayerState: player, members: [
-    { id: 'p1', displayName: 'Eru', avatar: { type: 'PRESET', value: 'trainer-berry' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: spectator ? 'SPECTATOR' : 'PLAYER', isHost: true, ready: false, sessionPoints: 4 },
-    { id: 'p2', displayName: 'Ana', avatar: { type: 'PRESET', value: 'trainer-aqua' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 0 },
+    { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: spectator ? 'SPECTATOR' : 'PLAYER', isHost: true, ready: false, sessionPoints: 4 },
+    { id: 'p2', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 0 },
   ] } as unknown as RoomView;
 }
 const render = (view: RoomView) => renderToStaticMarkup(createElement(PokedexEntryGuessGame, { room: view, selfId: 'p1', onAction: async () => undefined }));

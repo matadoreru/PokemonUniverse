@@ -19,8 +19,8 @@ public final class UserIdentityMapper {
         avatarFromUser(user.getAvatarType(), user.getAvatarValue(), user.getAvatarVersion()));
   }
 
+  /** Cualquier otro tipo (también un {@code PRESET} antiguo) se lee como {@code DEFAULT}. */
   public static AvatarRef avatarFromUser(String type, String value, int version) {
-    if ("PRESET".equals(type) && AvatarRef.isValidPreset(value)) return new AvatarRef.Preset(value);
     if ("CUSTOM".equals(type) && AvatarRef.isValidCustomFile(value)) return new AvatarRef.Custom(value, version);
     return new AvatarRef.Default();
   }

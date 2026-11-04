@@ -45,8 +45,7 @@ record RateLimitPolicy(String name, Predicate<HttpRequest<?>> matcher, int limit
     if (path.length() > 1 && path.endsWith("/")) path = path.substring(0, path.length() - 1);
     var method = request.getMethod();
     if (method == HttpMethod.POST && path.equals("/api/auth/guest/custom-avatar")) return true;
-    boolean profileWrite = method == HttpMethod.PUT && path.equals("/api/auth/profile/avatar/preset")
-        || method == HttpMethod.DELETE && path.equals("/api/auth/profile/avatar")
+    boolean profileWrite = method == HttpMethod.DELETE && path.equals("/api/auth/profile/avatar")
         || method == HttpMethod.PUT && path.equals("/api/auth/profile/avatar/custom");
     return profileWrite && request.getAttribute(IdentityFilter.ATTRIBUTE, AuthUser.class)
         .filter(user -> user.kind() == AuthUser.Kind.USER)

@@ -505,12 +505,14 @@ class RoomCoordinatorTest {
   void broadcastsAvatarChanges() {
     var kit = new RoomTestKit();
     var room = kit.room(8, guest("host", "Host"));
-    kit.manager.updateIdentityAvatar("host", new AvatarRef.Preset("trainer-aqua"));
-    assertEquals(new AvatarRef.Preset("trainer-aqua"), room.members.get("host").identity.avatar());
+    var avatar = new AvatarRef.Custom("0123456789abcdef0123456789abcdef0123.webp", 3);
+    kit.manager.updateIdentityAvatar("host", avatar);
+    assertEquals(avatar, room.members.get("host").identity.avatar());
     var state = kit.events.lastStateFor("host");
     assertEquals("socket-host", kit.events.named("room:state").getLast().connectionId());
-    assertEquals(new AvatarRef.Preset("trainer-aqua"), state.members().getFirst().avatar());
-    assertTrue(serialize(state).contains("\"avatar\":{\"type\":\"PRESET\",\"value\":\"trainer-aqua\"}"));
+    assertEquals(avatar, state.members().getFirst().avatar());
+    assertTrue(serialize(state).contains(
+        "\"avatar\":{\"type\":\"CUSTOM\",\"value\":\"0123456789abcdef0123456789abcdef0123.webp\",\"version\":3}"));
   }
 
   @Test

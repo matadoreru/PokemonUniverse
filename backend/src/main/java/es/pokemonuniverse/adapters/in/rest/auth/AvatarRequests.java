@@ -4,7 +4,6 @@ import es.pokemonuniverse.application.errors.InvalidInputException;
 import es.pokemonuniverse.application.validation.ZodIssues;
 import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import io.micronaut.json.tree.JsonNode;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -12,12 +11,10 @@ import java.util.regex.Pattern;
 
 /**
  * Validaciones de las rutas de escritura de avatar con los esquemas Zod de Node: {@code guestSchema} solo para
- * {@code displayName} (de la query) y {@code z.object({presetId: avatarPresetIdSchema}).strict()}.
+ * {@code displayName} (de la query) y los tipos de imagen que lee {@code express.raw}.
  */
 final class AvatarRequests {
 
-  /** Orden de {@code AVATAR_PRESETS} en {@code packages/shared/src/avatar.ts} (el de {@code values} en el issue). */
-  static final List<String> PRESET_IDS = List.of("trainer-berry", "trainer-aqua", "trainer-electric", "trainer-violet");
   /** {@code type} de {@code express.raw}: el tipo sin parámetros y sin distinguir mayúsculas. */
   static final Set<String> IMAGE_TYPES = Set.of("image/jpeg", "image/png", "image/webp");
 
@@ -54,26 +51,6 @@ final class AvatarRequests {
     }
     if (!issues.isEmpty()) throw new InvalidInputException(issues);
     return name;
-  }
-
-  /** {@code z.object({presetId: avatarPresetIdSchema}).strict().parse(req.body)}. */
-  static String presetId(JsonNode body) {
-    var issues = new ZodIssues();
-    if (!body.isObject()) {
-      issues.invalidType("object", body, List.of());
-      throw new InvalidInputException(issues);
-    }
-    var preset = body.get("presetId");
-    if (preset == null || !preset.isString() || !PRESET_IDS.contains(preset.getStringValue())) {
-      issues.invalidValue(PRESET_IDS, List.of("presetId"));
-    }
-    var unknown = new ArrayList<String>();
-    for (var entry : body.entries()) {
-      if (!entry.getKey().equals("presetId")) unknown.add(entry.getKey());
-    }
-    if (!unknown.isEmpty()) issues.unrecognizedKeys(unknown);
-    if (!issues.isEmpty()) throw new InvalidInputException(issues);
-    return preset.getStringValue();
   }
 
   private static JsonNode arrayNode(List<String> values) {
